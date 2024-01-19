@@ -1,0 +1,23 @@
+<script type="module" src="./test-case-1.js"></script>
+<article>
+  <h1>Test Case 1</h1>
+  <p>
+    <ul>
+      <li>Go to an album page</li>
+      <li>Select a track to play</li>
+      <li>Play the full track</li>
+    </ul>
+  </p>
+  <h2>Expectations</h2>
+  <p>
+    <ul>
+      <li>1 record logged</li>
+      <li>startAssetPosition = 0</li>
+      <li>endAssetPosition = track length</li>
+      <li>actualProductId = trackId played</li>
+      <li>sourceType = “ALBUM”</li>
+      <li>sourceId = albumId of track played</li>
+      <li>actions = []</li>
+    </ul>
+  </p>
+</article>

@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "baseUrl": "./src",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "es2022",
+    "lib": ["DOM", "es2022", "dom.iterable"],
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "types": [
+      "mocha"
+    ],
+    "sourceMap": false
+  },
+  "include": [
+    "."
+  ],
+  "exclude": [
+    "cypress/e2e"
+  ]
+}

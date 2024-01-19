@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIDAL Player Web Components Example</title>
+  <style>
+    code {
+      background-color: #ddd;
+      padding: 1em;
+      border-radius: 6px;
+      font-size: 10pt;
+      display: block;
+      font-family: 'Fira Code', monospace;
+    }
+
+    section {
+      border: 1px solid black;
+      margin: 1rem 0;
+      padding: 1rem;
+    }
+
+    section header {
+      font-weight: 600;
+      font-family: 'Fira Code', monospace;
+    }
+
+    table {
+      margin-block-start: 1em;
+    }
+
+    table, th, td {
+      border: 1px solid black;
+    }
+
+    th, td {
+      padding: 0.25em 0.5em
+    }
+
+    h1, h2, h3 {
+      font-family: 'Fira Code', monospace;
+    }
+
+    main {
+      margin: 0 auto;
+      max-width: 700px;
+      padding: 0 1rem;
+    }
+  </style>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <h1>TIDAL Player Web Components Example</h1>
+  <p>This is a small example to test out the provided web components.</p>
+  <hr>
+  <section>
+    <h2>Credentials</h2>
+    <p>Before any of the below works, submit your clientId and clientSecret for your TIDAL Third-Party client.</p>
+    <form id="credform">
+      <input type="text" name="clientId" placeholder="Client ID">
+      <input type="password" name="clientSecret" placeholder="Client Secret">
+      <button>Submit</button>
+    </form>
+  </section>
+  <hr>
+  <section>
+    <header>
+      <h2>&lt;tidal-video-view&gt;</h2>
+    </header>
+    <h3>Description</h3>
+    <p>
+      Outputs video data when a video is played.
+    </p>
+    <h3>Options</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>attribute</th>
+          <th>value</th>
+          <th>comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>video-id</td>
+          <td>productId</td>
+          <td>Set this to display a post image when the video is not playing.</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>Example</h3>
+    <tidal-play-trigger product-id="255510692" product-type="video">
+      <tidal-video-view style="width:500px" video-id="255510692"></tidal-video-view>
+    </tidal-play-trigger>
+    <figure>
+      <code>
+          &lt;tidal-video-view style="width:500px"&gt;&lt;/tidal-video-view&gt;
+      </code>
+    </figure>
+  </section>
+  <section>
+    <header>
+      <h2>&lt;tidal-progress-bar&gt;</h2>
+    </header>
+    <h3>Description</h3>
+    <p>
+      Shows the elapsed progress of the playing item. 60 FPS smooth like butter.
+    </p>
+    <h3>Options</h3>
+    <p>
+      No specific attribute options. Fills the box its given. Color controlled by currentColor.
+    </p>
+    <h3>Example</h3>
+    <tidal-progress-bar style="background-color:#aaa;width:500px;height:10px;color:cyan;border-radius:6px;overflow:hidden"></tidal-progress-bar>
+    <figure>
+      <code>
+          &lt;tidal-progress-bar style="background-color:#aaa;width:500px;height:10px;color:cyan;border-radius:6px;overflow:hidden"&gt;&lt;/tidal-progress-bar&gt;
+      </code>
+    </figure>
+  </section>
+  <section>
+    <header>
+      <h2>&lt;tidal-current-time&gt;</h2>
+    </header>
+    <h3>Description</h3>
+    <p>
+      Shows the current progress time in (hh:)mm:ss format.
+    </p>
+    <h3>Options</h3>
+    <p>
+      No specific attribute options. Fills the box its given. Color controlled by currentColor.
+    </p>
+    <h3>Example</h3>
+    <tidal-current-time></tidal-current-time>
+    <figure>
+      <code>
+          &lt;tidal-current-time&gt;&lt;/tidal-current-time&gt;
+      </code>
+    </figure>
+  </section>
+  <section>
+    <header>
+      <h2>&lt;tidal-duration-time&gt;</h2>
+    </header>
+    <h3>Description</h3>
+    <p>
+      Shows the duration of the current media product in (hh:)mm:ss format.
+    </p>
+    <h3>Options</h3>
+    <p>
+      No specific attribute options. Fills the box its given. Color controlled by currentColor.
+    </p>
+    <h3>Example</h3>
+    <h3>1</h3>
+    <tidal-duration-time></tidal-duration-time>
+    <figure>
+      <code>
+          &lt;tidal-duration-time&gt;&lt;/tidal-duration-time&gt;
+      </code>
+    </figure>
+    <h3>2</h3>
+    <tidal-duration-time>133.7</tidal-duration-time>
+    <figure>
+      <code>
+          &lt;tidal-duration-time&gt;133.7&lt;/tidal-duration-time&gt;
+      </code>
+    </figure>
+  </section>
+  <section>
+    <header>
+      <h2>&lt;tidal-play-trigger&gt;</h2>
+    </header>
+    <h3>Description</h3>
+    <p>
+      Triggers playback of a new item and acts as a play/pause button.
+    </p>
+    <h3>Options</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>attribute</th>
+          <th>value</th>
+          <th>comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>product-id</td>
+          <td>productId</td>
+          <td>Product ID to be played</td>
+        </tr>
+        <tr>
+          <td>product-type</td>
+          <td>'track' | 'video'</td>
+          <td>Product type to be played</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>Example</h3>
+    <tidal-play-trigger product-id="243610992" product-type="track">
+      <button>Play track</button>
+    </tidal-play-trigger>
+    <tidal-play-trigger product-id="31219323" product-type="track">
+      <button>🪐</button>
+    </tidal-play-trigger>
+    <tidal-play-trigger product-id="1300228" product-type="track">
+      <button>🌟</button>
+    </tidal-play-trigger>
+    <tidal-play-trigger product-id="79227803" product-type="track">
+      <button>🍑</button>
+    </tidal-play-trigger>
+    <tidal-play-trigger product-id="119969602" product-type="track">
+      <button>🦴</button>
+    </tidal-play-trigger>
+    <tidal-play-trigger product-id="114833547" product-type="track">
+      <button>🐒</button>
+    </tidal-play-trigger>
+    <tidal-play-trigger product-id="83493141" product-type="track">
+      <button>🎶</button>
+    </tidal-play-trigger>
+    <tidal-play-trigger product-id="188994994" product-type="track">
+      <button>🌊</button>
+    </tidal-play-trigger>
+    <tidal-play-trigger product-id="170268927" product-type="track">
+      <button>🔩</button>
+    </tidal-play-trigger>
+    <tidal-play-trigger product-id="248468202" product-type="track">
+      <button>💫</button>
+    </tidal-play-trigger>
+    <tidal-play-trigger product-id="182839339" product-type="track">
+      <button>✋</button>
+    </tidal-play-trigger>
+    <tidal-play-trigger product-id="26196180" product-type="video">
+      <button>All I want for</button>
+    </tidal-play-trigger>
+    <figure>
+      <code>
+        &lt;tidal-play-trigger product-id="243610992" product-type="track"&gt;
+          &lt;button&gt;Play track&lt;/button&gt;
+        &lt;/tidal-play-trigger&gt;
+      </code>
+    </figure>
+    <hr>
+    <tidal-play-trigger product-id="143516331" product-type="video">
+      <em>Play video 🧐</em>
+    </tidal-play-trigger>
+    <figure>
+      <code>
+        &lt;tidal-play-trigger product-id="143516331" product-type="video"&gt;
+          &lt;em&gt;Play video 🧐&lt;/em&gt;
+        &lt;/tidal-play-trigger&gt;
+      </code>
+    </figure>
+  </section>
+  <section>
+    <header><h2>Miscellaneous</h2></header>
+    <h3>&lt;tidal-play-trigger&gt; with &lt;tidal-video-view&gt;</h3>
+    <p>
+      &lt;tidal-play-trigger&gt; is a functional web component without any styles. You can put any element you wish in it, and a click will trigger playback. For example the &lt;tidal-video-view&gt; could be put inside:
+    </p>
+    <figure>
+      <code>
+        &lt;tidal-play-trigger product-id="23988566" product-type="video"&gt;
+          &lt;tidal-video-view style="width:250px"&gt;&lt;/tidal-video-view&gt;
+        &lt;/tidal-play-trigger&gt;
+      </code>
+    </figure>
+    <p>Click the &lt;tidal-video-view&gt; on the top of this page for an example.</p>
+  </section>
+</body>
+</html>

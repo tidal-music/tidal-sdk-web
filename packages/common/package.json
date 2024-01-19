@@ -1,0 +1,45 @@
+{
+  "name": "@tidal-music/common",
+  "version": "0.1.2",
+  "type": "module",
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "prepare": "vite build",
+    "build": "vite build",
+    "build:dev": "vite build -m development",
+    "clean": "rm -rf coverage dist .eslintcache",
+    "dev": "vite --debug --cors -c=./vite.config.ts",
+    "lint": "eslint . --cache --cache-strategy content",
+    "lint:ci": "eslint . --quiet",
+    "lint:fix": "pnpm run lint --fix",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui --coverage",
+    "types": "tsc"
+  },
+  "dependencies": {
+    "@tidal-music/common": "workspace:*"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "0.34.6",
+    "@vitest/ui": "0.34.7",
+    "typescript": "5.3.3",
+    "vite": "5.0.11",
+    "vite-plugin-dts": "3.7.1",
+    "vitest": "0.34.6"
+  }
+}

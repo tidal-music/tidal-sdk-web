@@ -1,0 +1,8 @@
+*.sh @tidal-music/tidal-web-platform
+*.md @tidal-music/tidal-web-platform
+*.json @tidal-music/tidal-web-platform
+
+/packages/ @tidal-music/tidal-web-platform
+/packages/auth/ @MathiasTim
+/packages/event-producer @TheHaff
+/packages/player @enjikaka

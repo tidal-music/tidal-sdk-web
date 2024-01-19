@@ -1,0 +1,18 @@
+name: Setup repo and pnpm
+description: Gets pnpm and runs commands necessary before executing other steps
+runs:
+  using: composite
+  steps:
+    # https://pnpm.io/continuous-integration
+    - name: Install package manager
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8.6.7
+    - name: Use Node.js 20.10
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.10.x
+        cache: 'pnpm'
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile

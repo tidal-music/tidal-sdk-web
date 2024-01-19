@@ -1,0 +1,53 @@
+body {
+  font-family: sans-serif;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+textarea {
+  width: 300px;
+  height: 120px;
+  margin-right: 10px;
+}
+
+button {
+  max-width: 100px;
+}
+
+label>span {
+  width: 100px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+pre {
+  margin: 3px;
+}
+
+#searchField {
+  display: none;
+}
+
+#searchResults {
+  margin-top: 20px;
+  padding: 0;
+}
+
+#searchResults a {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#searchResults img {
+  width: 80px;
+  margin-right: 10px;
+}
+
+#logoutBtn {
+  display: none;
+}

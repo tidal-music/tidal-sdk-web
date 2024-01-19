@@ -1,0 +1,35 @@
+name: Generate documentation
+
+on:
+  push:
+    branches: main
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    name: Build documentation
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: ./.github/actions/build-projects
+      - name: Typedoc
+        run: |
+          pnpm run docs
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+         path: docs/
+  deploy-docs:
+    needs: build-docs
+    permissions:
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    name: Deploy documentation
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

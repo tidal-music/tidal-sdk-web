@@ -1,0 +1,33 @@
+<html>
+
+<head>
+  <link href="shared.css" rel="stylesheet" />
+</head>
+
+<body>
+  <a href="../">Back to all examples</a>
+  <h1>Limited input device (e.g. TV)</h1>
+  <p>
+    This example showcases how to login a device with limited input capabilities, e.g. a TV.
+    In this case the user has to login on another device, e.g. a phone and enter a code we present them.
+  </p>
+
+  <form id="limitedInputDeviceForm">
+    <label>
+      <span>Client Id</span>
+      <input type="text" name="clientId" />
+    </label>
+
+    <button type="submit">Login</button>
+  </form>
+
+  <a id="limitedDeviceCode" target="_blank"></a>
+
+  <div id="userInfo"></div>
+
+  <button id="logoutBtn">Logout</button>
+
+  <script type="module" src="./limited-input-device.js"></script>
+</body>
+
+</html>

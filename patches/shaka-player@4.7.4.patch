@@ -1,0 +1,40 @@
+diff --git a/dist/shaka-player.compiled.d.ts b/dist/shaka-player.compiled.d.ts
+index 9c72e09e9727eac9b32dfce92087b6a4481b1ea7..32a7c646b2040b76ba60d9780618c35f512ece75 100644
+--- a/dist/shaka-player.compiled.d.ts
++++ b/dist/shaka-player.compiled.d.ts
+@@ -5276,3 +5276,5 @@ declare namespace ಠ_ಠ.clutz {
+     static isTypeSupported (keySystem : string , contentType : string ) : boolean ;
+   }
+ }
++
++export default shaka;
+diff --git a/dist/shaka-player.ui.d.ts b/dist/shaka-player.ui.d.ts
+index face310a3d869dc853764c7802f485c892a01ab6..b56ed09ac7184479cd0ce98248d37673b7e83525 100644
+--- a/dist/shaka-player.ui.d.ts
++++ b/dist/shaka-player.ui.d.ts
+@@ -5897,3 +5897,5 @@ declare namespace shaka.extern {
+ declare namespace shaka.extern {
+   type UIVolumeBarColors = { base : string , level : string } ;
+ }
++
++export default shaka;
+diff --git a/index.d.ts b/index.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..86130b219f20157404545f817f41485ab13ced25
+--- /dev/null
++++ b/index.d.ts
+@@ -0,0 +1,2 @@
++/// <reference path="./dist/shaka-player.compiled.d.ts" />
++/// <reference path="./dist/shaka-player.ui.d.ts" />
+diff --git a/package.json b/package.json
+index dee973bb19c28a74c5f13ef11cabe120ff683c02..fc0c9f02d0f931f2ab477dd258c355c60d3300d5 100644
+--- a/package.json
++++ b/package.json
+@@ -106,5 +106,6 @@
+     "remove": [
+       "engines"
+     ]
+-  }
++  },
++  "types": "dist/shaka-player.compiled.d.ts"
+ }

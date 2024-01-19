@@ -1,0 +1,15 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches: '*'
+
+jobs:
+  trigger-lint:
+    name: Run Lint Checks
+    uses: ./.github/workflows/lint.yml
+      
+  trigger-unit-test:
+    name: Run Unit Tests
+    uses: ./.github/workflows/unit-test.yml
+    secrets: inherit

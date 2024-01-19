@@ -1,0 +1,26 @@
+name: Run Lint Checks
+
+on:
+  workflow_call:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: ./.github/actions/build-projects
+      - name: Run Lint Checks
+        run: |
+          pnpm lint:ci
+  type-check:
+    runs-on: ubuntu-latest
+    name: Type Check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: ./.github/actions/build-projects
+      - name: Run Type Checks
+        run: |
+          pnpm types

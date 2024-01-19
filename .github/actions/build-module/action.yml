@@ -1,0 +1,66 @@
+name: Build module
+description: Runs the build for a module
+inputs: 
+  module-path:
+    description: The name of the module to build
+    required: true
+  version:
+    description: The semantic version code 
+    required: true
+  tag: 
+    description: The tag for the release
+    required: true
+  token: 
+    description: Github token
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Verify Inputs
+      id: verify-input
+      shell: bash
+      run: |
+        output="true"
+        echo "Checking if module exists..."
+        if [[ ! -d ${{ inputs.module-path }} ]]; then
+          output="false"
+          echo "Module does not exist!"
+        fi
+
+        semver_regex='^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+
+        echo "Checking if version is valid..."
+
+        if [ "$(echo ${{ inputs.version }} | grep -Eo "$semver_regex")" = "" ]; then
+          output="false"
+          echo "Invalid version string submitted"
+        fi
+
+        echo "Checking if tag is valid"
+        name="${{ inputs.module-path }}"
+        if [ "${name#*/}-${{ inputs.version}}" != "${{ inputs.tag }}" ]; then
+          output="false"
+          echo "Invalid tag submitted!"
+        fi
+
+        echo "verified=$output" >> $GITHUB_OUTPUT
+    - name: Build Module
+      shell: bash
+      id: build-module
+      if: steps.verify-input.outputs.verified == 'true'
+      run: |
+        path="${{ inputs.module-path }}"
+        name="${path#*/}"
+        archive_name="tidal-music-${name}-${{ inputs.version }}.tgz"
+        
+        cd $path
+        pnpm types
+        pnpm pack
+
+        echo "release_file=$path/$archive_name" >> $GITHUB_OUTPUT
+    - name: Upload Files To Release Draft
+      shell: bash
+      run: |
+        gh release upload ${{ inputs.tag }} ${{ steps.build-module.outputs.release_file }} --clobber
+      env:
+        GH_TOKEN: ${{ inputs.token }}
