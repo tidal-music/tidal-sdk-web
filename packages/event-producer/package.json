@@ -42,9 +42,9 @@
     "xml-js": "^1.6.11"
   },
   "dependencies": {
-    "@tidal-music/common": "0.1.2",
+    "@tidal-music/common": "workspace:^",
     "@tidal-music/event-producer": "workspace:*",
-    "@tidal-music/true-time": "0.1.0",
+    "@tidal-music/true-time": "workspace:^",
     "localforage": "1.10.0",
     "nanoid": "5.0.4"
   }

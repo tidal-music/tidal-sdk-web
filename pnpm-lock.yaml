@@ -35,10 +35,10 @@ importers:
         specifier: workspace:*
         version: 'link:'
       '@tidal-music/common':
-        specifier: 0.1.2
+        specifier: workspace:^
         version: link:../common
       '@tidal-music/true-time':
-        specifier: 0.1.0
+        specifier: workspace:^
         version: link:../true-time
     devDependencies:
       '@vitest/coverage-v8':
@@ -88,13 +88,13 @@ importers:
   packages/event-producer:
     dependencies:
       '@tidal-music/common':
-        specifier: 0.1.2
+        specifier: workspace:^
         version: link:../common
       '@tidal-music/event-producer':
         specifier: workspace:*
         version: 'link:'
       '@tidal-music/true-time':
-        specifier: 0.1.0
+        specifier: workspace:^
         version: link:../true-time
       localforage:
         specifier: 1.10.0
@@ -166,9 +166,6 @@ importers:
       '@tidal-music/common':
         specifier: workspace:^
         version: link:../common
-      '@tidal-music/player-web-components':
-        specifier: workspace:^
-        version: link:../player-web-components
       '@tidal-music/true-time':
         specifier: workspace:^
         version: link:../true-time
