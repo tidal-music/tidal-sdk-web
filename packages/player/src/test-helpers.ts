@@ -6,7 +6,7 @@ import { playerState } from './player/state';
 export { waitFor } from './internal/helpers/wait-for';
 
 type User = {
-  apiToken: string;
+  clientId: string;
   oAuthAccessToken: string;
   oAuthExpirationDate: number;
   oAuthRefreshToken: string;
@@ -33,14 +33,14 @@ export async function getTestUser(
 ): Promise<Credentials> {
   if (user.oAuthAccessToken) {
     return {
-      clientId: user.apiToken,
+      clientId: user.clientId,
       requestedScopes: ['READ', 'WRITE'],
       token: user.oAuthAccessToken,
     };
   }
 
   const body = new URLSearchParams({
-    client_id: user.apiToken,
+    client_id: user.clientId,
     client_unique_key: '',
     grant_type: 'refresh_token',
     refresh_token: user.oAuthRefreshToken,
@@ -59,7 +59,7 @@ export async function getTestUser(
   user.oAuthAccessToken = json.access_token;
 
   return {
-    clientId: user.apiToken,
+    clientId: user.clientId,
     requestedScopes: ['READ', 'WRITE'],
     token: json.access_token,
   };
