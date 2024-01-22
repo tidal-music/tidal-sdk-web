@@ -36,7 +36,7 @@
     "@vitest/web-worker": "0.34.7",
     "happy-dom": "13.1.4",
     "typescript": "5.3.3",
-    "vite": "5.0.11",
+    "vite": "5.0.12",
     "vite-plugin-dts": "3.7.1",
     "vitest": "0.34.6",
     "xml-js": "^1.6.11"
