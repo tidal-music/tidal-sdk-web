@@ -12,6 +12,7 @@
   "scripts": {
     "wtr": "web-test-runner",
     "test": "bash ./scripts/test.sh",
+    "prepare": "vite build",
     "build": "vite build",
     "clean": "rm -rf coverage dist .eslintcache",
     "dev": "vite --debug --cors -c=./vite.config.ts",
