@@ -1,8 +1,8 @@
 import type { EPEvent } from '../types';
 
-import Worker from './worker?sharedworker';
+import MySharedWorker from './worker?sharedworker&inline';
 
-export const worker = new Worker();
+export const worker = new MySharedWorker();
 
 worker.port.start();
 
