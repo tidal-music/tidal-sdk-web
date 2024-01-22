@@ -5,16 +5,8 @@ import { credentialsProviderStore } from '../index';
 import { trueTime } from '../true-time';
 
 import type { CommitData, PrematureEvents } from './types';
-/**
- * Generates a Web Worker from a function.
- */
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function workerize(method: Function) {
-  const functionBody = `(${method.toString()})();`;
-  const workerBlob = new Blob([functionBody], { type: 'text/javascript' });
-
-  return URL.createObjectURL(workerBlob);
-}
+// @ts-expect-error Vite Worker import style
+import BeaconWorker from './worker?worker&inline';
 
 export let worker: Worker;
 
@@ -38,9 +30,7 @@ async function handleWorkerMessage(
  */
 export async function start() {
   if (!worker) {
-    const { beacon } = await import('./worker');
-
-    worker = new Worker(workerize(beacon));
+    worker = new BeaconWorker();
 
     worker.addEventListener('message', event => {
       handleWorkerMessage(event);
