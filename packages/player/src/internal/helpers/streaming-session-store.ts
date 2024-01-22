@@ -108,7 +108,11 @@ class StreamingSessionStore {
       return;
     }
 
-    mediaProductTransition.playbackContext.actualDuration = updatedDuration;
+    mediaProductTransition.playbackContext = {
+      ...mediaProductTransition.playbackContext,
+      actualDuration: updatedDuration,
+    };
+
     this.saveMediaProductTransition(streamingSessionId, mediaProductTransition);
   }
 

@@ -742,19 +742,6 @@ export class BasePlayer {
       case fromTo('PLAYING', 'IDLE'): {
         this.reportPlaybackProgress(this.currentStreamingSessionId);
 
-        console.debug(
-          'PS',
-          {
-            from: currentPlaybackState,
-            to: newPlaybackState,
-          },
-          {
-            currentTime: this.#currentTime,
-            doIt: this.duration && this.currentTime < this.duration,
-            duration: this.duration,
-          },
-        );
-
         if (this.duration && this.currentTime < this.duration) {
           PlayLog.playbackSessionAction(this.currentStreamingSessionId, {
             actionType: 'PLAYBACK_STOP',
