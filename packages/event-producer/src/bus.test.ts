@@ -1,4 +1,4 @@
-import { TidalMessage } from '@tidal-music/common';
+import type { TidalMessage } from '@tidal-music/common';
 
 import * as bus from './bus';
 

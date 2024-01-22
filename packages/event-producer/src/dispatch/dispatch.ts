@@ -1,4 +1,4 @@
-import { CredentialsProvider } from '@tidal-music/common';
+import type { CredentialsProvider } from '@tidal-music/common';
 import { trueTime } from '@tidal-music/true-time';
 
 import type { Config } from '../config';

@@ -1,4 +1,4 @@
-import { Credentials } from '@tidal-music/common';
+import type { Credentials } from '@tidal-music/common';
 
 import type { ConsentCategory } from '../consentCategories';
 import type { AppInfo, EventHeaders, PlatformData } from '../types';
