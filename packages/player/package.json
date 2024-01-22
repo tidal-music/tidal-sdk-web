@@ -32,7 +32,7 @@
     "type": "git",
     "url": "ssh://git@github.com:tidal-music/tidal-sdk-web.git"
   },
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "keywords": [
     "tidal",
     "player"

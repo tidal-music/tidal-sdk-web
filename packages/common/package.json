@@ -9,6 +9,7 @@
     "type": "git",
     "url": "ssh://git@github.com:tidal-music/tidal-sdk-web.git"
   },
+  "license": "Apache-2.0",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
