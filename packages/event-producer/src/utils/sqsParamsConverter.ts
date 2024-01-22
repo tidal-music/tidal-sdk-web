@@ -19,7 +19,7 @@ export function eventsToSqsRequestParameters(events: Array<EPEvent>) {
     params.append(`${attributeKey}.1.Value.StringValue`, event.name);
     params.append(`${attributeKey}.1.Value.DataType`, 'String');
     if (event.headers) {
-      params.append(`${attributeKey}.2.Name`, 'Headers');
+      params.append(`${attributeKey}.2.Name`, 'headers');
       params.append(`${attributeKey}.2.Value.DataType`, 'String');
       params.append(
         `${attributeKey}.2.Value.StringValue`,

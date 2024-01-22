@@ -1,5 +1,3 @@
-import '@vitest/web-worker';
-
 import { config } from '../../test/fixtures/config';
 import { init as initConfig } from '../config';
 import * as monitor from '../monitor';

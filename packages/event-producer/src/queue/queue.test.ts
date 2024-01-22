@@ -10,10 +10,10 @@ const db = vi.mocked(_db);
 
 vi.mock('./db', () => ({
   db: {
-    getItem: vi.fn().mockResolvedValue(undefined),
+    getItem: vi.fn(),
     ready: vi.fn().mockResolvedValue(true),
-    removeItem: vi.fn().mockResolvedValue(true),
-    setItem: vi.fn().mockResolvedValue(true),
+    removeItem: vi.fn(),
+    setItem: vi.fn(),
   },
 }));
 
@@ -35,22 +35,12 @@ describe('Queue', () => {
     expect(queue.getEvents()).toEqual([epEvent1]);
   });
 
-  it('addEvent: adds event to array and persist in db through worker', async () => {
-    db.getItem.mockResolvedValueOnce(undefined);
-    db.setItem.mockResolvedValueOnce(true);
-
-    const postMessageSpy = vi.spyOn(queue.worker.port, 'postMessage');
+  it('addEvent: adds event to array and persist in indexedDB', async () => {
     await queue.initDB();
-    queue.addEvent(epEvent1);
+    await queue.addEvent(epEvent1);
 
     expect(queue.getEvents()).toEqual([epEvent1]);
-    expect(postMessageSpy).toHaveBeenCalledWith({
-      action: 'persist',
-      events: [epEvent1],
-    });
-    vi.waitFor(() => {
-      expect(db.setItem).toHaveBeenCalledWith('events', [epEvent1]);
-    });
     // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(db.setItem).toHaveBeenCalledWith('events', [epEvent1]);
   });
 });

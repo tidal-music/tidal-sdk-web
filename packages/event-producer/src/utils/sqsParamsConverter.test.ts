@@ -27,7 +27,7 @@ describe('sqsParamsConverter', () => {
     ).toEqual('String');
     expect(
       sqsParams.get('SendMessageBatchRequestEntry.1.MessageAttribute.2.Name'),
-    ).toEqual('Headers');
+    ).toEqual('headers');
     expect(
       sqsParams.get(
         'SendMessageBatchRequestEntry.1.MessageAttribute.2.Value.StringValue',

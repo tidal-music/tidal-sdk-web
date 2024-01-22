@@ -1,5 +1,3 @@
-import '@vitest/web-worker';
-
 import { config } from '../../test/fixtures/config';
 import { credentials1 } from '../../test/fixtures/credentialsProvider';
 

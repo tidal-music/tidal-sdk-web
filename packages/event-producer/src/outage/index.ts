@@ -1,8 +1,5 @@
-import {
-  type ErrorOptions,
-  TidalError,
-  type TidalMessage,
-} from '@tidal-music/common';
+import { TidalError } from '@tidal-music/common';
+import type { TidalMessage } from '@tidal-music/common';
 
 import * as bus from '../bus';
 
@@ -19,8 +16,10 @@ let _isOutage = false;
  * @extends TidalError
  */
 export class OutageStartError extends TidalError {
-  constructor(errorCode: string, options?: ErrorOptions) {
-    super(errorCode, options);
+  constructor(
+    errorCode: string /*, options?: ErrorOptions this causes compilation errors */,
+  ) {
+    super(errorCode /*, options*/);
 
     // Set the prototype explicitly.
     Object.setPrototypeOf(this, OutageStartError.prototype);

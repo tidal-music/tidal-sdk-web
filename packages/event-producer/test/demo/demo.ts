@@ -1,16 +1,7 @@
-import { init } from '../../src';
+import { dispatchEvent, init } from '../../src';
 import type { EPEvent } from '../../src';
-import { dispatchEvent } from '../../src/dispatch/dispatch';
 import { config as configFixture } from '../fixtures/config';
-import {
-  credentials1,
-  credentialsProvider1,
-} from '../fixtures/credentialsProvider';
 import { eventPayload1 } from '../fixtures/events';
-
-const setCredentialsToken = (token?: string) => {
-  credentials1.token = token;
-};
 
 const noop = () => {};
 
@@ -23,7 +14,6 @@ class EventDemo extends HTMLElement {
     super();
     this.shadow = this.attachShadow({ mode: 'open' });
     this.fakeQueue = [];
-    init(configFixture).catch(console.error);
   }
 
   connectedCallback() {
@@ -32,7 +22,7 @@ class EventDemo extends HTMLElement {
 
   render() {
     this.shadow.innerHTML = `<div><h1></h1><ul>
-      <li><input type="text" placeholder="credentials token" id="credentialsTokenInp"/><button id="setCredentialsToken">Set credentials token</button><button id="deleteCredentialsToken">Delete token</button></li>
+      <li><button id="initBtn">Init</button></li>
       <li><button id="dispatchEventBtn">Fire Event</button> <input id="inp" type="text" placeholder="event name"/></li>
       <li>${this.fakeQueue
         .map(
@@ -42,49 +32,23 @@ class EventDemo extends HTMLElement {
         .join('</li><li>')}</li>
       </ul><button id="submitEvents">Submit queue</button></div>`;
     if (this.shadowRoot) {
+      const initBtn = this.shadowRoot.querySelector('#initBtn');
       const dispatchEventBtn =
         this.shadowRoot.querySelector('#dispatchEventBtn');
-      const setCredentialsTokenBtn =
-        this.shadowRoot.querySelector<HTMLButtonElement>(
-          '#setCredentialsToken',
-        );
-      const deleteCredentialsTokenBtn =
-        this.shadowRoot.querySelector<HTMLButtonElement>(
-          '#deleteCredentialsToken',
-        );
-      const credentialsTokenInp =
-        this.shadowRoot.querySelector<HTMLInputElement>('#credentialsTokenInp');
       const inp = this.shadowRoot.querySelector<HTMLInputElement>('#inp');
       const submitEventsBtn = this.shadowRoot.querySelector('#submitEvents');
       const removeBtns = this.shadowRoot.querySelectorAll('[role="remove"]');
-      if (
-        dispatchEventBtn &&
-        inp &&
-        submitEventsBtn &&
-        setCredentialsTokenBtn &&
-        deleteCredentialsTokenBtn &&
-        credentialsTokenInp
-      ) {
-        setCredentialsTokenBtn.addEventListener('click', () => {
-          if (credentialsTokenInp.value) {
-            setCredentialsToken(credentialsTokenInp.value);
-          } else {
-            console.error('credentials token input is empty');
-          }
+      if (dispatchEventBtn && inp && submitEventsBtn && initBtn) {
+        initBtn.addEventListener('click', () => {
+          // eslint-disable-next-line no-console
+          init(configFixture).then(console.log).catch(console.error);
         });
         dispatchEventBtn.addEventListener('click', () => {
           dispatchEvent({
-            config: configFixture,
-            credentialsProvider: credentialsProvider1,
-            event: {
-              ...eventPayload1,
-              consentCategory: 'NECESSARY',
-              name: inp.value ? inp.value : `empty${this.fakeQueue.length + 1}`,
-            },
-          }).catch(console.error);
-        });
-        deleteCredentialsTokenBtn.addEventListener('click', () => {
-          setCredentialsToken();
+            ...eventPayload1,
+            consentCategory: 'NECESSARY',
+            name: inp.value ? inp.value : `empty${this.fakeQueue.length + 1}`,
+          });
         });
         submitEventsBtn.addEventListener(
           'click',

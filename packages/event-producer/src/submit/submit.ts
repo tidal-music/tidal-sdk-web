@@ -1,7 +1,7 @@
 import { IllegalArgumentError } from '@tidal-music/common';
 
 import type { Config } from '../config';
-import * as monitor from '../monitor';
+// import * as monitor from '../monitor';
 import { isOutage, setOutage } from '../outage';
 import * as queue from '../queue';
 import { eventsToSqsRequestParameters } from '../utils/sqsParamsConverter';
@@ -59,30 +59,28 @@ export const submitEvents = async ({ config }: SubmitEventsParams) => {
         }
       });
 
+    /** TODO: yell about this edgecase
     xml
       .querySelectorAll(
-        'SendMessageBatchResponse SendMessageBatchResult BatchResultErrorEntry',
+        'SendMessageBatchResponse SendMessageBatchResult Error Id',
       )
       .forEach(en => {
-        const errorEventId = en.querySelector('Id')?.textContent;
-        // SenderFault indicates the event is malformed and should be dropped.
-        // see https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_BatchResultErrorEntry.html
-        const isSenderFault =
-          en.querySelector('SenderFault')?.textContent === 'true';
-        if (errorEventId && isSenderFault) {
-          idsToRemove.push(errorEventId);
-          const droppedEv = eventsBatch.find(e => e.id === errorEventId);
-          if (droppedEv) {
-            monitor.registerDroppedEvent({
-              eventName: droppedEv.name,
-              reason: 'validationFailedEvents',
-            });
-          }
+        if (en.textContent) {
+          idsToRemove.push(en.textContent);
+        }
+        const droppedEv = eventsBatch.find(e => e.id === en.textContent);
+        if (droppedEv) {
+          monitor.registerDroppedEvent({
+            name: droppedEv.name,
+            reason: 'validation',
+          });
         }
       });
+    */
     return queue.removeEvents(idsToRemove);
   } else {
     setOutage(true);
+    // TODO: monitor.registerDroppedEvent() network error type is missing from spec
   }
   return Promise.resolve();
 };

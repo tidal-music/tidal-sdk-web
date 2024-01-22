@@ -1,29 +1,11 @@
 import type { EPEvent } from '../types';
 
-import Worker from './worker?sharedworker';
+import { db } from './db';
 
-export const worker = new Worker();
-
-worker.port.start();
-
-type WorkerMessages = MessageEvent<
-  | {
-      action: 'init';
-      events: Array<EPEvent>;
-    }
-  | {
-      action: 'initFailed';
-    }
-  | {
-      action: 'initSuccess';
-      events: Array<EPEvent>;
-    }
->;
-
-let _events: Array<EPEvent> = [];
+let events: Array<EPEvent> = [];
 
 export function getEvents() {
-  return _events;
+  return events;
 }
 
 /**
@@ -32,11 +14,10 @@ export function getEvents() {
  * @returns {Array<EPEvent>}
  */
 export function getEventBatch(): Array<EPEvent> {
-  const events = getEvents();
   if (events.length >= 10) {
     return events.slice(0, 10);
   }
-  return events;
+  return getEvents();
 }
 
 /**
@@ -45,40 +26,14 @@ export function getEventBatch(): Array<EPEvent> {
  * @param {Array<EPEvent>} newEvents
  */
 export function setEvents(newEvents: Array<EPEvent>) {
-  _events = newEvents;
+  events = newEvents;
 }
-
-/**
- * Inits workers localforage database and loads stored events into memory.
- *
- * @returns {Promise<void>}
- */
-export const initDB = (): Promise<void> =>
-  new Promise<void>((resolve, reject) => {
-    worker.port.onmessage = (message: WorkerMessages) => {
-      const { data } = message;
-      switch (data.action) {
-        case 'initSuccess': {
-          if (data.events) {
-            setEvents(getEvents().concat(data.events));
-          }
-          resolve();
-          break;
-        }
-        default:
-          console.error('Unknown action:', message);
-          reject(new Error('Unknown action'));
-      }
-    };
-
-    worker.port.postMessage({ action: 'init' });
-  });
 
 /**
  * Persists events in db.
  */
-export function persistEvents() {
-  worker.port.postMessage({ action: 'persist', events: getEvents() });
+export async function persistEvents() {
+  return db.setItem('events', getEvents());
 }
 
 /**
@@ -86,17 +41,50 @@ export function persistEvents() {
  *
  * @param {Array<string>} idsToRemove
  */
-export function removeEvents(idsToRemove: Array<string>) {
-  _events = _events.filter(event => !idsToRemove.includes(event.id));
-  persistEvents();
+export async function removeEvents(idsToRemove: Array<string>) {
+  events = events.filter(event => !idsToRemove.includes(event.id));
+
+  return persistEvents();
 }
+
+/**
+ * Restores events from indexedDB and adds them to the queue.
+ *
+ * @returns {Promise<void>}
+ */
+async function restoreEvents(): Promise<void> {
+  const storedEvents = await db.getItem<Array<EPEvent>>(
+    'events',
+    (error: Error) => {
+      if (error) {
+        console.error('Error in restoring events:', error);
+        throw error;
+      }
+    },
+  );
+  if (storedEvents) {
+    setEvents(getEvents().concat(storedEvents));
+  }
+}
+
+/**
+ * Init indexedDB and restore stored items
+ *
+ * @returns {Promise<void>}
+ */
+export const initDB = async (): Promise<void> => {
+  await db.ready();
+  await restoreEvents();
+};
 
 /**
  * Adds an event to the queue and persist queue.
  *
- * @param {EPEvent} event
+ * @param event
+ *
+ * @returns {Promise<Array<EPEvent>>}
  */
-export function addEvent(event: EPEvent) {
-  _events.push(event);
-  persistEvents();
+export async function addEvent(event: EPEvent): Promise<Array<EPEvent>> {
+  events.push(event);
+  return persistEvents();
 }

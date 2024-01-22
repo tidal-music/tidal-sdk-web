@@ -1,11 +1,9 @@
-import '@vitest/web-worker';
-
 import { config } from '../../test/fixtures/config';
 import { credentialsProvider1 } from '../../test/fixtures/credentialsProvider';
 import { eventPayload1 } from '../../test/fixtures/events';
 import * as monitor from '../monitor';
 import * as queue from '../queue';
-import * as uuid from '../uuid/uuid';
+import { init as initUUID } from '../uuid/uuid';
 
 import { type DispatchEventParams, dispatchEvent } from './dispatch';
 
@@ -17,30 +15,24 @@ vi.mock('@tidal-music/true-time', () => ({
 
 describe('dispatchEvent', () => {
   beforeEach(async () => {
-    await uuid.init();
+    await initUUID();
   });
-  it('if event consentCategory is not blocked -> adds event to queue', async () => {
-    vi.spyOn(uuid, 'uuid').mockReturnValue('fakeUuid');
+  it('if event consentCategory is not blacklisted -> adds event to queue', async () => {
     const dispatchEventPayload: DispatchEventParams = {
       config,
       credentialsProvider: credentialsProvider1,
       event: eventPayload1,
     };
     await dispatchEvent(dispatchEventPayload);
-    const { consentCategory, ...eventWithoutConsentCategory } =
-      dispatchEventPayload.event;
+
     expect(queue.addEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        payload: JSON.stringify({
-          ...eventWithoutConsentCategory,
-          ts: '1337',
-          uuid: 'fakeUuid',
-        }),
+        payload: JSON.stringify(dispatchEventPayload.event),
       }),
     );
   });
 
-  it('if event consentCategory is blocked -> monitor called', async () => {
+  it('if event consentCategory is blacklisted -> monitor called', async () => {
     const dispatchEventPayload: DispatchEventParams = {
       config,
       credentialsProvider: credentialsProvider1,

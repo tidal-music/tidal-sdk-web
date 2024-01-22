@@ -4,7 +4,7 @@ import { credentialsProvider1 } from './credentialsProvider';
 
 export const config: Config = {
   appInfo: { appName: 'withJoy', appVersion: '777' },
-  blockedConsentCategories: {
+  blacklistedConsentCategories: {
     NECESSARY: false,
     PERFORMANCE: false,
     TARGETING: true,

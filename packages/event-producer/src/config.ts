@@ -1,6 +1,6 @@
 import type { CredentialsProvider } from '@tidal-music/common';
 
-import type { BlockedConsentCategories } from './blockedConsentCategories';
+import type { ConsentCategories } from './consentCategories';
 import type { AppInfo, PlatformData } from './types';
 
 /**
@@ -12,8 +12,8 @@ import type { AppInfo, PlatformData } from './types';
 
 export type Config = {
   appInfo: AppInfo;
-  // Used to initialize the blockedConsentCategories property
-  blockedConsentCategories: BlockedConsentCategories;
+  // Used to initialize the blacklistedConsentCategories property
+  blacklistedConsentCategories: ConsentCategories;
   // An access token provider, used by the EventProducer to get access token.
   credentialsProvider?: CredentialsProvider;
   // The maximum amount of disk the EventProducer is allowed to use
@@ -63,8 +63,8 @@ type SetConsentCategoryParams = {
  * @param {SetConsentCategoryParams} consentLevel
  */
 export const setConsentCategory = (consentLevel: SetConsentCategoryParams) => {
-  _config.blockedConsentCategories = {
-    ..._config.blockedConsentCategories,
+  _config.blacklistedConsentCategories = {
+    ..._config.blacklistedConsentCategories,
     ...consentLevel,
   };
 };

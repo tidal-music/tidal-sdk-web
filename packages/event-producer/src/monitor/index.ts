@@ -1,7 +1,7 @@
 import { trueTime } from '@tidal-music/true-time';
 
 import { getConfig } from '../config';
-import type { EPEvent } from '../types';
+import { EPEvent } from '../types';
 import { getEventHeaders } from '../utils/headerUtils';
 import { eventsToSqsRequestParameters } from '../utils/sqsParamsConverter';
 import { uuid } from '../uuid/uuid';

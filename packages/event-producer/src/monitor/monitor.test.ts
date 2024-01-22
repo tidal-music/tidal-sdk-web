@@ -1,4 +1,3 @@
-import '@vitest/web-worker';
 import { trueTime } from '@tidal-music/true-time';
 
 import { config } from '../../test/fixtures/config';

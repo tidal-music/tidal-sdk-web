@@ -1,4 +1,4 @@
-import type { CredentialsProvider } from '@tidal-music/common';
+import { CredentialsProvider } from '@tidal-music/common';
 import { trueTime } from '@tidal-music/true-time';
 
 import type { Config } from '../config';
@@ -8,24 +8,6 @@ import type { DispatchedEvent, EPEvent } from '../types';
 import { getEventHeaders } from '../utils/headerUtils';
 import { validateEvent } from '../utils/validateEvent';
 import { uuid } from '../uuid/uuid';
-
-type CreatePayloadParams = {
-  event: DispatchedEvent;
-  id: string;
-  ts: string;
-};
-/**
- * Creates a payload to be sent to backend. The payload is the whole raw event with uuid
- * and timestamp added but the consentCategory omitted.
- *
- * @param {CreatePayloadParams} payloadParams
- * @returns {string}
- */
-const createPayload = ({ event, id, ts }: CreatePayloadParams): string => {
-  const { consentCategory, ...rawEventWithoutConsentCategory } = event;
-
-  return JSON.stringify({ ...rawEventWithoutConsentCategory, ts, uuid: id });
-};
 
 /**
  * Creates an EPEvent to be sent to the event producer
@@ -39,25 +21,20 @@ const createEvent = async ({
   credentialsProvider,
   event,
 }: DispatchEventParams): Promise<EPEvent> => {
-  const id = uuid();
-  const sentTimestamp = trueTime.now().toString();
+  const { consentCategory, headers: suppliedHeaders, name } = event;
   const headers = getEventHeaders({
     appInfo: config.appInfo,
-    consentCategory: event.consentCategory,
+    consentCategory,
     credentials: await credentialsProvider?.getCredentials(),
     platformData: config.platform,
-    sentTimestamp,
-    suppliedHeaders: event.headers,
+    sentTimestamp: trueTime.now().toString(),
+    suppliedHeaders,
   });
   return {
     headers,
-    id,
-    name: event.name,
-    payload: createPayload({
-      event,
-      id,
-      ts: sentTimestamp,
-    }),
+    id: uuid(),
+    name,
+    payload: JSON.stringify(event),
   };
 };
 
@@ -100,7 +77,7 @@ export const dispatchEvent = async ({
     strictEventCheck(dispatchedEvent);
   }
   /* c8 ignore stop */
-  if (config.blockedConsentCategories[dispatchedEvent.consentCategory]) {
+  if (config.blacklistedConsentCategories[dispatchedEvent.consentCategory]) {
     monitor.registerDroppedEvent({
       eventName: dispatchedEvent.name,
       reason: 'consentFilteredEvents',

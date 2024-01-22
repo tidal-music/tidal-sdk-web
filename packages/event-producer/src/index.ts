@@ -11,7 +11,7 @@ import * as queue from './queue/queue';
 import { submitEvents } from './submit/submit';
 import type { DispatchedEvent } from './types';
 
-export { setConsentCategory, setCredentialsProvider } from './config';
+export { setCredentialsProvider } from './config';
 export type * from './types';
 
 /**
@@ -23,18 +23,17 @@ export type * from './types';
 export const dispatchEvent = (event: DispatchedEvent) => {
   const config = getConfig();
   const { credentialsProvider } = config;
-  if (credentialsProvider) {
-    dispatch
-      .dispatchEvent({
-        config,
-        credentialsProvider,
-        event,
-      })
-      .catch(console.error);
-  } else {
+  if (!credentialsProvider) {
     // TODO: Is this the right error to throw?
     throw new IllegalArgumentError('CredentialsProvider not set');
   }
+  dispatch
+    .dispatchEvent({
+      config,
+      credentialsProvider,
+      event,
+    })
+    .catch(console.error);
 };
 
 export const init = (config: Config) => _init(config);
@@ -59,7 +58,7 @@ if (import.meta.env.DEV) {
     getEvents: queue.getEvents,
     killQueue: async () => {
       queue.setEvents([]);
-      queue.persistEvents();
+      await queue.persistEvents();
     },
     setOutage: outage.setOutage,
   };

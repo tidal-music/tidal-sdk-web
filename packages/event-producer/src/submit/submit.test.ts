@@ -1,16 +1,13 @@
-import '@vitest/web-worker';
 import { js2xml } from 'xml-js';
 
 import { config } from '../../test/fixtures/config';
 import { epEvent1 } from '../../test/fixtures/events';
-import * as monitor from '../monitor';
 import * as outage from '../outage';
 import * as queue from '../queue';
 
 import { submitEvents } from './submit';
 
 vi.mock('../queue');
-vi.mock('../monitor');
 
 describe('submit', () => {
   it('fails to send if no credentialsProvider is set', async () => {
@@ -128,7 +125,7 @@ describe('submit', () => {
     expect(outage.setOutage).toHaveBeenCalledWith(false);
   });
 
-  it('sets outage flag to true if isOutage === true & events are not sendt successfully', async () => {
+  it('sets outage flag to true if isOutage events are not sendt successfully', async () => {
     vi.spyOn(outage, 'setOutage');
     vi.spyOn(outage, 'isOutage').mockReturnValue(true);
     vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
@@ -142,64 +139,5 @@ describe('submit', () => {
     await submitEvents({ config });
 
     expect(outage.setOutage).toHaveBeenCalledWith(true);
-  });
-
-  it('response with BatchResultErrorEntry drops events if SenderFault === true', async () => {
-    vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({
-        ok: true,
-        text: vi
-          .fn()
-          .mockResolvedValue(
-            `<?xml version="1.0"?><SendMessageBatchResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><SendMessageBatchResult><BatchResultErrorEntry><Id>${epEvent1.id}</Id><SenderFault>true</SenderFault></BatchResultErrorEntry></SendMessageBatchResult></SendMessageBatchResponse>`,
-          ),
-      }),
-    );
-    await submitEvents({ config });
-
-    expect(fetch).toHaveBeenCalledWith(
-      config.tlConsumerUri,
-      expect.objectContaining({
-        body: expect.any(URLSearchParams),
-        headers: expect.any(Headers),
-        method: 'post',
-      }),
-    );
-
-    expect(monitor.registerDroppedEvent).toHaveBeenCalledWith({
-      eventName: epEvent1.name,
-      reason: 'validationFailedEvents',
-    });
-    expect(queue.removeEvents).toHaveBeenCalledWith([epEvent1.id]);
-  });
-
-  it('response with BatchResultErrorEntry keeps event if SenderFault === false', async () => {
-    vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({
-        ok: true,
-        text: vi
-          .fn()
-          .mockResolvedValue(
-            `<?xml version="1.0"?><SendMessageBatchResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><SendMessageBatchResult><BatchResultErrorEntry><Id>${epEvent1.id}</Id><SenderFault>false</SenderFault></BatchResultErrorEntry></SendMessageBatchResult></SendMessageBatchResponse>`,
-          ),
-      }),
-    );
-    await submitEvents({ config });
-
-    expect(fetch).toHaveBeenCalledWith(
-      config.tlConsumerUri,
-      expect.objectContaining({
-        body: expect.any(URLSearchParams),
-        headers: expect.any(Headers),
-        method: 'post',
-      }),
-    );
-
-    expect(monitor.registerDroppedEvent).not.toHaveBeenCalled();
-    expect(queue.removeEvents).toHaveBeenCalledWith([]);
   });
 });

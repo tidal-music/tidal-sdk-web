@@ -13,16 +13,16 @@ export type ConsentCategory =
    */
   | 'TARGETING';
 
-export type BlockedConsentCategories = Record<ConsentCategory, boolean>;
+export type ConsentCategories = Record<ConsentCategory, boolean>;
 
 /**
- * The default blocked consent categories.
+ * The default consent categories.
  * NECCESSARY is set to false, since it is not possible to opt out of strictly necessary events.
  * PERFORMANCE and TARGETING are set to true, since they are optional and opt in.
  *
- * @type {BlockedConsentCategories}
+ * @type {ConsentCategories}
  */
-export const defaultBlockedConsentCategories: BlockedConsentCategories = {
+export const defaultConsentCategories: ConsentCategories = {
   NECESSARY: false,
   PERFORMANCE: true,
   TARGETING: true,
