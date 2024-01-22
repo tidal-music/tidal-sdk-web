@@ -1,8 +1,10 @@
 import type { EPEvent } from '../types';
 
-import Worker from './worker?sharedworker';
+import WorkerUrl from './worker?sharedworker&url';
 
-export const worker = new Worker();
+export const worker = new SharedWorker(new URL(WorkerUrl, import.meta.url), {
+  type: 'module',
+});
 
 worker.port.start();
 

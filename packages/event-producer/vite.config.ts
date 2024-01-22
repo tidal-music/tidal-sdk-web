@@ -27,6 +27,7 @@ export default defineConfig(({ command, mode }) => {
       : {};
 
   const userConfig: UserConfig = {
+    base: '',
     build: {
       lib: {
         entry: 'src/index.ts',
@@ -47,8 +48,7 @@ export default defineConfig(({ command, mode }) => {
     },
     worker: {
       format: 'es',
-      // @ts-expect-error - vite-plugin-dts types are not up to date... i think
-      plugins: [
+      plugins: () => [
         dts({
           rollupTypes: true,
           tsconfigPath: 'tsconfig.build.json',
