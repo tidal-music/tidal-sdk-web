@@ -8,7 +8,8 @@
     "dist"
   ],
   "repository": {
-    "url": "https://github.com/tidal-music/tidal-sdk-web"
+    "type": "git",
+    "url": "ssh://git@github.com:tidal-music/tidal-sdk-web.git"
   },
   "license": "UNLICENSED",
   "exports": {

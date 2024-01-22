@@ -3,6 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:tidal-music/tidal-sdk-web.git"
+  },
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {

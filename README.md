@@ -8,7 +8,7 @@ The TIDAL SDK for Web serves as a complement to, and extension of, the [TIDAL AP
 
 # Development (of the SDK)
 ```bash
-git clone git@github.com:tidal-open-source/tidal-sdk-web.git
+git clone git@github.com:tidal-music/tidal-sdk-web.git
 
 cd ./tidal-sdk-web
 

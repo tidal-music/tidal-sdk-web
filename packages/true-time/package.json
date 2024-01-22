@@ -28,10 +28,12 @@
     "vitest": "0.34.6"
   },
   "files": [
-    "dist",
-    "package.json",
-    "README.md"
+    "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:tidal-music/tidal-sdk-web.git"
+  },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
