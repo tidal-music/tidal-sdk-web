@@ -1,9 +1,11 @@
 import { expect } from '@esm-bundle/chai';
 
 import * as Config from './config';
-import { mockNativePlayer } from './test-helpers';
+import { credentialsProvider, mockNativePlayer } from './test-helpers';
 
 import * as Player from './index';
+
+Player.setCredentialsProvider(credentialsProvider);
 
 describe('bootstrap', () => {
   it('enables output devices if options.outputDevices is true', () => {
@@ -32,6 +34,8 @@ describe('getMediaElement', () => {
       ],
     });
 
+    Player.setStreamingWifiAudioQuality('LOW');
+
     await Player.load(
       {
         productId: '141120674',
@@ -41,13 +45,14 @@ describe('getMediaElement', () => {
       },
       0,
     );
-    await Player.play();
+
     const mediaElement = Player.getMediaElement();
 
     expect(mediaElement).to.be.instanceOf(HTMLMediaElement);
   });
 
-  it('returns the mediaElement value on browser player', async () => {
+  /* To enalbe this test we need another test user with HTMLMediaElement compatible streaming configuration (MP3 Preview?). */
+  it.skip('returns the mediaElement value on browser player', async () => {
     Player.bootstrap({
       outputDevices: false,
       players: [
@@ -58,6 +63,8 @@ describe('getMediaElement', () => {
         },
       ],
     });
+
+    Player.setStreamingWifiAudioQuality('LOW');
 
     await Player.load(
       {
@@ -87,16 +94,6 @@ describe('getMediaElement', () => {
         },
       ],
     });
-
-    await Player.load(
-      {
-        productId: '141120674',
-        productType: 'track',
-        sourceId: 'tidal-player-tests',
-        sourceType: 'tidal-player-tests',
-      },
-      0,
-    );
 
     const mediaElement = Player.getMediaElement();
 

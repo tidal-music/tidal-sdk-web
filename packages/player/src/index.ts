@@ -25,6 +25,8 @@ type Options = {
 export function getMediaElement(): HTMLMediaElement | null {
   const { activePlayer: player } = playerState;
 
+  console.log('activePlayer', { player });
+
   if (!player) {
     return null;
   }
