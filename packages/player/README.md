@@ -28,9 +28,7 @@ Building is done with Vite.
 
 ### Linking
 
-To load TIDAL Player into project locally without publishing to npm; DO NOT use `pnpm link`, `yarn link` or `npm link`. These are _bad tools_ which _DO NOT WORK_.
-
-Manually configure a "hard link" using the `file:` protocol in package.json of the destination project like so:
+To load TIDAL Player into a project locally without publishing to npm; using `pnpm link`, `yarn link` or `npm link` can be problematic, especially if your project does not also use pnpm like this repo does. If so, you need to manually configure a "hard link" using the `file:` protocol in package.json of the destination project like so:
 
 1. Open the package.json in the project. (in the case of webclient, the root one)
 2. Add or edit a `"resolutions"` property on the top level. (this is an object)
