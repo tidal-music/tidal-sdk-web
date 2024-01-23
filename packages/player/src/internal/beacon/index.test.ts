@@ -1,19 +1,15 @@
 import { expect } from '@esm-bundle/chai';
 import * as sinon from 'sinon';
 
-import { setCredentialsProvider } from '../../api/index';
+import * as Player from '../../index';
 import { credentialsProvider } from '../../test-helpers';
 import type { StreamingSessionStart } from '../event-tracking/streaming-metrics/streaming-session-start';
-import { trueTime } from '../true-time';
 
 import { commit } from './index';
 
-describe('commit', () => {
-  beforeEach(async () => {
-    await trueTime.synchronize();
-    setCredentialsProvider(credentialsProvider);
-  });
+Player.setCredentialsProvider(credentialsProvider);
 
+describe('commit', () => {
   const worker = sinon.createStubInstance(Worker);
 
   const mockedPromisedEvent = Promise.resolve({

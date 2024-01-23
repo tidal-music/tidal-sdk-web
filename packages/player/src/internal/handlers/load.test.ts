@@ -1,21 +1,16 @@
 import { expect } from '@esm-bundle/chai';
 
 import * as Player from '../../index';
-import { trueTime } from '../../internal/true-time';
 import {
   credentialsProvider,
   getPreloadedStreamingSessionId,
   waitFor,
 } from '../../test-helpers';
 
+Player.setCredentialsProvider(credentialsProvider);
+
 describe('load', () => {
-  beforeEach(async () => {
-    await trueTime.synchronize();
-  });
-
   it('re-uses a next for loading if it is the same media product', async () => {
-    Player.setCredentialsProvider(credentialsProvider);
-
     await Player.load(
       {
         productId: '1766030',

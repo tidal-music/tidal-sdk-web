@@ -2,24 +2,19 @@ import { expect } from '@esm-bundle/chai';
 
 import { events } from './event-bus';
 import { PlayerError } from './internal/index';
-import { trueTime } from './internal/true-time';
 import { credentialsProvider, waitForEvent } from './test-helpers';
 
 import * as Player from './index';
 
-describe('eventBus', () => {
-  beforeEach(async () => {
-    await trueTime.synchronize();
-  });
+Player.setCredentialsProvider(credentialsProvider);
 
+describe('eventBus', () => {
   it('playback engine sends events through the bus', async () => {
     const mediaProductTransitionEvents = [];
 
     events.addEventListener('media-product-transition', e =>
       mediaProductTransitionEvents.push(e),
     );
-
-    Player.setCredentialsProvider(credentialsProvider);
 
     await Player.load(
       {
