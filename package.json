@@ -10,7 +10,7 @@
     "lint": "pnpm -r lint",
     "lint:ci": "pnpm -r lint:ci",
     "lint:fix": "pnpm -r lint:fix",
-    "test": "pnpm -r test",
+    "test": "pnpm -r test -- --run",
     "test:coverage": "pnpm -r test:coverage",
     "types": "pnpm -r types"
   },
