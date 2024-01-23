@@ -22,6 +22,7 @@ export default {
     // playwrightLauncher({ product: 'firefox' }),
     // playwrightLauncher({ product: 'webkit' })
   ],
+  concurrency: 1,
   coverage: true,
   files: ['src/**/*.test.ts'],
   nodeResolve: true,
@@ -42,4 +43,11 @@ export default {
       ui: 'bdd',
     },
   },
+  testRunnerHtml: testFramework =>
+    `<html>
+      <body>
+        <script>window.process = { env: { NODE_ENV: "development" } }</script>
+        <script type="module" src="${testFramework}"></script>
+      </body>
+    </html>`,
 };

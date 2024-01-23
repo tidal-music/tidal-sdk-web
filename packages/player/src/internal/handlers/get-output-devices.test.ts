@@ -3,16 +3,13 @@ import { expect } from '@esm-bundle/chai';
 import * as Player from '../../index';
 import { outputDevices } from '../../internal/output-devices';
 import { credentialsProvider } from '../../test-helpers';
-import { trueTime } from '../true-time';
 
 import { getOutputDevices } from './get-output-devices';
 
+Player.setCredentialsProvider(credentialsProvider);
+
 describe('getOutputDevices', () => {
   beforeEach(async () => {
-    await trueTime.synchronize();
-
-    Player.setCredentialsProvider(credentialsProvider);
-
     // Output devices is reported by the player, thus need one to
     await Player.load(
       {

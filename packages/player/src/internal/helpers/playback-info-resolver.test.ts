@@ -1,11 +1,8 @@
 import { expect } from '@esm-bundle/chai';
 
 import { credentialsProvider } from '../../test-helpers';
-import { trueTime } from '../true-time';
 
 import { fetchPlaybackInfo } from './playback-info-resolver';
-
-await trueTime.synchronize();
 
 describe('playbackInfoResolver', () => {
   it('fetches playback info if there is only clientId defined, gets preview', async () => {

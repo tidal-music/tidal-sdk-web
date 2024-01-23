@@ -1,4 +1,3 @@
-// import { assert } from '@esm-bundle/chai';
 import { credentialsProvider } from '../../test-helpers';
 
 import { fetchWebSocketURL, socketOpen } from './pushkin';
