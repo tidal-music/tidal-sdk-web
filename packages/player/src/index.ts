@@ -47,6 +47,8 @@ export function getMediaElement(): HTMLMediaElement | null {
  * @param {Options} options
  */
 export function bootstrap(options: Options) {
+  playerState.activePlayer = undefined;
+
   if (options.outputDevices === true) {
     Config.update({ outputDevicesEnabled: true });
   }
