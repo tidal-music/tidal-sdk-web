@@ -1,16 +1,11 @@
 import { expect } from '@esm-bundle/chai';
 
 import * as Player from '../../index';
-import { credentialsProvider, waitFor } from '../../test-helpers';
-import { trueTime } from '../true-time';
+import { waitFor } from '../../test-helpers';
 
 import { getAssetPosition } from './get-asset-position';
 
 describe('getAssetPosition', () => {
-  beforeEach(async () => {
-    await trueTime.synchronize();
-  });
-
   it('returns 0 if there is no active player', () => {
     const playerPosition = getAssetPosition();
 
@@ -18,8 +13,6 @@ describe('getAssetPosition', () => {
   });
 
   it('return currentTime if there is a player', async () => {
-    Player.setCredentialsProvider(credentialsProvider);
-
     await Player.load(
       {
         productId: '141120674',

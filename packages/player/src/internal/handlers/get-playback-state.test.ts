@@ -1,16 +1,11 @@
 import { expect } from '@esm-bundle/chai';
 
 import * as Player from '../../index';
-import { credentialsProvider, waitFor } from '../../test-helpers';
-import { trueTime } from '../true-time';
+import { waitFor } from '../../test-helpers';
 
 import { getPlaybackState } from './get-playback-state';
 
 describe('getPlaybackState', () => {
-  beforeEach(async () => {
-    await trueTime.synchronize();
-  });
-
   it('returns IDLE if there is no active player', () => {
     const activeState = getPlaybackState();
 
@@ -18,7 +13,6 @@ describe('getPlaybackState', () => {
   });
 
   it('return NOT_PLAYING when a media product is loaded', async () => {
-    Player.setCredentialsProvider(credentialsProvider);
     Player.setStreamingWifiAudioQuality('LOW');
 
     await Player.load(
@@ -35,7 +29,6 @@ describe('getPlaybackState', () => {
   });
 
   it('return PLAYING when a media product is playing', async () => {
-    Player.setCredentialsProvider(credentialsProvider);
     Player.setStreamingWifiAudioQuality('LOW');
 
     await Player.load(

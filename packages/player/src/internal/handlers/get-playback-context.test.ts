@@ -1,16 +1,11 @@
 import { expect } from '@esm-bundle/chai';
 
 import * as Player from '../../index';
-import { credentialsProvider, waitFor } from '../../test-helpers';
-import { trueTime } from '../true-time';
+import { waitFor } from '../../test-helpers';
 
 import { getPlaybackContext } from './get-playback-context';
 
 describe('getPlaybackContext', () => {
-  beforeEach(async () => {
-    await trueTime.synchronize();
-  });
-
   it('returns undefined if there is no active player', () => {
     const activePlaybackContext = getPlaybackContext();
 
@@ -18,10 +13,8 @@ describe('getPlaybackContext', () => {
   });
 
   it('returns the playback context', async () => {
-    Player.setCredentialsProvider(credentialsProvider);
     Player.setStreamingWifiAudioQuality('LOW');
 
-    console.debug('load');
     await Player.load(
       {
         productId: '141120674',
@@ -32,10 +25,8 @@ describe('getPlaybackContext', () => {
       0,
     );
 
-    console.debug('play');
     await Player.play();
 
-    console.debug('waitFor 2s');
     await waitFor(2000);
 
     const activePlaybackContext = getPlaybackContext();
