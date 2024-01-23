@@ -23,10 +23,6 @@ cd ./packages/event-producer
 
 pnpm dev
 ```
-## Update workspace dependencies
-```bash
-pnpm recursive update --latest
-```
 ## Create a new module
 Run:
 ```bash
