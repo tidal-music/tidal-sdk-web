@@ -8,7 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build -m development",
     "clean": "rm -rf coverage dist .eslintcache",
-    "types": "tsc",
+    "typecheck": "tsc",
     "lint": "eslint . --cache --cache-strategy content",
     "lint:ci": "eslint . --quiet",
     "lint:fix": "pnpm run lint --fix",

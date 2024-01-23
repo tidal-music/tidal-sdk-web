@@ -19,7 +19,7 @@
     "lint": "eslint . --cache --cache-strategy content",
     "lint:ci": "eslint . --quiet",
     "lint:fix": "pnpm run lint --fix",
-    "types": "tsc",
+    "typecheck": "tsc",
     "prepublishOnly": "npx --yes @skypack/package-check --cwd .",
     "internal:cypress:open": "pnpm cypress open",
     "internal:cypress:run": "pnpm cypress run",

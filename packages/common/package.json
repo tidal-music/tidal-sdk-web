@@ -32,7 +32,7 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui --coverage",
-    "types": "tsc"
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@tidal-music/common": "workspace:*"

@@ -23,4 +23,4 @@ jobs:
       - uses: ./.github/actions/build-projects
       - name: Run Type Checks
         run: |
-          pnpm types
+          pnpm typecheck

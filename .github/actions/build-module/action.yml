@@ -1,16 +1,16 @@
 name: Build module
 description: Runs the build for a module
-inputs: 
+inputs:
   module-path:
     description: The name of the module to build
     required: true
   version:
-    description: The semantic version code 
+    description: The semantic version code
     required: true
-  tag: 
+  tag:
     description: The tag for the release
     required: true
-  token: 
+  token:
     description: Github token
     required: true
 runs:
@@ -52,9 +52,9 @@ runs:
         path="${{ inputs.module-path }}"
         name="${path#*/}"
         archive_name="tidal-music-${name}-${{ inputs.version }}.tgz"
-        
+
         cd $path
-        pnpm types
+        pnpm typecheck
         pnpm pack
 
         echo "release_file=$path/$archive_name" >> $GITHUB_OUTPUT
