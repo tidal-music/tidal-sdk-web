@@ -36,7 +36,7 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui --coverage",
-    "types": "tsc",
+    "typecheck": "tsc",
     "prepublishOnly": "npx --yes @skypack/package-check --cwd ."
   },
   "devDependencies": {
