@@ -1,14 +1,12 @@
 import { expect } from '@esm-bundle/chai';
 
 import * as Player from '../../index';
-import { trueTime } from '../../internal/true-time';
-import { credentialsProvider, waitFor } from '../../test-helpers';
+import { waitFor } from '../../test-helpers';
 
 import { getMediaProduct } from './get-media-product';
 
 describe('getMediaProduct', () => {
   beforeEach(async () => {
-    await trueTime.synchronize();
     await Player.reset();
   });
 
@@ -22,8 +20,6 @@ describe('getMediaProduct', () => {
     this.timeout(10000);
 
     const test = async () => {
-      Player.setCredentialsProvider(credentialsProvider);
-
       console.debug('loading');
       await Player.load(
         {

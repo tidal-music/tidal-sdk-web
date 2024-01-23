@@ -3,16 +3,11 @@ import { expect } from '@esm-bundle/chai';
 import * as Player from '../../index';
 import type { MediaProduct } from '../../index';
 import { waitFor } from '../../internal/helpers/wait-for';
-import { trueTime } from '../../internal/true-time';
 import { credentialsProvider, waitForEvent } from '../../test-helpers';
 
+Player.setCredentialsProvider(credentialsProvider);
+
 describe('nextHandler', () => {
-  beforeEach(async () => {
-    await trueTime.synchronize();
-
-    Player.setCredentialsProvider(credentialsProvider);
-  });
-
   it('doesnt preload if no mediaProduct', async () => {
     await Player.load(
       {
