@@ -22,6 +22,7 @@ export default {
     // playwrightLauncher({ product: 'firefox' }),
     // playwrightLauncher({ product: 'webkit' })
   ],
+  concurrency: 1,
   coverage: true,
   files: ['src/**/*.test.ts'],
   nodeResolve: true,
