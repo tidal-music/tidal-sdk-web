@@ -11,13 +11,10 @@ import {
   findOutputType,
   getOutputDeviceByName,
 } from './output-devices';
-import { trueTime } from './true-time';
 
-await trueTime.synchronize();
+Player.setCredentialsProvider(credentialsProvider);
 
 beforeEach(async () => {
-  Player.setCredentialsProvider(credentialsProvider);
-
   await Player.load(
     {
       productId: '141120674',

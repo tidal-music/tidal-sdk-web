@@ -1,12 +1,9 @@
 import { expect } from '@esm-bundle/chai';
 
 import * as Config from './config';
-import { trueTime } from './internal/true-time';
-import { credentialsProvider, mockNativePlayer } from './test-helpers';
+import { mockNativePlayer } from './test-helpers';
 
 import * as Player from './index';
-
-await trueTime.synchronize();
 
 describe('bootstrap', () => {
   it('enables output devices if options.outputDevices is true', () => {
@@ -35,8 +32,6 @@ describe('getMediaElement', () => {
       ],
     });
 
-    Player.setCredentialsProvider(credentialsProvider);
-
     await Player.load(
       {
         productId: '141120674',
@@ -46,6 +41,7 @@ describe('getMediaElement', () => {
       },
       0,
     );
+    await Player.play();
     const mediaElement = Player.getMediaElement();
 
     expect(mediaElement).to.be.instanceOf(HTMLMediaElement);

@@ -2,16 +2,13 @@ import { expect } from '@esm-bundle/chai';
 
 import * as Player from '../../index';
 import { OutputDevice } from '../../internal/output-devices';
-import { trueTime } from '../../internal/true-time';
 import { credentialsProvider } from '../../test-helpers';
 
 import { deviceChange } from './device-change';
 
-await trueTime.synchronize();
+Player.setCredentialsProvider(credentialsProvider);
 
 beforeEach(async () => {
-  Player.setCredentialsProvider(credentialsProvider);
-
   await Player.load(
     {
       productId: '141120674',

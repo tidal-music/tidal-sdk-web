@@ -1,9 +1,15 @@
 /* eslint-disable no-console */
-import type { Credentials, CredentialsProvider } from '@tidal-music/common';
+import * as Auth from '@tidal-music/auth';
 
 import { playerState } from './player/state';
 
 export { waitFor } from './internal/helpers/wait-for';
+
+import * as Player from './index';
+
+export function getPreloadedStreamingSessionId() {
+  return playerState.preloadedStreamingSessionId;
+}
 
 type User = {
   clientId: string;
@@ -12,75 +18,39 @@ type User = {
   oAuthRefreshToken: string;
   userId: number;
 };
-type UserStore = Record<string, User>;
 
-export function getPreloadedStreamingSessionId() {
-  return playerState.preloadedStreamingSessionId;
-}
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+// @ts-expect-error Environment variable
+const user = JSON.parse(atob(process.env.TEST_USER)) as User;
+const scopes = ['r_usr', 'w_usr'];
 
-export const users: UserStore = {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  autohino: JSON.parse(atob(process.env.TEST_USER)),
-};
+await Auth.init({
+  clientId: user.clientId,
+  clientUniqueKey: 'FALLBACK',
+  credentialsStorageKey: 'FALLBACK',
+  scopes,
+});
 
-/**
- * Get test user
- */
-export async function getTestUser(
-  user: User = users.autohino,
-): Promise<Credentials> {
-  if (user.oAuthAccessToken) {
-    return {
-      clientId: user.clientId,
-      requestedScopes: ['READ', 'WRITE'],
-      token: user.oAuthAccessToken,
-    };
-  }
-
-  const body = new URLSearchParams({
-    client_id: user.clientId,
-    client_unique_key: '',
-    grant_type: 'refresh_token',
-    refresh_token: user.oAuthRefreshToken,
-    scope: 'r_usr w_usr',
-  });
-
-  const response = await fetch('https://login.tidal.com/oauth2/token', {
-    body: body.toString(),
-    headers: new Headers({
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    }),
-    method: 'POST',
-  });
-  const json = (await response.json()) as { access_token: string };
-
-  user.oAuthAccessToken = json.access_token;
-
-  return {
+await Auth.setCredentials({
+  accessToken: {
     clientId: user.clientId,
-    requestedScopes: ['READ', 'WRITE'],
-    token: json.access_token,
-  };
-}
+    clientUniqueKey: 'FALLBACK',
+    expires: user.oAuthExpirationDate,
+    grantedScopes: scopes,
+    requestedScopes: scopes,
+    token: user.oAuthAccessToken ?? '',
+  },
+  refreshToken: user.oAuthRefreshToken,
+});
+
+Player.setCredentialsProvider(Auth.credentialsProvider);
+export const credentialsProvider = Auth.credentialsProvider;
 
 export function waitForEvent(target: EventTarget, eventName: string) {
   return new Promise(resolve => {
     target.addEventListener(eventName, event => resolve(event), false);
   });
 }
-
-class TestCredentialsProvider implements CredentialsProvider {
-  bus() {}
-
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async getCredentials() {
-    return getTestUser();
-  }
-}
-
-export const credentialsProvider = new TestCredentialsProvider();
 
 class NativePlayerMock extends EventTarget {
   listDevices() {
