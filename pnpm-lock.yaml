@@ -54,8 +54,8 @@ importers:
         specifier: 5.0.12
         version: 5.0.12(@types/node@20.8.6)
       vite-plugin-dts:
-        specifier: 3.7.1
-        version: 3.7.1(typescript@5.3.3)(vite@5.0.12)
+        specifier: 3.7.2
+        version: 3.7.2(typescript@5.3.3)(vite@5.0.12)
       vitest:
         specifier: 0.34.6
         version: 0.34.6(@vitest/ui@0.34.7)(happy-dom@13.3.1)
@@ -79,8 +79,8 @@ importers:
         specifier: 5.0.12
         version: 5.0.12(@types/node@20.8.6)
       vite-plugin-dts:
-        specifier: 3.7.1
-        version: 3.7.1(typescript@5.3.3)(vite@5.0.12)
+        specifier: 3.7.2
+        version: 3.7.2(typescript@5.3.3)(vite@5.0.12)
       vitest:
         specifier: 0.34.6
         version: 0.34.6(@vitest/ui@0.34.7)(happy-dom@13.3.1)
@@ -122,8 +122,8 @@ importers:
         specifier: 5.0.12
         version: 5.0.12(@types/node@20.8.6)
       vite-plugin-dts:
-        specifier: 3.7.1
-        version: 3.7.1(typescript@5.3.3)(vite@5.0.12)
+        specifier: 3.7.2
+        version: 3.7.2(typescript@5.3.3)(vite@5.0.12)
       vitest:
         specifier: 0.34.6
         version: 0.34.6(@vitest/ui@0.34.7)(happy-dom@13.3.1)
@@ -224,8 +224,8 @@ importers:
         specifier: 5.0.12
         version: 5.0.12(@types/node@20.8.6)
       vite-plugin-dts:
-        specifier: 3.7.1
-        version: 3.7.1(@types/node@20.8.6)(rollup@4.3.0)(typescript@5.2.2)(vite@5.0.12)
+        specifier: 3.7.2
+        version: 3.7.2(@types/node@20.8.6)(rollup@4.3.0)(typescript@5.2.2)(vite@5.0.12)
       vitest:
         specifier: 0.34.6
         version: 0.34.6(@vitest/ui@0.34.7)(happy-dom@13.3.1)
@@ -254,8 +254,8 @@ importers:
         specifier: 5.0.12
         version: 5.0.12(@types/node@20.8.6)
       vite-plugin-dts:
-        specifier: 3.7.1
-        version: 3.7.1(typescript@5.3.3)(vite@5.0.12)
+        specifier: 3.7.2
+        version: 3.7.2(typescript@5.3.3)(vite@5.0.12)
       vitest:
         specifier: 0.34.6
         version: 0.34.6(@vitest/ui@0.34.7)(happy-dom@13.3.1)
@@ -279,8 +279,8 @@ importers:
         specifier: 5.0.12
         version: 5.0.12(@types/node@20.8.6)
       vite-plugin-dts:
-        specifier: 3.7.1
-        version: 3.7.1(typescript@5.3.3)(vite@5.0.12)
+        specifier: 3.7.2
+        version: 3.7.2(typescript@5.3.3)(vite@5.0.12)
       vitest:
         specifier: 0.34.6
         version: 0.34.6(@vitest/ui@0.34.7)(happy-dom@13.3.1)
@@ -304,8 +304,8 @@ importers:
         specifier: 5.0.12
         version: 5.0.12(@types/node@20.8.6)
       vite-plugin-dts:
-        specifier: 3.7.1
-        version: 3.7.1(typescript@5.3.3)(vite@5.0.12)
+        specifier: 3.7.2
+        version: 3.7.2(typescript@5.3.3)(vite@5.0.12)
       vitest:
         specifier: 0.34.6
         version: 0.34.6(@vitest/ui@0.34.7)(happy-dom@13.3.1)
@@ -8369,8 +8369,8 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-dts@3.7.1(@types/node@20.8.6)(rollup@4.3.0)(typescript@5.2.2)(vite@5.0.12):
-    resolution: {integrity: sha512-VZJckNFpVfRAkmOxhGT5OgTUVWVXxkNQqLpBUuiNGAr9HbtvmvsPLo2JB3Xhn+o/Z9+CT6YZfYa4bX9SGR5hNw==}
+  /vite-plugin-dts@3.7.2(@types/node@20.8.6)(rollup@4.3.0)(typescript@5.2.2)(vite@5.0.12):
+    resolution: {integrity: sha512-kg//1nDA01b8rufJf4TsvYN8LMkdwv0oBYpiQi6nRwpHyue+wTlhrBiqgipdFpMnW1oOYv6ywmzE5B0vg6vSEA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'
@@ -8393,8 +8393,8 @@ packages:
       - supports-color
     dev: true
 
-  /vite-plugin-dts@3.7.1(typescript@5.3.3)(vite@5.0.12):
-    resolution: {integrity: sha512-VZJckNFpVfRAkmOxhGT5OgTUVWVXxkNQqLpBUuiNGAr9HbtvmvsPLo2JB3Xhn+o/Z9+CT6YZfYa4bX9SGR5hNw==}
+  /vite-plugin-dts@3.7.2(typescript@5.3.3)(vite@5.0.12):
+    resolution: {integrity: sha512-kg//1nDA01b8rufJf4TsvYN8LMkdwv0oBYpiQi6nRwpHyue+wTlhrBiqgipdFpMnW1oOYv6ywmzE5B0vg6vSEA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'

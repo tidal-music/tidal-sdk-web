@@ -76,7 +76,7 @@
     "sinon": "^17.0.0",
     "typescript": "^5.2.2",
     "vite": "5.0.12",
-    "vite-plugin-dts": "3.7.1",
+    "vite-plugin-dts": "3.7.2",
     "vitest": "0.34.6"
   }
 }
