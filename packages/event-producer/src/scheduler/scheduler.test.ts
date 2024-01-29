@@ -17,7 +17,7 @@ describe('Scheduler', () => {
     vi.spyOn(submit, 'submitEvents');
     vi.spyOn(monitor, 'sendMonitoringInfo');
 
-    scheduler.init();
+    scheduler.init(config);
 
     expect(submit.submitEvents).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(30000);
@@ -34,11 +34,31 @@ describe('Scheduler', () => {
 
     const fakeError = new Error('you borked it!');
     vi.mocked(submit.submitEvents).mockRejectedValueOnce(fakeError);
-    scheduler.init();
+    scheduler.init(config);
 
     await vi.advanceTimersByTimeAsync(30000);
 
     expect(submit.submitEvents).toHaveBeenCalledWith({ config });
     expect(console.error).toHaveBeenCalledWith(fakeError);
+  });
+
+  it('interval is configurable', async () => {
+    vi.spyOn(submit, 'submitEvents');
+    vi.spyOn(monitor, 'sendMonitoringInfo');
+
+    scheduler.init({
+      ...config,
+      eventBatchInterval: 666,
+      monitoringInterval: 667,
+    });
+
+    expect(submit.submitEvents).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(666);
+    expect(monitor.sendMonitoringInfo).not.toHaveBeenCalled();
+    expect(submit.submitEvents).toHaveBeenCalledWith({ config });
+
+    await vi.advanceTimersByTimeAsync(1);
+
+    expect(monitor.sendMonitoringInfo).toHaveBeenCalled();
   });
 });

@@ -16,8 +16,10 @@ export type Config = {
   blockedConsentCategories: BlockedConsentCategories;
   // An access token provider, used by the EventProducer to get access token.
   credentialsProvider?: CredentialsProvider;
-  // The maximum amount of disk the EventProducer is allowed to use
-  // for temporarily storing events before they are sent to TL Consumer.
+  // frequency of sending events to TL Consumer
+  eventBatchInterval?: number;
+  // frequency of monitoring info sending
+  monitoringInterval?: number;
   platform: PlatformData;
   // Debug for integration purposes. Check if consentCategory is missing.
   strictMode?: boolean;
