@@ -14,5 +14,5 @@ import { init as initUuid } from './uuid/uuid';
 export const init = async (initialConfig: config.Config) => {
   config.init(initialConfig);
   await Promise.all([trueTime.synchronize(), initUuid(), queue.initDB()]);
-  scheduler.init();
+  scheduler.init(config.getConfig());
 };
