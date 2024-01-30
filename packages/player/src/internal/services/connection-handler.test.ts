@@ -1,4 +1,4 @@
-import { expect } from '@esm-bundle/chai';
+import { expect } from 'chai';
 
 import type { MediaProductTransition } from '../../api/event/media-product-transition';
 import { events } from '../../event-bus';

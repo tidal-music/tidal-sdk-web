@@ -1,4 +1,4 @@
-import { expect } from '@esm-bundle/chai';
+import { expect } from 'chai';
 
 import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
 import { trueTime } from '../internal/true-time';

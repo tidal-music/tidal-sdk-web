@@ -1,4 +1,4 @@
-import { expect } from '@esm-bundle/chai';
+import { expect } from 'chai';
 
 import NativePlayer from '../../player/nativePlayer';
 import { playerState } from '../../player/state';

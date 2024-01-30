@@ -1,4 +1,4 @@
-import { expect } from "@esm-bundle/chai";
+import { expect } from 'chai';
 
 
 const SDK_BATCH_INTERVAL = 15_000;

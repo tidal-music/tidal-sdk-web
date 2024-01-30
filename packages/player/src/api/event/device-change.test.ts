@@ -1,4 +1,4 @@
-import { expect } from '@esm-bundle/chai';
+import { expect } from 'chai';
 
 import * as Player from '../../index';
 import { OutputDevice } from '../../internal/output-devices';
