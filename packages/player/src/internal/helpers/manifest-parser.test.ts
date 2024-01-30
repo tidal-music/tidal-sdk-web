@@ -1,4 +1,4 @@
-import { expect } from '@esm-bundle/chai';
+import { expect } from 'chai';
 
 import { parseManifest } from './manifest-parser';
 import type { PlaybackInfoTrack } from './playback-info-resolver';

@@ -1,4 +1,4 @@
-import { expect } from '@esm-bundle/chai';
+import { expect } from 'chai';
 
 import { events } from './event-bus';
 import { PlayerError } from './internal/index';

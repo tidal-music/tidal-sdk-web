@@ -1,4 +1,4 @@
-import { expect } from '@esm-bundle/chai';
+import { expect } from 'chai';
 
 import * as Config from './config';
 import { credentialsProvider, mockNativePlayer } from './test-helpers';

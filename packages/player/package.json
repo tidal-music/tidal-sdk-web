@@ -48,7 +48,6 @@
   "devDependencies": {
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-typescript": "^7.21.4",
-    "@esm-bundle/chai": "^4.3.4-fix.0",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^25.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
@@ -66,6 +65,7 @@
     "@web/dev-server-rollup": "^0.6.0",
     "@web/test-runner": "^0.18.0",
     "bowser": "^2.11.0",
+    "chai": "^5.0.3",
     "cypress": "^13.6.3",
     "esbuild": "^0.19.0",
     "idb-keyval": "^6.2.1",
@@ -77,6 +77,6 @@
     "typescript": "^5.2.2",
     "vite": "5.0.12",
     "vite-plugin-dts": "3.7.2",
-    "vitest": "0.34.6"
+    "vitest": "1.2.2"
   }
 }
