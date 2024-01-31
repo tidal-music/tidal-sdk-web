@@ -16,7 +16,9 @@ import { eventsToSqsRequestParameters } from '../utils/sqsParamsConverter';
  * @param {SubmitEventsParams} params
  */
 type SubmitEventsParams = { config: Config };
-export const submitEvents = async ({ config }: SubmitEventsParams) => {
+export const submitEvents = async ({
+  config,
+}: SubmitEventsParams): Promise<void> => {
   const eventsBatch = queue.getEventBatch();
   if (eventsBatch.length === 0) {
     return Promise.resolve();
@@ -80,7 +82,10 @@ export const submitEvents = async ({ config }: SubmitEventsParams) => {
           }
         }
       });
-    return queue.removeEvents(idsToRemove);
+    queue.removeEvents(idsToRemove);
+    if (queue.getEvents().length > 0) {
+      return submitEvents({ config });
+    }
   } else {
     setOutage(true);
   }
