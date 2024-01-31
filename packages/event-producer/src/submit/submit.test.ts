@@ -13,6 +13,11 @@ vi.mock('../queue');
 vi.mock('../monitor');
 
 describe('submit', () => {
+  beforeEach(() => {
+    vi.mocked(queue).getEvents.mockReturnValue([]);
+    vi.mocked(queue).getEventBatch.mockReturnValue([]);
+  });
+
   it('fails to send if no credentialsProvider is set', async () => {
     vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
 
@@ -98,6 +103,78 @@ describe('submit', () => {
     );
 
     expect(outage.setOutage).not.toHaveBeenCalled();
+  });
+
+  it('recursive calls until empty', async () => {
+    const events = Array.from({ length: 21 }, (_, i) => ({
+      ...epEvent1,
+      id: `${i}`,
+    }));
+    const firstBatch = events.slice(0, 10);
+    const secondBatch = events.slice(10, 20);
+    const lastBatch = events.slice(20, 21);
+
+    const [firstResponse, secondResponse, lastResponse] = [
+      firstBatch,
+      secondBatch,
+      lastBatch,
+    ].map(batch =>
+      js2xml(
+        {
+          xml: {
+            SendMessageBatchResponse: {
+              SendMessageBatchResult: batch.map(e => ({
+                SendMessageBatchResultEntry: { Id: e.id },
+              })),
+            },
+          },
+        },
+        { compact: true },
+      ),
+    );
+
+    vi.mocked(queue).getEventBatch.mockReturnValueOnce(firstBatch);
+    vi.mocked(queue).getEventBatch.mockReturnValueOnce(secondBatch);
+    vi.mocked(queue).getEventBatch.mockReturnValueOnce(lastBatch);
+
+    vi.mocked(queue).getEvents.mockReturnValueOnce(events);
+    vi.mocked(queue).getEvents.mockReturnValueOnce(
+      secondBatch.concat(lastBatch),
+    );
+    vi.mocked(queue).getEvents.mockReturnValueOnce(lastBatch);
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          text: vi.fn().mockResolvedValue(firstResponse),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          text: vi.fn().mockResolvedValue(secondResponse),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          text: vi.fn().mockResolvedValue(lastResponse),
+        }),
+    );
+    await submitEvents({ config });
+
+    expect(fetch).toHaveBeenCalledWith(
+      config.tlConsumerUri,
+      expect.objectContaining({
+        body: expect.any(URLSearchParams),
+        headers: expect.any(Headers),
+        method: 'post',
+      }),
+    );
+
+    expect(fetch).toHaveBeenCalledTimes(3);
+
+    expect(queue.removeEvents).toHaveBeenCalledWith(firstBatch.map(e => e.id));
+    expect(queue.removeEvents).toHaveBeenCalledWith(secondBatch.map(e => e.id));
+    expect(queue.removeEvents).toHaveBeenCalledWith(lastBatch.map(e => e.id));
   });
 
   it('does not submit events if there are no events in the queue', async () => {
