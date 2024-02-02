@@ -1,7 +1,6 @@
 import type { Credentials } from '@tidal-music/common';
 
 export type InitArgs = {
-  certificatePinning?: boolean;
   clientId: string;
   clientSecret?: string;
   clientUniqueKey?: string;
