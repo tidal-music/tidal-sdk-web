@@ -357,7 +357,9 @@ export default class ShakaPlayer extends BasePlayer {
   async #createShakaPlayer(mediaEl: HTMLMediaElement) {
     this.debugLog('createShakaPlayer', mediaEl);
 
-    const player = new shaka.Player(mediaEl);
+    const player = new shaka.Player();
+
+    await player.attach(mediaEl);
 
     registerStalls(mediaEl);
     registerAdaptations(player);
