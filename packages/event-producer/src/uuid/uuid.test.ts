@@ -5,7 +5,7 @@ vi.mock('nanoid', () => ({
 }));
 const nanoid = vi.mocked(_nanoid);
 
-describe('uuid', () => {
+describe.sequential('uuid', () => {
   beforeEach(() => {
     nanoid.mockReturnValue('aRandomIdFromNanoid');
     // need to reset imports since there are scoped variables in the import for the lazy fallback

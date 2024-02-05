@@ -12,7 +12,7 @@ import { submitEvents } from './submit';
 vi.mock('../queue');
 vi.mock('../monitor');
 
-describe('submit', () => {
+describe.sequential('submit', () => {
   beforeEach(() => {
     vi.mocked(queue).getEvents.mockReturnValue([]);
     vi.mocked(queue).getEventBatch.mockReturnValue([]);

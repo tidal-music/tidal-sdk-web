@@ -7,7 +7,7 @@ import * as sqsParamsConverter from '../utils/sqsParamsConverter';
 
 import * as monitor from './';
 
-describe('monitor', () => {
+describe.sequential('monitor', () => {
   beforeEach(() => {
     init(config);
     monitor.resetMonitoringState();

@@ -8,7 +8,7 @@ import * as submit from '../submit/submit';
 import * as scheduler from './scheduler';
 
 vi.useFakeTimers();
-describe('Scheduler', () => {
+describe.sequential('Scheduler', () => {
   beforeEach(() => {
     initConfig(config);
     vi.stubGlobal('console', { error: vi.fn() });

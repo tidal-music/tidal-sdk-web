@@ -33,9 +33,9 @@
     "lint:ci": "eslint . --quiet",
     "lint:fix": "pnpm run lint --fix",
     "preview": "vite preview",
-    "test": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "test:ui": "vitest --ui --coverage",
+    "test": "vitest --sequence.concurrent",
+    "test:coverage": "pnpm run test --coverage",
+    "test:ui": "pnpm run test:coverage --ui",
     "typecheck": "tsc",
     "prepublishOnly": "npx --yes @skypack/package-check --cwd ."
   },
