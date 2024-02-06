@@ -17,7 +17,7 @@ vi.mock('./db', () => ({
   },
 }));
 
-describe('Queue', () => {
+describe.sequential('Queue', () => {
   beforeAll(async () => {
     await initUuid();
   });

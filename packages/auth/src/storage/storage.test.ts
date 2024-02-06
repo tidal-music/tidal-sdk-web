@@ -22,7 +22,7 @@ vi.mock('./database', () => ({
   },
 }));
 
-describe('storage', () => {
+describe.sequential('storage', () => {
   beforeEach(() => {
     vi.stubGlobal('crypto', {
       getRandomValues: vi.fn(),

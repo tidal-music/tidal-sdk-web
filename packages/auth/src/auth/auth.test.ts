@@ -49,7 +49,7 @@ const prepareFetchMock = {
   url: 'https://foo.baz',
 };
 
-describe('auth', () => {
+describe.sequential('auth', () => {
   beforeEach(() => {
     vi.stubGlobal(
       'CustomEvent',
