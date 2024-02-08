@@ -11,6 +11,7 @@
     "lint:ci": "pnpm -r lint:ci",
     "lint:fix": "pnpm -r lint:fix",
     "test": "pnpm -r test -- --run",
+    "test": "pnpm -r test:ci",
     "test:coverage": "pnpm -r test:coverage",
     "typecheck": "pnpm -r typecheck"
   },

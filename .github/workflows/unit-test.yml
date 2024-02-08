@@ -26,3 +26,6 @@ jobs:
           pnpm test
         env:
           TEST_USER: ${{ steps.json.outputs.encoded }}
+      - name: Report Coverage
+          if: always()
+          uses: davelosert/vitest-coverage-report-action@v2
