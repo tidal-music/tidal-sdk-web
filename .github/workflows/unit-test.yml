@@ -23,7 +23,7 @@ jobs:
           TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
       - name: Run Tests
         run: |
-          pnpm test
+          pnpm test:coverage
         env:
           TEST_USER: ${{ steps.json.outputs.encoded }}
       - name: Report Coverage
