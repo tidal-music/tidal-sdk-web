@@ -29,9 +29,33 @@ jobs:
           pnpm test:coverage
         env:
           TEST_USER: ${{ steps.json.outputs.encoded }}
+      - name: Report Auth Coverage
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: 'Auth'
+          working-directory: './packages/auth'
+      - name: Report Common Coverage
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: 'Common'
+          working-directory: './packages/common'
       - name: Report Event-Producer Coverage
         if: always()
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Event Producer'
           working-directory: './packages/event-producer'
+      - name: Report Player-Web-Components Coverage
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: 'Player Web Components'
+          working-directory: './packages/player-web-components'
+      - name: Report True-Time Coverage
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: 'True Time'
+          working-directory: './packages/true-time'
