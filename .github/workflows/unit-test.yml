@@ -6,6 +6,9 @@ on:
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
+    permissions:
+      # Required to put a comment into the pull-request
+      pull-requests: write
     name: Run Unit Tests
     steps:
       - uses: actions/checkout@v4
