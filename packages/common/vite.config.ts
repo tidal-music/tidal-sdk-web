@@ -15,10 +15,10 @@ export default defineConfig({
       reportOnFailure: true,
       reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
       thresholds: {
-        branches: 50.35,
+        branches: 42.85,
         functions: 37.5,
         lines: 50.35,
-        statements: 42.85,
+        statements: 50.35,
       },
     },
     globals: true,
