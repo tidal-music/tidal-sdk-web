@@ -565,12 +565,12 @@ export default class NativePlayer extends BasePlayer {
       await this.mediaStateChange('active');
     }
 
-    this.seekStart();
+    this.seekStart(this.currentTime);
 
     this.currentTime = seconds;
     this.#player.seek(seconds);
 
-    this.seekEnd();
+    this.seekEnd(this.currentTime);
   }
 
   // Handles track "skip next" and progressions between shaka and native player
