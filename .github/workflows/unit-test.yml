@@ -26,6 +26,10 @@ jobs:
           pnpm test:coverage
         env:
           TEST_USER: ${{ steps.json.outputs.encoded }}
-      - name: Report Coverage
+      - name: Report Event-Producer Coverage
         if: always()
         uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: 'Event Producer'
+          json-summary-path: '.packages/event-producer/coverage/coverage-final.json'
+          json-final-path: '.packages/event-producer/coverage/coverage-summary.json'
