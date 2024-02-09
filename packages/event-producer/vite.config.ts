@@ -41,6 +41,12 @@ export default defineConfig(({ command, mode }) => {
       coverage: {
         reportOnFailure: true,
         reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
+        thresholds: {
+          branches: 1,
+          functions: 1,
+          lines: 1,
+          statements: 1,
+        },
       },
       environment: 'happy-dom',
       globals: true,
