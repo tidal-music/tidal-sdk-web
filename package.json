@@ -18,7 +18,7 @@
     "eslint": "8.56.0",
     "eslint-config-tidal": "3.2.0",
     "eslint-plugin-disable-autofix": "4.1.0",
-    "eslint-plugin-jsdoc": "48.0.0",
+    "eslint-plugin-jsdoc": "48.0.6",
     "typedoc": "0.25.2"
   },
   "engines": {
