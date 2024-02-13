@@ -35,7 +35,6 @@ const submitHandler = async event => {
     clientId,
     clientUniqueKey: 'test',
     credentialsStorageKey: 'loginRedirect',
-    scopes: [],
   });
 
   const loginUrl = await initializeLogin({
@@ -57,7 +56,6 @@ const loadHandler = async () => {
       clientId,
       clientUniqueKey: 'test',
       credentialsStorageKey: 'loginRedirect',
-      scopes: [],
     });
 
     if (window.location.search.length > 0) {
