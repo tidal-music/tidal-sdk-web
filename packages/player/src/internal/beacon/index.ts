@@ -1,10 +1,10 @@
-import { get, set } from 'idb-keyval';
-
 import * as Config from '../../config';
+import { db } from '../helpers/event-session';
 import { credentialsProviderStore } from '../index';
 import { trueTime } from '../true-time';
 
 import type { CommitData, PrematureEvents } from './types';
+
 /**
  * Generates a Web Worker from a function.
  */
@@ -25,12 +25,10 @@ async function handleWorkerMessage(
     streamingSessionId: string;
   }>,
 ) {
-  const savedEventMap = await get(event.data.eventName);
-  const savedEvents = new Map(savedEventMap);
-
-  savedEvents.delete(event.data.streamingSessionId);
-
-  await set(event.data.eventName, [...savedEvents]);
+  db.delete({
+    eventName: event.data.eventName,
+    streamingSessionId: event.data.streamingSessionId,
+  });
 }
 
 /**

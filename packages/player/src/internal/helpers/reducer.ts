@@ -1,15 +1,11 @@
-import { get, set } from 'idb-keyval';
-
 import * as Config from '../../config';
+
+import { db } from './event-session';
 
 export async function createReducer<P, N extends string>(
   eventName: N,
   defaultPayload: P,
 ) {
-  let events = new Map<string, P>();
-
-  let storedItem;
-
   if (!Config.get('gatherEvents')) {
     // @ts-expect-error - Not used
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -17,46 +13,20 @@ export async function createReducer<P, N extends string>(
       Promise.resolve(undefined);
   }
 
-  // sessionStorage can be unavailable in for example iframes for embed player.
-  try {
-    storedItem = await get(eventName);
-
-    if (storedItem) {
-      events = new Map(storedItem);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-
   return async (newData: { streamingSessionId: string } & Partial<P>) => {
-    const oldPayload = events.get(newData.streamingSessionId) || defaultPayload;
-    const updatedPayload = {
-      ...oldPayload,
-      ...newData,
-    } as P;
-
-    for (const k of Object.keys(newData)) {
-      const key = k as keyof Partial<P>;
-
-      if (Array.isArray(newData[key])) {
-        updatedPayload[key] = [
-          ...((oldPayload[key] as Array<any>) || []),
-          ...((newData[key] as Array<any>) || []),
-        ] as P[typeof key];
-      }
-    }
-
-    events.set(newData.streamingSessionId, updatedPayload);
-
     try {
-      await set(eventName, [...events]);
+      await db.put({
+        name: eventName,
+        payload: {
+          ...defaultPayload,
+          ...newData,
+        },
+        streamingSessionId: newData.streamingSessionId,
+      });
+
+      return db.get(eventName, newData.streamingSessionId);
     } catch (e) {
       console.error(e);
     }
-
-    return {
-      name: eventName,
-      payload: updatedPayload,
-    };
   };
 }
