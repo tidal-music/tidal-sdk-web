@@ -1,6 +1,6 @@
 import { init } from '../../src';
 import type { EPEvent } from '../../src';
-import { dispatchEvent } from '../../src/dispatch/dispatch';
+import { sendEvent } from '../../src/send/send';
 import { config as configFixture } from '../fixtures/config';
 import {
   credentials1,
@@ -33,7 +33,7 @@ class EventDemo extends HTMLElement {
   render() {
     this.shadow.innerHTML = `<div><h1></h1><ul>
       <li><input type="text" placeholder="credentials token" id="credentialsTokenInp"/><button id="setCredentialsToken">Set credentials token</button><button id="deleteCredentialsToken">Delete token</button></li>
-      <li><button id="dispatchEventBtn">Fire Event</button> <input id="inp" type="text" placeholder="event name"/></li>
+      <li><button id="sendEventBtn">Fire Event</button> <input id="inp" type="text" placeholder="event name"/></li>
       <li>${this.fakeQueue
         .map(
           ({ id, name }) =>
@@ -42,8 +42,7 @@ class EventDemo extends HTMLElement {
         .join('</li><li>')}</li>
       </ul><button id="submitEvents">Submit queue</button></div>`;
     if (this.shadowRoot) {
-      const dispatchEventBtn =
-        this.shadowRoot.querySelector('#dispatchEventBtn');
+      const sendEventBtn = this.shadowRoot.querySelector('#sendEventBtn');
       const setCredentialsTokenBtn =
         this.shadowRoot.querySelector<HTMLButtonElement>(
           '#setCredentialsToken',
@@ -58,7 +57,7 @@ class EventDemo extends HTMLElement {
       const submitEventsBtn = this.shadowRoot.querySelector('#submitEvents');
       const removeBtns = this.shadowRoot.querySelectorAll('[role="remove"]');
       if (
-        dispatchEventBtn &&
+        sendEventBtn &&
         inp &&
         submitEventsBtn &&
         setCredentialsTokenBtn &&
@@ -72,8 +71,8 @@ class EventDemo extends HTMLElement {
             console.error('credentials token input is empty');
           }
         });
-        dispatchEventBtn.addEventListener('click', () => {
-          dispatchEvent({
+        sendEventBtn.addEventListener('click', () => {
+          sendEvent({
             config: configFixture,
             credentialsProvider: credentialsProvider1,
             event: {
