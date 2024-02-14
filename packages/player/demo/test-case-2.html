@@ -5,28 +5,31 @@
   </head>
   <body>
     <article>
-      <h1>Test Case 1</h1>
+      <h1>Test Case 2</h1>
       <p>
         <ul>
           <li>Go to an album page</li>
           <li>Select a track to play</li>
-          <li>Play the full track</li>
+          <li>Play the track</li>
+          <li>After 20 seconds scrub to the last 20 seconds of the song</li>
+          <li>Finish the track</li>
         </ul>
       </p>
       <h2>Expectations</h2>
       <p>
         <ul>
           <li>1 record logged</li>
+          <li>PLAYBACK_STOP action logged at assetPosition = 20 sec</li>
+          <li>PLAYBACK_START action logged at track length - 20 sec</li>
           <li>startAssetPosition = 0</li>
           <li>endAssetPosition = track length</li>
           <li>actualProductId = trackId played</li>
           <li>sourceType = “ALBUM”</li>
-          <li>sourceId = albumId of track played</li>
-          <li>actions = []</li>
+          <li>sourceId = albumId of played track</li>
         </ul>
       </p>
     </article>
     <output style="white-space:pre"></output>
-    <script type="module" src="./test-case-1.js"></script>
+    <script type="module" src="./test-case-2.js"></script>
   </body>
 </html>

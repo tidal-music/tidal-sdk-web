@@ -141,6 +141,30 @@ describe.sequential('auth', () => {
         tidalLoginServiceBaseUri: 'https://baz.bar',
       });
     });
+
+    it('inits the auth module with empty scopes', async () => {
+      const trueTimeSpy = vi.spyOn(trueTime, 'synchronize').mockResolvedValue();
+      vi.mocked(storage.loadCredentials).mockResolvedValue(undefined);
+
+      const config = {
+        clientId: 'CLIENT_ID',
+        clientUniqueKey: 'CLIENT_UNIQUE_KEY',
+        credentialsStorageKey: 'CREDENTIALS_STORAGE_KEY',
+      };
+
+      await init(config);
+
+      expect(storage.loadCredentials).toHaveBeenCalledWith(
+        'CREDENTIALS_STORAGE_KEY',
+      );
+      expect(storage.saveCredentialsToStorage).toHaveBeenCalledWith({
+        ...config,
+        scopes: [],
+        tidalAuthServiceBaseUri: 'https://auth.tidal.com/v1/',
+        tidalLoginServiceBaseUri: 'https://login.tidal.com/',
+      });
+      expect(trueTimeSpy).toHaveBeenCalled();
+    });
   });
 
   describe('initializeLogin', () => {

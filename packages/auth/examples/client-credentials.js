@@ -37,7 +37,6 @@ window.addEventListener('load', () => {
       clientId,
       clientSecret,
       credentialsStorageKey: 'clientCredentials',
-      scopes: [],
     });
 
     // hide form to signal "logged in state", display search

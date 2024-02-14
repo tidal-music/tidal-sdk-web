@@ -569,13 +569,35 @@ export class BasePlayer {
    * Handle play log reporting for seeking.
    * Seek start should log a PLAYBACK_START action if playing post seek.
    */
-  seekEnd() {
-    if (this.currentStreamingSessionId && this.playbackState === 'PLAYING') {
-      PlayLog.playbackSessionAction(this.currentStreamingSessionId, {
-        actionType: 'PLAYBACK_START',
-        assetPosition: this.currentTime,
-        timestamp: trueTime.now(),
-      });
+  seekEnd(assetPosition: number) {
+    const streamingSessionId = this.currentStreamingSessionId;
+
+    if (streamingSessionId) {
+      const logEvent = () =>
+        PlayLog.playbackSessionAction(streamingSessionId, {
+          actionType: 'PLAYBACK_START',
+          assetPosition,
+          timestamp: trueTime.now(),
+        });
+
+      if (this.playbackState === 'PLAYING') {
+        logEvent().catch(console.error);
+      } else {
+        const handlePlaybackStateChange = () => {
+          if (this.playbackState === 'PLAYING') {
+            logEvent().catch(console.error);
+
+            events.removeEventListener(
+              'playback-state-change',
+              handlePlaybackStateChange,
+            );
+          }
+        };
+        events.addEventListener(
+          'playback-state-change',
+          handlePlaybackStateChange,
+        );
+      }
     }
   }
 
@@ -583,11 +605,11 @@ export class BasePlayer {
    * Handle play log reporting for seeking.
    * Seek start should log a PLAYBACK_STOP action.
    */
-  seekStart() {
+  seekStart(assetPosition: number) {
     if (this.currentStreamingSessionId) {
       PlayLog.playbackSessionAction(this.currentStreamingSessionId, {
         actionType: 'PLAYBACK_STOP',
-        assetPosition: this.currentTime,
+        assetPosition,
         timestamp: trueTime.now(),
       });
     }

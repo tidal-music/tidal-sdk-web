@@ -99,7 +99,7 @@ export const init = async ({
     }),
     clientUniqueKey,
     credentialsStorageKey,
-    scopes,
+    scopes: scopes ?? [],
     tidalAuthServiceBaseUri:
       tidalAuthServiceBaseUri ??
       persistedUser?.tidalAuthServiceBaseUri ??
