@@ -3,7 +3,10 @@ class EventSessionDB {
   #db: IDBDatabase;
 
   constructor() {
-    const name = 'streaming-sessions-' + crypto.randomUUID();
+    this.#removeOldDatabase();
+
+    const uuid = crypto.randomUUID();
+    const name = 'streaming-sessions-' + uuid;
     const openRequest = indexedDB.open(name, 1);
 
     openRequest.onupgradeneeded = () => {
@@ -19,7 +22,16 @@ class EventSessionDB {
 
     openRequest.onsuccess = () => {
       this.#db = openRequest.result;
+      localStorage.setItem('ssuid', uuid);
     };
+  }
+
+  #removeOldDatabase() {
+    const ssuid = localStorage.getItem('ssuid');
+
+    if (ssuid) {
+      indexedDB.deleteDatabase('streaming-sessions-' + ssuid);
+    }
   }
 
   delete({
