@@ -26,6 +26,19 @@ class EventSessionDB {
     };
   }
 
+  async #generateCompositeKey(streamingSessionId: string, eventName: string) {
+    const msgUint8 = new TextEncoder().encode(
+      `${streamingSessionId}-${eventName}`,
+    ); // encode as (utf-8) Uint8Array
+    const hashBuffer = await crypto.subtle.digest('SHA-1', msgUint8); // hash the message
+    const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+    const hashHex = hashArray
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join(''); // convert bytes to hex string
+
+    return hashHex;
+  }
+
   #removeOldDatabase() {
     const ssuid = localStorage.getItem('ssuid');
 
@@ -34,20 +47,21 @@ class EventSessionDB {
     }
   }
 
-  delete({
+  async delete({
     eventName,
     streamingSessionId,
   }: {
     eventName: string;
     streamingSessionId: string;
   }) {
+    const compositeKey = await this.#generateCompositeKey(
+      streamingSessionId,
+      eventName,
+    );
+
     return new Promise((resolve, reject) => {
-      // Open a transaction on the "events" store with readwrite permissions
       const transaction = this.#db.transaction(['events'], 'readwrite');
       const store = transaction.objectStore('events');
-
-      // Construct the composite key from eventName and streamingSessionId
-      const compositeKey = [streamingSessionId, eventName].join('+');
 
       // Use the delete method with the composite key to delete the record
       const request = store.delete(compositeKey);
@@ -64,13 +78,14 @@ class EventSessionDB {
   }
 
   async get(eventName: string, streamingSessionId: string): Promise<unknown> {
+    const compositeKey = await this.#generateCompositeKey(
+      streamingSessionId,
+      eventName,
+    );
+
     return new Promise((resolve, reject) => {
-      // Open a transaction on the "events" store
       const transaction = this.#db.transaction(['events'], 'readonly');
       const store = transaction.objectStore('events');
-
-      const compositeKey = [streamingSessionId, eventName].join('+');
-
       const request = store.get(compositeKey);
 
       request.onsuccess = () => {
@@ -88,17 +103,22 @@ class EventSessionDB {
     });
   }
 
-  put(value: {
+  async put(value: {
     id?: unknown;
     name: string;
     payload: unknown;
     streamingSessionId: string;
   }) {
+    const compositeKey = await this.#generateCompositeKey(
+      value.streamingSessionId,
+      value.name,
+    );
+
     return new Promise((resolve, reject) => {
       const transaction = this.#db.transaction(['events'], 'readwrite');
       const store = transaction.objectStore('events');
 
-      value.id = [value.streamingSessionId, value.name].join('+');
+      value.id = compositeKey;
 
       const request = store.put(value);
 
