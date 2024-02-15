@@ -179,6 +179,9 @@ export const initializeDeviceLogin = async () => {
 
   const body = {
     client_id: state.credentials.clientId,
+    ...(state.credentials.clientSecret && {
+      client_secret: state.credentials.clientSecret,
+    }),
     scope: state.credentials.scopes.join(' '),
   };
 
@@ -225,8 +228,14 @@ export const finalizeLogin = async (loginResponseQuery: string) => {
     throw new TidalError(authErrorCodeMap.initError);
   }
 
-  const { clientId, clientUniqueKey, codeChallenge, redirectUri, scopes } =
-    state.credentials;
+  const {
+    clientId,
+    clientSecret,
+    clientUniqueKey,
+    codeChallenge,
+    redirectUri,
+    scopes,
+  } = state.credentials;
 
   const params = Object.fromEntries(new URLSearchParams(loginResponseQuery));
 
@@ -237,6 +246,9 @@ export const finalizeLogin = async (loginResponseQuery: string) => {
   const body = {
     client_id: clientId,
     client_unique_key: clientUniqueKey ?? '',
+    ...(clientSecret && {
+      client_secret: clientSecret,
+    }),
     code: params.code,
     code_verifier: codeChallenge,
     grant_type: 'authorization_code',
@@ -361,6 +373,9 @@ export const logout = () => {
 const refreshAccessToken = async () => {
   if (state.credentials?.refreshToken) {
     const body = {
+      ...(state.credentials.clientSecret && {
+        client_secret: state.credentials.clientSecret,
+      }),
       client_id: state.credentials.clientId,
       grant_type: 'refresh_token',
       refresh_token: state.credentials.refreshToken,
@@ -388,6 +403,9 @@ const refreshAccessToken = async () => {
 const upgradeToken = async () => {
   if (state.credentials?.refreshToken) {
     const body = {
+      ...(state.credentials.clientSecret && {
+        client_secret: state.credentials.clientSecret,
+      }),
       client_id: state.credentials.clientId,
       grant_type: 'update_client',
       refresh_token: state.credentials.refreshToken,
