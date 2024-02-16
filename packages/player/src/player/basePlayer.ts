@@ -14,6 +14,7 @@ import {
   transformOutputType,
 } from '../internal/event-tracking/streaming-metrics/playback-statistics';
 import { load } from '../internal/handlers/load';
+import { db } from '../internal/helpers/event-session';
 import type { StreamInfo } from '../internal/helpers/manifest-parser';
 import { normalizeVolume } from '../internal/helpers/normalize-volume';
 import type { PlaybackInfo } from '../internal/helpers/playback-info-resolver';
@@ -405,6 +406,12 @@ export class BasePlayer {
    * Refetches playbackinfo.
    */
   async hardReload(mediaProduct: MediaProduct, assetPosition: number) {
+    if (this.currentStreamingSessionId) {
+      await db.clean({
+        streamingSessionId: this.currentStreamingSessionId,
+      });
+    }
+
     return load(mediaProduct, assetPosition);
   }
 

@@ -25,8 +25,12 @@ async function handleWorkerMessage(
     streamingSessionId: string;
   }>,
 ) {
+  console.log('cleanUp', {
+    name: event.data.eventName,
+    streamingSessionId: event.data.streamingSessionId,
+  });
   db.delete({
-    eventName: event.data.eventName,
+    name: event.data.eventName,
     streamingSessionId: event.data.streamingSessionId,
   });
 }

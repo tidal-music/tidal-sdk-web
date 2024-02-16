@@ -47,16 +47,42 @@ class EventSessionDB {
     }
   }
 
+  async clean({ streamingSessionId }: { streamingSessionId: string }) {
+    console.log('clean out ' + streamingSessionId);
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.#db.transaction(['events'], 'readwrite');
+      const store = transaction.objectStore('events');
+      const index = store.index('streamingSessionId');
+      const request = index.openCursor(IDBKeyRange.only(streamingSessionId));
+
+      request.onsuccess = () => {
+        const cursor = request.result;
+        if (cursor) {
+          store.delete(cursor.primaryKey);
+          cursor.continue();
+        } else {
+          resolve('Events deleted successfully.');
+        }
+      };
+
+      request.onerror = () => {
+        console.error('Error in cleaning events:');
+        reject(request.error);
+      };
+    });
+  }
+
   async delete({
-    eventName,
+    name,
     streamingSessionId,
   }: {
-    eventName: string;
+    name: string;
     streamingSessionId: string;
   }) {
     const compositeKey = await this.#generateCompositeKey(
       streamingSessionId,
-      eventName,
+      name,
     );
 
     return new Promise((resolve, reject) => {
@@ -77,10 +103,23 @@ class EventSessionDB {
     });
   }
 
-  async get(eventName: string, streamingSessionId: string): Promise<unknown> {
+  async get<P>({
+    name,
+    streamingSessionId,
+  }: {
+    name: string;
+    streamingSessionId: string;
+  }): Promise<
+    | {
+        name: string;
+        payload: P;
+        streamingSessionId: string;
+      }
+    | undefined
+  > {
     const compositeKey = await this.#generateCompositeKey(
       streamingSessionId,
-      eventName,
+      name,
     );
 
     return new Promise((resolve, reject) => {
@@ -92,7 +131,7 @@ class EventSessionDB {
         if (request.result) {
           resolve(request.result); // Record found, resolve the promise with the record
         } else {
-          resolve(null); // No record found with the composite key
+          resolve(undefined); // No record found with the composite key
         }
       };
 
