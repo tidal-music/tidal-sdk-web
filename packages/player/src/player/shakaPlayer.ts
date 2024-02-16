@@ -900,7 +900,7 @@ export default class ShakaPlayer extends BasePlayer {
       await this.unloadPreloadedMediaProduct();
     }
 
-    if (this.playbackState !== 'IDLE' && this.hasStarted()) {
+    if (this.playbackState !== 'IDLE') {
       this.finishCurrentMediaProduct('skip');
     }
 

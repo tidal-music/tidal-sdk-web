@@ -432,7 +432,7 @@ export default class BrowserPlayer extends BasePlayer {
 
     this.debugLog('reset');
 
-    if (this.playbackState !== 'IDLE' && this.hasStarted()) {
+    if (this.playbackState !== 'IDLE') {
       this.finishCurrentMediaProduct('skip');
     }
 

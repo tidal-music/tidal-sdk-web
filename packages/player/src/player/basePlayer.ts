@@ -407,9 +407,7 @@ export class BasePlayer {
    */
   async hardReload(mediaProduct: MediaProduct, assetPosition: number) {
     if (this.currentStreamingSessionId) {
-      await db.clean({
-        streamingSessionId: this.currentStreamingSessionId,
-      });
+      this.finishCurrentMediaProduct('skip');
     }
 
     return load(mediaProduct, assetPosition);
