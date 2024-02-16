@@ -69,6 +69,12 @@ importers:
         specifier: 0.8.2
         version: 0.8.2
     devDependencies:
+      '@tidal-music/auth':
+        specifier: workspace:^
+        version: link:../auth
+      '@tidal-music/common':
+        specifier: workspace:^
+        version: link:../common
       '@vitest/coverage-v8':
         specifier: 1.2.2
         version: 1.2.2(vitest@1.2.2)

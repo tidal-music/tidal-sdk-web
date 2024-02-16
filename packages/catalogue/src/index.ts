@@ -1,3 +1,3 @@
-import { helloCatalogue } from './catalogue';
+export { catalogueClient, initCatalogueClient } from './catalogue';
 
-helloCatalogue();
+export type { components } from './catalogueAPI';
