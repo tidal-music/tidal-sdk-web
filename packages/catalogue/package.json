@@ -21,8 +21,8 @@
     }
   },
   "scripts": {
-    "prepare": "vite build",
-    "build": "vite build",
+    "prepare": "vite build && cp src/catalogueAPI.d.ts dist/",
+    "build": "vite build && cp src/catalogueAPI.d.ts dist/",
     "build:dev": "vite build -m development",
     "clean": "rm -rf coverage dist .eslintcache",
     "dev": "vite --debug --cors -c=./vite.config.ts",
