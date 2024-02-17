@@ -7,7 +7,6 @@ async function runExample(clientId, clientSecret) {
     clientId,
     clientSecret,
     credentialsStorageKey: 'clientCredentials',
-    scopes: [],
   });
 
   await initCatalogueClient(credentialsProvider);
@@ -27,7 +26,7 @@ async function runExample(clientId, clientSecret) {
     );
   } else {
     for (const [key, value] of Object.entries(data.resource)) {
-      results.innerHTML += `<li><b>${key}:</b>${value}</li>`;
+      results.innerHTML += `<li><b>${key}:</b>${JSON.stringify(value)}</li>`;
     }
   }
 }
