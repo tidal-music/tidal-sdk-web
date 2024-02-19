@@ -3,7 +3,7 @@ export class TrueTime {
 
   #serverTime?: number;
 
-  #synced = false;
+  #synced: number | undefined;
 
   #url: URL;
 
@@ -11,7 +11,6 @@ export class TrueTime {
     this.#url = new URL(url);
     this.#clientStartTime = performance.now();
   }
-
   now(highResTimeStamp: DOMHighResTimeStamp = performance.now()): number {
     if (!this.#serverTime || !this.#clientStartTime) {
       throw new ReferenceError(
@@ -33,7 +32,9 @@ export class TrueTime {
    * @param url - server url
    */
   async synchronize() {
-    if (this.#synced) {
+    // Synchronize at max once every 1 000 000 miliseconds
+    // eslint-disable-next-line no-restricted-syntax
+    if (this.#synced && Math.abs(this.#synced - Date.now()) < 1_000_000) {
       return;
     }
 
@@ -42,7 +43,8 @@ export class TrueTime {
 
       if (response.ok && response.headers.has('date')) {
         this.#serverTime = new Date(response.headers.get('date')!).getTime();
-        this.#synced = true;
+        // eslint-disable-next-line no-restricted-syntax
+        this.#synced = Date.now();
       }
     } catch (error) {
       console.error(error);
