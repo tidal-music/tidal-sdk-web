@@ -15,6 +15,9 @@ class EventSessionDB {
     this.#createNewDatabase().catch(console.error);
   }
 
+  /**
+   * Create a new database and set the #openingDatabase promise to undefined when it's done.
+   */
   async #createNewDatabase() {
     this.#openingDatabase = this.#init().then(() => {
       this.#openingDatabase = undefined;
@@ -23,6 +26,10 @@ class EventSessionDB {
     return this.#openingDatabase;
   }
 
+  /**
+   * Ensure that the database is open and ready to use. Using a promise to
+   * debounce multiple calls to this method.
+   */
   async #ensureDatabase() {
     if (this.#openingDatabase) {
       await this.#openingDatabase;
@@ -81,6 +88,9 @@ class EventSessionDB {
     }
   }
 
+  /**
+   * Delete a logged event by name and streamingSessionId.
+   */
   async delete({
     name,
     streamingSessionId,
@@ -121,6 +131,9 @@ class EventSessionDB {
     });
   }
 
+  /**
+   * Get a logged event by name and streamingSessionId.
+   */
   async get<P>({
     name,
     streamingSessionId,
@@ -168,6 +181,9 @@ class EventSessionDB {
     });
   }
 
+  /**
+   * Adds or updates an event.
+   */
   async put(value: {
     id?: unknown;
     name: string;
