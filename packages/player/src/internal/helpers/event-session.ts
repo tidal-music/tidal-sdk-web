@@ -7,7 +7,7 @@ type MaybeEvent<P> =
   | undefined;
 
 class EventSessionDB {
-  // @ts-expect-error - Assigned.
+  // @ts-expect-error - Assigned through private method #init.
   #db: IDBDatabase;
   #openingDatabase: Promise<void> | undefined;
 
