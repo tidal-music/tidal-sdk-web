@@ -56,10 +56,9 @@ class EventSessionDB {
         this.#db = request.result;
 
         if (!this.#db.objectStoreNames.contains('events')) {
-          const objectStore = this.#db.createObjectStore('events', {
+          this.#db.createObjectStore('events', {
             keyPath: 'id',
           });
-          objectStore.createIndex('streamingSessionId', 'streamingSessionId');
         }
       };
 
