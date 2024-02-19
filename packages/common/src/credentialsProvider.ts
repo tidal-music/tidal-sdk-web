@@ -3,6 +3,7 @@ export const messageTypes = {
 };
 
 export type BusEvent = CustomEvent<{
+  payload?: Credentials;
   type: (typeof messageTypes)[keyof typeof messageTypes];
 }>;
 

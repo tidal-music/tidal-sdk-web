@@ -1,23 +1,15 @@
 import * as Player from '../';
 
-import { login } from './login.js';
+import { login, print } from './helpers.js';
 
 await login();
 
-Player.events.addEventListener('ended', () => {
-  document.dispatchEvent(new CustomEvent('player-sdk:ended'));
-});
-
-Player.events.addEventListener('media-product-transition', () => {
-  document.dispatchEvent(
-    new CustomEvent('player-sdk:media-product-transition'),
-  );
-});
-
+print('Loading 108506136');
 await Player.load({
   productId: '108506136',
   productType: 'track',
   sourceId: '4141352',
   sourceType: 'ALBUM',
 });
+print('Playing 108506136');
 await Player.play();

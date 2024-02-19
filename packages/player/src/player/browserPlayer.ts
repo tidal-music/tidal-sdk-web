@@ -34,7 +34,6 @@ export default class BrowserPlayer extends BasePlayer {
     playHandler: EventListener;
     playingHandler: EventListener;
     seekedHandler: EventListener;
-    seekingHandler: EventListener;
     stalledHandler: EventListener;
     timeUpdateHandler: EventListener;
     waitingHandler: EventListener;
@@ -114,16 +113,10 @@ export default class BrowserPlayer extends BasePlayer {
     const errorHandler = (e: Event) =>
       console.error('HTMLMediaElement errored', e);
 
-    const seekingHandler = () => {
-      if (this.mediaElement) {
-        this.currentTime = this.mediaElement.currentTime;
-        this.seekStart();
-      }
-    };
     const seekedHandler = () => {
       if (this.mediaElement) {
         this.currentTime = this.mediaElement.currentTime;
-        this.seekEnd();
+        this.seekEnd(this.currentTime);
       }
     };
 
@@ -135,7 +128,6 @@ export default class BrowserPlayer extends BasePlayer {
       playHandler: setPlaying,
       playingHandler: setPlaying,
       seekedHandler,
-      seekingHandler,
       stalledHandler: setStalled,
       timeUpdateHandler,
       waitingHandler: setStalled,
@@ -207,11 +199,6 @@ export default class BrowserPlayer extends BasePlayer {
     mediaElement[method](
       'stalled',
       this.#mediaElementEventHandlers.stalledHandler,
-      { passive: true },
-    );
-    mediaElement[method](
-      'seeking',
-      this.#mediaElementEventHandlers.seekingHandler,
       { passive: true },
     );
     mediaElement[method](
@@ -469,6 +456,8 @@ export default class BrowserPlayer extends BasePlayer {
     if (!mediaEl) {
       return;
     }
+
+    this.seekStart(this.currentTime);
 
     if ('fastSeek' in mediaEl) {
       mediaEl.fastSeek(seconds);

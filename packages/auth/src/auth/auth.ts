@@ -75,6 +75,13 @@ const dispatchEvent = (detail: BusEvent['detail']) => {
   globalThis.dispatchEvent(event);
 };
 
+const dispatchCredentialsUpdated = (credentials: Credentials) => {
+  dispatchEvent({
+    payload: credentials,
+    type: messageTypes.credentialsUpdated,
+  });
+};
+
 /**
  * Initialize the auth library, this needs to be called before any other auth methods.
  *
@@ -99,7 +106,7 @@ export const init = async ({
     }),
     clientUniqueKey,
     credentialsStorageKey,
-    scopes,
+    scopes: scopes ?? [],
     tidalAuthServiceBaseUri:
       tidalAuthServiceBaseUri ??
       persistedUser?.tidalAuthServiceBaseUri ??
@@ -253,8 +260,6 @@ export const finalizeLogin = async (loginResponseQuery: string) => {
     throw response;
   }
 
-  dispatchEvent({ type: messageTypes.credentialsUpdated });
-
   const jsonResponse = (await response.json()) as TokenJSONResponse;
 
   await persistToken(jsonResponse);
@@ -376,8 +381,6 @@ const refreshAccessToken = async () => {
       return response;
     }
 
-    dispatchEvent({ type: messageTypes.credentialsUpdated });
-
     const jsonResponse = (await response.json()) as TokenJSONResponse;
     return persistToken(jsonResponse);
   } else if (state.credentials?.clientSecret) {
@@ -413,8 +416,6 @@ const upgradeToken = async () => {
       throw new RetryableError(authErrorCodeMap.retryableError);
     }
 
-    dispatchEvent({ type: messageTypes.credentialsUpdated });
-
     const jsonResponse = (await response.json()) as TokenJSONResponse;
     return persistToken(jsonResponse);
   }
@@ -437,8 +438,6 @@ const getTokenThroughClientCredentials = async () => {
     if (response instanceof Error) {
       return response;
     }
-
-    dispatchEvent({ type: messageTypes.credentialsUpdated });
 
     const jsonResponse = (await response.json()) as TokenJSONResponse;
     return persistToken(jsonResponse);
@@ -591,12 +590,17 @@ export const setCredentials = async ({
       refreshToken,
     }),
   });
-
-  dispatchEvent({ type: messageTypes.credentialsUpdated });
 };
 
 const persistCredentials = (updatedCredentials: UserCredentials) => {
   state.credentials = updatedCredentials;
+
+  const credentials: Credentials = {
+    ...state.credentials.accessToken,
+    clientId: state.credentials.clientId,
+    requestedScopes: state.credentials.scopes,
+  };
+  dispatchCredentialsUpdated(credentials);
 
   return saveCredentialsToStorage(state.credentials);
 };

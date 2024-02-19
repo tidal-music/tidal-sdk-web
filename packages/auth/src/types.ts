@@ -5,7 +5,7 @@ export type InitArgs = {
   clientSecret?: string;
   clientUniqueKey?: string;
   credentialsStorageKey: string;
-  scopes: Array<string>;
+  scopes?: Array<string>;
   tidalAuthServiceBaseUri?: string;
   tidalLoginServiceBaseUri?: string;
 };
@@ -16,9 +16,13 @@ export type UserCredentials = {
   expiresIn?: number;
   redirectUri?: string;
   refreshToken?: string;
+  scopes: Array<string>;
   tidalAuthServiceBaseUri: string;
   tidalLoginServiceBaseUri: string;
-} & Omit<InitArgs, 'tidalAuthServiceBaseUri' | 'tidalLoginServiceBaseUri'>;
+} & Omit<
+  InitArgs,
+  'scopes' | 'tidalAuthServiceBaseUri' | 'tidalLoginServiceBaseUri'
+>;
 
 export type SocialNetwork = 'APPLE' | 'FACEBOOK' | 'TWITTER';
 

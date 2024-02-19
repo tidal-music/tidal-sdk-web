@@ -116,7 +116,6 @@ export default class ShakaPlayer extends BasePlayer {
     playHandler: EventListener;
     playingHandler: EventListener;
     seekedHandler: EventListener;
-    seekingHandler: EventListener;
     stalledHandler: EventListener;
     timeUpdateHandler: EventListener;
     waitingHandler: EventListener;
@@ -238,13 +237,9 @@ export default class ShakaPlayer extends BasePlayer {
         (e.target as HTMLMediaElement).error,
       );
 
-    const seekingHandler = () => {
-      this.currentTime = this.mediaElement ? this.mediaElement.currentTime : 0;
-      this.seekStart();
-    };
     const seekedHandler = () => {
       this.currentTime = this.mediaElement ? this.mediaElement.currentTime : 0;
-      this.seekEnd();
+      this.seekEnd(this.currentTime);
     };
 
     this.#mediaElementEventHandlers = {
@@ -255,7 +250,6 @@ export default class ShakaPlayer extends BasePlayer {
       playHandler: setPlaying,
       playingHandler: setPlaying,
       seekedHandler,
-      seekingHandler,
       stalledHandler: setStalled,
       timeUpdateHandler,
       waitingHandler: setStalled,
@@ -648,11 +642,6 @@ export default class ShakaPlayer extends BasePlayer {
       { passive: true },
     );
     mediaElement[method](
-      'seeking',
-      this.#mediaElementEventHandlers.seekingHandler,
-      { passive: true },
-    );
-    mediaElement[method](
       'seeked',
       this.#mediaElementEventHandlers.seekedHandler,
       { passive: true },
@@ -933,6 +922,8 @@ export default class ShakaPlayer extends BasePlayer {
     if (!mediaElement) {
       return;
     }
+
+    this.seekStart(this.currentTime);
 
     this.currentTime = currentTime;
 
