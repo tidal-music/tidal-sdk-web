@@ -9,6 +9,8 @@ type MaybeEvent<P> =
 class EventSessionDB {
   // @ts-expect-error - Assigned through private method #init.
   #db: IDBDatabase;
+  // @ts-expect-error - Assigned through private method #init.
+  #name: string;
   #openingDatabase: Promise<void> | undefined;
 
   constructor() {
@@ -31,9 +33,13 @@ class EventSessionDB {
    * debounce multiple calls to this method.
    */
   async #ensureDatabase() {
+    const isExisting = (await window.indexedDB.databases())
+      .map(db => db.name)
+      .includes(this.#name);
+
     if (this.#openingDatabase) {
       await this.#openingDatabase;
-    } else {
+    } else if (!isExisting) {
       await this.#createNewDatabase();
     }
   }
@@ -57,6 +63,7 @@ class EventSessionDB {
 
       const uuid = crypto.randomUUID();
       const name = 'streaming-sessions-' + uuid;
+      this.#name = name;
       const request = indexedDB.open(name, 1);
 
       request.onupgradeneeded = () => {
@@ -98,6 +105,8 @@ class EventSessionDB {
     name: string;
     streamingSessionId: string;
   }): Promise<void> {
+    await this.#ensureDatabase();
+
     const compositeKey = await this.#generateCompositeKey(
       streamingSessionId,
       name,
@@ -141,6 +150,8 @@ class EventSessionDB {
     name: string;
     streamingSessionId: string;
   }): Promise<MaybeEvent<P>> {
+    await this.#ensureDatabase();
+
     const compositeKey = await this.#generateCompositeKey(
       streamingSessionId,
       name,
@@ -190,6 +201,8 @@ class EventSessionDB {
     payload: unknown;
     streamingSessionId: string;
   }): Promise<void> {
+    await this.#ensureDatabase();
+
     const compositeKey = await this.#generateCompositeKey(
       value.streamingSessionId,
       value.name,

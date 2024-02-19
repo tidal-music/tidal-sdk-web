@@ -32,7 +32,11 @@ describe('saveAdaptation', () => {
     const activeShakaTrack = JSON.parse(
       '{"id":6,"active":true,"type":"variant","bandwidth":3117998,"language":"und","label":null,"kind":null,"width":1280,"height":720,"frameRate":null,"pixelAspectRatio":null,"hdr":null,"mimeType":"video/mp2t","codecs":"avc1.4D401F,mp4a.40.2","audioCodec":null,"videoCodec":"avc1.4D401F,mp4a.40.2","primary":false,"roles":[],"audioRoles":null,"forced":false,"videoId":5,"audioId":null,"channelsCount":null,"audioSamplingRate":null,"spatialAudio":false,"tilesLayout":null,"audioBandwidth":null,"videoBandwidth":null,"originalVideoId":null,"originalAudioId":null,"originalTextId":null,"originalImageId":null}',
     );
-    const adaptation = saveAdaptation('jeremy-session', activeShakaTrack, 1337);
+    const adaptation = await saveAdaptation(
+      'jeremy-session',
+      activeShakaTrack,
+      1337,
+    );
     const event = await StreamingMetrics.playbackStatistics({
       streamingSessionId: 'jeremy-session',
     });
@@ -41,6 +45,6 @@ describe('saveAdaptation', () => {
       throw new Error('Event undefined');
     }
 
-    expect(event.payload.adaptations).to.include(adaptation);
+    expect(event.payload.adaptations[0]).to.deep.equal(adaptation);
   });
 });
