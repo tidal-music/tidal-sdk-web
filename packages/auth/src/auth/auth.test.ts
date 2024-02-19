@@ -270,10 +270,10 @@ describe.sequential('auth', () => {
       vi.mocked(storage.loadCredentials).mockResolvedValue(fixtures.storage);
 
       await init({
-        clientId: 'foo',
-        clientUniqueKey: 'baz',
-        credentialsStorageKey: 'bar',
-        scopes: ['read'],
+        clientId: 'CLIENT_ID',
+        clientUniqueKey: 'CLIENT_UNIQUE_KEY',
+        credentialsStorageKey: 'CREDENTIALS_STORAGE_KEY',
+        scopes: ['READ', 'WRITE'],
       });
 
       await expect(
@@ -331,7 +331,7 @@ describe.sequential('auth', () => {
     it('polls and persists access token when successful', async () => {
       vi.mocked(fetchHandling.prepareFetch).mockReturnValue(prepareFetchMock);
       vi.spyOn(trueTime, 'synchronize').mockResolvedValue();
-      vi.spyOn(trueTime, 'now').mockResolvedValue(0);
+      vi.spyOn(trueTime, 'now').mockReturnValue(0);
       vi.mocked(fetchHandling.exponentialBackoff).mockResolvedValue(
         new Response(JSON.stringify(fixtures.deviceAuthorizationResponse)),
       );
@@ -354,7 +354,7 @@ describe.sequential('auth', () => {
     it('polls until 500 and resumes', async () => {
       vi.mocked(fetchHandling.prepareFetch).mockReturnValue(prepareFetchMock);
       vi.spyOn(trueTime, 'synchronize').mockResolvedValue();
-      vi.spyOn(trueTime, 'now').mockResolvedValue(0);
+      vi.spyOn(trueTime, 'now').mockReturnValue(0);
 
       vi.mocked(fetchHandling.exponentialBackoff)
         .mockResolvedValueOnce(
@@ -384,7 +384,7 @@ describe.sequential('auth', () => {
     it('polls until 500, get 200 in exponentialBackoff "inner loop"', async () => {
       vi.mocked(fetchHandling.prepareFetch).mockReturnValue(prepareFetchMock);
       vi.spyOn(trueTime, 'synchronize').mockResolvedValue();
-      vi.spyOn(trueTime, 'now').mockResolvedValue(0);
+      vi.spyOn(trueTime, 'now').mockReturnValue(0);
       vi.mocked(fetchHandling.exponentialBackoff)
         .mockResolvedValueOnce(
           new Response(JSON.stringify(fixtures.deviceAuthorizationResponse)),
@@ -531,6 +531,7 @@ describe.sequential('auth', () => {
       vi.mocked(storage.loadCredentials).mockResolvedValue(fixtures.storage);
       vi.spyOn(trueTime, 'now').mockReturnValue(0); // make sure token isn't expired
       vi.mocked(fetchHandling.prepareFetch).mockReturnValue(prepareFetchMock);
+      const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
 
       await init(initConfig);
 
@@ -538,6 +539,15 @@ describe.sequential('auth', () => {
 
       expect(accessToken).toEqual(fixtures.storage.accessToken);
       expect(fetchHandling.handleTokenFetch).not.toHaveBeenCalled();
+
+      // make sure bus contains the token
+      expect(dispatchSpy).toHaveBeenCalledWith({
+        detail: {
+          payload: fixtures.storage.accessToken,
+          type: 'CredentialsUpdatedMessage',
+        },
+        type: 'authEventBus',
+      });
     });
 
     it('refresh an expired token and return it', async () => {
