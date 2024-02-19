@@ -142,7 +142,7 @@ class EventSessionDB {
 
         request.onsuccess = () => {
           if (request.result) {
-            resolve(request.result);
+            resolve(request.result as MaybeEvent<P>);
           } else {
             resolve(undefined);
           }
