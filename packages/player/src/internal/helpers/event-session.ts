@@ -1,42 +1,77 @@
+type MaybeEvent<P> =
+  | {
+      name: string;
+      payload: P;
+      streamingSessionId: string;
+    }
+  | undefined;
+
 class EventSessionDB {
   // @ts-expect-error - Assigned.
   #db: IDBDatabase;
+  #openingDatabase: Promise<void> | undefined;
 
   constructor() {
-    this.#removeOldDatabase();
+    this.#createNewDatabase().catch(console.error);
+  }
 
-    const uuid = crypto.randomUUID();
-    const name = 'streaming-sessions-' + uuid;
-    const openRequest = indexedDB.open(name, 1);
+  async #createNewDatabase() {
+    this.#openingDatabase = this.#init().then(() => {
+      this.#openingDatabase = undefined;
+    });
 
-    openRequest.onupgradeneeded = () => {
-      this.#db = openRequest.result;
+    return this.#openingDatabase;
+  }
 
-      if (!this.#db.objectStoreNames.contains('events')) {
-        const objectStore = this.#db.createObjectStore('events', {
-          keyPath: 'id',
-        });
-        objectStore.createIndex('streamingSessionId', 'streamingSessionId');
-      }
-    };
-
-    openRequest.onsuccess = () => {
-      this.#db = openRequest.result;
-      localStorage.setItem('ssuid', uuid);
-    };
+  async #ensureDatabase() {
+    if (this.#openingDatabase) {
+      await this.#openingDatabase;
+    } else {
+      await this.#createNewDatabase();
+    }
   }
 
   async #generateCompositeKey(streamingSessionId: string, eventName: string) {
     const msgUint8 = new TextEncoder().encode(
       `${streamingSessionId}-${eventName}`,
-    ); // encode as (utf-8) Uint8Array
-    const hashBuffer = await crypto.subtle.digest('SHA-1', msgUint8); // hash the message
-    const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+    );
+    const hashBuffer = await crypto.subtle.digest('SHA-1', msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray
       .map(b => b.toString(16).padStart(2, '0'))
-      .join(''); // convert bytes to hex string
+      .join('');
 
     return hashHex;
+  }
+
+  async #init() {
+    return new Promise<void>((resolve, reject) => {
+      this.#removeOldDatabase();
+
+      const uuid = crypto.randomUUID();
+      const name = 'streaming-sessions-' + uuid;
+      const request = indexedDB.open(name, 1);
+
+      request.onupgradeneeded = () => {
+        this.#db = request.result;
+
+        if (!this.#db.objectStoreNames.contains('events')) {
+          const objectStore = this.#db.createObjectStore('events', {
+            keyPath: 'id',
+          });
+          objectStore.createIndex('streamingSessionId', 'streamingSessionId');
+        }
+      };
+
+      request.onsuccess = () => {
+        this.#db = request.result;
+        localStorage.setItem('ssuid', uuid);
+
+        resolve();
+      };
+
+      request.onerror = () => reject(request.error);
+    });
   }
 
   #removeOldDatabase() {
@@ -47,59 +82,43 @@ class EventSessionDB {
     }
   }
 
-  async clean({ streamingSessionId }: { streamingSessionId: string }) {
-    console.log('clean out ' + streamingSessionId);
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.#db.transaction(['events'], 'readwrite');
-      const store = transaction.objectStore('events');
-      const index = store.index('streamingSessionId');
-      const request = index.openCursor(IDBKeyRange.only(streamingSessionId));
-
-      request.onsuccess = () => {
-        const cursor = request.result;
-        if (cursor) {
-          store.delete(cursor.primaryKey);
-          cursor.continue();
-        } else {
-          resolve('Events deleted successfully.');
-        }
-      };
-
-      request.onerror = () => {
-        console.error('Error in cleaning events:');
-        reject(request.error);
-      };
-    });
-  }
-
   async delete({
     name,
     streamingSessionId,
   }: {
     name: string;
     streamingSessionId: string;
-  }) {
+  }): Promise<void> {
     const compositeKey = await this.#generateCompositeKey(
       streamingSessionId,
       name,
     );
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.#db.transaction(['events'], 'readwrite');
-      const store = transaction.objectStore('events');
+    return new Promise<void>((resolve, reject) => {
+      try {
+        const transaction = this.#db.transaction(['events'], 'readwrite');
+        const store = transaction.objectStore('events');
+        const request = store.delete(compositeKey);
 
-      // Use the delete method with the composite key to delete the record
-      const request = store.delete(compositeKey);
+        request.onsuccess = () => resolve();
 
-      request.onsuccess = () => {
-        resolve('Event deleted successfully.');
-      };
-
-      request.onerror = () => {
-        console.error('Error in deleting event:');
-        reject(request.error);
-      };
+        request.onerror = () => {
+          throw request.error;
+        };
+      } catch (error) {
+        reject(error);
+      }
+    }).catch(async error => {
+      if (
+        error instanceof DOMException &&
+        error.message.includes('The database connection is closing')
+      ) {
+        await this.#ensureDatabase();
+        return this.delete({
+          name,
+          streamingSessionId,
+        });
+      }
     });
   }
 
@@ -109,36 +128,44 @@ class EventSessionDB {
   }: {
     name: string;
     streamingSessionId: string;
-  }): Promise<
-    | {
-        name: string;
-        payload: P;
-        streamingSessionId: string;
-      }
-    | undefined
-  > {
+  }): Promise<MaybeEvent<P>> {
     const compositeKey = await this.#generateCompositeKey(
       streamingSessionId,
       name,
     );
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.#db.transaction(['events'], 'readonly');
-      const store = transaction.objectStore('events');
-      const request = store.get(compositeKey);
+    return new Promise<MaybeEvent<P>>((resolve, reject) => {
+      try {
+        const transaction = this.#db.transaction(['events'], 'readonly');
+        const store = transaction.objectStore('events');
+        const request = store.get(compositeKey);
 
-      request.onsuccess = () => {
-        if (request.result) {
-          resolve(request.result); // Record found, resolve the promise with the record
-        } else {
-          resolve(undefined); // No record found with the composite key
-        }
-      };
+        request.onsuccess = () => {
+          if (request.result) {
+            resolve(request.result);
+          } else {
+            resolve(undefined);
+          }
+        };
 
-      request.onerror = () => {
-        console.error('Error in retrieving record:');
-        reject(request.error);
-      };
+        request.onerror = () => {
+          throw request.error;
+        };
+      } catch (error) {
+        reject(error);
+      }
+    }).catch(async error => {
+      if (
+        error instanceof DOMException &&
+        error.message.includes('The database connection is closing')
+      ) {
+        await this.#ensureDatabase();
+
+        return this.get<P>({
+          name,
+          streamingSessionId,
+        });
+      }
     });
   }
 
@@ -147,23 +174,38 @@ class EventSessionDB {
     name: string;
     payload: unknown;
     streamingSessionId: string;
-  }) {
+  }): Promise<void> {
     const compositeKey = await this.#generateCompositeKey(
       value.streamingSessionId,
       value.name,
     );
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.#db.transaction(['events'], 'readwrite');
-      const store = transaction.objectStore('events');
+    return new Promise<void>((resolve, reject) => {
+      try {
+        const transaction = this.#db.transaction(['events'], 'readwrite');
+        const store = transaction.objectStore('events');
 
-      value.id = compositeKey;
+        value.id = compositeKey;
 
-      const request = store.put(value);
+        const request = store.put(value);
 
-      request.onsuccess = event => resolve(event);
+        request.onsuccess = () => resolve();
 
-      request.onerror = event => reject(event);
+        request.onerror = () => {
+          throw request.error;
+        };
+      } catch (error) {
+        reject(error);
+      }
+    }).catch(async error => {
+      if (
+        error instanceof DOMException &&
+        error.message.includes('The database connection is closing')
+      ) {
+        await this.#ensureDatabase();
+
+        return this.put(value);
+      }
     });
   }
 }
