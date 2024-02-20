@@ -2,35 +2,108 @@
 
 import { TrueTime } from '.';
 
-vi.useFakeTimers();
+const DAYS_30 = 2_592_000_000;
+const MINUTES_18 = 1_080_000;
 
 describe('TrueTime', () => {
   describe('tidal true time', () => {
     const trueTime = new TrueTime('https://api.tidal.com/v1/ping');
 
-    beforeAll(async () => {
-      await trueTime.synchronize();
+    afterEach(() => {
+      vi.restoreAllMocks();
+      vi.clearAllTimers();
+    });
+
+    describe('synchronize', () => {
+      it('re-syncs time with server if it has not ben done for 1M ms', async () => {
+        const _trueTime = new TrueTime('https://api.tidal.com/v1/ping');
+
+        await _trueTime.synchronize();
+
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date(Date.now() + MINUTES_18));
+
+        const spy = vi.spyOn(_trueTime, 'setServerTime');
+
+        await _trueTime.synchronize();
+
+        expect(spy).toBeCalled();
+      });
+    });
+
+    describe('driftDiff', () => {
+      it('returns the drift diff', () => {
+        const _trueTime = new TrueTime('https://api.tidal.com/v1/ping');
+        const diff = _trueTime.driftDiff();
+
+        expect(diff).toBeLessThan(1);
+      });
+
+      it('returns the current drift when performance.now() is out of sync', () => {
+        const oldTrueTime = new TrueTime('https://api.tidal.com/v1/ping');
+
+        vi.spyOn(oldTrueTime, 'timeOrigin').mockReturnValue(
+          Date.now() - DAYS_30 - performance.now(),
+        );
+
+        // eslint-disable-next-line vitest/valid-expect
+        expect(oldTrueTime.driftDiff()).to.be.closeTo(DAYS_30, 1000);
+      });
+    });
+
+    describe('currentDrift', () => {
+      it('returns the current drift when Date.now() is out of sync', () => {
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date(Date.now() - DAYS_30));
+
+        // eslint-disable-next-line vitest/valid-expect
+        expect(trueTime.currentDrift()).to.be.closeTo(DAYS_30, 1000);
+      });
+
+      it('returns the current drift when performance.now() is out of sync', () => {
+        const oldTrueTime = new TrueTime('https://api.tidal.com/v1/ping');
+
+        vi.spyOn(oldTrueTime, 'timeOrigin').mockReturnValue(
+          Date.now() - DAYS_30 - performance.now(),
+        );
+
+        // eslint-disable-next-line vitest/valid-expect
+        expect(oldTrueTime.currentDrift()).to.be.closeTo(DAYS_30, 1000);
+      });
     });
 
     describe('now', () => {
-      it('returns the Date.now() value adjusted to server time', () => {
-        const thirtyDays = 2_592_000_000;
+      it('returns a valid timestamp when client clock is many days behind', async () => {
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date(Date.now() - DAYS_30));
 
-        vi.setSystemTime(new Date(Date.now() - thirtyDays));
+        await trueTime.synchronize();
 
-        // Assert that TrueTime has adjusted
-        expect(trueTime.now()).not.toEqual(Date.now());
-
-        const diff = Math.abs(trueTime.now() - Date.now());
-
-        // Check the diff and allow for 100 ms offset due to test timings.
-        // Chai style assertion that works, but is unexpected:
         // eslint-disable-next-line vitest/valid-expect
-        expect(diff).to.be.closeTo(thirtyDays, 1000);
+        expect(trueTime.now()).to.be.closeTo(Date.now(), 1000);
+      });
+
+      it('returns a valid timestamp when performance timeOrigin is many days behind', async () => {
+        vi.clearAllTimers();
+
+        const oldTrueTime = new TrueTime('https://api.tidal.com/v1/ping');
+
+        vi.spyOn(oldTrueTime, 'timeOrigin').mockReturnValue(
+          Date.now() - DAYS_30 - performance.now(),
+        );
+
+        await oldTrueTime.setServerTime();
+
+        // eslint-disable-next-line vitest/valid-expect
+        expect(oldTrueTime.now()).to.be.closeTo(Date.now(), 1000);
       });
     });
 
     describe('timestamp', () => {
+      beforeAll(async () => {
+        await trueTime.synchronize();
+      });
+
       test('returns adjusted time at mark', () => {
         performance.mark('before time travel');
 

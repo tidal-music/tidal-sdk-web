@@ -1,5 +1,7 @@
+/* eslint-disable no-restricted-syntax */
 export class TrueTime {
   #clientStartTime: number;
+  #initialDrift: number;
 
   #serverTime?: number;
 
@@ -10,7 +12,19 @@ export class TrueTime {
   constructor(url: string) {
     this.#url = new URL(url);
     this.#clientStartTime = performance.now();
+    this.#initialDrift = Math.abs(
+      Date.now() - (this.timeOrigin() + this.#clientStartTime),
+    );
   }
+
+  currentDrift() {
+    return Math.abs(Date.now() - (this.timeOrigin() + performance.now()));
+  }
+
+  driftDiff() {
+    return Math.abs(this.#initialDrift - this.currentDrift());
+  }
+
   now(highResTimeStamp: DOMHighResTimeStamp = performance.now()): number {
     if (!this.#serverTime || !this.#clientStartTime) {
       throw new ReferenceError(
@@ -26,18 +40,7 @@ export class TrueTime {
     );
   }
 
-  /**
-   * Use this method to synchronize time with the server.
-   *
-   * @param url - server url
-   */
-  async synchronize() {
-    // Synchronize at max once every 1 000 000 miliseconds
-    // eslint-disable-next-line no-restricted-syntax
-    if (this.#synced && Math.abs(this.#synced - Date.now()) < 1_000_000) {
-      return;
-    }
-
+  async setServerTime() {
     try {
       const response = await fetch(this.#url);
 
@@ -49,6 +52,30 @@ export class TrueTime {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  /**
+   * Use this method to synchronize time with the server.
+   *
+   * @param url - server url
+   */
+  async synchronize() {
+    // Synchronize at max once every 1 000 000 miliseconds
+    // eslint-disable-next-line no-restricted-syntax
+    if (
+      (this.#synced && Math.abs(this.#synced - Date.now()) < 1_000_000) ||
+      (this.#synced &&
+        Math.abs(this.#initialDrift - this.currentDrift()) < 1_000)
+    ) {
+      return;
+    }
+
+    return this.setServerTime();
+  }
+
+  // Just exported to be able to mock from test.
+  timeOrigin() {
+    return performance.timeOrigin;
   }
 
   timestamp(markName: string, detail?: string): number | undefined {
