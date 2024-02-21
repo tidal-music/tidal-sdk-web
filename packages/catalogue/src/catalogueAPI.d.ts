@@ -64,6 +64,13 @@ export interface paths {
      */
     get: operations["getArtist"];
   };
+  "/artists/{artistId}/tracks": {
+    /**
+     * Get tracks by artist
+     * @description Retrieve a list of tracks made by the specified artist
+     */
+    get: operations["getArtistTracks"];
+  };
   "/artists/{artistId}/similar": {
     /**
      * Get similar artists for the given artist
@@ -401,6 +408,11 @@ export interface components {
     "Artist Resource Aware Response": {
       resource: components["schemas"]["Artist"];
     };
+    "Multi Status Pagination Aware Tracks Response": {
+      /** @description List of tracks with relevant statuses and execution comment */
+      data?: components["schemas"]["Multi-Status Response Data:Track"][];
+      metadata: components["schemas"]["Pagination-Aware Response Metadata"];
+    };
     "Pagination Aware Similar Artists Response": {
       /** @description List of artists */
       data?: components["schemas"]["Resource-Aware Item:Sole Id Artist"][];
@@ -620,11 +632,6 @@ export interface components {
       data?: components["schemas"]["Multi-Status Response Data:Album"][];
       metadata: components["schemas"]["Multi-Status Response Metadata"];
     };
-    /** @description Map of album-related properties. All properties are distributed across namespaces that acts as a map keys. Each namespace consists of list of related properties. The fact of the presence of a particular property effectively means that an item has this characteristic. */
-    "Album Properties": {
-      /** @example explicit */
-      content?: "explicit"[];
-    };
     /** @description Map of track-related properties. All properties are distributed across namespaces that acts as a map keys. Each namespace consists of list of related properties. The fact of the presence of a particular property effectively means that an item has this characteristic. */
     "Track Properties": {
       /** @example explicit */
@@ -634,6 +641,11 @@ export interface components {
     "Video Properties": {
       /** @example live-stream */
       "video-type"?: "live-stream"[];
+      /** @example explicit */
+      content?: "explicit"[];
+    };
+    /** @description Map of album-related properties. All properties are distributed across namespaces that acts as a map keys. Each namespace consists of list of related properties. The fact of the presence of a particular property effectively means that an item has this characteristic. */
+    "Album Properties": {
       /** @example explicit */
       content?: "explicit"[];
     };
@@ -1883,6 +1895,16 @@ export interface operations {
          * @example US
          */
         countryCode: string;
+        /**
+         * @description Pagination offset (in number of items)
+         * @example 0
+         */
+        offset?: number;
+        /**
+         * @description Page size
+         * @example 10
+         */
+        limit?: number;
       };
     };
     requestBody?: {
@@ -2365,6 +2387,241 @@ export interface operations {
         };
         content: {
           "application/vnd.tidal.v1+json": components["schemas"]["Artist Resource Aware Response"];
+        };
+      };
+      /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+      400: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.tidal.v1+json": components["schemas"]["Errors Response"];
+        };
+      };
+      /** @description Resource not found. The requested resource is not found. */
+      404: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.tidal.v1+json": components["schemas"]["Errors Response"];
+        };
+      };
+      /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+      405: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.tidal.v1+json": components["schemas"]["Errors Response"];
+        };
+      };
+      /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+      406: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.tidal.v1+json": components["schemas"]["Errors Response"];
+        };
+      };
+      /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+      415: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.tidal.v1+json": components["schemas"]["Errors Response"];
+        };
+      };
+      /** @description Internal Server Error. Something went wrong on the server party. */
+      500: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.tidal.v1+json": components["schemas"]["Errors Response"];
+        };
+      };
+    };
+  };
+  /**
+   * Get tracks by artist
+   * @description Retrieve a list of tracks made by the specified artist
+   */
+  getArtistTracks: {
+    parameters: {
+      query: {
+        /**
+         * @description ISO 3166-1 alpha-2 country code
+         * @example US
+         */
+        countryCode: string;
+        /**
+         * @description Pagination offset (in number of items)
+         * @example 0
+         */
+        offset?: number;
+        /**
+         * @description Page size
+         * @example 10
+         */
+        limit?: number;
+      };
+      path: {
+        /**
+         * @description TIDAL artist id
+         * @example 1566
+         */
+        artistId: string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/vnd.tidal.v1+json": unknown;
+      };
+    };
+    responses: {
+      /** @description Successfully executed request. */
+      207: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.tidal.v1+json": components["schemas"]["Multi Status Pagination Aware Tracks Response"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
