@@ -1,3 +1,3 @@
-# Template
+# TIDAL Catalogue
 
-This is just a template structure to build new packages from
+TODO

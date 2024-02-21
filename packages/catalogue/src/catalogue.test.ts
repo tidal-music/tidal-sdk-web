@@ -1,10 +1,10 @@
-import { helloCatalogue } from './catalogue';
+import { createCatalogueClient } from './catalogue';
 
-describe('helloCatalogue', () => {
-  it("greets with Catalogue's name", () => {
+describe('createCatalogueClient', () => {
+  it.todo("greets with Catalogue's name", () => {
     const debug = vi.fn();
     vi.stubGlobal('console', { debug });
-    helloCatalogue();
+    createCatalogueClient();
     expect(debug).toHaveBeenCalledWith('This is a hello from Catalogue');
   });
 });
