@@ -30,7 +30,7 @@
     "lint:ci": "eslint . --quiet",
     "lint:fix": "pnpm run lint --fix",
     "preview": "vite preview",
-    "generateTypes": "openapi-typescript https://developer.tidal.com/apiref/api-specifications/api-public-catalogue/tidal-catalog-openapi-3.0.json --output ./src/catalogueAPI.d.ts",
+    "generateTypes": "openapi-typescript https://developer.tidal.com/apiref/api-specifications/api-public-catalogue/tidal-catalog-openapi-3.0.json --output ./src/catalogueAPI.d.ts && echo \"/* eslint-disable */\n$(cat ./src/catalogueAPI.d.ts)\" > ./src/catalogueAPI.d.ts",
     "test": "vitest --sequence.concurrent",
     "test:coverage": "pnpm run test --coverage",
     "test:ui": "pnpm run test:coverage --ui",
