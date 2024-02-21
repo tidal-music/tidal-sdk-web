@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import { generateGUID } from './generate-guid';
 
@@ -14,7 +15,7 @@ describe('generateGUID', () => {
       throw new Error('Regex failed, cannot fulfill test.');
     }
 
-    expect(result[0]).to.equal(id);
+    expect(result[0]).toEqual(id);
   });
 
   it('generates a valid unique id using Math.random', () => {
@@ -25,6 +26,6 @@ describe('generateGUID', () => {
       throw new Error('Regex failed, cannot fulfill test.');
     }
 
-    expect(result[0]).to.equal(id);
+    expect(result[0]).toEqual(id);
   });
 });

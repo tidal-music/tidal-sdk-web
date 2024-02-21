@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import {
   activeDevicePassThroughChanged,
@@ -9,8 +10,8 @@ describe('activeDeviceDisconnected', () => {
   it('creates a CustomEvent with a predetermined name and passthrough state as boolean in detail', () => {
     const result = activeDevicePassThroughChanged(true);
 
-    expect(result instanceof CustomEvent).to.equal(true);
-    expect(result.type).to.equal(eventName);
-    expect(result.detail).to.equal(true);
+    expect(result instanceof CustomEvent).toEqual(true);
+    expect(result.type).toEqual(eventName);
+    expect(result.detail).toEqual(true);
   });
 });

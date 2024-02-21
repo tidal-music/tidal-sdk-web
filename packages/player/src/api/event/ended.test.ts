@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import { ended } from './ended';
 
@@ -11,8 +12,8 @@ describe('ended', () => {
       sourceType: '',
     });
 
-    expect(result instanceof CustomEvent).to.equal(true);
-    expect(result.type).to.equal('ended');
-    expect(result.detail.reason).to.equal('completed');
+    expect(result instanceof CustomEvent).toEqual(true);
+    expect(result.type).toEqual('ended');
+    expect(result.detail.reason).toEqual('completed');
   });
 });

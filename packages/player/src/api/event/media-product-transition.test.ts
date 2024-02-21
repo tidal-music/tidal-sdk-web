@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import type { MediaProduct, PlaybackContext } from '../interfaces';
 
@@ -28,11 +29,11 @@ describe('mediaProductTransition', () => {
     };
     const result = mediaProductTransition(mediaProduct, playbackContext);
 
-    expect(result instanceof CustomEvent).to.equal(true);
+    expect(result instanceof CustomEvent).toEqual(true);
 
-    expect(result.type).to.equal('media-product-transition');
+    expect(result.type).toEqual('media-product-transition');
 
-    expect(result.detail.mediaProduct).to.equal(mediaProduct);
-    expect(result.detail.playbackContext).to.equal(playbackContext);
+    expect(result.detail.mediaProduct).toEqual(mediaProduct);
+    expect(result.detail.playbackContext).toEqual(playbackContext);
   });
 });

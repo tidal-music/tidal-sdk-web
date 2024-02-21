@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import NativePlayer from '../../player/nativePlayer';
 import { playerState } from '../../player/state';
@@ -12,6 +13,6 @@ describe('startNativePlayer', () => {
 
     await startNativePlayer();
 
-    expect(playerState.activePlayer).to.be.instanceOf(NativePlayer);
+    expect(playerState.activePlayer).toBeInstanceOf(NativePlayer);
   });
 });

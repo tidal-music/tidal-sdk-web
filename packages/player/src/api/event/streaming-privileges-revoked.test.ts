@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import {
   eventName,
@@ -9,8 +10,8 @@ describe('streamingPrivilegesRevokedEvent', () => {
   it('creates a CustomEvent with a predetermined name and playing device name in detail', () => {
     const result = streamingPrivilegesRevokedEvent('Tesla');
 
-    expect(result instanceof CustomEvent).to.equal(true);
-    expect(result.type).to.equal(eventName);
-    expect(result.detail).to.equal('Tesla');
+    expect(result instanceof CustomEvent).toEequal(true);
+    expect(result.type).toEqual(eventName);
+    expect(result.detail).toEqual('Tesla');
   });
 });

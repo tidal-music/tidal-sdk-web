@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import type { MediaProductTransition } from '../../api/event/media-product-transition';
 import { events } from '../../event-bus';
@@ -52,8 +53,8 @@ describe('ConnectionHandler', () => {
 
     expect(
       (event as MediaProductTransition).detail.mediaProduct.productId,
-    ).to.equal('141120674');
-    expect(playbackContextTwo.playbackSessionId).to.not.equal(
+    ).toEqual('141120674');
+    expect(playbackContextTwo.playbackSessionId).not.toEqual(
       playbackContextOne.playbackSessionId,
     );
   });
@@ -99,7 +100,7 @@ describe('ConnectionHandler', () => {
     }
 
     // Assert that playback session did not renew
-    expect(playbackContextOne.playbackSessionId).to.equal(
+    expect(playbackContextOne.playbackSessionId).toEqual(
       playbackContextTwo.playbackSessionId,
     );
   });

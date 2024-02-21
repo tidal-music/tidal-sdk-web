@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import * as Config from '../../config';
 
@@ -8,6 +9,6 @@ describe('setClientPlatform handler', () => {
   it('sets the client token in config', () => {
     setClientPlatform('tomte');
 
-    expect(Config.get('clientPlatform')).to.equal('tomte');
+    expect(Config.get('clientPlatform')).toEqual('tomte');
   });
 });

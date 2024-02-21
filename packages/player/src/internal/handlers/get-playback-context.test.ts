@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import * as Player from '../../index';
 import { waitFor } from '../../test-helpers';
@@ -9,7 +10,7 @@ describe('getPlaybackContext', () => {
   it('returns undefined if there is no active player', () => {
     const activePlaybackContext = getPlaybackContext();
 
-    expect(activePlaybackContext).to.equal(undefined);
+    expect(activePlaybackContext).toEqual(undefined);
   });
 
   it('returns the playback context', async () => {
@@ -35,6 +36,6 @@ describe('getPlaybackContext', () => {
       throw new Error('No playback context, cannot fulfill test');
     }
 
-    expect(activePlaybackContext.actualProductId).to.equal('141120674');
+    expect(activePlaybackContext.actualProductId).toEqual('141120674');
   });
 });

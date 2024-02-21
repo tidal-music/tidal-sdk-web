@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import * as Player from '../';
 import { events } from '../event-bus';
@@ -58,70 +59,70 @@ describe('findOutputType', () => {
     const label = 'Communications - Germanys Saurkraut';
     const result = findOutputType(wdMock({ label }));
 
-    expect(result).to.equal('windowsCommunication');
+    expect(result).toEqual('windowsCommunication');
   });
 
   it('recognizes Bluetooth', () => {
     const label = 'STANMORE Speaker (Bluetooth)'; // Live macos example
     const result = findOutputType(wdMock({ label }));
 
-    expect(result).to.equal('bluetooth');
+    expect(result).toEqual('bluetooth');
   });
 
   it('recognizes DisplayPort', () => {
     const label = 'DELL P2715Q (DisplayPort)';
     const result = findOutputType(wdMock({ label }));
 
-    expect(result).to.equal('displayPort');
+    expect(result).toEqual('displayPort');
   });
 
   it('recognizes Built-in', () => {
     const label = 'Högtalare i MacBook Pro (Built-in)'; // Live macos example
     const result = findOutputType(wdMock({ label }));
 
-    expect(result).to.equal('builtIn');
+    expect(result).toEqual('builtIn');
   });
 
   it('recognizes HDMI', () => {
     const label = 'Högtalare i MacBook Pro (HDMI)';
     const result = findOutputType(wdMock({ label }));
 
-    expect(result).to.equal('hdmi');
+    expect(result).toEqual('hdmi');
   });
 
   it('recognizes USB', () => {
     const label = 'Speakers (Zorloo Ztella USB Audio)'; // Live windows example
     const result = findOutputType(wdMock({ label }));
 
-    expect(result).to.equal('usb');
+    expect(result).toEqual('usb');
   });
 
   it('recognizes AirPlay', () => {
     const label = 'Kontor+ (AirPlay)';
     const result = findOutputType(wdMock({ label }));
 
-    expect(result).to.equal('airplay');
+    expect(result).toEqual('airplay');
   });
 
   it('recognizes AirPlay from native player', () => {
     const name = 'Kontor+';
     const result = findOutputType(ndMock({ name, type: 'airplay' }));
 
-    expect(result).to.equal('airplay');
+    expect(result).toEqual('airplay');
   });
 
   it('returns undefined if cannot parse', () => {
     const label = 'Sodastream';
     const result = findOutputType(wdMock({ label }));
 
-    expect(result).to.equal(undefined);
+    expect(result).toEqual(undefined);
   });
 
   it('returns undefined if type cannot be inferred', () => {
     const label = 'Sodastream (CO2 Water)';
     const result = findOutputType(wdMock({ label }));
 
-    expect(result).to.equal(undefined);
+    expect(result).toEqual(undefined);
   });
 });
 
@@ -135,11 +136,11 @@ describe('OutputDevice', () => {
       webDeviceId: '1337',
     });
 
-    expect(device.name).to.equal('Speakers in MacBook');
-    expect(device.type).to.equal('builtIn');
-    expect(device.webDeviceId).to.equal('1337');
-    expect(device.nativeDeviceId).to.equal('7331');
-    expect(device.controllableVolume).to.equal(true);
+    expect(device.name).toEqual('Speakers in MacBook');
+    expect(device.type).toEqual('builtIn');
+    expect(device.webDeviceId).toEqual('1337');
+    expect(device.nativeDeviceId).toEqual('7331');
+    expect(device.controllableVolume).toEqual(true);
   });
 
   it('correctly defaults to sane values if not provided', () => {
@@ -148,11 +149,11 @@ describe('OutputDevice', () => {
       type: 'builtIn',
     });
 
-    expect(device.name).to.equal('Speakers in MacBook');
-    expect(device.type).to.equal('builtIn');
-    expect(device.webDeviceId).to.equal(undefined);
-    expect(device.nativeDeviceId).to.equal(undefined);
-    expect(device.controllableVolume).to.equal(true);
+    expect(device.name).toEqual('Speakers in MacBook');
+    expect(device.type).toEqual('builtIn');
+    expect(device.webDeviceId).toEqual(undefined);
+    expect(device.nativeDeviceId).toEqual(undefined);
+    expect(device.controllableVolume).toEqual(true);
   });
 });
 
@@ -176,10 +177,10 @@ describe('OutputDevices', () => {
     const result = getOutputDeviceByName(devices, 'Germanys Saurkraut');
 
     if (result) {
-      expect(result.nativeDeviceId).to.equal(
+      expect(result.nativeDeviceId).toEqual(
         'native-breaky-supertrouper-booper',
       );
-      expect(result.webDeviceId).to.equal('web-breaky-supertrouper-booper');
+      expect(result.webDeviceId).toEqual('web-breaky-supertrouper-booper');
       expect(result.name).to.include('Germanys Saurkraut');
     }
   });
@@ -187,20 +188,20 @@ describe('OutputDevices', () => {
   it('getOutputDeviceByName returns undefined if no devices', () => {
     const result = getOutputDeviceByName(new Set([]), 'Germanys Saurkraut');
 
-    expect(result).to.equal(undefined);
+    expect(result).toEqual(undefined);
   });
 
   it('getOutputDeviceByName returns undefined if no device found', () => {
     const result = getOutputDeviceByName(devices, 'Kittycat');
 
-    expect(result).to.equal(undefined);
+    expect(result).toEqual(undefined);
   });
 
   it('can detect output type if web device name exposes a clue', () => {
     const before = getOutputDeviceByName(devices, 'My Cool Speaker');
 
     if (before) {
-      expect(before.type).to.equal('bluetooth');
+      expect(before.type).toEqual('bluetooth');
     }
   });
 
@@ -208,7 +209,7 @@ describe('OutputDevices', () => {
     const before = getOutputDeviceByName(devices, 'Germanys Saurkraut');
 
     if (before) {
-      expect(before.type).to.equal('mqa');
+      expect(before.type).toEqual('mqa');
     }
   });
 
@@ -216,22 +217,22 @@ describe('OutputDevices', () => {
   it.skip('can change device mode', () => {
     const outputDevices = new OutputDevices();
 
-    expect(outputDevices.deviceMode).to.equal('shared');
+    expect(outputDevices.deviceMode).toEqual('shared');
 
     outputDevices.deviceMode = 'exclusive';
 
-    expect(outputDevices.deviceMode).to.equal('exclusive');
+    expect(outputDevices.deviceMode).toEqual('exclusive');
   });
 
   // TODO: Add active device and boot player to fix test.
   it.skip('can change pass through mode', () => {
     const outputDevices = new OutputDevices();
 
-    expect(outputDevices.passThrough).to.equal(undefined);
+    expect(outputDevices.passThrough).toEqual(undefined);
 
     outputDevices.passThrough = true;
 
-    expect(outputDevices.passThrough).to.equal(true);
+    expect(outputDevices.passThrough).toEqual(true);
   });
 
   // eslint-disable-next-line vitest/expect-expect

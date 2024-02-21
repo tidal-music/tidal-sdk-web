@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import * as Player from '../../index';
 import { outputDevices } from '../../internal/output-devices';
@@ -25,6 +26,6 @@ describe('getOutputDevices', () => {
   it('returns the output devices from the OutputDevices class', async () => {
     const devices = await getOutputDevices();
 
-    expect(devices).to.deep.equal([...outputDevices.outputDevices]);
+    expect(devices).toContainEqual([...outputDevices.outputDevices]);
   });
 });

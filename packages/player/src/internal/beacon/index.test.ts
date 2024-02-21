@@ -1,5 +1,6 @@
-import { expect } from 'chai';
 import * as sinon from 'sinon';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import * as Player from '../../index';
 import { credentialsProvider } from '../../test-helpers';
@@ -45,13 +46,13 @@ describe('commit', () => {
       );
     }
 
-    expect(message.accessToken).to.not.be.undefined;
-    expect(message.clientId).to.not.be.undefined;
+    expect(message.accessToken).toBeDefined();
+    expect(message.clientId).toBeDefined();
   });
 
   it('calls postMessage on worker', () => {
     commit(worker, { events: [mockedPromisedEvent], type: 'play_log' });
 
-    expect(worker.postMessage.called).to.equal(true);
+    expect(worker.postMessage.called).toEqual(true);
   });
 });

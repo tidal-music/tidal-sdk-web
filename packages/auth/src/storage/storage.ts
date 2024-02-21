@@ -31,6 +31,8 @@ const handleNewCryptoKey = async ({
     database.setItem(`${storageKey}Salt`, salt);
     database.setItem(`${storageKey}Key`, wrappedKey);
   } catch (error) {
+    console.error(error);
+
     throw new TidalError(authErrorCodeMap.storageError, {
       cause: error,
     });
@@ -65,9 +67,22 @@ export const loadCredentials = async (credentialsStorageKey: string) => {
         encryptedCredentials,
         key: secretKey,
       });
+
+      console.log('loadCredentials', {
+        counter,
+        credentials,
+        decodeCredentials: decodeCredentials(credentials),
+        encryptedCredentials,
+        key: secretKey,
+      });
+
       return JSON.parse(decodeCredentials(credentials)) as UserCredentials;
     } catch (error) {
-      throw new TidalError(authErrorCodeMap.storageError);
+      console.error(error);
+
+      throw new TidalError(authErrorCodeMap.storageError, {
+        cause: error,
+      });
     }
   } else {
     return handleNewCryptoKey({
@@ -90,7 +105,14 @@ export const saveCredentialsToStorage = async (
   );
 
   if (!wrappedKey || !counter || !salt) {
-    throw new TidalError(authErrorCodeMap.storageError);
+    const error = new Error(
+      'Missing: ' + [wrappedKey, counter, salt].filter(x => !x).join(', '),
+    );
+
+    console.error(error);
+    throw new TidalError(authErrorCodeMap.storageError, {
+      cause: error,
+    });
   }
   try {
     const secretKey = await unwrapCryptoKey({
@@ -110,6 +132,8 @@ export const saveCredentialsToStorage = async (
       encryptedCredentials,
     );
   } catch (error) {
+    console.error(error);
+
     throw new TidalError(authErrorCodeMap.storageError, {
       cause: error,
     });

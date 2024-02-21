@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import * as Player from '../../index';
 import { waitFor } from '../../test-helpers';
@@ -9,7 +10,7 @@ describe('getPlaybackState', () => {
   it('returns IDLE if there is no active player', () => {
     const activeState = getPlaybackState();
 
-    expect(activeState).to.equal('IDLE');
+    expect(activeState).toEqual('IDLE');
   });
 
   it('return NOT_PLAYING when a media product is loaded', async () => {
@@ -25,7 +26,7 @@ describe('getPlaybackState', () => {
       0,
     );
 
-    expect(getPlaybackState()).to.equal('NOT_PLAYING');
+    expect(getPlaybackState()).toEqual('NOT_PLAYING');
   });
 
   it('return PLAYING when a media product is playing', async () => {
@@ -43,12 +44,12 @@ describe('getPlaybackState', () => {
 
     await waitFor(2000);
 
-    expect(getPlaybackState()).to.equal('NOT_PLAYING');
+    expect(getPlaybackState()).toEqual('NOT_PLAYING');
 
     await Player.play();
 
     await waitFor(2000);
 
-    expect(getPlaybackState()).to.equal('PLAYING');
+    expect(getPlaybackState()).toEqual('PLAYING');
   });
 });

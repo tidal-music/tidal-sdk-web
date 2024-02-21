@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import { parseManifest } from './manifest-parser';
 import type { PlaybackInfoTrack } from './playback-info-resolver';

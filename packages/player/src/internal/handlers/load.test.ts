@@ -1,15 +1,18 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { beforeAll, describe, expect, it } from 'vitest';
 
 import * as Player from '../../index';
 import {
-  credentialsProvider,
   getPreloadedStreamingSessionId,
+  loginUserFromEnv,
   waitFor,
 } from '../../test-helpers';
 
-Player.setCredentialsProvider(credentialsProvider);
-
 describe('load', () => {
+  beforeAll(async () => {
+    await loginUserFromEnv();
+  });
+
   it('re-uses a next for loading if it is the same media product', async () => {
     await Player.load(
       {
@@ -49,7 +52,7 @@ describe('load', () => {
       throw new Error('No playback context, cannot fulfill test');
     }
 
-    expect(playbackContext.playbackSessionId).to.equal(
+    expect(playbackContext.playbackSessionId).toEqual(
       preloadedStreamingSessionId,
     );
   });

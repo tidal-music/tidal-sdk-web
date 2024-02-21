@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import { streamingSessionStart } from './streaming-session-start';
 
@@ -17,7 +18,7 @@ describe('streamingSessionStart', () => {
       throw new Error('Event undefined');
     }
 
-    expect(before).to.not.equal(after);
-    expect(after.payload.startReason).to.equal('EXPLICIT');
+    expect(before).not.toBe(after);
+    expect(after.payload.startReason).toBe('EXPLICIT');
   });
 });

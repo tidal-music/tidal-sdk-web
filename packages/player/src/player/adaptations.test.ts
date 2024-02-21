@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
 import { trueTime } from '../internal/true-time';
@@ -16,13 +17,13 @@ describe('shakaTrackToAdaptation', () => {
     const adaptation = shakaTrackToAdaptation(shakaTrack, 0);
 
     // Mocked media element
-    expect(adaptation.assetPosition).to.equal(0);
-    expect(adaptation.bandwidth).to.equal(983528);
-    expect(adaptation.codecs).to.equal('flac');
+    expect(adaptation.assetPosition).toEqual(0);
+    expect(adaptation.bandwidth).toEqual(983528);
+    expect(adaptation.codecs).toEqual('flac');
 
     // No width and height since the asserted shaka track is a audio only.
-    expect(adaptation.videoWidth).to.equal(null);
-    expect(adaptation.videoHeight).to.equal(null);
+    expect(adaptation.videoWidth).toEqual(null);
+    expect(adaptation.videoHeight).toEqual(null);
   });
 });
 

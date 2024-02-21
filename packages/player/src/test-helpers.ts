@@ -19,31 +19,36 @@ type User = {
   userId: number;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-// @ts-expect-error Environment variable
-const user = JSON.parse(atob(process.env.TEST_USER)) as User;
-const scopes = ['r_usr', 'w_usr'];
+export async function loginUserFromEnv() {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const user = JSON.parse(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    atob(JSON.parse(import.meta.env.VITE_TEST_USER)),
+  ) as User;
+  const scopes = ['r_usr', 'w_usr'];
 
-await Auth.init({
-  clientId: user.clientId,
-  clientUniqueKey: 'FALLBACK',
-  credentialsStorageKey: 'FALLBACK',
-  scopes,
-});
-
-await Auth.setCredentials({
-  accessToken: {
+  await Auth.init({
     clientId: user.clientId,
     clientUniqueKey: 'FALLBACK',
-    expires: user.oAuthExpirationDate,
-    grantedScopes: scopes,
-    requestedScopes: scopes,
-    token: user.oAuthAccessToken ?? '',
-  },
-  refreshToken: user.oAuthRefreshToken,
-});
+    credentialsStorageKey: 'FALLBACK',
+    scopes,
+  });
 
-Player.setCredentialsProvider(Auth.credentialsProvider);
+  await Auth.setCredentials({
+    accessToken: {
+      clientId: user.clientId,
+      clientUniqueKey: 'FALLBACK',
+      expires: user.oAuthExpirationDate,
+      grantedScopes: scopes,
+      requestedScopes: scopes,
+      token: user.oAuthAccessToken ?? '',
+    },
+    refreshToken: user.oAuthRefreshToken,
+  });
+
+  Player.setCredentialsProvider(Auth.credentialsProvider);
+}
+
 export const credentialsProvider = Auth.credentialsProvider;
 
 export function waitForEvent(target: EventTarget, eventName: string) {

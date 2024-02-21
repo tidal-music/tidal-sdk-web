@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import * as Config from '../../config';
 
@@ -8,6 +9,6 @@ describe('setStreamingWifiAudioQuality', () => {
   it('sets the client token in config', () => {
     setStreamingWifiAudioQuality('HI_RES');
 
-    expect(Config.get('streamingWifiAudioQuality')).to.equal('HI_RES');
+    expect(Config.get('streamingWifiAudioQuality')).toEqual('HI_RES');
   });
 });

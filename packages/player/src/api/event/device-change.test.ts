@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import * as Player from '../../index';
 import { OutputDevice } from '../../internal/output-devices';
@@ -31,11 +32,11 @@ describe('deviceChange', () => {
     });
     const result = deviceChange([device]);
 
-    expect(result instanceof CustomEvent).to.equal(true);
-    expect(result.type).to.equal('device-change');
+    expect(result instanceof CustomEvent).toEqual(true);
+    expect(result.type).toEqual('device-change');
 
     result.detail.devices.forEach(_device => {
-      expect(_device instanceof OutputDevice).to.equal(true);
+      expect(_device instanceof OutputDevice).toEqual(true);
     });
   });
 });

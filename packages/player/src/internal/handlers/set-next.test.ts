@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import * as Player from '../../index';
 import type { MediaProduct } from '../../index';
@@ -37,7 +38,7 @@ describe('nextHandler', () => {
 
     const state = Player.getPlaybackState();
 
-    expect(state).to.equal('NOT_PLAYING');
+    expect(state).toEqual('NOT_PLAYING');
   });
 
   it('if preloading current item (repeat one), switch streaming session ids', async () => {
@@ -86,8 +87,8 @@ describe('nextHandler', () => {
       playbackSessionId: secondSessionId,
     } = playbackContextTwo;
 
-    expect(firstProductId).to.equal(secondProductId);
-    expect(firstSessionId).to.not.equal(secondSessionId);
+    expect(firstProductId).toEqual(secondProductId);
+    expect(firstSessionId).not.toEqual(secondSessionId);
   });
 
   it('repeat 1 works 3 times in a row', async () => {
@@ -131,8 +132,8 @@ describe('nextHandler', () => {
       playbackSessionId: secondSessionId,
     } = playbackContextTwo;
 
-    expect(secondProductId).to.equal(firstProductId);
-    expect(secondSessionId).to.not.equal(firstSessionId);
+    expect(secondProductId).toEqual(firstProductId);
+    expect(secondSessionId).not.toEqual(firstSessionId);
 
     await Player.setNext(testMediaProduct('3'));
 
@@ -151,9 +152,9 @@ describe('nextHandler', () => {
       playbackSessionId: thirdSessionId,
     } = playbackContextThree;
 
-    expect(thirdProductId).to.equal(firstProductId);
-    expect(thirdSessionId).to.not.equal(secondSessionId);
-    expect(thirdSessionId).to.not.equal(firstSessionId);
+    expect(thirdProductId).toEqual(firstProductId);
+    expect(thirdSessionId).not.toEqual(secondSessionId);
+    expect(thirdSessionId).not.toEqual(firstSessionId);
   });
 
   it('plays preloaded item', async () => {
@@ -192,7 +193,7 @@ describe('nextHandler', () => {
       throw new Error('No media product, cannot fulfil test');
     }
 
-    expect(mediaProduct.productId).to.equal('154872415');
+    expect(mediaProduct.productId).toEqual('154872415');
   });
 
   it('plays the last preloaded item', async () => {
@@ -240,7 +241,7 @@ describe('nextHandler', () => {
       throw new Error('No media product, cannot fulfil test');
     }
 
-    expect(mediaProduct.productId).to.equal('180319868');
+    expect(mediaProduct.productId).toEqual('180319868');
   });
 
   it('returns the same next call if next is called twice with the same media product', async () => {
@@ -272,6 +273,6 @@ describe('nextHandler', () => {
       sourceType: 'tidal-player-tests',
     });
 
-    expect(promise1).to.equal(promise2);
+    expect(promise1).toEqual(promise2);
   });
 });

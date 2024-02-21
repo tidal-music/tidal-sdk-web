@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import * as Player from '../../index';
 import { waitFor } from '../../test-helpers';
@@ -9,7 +10,7 @@ describe('getAssetPosition', () => {
   it('returns 0 if there is no active player', () => {
     const playerPosition = getAssetPosition();
 
-    expect(playerPosition).to.equal(0);
+    expect(playerPosition).toEqual(0);
   });
 
   it('return currentTime if there is a player', async () => {
@@ -29,6 +30,6 @@ describe('getAssetPosition', () => {
 
     const playerPosition = getAssetPosition();
 
-    expect(playerPosition).to.be.greaterThanOrEqual(0.5);
+    expect(playerPosition).toBeGreaterThanOrEqual(0.5);
   });
 });

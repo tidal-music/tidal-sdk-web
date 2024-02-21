@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import { drmLicenseFetch } from './drm-license-fetch';
 
@@ -17,7 +18,7 @@ describe('drmLicenseFetch', () => {
       throw new Error('Event undefined');
     }
 
-    expect(before).to.not.equal(after);
-    expect(after.payload.endReason).to.equal('ERROR');
+    expect(before).not.toEqual(after);
+    expect(after.payload.endReason).toEqual('ERROR');
   });
 });

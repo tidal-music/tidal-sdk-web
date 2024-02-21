@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import * as Player from '../../index';
 import { waitFor } from '../../test-helpers';
@@ -13,12 +14,10 @@ describe('getMediaProduct', () => {
   it('returns undefined if there is no active player', () => {
     const activeMediaProduct = getMediaProduct();
 
-    expect(activeMediaProduct).to.equal(null);
+    expect(activeMediaProduct).toEqual(null);
   });
 
   it('returns the media product', function () {
-    this.timeout(10000);
-
     const test = async () => {
       console.debug('loading');
       await Player.load(
@@ -43,7 +42,7 @@ describe('getMediaProduct', () => {
 
       console.debug({ activeMediaProduct });
 
-      expect(activeMediaProduct).to.equal({
+      expect(activeMediaProduct).toEqual({
         productId: '141120674',
         productType: 'track',
         sourceId: 'tidal-player-tests',

@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import { credentialsProvider } from '../../test-helpers';
 
@@ -23,9 +24,9 @@ describe('playbackInfoResolver', () => {
       streamingSessionId: 'tidal-player-js-test-' + Date.now(),
     });
 
-    expect(result.assetPresentation).to.equal('PREVIEW');
-    expect(result.manifestMimeType).to.not.equal(undefined);
-    expect(result.manifest).to.not.equal(undefined);
+    expect(result.assetPresentation).toEqual('PREVIEW');
+    expect(result.manifestMimeType).not.toEqual(undefined);
+    expect(result.manifest).not.toEqual(undefined);
   });
 
   it('fetches playback info if there is an accessToken defined, gets full', async () => {
@@ -50,8 +51,8 @@ describe('playbackInfoResolver', () => {
       streamingSessionId: 'tidal-player-js-test-' + Date.now(),
     });
 
-    expect(result.assetPresentation).to.equal('FULL');
-    expect(result.manifestMimeType).to.not.equal(undefined);
-    expect(result.manifest).to.not.equal(undefined);
+    expect(result.assetPresentation).toEqual('FULL');
+    expect(result.manifestMimeType).not.toEqual(undefined);
+    expect(result.manifest).not.toEqual(undefined);
   });
 });

@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import * as Config from './config';
 import { credentialsProvider, mockNativePlayer } from './test-helpers';
@@ -11,7 +12,7 @@ describe('bootstrap', () => {
   it('enables output devices if options.outputDevices is true', () => {
     Player.bootstrap({ outputDevices: true, players: [] });
 
-    expect(Config.get('outputDevicesEnabled')).to.equal(true);
+    expect(Config.get('outputDevicesEnabled')).toEqual(true);
   });
 });
 
@@ -19,7 +20,7 @@ describe('getMediaElement', () => {
   it('is null if there is no player', () => {
     const mediaElement = Player.getMediaElement();
 
-    expect(mediaElement).to.equal(null);
+    expect(mediaElement).toEqual(null);
   });
 
   it('returns the mediaElement value on shaka player', async () => {
@@ -48,7 +49,7 @@ describe('getMediaElement', () => {
 
     const mediaElement = Player.getMediaElement();
 
-    expect(mediaElement).to.be.instanceOf(HTMLMediaElement);
+    expect(mediaElement).toBeInstanceOf(HTMLMediaElement);
   });
 
   /* To enalbe this test we need another test user with HTMLMediaElement compatible streaming configuration (MP3 Preview?). */
@@ -78,7 +79,7 @@ describe('getMediaElement', () => {
 
     const mediaElement = Player.getMediaElement();
 
-    expect(mediaElement).to.be.instanceOf(HTMLMediaElement);
+    expect(mediaElement).toBeInstanceOf(HTMLMediaElement);
   });
 
   it('returns null if active player is native player', async () => {
@@ -97,6 +98,6 @@ describe('getMediaElement', () => {
 
     const mediaElement = Player.getMediaElement();
 
-    expect(mediaElement).to.equal(null);
+    expect(mediaElement).toEqual(null);
   });
 });

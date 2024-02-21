@@ -1,4 +1,5 @@
-import { expect } from 'chai';
+// eslint-disable-next-line no-restricted-imports
+import { describe, expect, it } from 'vitest';
 
 import * as Config from '../../config';
 
@@ -8,6 +9,6 @@ describe('setVolumeLevel', () => {
   it('sets desiredVolumeLevel in config', () => {
     setVolumeLevel(0.6);
 
-    expect(Config.get('desiredVolumeLevel')).to.equal(0.6);
+    expect(Config.get('desiredVolumeLevel')).toEqual(0.6);
   });
 });
