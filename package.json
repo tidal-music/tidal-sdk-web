@@ -35,7 +35,7 @@
   ],
   "pnpm": {
     "patchedDependencies": {
-      "shaka-player@4.7.4": "patches/shaka-player@4.7.4.patch"
+      "shaka-player@4.7.9": "patches/shaka-player@4.7.9.patch"
     }
   }
 }
