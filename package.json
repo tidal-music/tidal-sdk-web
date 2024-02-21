@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/tidal-sdk-web",
-  "packageManager": "pnpm@8.15.1",
+  "packageManager": "pnpm@8.15.3",
   "private": true,
   "type": "module",
   "scripts": {
@@ -17,9 +17,9 @@
   "devDependencies": {
     "eslint": "8.56.0",
     "eslint-config-tidal": "3.2.0",
-    "eslint-plugin-disable-autofix": "4.1.0",
-    "eslint-plugin-jsdoc": "48.0.6",
-    "typedoc": "0.25.2"
+    "eslint-plugin-disable-autofix": "4.2.0",
+    "eslint-plugin-jsdoc": "48.1.0",
+    "typedoc": "0.25.8"
   },
   "engines": {
     "node": ">=20.10.0",
@@ -35,7 +35,7 @@
   ],
   "pnpm": {
     "patchedDependencies": {
-      "shaka-player@4.7.4": "patches/shaka-player@4.7.4.patch"
+      "shaka-player@4.7.9": "patches/shaka-player@4.7.9.patch"
     }
   }
 }
