@@ -1,29 +1,33 @@
 import type { CredentialsProvider } from '@tidal-music/common';
-import createClient from 'openapi-fetch';
+import createClient, { type Middleware } from 'openapi-fetch';
 
 import type { paths } from './catalogueAPI';
 
-let authToken: string | undefined = undefined;
-
 /**
- * Initializes the client with the provided credentials.
+ * Create a Catalogue API client with the provided credentials.
  *
  * @param credentialsProvider The credentials provider.
  */
-export async function initCatalogueClient(
+export function createCatalogueClient(
   credentialsProvider: CredentialsProvider,
 ) {
-  const credentials = await credentialsProvider.getCredentials();
-  authToken = credentials.token;
-  //TODO: listen for changes to the token
-}
+  const authMiddleware: Middleware = {
+    async onRequest(req) {
+      const credentials = await credentialsProvider.getCredentials();
 
-export const catalogueClient = createClient<paths>({
-  baseUrl: 'https://openapi.tidal.com/',
-  headers: {
-    get Authorization() {
-      return authToken ? `Bearer ${authToken}` : undefined;
+      // add Authorization header to every request
+      req.headers.set('Authorization', `Bearer ${credentials.token}`);
+      return req;
     },
-    'Content-Type': 'application/vnd.tidal.v1+json',
-  },
-});
+  };
+
+  const catalogueClient = createClient<paths>({
+    baseUrl: 'https://openapi.tidal.com/',
+    headers: {
+      'Content-Type': 'application/vnd.tidal.v1+json',
+    },
+  });
+  catalogueClient.use(authMiddleware);
+
+  return catalogueClient;
+}

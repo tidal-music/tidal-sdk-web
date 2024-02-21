@@ -1,6 +1,6 @@
 import { credentialsProvider, init as initAuth } from '@tidal-music/auth';
 
-import { catalogueClient, initCatalogueClient } from '../dist';
+import { createCatalogueClient } from '../dist';
 
 async function runExample(clientId, clientSecret) {
   await initAuth({
@@ -9,8 +9,9 @@ async function runExample(clientId, clientSecret) {
     credentialsStorageKey: 'clientCredentials',
   });
 
-  await initCatalogueClient(credentialsProvider);
+  const catalogueClient = createCatalogueClient(credentialsProvider);
 
+  // Example of an API request
   const { data, error } = await catalogueClient.GET('/albums/{id}', {
     params: {
       path: { id: '251380836' },
