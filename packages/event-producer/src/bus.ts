@@ -26,3 +26,6 @@ export const postMessage = (message: OutageStartError | TidalMessage) => {
   });
   globalThis.dispatchEvent(event);
 };
+
+// eslint-disable-next-line no-console
+console.log('bussin');
