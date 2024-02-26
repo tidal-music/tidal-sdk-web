@@ -28,4 +28,4 @@ export const postMessage = (message: OutageStartError | TidalMessage) => {
 };
 
 // eslint-disable-next-line no-console
-console.log('the rizz');
+console.log('the rizzzler');
