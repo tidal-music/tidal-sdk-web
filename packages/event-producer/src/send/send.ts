@@ -23,6 +23,7 @@ type CreatePayloadParams = {
  */
 const createPayload = ({ event, id, ts }: CreatePayloadParams): string => {
   const { consentCategory, ...rawEventWithoutConsentCategory } = event;
+  console.error('some error');
 
   return JSON.stringify({ ...rawEventWithoutConsentCategory, ts, uuid: id });
 };
