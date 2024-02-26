@@ -30,32 +30,35 @@ jobs:
         env:
           TEST_USER: ${{ steps.json.outputs.encoded }}
       - name: Report Auth Coverage
-        if: always()
+        if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Auth'
-          working-directory: './packages/auth'
+          working-directory: 'packages/auth'
       - name: Report Common Coverage
-        if: always()
+        if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Common'
-          working-directory: './packages/common'
+          working-directory: 'packages/common'
       - name: Report Event-Producer Coverage
-        if: always()
+        if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Event Producer'
-          working-directory: './packages/event-producer'
+          json-summary-path: 'packages/event-producer/coverage/coverage-final.json'
+          json-final-path: 'packages/event-producer/coverage/coverage-summary.json'
+          working-directory: 'packages/event-producer'
+          vite-config-path: 'packages/event-producer/vite.config.ts'
       - name: Report Player-Web-Components Coverage
-        if: always()
+        if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Player Web Components'
-          working-directory: './packages/player-web-components'
+          working-directory: 'packages/player-web-components'
       - name: Report True-Time Coverage
-        if: always()
+        if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'True Time'
-          working-directory: './packages/true-time'
+          working-directory: 'packages/true-time'
