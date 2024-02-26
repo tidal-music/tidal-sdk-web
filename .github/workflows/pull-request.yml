@@ -41,6 +41,8 @@ jobs:
 
   trigger-unit-test:
     name: Run Unit Tests
+    permissions:
+      pull-requests: write
     needs: [ check-changes ]
     if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
     uses: ./.github/workflows/unit-test.yml
