@@ -16,10 +16,10 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v42
         with:
-          files: packages/**/package.json
+          files_yaml: packages/**
       - name: Build matrix input
         id: build-matrix
-        if: ${{ steps.changed-files.outputs.all_changed_files }} != '[]'
+        if: steps.changed-files-yaml.outputs.test_any_changed == 'true'
         run: |
           set +e
           modules_list=()
