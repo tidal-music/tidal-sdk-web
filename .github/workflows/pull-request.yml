@@ -11,7 +11,5 @@ jobs:
 
   trigger-unit-test:
     name: Run Unit Tests
-    permissions:
-      pull-requests: write
     uses: ./.github/workflows/unit-test.yml
     secrets: inherit
