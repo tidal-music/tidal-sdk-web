@@ -77,10 +77,7 @@ jobs:
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Event Producer'
-          json-summary-path: 'packages/event-producer/coverage/coverage-final.json'
-          json-final-path: 'packages/event-producer/coverage/coverage-summary.json'
           working-directory: 'packages/event-producer'
-          vite-config-path: 'packages/event-producer/vite.config.ts'
       - name: Report Player-Web-Components Coverage
         if: steps.changed-files.outputs.player-web-components_all_changed_files
         uses: davelosert/vitest-coverage-report-action@v2
