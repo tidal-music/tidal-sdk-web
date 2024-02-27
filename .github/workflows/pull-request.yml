@@ -1,9 +1,6 @@
 name: Pull Request
 
 on:
-  push:
-    # trigger ci by creating a branch starting with ci-test/
-    branches: 'ci-test/*'
   pull_request:
     branches: '*'
 
