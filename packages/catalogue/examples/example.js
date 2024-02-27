@@ -10,26 +10,82 @@ async function runExample(clientId, clientSecret) {
   });
 
   const catalogueClient = createCatalogueClient(credentialsProvider);
-
-  // Example of an API request
-  const { data, error } = await catalogueClient.GET('/albums/{id}', {
-    params: {
-      path: { id: '251380836' },
-      query: { countryCode: 'no' }, // would be nice with a default value?
-    },
-  });
-
   const results = document.getElementById('results');
 
-  if (error) {
-    error.errors.forEach(
-      err => (results.innerHTML += `<li>${err.category}</li>`),
-    );
-  } else {
-    for (const [key, value] of Object.entries(data.resource)) {
-      results.innerHTML += `<li><b>${key}:</b>${JSON.stringify(value)}</li>`;
+  /**
+   * Retrieves an album by its ID.
+   *
+   * @param {string} id string The ID of the album.
+   */
+  async function getAlbum(id) {
+    const { data, error } = await catalogueClient.GET('/albums/{id}', {
+      params: {
+        path: { id },
+        query: { countryCode: 'no' }, // would be nice with a default value?
+      },
+    });
+
+    if (error) {
+      error.errors.forEach(
+        err => (results.innerHTML += `<li>${err.category}</li>`),
+      );
+    } else {
+      for (const [key, value] of Object.entries(data.resource)) {
+        results.innerHTML += `<li><b>${key}:</b>${JSON.stringify(value)}</li>`;
+      }
     }
   }
+  // Example of an API request
+  await getAlbum('251380836');
+
+  /**
+   * Retrieves the tracks of an album by its ID.
+   *
+   * @param {string} albumId The ID of the album.
+   */
+  async function getAlbumTracks(albumId) {
+    const { data, error } = await catalogueClient.GET(
+      '/albums/{albumId}/items',
+      {
+        params: {
+          path: { albumId },
+          query: { countryCode: 'no' },
+        },
+      },
+    );
+
+    if (error) {
+      console.error(error);
+    } else {
+      // eslint-disable-next-line no-console
+      console.log(data);
+    }
+  }
+  // Example of another API request
+  await getAlbumTracks('251380836');
+
+  /**
+   * Retrieves an artist by its ID.
+   *
+   * @param {string} id The ID of the artist.
+   */
+  async function getArtist(id) {
+    const { data, error } = await catalogueClient.GET('/artists/{id}', {
+      params: {
+        path: { id },
+        query: { countryCode: 'no' },
+      },
+    });
+
+    if (error) {
+      console.error(error);
+    } else {
+      // eslint-disable-next-line no-console
+      console.log(data.resource.name);
+    }
+  }
+  // Example failing API request
+  await getArtist('1');
 }
 
 const authenticateHandler = async (event, form) => {
