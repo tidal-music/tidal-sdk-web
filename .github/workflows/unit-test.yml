@@ -61,19 +61,19 @@ jobs:
         env:
           TEST_USER: ${{ steps.json.outputs.encoded }}
       - name: Report Auth Coverage
-        if: ${{ ${input.modules}.changed-files.outputs.test_all_changed_files }}
+        if: steps.changed-files.outputs.auth_all_changed_files
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Auth'
           working-directory: 'packages/auth'
       - name: Report Common Coverage
-        if: steps.changed-files.outputs.auth_any_changed == 'true'
+        if: steps.changed-files.outputs.common_all_changed_files
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Common'
           working-directory: 'packages/common'
       - name: Report Event-Producer Coverage
-        if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
+        if: steps.changed-files.outputs.event-producer_all_changed_files
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Event Producer'
@@ -82,13 +82,19 @@ jobs:
           working-directory: 'packages/event-producer'
           vite-config-path: 'packages/event-producer/vite.config.ts'
       - name: Report Player-Web-Components Coverage
-        if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
+        if: steps.changed-files.outputs.player-web-components_all_changed_files
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Player Web Components'
           working-directory: 'packages/player-web-components'
+      - name: Report Template Coverage
+        if: steps.changed-files.outputs.template_all_changed_files
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: 'Template'
+          working-directory: 'packages/template'
       - name: Report True-Time Coverage
-        if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
+        if: steps.changed-files.outputs.true-time_all_changed_files
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'True Time'
