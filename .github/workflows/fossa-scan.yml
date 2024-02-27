@@ -8,16 +8,16 @@ jobs:
         runs-on: ubuntu-latest
         steps:
           - name: "Checkout Code"
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
 
           - name: "Run FOSSA Scan"
-            uses: fossas/fossa-action@main
+            uses: fossas/fossa-action@v1.3.3
             with:
               api-key: ${{secrets.FOSSAAPIKEY}}
 
           - name: "FOSSA Tests"
             id: fossa-tests
-            uses: fossas/fossa-action@main
+            uses: fossas/fossa-action@v1.3.3
             with:
               api-key: ${{secrets.FOSSAAPIKEY}}
               run-tests: true
