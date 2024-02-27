@@ -55,7 +55,5 @@ jobs:
       pull-requests: write
     needs: [ check-changes ]
     if: needs.changed-files.outputs.all_changed_files == 'true'
-    with:
-      modules: ${{ needs.check-changes.outputs.modules }}
     uses: ./.github/workflows/unit-test.yml
     secrets: inherit
