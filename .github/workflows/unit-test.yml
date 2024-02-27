@@ -61,13 +61,13 @@ jobs:
         env:
           TEST_USER: ${{ steps.json.outputs.encoded }}
       - name: Report Auth Coverage
-        if: steps.changed-files.outputs.auth_all_changed_files
+        if: steps.changed-files.outputs.auth_any_changed
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Auth'
           working-directory: 'packages/auth'
       - name: Report Common Coverage
-        if: steps.changed-files.outputs.common_all_changed_files
+        if: steps.changed-files.outputs.common_any_changed
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Common'
@@ -79,19 +79,19 @@ jobs:
           name: 'Event Producer'
           working-directory: 'packages/event-producer'
       - name: Report Player-Web-Components Coverage
-        if: steps.changed-files.outputs.player-web-components_all_changed_files
+        if: steps.changed-files.outputs.player-web-components_any_changed
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Player Web Components'
           working-directory: 'packages/player-web-components'
       - name: Report Template Coverage
-        if: steps.changed-files.outputs.template_all_changed_files
+        if: steps.changed-files.outputs.template_any_changed
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Template'
           working-directory: 'packages/template'
       - name: Report True-Time Coverage
-        if: steps.changed-files.outputs.true-time_all_changed_files
+        if: steps.changed-files.outputs.true-time_any_changed
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'True Time'
