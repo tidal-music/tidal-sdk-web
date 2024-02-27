@@ -38,7 +38,7 @@ jobs:
         # NOTE: Ensure all outputs are prefixed by the same key used above e.g. `test_(...)` | `doc_(...)` | `src_(...)` when trying to access the `any_changed` output.
         if: steps.changed-files.outputs.any_changed == 'true'
         env:
-          TEST_ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          TEST_ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.any_changed_files }}
         run: |
           echo "One or more test file(s) has changed."
           echo "List all the files that have changed: $TEST_ALL_CHANGED_FILES"
@@ -73,7 +73,7 @@ jobs:
           name: 'Common'
           working-directory: 'packages/common'
       - name: Report Event-Producer Coverage
-        if: steps.changed-files.outputs.event-producer_all_changed_files
+        if: steps.changed-files.outputs.event-producer_any_changed
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Event Producer'
