@@ -26,3 +26,9 @@ export const postMessage = (message: OutageStartError | TidalMessage) => {
   });
   globalThis.dispatchEvent(event);
 };
+
+// @ts-expect-error this is for testing ci only
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const someLegacyCode = () => {
+  console.error('please delete me');
+};
