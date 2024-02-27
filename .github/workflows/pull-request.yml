@@ -6,7 +6,7 @@ on:
 
 jobs:
   fossa-scans:
-    name: Rune FOSSA Scans
+    name: Run FOSSA Scans
     uses: ./.github/workflows/fossa-scan.yml
     secrets: inherit
 
