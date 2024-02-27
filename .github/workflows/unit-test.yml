@@ -2,6 +2,11 @@ name: Run Unit Tests
 
 on:
   workflow_call:
+    inputs:
+      modules:
+        required: true
+        type: string
+        description: 'List of modules to run tests for'
 
 jobs:
   unit-tests:
@@ -26,6 +31,7 @@ jobs:
           TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
       - name: Run Tests
         run: |
+          echo "Running tests for ${{ inputs.modules }}"
           pnpm test:coverage
         env:
           TEST_USER: ${{ steps.json.outputs.encoded }}

@@ -16,7 +16,21 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v42
         with:
-          files: packages/**
+          files_yaml: |
+            auth:
+              - 'packages/auth/**'
+            common:
+              - 'packages/common/**'
+            event-producer:
+              - 'packages/event-producer/**'
+            player:
+              - 'packages/player/**'
+            player-web-components:
+              - 'packages/player-web-components/**'
+            template:
+              - 'packages/template/**'
+            true-time:
+              - 'packages/true-time/**'
           # Optionally set `files_yaml_from_source_file` to read the YAML from a file. e.g `files_yaml_from_source_file: .github/changed-files.yml`
 
       - name: Run step if test file(s) change
@@ -39,5 +53,7 @@ jobs:
       pull-requests: write
     needs: [ check-changes ]
     if: needs.changed-files.outputs.any_changed == 'true'
+    with:
+      modules: ${{ needs.check-changes.outputs.modules }}
     uses: ./.github/workflows/unit-test.yml
     secrets: inherit
