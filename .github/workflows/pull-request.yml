@@ -16,24 +16,18 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v42
         with:
-          files_yaml: packages/**
-      - name: Build matrix input
-        id: build-matrix
-        if: steps.changed-files-yaml.outputs.test_any_changed == 'true'
-        run: |
-          set +e
-          modules_list=()
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            ./bin/check-version-bump.sh ./"$file"
+          files: packages/**
+          # Optionally set `files_yaml_from_source_file` to read the YAML from a file. e.g `files_yaml_from_source_file: .github/changed-files.yml`
 
-            # check-version-bump exits with 0 if it detects a bump, otherwise with 1
-            if [ $? != "1" ] && [[ ! " ${modules_list[*]} " =~ " ${file} " ]]; then
-              modules_list+=("${file%"/package.json"}")
-            fi
-          done
+      - name: Run step if test file(s) change
+        # NOTE: Ensure all outputs are prefixed by the same key used above e.g. `test_(...)` | `doc_(...)` | `src_(...)` when trying to access the `any_changed` output.
+        if: steps.changed-files.outputs.any_changed == 'true'
+        env:
+          TEST_ALL_CHANGED_FILES: ${{ steps.changed-files-yaml.outputs.test_all_changed_files }}
+          run: |
+            echo "One or more test file(s) has changed."
+            echo "List all the files that have changed: $TEST_ALL_CHANGED_FILES"
 
-          jsonString="$(jq --compact-output --null-input '$ARGS.positional' --args -- "${modules_list[@]}")"
-          echo "modules=$jsonString" >> $GITHUB_OUTPUT
 
   trigger-lint:
     name: Run Lint Checks
@@ -44,6 +38,6 @@ jobs:
     permissions:
       pull-requests: write
     needs: [ check-changes ]
-    if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
+    if: steps.changed-files.outputs.any_changed == 'true'
     uses: ./.github/workflows/unit-test.yml
     secrets: inherit
