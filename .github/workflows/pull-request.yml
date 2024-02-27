@@ -1,6 +1,8 @@
 name: Pull Request
 
 on:
+  push:
+    branches: ['ci-test/*']
   pull_request:
     branches: '*'
 
