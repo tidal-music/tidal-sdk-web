@@ -2,50 +2,11 @@ name: Pull Request
 
 on:
   push:
-    # trigger ci by creating a branch starting with ci-test/
-    branches: 'ci-test/*'
+    branches: ['ci-test/*']
   pull_request:
     branches: '*'
 
 jobs:
-  check-changes:
-    runs-on: ubuntu-latest
-    name: Check Changed Files
-    outputs:
-      modules: ${{ steps.build-matrix.outputs.modules }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v42
-        with:
-          files_yaml: |
-            auth:
-              - 'packages/auth/**'
-            common:
-              - 'packages/common/**'
-            event-producer:
-              - 'packages/event-producer/**'
-            player:
-              - 'packages/player/**'
-            player-web-components:
-              - 'packages/player-web-components/**'
-            template:
-              - 'packages/template/**'
-            true-time:
-              - 'packages/true-time/**'
-          # Optionally set `files_yaml_from_source_file` to read the YAML from a file. e.g `files_yaml_from_source_file: .github/changed-files.yml`
-
-      - name: Run step if test file(s) change
-        # NOTE: Ensure all outputs are prefixed by the same key used above e.g. `test_(...)` | `doc_(...)` | `src_(...)` when trying to access the `any_changed` output.
-        if: steps.changed-files.outputs.any_changed == 'true'
-        env:
-          TEST_ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        run: |
-            echo "One or more test file(s) has changed."
-            echo "List all the files that have changed: $TEST_ALL_CHANGED_FILES"
-
-
   trigger-lint:
     name: Run Lint Checks
     uses: ./.github/workflows/lint.yml
@@ -54,9 +15,5 @@ jobs:
     name: Run Unit Tests
     permissions:
       pull-requests: write
-    needs: [ check-changes ]
-    if: needs.changed-files.outputs.all_changed_files == 'true'
-    with:
-      modules: ${{ needs.check-changes.outputs.modules }}
     uses: ./.github/workflows/unit-test.yml
     secrets: inherit

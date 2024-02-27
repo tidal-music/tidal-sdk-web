@@ -11,6 +11,8 @@ jobs:
       pull-requests: write
     name: Run Unit Tests
     steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v42
@@ -32,17 +34,15 @@ jobs:
               - 'packages/true-time/**'
         # Optionally set `files_yaml_from_source_file` to read the YAML from a file. e.g `files_yaml_from_source_file: .github/changed-files.yml`
 
-    - name: Run step if test file(s) change
-      # NOTE: Ensure all outputs are prefixed by the same key used above e.g. `test_(...)` | `doc_(...)` | `src_(...)` when trying to access the `any_changed` output.
-      if: steps.changed-files.outputs.any_changed == 'true'
-      env:
-        TEST_ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-      run: |
-        echo "One or more test file(s) has changed."
-        echo "List all the files that have changed: $TEST_ALL_CHANGED_FILES"
+      - name: Run step if test file(s) change
+        # NOTE: Ensure all outputs are prefixed by the same key used above e.g. `test_(...)` | `doc_(...)` | `src_(...)` when trying to access the `any_changed` output.
+        if: steps.changed-files.outputs.any_changed == 'true'
+        env:
+          TEST_ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.any_changed_files }}
+        run: |
+          echo "One or more test file(s) has changed."
+          echo "List all the files that have changed: $TEST_ALL_CHANGED_FILES"
 
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
       - name: Prepare test user for player tests
         id: json
         run: |
@@ -61,34 +61,37 @@ jobs:
         env:
           TEST_USER: ${{ steps.json.outputs.encoded }}
       - name: Report Auth Coverage
-        if: ${{ ${input.modules}.changed-files.outputs.test_all_changed_files }}
+        if: steps.changed-files.outputs.auth_any_changed
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Auth'
           working-directory: 'packages/auth'
       - name: Report Common Coverage
-        if: steps.changed-files.outputs.auth_any_changed == 'true'
+        if: steps.changed-files.outputs.common_any_changed
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Common'
           working-directory: 'packages/common'
       - name: Report Event-Producer Coverage
-        if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
+        if: steps.changed-files.outputs.event-producer_any_changed
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Event Producer'
-          json-summary-path: 'packages/event-producer/coverage/coverage-final.json'
-          json-final-path: 'packages/event-producer/coverage/coverage-summary.json'
           working-directory: 'packages/event-producer'
-          vite-config-path: 'packages/event-producer/vite.config.ts'
       - name: Report Player-Web-Components Coverage
-        if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
+        if: steps.changed-files.outputs.player-web-components_any_changed
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'Player Web Components'
           working-directory: 'packages/player-web-components'
+      - name: Report Template Coverage
+        if: steps.changed-files.outputs.template_any_changed
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: 'Template'
+          working-directory: 'packages/template'
       - name: Report True-Time Coverage
-        if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
+        if: steps.changed-files.outputs.true-time_any_changed
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           name: 'True Time'
