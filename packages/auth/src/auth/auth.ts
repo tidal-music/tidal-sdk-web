@@ -75,6 +75,13 @@ const dispatchEvent = (detail: BusEvent['detail']) => {
   globalThis.dispatchEvent(event);
 };
 
+const dispatchCredentialsUpdated = (credentials: Credentials) => {
+  dispatchEvent({
+    payload: credentials,
+    type: messageTypes.credentialsUpdated,
+  });
+};
+
 /**
  * Initialize the auth library, this needs to be called before any other auth methods.
  *
@@ -179,6 +186,9 @@ export const initializeDeviceLogin = async () => {
 
   const body = {
     client_id: state.credentials.clientId,
+    ...(state.credentials.clientSecret && {
+      client_secret: state.credentials.clientSecret,
+    }),
     scope: state.credentials.scopes.join(' '),
   };
 
@@ -225,8 +235,14 @@ export const finalizeLogin = async (loginResponseQuery: string) => {
     throw new TidalError(authErrorCodeMap.initError);
   }
 
-  const { clientId, clientUniqueKey, codeChallenge, redirectUri, scopes } =
-    state.credentials;
+  const {
+    clientId,
+    clientSecret,
+    clientUniqueKey,
+    codeChallenge,
+    redirectUri,
+    scopes,
+  } = state.credentials;
 
   const params = Object.fromEntries(new URLSearchParams(loginResponseQuery));
 
@@ -237,6 +253,9 @@ export const finalizeLogin = async (loginResponseQuery: string) => {
   const body = {
     client_id: clientId,
     client_unique_key: clientUniqueKey ?? '',
+    ...(clientSecret && {
+      client_secret: clientSecret,
+    }),
     code: params.code,
     code_verifier: codeChallenge,
     grant_type: 'authorization_code',
@@ -252,8 +271,6 @@ export const finalizeLogin = async (loginResponseQuery: string) => {
   if (response instanceof Error) {
     throw response;
   }
-
-  dispatchEvent({ type: messageTypes.credentialsUpdated });
 
   const jsonResponse = (await response.json()) as TokenJSONResponse;
 
@@ -361,6 +378,9 @@ export const logout = () => {
 const refreshAccessToken = async () => {
   if (state.credentials?.refreshToken) {
     const body = {
+      ...(state.credentials.clientSecret && {
+        client_secret: state.credentials.clientSecret,
+      }),
       client_id: state.credentials.clientId,
       grant_type: 'refresh_token',
       refresh_token: state.credentials.refreshToken,
@@ -376,8 +396,6 @@ const refreshAccessToken = async () => {
       return response;
     }
 
-    dispatchEvent({ type: messageTypes.credentialsUpdated });
-
     const jsonResponse = (await response.json()) as TokenJSONResponse;
     return persistToken(jsonResponse);
   } else if (state.credentials?.clientSecret) {
@@ -388,6 +406,9 @@ const refreshAccessToken = async () => {
 const upgradeToken = async () => {
   if (state.credentials?.refreshToken) {
     const body = {
+      ...(state.credentials.clientSecret && {
+        client_secret: state.credentials.clientSecret,
+      }),
       client_id: state.credentials.clientId,
       grant_type: 'update_client',
       refresh_token: state.credentials.refreshToken,
@@ -413,8 +434,6 @@ const upgradeToken = async () => {
       throw new RetryableError(authErrorCodeMap.retryableError);
     }
 
-    dispatchEvent({ type: messageTypes.credentialsUpdated });
-
     const jsonResponse = (await response.json()) as TokenJSONResponse;
     return persistToken(jsonResponse);
   }
@@ -437,8 +456,6 @@ const getTokenThroughClientCredentials = async () => {
     if (response instanceof Error) {
       return response;
     }
-
-    dispatchEvent({ type: messageTypes.credentialsUpdated });
 
     const jsonResponse = (await response.json()) as TokenJSONResponse;
     return persistToken(jsonResponse);
@@ -591,12 +608,17 @@ export const setCredentials = async ({
       refreshToken,
     }),
   });
-
-  dispatchEvent({ type: messageTypes.credentialsUpdated });
 };
 
 const persistCredentials = (updatedCredentials: UserCredentials) => {
   state.credentials = updatedCredentials;
+
+  const credentials: Credentials = {
+    ...state.credentials.accessToken,
+    clientId: state.credentials.clientId,
+    requestedScopes: state.credentials.scopes,
+  };
+  dispatchCredentialsUpdated(credentials);
 
   return saveCredentialsToStorage(state.credentials);
 };
