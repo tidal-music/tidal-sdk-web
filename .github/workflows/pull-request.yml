@@ -8,6 +8,7 @@ jobs:
   fossa-scans:
     name: Rune FOSSA Scans
     uses: ./.github/workflows/fossa-scan.yml
+    secrets: inherit
 
   trigger-lint:
     name: Run Lint Checks
