@@ -38,6 +38,6 @@ jobs:
     permissions:
       pull-requests: write
     needs: [ check-changes ]
-    if: jobs.check-changes.steps.changed-files.outputs.any_changed == 'true'
+    if: check-changes.steps.changed-files.outputs.any_changed == 'true'
     uses: ./.github/workflows/unit-test.yml
     secrets: inherit
