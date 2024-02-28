@@ -1,9 +1,9 @@
 name: Pull Request
 
 on:
-  fork:
-    branches: '*'
   pull_request:
+    branches: '*'
+  pull_request_target:
     branches: '*'
 
 jobs:
