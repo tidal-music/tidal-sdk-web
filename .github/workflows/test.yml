@@ -22,12 +22,14 @@ jobs:
       - name: Determine changed packages
         id: changed-packages
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BASE_REF=${{ github.base_ref }}
-            HEAD_REF=${{ github.head_ref }}
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            # Fetch the base branch
+            git fetch origin ${{ github.base_ref }}
+            BASE_REF="origin/${{ github.base_ref }}"
+            HEAD_REF="${{ github.event.pull_request.head.sha }}"
           else
-            BASE_REF=${{ github.sha }}
-            HEAD_REF=$(git rev-parse HEAD)
+            BASE_REF="${{ github.event.before }}"
+            HEAD_REF="${{ github.sha }}"
           fi
           echo "$BASE_REF - $HEAD_REF"
           CHANGED=$(git diff --name-only $BASE_REF...$HEAD_REF | grep '^packages/' | awk -F'/' '{print $2}' | sort | uniq | tr '\n' ' ')
