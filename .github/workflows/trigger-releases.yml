@@ -3,7 +3,7 @@ on:
   push:
     branches: main
 
-jobs: 
+jobs:
   check-changes:
     runs-on: ubuntu-latest
     name: Check Changed Files
@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Get changed files
-        id: changed-files 
+        id: changed-files
         uses: tj-actions/changed-files@v42
         with:
           files: packages/**/package.json
@@ -33,18 +33,18 @@ jobs:
 
           jsonString="$(jq --compact-output --null-input '$ARGS.positional' --args -- "${modules_list[@]}")"
           echo "modules=$jsonString" >> $GITHUB_OUTPUT
-          
+
   trigger-lint:
     name: Run Lint Checks
     needs: [ check-changes ]
     if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
     uses: ./.github/workflows/lint.yml
-      
+
   trigger-unit-tests:
     name: Run Unit Tests
     needs: [ check-changes ]
     if: ${{ needs.check-changes.outputs.modules != '' && toJson(fromJson(needs.check-changes.outputs.modules)) != '[]' }}
-    uses: ./.github/workflows/unit-test.yml
+    uses: ./.github/workflows/test.yml
     secrets: inherit
 
   trigger-releases:
@@ -56,7 +56,7 @@ jobs:
       matrix:
         module: ${{ fromJSON(needs.check-changes.outputs.modules) }}
     uses: ./.github/workflows/create-release.yml
-    with: 
+    with:
         module: ${{ matrix.module }}
     secrets: inherit
 

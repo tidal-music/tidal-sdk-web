@@ -1,0 +1,48 @@
+name: Test
+
+on:
+  workflow_call:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch:
+          - ${{ github.head_ref }}
+          - "main"
+    name: Run Unit Tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+
+      # Determine changed and unchanged packages
+      - name: Determine changed packages
+        id: changed-packages
+        #CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^packages/' | awk -F'/' '{print $2}' | sort | uniq | tr '\n' ' ')
+        run: |
+          CHANGED=$(git diff --name-only main | grep '^packages/' | awk -F'/' '{print $2}' | sort | uniq | tr '\n' ' ')
+          echo "Changed packages: $CHANGED"
+          echo "::set-output name=list::$CHANGED"
+
+      # Test unchanged packages
+      - name: Test unchanged packages
+        run: |
+          ALL_PKGS=$(ls packages | tr '\n' ' ')
+          CHANGED_PKGS="${{ steps.changed-packages.outputs.list }}"
+          for PKG in $ALL_PKGS; do
+            if [[ " $CHANGED_PKGS " != *" $PKG "* ]]; then
+              echo "Testing unchanged package: $PKG"
+              pnpm --filter $PKG run test || exit 1
+            fi
+          done
+
+      # Test changed packages with coverage
+      - name: Test changed packages with coverage
+        run: |
+          CHANGED_PKGS="${{ steps.changed-packages.outputs.list }}"
+          for PKG in $CHANGED_PKGS; do
+            echo "Testing changed package with coverage: $PKG"
+            pnpm --filter $PKG run test:coverage || exit 1
+          done
+

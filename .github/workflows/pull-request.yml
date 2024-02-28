@@ -18,5 +18,5 @@ jobs:
     name: Run Unit Tests
     permissions:
       pull-requests: write
-    uses: ./.github/workflows/unit-test.yml
+    uses: ./.github/workflows/test.yml
     secrets: inherit
