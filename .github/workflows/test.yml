@@ -24,7 +24,7 @@ jobs:
           echo "Changed packages: $CHANGED"
           echo "::set-output name=list::$CHANGED"
 
-      - name: Prepare test user for player tests
+      - name: Prepare test user for player and run tests
         if: contains(steps.changed-packages.outputs.list, 'player')
         id: json
         run: |
@@ -34,13 +34,9 @@ jobs:
           fixed_json="$(echo ${json/\[TOKEN\]/$replacement})"
           encoded_json=$(echo "$fixed_json" | base64 | tr -d '\n')
           echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
+          pnpm --filter player run test || exit 1
         env:
           TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
-
-      # Test player package
-      - name: Test unchanged packages
-        run: |
-          pnpm --filter player run test || exit 1
 
       # Test unchanged packages
       - name: Test unchanged packages
