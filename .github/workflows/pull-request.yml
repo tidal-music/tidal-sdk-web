@@ -7,6 +7,11 @@ on:
     branches: '*'
 
 jobs:
+  fossa-scans:
+    name: Run FOSSA Scans
+    uses: ./.github/workflows/fossa-scan.yml
+    secrets: inherit
+
   trigger-lint:
     name: Run Lint Checks
     uses: ./.github/workflows/lint.yml

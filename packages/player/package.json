@@ -68,7 +68,6 @@
     "chai": "5.1.0",
     "cypress": "13.6.6",
     "esbuild": "0.20.1",
-    "idb-keyval": "6.2.1",
     "js-levenshtein": "1.1.6",
     "mux.js": "6.3.0",
     "rollup": "4.12.0",
