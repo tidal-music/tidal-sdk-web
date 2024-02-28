@@ -54,6 +54,7 @@ jobs:
       - name: Test changed packages with coverage
         run: |
           CHANGED_PKGS="${{ steps.changed-packages.outputs.list }}"
+          echo "Changed packages: $CHANGED_PKGS"
           for PKG in $CHANGED_PKGS; do
             if [[ "$PKG" != "player" ]]; then
               echo "Testing changed package with coverage: $PKG"
