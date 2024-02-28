@@ -405,6 +405,10 @@ export class BasePlayer {
    * Refetches playbackinfo.
    */
   async hardReload(mediaProduct: MediaProduct, assetPosition: number) {
+    if (this.currentStreamingSessionId) {
+      this.finishCurrentMediaProduct('skip');
+    }
+
     return load(mediaProduct, assetPosition);
   }
 
