@@ -1,6 +1,8 @@
 name: Pull Request
 
 on:
+  fork:
+    branches: '*'
   pull_request:
     branches: '*'
 
