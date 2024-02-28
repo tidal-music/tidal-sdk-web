@@ -28,7 +28,7 @@ jobs:
             HEAD_REF=$(git rev-parse HEAD)
           fi
           echo "$BASE_REF - $HEAD_REF"
-          CHANGED=$(git diff --name-only $BASE_REF...$HEAD_REF | grep '^packages/' | awk -F'/' '{print $2}' | sort | uniq | tr '\n' ' ')
+          CHANGED=$(git diff --name-only $BASE_REF $HEAD_REF | grep '^packages/' | awk -F'/' '{print $2}' | sort | uniq | tr '\n' ' ')
           echo "Changed packages: $CHANGED"
           echo "{list}={$CHANGED}" >> $GITHUB_OUTPUT
 
