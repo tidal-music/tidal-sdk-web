@@ -10,7 +10,7 @@ jobs:
       matrix:
         branch:
           - ${{ github.head_ref }}
-          - "main"
+          - ${{ github.base_ref }}
     name: Run Unit Tests
     steps:
       - uses: actions/checkout@v4
