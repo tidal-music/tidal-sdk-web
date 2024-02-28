@@ -26,6 +26,3 @@ export const postMessage = (message: OutageStartError | TidalMessage) => {
   });
   globalThis.dispatchEvent(event);
 };
-
-const DELETE_ME = () => 'dont forget to delete me!';
-console.error(DELETE_ME());
