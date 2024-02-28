@@ -12,6 +12,7 @@ export default defineConfig({
   plugins: [dts({ rollupTypes: true, tsconfigPath: 'tsconfig.build.json' })],
   test: {
     coverage: {
+      exclude: ['./index.ts'], // ignore barrel file
       reportOnFailure: true,
       reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
       thresholds: {
