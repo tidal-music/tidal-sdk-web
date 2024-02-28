@@ -1,5 +1,5 @@
 export class TrueTime {
-  #clientStartTime: number;
+  #clientStartTime?: number;
 
   #serverTime?: number;
 
@@ -9,30 +9,33 @@ export class TrueTime {
 
   constructor(url: string) {
     this.#url = new URL(url);
-    this.#clientStartTime = performance.now();
   }
 
-  now(highResTimeStamp: DOMHighResTimeStamp = performance.now()): number {
+  /**
+   * Returns the current time adjusted to server-time.
+   *
+   * @param clientCurrentTime The current time on the client side. Defaults to Date.now().
+   * @returns The current adjusted time.
+   * @throws {ReferenceError} If the initialization has not been done yet. You need to call and await the `synchronize` method once.
+   */
+  // eslint-disable-next-line no-restricted-syntax
+  now(clientCurrentTime = Date.now()): number {
     if (!this.#serverTime || !this.#clientStartTime) {
       throw new ReferenceError(
         'Initialization has not been done yet. You need to call and await the synchronize method once.',
       );
     }
 
-    return Number.parseInt(
-      (
-        this.#serverTime + Math.abs(this.#clientStartTime - highResTimeStamp)
-      ).toFixed(0),
-      10,
-    );
+    return this.#serverTime + (clientCurrentTime - this.#clientStartTime);
   }
 
   /**
-   * Use this method to synchronize time with the server.
+   * Synchronizes the client's time with the server's time.
+   * If already synchronized, this method does nothing.
    *
-   * @param url - server url
+   * @returns {Promise<void>} A promise that resolves when the synchronization is complete.
    */
-  async synchronize() {
+  async synchronize(): Promise<void> {
     if (this.#synced) {
       return;
     }
@@ -42,6 +45,8 @@ export class TrueTime {
 
       if (response.ok && response.headers.has('date')) {
         this.#serverTime = new Date(response.headers.get('date')!).getTime();
+        // eslint-disable-next-line no-restricted-syntax
+        this.#clientStartTime = Date.now();
         this.#synced = true;
       }
     } catch (error) {
@@ -49,8 +54,23 @@ export class TrueTime {
     }
   }
 
+  /**
+   * Returns the timestamp of a performance mark with the specified name and detail.
+   * PS: `performance.mark` must be called with `startTime: trueTime.now()`.
+   *
+   * @param markName - The name of the performance mark.
+   * @param detail - Optional. The detail of the performance mark.
+   * @returns The timestamp of the performance mark, or undefined if not found.
+   * @throws ReferenceError if initialization has not been done yet or if the performance mark is not found.
+   */
   timestamp(markName: string, detail?: string): number | undefined {
     let performanceEntry: PerformanceEntry | undefined;
+
+    if (!this.#serverTime || !this.#clientStartTime) {
+      throw new ReferenceError(
+        'Initialization has not been done yet. You need to call and await the synchronize method once.',
+      );
+    }
 
     if (detail) {
       performanceEntry = performance
@@ -66,7 +86,7 @@ export class TrueTime {
       performanceEntry = performance.getEntriesByName(markName).pop();
     }
 
-    return performanceEntry ? this.now(performanceEntry.startTime) : undefined;
+    return performanceEntry ? performanceEntry.startTime : undefined;
   }
 }
 
