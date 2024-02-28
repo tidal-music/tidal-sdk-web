@@ -9,6 +9,7 @@ export const storage = {
     userId: '123456789',
   },
   clientId: 'CLIENT_ID',
+  clientSecret: 'CLIENT_SECRET',
   clientUniqueKey: 'CLIENT_UNIQUE_KEY',
   codeChallenge: 'CODE_CHALLENGE',
   credentialsStorageKey: 'CREDENTIALS_STORAGE_KEY',
