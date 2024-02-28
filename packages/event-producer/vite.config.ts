@@ -39,7 +39,14 @@ export default defineConfig(({ command, mode }) => {
     plugins: [dts({ rollupTypes: true, tsconfigPath: 'tsconfig.build.json' })],
     test: {
       coverage: {
+        reportOnFailure: true,
         reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
+        thresholds: {
+          branches: 80,
+          functions: 80,
+          lines: 80,
+          statements: 80,
+        },
       },
       environment: 'happy-dom',
       globals: true,

@@ -30,6 +30,7 @@
     "lint:fix": "pnpm run lint --fix",
     "preview": "vite preview",
     "test": "vitest --sequence.concurrent",
+    "test:ci": "pnpm run test:coverage --reporter=json-summary --reporter=json",
     "test:coverage": "pnpm run test --coverage",
     "test:ui": "pnpm run test:coverage --ui",
     "typecheck": "tsc"

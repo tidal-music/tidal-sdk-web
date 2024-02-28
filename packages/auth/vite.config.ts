@@ -32,7 +32,14 @@ export default defineConfig(({ command }) => {
     plugins: [dts({ rollupTypes: true, tsconfigPath: 'tsconfig.build.json' })],
     test: {
       coverage: {
+        reportOnFailure: true,
         reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
+        thresholds: {
+          branches: 80,
+          functions: 73.77,
+          lines: 69.41,
+          statements: 69.41,
+        },
       },
       globals: true,
       restoreMocks: true,
