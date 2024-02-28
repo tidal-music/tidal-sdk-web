@@ -19,9 +19,8 @@ jobs:
       # Determine changed and unchanged packages
       - name: Determine changed packages
         id: changed-packages
-        #CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^packages/' | awk -F'/' '{print $2}' | sort | uniq | tr '\n' ' ')
         run: |
-          CHANGED=$(git diff --name-only main | grep '^packages/' | awk -F'/' '{print $2}' | sort | uniq | tr '\n' ' ')
+          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^packages/' | awk -F'/' '{print $2}' | sort | uniq | tr '\n' ' ')
           echo "Changed packages: $CHANGED"
           echo "::set-output name=list::$CHANGED"
 
