@@ -22,7 +22,7 @@ jobs:
         run: |
           CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^packages/' | awk -F'/' '{print $2}' | sort | uniq | tr '\n' ' ')
           echo "Changed packages: $CHANGED"
-          echo "::set-output name=list::$CHANGED"
+          echo "{list}={$CHANGED}" >> $GITHUB_OUTPUT
 
       - name: Prepare test user for player and run tests
         if: contains(steps.changed-packages.outputs.list, 'player')
