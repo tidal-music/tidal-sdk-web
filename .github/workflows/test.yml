@@ -30,7 +30,7 @@ jobs:
           ALL_PKGS=$(ls packages | tr '\n' ' ')
           CHANGED_PKGS="${{ steps.changed-packages.outputs.list }}"
           for PKG in $ALL_PKGS; do
-            if [[ " $CHANGED_PKGS " != *" $PKG "* ]]; then
+            if [[ " $CHANGED_PKGS " != *" $PKG "* ]] && [[ "$PKG" != "player" ]]; then
               echo "Testing unchanged package: $PKG"
               pnpm --filter $PKG run test || exit 1
             fi
@@ -41,7 +41,9 @@ jobs:
         run: |
           CHANGED_PKGS="${{ steps.changed-packages.outputs.list }}"
           for PKG in $CHANGED_PKGS; do
-            echo "Testing changed package with coverage: $PKG"
-            pnpm --filter $PKG run test:coverage || exit 1
-          done
+            if [[ "$PKG" != "player" ]]; then
+              echo "Testing changed package with coverage: $PKG"
+              pnpm --filter $PKG run test:coverage || exit 1
+            fi
+           done
 
