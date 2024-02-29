@@ -6,45 +6,32 @@ on:
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
-    permissions:
-      # Required to put a comment into the pull-request
-      pull-requests: write
     name: Run Unit Tests
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v42
+      - name: Checkout target branch
+        uses: actions/checkout@v4
         with:
-          files_yaml: |
-            auth:
-              - 'packages/auth/**'
-            common:
-              - 'packages/common/**'
-            event-producer:
-              - 'packages/event-producer/**'
-            player:
-              - 'packages/player/**'
-            player-web-components:
-              - 'packages/player-web-components/**'
-            template:
-              - 'packages/template/**'
-            true-time:
-              - 'packages/true-time/**'
-        # Optionally set `files_yaml_from_source_file` to read the YAML from a file. e.g `files_yaml_from_source_file: .github/changed-files.yml`
+          ref: ${{ github.base_ref }}
+          path: base
 
-      - name: Run step if test file(s) change
-        # NOTE: Ensure all outputs are prefixed by the same key used above e.g. `test_(...)` | `doc_(...)` | `src_(...)` when trying to access the `any_changed` output.
-        if: steps.changed-files.outputs.any_changed == 'true'
-        env:
-          TEST_ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.any_changed_files }}
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+        with:
+          path: head
+
+      - uses: ./.github/actions/setup
+
+      # Determine changed and unchanged packages
+      - name: Determine changed packages
+        id: changed-packages
         run: |
-          echo "One or more test file(s) has changed."
-          echo "List all the files that have changed: $TEST_ALL_CHANGED_FILES"
+          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^packages/' | awk -F'/' '{print $2}' | sort | uniq | tr '\n' ' ')
+          echo "Changed packages: $CHANGED"
+          echo "list=$CHANGED" >> $GITHUB_OUTPUT
 
       - name: Prepare test user for player tests
-        id: json
+        if: contains(steps.changed-packages.outputs.list, 'player')
+        id: player-test-user
         run: |
           echo ${{ env.TEST_USER }} | base64 -d > test-user.json
           json=$(cat test-user.json)
@@ -54,45 +41,41 @@ jobs:
           echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
         env:
           TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
-      - name: Run Tests
+
+      # Test unchanged packages
+      - name: Test Player
+        if: contains(steps.changed-packages.outputs.list, 'player')
         run: |
-          echo "Running tests for ${{ inputs.modules }}"
-          pnpm test:coverage
+          pnpm --filter player run test:coverage || exit 1
         env:
-          TEST_USER: ${{ steps.json.outputs.encoded }}
-      - name: Report Auth Coverage
-        if: steps.changed-files.outputs.auth_any_changed
-        uses: davelosert/vitest-coverage-report-action@v2
+          TEST_USER: ${{ steps.player-test-user.outputs.encoded }}
+
+      # Test unchanged packages
+      - name: Test unchanged packages
+        run: |
+          ALL_PKGS=$(ls packages | tr '\n' ' ')
+          CHANGED_PKGS="${{ steps.changed-packages.outputs.list }}"
+          for PKG in $ALL_PKGS; do
+            if [[ " $CHANGED_PKGS " != *" $PKG "* ]] && [[ "$PKG" != "player" ]]; then
+              echo "Testing unchanged package: $PKG"
+              pnpm --filter $PKG run test || exit 1
+            fi
+          done
+
+      # Test changed packages with coverage
+      - name: Test changed packages with coverage
+        run: |
+          CHANGED_PKGS="${{ steps.changed-packages.outputs.list }}"
+          for PKG in $CHANGED_PKGS; do
+            if [[ "$PKG" != "player" ]]; then
+              echo "Testing changed package with coverage: $PKG"
+              pnpm --filter $PKG run test:coverage || exit 1
+            fi
+           done
+
+      - uses: codecov/codecov-action@v4
         with:
-          name: 'Auth'
-          working-directory: 'packages/auth'
-      - name: Report Common Coverage
-        if: steps.changed-files.outputs.common_any_changed
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: 'Common'
-          working-directory: 'packages/common'
-      - name: Report Event-Producer Coverage
-        if: steps.changed-files.outputs.event-producer_any_changed
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: 'Event Producer'
-          working-directory: 'packages/event-producer'
-      - name: Report Player-Web-Components Coverage
-        if: steps.changed-files.outputs.player-web-components_any_changed
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: 'Player Web Components'
-          working-directory: 'packages/player-web-components'
-      - name: Report Template Coverage
-        if: steps.changed-files.outputs.template_any_changed
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: 'Template'
-          working-directory: 'packages/template'
-      - name: Report True-Time Coverage
-        if: steps.changed-files.outputs.true-time_any_changed
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: 'True Time'
-          working-directory: 'packages/true-time'
+          files: packages/*/coverage/lcov.info
+          fail_ci_if_error: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
