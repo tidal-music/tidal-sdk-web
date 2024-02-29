@@ -3,8 +3,6 @@ export class TrueTime {
 
   #serverTime?: number;
 
-  #synced = false;
-
   #url: URL;
 
   constructor(url: string) {
@@ -31,12 +29,18 @@ export class TrueTime {
 
   /**
    * Synchronizes the client's time with the server's time.
-   * If already synchronized, this method does nothing.
+   * If the client's time is already synchronized within an hour, no action is taken.
    *
    * @returns {Promise<void>} A promise that resolves when the synchronization is complete.
    */
   async synchronize(): Promise<void> {
-    if (this.#synced) {
+    const anHour = 3_600_000;
+
+    if (
+      this.#clientStartTime &&
+      // eslint-disable-next-line no-restricted-syntax
+      Math.abs(Date.now() - this.#clientStartTime) < anHour
+    ) {
       return;
     }
 
@@ -47,7 +51,6 @@ export class TrueTime {
         this.#serverTime = new Date(response.headers.get('date')!).getTime();
         // eslint-disable-next-line no-restricted-syntax
         this.#clientStartTime = Date.now();
-        this.#synced = true;
       }
     } catch (error) {
       console.error(error);
