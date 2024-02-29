@@ -1,3 +1,4 @@
+/* c8 ignore start types file */
 import type { Credentials } from '@tidal-music/common';
 
 export type InitArgs = {
@@ -14,6 +15,7 @@ export type UserCredentials = {
   accessToken?: Credentials;
   codeChallenge?: string;
   expiresIn?: number;
+  previousClientSecret?: string;
   redirectUri?: string;
   refreshToken?: string;
   scopes: Array<string>;

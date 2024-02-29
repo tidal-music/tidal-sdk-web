@@ -13,8 +13,27 @@ export const storage = {
   clientUniqueKey: 'CLIENT_UNIQUE_KEY',
   codeChallenge: 'CODE_CHALLENGE',
   credentialsStorageKey: 'CREDENTIALS_STORAGE_KEY',
+  previousClientSecret: 'CLIENT_SECRET',
   redirectUri: 'https://redirect.uri',
   refreshToken: 'REFRESH_TOKEN',
+  scopes: ['READ', 'WRITE'],
+  tidalAuthServiceBaseUri: 'https://auth.tidal.com/v1/',
+  tidalLoginServiceBaseUri: 'https://login.tidal.com/',
+};
+
+export const storageClientCredentials = {
+  accessToken: {
+    clientId: 'CLIENT_ID',
+    clientUniqueKey: undefined,
+    expires: 1694864347517,
+    grantedScopes: [],
+    requestedScopes: [],
+    token: 'ACCESS_TOKEN',
+  },
+  clientId: 'CLIENT_ID',
+  clientSecret: 'CLIENT_SECRET',
+  credentialsStorageKey: 'CREDENTIALS_STORAGE_KEY',
+  previousClientSecret: 'CLIENT_SECRET',
   scopes: ['READ', 'WRITE'],
   tidalAuthServiceBaseUri: 'https://auth.tidal.com/v1/',
   tidalLoginServiceBaseUri: 'https://login.tidal.com/',
@@ -28,6 +47,13 @@ export const userJsonResponse = {
   scope: 'READ WRITE',
   token_type: 'Bearer' as const,
   user_id: 123456789,
+};
+
+export const clientCredentialsJsonResponse = {
+  access_token: 'ACCESS_TOKEN',
+  expires_in: 12356,
+  scope: '',
+  token_type: 'Bearer' as const,
 };
 
 export const expiresTimerMock =
