@@ -5,8 +5,8 @@ on:
     branches: [ "main", "jeremy/gh-action-cypress" ]
 #    paths:
 #      - packages/player/**
-  pull_request:
-    branches: [ "main", "jeremy/gh-action-cypress"]
+#  pull_request:
+#    branches: [ "main", "jeremy/gh-action-cypress"]
 #    paths:
 #      - packages/player/**
 
