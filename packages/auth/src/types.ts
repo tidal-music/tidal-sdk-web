@@ -1,3 +1,4 @@
+/* c8 ignore start types file */
 import type { Credentials } from '@tidal-music/common';
 
 export type InitArgs = {
