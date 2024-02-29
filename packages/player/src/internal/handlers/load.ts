@@ -64,7 +64,10 @@ export async function load(
 
     performance.mark(
       'streaming_metrics:playback_statistics:idealStartTimestamp',
-      { detail: playerState.preloadedStreamingSessionId },
+      {
+        detail: playerState.preloadedStreamingSessionId,
+        startTime: trueTime.now(),
+      },
     );
 
     await player.reset({ keepPreload: true });
@@ -101,7 +104,10 @@ export async function load(
 
   performance.mark(
     'streaming_metrics:playback_statistics:idealStartTimestamp',
-    { detail: streamingSessionId },
+    {
+      detail: streamingSessionId,
+      startTime: trueTime.now(),
+    },
   );
 
   const { clientId, token } =

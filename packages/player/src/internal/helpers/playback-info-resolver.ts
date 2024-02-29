@@ -247,6 +247,7 @@ export async function fetchPlaybackInfo(options: Options) {
 
   performance.mark('streaming_metrics:playback_info_fetch:startTimestamp', {
     detail: streamingSessionId,
+    startTime: trueTime.now(),
   });
 
   try {
@@ -292,12 +293,14 @@ export async function fetchPlaybackInfo(options: Options) {
 
     performance.mark('streaming_metrics:playback_info_fetch:endTimestamp', {
       detail: streamingSessionId,
+      startTime: trueTime.now(),
     });
 
     return playbackInfo;
   } catch (e) {
     performance.mark('streaming_metrics:playback_info_fetch:endTimestamp', {
       detail: streamingSessionId,
+      startTime: trueTime.now(),
     });
 
     StreamingMetrics.playbackInfoFetch({
