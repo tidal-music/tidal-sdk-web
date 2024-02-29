@@ -32,11 +32,11 @@ jobs:
           encoded_json=$(echo "$fixed_json" | base64 | tr -d '\n')
           echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
         env:
-          TEST_USER: ${{ steps.json.outputs.encoded }}
+          TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
       - name: Cypress run
         uses: cypress-io/github-action@v6
         env:
-          CYPRESS_TEST_USER: "I AM NOT UNDEFINED"
+          CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
         with:
           install: false
           browser: chrome
