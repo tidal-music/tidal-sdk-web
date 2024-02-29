@@ -32,6 +32,7 @@ export default defineConfig(({ command }) => {
     plugins: [dts({ rollupTypes: true, tsconfigPath: 'tsconfig.build.json' })],
     test: {
       coverage: {
+        exclude: ['examples/**'],
         reportOnFailure: true,
         reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
         thresholds: {
