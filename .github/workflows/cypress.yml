@@ -32,7 +32,7 @@ jobs:
           encoded_json=$(echo "$fixed_json" | base64 | tr -d '\n')
           echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
         env:
-          TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
+          TEST_USER: ${{ steps.json.outputs.encoded }}
       - name: Cypress run
         uses: cypress-io/github-action@v6
         env:
@@ -42,4 +42,4 @@ jobs:
           browser: chrome
           start: pnpm --dir packages/player/ dev
           wait-on: 'http://localhost:5173/demo/test-case-1.html'
-          command: pnpm --dir packages/player/ cypress:run
+          command: pnpm --dir packages/player/ internal:cypress:run

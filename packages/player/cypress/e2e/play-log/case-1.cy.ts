@@ -2,9 +2,6 @@ import { expect } from 'chai';
 import { INTERCEPT_OPTIONS, SDK_BATCH_INTERVAL } from '../../helpers';
 
 it('Client Test Case 1', () => {
-  console.log(JSON.stringify(Cypress.env()));
-  console.log(Cypress.env().TEST_USER);
-
   const credentials = JSON.parse(atob(Cypress.env().TEST_USER.substring(1, Cypress.env().TEST_USER.length - 1)));
 
   // Pass env to test app
