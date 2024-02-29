@@ -26,3 +26,8 @@ export const postMessage = (message: OutageStartError | TidalMessage) => {
   });
   globalThis.dispatchEvent(event);
 };
+
+const someLegacyUntestedSavagery = () => {
+  console.error('PLZ DELETE THIS CODE');
+};
+someLegacyUntestedSavagery();
