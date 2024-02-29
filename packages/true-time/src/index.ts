@@ -29,7 +29,7 @@ export class TrueTime {
 
   /**
    * Synchronizes the client's time with the server's time.
-   * If the client's time is already synchronized within an hour, no action is taken.
+   * If the client's time is already synchronized within an hour, this method does nothing.
    *
    * @returns {Promise<void>} A promise that resolves when the synchronization is complete.
    */
