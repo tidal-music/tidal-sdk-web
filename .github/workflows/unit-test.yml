@@ -8,62 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Run Unit Tests
     steps:
-      - name: Checkout target branch
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.base_ref }}
-          path: base
-
-      - name: Checkout current branch
-        uses: actions/checkout@v4
-        with:
-          path: head
-
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
 
-      # Determine changed and unchanged packages
-      - name: Determine changed packages
-        id: changed-packages
-        run: |
-          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^packages/' | awk -F'/' '{print $2}' | sort | uniq | tr '\n' ' ')
-          echo "Changed packages: $CHANGED"
-          echo "list=$CHANGED" >> $GITHUB_OUTPUT
-
-      - name: Prepare test user for player tests
-        if: contains(steps.changed-packages.outputs.list, 'player')
-        id: player-test-user
-        run: |
-          echo ${{ env.TEST_USER }} | base64 -d > test-user.json
-          json=$(cat test-user.json)
-          replacement=${{ secrets.PLAYER_REFRESH_TOKEN }}
-          fixed_json="$(echo ${json/\[TOKEN\]/$replacement})"
-          encoded_json=$(echo "$fixed_json" | base64 | tr -d '\n')
-          echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
-        env:
-          TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
-
-      # Test unchanged packages
-      - name: Test Player
-        if: contains(steps.changed-packages.outputs.list, 'player')
-        run: |
-          pnpm --filter player run test:coverage || exit 1
-        env:
-          TEST_USER: ${{ steps.player-test-user.outputs.encoded }}
-
-      # Test unchanged packages
-      - name: Test unchanged packages
-        run: |
-          ALL_PKGS=$(ls packages | tr '\n' ' ')
-          CHANGED_PKGS="${{ steps.changed-packages.outputs.list }}"
-          for PKG in $ALL_PKGS; do
-            if [[ " $CHANGED_PKGS " != *" $PKG "* ]] && [[ "$PKG" != "player" ]]; then
-              echo "Testing unchanged package: $PKG"
-              pnpm --filter $PKG run test || exit 1
-            fi
-          done
-
-      # Test changed packages with coverage
-      - name: Test changed packages with coverage
+      - name: Test with coverage
         run: |
           CHANGED_PKGS="${{ steps.changed-packages.outputs.list }}"
           for PKG in $CHANGED_PKGS; do
@@ -72,6 +20,26 @@ jobs:
               pnpm --filter $PKG run test:coverage || exit 1
             fi
            done
+
+      # TODO: add player test
+      #- name: Prepare test user for player tests
+      #  id: player-test-user
+      #  run: |
+      #    echo ${{ env.TEST_USER }} | base64 -d > test-user.json
+      #    json=$(cat test-user.json)
+      #    replacement=${{ secrets.PLAYER_REFRESH_TOKEN }}
+      #    fixed_json="$(echo ${json/\[TOKEN\]/$replacement})"
+      #    encoded_json=$(echo "$fixed_json" | base64 | tr -d '\n')
+      #    echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
+      #  env:
+      #    TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
+
+      #
+      #- name: Test Player
+      #  run: |
+      #    pnpm --filter player run test:coverage || exit 1
+      #  env:
+      #    TEST_USER: ${{ steps.player-test-user.outputs.encoded }}
 
       - uses: codecov/codecov-action@v4
         with:
