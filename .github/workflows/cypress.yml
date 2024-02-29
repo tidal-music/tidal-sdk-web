@@ -36,7 +36,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v6
         env:
-          CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
+          CYPRESS_TEST_USER: "I AM NOT UNDEFINED"
         with:
           install: false
           browser: chrome
