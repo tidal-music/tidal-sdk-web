@@ -53,13 +53,12 @@ describe.sequential('monitor', () => {
         method: 'post',
       }),
     );
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call
-    const messageBody = vi
-      .mocked(fetch)
-      // @ts-expect-error we know it;s there
-      .mock.calls[0][1]?.body?.get(
-        'SendMessageBatchRequestEntry.1.MessageBody',
-      );
+    const messageBody = (
+      vi.mocked(fetch).mock.calls[0]?.[1]?.body as URLSearchParams | undefined
+    )?.get('SendMessageBatchRequestEntry.1.MessageBody');
+
     expect(messageBody).toMatch('"consentFilteredEvents":{"event1":1}');
   });
 });

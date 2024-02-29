@@ -8,7 +8,7 @@ export const sha256 = async (message: string) => {
   const len = bytes.byteLength;
   let binary = '';
   for (let i = 0; i < len; i += 1) {
-    binary += String.fromCharCode(bytes[i]);
+    binary += String.fromCharCode(bytes[i]!);
   }
   return globalThis.btoa(binary);
 };
