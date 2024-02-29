@@ -47,20 +47,22 @@ type MessageParams = MessageEvent<
 
 const connect = (event: MessageEvent) => {
   const port = event.ports[0];
-  port.onmessage = async (message: MessageParams) => {
-    const { data } = message;
-    switch (data.action) {
-      case 'persist':
-        db.setItem('events', data.events).catch(console.error);
-        break;
-      case 'init': {
-        await initDB();
-        const events = await getStoredEvents();
-        port.postMessage({ action: 'initSuccess', events });
-        break;
+  if (port) {
+    port.onmessage = async (message: MessageParams) => {
+      const { data } = message;
+      switch (data.action) {
+        case 'persist':
+          db.setItem('events', data.events).catch(console.error);
+          break;
+        case 'init': {
+          await initDB();
+          const events = await getStoredEvents();
+          port.postMessage({ action: 'initSuccess', events });
+          break;
+        }
       }
-    }
-  };
+    };
+  }
 };
 
 // @ts-expect-error - web worker type

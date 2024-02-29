@@ -88,8 +88,8 @@ describe('TrueTime', () => {
       vi.spyOn(globalThis, 'fetch');
       await trueTime.synchronize();
 
-      const callArg = vi.mocked(fetch).mock.calls[0][0] as URL;
-      expect(callArg.href).toEqual('https://time.google.com/');
+      const callArg = vi.mocked(fetch)?.mock.calls[0]?.[0] as URL;
+      expect(callArg?.href).toEqual('https://time.google.com/');
     });
   });
 });

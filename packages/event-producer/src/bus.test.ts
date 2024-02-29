@@ -19,7 +19,7 @@ describe('bus', () => {
     bus.bus(callback);
     const message: TidalMessage = { name: 'test' };
     bus.postMessage(message);
-    const event = dispatchEvent.mock.calls[0][0] as CustomEvent;
+    const event = dispatchEvent.mock.calls[0]?.[0] as CustomEvent;
     expect(event.detail).toEqual(message);
   });
 });

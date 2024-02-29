@@ -121,7 +121,7 @@ export function marshalLabel(deviceLabel: string, operatingSystem: string) {
 
   if (osName.includes('mac')) {
     // Strip the output type
-    nicerLabel = deviceLabel.split('(')[0].trim();
+    nicerLabel = (deviceLabel.split('(')[0] ?? '').trim();
   }
 
   return nicerLabel;
