@@ -3,12 +3,12 @@ name: Cypress Tests
 on:
   push:
     branches: [ "main", "jeremy/gh-action-cypress" ]
-    paths:
-      - packages/player/**
+#    paths:
+#      - packages/player/**
   pull_request:
     branches: [ "main", "jeremy/gh-action-cypress"]
-    paths:
-      - packages/player/**
+#    paths:
+#      - packages/player/**
 
 concurrency:
   group: cypress-${{ github.event.pull_request.number || github.ref }}
