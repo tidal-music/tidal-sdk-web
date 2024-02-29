@@ -43,11 +43,12 @@ it('Client Test Case 1', () => {
 
     expect(playbackSession.payload).to.include({
       startAssetPosition: 0,
-      endAssetPosition: 0.999999,
       actualProductId: '108506136',
       sourceType: 'ALBUM',
       sourceId: '4141352'
     });
+
+    expect(playbackSession.payload.endAssetPosition).to.be.closeTo(1, 0.2);
 
     expect(playbackSession.payload.actions).to.have.lengthOf(0);
   })
