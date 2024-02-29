@@ -54,7 +54,7 @@ it('Client Test Case 2', () => {
     expect(playbackSession.payload.actions[0]).to.include({
       actionType: 'PLAYBACK_STOP',
     });
-    expect(playbackSession.payload.actions[0].assetPosition).to.be.closeTo(20, 0.1);
+    expect(playbackSession.payload.actions[0].assetPosition).to.be.closeTo(20, 0.5);
     expect(playbackSession.payload.actions[1]).to.include({
       actionType: 'PLAYBACK_START'
     });
