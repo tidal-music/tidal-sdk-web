@@ -25,14 +25,14 @@ jobs:
       - name: Prepare test user for player tests
         id: json
         run: |
-          echo ${{ env.TEST_USER }} | base64 -d > test-user.json
+          echo ${{ env.CYPRESS_TEST_USER }} | base64 -d > test-user.json
           json=$(cat test-user.json)
           replacement=${{ secrets.PLAYER_REFRESH_TOKEN }}
           fixed_json="$(echo ${json/\[TOKEN\]/$replacement})"
           encoded_json=$(echo "$fixed_json" | base64 | tr -d '\n')
           echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
         env:
-          TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
+          CYPRESS_TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
