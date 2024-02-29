@@ -14,7 +14,7 @@ export default defineConfig({
     coverage: {
       exclude: ['./src/index.ts'].concat(configDefaults.coverage.exclude ?? []), // ignore barrel file
       reportOnFailure: true,
-      reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
+      reporter: process.env.CI ? ['lcov'] : ['html'],
       thresholds: {
         autoUpdate: true,
         branches: 42.85,

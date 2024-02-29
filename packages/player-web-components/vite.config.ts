@@ -18,7 +18,7 @@ export default defineConfig({
     coverage: {
       exclude: ['./src/index.ts'].concat(configDefaults.coverage.exclude ?? []),
       reportOnFailure: true,
-      reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
+      reporter: process.env.CI ? ['lcov'] : ['html'],
       thresholds: {
         autoUpdate: true,
         branches: 66.66,

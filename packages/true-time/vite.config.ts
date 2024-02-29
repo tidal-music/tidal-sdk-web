@@ -13,7 +13,7 @@ export default defineConfig({
   test: {
     coverage: {
       reportOnFailure: true,
-      reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
+      reporter: process.env.CI ? ['lcov'] : ['html'],
       thresholds: {
         branches: 80,
         functions: 80,

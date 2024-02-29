@@ -16,7 +16,7 @@ export default defineConfig({
   },
   test: {
     coverage: {
-      reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
+      reporter: process.env.CI ? ['lcov'] : ['html'],
     },
     globals: true,
     restoreMocks: true,
