@@ -6,43 +6,10 @@ on:
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
-    permissions:
-      # Required to put a comment into the pull-request
-      pull-requests: write
     name: Run Unit Tests
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v42
-        with:
-          files_yaml: |
-            auth:
-              - 'packages/auth/**'
-            common:
-              - 'packages/common/**'
-            event-producer:
-              - 'packages/event-producer/**'
-            player:
-              - 'packages/player/**'
-            player-web-components:
-              - 'packages/player-web-components/**'
-            template:
-              - 'packages/template/**'
-            true-time:
-              - 'packages/true-time/**'
-        # Optionally set `files_yaml_from_source_file` to read the YAML from a file. e.g `files_yaml_from_source_file: .github/changed-files.yml`
-
-      - name: Run step if test file(s) change
-        # NOTE: Ensure all outputs are prefixed by the same key used above e.g. `test_(...)` | `doc_(...)` | `src_(...)` when trying to access the `any_changed` output.
-        if: steps.changed-files.outputs.any_changed == 'true'
-        env:
-          TEST_ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.any_changed_files }}
-        run: |
-          echo "One or more test file(s) has changed."
-          echo "List all the files that have changed: $TEST_ALL_CHANGED_FILES"
-
       - name: Prepare test user for player tests
         id: json
         run: |
@@ -56,43 +23,6 @@ jobs:
           TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
       - name: Run Tests
         run: |
-          echo "Running tests for ${{ inputs.modules }}"
-          pnpm test:coverage
+          pnpm test
         env:
           TEST_USER: ${{ steps.json.outputs.encoded }}
-      - name: Report Auth Coverage
-        if: steps.changed-files.outputs.auth_any_changed
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: 'Auth'
-          working-directory: 'packages/auth'
-      - name: Report Common Coverage
-        if: steps.changed-files.outputs.common_any_changed
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: 'Common'
-          working-directory: 'packages/common'
-      - name: Report Event-Producer Coverage
-        if: steps.changed-files.outputs.event-producer_any_changed
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: 'Event Producer'
-          working-directory: 'packages/event-producer'
-      - name: Report Player-Web-Components Coverage
-        if: steps.changed-files.outputs.player-web-components_any_changed
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: 'Player Web Components'
-          working-directory: 'packages/player-web-components'
-      - name: Report Template Coverage
-        if: steps.changed-files.outputs.template_any_changed
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: 'Template'
-          working-directory: 'packages/template'
-      - name: Report True-Time Coverage
-        if: steps.changed-files.outputs.true-time_any_changed
-        uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: 'True Time'
-          working-directory: 'packages/true-time'
