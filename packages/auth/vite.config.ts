@@ -37,9 +37,9 @@ export default defineConfig(({ command }) => {
         reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
         thresholds: {
           branches: 80,
-          functions: 73.77,
-          lines: 69.41,
-          statements: 69.41,
+          functions: 80,
+          lines: 80,
+          statements: 80,
         },
       },
       globals: true,
