@@ -1,13 +1,18 @@
 name: Cypress Tests
 
+# Paths: Cypress is only used in player pkg, so only run this workflow
+# when something in player changes, or in true-time since that's a hard dep.defaults:
+# (Auth is provided via credentials provider and not directly used)
 on:
   push:
     branches: [ "main" ]
     paths:
+      - packages/true-time/**
       - packages/player/**
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main"]
     paths:
+      - packages/true-time/**
       - packages/player/**
 
 concurrency:
@@ -35,9 +40,11 @@ jobs:
           TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
       - name: Cypress run
         uses: cypress-io/github-action@v6
+        env:
+          CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
         with:
           install: false
           browser: chrome
           start: pnpm --dir packages/player/ dev
           wait-on: 'http://localhost:5173/demo/test-case-1.html'
-          command: pnpm --dir packages/player/ cypress:run
+          command: pnpm --dir packages/player/ internal:cypress:run
