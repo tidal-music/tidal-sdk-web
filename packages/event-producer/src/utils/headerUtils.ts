@@ -11,10 +11,7 @@ export const getEventHeaders = ({
   platformData: {
     browserName,
     browserVersion,
-    deviceVendor,
-    model,
     osName,
-    version: osVersion,
   },
   sentTimestamp,
   suppliedHeaders,
@@ -37,10 +34,7 @@ export const getEventHeaders = ({
     'browser-version': browserVersion,
     'client-id': clientId,
     'consent-category': consentCategory,
-    'device-model': model,
-    'device-vendor': deviceVendor,
     'os-name': osName,
-    'os-version': osVersion,
     'requested-sent-timestamp': sentTimestamp,
   };
 

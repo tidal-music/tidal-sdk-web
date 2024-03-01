@@ -13,10 +13,7 @@ export const config: Config = {
   platform: {
     browserName: 'brave',
     browserVersion: 'final.final.final',
-    deviceVendor: 'baconfari',
-    model: 'the XL',
     osName: 'Bic Mac',
-    version: '666',
   },
   tlConsumerUri: '/api/event-batch',
   tlPublicConsumerUri: '/api/public/event-batch',
