@@ -8,11 +8,7 @@ export const getEventHeaders = ({
   authorize = true,
   consentCategory,
   credentials,
-  platformData: {
-    browserName,
-    browserVersion,
-    osName,
-  },
+  platformData: { browserName, browserVersion, osName },
   sentTimestamp,
   suppliedHeaders,
 }: {
