@@ -42,6 +42,4 @@ And follow the prompts.
 
 4. Check in with your teammates, lead, the module's owner etc. to make sure the release is ready to go.
 
-5. Click `Publish` at the bottom of your draft release. This will trigger a workflow to tag the release commit and attach artifacts to the release.
-
-6. Do the release to `Npm` from your machine using `pnpm publish --access public` in a package folder, with a `pnpm clean` first to be on the safe side. Then check that the built files look okay before using your browser to authorize the release (requires publish access to the [@tidal-music Npm org](https://www.npmjs.com/org/tidal-music)).
+5. Click `Publish` at the bottom of your draft release. This will trigger a workflow to tag the release commit and attach artifacts to the release. It will also trigger publishing the package to `Npm`, where it should appear under [@tidal-music Npm org](https://www.npmjs.com/org/tidal-music) shortly!
