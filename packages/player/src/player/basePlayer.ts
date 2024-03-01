@@ -108,6 +108,7 @@ export class BasePlayer {
         'streaming_metrics:playback_statistics:idealStartTimestamp',
         {
           detail: playerState.preloadedStreamingSessionId,
+          startTime: trueTime.now(),
         },
       );
     }
@@ -289,6 +290,7 @@ export class BasePlayer {
       'streaming_metrics:playback_statistics:actualStartTimestamp',
       {
         detail: streamingSessionId,
+        startTime: trueTime.now(),
       },
     );
 

@@ -156,7 +156,7 @@ export async function getAppropriatePlayer(
     );
   }
 
-  const { player } = appropriatePlayers[0];
+  const { player } = appropriatePlayers[0]!;
 
   switch (player) {
     case 'shaka':

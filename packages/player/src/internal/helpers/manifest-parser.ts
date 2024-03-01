@@ -114,7 +114,7 @@ function dashFindCodec(manifest: string): Codec | undefined {
     return undefined;
   }
 
-  const codecs = search[2];
+  const codecs = search[2] ?? '';
 
   if (codecs.includes('mp4a') || codecs.includes('aac')) {
     return 'aac';
@@ -161,7 +161,7 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
     playbackInfo.manifestMimeType === 'application/vnd.tidal.emu'
   ) {
     const parsedManifest = parseJSONManifest(playbackInfo.manifest);
-    const streamUrl = parsedManifest.urls[0];
+    const streamUrl = parsedManifest.urls[0]!;
     const streamFormat = extractStreamFormat(
       parsedManifest,
       'audioQuality' in playbackInfo ? playbackInfo.audioQuality : null,

@@ -420,6 +420,7 @@ export default class ShakaPlayer extends BasePlayer {
 
         performance.mark('streaming_metrics:drm_license_fetch:startTimestamp', {
           detail: streamingSessionId,
+          startTime: trueTime.now(),
         });
 
         const streamInfo =
@@ -444,6 +445,7 @@ export default class ShakaPlayer extends BasePlayer {
         if (this.currentStreamingSessionId) {
           performance.mark('streaming_metrics:drm_license_fetch:endTimestamp', {
             detail: this.currentStreamingSessionId,
+            startTime: trueTime.now(),
           });
 
           performance.measure('streaming_metrics:drm_license_fetch', {
