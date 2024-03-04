@@ -34,8 +34,5 @@ export type EPEvent = Omit<SentEvent, 'consentCategory' | 'payload'> & {
 export type PlatformData = {
   browserName: string;
   browserVersion: string;
-  deviceVendor: string;
-  model: string;
   osName: string;
-  version: string;
 };

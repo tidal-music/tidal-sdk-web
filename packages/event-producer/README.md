@@ -39,7 +39,7 @@ Run `pnpm i` in the event-producer root folder.
 ## How to use
 
 ```typescript
-import { init, dispatchEvent, bus } from '@tidal-music/event-producer';
+import { init, sendEvent, bus } from '@tidal-music/event-producer';
 import { credentialsProvider } from './credentialsProvider';
 
 
@@ -76,8 +76,8 @@ async function main() {
     tlPublicConsumerUri: '/api/public/event-batch',
   });
 
-  // Now we can dispatch events
-  dispatchEvent({
+  // Now we can send events
+  sendEvent({
     consentCategory: 'PERFORMANCE',
     name: 'listened_to_track',
     payload: {

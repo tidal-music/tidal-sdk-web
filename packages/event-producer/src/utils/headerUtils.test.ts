@@ -25,10 +25,7 @@ describe('headerUtils', () => {
       'browser-version': config.platform.browserVersion,
       'client-id': 'fakeClientId',
       'consent-category': 'NECESSARY',
-      'device-model': config.platform.model,
-      'device-vendor': config.platform.deviceVendor,
       'os-name': config.platform.osName,
-      'os-version': config.platform.version,
       'requested-sent-timestamp': '2023',
       someXtraHeader: 'eggs',
     });
