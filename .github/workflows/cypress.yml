@@ -5,12 +5,12 @@ name: Cypress Tests
 # (Auth is provided via credentials provider and not directly used)
 on:
   push:
-    branches: [ "main", "re-enable-cypress" ]
+    branches: [ "main" ]
     paths:
       - packages/true-time/**
       - packages/player/**
   pull_request:
-    branches: [ "main", "re-enable-cypress" ]
+    branches: [ "main" ]
     paths:
       - packages/true-time/**
       - packages/player/**

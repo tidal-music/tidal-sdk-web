@@ -32,7 +32,7 @@ To load TIDAL Player into a project locally without publishing to npm; using `pn
 
 1. Open the package.json in the project. (in the case of webclient, the root one)
 2. Add or edit a `"resolutions"` property on the top level. (this is an object)
-3. Add an entry for @tidal-music/player like so: `"@tidal-music/player": "file:/Users/yourusername/dev/tidal-sdk-web/packages/player"`
+3. Add an entry for @tidal-music/player like so: `"@tidal-music/player": "file:/Users/<your-username>/dev/tidal-sdk-web/packages/player"`
 4. Run `npm/yarn/pnpm install` in your destination project.
 
 !! Remove the entry in `"resolution"` and run `npm/yarn/pnpm install` again when you are done testing to have the NPM version of the package load instead.
