@@ -26,6 +26,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - uses: ./.github/actions/setup
+      - uses: ./.github/actions/build-projects
       - name: Prepare test user for player tests
         id: json
         run: |
@@ -42,8 +43,8 @@ jobs:
         env:
           CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
         with:
-          install: true
+          install: false
           browser: chrome
-          start: pnpm --dir packages/player dev
+          start: pnpm --dir packages/player/ dev
           wait-on: 'http://localhost:5173/demo/test-case-1.html'
-          command: pnpm --dir packages/player internal:cypress:run
+          command: pnpm --dir packages/player/ internal:cypress:run
