@@ -42,7 +42,7 @@ jobs:
         env:
           CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
         with:
-          install: false
+          install: true
           browser: chrome
           start: pnpm --dir packages/player dev
           wait-on: 'http://localhost:5173/demo/test-case-1.html'
