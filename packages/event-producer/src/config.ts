@@ -16,6 +16,8 @@ export type Config = {
   blockedConsentCategories: BlockedConsentCategories;
   // An access token provider, used by the EventProducer to get access token.
   credentialsProvider?: CredentialsProvider;
+  // debug/testing utils
+  debug?: boolean;
   // frequency of sending events to TL Consumer
   eventBatchInterval?: number;
   // frequency of monitoring info sending
