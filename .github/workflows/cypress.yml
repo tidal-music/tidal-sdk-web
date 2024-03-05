@@ -25,6 +25,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Set up Cypress binary cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/build-projects
       - name: Prepare test user for player tests
@@ -45,6 +50,7 @@ jobs:
         with:
           install: false
           browser: chrome
+          project: packages/player
           start: pnpm --dir packages/player/ dev
           wait-on: 'http://localhost:5173/demo/test-case-1.html'
           command: pnpm --dir packages/player/ internal:cypress:run
