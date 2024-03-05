@@ -50,6 +50,7 @@ jobs:
         with:
           install: false
           browser: chrome
+          working-directory: ./packages/player
           start: pnpm --dir packages/player/ dev
           wait-on: 'http://localhost:5173/demo/test-case-1.html'
           command: pnpm --dir packages/player/ internal:cypress:run
