@@ -66,8 +66,8 @@ importers:
         specifier: workspace:*
         version: 'link:'
       openapi-fetch:
-        specifier: 0.9.2
-        version: 0.9.2
+        specifier: 0.9.3
+        version: 0.9.3
     devDependencies:
       '@tidal-music/auth':
         specifier: workspace:^
@@ -7636,8 +7636,8 @@ packages:
       is-wsl: 2.2.0
     dev: true
 
-  /openapi-fetch@0.9.2:
-    resolution: {integrity: sha512-EEzVCoGAbGP1Z3eTZXI0urHtvb+JRKLnPbnemsUzeTWcHCaAXsdhAWYfdLAx4fTNNUaL23BQLup8dQjMMkCRqA==}
+  /openapi-fetch@0.9.3:
+    resolution: {integrity: sha512-tC1NDn71vJHeCzu+lYdrnIpgRt4GxR0B4eSwXNb15ypWpZcpaEOwHFkoz8FcfG5Fvqkz2P0Fl9zQF1JJwBjuvA==}
     dependencies:
       openapi-typescript-helpers: 0.0.7
     dev: false
