@@ -41,17 +41,16 @@ export function findBestMatch(
     );
   }
 
-  const ratings = [];
+  const ratings: Array<{ rating: number; target: string }> = [];
   let bestMatchIndex = 0;
 
-  for (let i = 0; i < targetStrings.length; i++) {
-    const currentTargetString = targetStrings[i];
+  targetStrings.forEach(function (currentTargetString) {
     const currentRating = compareTwoStrings(mainString, currentTargetString);
     ratings.push({ rating: currentRating, target: currentTargetString });
-    if (currentRating > ratings[bestMatchIndex].rating) {
-      bestMatchIndex = i;
+    if (currentRating > (ratings[bestMatchIndex]?.rating ?? 0)) {
+      bestMatchIndex = ratings.length - 1;
     }
-  }
+  });
 
   const bestMatch = ratings[bestMatchIndex];
 

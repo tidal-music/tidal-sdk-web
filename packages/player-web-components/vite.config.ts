@@ -1,5 +1,5 @@
 import dts from 'vite-plugin-dts';
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 export default defineConfig({
   build: {
@@ -16,7 +16,16 @@ export default defineConfig({
   },
   test: {
     coverage: {
+      exclude: ['./src/index.ts'].concat(configDefaults.coverage.exclude ?? []),
+      reportOnFailure: true,
       reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
+      thresholds: {
+        autoUpdate: true,
+        branches: 66.66,
+        functions: 30,
+        lines: 8.81,
+        statements: 8.81,
+      },
     },
     globals: true,
     restoreMocks: true,

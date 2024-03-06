@@ -13,7 +13,7 @@ export type EventHeaders = Record<string, string>;
 /**
  * This is an incoming raw event.
  */
-export type DispatchedEvent = {
+export type SentEvent = {
   consentCategory: ConsentCategory;
   headers?: EventHeaders;
   name: string;
@@ -23,7 +23,7 @@ export type DispatchedEvent = {
 /**
  * This is an outgoing prepared event.
  */
-export type EPEvent = Omit<DispatchedEvent, 'consentCategory' | 'payload'> & {
+export type EPEvent = Omit<SentEvent, 'consentCategory' | 'payload'> & {
   id: string;
   payload: string;
 };
@@ -34,8 +34,5 @@ export type EPEvent = Omit<DispatchedEvent, 'consentCategory' | 'payload'> & {
 export type PlatformData = {
   browserName: string;
   browserVersion: string;
-  deviceVendor: string;
-  model: string;
   osName: string;
-  version: string;
 };

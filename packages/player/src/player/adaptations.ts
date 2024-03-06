@@ -28,15 +28,15 @@ export function shakaTrackToAdaptation(
   };
 }
 
-export function saveAdaptation(
+export async function saveAdaptation(
   streamingSessionId: string,
   activeTrack: shaka.extern.Track,
   currentTime: number,
-): Adaptation {
+): Promise<Adaptation> {
   const adaptation = shakaTrackToAdaptation(activeTrack, currentTime);
 
   if (adaptation.mimeType && adaptation.codecs) {
-    StreamingMetrics.playbackStatistics({
+    await StreamingMetrics.playbackStatistics({
       adaptations: [adaptation],
       streamingSessionId,
     });
@@ -51,7 +51,7 @@ export function registerAdaptations(shakaPlayer: shaka.Player) {
   const onAdaptation = () => {
     const activeTrack: shaka.extern.Track = shakaPlayer
       .getVariantTracks()
-      .filter(v => v.active)[0];
+      .filter(v => v.active)[0]!;
 
     const mediaElement = shakaPlayer.getMediaElement();
 
@@ -60,7 +60,7 @@ export function registerAdaptations(shakaPlayer: shaka.Player) {
         currentStreamingSessionId,
         activeTrack,
         mediaElement.currentTime,
-      );
+      ).catch(console.error);
     }
   };
 

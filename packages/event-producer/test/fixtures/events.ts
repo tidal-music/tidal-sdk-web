@@ -1,6 +1,6 @@
-import type { DispatchedEvent, EPEvent } from '../../src';
+import type { EPEvent, SentEvent } from '../../src';
 
-export const eventPayload1: DispatchedEvent = {
+export const eventPayload1: SentEvent = {
   consentCategory: 'NECESSARY',
   name: 'display_page',
   payload: {

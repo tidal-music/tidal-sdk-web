@@ -1,3 +1,4 @@
+/* c8 ignore start index file */
 import type { CredentialsProvider } from '@tidal-music/common';
 
 import { bus, getCredentials } from './auth/auth';

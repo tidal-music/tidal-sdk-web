@@ -543,7 +543,7 @@ export default class NativePlayer extends BasePlayer {
 
     this.#player.stop();
 
-    if (this.playbackState !== 'IDLE' && this.hasStarted()) {
+    if (this.playbackState !== 'IDLE') {
       this.finishCurrentMediaProduct('skip');
     }
 

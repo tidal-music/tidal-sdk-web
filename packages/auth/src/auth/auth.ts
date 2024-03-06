@@ -96,24 +96,26 @@ export const init = async ({
   tidalAuthServiceBaseUri,
   tidalLoginServiceBaseUri,
 }: InitArgs) => {
-  const persistedUser = await loadCredentials(credentialsStorageKey);
+  const persistedCredentials = await loadCredentials(credentialsStorageKey);
 
   const credentials = {
-    ...persistedUser,
+    ...persistedCredentials,
     clientId,
     ...(clientSecret && {
       clientSecret,
     }),
     clientUniqueKey,
     credentialsStorageKey,
+    // we store the clientSecret separately to determine if a token needs to be upgraded
+    previousClientSecret: persistedCredentials?.clientSecret,
     scopes: scopes ?? [],
     tidalAuthServiceBaseUri:
       tidalAuthServiceBaseUri ??
-      persistedUser?.tidalAuthServiceBaseUri ??
+      persistedCredentials?.tidalAuthServiceBaseUri ??
       TIDAL_AUTH_SERVICE_BASE_URI,
     tidalLoginServiceBaseUri:
       tidalLoginServiceBaseUri ??
-      persistedUser?.tidalLoginServiceBaseUri ??
+      persistedCredentials?.tidalLoginServiceBaseUri ??
       TIDAL_LOGIN_SERVICE_BASE_URI,
   };
 
@@ -398,7 +400,7 @@ const refreshAccessToken = async () => {
 
     const jsonResponse = (await response.json()) as TokenJSONResponse;
     return persistToken(jsonResponse);
-  } else if (state.credentials?.clientSecret) {
+  } else {
     return getTokenThroughClientCredentials();
   }
 };
@@ -436,6 +438,8 @@ const upgradeToken = async () => {
 
     const jsonResponse = (await response.json()) as TokenJSONResponse;
     return persistToken(jsonResponse);
+  } else {
+    return getTokenThroughClientCredentials();
   }
 };
 
@@ -496,6 +500,7 @@ export const getCredentials: GetCredentials = async (
   });
 };
 
+// eslint-disable-next-line complexity
 const getCredentialsInternal = async (apiErrorSubStatus?: string) => {
   if (state.credentials) {
     state.pending = true;
@@ -516,10 +521,17 @@ const getCredentialsInternal = async (apiErrorSubStatus?: string) => {
         throw new IllegalArgumentError(authErrorCodeMap.illegalArgumentError);
       }
 
-      if (state.credentials.clientId !== accessToken.clientId) {
+      const shouldUpgradeToken =
+        state.credentials.clientId !== accessToken?.clientId ||
+        state.credentials.previousClientSecret !==
+          state.credentials.clientSecret;
+
+      if (shouldUpgradeToken) {
         const upgradeTokenResponse = await upgradeToken();
         if (upgradeTokenResponse && 'token' in upgradeTokenResponse) {
           return upgradeTokenResponse;
+        } else {
+          throw new RetryableError(authErrorCodeMap.retryableError);
         }
       }
 
@@ -630,12 +642,16 @@ const persistToken = async (jsonResponse: TokenJSONResponse) => {
 
   const { clientId, clientUniqueKey, scopes } = state.credentials;
 
+  const grantedScopes = jsonResponse.scope?.length
+    ? jsonResponse.scope?.split(' ')
+    : [];
+
   const accessToken: Credentials = {
     clientId,
     clientUniqueKey,
     // `expires_in` is sent in seconds, needs transformation to milliseconds
     expires: trueTime.now() + jsonResponse.expires_in * 1000,
-    grantedScopes: jsonResponse.scope?.split(' '),
+    grantedScopes,
     requestedScopes: scopes,
     token: jsonResponse.access_token,
     ...(jsonResponse.user_id && {
