@@ -269,7 +269,7 @@ export interface components {
        */
       releaseDate?: string;
       properties?: components["schemas"]["Video Properties"];
-    }, "album" | "copyright" | "duration" | "id" | "isrc" | "releaseDate" | "tidalUrl" | "title" | "trackNumber" | "version" | "volumeNumber">;
+    }, "album" | "copyright" | "duration" | "id" | "isrc" | "popularity" | "releaseDate" | "tidalUrl" | "title" | "trackNumber" | "version" | "volumeNumber">;
     "Video Resource": {
       /**
        * @description Resource url for this particular dimension
@@ -328,7 +328,7 @@ export interface components {
     } & Omit<components["schemas"]["Album Item"], "artifactType"> & {
       mediaMetadata?: components["schemas"]["MediaMetadata"];
       properties?: components["schemas"]["Track Properties"];
-    }, "album" | "copyright" | "duration" | "id" | "isrc" | "tidalUrl" | "title" | "trackNumber" | "version" | "volumeNumber">;
+    }, "album" | "copyright" | "duration" | "id" | "isrc" | "popularity" | "tidalUrl" | "title" | "trackNumber" | "version" | "volumeNumber">;
     "Tracks Multi-Status Response": {
       /** @description List of tracks with relevant statuses and execution comment */
       data?: components["schemas"]["Multi-Status Response Data:Track"][];
@@ -381,6 +381,12 @@ export interface components {
        * @example https://tidal.com/browse/artist/1566
        */
       tidalUrl: string;
+      /**
+       * Format: double
+       * @description Artist popularity (ranged in 0.00 ... 1.00). Conditionally visible
+       * @example 0.56
+       */
+      popularity: number;
     };
     "Artists Multi-Status Response": {
       /** @description List of artists with relevant statuses and execution comment */
@@ -501,6 +507,12 @@ export interface components {
        */
       tidalUrl: string;
       providerInfo?: components["schemas"]["ProviderInfo"];
+      /**
+       * Format: double
+       * @description Album popularity (ranged in 0.00 ... 1.00). Conditionally visible
+       * @example 0.56
+       */
+      popularity: number;
     };
     "Multi Status Pagination Aware Albums Response": {
       /** @description List of albums with relevant statuses and execution comment */
@@ -573,17 +585,23 @@ export interface components {
        */
       title: string;
       /**
-       * @description ISRC code
-       * @example TIDAL2274
-       */
-      isrc: string;
-      /**
        * @description Copyright information
        * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
        */
       copyright: string;
       /** @description Contributing artists */
       artists?: components["schemas"]["Simple Artist"][];
+      /**
+       * Format: double
+       * @description Artist popularity (ranged in 0.00 ... 1.00). Conditionally visible
+       * @example 0.56
+       */
+      popularity: number;
+      /**
+       * @description ISRC code
+       * @example TIDAL2274
+       */
+      isrc: string;
       /**
        * Format: int32
        * @description Video number
