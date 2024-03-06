@@ -26,7 +26,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - uses: ./.github/actions/build-projects
       - name: Prepare test user for player tests
         id: json
         run: |
@@ -38,6 +37,11 @@ jobs:
           echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
         env:
           TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
+      - name: Set up Cypress binary cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Cypress run
         uses: cypress-io/github-action@v6
         env:
