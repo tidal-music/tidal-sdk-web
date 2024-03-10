@@ -18,8 +18,8 @@
     "eslint": "8.57.0",
     "eslint-config-tidal": "3.2.0",
     "eslint-plugin-disable-autofix": "4.2.0",
-    "eslint-plugin-jsdoc": "48.2.0",
-    "typedoc": "0.25.10"
+    "eslint-plugin-jsdoc": "48.2.1",
+    "typedoc": "0.25.12"
   },
   "engines": {
     "node": ">=20.11.1",
