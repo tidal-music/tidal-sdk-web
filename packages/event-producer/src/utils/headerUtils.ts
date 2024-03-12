@@ -35,7 +35,7 @@ export const getEventHeaders = ({
   };
 
   if (authorize && accessToken) {
-    headers.Authorization = accessToken;
+    headers.authorization = accessToken;
   }
 
   if (suppliedHeaders) {
