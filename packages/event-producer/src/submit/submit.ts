@@ -87,6 +87,8 @@ export const submitEvents = async ({
       return submitEvents({ config });
     }
   } else {
+    const respStr = await res.text();
+    console.error('Error sending event batch:', respStr);
     setOutage(true);
   }
   return Promise.resolve();
