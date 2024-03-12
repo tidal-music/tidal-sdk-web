@@ -18,9 +18,9 @@ describe('headerUtils', () => {
       },
     });
     expect(headers).toEqual({
-      Authorization: credentials1.token,
       'app-name': config.appInfo.appName,
       'app-version': config.appInfo.appVersion,
+      authorization: credentials1.token,
       'browser-name': config.platform.browserName,
       'browser-version': config.platform.browserVersion,
       'client-id': 'fakeClientId',
