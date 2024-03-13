@@ -1,4 +1,4 @@
-import type { EPEvent } from '../types';
+import type { Config, EPEvent } from '../types';
 
 import WorkerUrl from './worker?sharedworker&url';
 
@@ -55,14 +55,23 @@ export function setEvents(newEvents: Array<EPEvent>) {
  *
  * @returns {Promise<void>}
  */
-export const initDB = (): Promise<void> =>
+export const initDB = (c?: {
+  feralEventTypes: Config['feralEventTypes'];
+}): Promise<void> =>
   new Promise<void>((resolve, reject) => {
     worker.port.onmessage = (message: WorkerMessages) => {
       const { data } = message;
       switch (data.action) {
         case 'initSuccess': {
           if (data.events) {
-            setEvents(getEvents().concat(data.events));
+            // remove events in the wild that might be jamming the queue
+            const events =
+              c?.feralEventTypes && c.feralEventTypes.length > 0
+                ? data.events.filter(
+                    event => !c.feralEventTypes.includes(event.name),
+                  )
+                : data.events;
+            setEvents(getEvents().concat(events));
           }
           resolve();
           break;

@@ -19,3 +19,10 @@ export const epEvent1: EPEvent = {
   name: 'fakeName',
   payload: JSON.stringify(eventPayload1.payload),
 };
+
+export const epEvent2: EPEvent = {
+  headers: {},
+  id: 'idnr2',
+  name: 'bacon',
+  payload: JSON.stringify(eventPayload1.payload),
+};
