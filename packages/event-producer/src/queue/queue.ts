@@ -64,12 +64,11 @@ export const initDB = (c?: {
       switch (data.action) {
         case 'initSuccess': {
           if (data.events) {
+            const feralEvents = c?.feralEventTypes ?? [];
             // remove events in the wild that might be jamming the queue
             const events =
-              c?.feralEventTypes && c.feralEventTypes.length > 0
-                ? data.events.filter(
-                    event => !c.feralEventTypes.includes(event.name),
-                  )
+              feralEvents.length > 0
+                ? data.events.filter(event => !feralEvents.includes(event.name))
                 : data.events;
             setEvents(getEvents().concat(events));
           }
