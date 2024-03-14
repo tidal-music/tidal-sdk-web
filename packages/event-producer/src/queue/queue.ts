@@ -55,7 +55,7 @@ export function setEvents(newEvents: Array<EPEvent>) {
  *
  * @returns {Promise<void>}
  */
-export const initDB = (c?: {
+export const initDB = (options?: {
   feralEventTypes: Config['feralEventTypes'];
 }): Promise<void> =>
   new Promise<void>((resolve, reject) => {
@@ -64,7 +64,7 @@ export const initDB = (c?: {
       switch (data.action) {
         case 'initSuccess': {
           if (data.events) {
-            const feralEvents = c?.feralEventTypes ?? [];
+            const feralEvents = options?.feralEventTypes ?? [];
             // remove events in the wild that might be jamming the queue
             const events =
               feralEvents.length > 0
