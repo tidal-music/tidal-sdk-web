@@ -4,6 +4,7 @@ import type { Config } from '../config';
 import * as monitor from '../monitor';
 import { isOutage, setOutage } from '../outage';
 import * as queue from '../queue';
+import type { EPEvent } from '../types';
 import { eventsToSqsRequestParameters } from '../utils/sqsParamsConverter';
 
 /**
@@ -90,6 +91,31 @@ export const submitEvents = async ({
     const respStr = await res.text();
     console.error('Error sending event batch:', respStr);
     setOutage(true);
+
+    const xml = new window.DOMParser().parseFromString(respStr, 'text/xml');
+    if (
+      xml.querySelector('ErrorResponse Error Type')?.textContent === 'Sender'
+    ) {
+      // If the error is due to duplicate event ids, we dedupe the queue for next run.
+      if (
+        xml.querySelector('ErrorResponse Error Code')?.textContent ===
+        'AWS.SimpleQueueService.BatchEntryIdsNotDistinct'
+      ) {
+        const currentEvents = queue.getEvents();
+        const eventData: Record<string, EPEvent> = {};
+        const uniqueueIds = new Set(
+          currentEvents.map(e => {
+            eventData[e.id] = e;
+            return e.id;
+          }),
+        );
+        const dedupedEvents = Array.from(uniqueueIds).map(
+          id => eventData[id],
+        ) as Array<EPEvent>;
+
+        queue.setEvents(dedupedEvents);
+      }
+    }
   }
   return Promise.resolve();
 };
