@@ -103,13 +103,13 @@ export const submitEvents = async ({
       ) {
         const currentEvents = queue.getEvents();
         const eventData: Record<string, EPEvent> = {};
-        const uniqueueIds = new Set(
-          currentEvents.map(e => {
-            eventData[e.id] = e;
-            return e.id;
+        const uniqueIds = new Set(
+          currentEvents.map(event => {
+            eventData[event.id] = event;
+            return event.id;
           }),
         );
-        const dedupedEvents = Array.from(uniqueueIds).map(
+        const dedupedEvents = Array.from(uniqueIds).map(
           id => eventData[id],
         ) as Array<EPEvent>;
 
