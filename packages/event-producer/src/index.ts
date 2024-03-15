@@ -42,23 +42,26 @@ export const init = (config: Config) => _init(config);
 export { bus };
 
 /* c8 ignore start debug only */
-// @ts-expect-error dev builds only
-globalThis.__tepDebug = {
-  bus,
-  dropEvent: () => {
-    monitor.registerDroppedEvent({
-      eventName: 'bacon',
-      reason: 'consentFilteredEvents',
-    });
-  },
-  dumpConfig: () => getConfig(),
-  flushEvents: () => submitEvents({ config: getConfig() }).catch(console.error),
-  flushMonitoring: monitor.sendMonitoringInfo,
-  getEvents: queue.getEvents,
-  killQueue: async () => {
-    queue.setEvents([]);
-    queue.persistEvents();
-  },
-  setOutage: outage.setOutage,
-};
+if (import.meta.env.DEV) {
+  // @ts-expect-error dev builds only
+  globalThis.__tepDebug = {
+    bus,
+    dropEvent: () => {
+      monitor.registerDroppedEvent({
+        eventName: 'bacon',
+        reason: 'consentFilteredEvents',
+      });
+    },
+    dumpConfig: () => getConfig(),
+    flushEvents: () =>
+      submitEvents({ config: getConfig() }).catch(console.error),
+    flushMonitoring: monitor.sendMonitoringInfo,
+    getEvents: queue.getEvents,
+    killQueue: async () => {
+      queue.setEvents([]);
+      queue.persistEvents();
+    },
+    setOutage: outage.setOutage,
+  };
+}
 /* c8 ignore stop */
