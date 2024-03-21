@@ -38,6 +38,7 @@
     "@tidal-music/common": "workspace:*"
   },
   "devDependencies": {
+    "@tidal-music/event-producer": "workspace:*",
     "@vitest/coverage-v8": "1.4.0",
     "@vitest/ui": "1.4.0",
     "typescript": "5.4.2",

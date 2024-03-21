@@ -1,8 +1,22 @@
-import type { CredentialsProvider } from '@tidal-music/common';
+import type { CredentialsProvider, EventSender } from '@tidal-music/common';
 
 import * as Config from '../config';
 
 import { waitForEvent } from './helpers/wait-for';
+
+class EventSenderStore extends EventTarget {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore - Setter
+  #eventSender: EventSender;
+
+  set eventSender(newEventSender: EventSender) {
+    this.#eventSender = newEventSender;
+  }
+
+  get eventSender() {
+    return this.#eventSender;
+  }
+}
 
 class CredentialsProviderStore extends EventTarget {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -241,6 +255,7 @@ export async function isAuthorizedWithUser() {
 }
 
 export const credentialsProviderStore = new CredentialsProviderStore();
+export const eventSenderStore = new EventSenderStore();
 
 /**
  * Starts streaming privileges and event code if the credentials allow it.
