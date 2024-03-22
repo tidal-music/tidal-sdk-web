@@ -14,8 +14,6 @@ export { reset } from '../internal/handlers/reset';
 export { seek } from '../internal/handlers/seek';
 
 export { setApiUrl } from '../internal/handlers/set-api-url';
-export { setAppVersion } from '../internal/handlers/set-app-version';
-export { setClientPlatform } from '../internal/handlers/set-client-platform';
 export { setCredentialsProvider } from '../internal/handlers/set-credentials-provider';
 export { setEventSender } from '../internal/handlers/set-event-sender';
 
