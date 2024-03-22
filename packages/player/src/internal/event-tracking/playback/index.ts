@@ -4,7 +4,7 @@ import { commit as baseCommit } from '../index';
 import type { CommitData } from '../types';
 
 /**
- * Send event to event system scoped to streaming_metrics category.
+ * Send event to event system scoped to playback category.
  */
 export async function commit(data: Pick<CommitData, 'events'>) {
   for await (const event of data.events) {
