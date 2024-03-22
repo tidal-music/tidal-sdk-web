@@ -9,6 +9,10 @@ class EventSenderStore extends EventTarget {
   // @ts-ignore - Setter
   #eventSender: EventSender;
 
+  hasEventSender() {
+    return Boolean(this.#eventSender);
+  }
+
   set eventSender(newEventSender: EventSender) {
     this.#eventSender = newEventSender;
   }

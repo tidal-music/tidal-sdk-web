@@ -7,7 +7,11 @@ import { parseManifest } from '../../internal/helpers/manifest-parser';
 import { fetchPlaybackInfo } from '../../internal/helpers/playback-info-resolver';
 import type { PlaybackInfo } from '../../internal/helpers/playback-info-resolver';
 import { streamingSessionStore } from '../../internal/helpers/streaming-session-store';
-import { PlayerError, credentialsProviderStore } from '../../internal/index';
+import {
+  PlayerError,
+  credentialsProviderStore,
+  eventSenderStore,
+} from '../../internal/index';
 import ConnectionHandler from '../../internal/services/connection-handler';
 import { getAppropriatePlayer, setActivePlayer } from '../../player/index';
 import { playerState } from '../../player/state';
@@ -36,6 +40,10 @@ export async function load(
   assetPosition = 0,
   prefetch = false,
 ) {
+  if (!eventSenderStore.hasEventSender()) {
+    throw new Error('Playback not allowed without an event sender.');
+  }
+
   await trueTime.synchronize();
 
   Pushkin.ensure().catch(console.error);
