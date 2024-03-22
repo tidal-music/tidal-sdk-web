@@ -269,19 +269,13 @@ async function handleAuthorized() {
     return Pushkin.refresh();
   };
 
-  const startBeacon = async () => {
-    const Beacon = await import('./beacon/index');
-
-    return Beacon.start();
-  };
-
   if (authorizedWithUser) {
     Config.update({
       gatherEvents: true,
     });
 
     try {
-      await Promise.all([startPushkin(), startBeacon()]);
+      await Promise.all([startPushkin()]);
     } catch (e) {
       console.error(e);
     }

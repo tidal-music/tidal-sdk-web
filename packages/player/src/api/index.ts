@@ -17,7 +17,7 @@ export { setApiUrl } from '../internal/handlers/set-api-url';
 export { setAppVersion } from '../internal/handlers/set-app-version';
 export { setClientPlatform } from '../internal/handlers/set-client-platform';
 export { setCredentialsProvider } from '../internal/handlers/set-credentials-provider';
-export { setEventUrl } from '../internal/handlers/set-event-url';
+export { setEventSender } from '../internal/handlers/set-event-sender';
 
 export { setLoudnessNormalizationMode } from '../internal/handlers/set-loudness-normalization-mode';
 export { setNext } from '../internal/handlers/set-next';
