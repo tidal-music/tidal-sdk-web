@@ -1,4 +1,3 @@
-import * as Config from '../../config';
 import { credentialsProviderStore, eventSenderStore } from '../index';
 
 type BaseCommitData = {
@@ -12,25 +11,39 @@ type BaseCommitData = {
  * Send event to event system scoped to streaming_metrics category.
  */
 export async function commit(baseCommitData: BaseCommitData) {
-  const credentials =
-    await credentialsProviderStore.credentialsProvider.getCredentials();
-
-  eventSenderStore.eventSender.sendEvent({
-    // @ts-expect-error required but not in the spec :(
-    client: {
-      platform: Config.get('clientPlatform'),
-      token: credentials.clientId,
-      version: Config.get('appVersion'),
-    },
-    consentCategory: 'NECESSARY',
+  /*
+    This is a workaround to keep the old nested header structure,
+    turn off when we can rely on the header enrichment solely.
+  */
+  const oldNestedHeader = true;
+  const event = {
+    consentCategory: 'NECESSARY' as const,
     group: baseCommitData.group,
     name: baseCommitData.name,
     payload: baseCommitData.payload,
-    user: {
+    version: baseCommitData.version,
+  };
+
+  if (oldNestedHeader) {
+    const credentials =
+      await credentialsProviderStore.credentialsProvider.getCredentials();
+
+    const config = eventSenderStore.eventSender.getConfig();
+
+    // @ts-expect-error - client field in spec, but required apparently...
+    event.client = {
+      platform: config.platform,
+      token: credentials.clientId,
+      version: config.appInfo.appVersion,
+    };
+
+    // @ts-expect-error - user field in spec, but required apparently...
+    event.user = {
       accessToken: credentials.token,
       clientId: credentials.clientId,
       id: credentials.userId,
-    },
-    version: baseCommitData.version,
-  });
+    };
+  }
+
+  eventSenderStore.eventSender.sendEvent(event);
 }
