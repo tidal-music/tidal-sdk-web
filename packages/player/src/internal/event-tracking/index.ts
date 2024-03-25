@@ -1,3 +1,4 @@
+import { db } from '../helpers/event-session';
 import { credentialsProviderStore, eventSenderStore } from '../index';
 
 type BaseCommitData = {
@@ -23,6 +24,14 @@ export async function commit(baseCommitData: BaseCommitData) {
     payload: baseCommitData.payload,
     version: baseCommitData.version,
   };
+  const streamingSessionId = event.payload.streamingSessionId as
+    | string
+    | undefined;
+
+  // streamingSessionId not allowed in the progress event
+  if (event.name === 'progress' && 'streamingSessionId' in event.payload) {
+    delete event.payload.streamingSessionId;
+  }
 
   if (oldNestedHeader) {
     const credentials =
@@ -46,4 +55,11 @@ export async function commit(baseCommitData: BaseCommitData) {
   }
 
   eventSenderStore.eventSender.sendEvent(event);
+
+  if (streamingSessionId) {
+    await db.delete({
+      name: event.name,
+      streamingSessionId,
+    });
+  }
 }
