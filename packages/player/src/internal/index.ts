@@ -9,6 +9,10 @@ class EventSenderStore extends EventTarget {
   // @ts-ignore - Setter
   #eventSender: EventSender;
 
+  hasEventSender() {
+    return Boolean(this.#eventSender);
+  }
+
   set eventSender(newEventSender: EventSender) {
     this.#eventSender = newEventSender;
   }
@@ -269,19 +273,13 @@ async function handleAuthorized() {
     return Pushkin.refresh();
   };
 
-  const startBeacon = async () => {
-    const Beacon = await import('./beacon/index');
-
-    return Beacon.start();
-  };
-
   if (authorizedWithUser) {
     Config.update({
       gatherEvents: true,
     });
 
     try {
-      await Promise.all([startPushkin(), startBeacon()]);
+      await Promise.all([startPushkin()]);
     } catch (e) {
       console.error(e);
     }

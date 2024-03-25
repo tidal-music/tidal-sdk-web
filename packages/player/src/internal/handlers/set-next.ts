@@ -14,7 +14,7 @@ import { playerState } from '../../player/state';
 import * as PlayLog from '../event-tracking/play-log/index';
 import * as StreamingMetrics from '../event-tracking/streaming-metrics/index';
 import { streamingSessionStore } from '../helpers/streaming-session-store';
-import { credentialsProviderStore } from '../index';
+import { credentialsProviderStore, eventSenderStore } from '../index';
 import { trueTime } from '../true-time';
 
 let controller: AbortController;
@@ -32,6 +32,10 @@ async function _setNext(
   mediaProduct?: MediaProduct,
   sessionTags: Array<string> = [],
 ) {
+  if (!eventSenderStore.hasEventSender()) {
+    throw new Error('Playback not allowed without an event sender.');
+  }
+
   cancelQueuedOnendedHandler();
 
   // If next handler is called with undefined/null as media product, we treat that as an unset.
@@ -54,16 +58,14 @@ async function _setNext(
 
   const startTimestamp = trueTime.now();
 
-  StreamingMetrics.commit({
-    events: [
-      StreamingMetrics.streamingSessionStart({
-        sessionTags,
-        startReason: 'IMPLICIT',
-        streamingSessionId,
-        timestamp: startTimestamp,
-      }),
-    ],
-  }).catch(console.error);
+  StreamingMetrics.commit([
+    StreamingMetrics.streamingSessionStart({
+      sessionTags,
+      startReason: 'IMPLICIT',
+      streamingSessionId,
+      timestamp: startTimestamp,
+    }),
+  ]).catch(console.error);
 
   const { clientId, token } =
     await credentialsProviderStore.credentialsProvider.getCredentials();
@@ -134,12 +136,10 @@ async function _setNext(
     streamingSessionId,
   });
 
-  StreamingMetrics.commit({
-    events: [
-      StreamingMetrics.streamingSessionStart({ streamingSessionId }),
-      StreamingMetrics.playbackInfoFetch({ streamingSessionId }),
-    ],
-  }).catch(console.error);
+  StreamingMetrics.commit([
+    StreamingMetrics.streamingSessionStart({ streamingSessionId }),
+    StreamingMetrics.playbackInfoFetch({ streamingSessionId }),
+  ]).catch(console.error);
 
   const { activePlayer } = playerState;
   const samePlayer =

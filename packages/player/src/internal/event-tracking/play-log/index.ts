@@ -1,17 +1,20 @@
 export { playbackSession, playbackSessionAction } from './playback-session';
 
-import { commit as beaconCommit, worker } from '../../beacon/index';
-import type { CommitData } from '../../beacon/types';
-import { runIfAuthorizedWithUser } from '../../helpers/run-if-authorized-with-user';
+import { commit as baseCommit } from '../index';
+import type { Events } from '../types';
 
 /**
  * Send event to event system scoped to play_log category.
  */
-export function commit(data: Pick<CommitData, 'events'>) {
-  return runIfAuthorizedWithUser(() =>
-    beaconCommit(worker, {
-      type: 'play_log' as const,
-      ...data,
-    }),
-  );
+export async function commit(data: Events) {
+  for await (const event of data) {
+    if (event) {
+      await baseCommit({
+        group: 'play_log',
+        name: event.name,
+        payload: event.payload,
+        version: 1,
+      });
+    }
+  }
 }
