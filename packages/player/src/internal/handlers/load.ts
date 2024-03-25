@@ -96,19 +96,17 @@ export async function load(
 
   const streamingSessionId = generateGUID();
 
-  StreamingMetrics.commit({
-    events: [
-      StreamingMetrics.streamingSessionStart({
-        sessionProductId: mediaProduct.productId,
-        sessionProductType:
-          mediaProduct.productType === 'track' ? 'TRACK' : 'VIDEO',
-        sessionType: 'PLAYBACK',
-        startReason: 'EXPLICIT',
-        streamingSessionId,
-        timestamp: trueTime.now(),
-      }),
-    ],
-  }).catch(console.error);
+  StreamingMetrics.commit([
+    StreamingMetrics.streamingSessionStart({
+      sessionProductId: mediaProduct.productId,
+      sessionProductType:
+        mediaProduct.productType === 'track' ? 'TRACK' : 'VIDEO',
+      sessionType: 'PLAYBACK',
+      startReason: 'EXPLICIT',
+      streamingSessionId,
+      timestamp: trueTime.now(),
+    }),
+  ]).catch(console.error);
 
   performance.mark(
     'streaming_metrics:playback_statistics:idealStartTimestamp',

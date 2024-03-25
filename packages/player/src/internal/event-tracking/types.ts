@@ -31,16 +31,6 @@ export type PrematureEvents =
   | StreamingSessionEnd
   | StreamingSessionStart;
 
-export type CommitData = {
-  accessToken: string;
-  apiUrl: string;
-  appVersion: string;
-  clientId: string;
-  clientPlatform: string;
-  eventUrl: string;
-  events:
-    | Array<PrematureEvents | undefined>
-    | Array<Promise<PrematureEvents | undefined>>;
-  ts: number;
-  type: 'play_log' | 'playback' | 'streaming_metrics';
-};
+export type Events =
+  | Array<PrematureEvents | undefined>
+  | Array<Promise<PrematureEvents | undefined>>;

@@ -1,13 +1,13 @@
 export { progress } from './progress';
 
 import { commit as baseCommit } from '../index';
-import type { CommitData } from '../types';
+import type { Events } from '../types';
 
 /**
  * Send event to event system scoped to playback category.
  */
-export async function commit(data: Pick<CommitData, 'events'>) {
-  for await (const event of data.events) {
+export async function commit(events: Events) {
+  for await (const event of events) {
     if (event) {
       await baseCommit({
         group: 'playback',

@@ -58,16 +58,14 @@ async function _setNext(
 
   const startTimestamp = trueTime.now();
 
-  StreamingMetrics.commit({
-    events: [
-      StreamingMetrics.streamingSessionStart({
-        sessionTags,
-        startReason: 'IMPLICIT',
-        streamingSessionId,
-        timestamp: startTimestamp,
-      }),
-    ],
-  }).catch(console.error);
+  StreamingMetrics.commit([
+    StreamingMetrics.streamingSessionStart({
+      sessionTags,
+      startReason: 'IMPLICIT',
+      streamingSessionId,
+      timestamp: startTimestamp,
+    }),
+  ]).catch(console.error);
 
   const { clientId, token } =
     await credentialsProviderStore.credentialsProvider.getCredentials();
@@ -138,12 +136,10 @@ async function _setNext(
     streamingSessionId,
   });
 
-  StreamingMetrics.commit({
-    events: [
-      StreamingMetrics.streamingSessionStart({ streamingSessionId }),
-      StreamingMetrics.playbackInfoFetch({ streamingSessionId }),
-    ],
-  }).catch(console.error);
+  StreamingMetrics.commit([
+    StreamingMetrics.streamingSessionStart({ streamingSessionId }),
+    StreamingMetrics.playbackInfoFetch({ streamingSessionId }),
+  ]).catch(console.error);
 
   const { activePlayer } = playerState;
   const samePlayer =

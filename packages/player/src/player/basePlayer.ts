@@ -256,29 +256,25 @@ export class BasePlayer {
   ) {
     const endTimestamp = trueTime.now();
 
-    PlayLog.commit({
-      events: [
-        PlayLog.playbackSession({
-          endAssetPosition,
-          endTimestamp,
-          streamingSessionId,
-        }),
-      ],
-    }).catch(console.error);
+    PlayLog.commit([
+      PlayLog.playbackSession({
+        endAssetPosition,
+        endTimestamp,
+        streamingSessionId,
+      }),
+    ]).catch(console.error);
 
-    StreamingMetrics.commit({
-      events: [
-        StreamingMetrics.playbackStatistics({
-          endReason: playbackStatisticsEndReason(endReason),
-          endTimestamp,
-          streamingSessionId,
-        }),
-        StreamingMetrics.streamingSessionEnd({
-          streamingSessionId,
-          timestamp: endTimestamp,
-        }),
-      ],
-    }).catch(console.error);
+    StreamingMetrics.commit([
+      StreamingMetrics.playbackStatistics({
+        endReason: playbackStatisticsEndReason(endReason),
+        endTimestamp,
+        streamingSessionId,
+      }),
+      StreamingMetrics.streamingSessionEnd({
+        streamingSessionId,
+        timestamp: endTimestamp,
+      }),
+    ]).catch(console.error);
   }
 
   eventTrackingStreamingStarted(streamingSessionId: string) {
@@ -543,23 +539,21 @@ export class BasePlayer {
     const { mediaProduct, playbackContext } = mediaProductTransition;
 
     if (this.#currentStreamingSessionId) {
-      Playback.commit({
-        events: [
-          Playback.progress({
-            playback: {
-              durationMS: Math.floor(playbackContext.actualDuration * 1000),
-              id: mediaProduct.productId,
-              playedMS: Math.floor(this.currentTime * 1000),
-              source: {
-                id: mediaProduct.sourceId,
-                type: mediaProduct.sourceType,
-              },
-              type: mediaProduct.productType === 'track' ? 'TRACK' : 'VIDEO',
+      Playback.commit([
+        Playback.progress({
+          playback: {
+            durationMS: Math.floor(playbackContext.actualDuration * 1000),
+            id: mediaProduct.productId,
+            playedMS: Math.floor(this.currentTime * 1000),
+            source: {
+              id: mediaProduct.sourceId,
+              type: mediaProduct.sourceType,
             },
-            streamingSessionId: this.#currentStreamingSessionId,
-          }),
-        ],
-      }).catch(console.error);
+            type: mediaProduct.productType === 'track' ? 'TRACK' : 'VIDEO',
+          },
+          streamingSessionId: this.#currentStreamingSessionId,
+        }),
+      ]).catch(console.error);
     }
   }
 
