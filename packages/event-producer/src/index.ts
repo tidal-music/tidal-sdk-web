@@ -11,7 +11,11 @@ import * as send from './send/send';
 import { submitEvents } from './submit/submit';
 import type { SentEvent } from './types';
 
-export { setConsentCategory, setCredentialsProvider } from './config';
+export {
+  getConfig,
+  setConsentCategory,
+  setCredentialsProvider,
+} from './config';
 export type * from './types';
 
 /**
