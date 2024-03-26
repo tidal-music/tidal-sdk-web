@@ -66,6 +66,9 @@ importers:
         specifier: workspace:*
         version: 'link:'
     devDependencies:
+      '@tidal-music/event-producer':
+        specifier: workspace:*
+        version: link:../event-producer
       '@vitest/coverage-v8':
         specifier: 1.4.0
         version: 1.4.0(vitest@1.4.0)
