@@ -1,6 +1,7 @@
 name: FOSSA Scans
 
 on:
+  push:
   workflow_call:
 
 jobs:
@@ -14,6 +15,7 @@ jobs:
             uses: fossas/fossa-action@v1.3.3
             with:
               api-key: ${{secrets.FOSSAAPIKEY}}
+              debug: true
 
           - name: "FOSSA Tests"
             id: fossa-tests
