@@ -33,14 +33,38 @@ class EventSessionDB {
    * debounce multiple calls to this method.
    */
   async #ensureDatabase() {
-    const isExisting = (await window.indexedDB.databases())
-      .map(db => db.name)
-      .includes(this.#name);
+    let isExisting = false;
 
     if (this.#openingDatabase) {
       await this.#openingDatabase;
-    } else if (!isExisting) {
-      await this.#createNewDatabase();
+    } else {
+      // Attempt to open the database
+      this.#openingDatabase = new Promise<void>((resolve, reject) => {
+        const request = window.indexedDB.open(this.#name);
+
+        // This event means the database was found and successfully opened
+        request.onsuccess = () => {
+          isExisting = true; // Database exists
+          resolve();
+          request.result.close(); // Close the database connection
+        };
+
+        // This event means the database does not exist and is being created
+        request.onupgradeneeded = () => {
+          isExisting = false; // Trigger database creation
+        };
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+      });
+
+      await this.#openingDatabase;
+
+      // If database didn't exist, create it
+      if (!isExisting) {
+        await this.#createNewDatabase();
+      }
     }
   }
 
