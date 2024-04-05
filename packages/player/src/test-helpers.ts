@@ -44,7 +44,7 @@ await Auth.setCredentials({
   refreshToken: user.oAuthRefreshToken,
 });
 
-EventProducer.init({
+await EventProducer.init({
   appInfo: { appName: 'TIDAL SDK Player Module test', appVersion: '0.0.0' },
   blockedConsentCategories: {
     NECESSARY: false,
