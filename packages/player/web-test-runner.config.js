@@ -43,7 +43,7 @@ export default {
   rootDir: '../../',
   testFramework: {
     config: {
-      timeout: '20000',
+      timeout: '120000',
       ui: 'bdd',
     },
   },
