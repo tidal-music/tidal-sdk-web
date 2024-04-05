@@ -31,7 +31,8 @@ const scopes = ['r_usr', 'w_usr'];
  * @param {Function} before
  * @param {Function} after
  */
-export function authAndEvents(before, after) {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function authAndEvents(before: Function, after: Function) {
   after(async () => {
     console.log('[Test Helper] Clearing auth provider and event producer.');
 
