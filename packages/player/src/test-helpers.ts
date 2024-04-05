@@ -44,8 +44,6 @@ await Auth.setCredentials({
   refreshToken: user.oAuthRefreshToken,
 });
 
-Player.setCredentialsProvider(Auth.credentialsProvider);
-
 EventProducer.init({
   appInfo: { appName: 'TIDAL SDK Player Module test', appVersion: '0.0.0' },
   blockedConsentCategories: {
@@ -63,6 +61,9 @@ EventProducer.init({
   tlConsumerUri: 'https://api.tidal.com/api/event-batch',
   tlPublicConsumerUri: 'https://api.tidal.com/api/public/event-batch',
 });
+
+Player.setCredentialsProvider(Auth.credentialsProvider);
+Player.setEventSender(EventProducer);
 
 export const credentialsProvider = Auth.credentialsProvider;
 
