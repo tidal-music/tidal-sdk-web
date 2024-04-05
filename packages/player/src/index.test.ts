@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import * as Config from './config';
-import { mockNativePlayer, setupAuthAndEvents } from './test-helpers';
+import { authAndEvents, mockNativePlayer } from './test-helpers';
 
 import * as Player from './index';
 
@@ -14,6 +14,8 @@ describe('bootstrap', () => {
 });
 
 describe('getMediaElement', () => {
+  authAndEvents(before, after);
+
   it('is null if there is no player', () => {
     const mediaElement = Player.getMediaElement();
 
@@ -21,8 +23,6 @@ describe('getMediaElement', () => {
   });
 
   it('returns the mediaElement value on shaka player', async () => {
-    await setupAuthAndEvents();
-
     Player.bootstrap({
       outputDevices: false,
       players: [

@@ -1,12 +1,12 @@
 import { expect } from 'chai';
 
-import { credentialsProvider, setupAuthAndEvents } from '../../test-helpers';
+import { authAndEvents, credentialsProvider } from '../../test-helpers';
 
 import { fetchPlaybackInfo } from './playback-info-resolver';
 
-await setupAuthAndEvents();
-
 describe('playbackInfoResolver', () => {
+  authAndEvents(before, after);
+
   it('fetches playback info if there is only clientId defined, gets preview', async () => {
     const { clientId } = await credentialsProvider.getCredentials();
 

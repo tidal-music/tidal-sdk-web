@@ -28,7 +28,9 @@ export default {
   ],
   concurrency: 1,
   coverage: true,
+  debug: false,
   files: ['src/**/*.test.ts'],
+  filterBrowserLogs: () => true,
   nodeResolve: true,
   plugins: [
     // Transform dependencies that doesn't provide ESM from CJS to ESM.
@@ -41,6 +43,7 @@ export default {
   ],
   // In a monorepo you need to set set the root dir to resolve modules (https://modern-web.dev/docs/test-runner/cli-and-configuration/)
   rootDir: '../../',
+  staticLogging: true,
   testFramework: {
     config: {
       timeout: '120000',

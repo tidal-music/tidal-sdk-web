@@ -3,11 +3,11 @@ import { expect } from 'chai';
 import * as Player from '../../index';
 import type { MediaProduct } from '../../index';
 import { waitFor } from '../../internal/helpers/wait-for';
-import { setupAuthAndEvents, waitForEvent } from '../../test-helpers';
-
-await setupAuthAndEvents();
+import { authAndEvents, waitForEvent } from '../../test-helpers';
 
 describe('nextHandler', () => {
+  authAndEvents(before, after);
+
   it('doesnt preload if no mediaProduct', async () => {
     await Player.load(
       {

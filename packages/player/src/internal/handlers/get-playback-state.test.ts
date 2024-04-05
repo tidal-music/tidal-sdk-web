@@ -1,13 +1,13 @@
 import { expect } from 'chai';
 
 import * as Player from '../../index';
-import { setupAuthAndEvents, waitFor } from '../../test-helpers';
+import { authAndEvents, waitFor } from '../../test-helpers';
 
 import { getPlaybackState } from './get-playback-state';
 
-await setupAuthAndEvents();
-
 describe('getPlaybackState', () => {
+  authAndEvents(before, after);
+
   it('returns IDLE if there is no active player', () => {
     const activeState = getPlaybackState();
 
