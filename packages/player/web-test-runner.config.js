@@ -16,7 +16,11 @@ export default {
     // playwrightLauncher({ product: 'chromium', launchOptions: { args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'] } }),
     chromeLauncher({
       launchOptions: {
-        args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'],
+        args: [
+          '--disable-web-security',
+          '--no-sandbox',
+          '--autoplay-policy=no-user-gesture-required',
+        ],
       },
     }),
     // playwrightLauncher({ product: 'firefox' }),
@@ -50,4 +54,5 @@ export default {
         <script type="module" src="${testFramework}"></script>
       </body>
     </html>`,
+  watch: true,
 };
