@@ -2,11 +2,11 @@ import { expect } from 'chai';
 
 import * as Player from '../../index';
 import { outputDevices } from '../../internal/output-devices';
-import { credentialsProvider } from '../../test-helpers';
+import { setupAuthAndEvents } from '../../test-helpers';
 
 import { getOutputDevices } from './get-output-devices';
 
-Player.setCredentialsProvider(credentialsProvider);
+await setupAuthAndEvents();
 
 describe('getOutputDevices', () => {
   beforeEach(async () => {

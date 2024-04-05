@@ -1,9 +1,7 @@
 import { expect } from 'chai';
 
-import * as Player from '../';
 import { events } from '../event-bus';
 import type { NativePlayerComponentDeviceDescription } from '../player/nativeInterface';
-import { credentialsProvider } from '../test-helpers';
 
 import {
   OutputDevice,
@@ -11,20 +9,6 @@ import {
   findOutputType,
   getOutputDeviceByName,
 } from './output-devices';
-
-Player.setCredentialsProvider(credentialsProvider);
-
-beforeEach(async () => {
-  await Player.load(
-    {
-      productId: '141120674',
-      productType: 'track',
-      sourceId: 'tidal-player-tests',
-      sourceType: 'tidal-player-tests',
-    },
-    0,
-  );
-});
 
 const defaultWd: MediaDeviceInfo = {
   deviceId: '12d6as',
@@ -212,40 +196,12 @@ describe('OutputDevices', () => {
     }
   });
 
-  // TODO: Add active device and boot player to fix test.
-  // eslint-disable-next-line vitest/no-commented-out-tests
-  /*
-  it('can change device mode', () => {
-    const outputDevices = new OutputDevices();
-
-    expect(outputDevices.deviceMode).to.equal('shared');
-
-    outputDevices.deviceMode = 'exclusive';
-
-    expect(outputDevices.deviceMode).to.equal('exclusive');
-  });
-  */
-
-  // TODO: Add active device and boot player to fix test.
-  // eslint-disable-next-line vitest/no-commented-out-tests
-  /*
-  it.skip('can change pass through mode', () => {
-    const outputDevices = new OutputDevices();
-
-    expect(outputDevices.passThrough).to.equal(undefined);
-
-    outputDevices.passThrough = true;
-
-    expect(outputDevices.passThrough).to.equal(true);
-  });
-  */
-
   // eslint-disable-next-line vitest/expect-expect
   it('emits devicechange event when emitDeviceChange is called', done => {
     const outputDevices = new OutputDevices();
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    events.addEventListener('device-change', () => done());
+    events.addEventListener('device-change', () => done(), { once: true });
 
     outputDevices.emitDeviceChange();
   });

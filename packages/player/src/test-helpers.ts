@@ -25,45 +25,49 @@ type User = {
 const user = JSON.parse(atob(process.env.TEST_USER)) as User;
 const scopes = ['r_usr', 'w_usr'];
 
-await Auth.init({
-  clientId: user.clientId,
-  clientUniqueKey: 'FALLBACK',
-  credentialsStorageKey: 'FALLBACK',
-  scopes,
-});
-
-await Auth.setCredentials({
-  accessToken: {
+export async function setupAuthAndEvents() {
+  await Auth.init({
     clientId: user.clientId,
     clientUniqueKey: 'FALLBACK',
-    expires: user.oAuthExpirationDate,
-    grantedScopes: scopes,
-    requestedScopes: scopes,
-    token: user.oAuthAccessToken ?? '',
-  },
-  refreshToken: user.oAuthRefreshToken,
-});
+    credentialsStorageKey: 'FALLBACK',
+    scopes,
+  });
 
-await EventProducer.init({
-  appInfo: { appName: 'TIDAL SDK Player Module test', appVersion: '0.0.0' },
-  blockedConsentCategories: {
-    NECESSARY: false,
-    PERFORMANCE: false,
-    TARGETING: false,
-  },
-  credentialsProvider: Auth.credentialsProvider,
-  platform: {
-    browserName: 'Web Test Runner',
-    browserVersion: '0.0.0',
-    osName: 'GitHub Actions',
-  },
-  strictMode: false,
-  tlConsumerUri: 'https://api.tidal.com/api/event-batch',
-  tlPublicConsumerUri: 'https://api.tidal.com/api/public/event-batch',
-});
+  await Auth.setCredentials({
+    accessToken: {
+      clientId: user.clientId,
+      clientUniqueKey: 'FALLBACK',
+      expires: user.oAuthExpirationDate,
+      grantedScopes: scopes,
+      requestedScopes: scopes,
+      token: user.oAuthAccessToken ?? '',
+    },
+    refreshToken: user.oAuthRefreshToken,
+  });
 
-Player.setCredentialsProvider(Auth.credentialsProvider);
-Player.setEventSender(EventProducer);
+  await EventProducer.init({
+    appInfo: { appName: 'TIDAL SDK Player Module test', appVersion: '0.0.0' },
+    blockedConsentCategories: {
+      NECESSARY: false,
+      PERFORMANCE: false,
+      TARGETING: false,
+    },
+    credentialsProvider: Auth.credentialsProvider,
+    platform: {
+      browserName: 'Web Test Runner',
+      browserVersion: '0.0.0',
+      osName: 'GitHub Actions',
+    },
+    strictMode: false,
+    tlConsumerUri:
+      'https://event-collector.obelix-staging-use1.tidalhi.fi/api/event-batch',
+    tlPublicConsumerUri:
+      'https://event-collector.obelix-staging-use1.tidalhi.fi/api/public/event-batch',
+  });
+
+  Player.setCredentialsProvider(Auth.credentialsProvider);
+  Player.setEventSender(EventProducer);
+}
 
 export const credentialsProvider = Auth.credentialsProvider;
 

@@ -1,6 +1,8 @@
-import { credentialsProvider } from '../../test-helpers';
+import { credentialsProvider, setupAuthAndEvents } from '../../test-helpers';
 
 import { fetchWebSocketURL, socketOpen } from './pushkin';
+
+await setupAuthAndEvents();
 
 describe('Pushkin', () => {
   // eslint-disable-next-line vitest/expect-expect

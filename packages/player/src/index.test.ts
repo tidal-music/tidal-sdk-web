@@ -1,11 +1,9 @@
 import { expect } from 'chai';
 
 import * as Config from './config';
-import { credentialsProvider, mockNativePlayer } from './test-helpers';
+import { mockNativePlayer, setupAuthAndEvents } from './test-helpers';
 
 import * as Player from './index';
-
-Player.setCredentialsProvider(credentialsProvider);
 
 describe('bootstrap', () => {
   it('enables output devices if options.outputDevices is true', () => {
@@ -23,6 +21,8 @@ describe('getMediaElement', () => {
   });
 
   it('returns the mediaElement value on shaka player', async () => {
+    await setupAuthAndEvents();
+
     Player.bootstrap({
       outputDevices: false,
       players: [
@@ -84,7 +84,7 @@ describe('getMediaElement', () => {
   });
   */
 
-  it('returns null if active player is native player', async () => {
+  it('returns null if active player is native player', () => {
     mockNativePlayer();
 
     Player.bootstrap({

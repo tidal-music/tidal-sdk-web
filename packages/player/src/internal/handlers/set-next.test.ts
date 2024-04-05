@@ -3,9 +3,9 @@ import { expect } from 'chai';
 import * as Player from '../../index';
 import type { MediaProduct } from '../../index';
 import { waitFor } from '../../internal/helpers/wait-for';
-import { credentialsProvider, waitForEvent } from '../../test-helpers';
+import { setupAuthAndEvents, waitForEvent } from '../../test-helpers';
 
-Player.setCredentialsProvider(credentialsProvider);
+await setupAuthAndEvents();
 
 describe('nextHandler', () => {
   it('doesnt preload if no mediaProduct', async () => {

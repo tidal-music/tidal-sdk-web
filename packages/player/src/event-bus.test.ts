@@ -2,11 +2,11 @@ import { expect } from 'chai';
 
 import { events } from './event-bus';
 import { PlayerError } from './internal/index';
-import { credentialsProvider, waitForEvent } from './test-helpers';
+import { setupAuthAndEvents, waitForEvent } from './test-helpers';
 
 import * as Player from './index';
 
-Player.setCredentialsProvider(credentialsProvider);
+await setupAuthAndEvents();
 
 describe('eventBus', () => {
   it('playback engine sends events through the bus', async () => {

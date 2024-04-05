@@ -1,8 +1,10 @@
 import { expect } from 'chai';
 
-import { credentialsProvider } from '../../test-helpers';
+import { credentialsProvider, setupAuthAndEvents } from '../../test-helpers';
 
 import { fetchPlaybackInfo } from './playback-info-resolver';
+
+await setupAuthAndEvents();
 
 describe('playbackInfoResolver', () => {
   it('fetches playback info if there is only clientId defined, gets preview', async () => {

@@ -2,12 +2,12 @@ import { expect } from 'chai';
 
 import * as Player from '../../index';
 import {
-  credentialsProvider,
   getPreloadedStreamingSessionId,
+  setupAuthAndEvents,
   waitFor,
 } from '../../test-helpers';
 
-Player.setCredentialsProvider(credentialsProvider);
+await setupAuthAndEvents();
 
 describe('load', () => {
   it('re-uses a next for loading if it is the same media product', async () => {
