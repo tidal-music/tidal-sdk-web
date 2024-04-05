@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import * as Auth from '@tidal-music/auth';
+import * as EventProducer from '@tidal-music/event-producer';
 
 import { playerState } from './player/state';
 
@@ -44,6 +45,25 @@ await Auth.setCredentials({
 });
 
 Player.setCredentialsProvider(Auth.credentialsProvider);
+
+EventProducer.init({
+  appInfo: { appName: 'TIDAL SDK Player Module test', appVersion: '0.0.0' },
+  blockedConsentCategories: {
+    NECESSARY: false,
+    PERFORMANCE: false,
+    TARGETING: false,
+  },
+  credentialsProvider: Auth.credentialsProvider,
+  platform: {
+    browserName: 'Web Test Runner',
+    browserVersion: '0.0.0',
+    osName: 'GitHub Actions',
+  },
+  strictMode: false,
+  tlConsumerUri: 'https://api.tidal.com/api/event-batch',
+  tlPublicConsumerUri: 'https://api.tidal.com/api/public/event-batch',
+});
+
 export const credentialsProvider = Auth.credentialsProvider;
 
 export function waitForEvent(target: EventTarget, eventName: string) {
