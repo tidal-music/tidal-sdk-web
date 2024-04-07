@@ -39,9 +39,9 @@
     "@vitest/coverage-v8": "1.4.0",
     "@vitest/ui": "1.4.0",
     "@vitest/web-worker": "1.4.0",
-    "happy-dom": "14.3.9",
-    "typescript": "5.4.3",
-    "vite": "5.2.7",
+    "happy-dom": "14.7.1",
+    "typescript": "5.4.4",
+    "vite": "5.2.8",
     "vite-plugin-dts": "3.8.1",
     "vitest": "1.4.0",
     "xml-js": "1.6.11"
@@ -51,6 +51,6 @@
     "@tidal-music/event-producer": "workspace:*",
     "@tidal-music/true-time": "workspace:^",
     "localforage": "1.10.0",
-    "nanoid": "5.0.6"
+    "nanoid": "5.0.7"
   }
 }
