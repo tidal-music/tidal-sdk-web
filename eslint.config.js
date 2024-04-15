@@ -48,7 +48,7 @@ export default [
       'no-restricted-syntax': [
         'error',
         {
-          message: 'Never use Date.now! always use TrueTime',
+          message: 'Never use Date.now! always use trueTime.now()',
           selector:
             'CallExpression[callee.object.name="Date"][callee.property.name="now"]',
         },
