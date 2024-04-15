@@ -48,7 +48,6 @@ export class TrueTime {
 
     this.#isSynchronizing = true;
     try {
-      console.trace('Synchronizing TrueTime');
       const response = await fetch(this.#url);
 
       if (response.ok && response.headers.has('date')) {
