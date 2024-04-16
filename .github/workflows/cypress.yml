@@ -51,7 +51,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           runTests: false
-          command: pnpm --dir packages/player/ internal:cypress:run
+          working-directory: .
       - name: Cypress run
         uses: cypress-io/github-action@v6
         env:
