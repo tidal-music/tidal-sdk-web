@@ -29,8 +29,8 @@ importers:
         specifier: 0.25.13
         version: 0.25.13(typescript@5.4.5)
       vitest:
-        specifier: 1.4.0
-        version: 1.4.0(@vitest/ui@1.4.0)(happy-dom@14.7.1)
+        specifier: 1.5.0
+        version: 1.5.0(@vitest/ui@1.5.0)(happy-dom@14.7.1)
 
   packages/auth:
     dependencies:
@@ -55,10 +55,10 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8
+        version: 5.2.8(@types/node@20.12.7)
       vite-plugin-dts:
         specifier: 3.8.3
-        version: 3.8.3(typescript@5.4.5)(vite@5.2.8)
+        version: 3.8.3(@types/node@20.12.7)(rollup@4.14.2)(typescript@5.4.5)(vite@5.2.8)
       vitest:
         specifier: 1.5.0
         version: 1.5.0(@vitest/ui@1.5.0)(happy-dom@14.7.1)
@@ -80,10 +80,10 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8
+        version: 5.2.8(@types/node@20.12.7)
       vite-plugin-dts:
         specifier: 3.8.3
-        version: 3.8.3(typescript@5.4.5)(vite@5.2.8)
+        version: 3.8.3(@types/node@20.12.7)(rollup@4.14.2)(typescript@5.4.5)(vite@5.2.8)
       vitest:
         specifier: 1.5.0
         version: 1.5.0(@vitest/ui@1.5.0)(happy-dom@14.7.1)
@@ -123,10 +123,10 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8
+        version: 5.2.8(@types/node@20.12.7)
       vite-plugin-dts:
         specifier: 3.8.3
-        version: 3.8.3(typescript@5.4.5)(vite@5.2.8)
+        version: 3.8.3(@types/node@20.12.7)(rollup@4.14.2)(typescript@5.4.5)(vite@5.2.8)
       vitest:
         specifier: 1.5.0
         version: 1.5.0(@vitest/ui@1.5.0)(happy-dom@14.7.1)
@@ -252,10 +252,10 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8
+        version: 5.2.8(@types/node@20.12.7)
       vite-plugin-dts:
         specifier: 3.8.3
-        version: 3.8.3(typescript@5.4.5)(vite@5.2.8)
+        version: 3.8.3(@types/node@20.12.7)(rollup@4.14.2)(typescript@5.4.5)(vite@5.2.8)
       vitest:
         specifier: 1.5.0
         version: 1.5.0(@vitest/ui@1.5.0)(happy-dom@14.7.1)
@@ -277,10 +277,10 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8
+        version: 5.2.8(@types/node@20.12.7)
       vite-plugin-dts:
         specifier: 3.8.3
-        version: 3.8.3(typescript@5.4.5)(vite@5.2.8)
+        version: 3.8.3(@types/node@20.12.7)(rollup@4.14.2)(typescript@5.4.5)(vite@5.2.8)
       vitest:
         specifier: 1.5.0
         version: 1.5.0(@vitest/ui@1.5.0)(happy-dom@14.7.1)
@@ -302,10 +302,10 @@ importers:
         version: 5.4.5
       vite:
         specifier: 5.2.8
-        version: 5.2.8
+        version: 5.2.8(@types/node@20.12.7)
       vite-plugin-dts:
         specifier: 3.8.3
-        version: 3.8.3(typescript@5.4.5)(vite@5.2.8)
+        version: 3.8.3(@types/node@20.12.7)(rollup@4.14.2)(typescript@5.4.5)(vite@5.2.8)
       vitest:
         specifier: 1.5.0
         version: 1.5.0(@vitest/ui@1.5.0)(happy-dom@14.7.1)
@@ -8904,28 +8904,7 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 5.2.8
-    transitivePeerDependencies:
-      - '@types/node'
-      - less
-      - lightningcss
-      - sass
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-    dev: true
-
-  /vite-node@1.5.0:
-    resolution: {integrity: sha512-tV8h6gMj6vPzVCa7l+VGq9lwoJjW8Y79vst8QZZGiuRAfijU+EEWuc0kFpmndQrWhMMhet1jdSF+40KSZUqIIw==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    dependencies:
-      cac: 6.7.14
-      debug: 4.3.4(supports-color@8.1.1)
-      pathe: 1.1.1
-      picocolors: 1.0.0
-      vite: 5.2.8
+      vite: 5.2.8(@types/node@20.12.7)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -8983,66 +8962,6 @@ packages:
       - supports-color
     dev: true
 
-  /vite-plugin-dts@3.8.3(typescript@5.4.5)(vite@5.2.8):
-    resolution: {integrity: sha512-yRHiRosQw7MXdOhmcrVI+kRiB8YEShbSxnADNteK4eZGdEoyOkMHihvO5XOAVlOq8ng9sIqu8vVefDK1zcj3qw==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    peerDependencies:
-      typescript: '*'
-      vite: '*'
-    peerDependenciesMeta:
-      vite:
-        optional: true
-    dependencies:
-      '@microsoft/api-extractor': 7.43.0(@types/node@20.12.7)
-      '@rollup/pluginutils': 5.1.0(rollup@4.14.2)
-      '@vue/language-core': 1.8.27(typescript@5.4.5)
-      debug: 4.3.4(supports-color@8.1.1)
-      kolorist: 1.8.0
-      magic-string: 0.30.8
-      typescript: 5.4.5
-      vite: 5.2.8
-      vue-tsc: 1.8.27(typescript@5.4.5)
-    transitivePeerDependencies:
-      - '@types/node'
-      - rollup
-      - supports-color
-    dev: true
-
-  /vite@5.2.8:
-    resolution: {integrity: sha512-OyZR+c1CE8yeHw5V5t59aXsUPPVTHMDjEZz8MgguLL/Q7NblxhZUlTu9xSPqlsUO/y+X7dlU05jdhvyycD55DA==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^18.0.0 || >=20.0.0
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      esbuild: 0.20.2
-      postcss: 8.4.38
-      rollup: 4.14.1
-    optionalDependencies:
-      fsevents: 2.3.3
-    dev: true
-
   /vite@5.2.8(@types/node@20.12.7):
     resolution: {integrity: sha512-OyZR+c1CE8yeHw5V5t59aXsUPPVTHMDjEZz8MgguLL/Q7NblxhZUlTu9xSPqlsUO/y+X7dlU05jdhvyycD55DA==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -9074,7 +8993,7 @@ packages:
       '@types/node': 20.12.7
       esbuild: 0.20.2
       postcss: 8.4.38
-      rollup: 4.14.2
+      rollup: 4.14.1
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
@@ -9122,7 +9041,7 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.5.1
       tinypool: 0.8.2
-      vite: 5.2.8
+      vite: 5.2.8(@types/node@20.12.7)
       vite-node: 1.1.0
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
@@ -9235,8 +9154,8 @@ packages:
       strip-literal: 2.0.0
       tinybench: 2.5.1
       tinypool: 0.8.4
-      vite: 5.2.8
-      vite-node: 1.5.0
+      vite: 5.2.8(@types/node@20.12.7)
+      vite-node: 1.5.0(@types/node@20.12.7)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
