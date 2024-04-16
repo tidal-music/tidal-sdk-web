@@ -28,6 +28,9 @@ importers:
       typedoc:
         specifier: 0.25.13
         version: 0.25.13(typescript@5.4.5)
+      vitest:
+        specifier: 1.4.0
+        version: 1.4.0(@vitest/ui@1.4.0)(happy-dom@14.7.1)
 
   packages/auth:
     dependencies:
