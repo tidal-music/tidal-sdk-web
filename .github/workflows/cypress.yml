@@ -51,6 +51,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           runTests: false
+          working-directory: packages/player
       - name: Cypress run
         uses: cypress-io/github-action@v6
         env:
