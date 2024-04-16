@@ -47,11 +47,6 @@ jobs:
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
-      - name: Install Cypress dependencies
-        uses: cypress-io/github-action@v6
-        with:
-          runTests: false
-          working-directory: .
       - name: Cypress run
         uses: cypress-io/github-action@v6
         env:
