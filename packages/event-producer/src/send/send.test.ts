@@ -33,7 +33,7 @@ describe.sequential('sendEvent', () => {
       expect.objectContaining({
         payload: JSON.stringify({
           ...eventWithoutConsentCategory,
-          ts: '1337',
+          ts: 1337,
           uuid: 'fakeUuid',
         }),
       }),
