@@ -12,7 +12,7 @@ import { uuid } from '../uuid/uuid';
 type CreatePayloadParams = {
   event: SentEvent;
   id: string;
-  ts: string;
+  ts: number;
 };
 /**
  * Creates a payload to be sent to backend. The payload is the whole raw event with uuid
@@ -40,7 +40,7 @@ const createEvent = async ({
   event,
 }: SendEventParams): Promise<EPEvent> => {
   const id = uuid();
-  const sentTimestamp = trueTime.now().toString();
+  const sentTimestamp = trueTime.now();
   const headers = getEventHeaders({
     appInfo: config.appInfo,
     consentCategory: event.consentCategory,
