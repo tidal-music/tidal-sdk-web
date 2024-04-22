@@ -24,7 +24,7 @@
   },
   "engines": {
     "node": ">=20.11.1",
-    "pnpm": ">=8.6.7"
+    "pnpm": ">=9.0.5"
   },
   "prettier": {
     "arrowParens": "avoid",
