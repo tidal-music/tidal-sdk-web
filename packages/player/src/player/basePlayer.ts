@@ -380,6 +380,11 @@ export class BasePlayer {
   }
 
   finishCurrentMediaProduct(endReason: EndReason) {
+    // A media product was loaded by never started.
+    if (!this.hasStarted()) {
+      return;
+    }
+
     const cssi = this.#currentStreamingSessionId;
     const hasNotBeenFinished = cssi
       ? streamingSessionStore.hasStreamInfo(cssi)

@@ -42,8 +42,6 @@ class EventSessionDB {
     );
 
     this.#db.delete(compositeKey);
-    console.debug('[EventSessionDB] delete');
-    console.table(Object.fromEntries(this.#db.entries()));
   }
 
   /**
@@ -60,9 +58,6 @@ class EventSessionDB {
       streamingSessionId,
       name,
     );
-
-    console.debug('[EventSessionDB] get');
-    console.table(Object.fromEntries(this.#db.entries()));
 
     return this.#db.get(compositeKey);
   }
@@ -82,8 +77,6 @@ class EventSessionDB {
     );
 
     this.#db.set(compositeKey, value);
-    console.debug('[EventSessionDB] put');
-    console.table(Object.fromEntries(this.#db.entries()));
   }
 }
 
