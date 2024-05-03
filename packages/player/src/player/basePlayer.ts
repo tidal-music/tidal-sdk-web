@@ -380,7 +380,7 @@ export class BasePlayer {
   }
 
   finishCurrentMediaProduct(endReason: EndReason) {
-    // A media product was loaded by never started.
+    // A media product was loaded but never started.
     if (!this.hasStarted()) {
       return;
     }
