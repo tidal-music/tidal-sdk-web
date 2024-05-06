@@ -12,6 +12,10 @@
     #forceRefreshBtn {
       max-width: 300px;
     }
+
+    #searchField {
+      margin-top: 20px;
+    }
   </style>
 </head>
 
@@ -42,8 +46,13 @@
   <div id="userInfo"></div>
 
   <button id="logoutBtn">Logout</button>
-  <button id="getUserBtn">Get user</button>
   <button id="forceRefreshBtn">Force Refresh (sub status)</button>
+
+  <label>
+    <input type="search" name="search" placeholder="search for artists" id="searchField" />
+  </label>
+
+  <ul id="searchResults"></ul>
 
   <script type="module" src="./authorization-code.js"></script>
 </body>
