@@ -17,7 +17,7 @@
 
 <body>
   <a href="../">Back to all examples</a>
-  <h1>Login redirect</h1>
+  <h1>Authorization code</h1>
   <p>
     This example showcases how to login through login.tidal.com and get redirected back to your app.
     You need a properly configured clientId, which is tied to a secure redirect uri.
@@ -26,7 +26,7 @@
   </p>
 
 
-  <form id="loginRedirectForm">
+  <form id="authorizationCodeForm">
     <label>
       <span>Client Id</span>
       <input type="text" name="clientId" required />
@@ -45,7 +45,7 @@
   <button id="getUserBtn">Get user</button>
   <button id="forceRefreshBtn">Force Refresh (sub status)</button>
 
-  <script type="module" src="./login-redirect.js"></script>
+  <script type="module" src="./authorization-code.js"></script>
 </body>
 
 </html>

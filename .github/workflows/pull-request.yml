@@ -2,6 +2,8 @@ name: Pull Request
 
 on:
   pull_request:
+  merge_group:
+    type: [checks_requested]
 
 jobs:
   fossa-scans:

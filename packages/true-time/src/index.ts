@@ -1,27 +1,28 @@
 export class TrueTime {
   #clientStartTime?: number;
 
+  #isSynchronizing = false;
+
   #serverTime?: number;
 
   #url: URL;
 
   constructor(url: string) {
     this.#url = new URL(url);
+    void this.synchronize();
   }
 
   /**
    * Returns the current time adjusted to server-time.
    *
    * @param clientCurrentTime The current time on the client side. Defaults to Date.now().
-   * @returns The current adjusted time.
-   * @throws {ReferenceError} If the initialization has not been done yet. You need to call and await the `synchronize` method once.
+   * @returns The current adjusted time (or the client time if not synced yet).
    */
   // eslint-disable-next-line no-restricted-syntax
   now(clientCurrentTime = Date.now()): number {
     if (!this.#serverTime || !this.#clientStartTime) {
-      throw new ReferenceError(
-        'Initialization has not been done yet. You need to call and await the synchronize method once.',
-      );
+      console.warn('TrueTime is not yet synchronized');
+      return clientCurrentTime;
     }
 
     return this.#serverTime + (clientCurrentTime - this.#clientStartTime);
@@ -37,13 +38,15 @@ export class TrueTime {
     const anHour = 3_600_000;
 
     if (
-      this.#clientStartTime &&
-      // eslint-disable-next-line no-restricted-syntax
-      Math.abs(Date.now() - this.#clientStartTime) < anHour
+      (this.#clientStartTime &&
+        // eslint-disable-next-line no-restricted-syntax
+        Math.abs(Date.now() - this.#clientStartTime) < anHour) ||
+      this.#isSynchronizing
     ) {
       return;
     }
 
+    this.#isSynchronizing = true;
     try {
       const response = await fetch(this.#url);
 
@@ -55,6 +58,7 @@ export class TrueTime {
     } catch (error) {
       console.error(error);
     }
+    this.#isSynchronizing = false;
   }
 
   /**
@@ -64,16 +68,10 @@ export class TrueTime {
    * @param markName - The name of the performance mark.
    * @param detail - Optional. The detail of the performance mark.
    * @returns The timestamp of the performance mark, or undefined if not found.
-   * @throws ReferenceError if initialization has not been done yet or if the performance mark is not found.
+   * @throws ReferenceError if the performance mark is not found.
    */
   timestamp(markName: string, detail?: string): number | undefined {
     let performanceEntry: PerformanceEntry | undefined;
-
-    if (!this.#serverTime || !this.#clientStartTime) {
-      throw new ReferenceError(
-        'Initialization has not been done yet. You need to call and await the synchronize method once.',
-      );
-    }
 
     if (detail) {
       performanceEntry = performance

@@ -3,7 +3,7 @@ import { finalizeLogin, init, initializeLogin, logout } from '../dist';
 import { getUserInfo } from './shared';
 
 window.addEventListener('load', () => {
-  const form = document.getElementById('loginRedirectForm');
+  const form = document.getElementById('authorizationCodeForm');
   const logoutButton = document.getElementById('logoutBtn');
 
   form?.addEventListener('submit', event => {
@@ -34,7 +34,7 @@ const submitHandler = async event => {
   await init({
     clientId,
     clientUniqueKey: 'test',
-    credentialsStorageKey: 'loginRedirect',
+    credentialsStorageKey: 'authorizationCode',
   });
 
   const loginUrl = await initializeLogin({
@@ -47,7 +47,7 @@ const submitHandler = async event => {
 const loadHandler = async () => {
   const clientId = localStorage.getItem('clientId');
   const redirectUri = localStorage.getItem('redirectUri');
-  const form = document.getElementById('loginRedirectForm');
+  const form = document.getElementById('authorizationCodeForm');
 
   if (clientId && redirectUri) {
     form.style.display = 'none';
@@ -55,12 +55,12 @@ const loadHandler = async () => {
     await init({
       clientId,
       clientUniqueKey: 'test',
-      credentialsStorageKey: 'loginRedirect',
+      credentialsStorageKey: 'authorizationCode',
     });
 
     if (window.location.search.length > 0) {
       await finalizeLogin(window.location.search);
-      window.location.replace('/examples/login-redirect.html');
+      window.location.replace('/examples/authorization-code.html');
     } else {
       await getUserInfo();
       document.getElementById('getUserBtn').style.display = 'block';
