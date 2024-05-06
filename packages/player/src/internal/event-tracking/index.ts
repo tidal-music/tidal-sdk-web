@@ -28,11 +28,6 @@ export async function commit(baseCommitData: BaseCommitData) {
     | string
     | undefined;
 
-  // streamingSessionId not allowed in the progress event
-  if (event.name === 'progress' && 'streamingSessionId' in event.payload) {
-    delete event.payload.streamingSessionId;
-  }
-
   if (oldNestedHeader) {
     const credentials =
       await credentialsProviderStore.credentialsProvider.getCredentials();
