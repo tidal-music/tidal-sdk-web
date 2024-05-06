@@ -75,7 +75,7 @@ export const sendMonitoringInfo = async () => {
         consentCategory: 'NECESSARY',
         credentials: await config.credentialsProvider?.getCredentials(),
         platformData: config.platform,
-        sentTimestamp: trueTime.now().toString(),
+        sentTimestamp: trueTime.now(),
       }),
       id: uuid(),
       name: 'tep-tl-monitoring',

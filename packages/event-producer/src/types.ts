@@ -8,7 +8,7 @@ export type AppInfo = {
   appVersion: string;
 };
 
-export type EventHeaders = Record<string, string>;
+export type EventHeaders = Record<string, number | string>;
 
 /**
  * This is an incoming raw event.

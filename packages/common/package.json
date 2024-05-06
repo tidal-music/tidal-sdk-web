@@ -34,16 +34,13 @@
     "test:ui": "pnpm run test:coverage --ui",
     "typecheck": "tsc"
   },
-  "dependencies": {
-    "@tidal-music/common": "workspace:*"
-  },
   "devDependencies": {
     "@tidal-music/event-producer": "workspace:*",
-    "@vitest/coverage-v8": "1.4.0",
-    "@vitest/ui": "1.4.0",
-    "typescript": "5.4.2",
-    "vite": "5.1.6",
-    "vite-plugin-dts": "3.7.3",
-    "vitest": "1.4.0"
+    "@vitest/coverage-v8": "1.5.0",
+    "@vitest/ui": "1.5.0",
+    "typescript": "5.4.5",
+    "vite": "5.2.10",
+    "vite-plugin-dts": "3.8.3",
+    "vitest": "1.5.0"
   }
 }
