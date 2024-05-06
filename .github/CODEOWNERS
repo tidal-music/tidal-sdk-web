@@ -4,5 +4,5 @@
 
 /packages/ @tidal-music/tidal-web-platform
 /packages/auth/ @MathiasTim
-/packages/event-producer @TheHaff
+/packages/event-producer @tidal-music/tidal-web-platform
 /packages/player @enjikaka

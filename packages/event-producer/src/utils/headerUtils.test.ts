@@ -12,7 +12,7 @@ describe('headerUtils', () => {
       consentCategory: 'NECESSARY',
       credentials: credentials1,
       platformData: config.platform,
-      sentTimestamp: '2023',
+      sentTimestamp: 2023,
       suppliedHeaders: {
         someXtraHeader: 'eggs',
       },
@@ -26,7 +26,7 @@ describe('headerUtils', () => {
       'client-id': 'fakeClientId',
       'consent-category': 'NECESSARY',
       'os-name': config.platform.osName,
-      'requested-sent-timestamp': '2023',
+      'requested-sent-timestamp': 2023,
       someXtraHeader: 'eggs',
     });
   });
@@ -37,7 +37,7 @@ describe('headerUtils', () => {
       consentCategory: 'NECESSARY',
       credentials: credentials1,
       platformData: config.platform,
-      sentTimestamp: '2023',
+      sentTimestamp: 2023,
       suppliedHeaders: {
         'app-name': 'bacon',
         someXtraHeader: 'eggs',
