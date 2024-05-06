@@ -71,7 +71,7 @@
     "js-levenshtein": "1.1.6",
     "mux.js": "6.3.0",
     "rollup": "4.16.1",
-    "shaka-player": "4.7.13",
+    "shaka-player": "4.8.1",
     "sinon": "17.0.1",
     "typescript": "5.4.5",
     "vite": "5.2.10",
