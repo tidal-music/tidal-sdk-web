@@ -13,7 +13,7 @@ export async function commit(data: Events) {
         group: 'play_log',
         name: event.name,
         payload: event.payload,
-        version: 1,
+        version: 2,
       });
     }
   }
