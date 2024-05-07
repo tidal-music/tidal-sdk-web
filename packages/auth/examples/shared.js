@@ -1,41 +1,37 @@
 import { credentialsProvider } from '../dist';
 
 /**
- * fetch user info and display in DOM
+ * Gets the token from the SDK, extracts the user id and displays it
  *
  * @param {string?} apiSubStatus
  */
 export const getUserInfo = async apiSubStatus => {
   const credentials = await credentialsProvider.getCredentials(apiSubStatus);
 
-  const headers = new Headers({
-    Accept: 'application/json',
-    Authorization: `Bearer ${credentials.token}`,
-  });
-  const response = await window.fetch('https://login.tidal.com/oauth2/me', {
-    headers,
-  });
-  const userJson = await response.json();
-  const userInfo = document.getElementById('userInfo');
+  try {
+    const decodedToken = base64UrlDecode(credentials.token);
+    const userInfo = document.getElementById('userInfo');
 
-  if (userInfo && response.ok) {
-    userInfo.innerHTML = `<h3>User id: ${userJson.userId}</h3>`;
-    userInfo.innerHTML += `<h3>Email: ${userJson.email}</h3>`;
+    if (userInfo && decodedToken) {
+      userInfo.innerHTML = `<h3>User id: ${decodedToken.uid}</h3>`;
 
-    const logoutBtn = document.getElementById('logoutBtn');
-    logoutBtn.style.display = 'block';
+      const logoutBtn = document.getElementById('logoutBtn');
+      logoutBtn.style.display = 'block';
+    }
+  } catch (error) {
+    console.error(error);
   }
 };
 
 /**
  * Search for an artist and display the results in the DOM.
  *
- * @param {string} artistId
+ * @param {string} query
  */
-export const searchForArtist = async artistId => {
+export const searchForArtist = async query => {
   const searchResults = document.getElementById('searchResults');
   const credentials = await credentialsProvider.getCredentials();
-  const searchResult = await search(credentials.token, artistId, 'ARTISTS');
+  const searchResult = await search(credentials.token, query, 'ARTISTS');
 
   searchResults.innerHTML = '';
 
@@ -53,7 +49,8 @@ export const searchForArtist = async artistId => {
  * Fetches an artists and adds it name to DOM.
  *
  * @param {string} token
- * @param {string} artistId
+ * @param {string} query
+ * @param {string} type
  */
 export const search = async (token, query, type) => {
   const queryString = new URLSearchParams({
@@ -90,3 +87,18 @@ export function debounce(func, timeout = 300) {
     }, timeout);
   };
 }
+
+/**
+ * Decodes a base64 url encoded access token.
+ *
+ * @param {string} token
+ * @returns {{uid:number}}
+ */
+const base64UrlDecode = token => {
+  try {
+    const [, body] = token.split('.');
+    return JSON.parse(globalThis.atob(body));
+  } catch (error) {
+    console.error(error);
+  }
+};
