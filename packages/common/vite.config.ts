@@ -11,8 +11,7 @@ export default defineConfig({
   },
   plugins: [
     dts({
-      // Bundle the event sender types from event-producer
-      bundledPackages: ['@tidal-music/event-producer'],
+      rollupTypes: true,
       tsconfigPath: 'tsconfig.build.json',
     }),
   ],
