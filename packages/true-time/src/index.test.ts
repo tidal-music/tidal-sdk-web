@@ -66,36 +66,10 @@ describe('TrueTime', () => {
     });
   });
 
-  describe('true time errors', () => {
-    const trueTime = new TrueTime('https://api.tidal.com/v1/ping');
-
-    describe('now', () => {
-      test('throws error due to no synchronize call', async () => {
-        expect(() => trueTime.now()).toThrowError(
-          'Initialization has not been done yet. You need to call and await the synchronize method once.',
-        );
-      });
-    });
-
-    describe('timestamp', () => {
-      test('throws error due to no synchronize call', async () => {
-        // PS `performance.mark` should not be called without `startTime: trueTime.now()` option,
-        // but doing it here to test the error.
-        performance.mark('birds are dinosaurs');
-
-        expect(() => trueTime.timestamp('birds are dinosaurs')).toThrowError(
-          'Initialization has not been done yet. You need to call and await the synchronize method once.',
-        );
-      });
-    });
-  });
-
   describe('google true time', () => {
-    const trueTime = new TrueTime('https://time.google.com');
-
     test('fetches server time from correct url', async () => {
       vi.spyOn(globalThis, 'fetch');
-      await trueTime.synchronize();
+      new TrueTime('https://time.google.com');
 
       const callArg = vi.mocked(fetch)?.mock.calls[0]?.[0] as URL;
       expect(callArg?.href).toEqual('https://time.google.com/');

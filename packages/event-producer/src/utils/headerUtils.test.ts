@@ -12,21 +12,21 @@ describe('headerUtils', () => {
       consentCategory: 'NECESSARY',
       credentials: credentials1,
       platformData: config.platform,
-      sentTimestamp: '2023',
+      sentTimestamp: 2023,
       suppliedHeaders: {
         someXtraHeader: 'eggs',
       },
     });
     expect(headers).toEqual({
-      Authorization: credentials1.token,
       'app-name': config.appInfo.appName,
       'app-version': config.appInfo.appVersion,
+      authorization: credentials1.token,
       'browser-name': config.platform.browserName,
       'browser-version': config.platform.browserVersion,
       'client-id': 'fakeClientId',
       'consent-category': 'NECESSARY',
       'os-name': config.platform.osName,
-      'requested-sent-timestamp': '2023',
+      'requested-sent-timestamp': 2023,
       someXtraHeader: 'eggs',
     });
   });
@@ -37,7 +37,7 @@ describe('headerUtils', () => {
       consentCategory: 'NECESSARY',
       credentials: credentials1,
       platformData: config.platform,
-      sentTimestamp: '2023',
+      sentTimestamp: 2023,
       suppliedHeaders: {
         'app-name': 'bacon',
         someXtraHeader: 'eggs',

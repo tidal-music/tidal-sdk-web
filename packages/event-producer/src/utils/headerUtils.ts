@@ -17,8 +17,8 @@ export const getEventHeaders = ({
   consentCategory: ConsentCategory;
   credentials?: Credentials;
   platformData: PlatformData;
-  sentTimestamp: string;
-  suppliedHeaders?: Record<string, string>;
+  sentTimestamp: number;
+  suppliedHeaders?: Record<string, number | string>;
 }) => {
   const accessToken = credentials?.token;
   const clientId = credentials?.clientId ?? 'clientIDMissing!';
@@ -35,7 +35,7 @@ export const getEventHeaders = ({
   };
 
   if (authorize && accessToken) {
-    headers.Authorization = accessToken;
+    headers.authorization = accessToken;
   }
 
   if (suppliedHeaders) {

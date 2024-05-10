@@ -1,1 +1,1 @@
-export default ['packages/**/src/*'];
+export default ['packages/*'];
