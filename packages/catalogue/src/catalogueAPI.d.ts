@@ -568,35 +568,22 @@ export interface components {
        */
       id: string;
       /**
-       * @description Version of the album's item; complements title
-       * @example Kill Jay Z
-       */
-      version: string;
-      /**
        * Format: int32
        * @description Duration (in seconds)
        * @example 30
        */
       duration: number;
+      /**
+       * @description Version of the album's item; complements title
+       * @example Kill Jay Z
+       */
+      version: string;
       album: components["schemas"]["Simple Album"];
       /**
        * @description Title
        * @example Kill Jay Z
        */
       title: string;
-      /**
-       * @description Copyright information
-       * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
-       */
-      copyright: string;
-      /** @description Contributing artists */
-      artists?: components["schemas"]["Simple Artist"][];
-      /**
-       * Format: double
-       * @description Artist popularity (ranged in 0.00 ... 1.00). Conditionally visible
-       * @example 0.56
-       */
-      popularity: number;
       /**
        * @description ISRC code
        * @example TIDAL2274
@@ -614,6 +601,19 @@ export interface components {
        * @example 30
        */
       volumeNumber: number;
+      /**
+       * @description Copyright information
+       * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
+       */
+      copyright: string;
+      /** @description Contributing artists */
+      artists?: components["schemas"]["Simple Artist"][];
+      /**
+       * Format: double
+       * @description Track or video popularity (ranged in 0.00 ... 1.00). Conditionally visible
+       * @example 0.56
+       */
+      popularity: number;
       /**
        * @description Web address that can be used to access TIDAL track or video page and can also be shared with others
        * @example https://tidal.com/browse/track/251380837
@@ -651,15 +651,15 @@ export interface components {
       data?: components["schemas"]["Multi-Status Response Data:Album"][];
       metadata: components["schemas"]["Multi-Status Response Metadata"];
     };
-    /** @description Map of track-related properties. All properties are distributed across namespaces that acts as a map keys. Each namespace consists of list of related properties. The fact of the presence of a particular property effectively means that an item has this characteristic. */
-    "Track Properties": {
-      /** @example explicit */
-      content?: "explicit"[];
-    };
     /** @description Map of video-related properties. All properties are distributed across namespaces that acts as a map keys. Each namespace consists of list of related properties. The fact of the presence of a particular property effectively means that an item has this characteristic. */
     "Video Properties": {
       /** @example live-stream */
       "video-type"?: "live-stream"[];
+      /** @example explicit */
+      content?: "explicit"[];
+    };
+    /** @description Map of track-related properties. All properties are distributed across namespaces that acts as a map keys. Each namespace consists of list of related properties. The fact of the presence of a particular property effectively means that an item has this characteristic. */
+    "Track Properties": {
       /** @example explicit */
       content?: "explicit"[];
     };
@@ -2590,6 +2590,11 @@ export interface operations {
          * @example US
          */
         countryCode: string;
+        /**
+         * @description Collapse by options for getting artist tracks. Available options: FINGERPRINT, ID. FINGERPRINT option might collapse similar tracks based item fingerprints while collapsing by ID always returns all available items.
+         * @example FINGERPRINT
+         */
+        collapseBy?: "FINGERPRINT" | "ID";
         /**
          * @description Pagination offset (in number of items)
          * @example 0
