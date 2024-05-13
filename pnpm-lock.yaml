@@ -59,6 +59,9 @@ importers:
       vite-plugin-dts:
         specifier: 3.9.1
         version: 3.9.1(@types/node@20.12.10)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@20.12.10)(terser@5.31.0))
+      vite-plugin-top-level-await:
+        specifier: 1.4.1
+        version: 1.4.1(rollup@4.17.2)(vite@5.2.11(@types/node@20.12.10)(terser@5.31.0))
       vitest:
         specifier: 1.6.0
         version: 1.6.0(@types/node@20.12.10)(@vitest/ui@1.6.0)(happy-dom@14.10.1)(terser@5.31.0)
@@ -127,6 +130,9 @@ importers:
       vite-plugin-dts:
         specifier: 3.9.1
         version: 3.9.1(@types/node@20.12.10)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.11(@types/node@20.12.10)(terser@5.31.0))
+      vite-plugin-top-level-await:
+        specifier: 1.4.1
+        version: 1.4.1(rollup@4.17.2)(vite@5.2.11(@types/node@20.12.10)(terser@5.31.0))
       vitest:
         specifier: 1.6.0
         version: 1.6.0(@types/node@20.12.10)(@vitest/ui@1.6.0)(happy-dom@14.10.1)(terser@5.31.0)
