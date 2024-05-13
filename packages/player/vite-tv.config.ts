@@ -11,7 +11,7 @@ export default defineConfig({
       formats: ['es'],
     },
     outDir: 'dist/tv',
-    target: 'chrome76',
+    target: 'es2015',
   },
   plugins: [
     topLevelAwait(),
