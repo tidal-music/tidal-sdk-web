@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     "import": "./dist/index.js",
-    "default": "./dist/index.js"
+    "default": "./dist/index.js",
+    "tv": "./dist/tv/index.js"
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
