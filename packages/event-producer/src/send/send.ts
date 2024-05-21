@@ -28,7 +28,7 @@ const createPayload = ({ event, id, ts }: CreatePayloadParams): string => {
 };
 
 /**
- * Creates an EPEvent to be sent to the event producer
+ * Creates an EPEvent to be sent to the event producer testing change 
  *
  * @param {SendEventParams} params
  *
