@@ -26,16 +26,15 @@ jobs:
             # check-version-bump exits with 0 if it detects a bump, otherwise with 1
             if [ $? != "1" ] && [[ ! " ${modules_list[*]} " =~ " ${file} " ]]; then
               version="$(cat $file | jq -r '.version')"
-              modules_list+=("{\"name\": \"$file\", \"version\": \"$version\"}")
+              modules_list+=("{\"name\": \"${file%"/package.json"}\", \"version\": \"$version\"}")
             fi
           done
 
           jsonString="$(jq --compact-output --null-input '$ARGS.positional' --args -- "${modules_list[@]}")"
-          echo 'miko'
           echo $jsonString
           echo "modules=$jsonString" >> $GITHUB_OUTPUT
 
-      # - name: Check changelog files
-      #   if: ${{ steps.get-modules-with-increased-version.outputs.modules != '' }}
-      #   run: |
-      #     kotlinc -script .github/scripts/CheckChangelogs.main.kts ${{ steps.get-modules-with-increased-version.outputs.modules}}
+      - name: Check changelog files
+        if: ${{ steps.build-matrix.outputs.modules != '' }}
+        run: |
+          kotlinc -script .github/scripts/CheckChangelogs.main.kts ${{ steps.build-matrix.outputs.modules}}
