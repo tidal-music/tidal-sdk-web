@@ -25,7 +25,8 @@ jobs:
 
             # check-version-bump exits with 0 if it detects a bump, otherwise with 1
             if [ $? != "1" ] && [[ ! " ${modules_list[*]} " =~ " ${file} " ]]; then
-              modules_list+=("${file%"/package.json"}")
+              version="$(cat $file/package.json | jq -r '.version')"
+              module_list+=("{\"name\": \"$file\", \"version\": \"$version\"}")
             fi
           done
 
