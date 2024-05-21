@@ -1,0 +1,40 @@
+name: Check version bump and changelog files
+
+on:
+  push
+
+jobs:
+  check-version-bump:
+    runs-on: ubuntu-latest
+    name: Verify whether any updates were made to the modules' versions, and if they were, examine the changelog files for the respective modules
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get changed files
+        id: changed-files 
+        uses: tj-actions/changed-files@v44
+        with:
+          files: packages/**/package.json
+      - name: Build matrix input
+        id: build-matrix
+        if: ${{ steps.changed-files.outputs.all_changed_files }} != '[]'
+        run: |
+          set +e
+          modules_list=()
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            ./bin/check-version-bump.sh ./"$file"
+
+            # check-version-bump exits with 0 if it detects a bump, otherwise with 1
+            if [ $? != "1" ] && [[ ! " ${modules_list[*]} " =~ " ${file} " ]]; then
+              modules_list+=("${file%"/package.json"}")
+            fi
+          done
+
+          jsonString="$(jq --compact-output --null-input '$ARGS.positional' --args -- "${modules_list[@]}")"
+          echo 'miko'
+          echo $jsonString
+          echo "modules=$jsonString" >> $GITHUB_OUTPUT
+
+      # - name: Check changelog files
+      #   if: ${{ steps.get-modules-with-increased-version.outputs.modules != '' }}
+      #   run: |
+      #     kotlinc -script .github/scripts/CheckChangelogs.main.kts ${{ steps.get-modules-with-increased-version.outputs.modules}}
