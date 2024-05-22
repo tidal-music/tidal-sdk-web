@@ -24,7 +24,7 @@
   },
   "engines": {
     "node": ">=20.11.1",
-    "pnpm": ">=9.1.1"
+    "pnpm": ">=9.1.2"
   },
   "prettier": {
     "arrowParens": "avoid",
@@ -36,7 +36,7 @@
   ],
   "pnpm": {
     "patchedDependencies": {
-      "shaka-player@4.8.3": "patches/shaka-player@4.8.3.patch"
+      "shaka-player@4.8.5": "patches/shaka-player@4.8.5.patch"
     }
   }
 }
