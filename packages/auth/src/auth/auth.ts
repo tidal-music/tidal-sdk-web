@@ -310,7 +310,6 @@ export const finalizeDeviceLogin = async () => {
     ...(clientUniqueKey && {
       client_unique_key: clientUniqueKey,
     }),
-    client_unique_key: clientUniqueKey ?? '',
     device_code: deviceCode,
     grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
     scope: scopes.join(' '),
