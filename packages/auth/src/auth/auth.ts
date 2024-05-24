@@ -254,7 +254,9 @@ export const finalizeLogin = async (loginResponseQuery: string) => {
 
   const body = {
     client_id: clientId,
-    client_unique_key: clientUniqueKey ?? '',
+    ...(clientUniqueKey && {
+      client_unique_key: clientUniqueKey,
+    }),
     ...(clientSecret && {
       client_secret: clientSecret,
     }),
@@ -304,6 +306,9 @@ export const finalizeDeviceLogin = async () => {
     client_id: clientId,
     ...(clientSecret && {
       client_secret: clientSecret,
+    }),
+    ...(clientUniqueKey && {
+      client_unique_key: clientUniqueKey,
     }),
     client_unique_key: clientUniqueKey ?? '',
     device_code: deviceCode,
