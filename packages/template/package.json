@@ -15,8 +15,7 @@
   "types": "dist/index.d.ts",
   "exports": {
     "default": "./dist/index.js",
-    "import": "./dist/index.js",
-    "types": "./dist/index.d.ts"
+    "import": "./dist/index.js"
   },
   "scripts": {
     "prepare": "vite build",

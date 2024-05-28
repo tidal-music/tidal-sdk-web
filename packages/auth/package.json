@@ -11,13 +11,12 @@
   },
   "license": "Apache-2.0",
   "module": "dist/index.js",
-  "types": "dist/index.d.ts",
   "exports": {
     "import": "./dist/index.js",
-    "types": "./dist/index.d.ts",
     "default": "./dist/index.js",
     "legacy": "./dist/legacy/index.js"
   },
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "vite build && vite build -c vite-legacy.config.ts",
     "build:dev": "vite build -m development",
