@@ -38,7 +38,7 @@
     "@vitest/coverage-v8": "1.6.0",
     "@vitest/ui": "1.6.0",
     "@vitest/web-worker": "1.6.0",
-    "happy-dom": "14.10.1",
+    "happy-dom": "14.11.0",
     "typescript": "5.4.5",
     "vite": "5.2.11",
     "vite-plugin-dts": "3.9.1",

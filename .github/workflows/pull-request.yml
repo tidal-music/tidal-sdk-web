@@ -21,3 +21,7 @@ jobs:
       pull-requests: write
     uses: ./.github/workflows/unit-test.yml
     secrets: inherit
+
+  trigger-changelogs-check:
+    name: Trigger changelog files check
+    uses: ./.github/workflows/check-changelog-files.yml

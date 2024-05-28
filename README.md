@@ -36,10 +36,12 @@ And follow the prompts.
     ```
     Change `version` to the new value. Follow [Semantic Versioning](https://semver.org/). Also, you cannot downgrade - the CI/CD pipeline will refuse to work with downgrades.
 
-2. Open a Pull Request with your version bump, get it approved and merge it. A release draft will be created for the module you changed.
+2. Update the module's changelog file with the changes that will be introduced in the new version.
 
-3. Find your draft in the [releases list](https://github.com/tidal-music/tidal-sdk-web/releases) and add some meaningful sentences about the release, changelog style (Note: We should automate and regulate changelog creation, but for now, you are free to just type).
+3. Open a Pull Request with your version bump and changelog update, get it approved and merge it. A release draft will be created for the module you changed.
 
-4. Check in with your teammates, lead, the module's owner etc. to make sure the release is ready to go.
+4. Find your draft in the [releases list](https://github.com/tidal-music/tidal-sdk-web/releases) and add some meaningful sentences about the release, changelog style (Note: We should automate and regulate changelog creation, but for now, you are free to just type).
 
-5. Click `Publish` at the bottom of your draft release. This will trigger a workflow to tag the release commit and attach artifacts to the release. It will also trigger publishing the package to `Npm`, where it should appear under [@tidal-music Npm org](https://www.npmjs.com/org/tidal-music) shortly!
+5. Check in with your teammates, lead, the module's owner etc. to make sure the release is ready to go.
+
+6. Click `Publish` at the bottom of your draft release. This will trigger a workflow to tag the release commit and attach artifacts to the release. It will also trigger publishing the package to `Npm`, where it should appear under [@tidal-music Npm org](https://www.npmjs.com/org/tidal-music) shortly!
