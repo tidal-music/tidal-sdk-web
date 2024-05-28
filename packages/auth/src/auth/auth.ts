@@ -254,7 +254,9 @@ export const finalizeLogin = async (loginResponseQuery: string) => {
 
   const body = {
     client_id: clientId,
-    client_unique_key: clientUniqueKey ?? '',
+    ...(clientUniqueKey && {
+      client_unique_key: clientUniqueKey,
+    }),
     ...(clientSecret && {
       client_secret: clientSecret,
     }),
@@ -305,7 +307,9 @@ export const finalizeDeviceLogin = async () => {
     ...(clientSecret && {
       client_secret: clientSecret,
     }),
-    client_unique_key: clientUniqueKey ?? '',
+    ...(clientUniqueKey && {
+      client_unique_key: clientUniqueKey,
+    }),
     device_code: deviceCode,
     grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
     scope: scopes.join(' '),

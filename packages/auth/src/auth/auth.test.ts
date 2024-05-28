@@ -296,6 +296,32 @@ describe.sequential('auth', () => {
       expect(result).toBeUndefined();
     });
 
+    it('does not send a clientUniqueKey when omitted', async () => {
+      // make sure `init` gets the correct values from storage
+      vi.mocked(storage.loadCredentials).mockResolvedValue(fixtures.storage);
+      vi.mocked(fetchHandling.handleTokenFetch).mockResolvedValue(
+        new Response(JSON.stringify(fixtures.userJsonResponse)), // oauth/token
+      );
+
+      await init({ ...initConfig, clientUniqueKey: undefined });
+
+      const result = await finalizeLogin('code=foobar');
+      expect(storage.saveCredentialsToStorage).toHaveBeenCalled();
+      expect(fetchHandling.handleTokenFetch).toHaveBeenCalledWith({
+        body: {
+          client_id: 'CLIENT_ID',
+          client_secret: 'CLIENT_SECRET',
+          code: 'foobar',
+          code_verifier: 'CODE_CHALLENGE',
+          grant_type: 'authorization_code',
+          redirect_uri: 'https://redirect.uri',
+          scope: 'READ WRITE',
+        },
+        credentials: { ...fixtures.storage, clientUniqueKey: undefined },
+      });
+      expect(result).toBeUndefined();
+    });
+
     it('requests an auth token and handles retryableError', async () => {
       // make sure `init` gets the correct values from storage
       vi.mocked(storage.loadCredentials).mockResolvedValue(fixtures.storage);
