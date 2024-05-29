@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     "import": "./dist/index.js",
-    "default": "./dist/index.js"
+    "default": "./dist/index.js",
+    "legacy": "./dist/legacy/index.js"
   },
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -13,7 +14,7 @@
     "wtr": "web-test-runner",
     "test": "bash ./scripts/test.sh",
     "prepare": "vite build",
-    "build": "vite build",
+    "build": "vite build && vite build -c vite-legacy.config.ts",
     "clean": "rm -rf coverage dist .eslintcache",
     "dev": "vite --debug --cors -c=./vite.config.ts",
     "lint": "eslint . --cache --cache-strategy content",
@@ -76,6 +77,7 @@
     "typescript": "5.4.5",
     "vite": "5.2.11",
     "vite-plugin-dts": "3.9.1",
+    "vite-plugin-top-level-await": "1.4.1",
     "vitest": "1.6.0"
   }
 }
