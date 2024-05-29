@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import * as Auth from '@tidal-music/auth';
+import * as EventProducer from '@tidal-music/event-producer';
 
 import { playerState } from './player/state';
 
@@ -24,26 +25,88 @@ type User = {
 const user = JSON.parse(atob(process.env.TEST_USER)) as User;
 const scopes = ['r_usr', 'w_usr'];
 
-await Auth.init({
-  clientId: user.clientId,
-  clientUniqueKey: 'FALLBACK',
-  credentialsStorageKey: 'FALLBACK',
-  scopes,
-});
+/**
+ * Testing helpers for auth and events.
+ *
+ * @param {Function} before
+ * @param {Function} after
+ */
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function authAndEvents(before: Function, after: Function) {
+  after(async () => {
+    console.log('[Test Helper] Clearing auth provider and event producer.');
 
-await Auth.setCredentials({
-  accessToken: {
-    clientId: user.clientId,
-    clientUniqueKey: 'FALLBACK',
-    expires: user.oAuthExpirationDate,
-    grantedScopes: scopes,
-    requestedScopes: scopes,
-    token: user.oAuthAccessToken ?? '',
-  },
-  refreshToken: user.oAuthRefreshToken,
-});
+    localStorage.clear();
+    console.log('[Test Helper] Cleared localStorage');
 
-Player.setCredentialsProvider(Auth.credentialsProvider);
+    const dbs = await indexedDB.databases();
+
+    for (let db of dbs) {
+      if (db.name) {
+        indexedDB.deleteDatabase(db.name);
+        console.log('[Test Helper] Removed DB ' + db.name);
+      }
+    }
+
+    console.log(
+      '[Test Helper] Auth provider and event producer are not ready for the next test.',
+    );
+  });
+
+  before(async () => {
+    console.log('[Test Helper] Setting up auth provider and event producer.');
+
+    await Auth.init({
+      clientId: user.clientId,
+      clientUniqueKey: 'FALLBACK',
+      credentialsStorageKey: 'FALLBACK',
+      scopes,
+    });
+
+    await Auth.setCredentials({
+      accessToken: {
+        clientId: user.clientId,
+        clientUniqueKey: 'FALLBACK',
+        expires: user.oAuthExpirationDate,
+        grantedScopes: scopes,
+        requestedScopes: scopes,
+        token: user.oAuthAccessToken ?? '',
+      },
+      refreshToken: user.oAuthRefreshToken,
+    });
+
+    await EventProducer.init({
+      appInfo: {
+        appName: 'TIDAL SDK Player Module test',
+        appVersion: '0.0.0',
+      },
+      blockedConsentCategories: {
+        NECESSARY: false,
+        PERFORMANCE: false,
+        TARGETING: false,
+      },
+      credentialsProvider: Auth.credentialsProvider,
+      platform: {
+        browserName: 'Web Test Runner',
+        browserVersion: '0.0.0',
+        osName: 'GitHub Actions',
+      },
+      strictMode: false,
+      tlConsumerUri:
+        'https://event-collector.obelix-staging-use1.tidalhi.fi/api/event-batch',
+      tlPublicConsumerUri:
+        'https://event-collector.obelix-staging-use1.tidalhi.fi/api/public/event-batch',
+    });
+
+    Player.setCredentialsProvider(Auth.credentialsProvider);
+    Player.setEventSender(EventProducer);
+
+    console.log(
+      '[Test Helper] Auth provider and event producer is ready for testing.',
+    );
+  });
+}
+
 export const credentialsProvider = Auth.credentialsProvider;
 
 export function waitForEvent(target: EventTarget, eventName: string) {

@@ -1,17 +1,20 @@
 export { progress } from './progress';
 
-import { commit as beaconCommit, worker } from '../../beacon/index';
-import type { CommitData } from '../../beacon/types';
-import { runIfAuthorizedWithUser } from '../../helpers/run-if-authorized-with-user';
+import { commit as baseCommit } from '../index';
+import type { Events } from '../types';
 
 /**
  * Send event to event system scoped to playback category.
  */
-export function commit(data: Pick<CommitData, 'events'>) {
-  return runIfAuthorizedWithUser(() =>
-    beaconCommit(worker, {
-      ...data,
-      type: 'playback' as const,
-    }),
-  );
+export async function commit(events: Events) {
+  for await (const event of events) {
+    if (event) {
+      await baseCommit({
+        group: 'playback',
+        name: event.name,
+        payload: event.payload,
+        version: 1,
+      });
+    }
+  }
 }

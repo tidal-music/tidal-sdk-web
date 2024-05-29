@@ -1,11 +1,9 @@
 import { expect } from 'chai';
 
 import * as Config from './config';
-import { credentialsProvider, mockNativePlayer } from './test-helpers';
+import { authAndEvents, mockNativePlayer } from './test-helpers';
 
 import * as Player from './index';
-
-Player.setCredentialsProvider(credentialsProvider);
 
 describe('bootstrap', () => {
   it('enables output devices if options.outputDevices is true', () => {
@@ -16,6 +14,8 @@ describe('bootstrap', () => {
 });
 
 describe('getMediaElement', () => {
+  authAndEvents(before, after);
+
   it('is null if there is no player', () => {
     const mediaElement = Player.getMediaElement();
 
@@ -51,8 +51,10 @@ describe('getMediaElement', () => {
     expect(mediaElement).to.be.instanceOf(HTMLMediaElement);
   });
 
-  /* To enalbe this test we need another test user with HTMLMediaElement compatible streaming configuration (MP3 Preview?). */
-  it.skip('returns the mediaElement value on browser player', async () => {
+  /* To enable this test we need another test user with HTMLMediaElement compatible streaming configuration (MP3 Preview?). */
+  // eslint-disable-next-line vitest/no-commented-out-tests
+  /*
+  it('returns the mediaElement value on browser player', async () => {
     Player.bootstrap({
       outputDevices: false,
       players: [
@@ -80,8 +82,9 @@ describe('getMediaElement', () => {
 
     expect(mediaElement).to.be.instanceOf(HTMLMediaElement);
   });
+  */
 
-  it('returns null if active player is native player', async () => {
+  it('returns null if active player is native player', () => {
     mockNativePlayer();
 
     Player.bootstrap({
