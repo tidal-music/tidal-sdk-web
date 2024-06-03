@@ -812,13 +812,8 @@ describe.sequential('auth', () => {
     });
 
     it('make sure parallel requests are halted', async () => {
-      vi.mocked(storage.loadCredentials).mockResolvedValue({
-        ...fixtures.storage,
-        accessToken: {
-          ...fixtures.storage.accessToken,
-          expires: 0,
-        },
-      });
+      // make sure init is called with no previous stored data
+      vi.mocked(storage.loadCredentials).mockResolvedValueOnce(undefined);
       vi.mocked(fetchHandling.handleTokenFetch)
         .mockResolvedValueOnce(
           new Response(JSON.stringify(fixtures.userJsonResponse)),
@@ -838,6 +833,7 @@ describe.sequential('auth', () => {
 
       const accessToken = await Promise.all([
         getCredentials(),
+        getCredentials(),
         getCredentials('6001'),
         getCredentials(),
       ]);
@@ -846,6 +842,7 @@ describe.sequential('auth', () => {
       expect(fetchHandling.handleTokenFetch).toHaveBeenCalledTimes(2);
       expect(storage.saveCredentialsToStorage).toHaveBeenCalled();
       expect(accessToken).toEqual([
+        fixtures.storage.accessToken,
         fixtures.storage.accessToken,
         fixtures.storage.accessToken,
         fixtures.storage.accessToken,

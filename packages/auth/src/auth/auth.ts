@@ -527,8 +527,11 @@ const getCredentialsInternal = async (apiErrorSubStatus?: string) => {
 
       const shouldUpgradeToken =
         state.credentials.clientId !== accessToken?.clientId ||
-        state.credentials.previousClientSecret !==
-          state.credentials.clientSecret;
+        Boolean(
+          state.credentials.previousClientSecret &&
+            state.credentials.previousClientSecret !==
+              state.credentials.clientSecret,
+        );
 
       if (shouldUpgradeToken) {
         const upgradeTokenResponse = await upgradeToken();
