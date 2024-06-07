@@ -1,15 +1,11 @@
-import { get, set } from 'idb-keyval';
-
 import * as Config from '../../config';
 
+import { db } from './event-session';
+
 export async function createReducer<P, N extends string>(
-  eventName: N,
+  name: N,
   defaultPayload: P,
 ) {
-  let events = new Map<string, P>();
-
-  let storedItem;
-
   if (!Config.get('gatherEvents')) {
     // @ts-expect-error - Not used
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -17,46 +13,45 @@ export async function createReducer<P, N extends string>(
       Promise.resolve(undefined);
   }
 
-  // sessionStorage can be unavailable in for example iframes for embed player.
-  try {
-    storedItem = await get(eventName);
-
-    if (storedItem) {
-      events = new Map(storedItem);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-
   return async (newData: { streamingSessionId: string } & Partial<P>) => {
-    const oldPayload = events.get(newData.streamingSessionId) || defaultPayload;
-    const updatedPayload = {
-      ...oldPayload,
-      ...newData,
-    } as P;
-
-    for (const k of Object.keys(newData)) {
-      const key = k as keyof Partial<P>;
-
-      if (Array.isArray(newData[key])) {
-        updatedPayload[key] = [
-          ...((oldPayload[key] as Array<any>) || []),
-          ...((newData[key] as Array<any>) || []),
-        ] as P[typeof key];
-      }
-    }
-
-    events.set(newData.streamingSessionId, updatedPayload);
-
     try {
-      await set(eventName, [...events]);
+      const savedEvent = await db.get<P>({
+        name,
+        streamingSessionId: newData.streamingSessionId,
+      });
+
+      const payload = Object.assign(
+        {},
+        defaultPayload,
+        savedEvent ? savedEvent.payload : {},
+        newData,
+      ) as P;
+
+      for (const k of Object.keys(newData)) {
+        const key = k as keyof Partial<P>;
+
+        if (Array.isArray(newData[key])) {
+          payload[key] = [
+            ...((defaultPayload[key] as Array<any>) || []),
+            ...((savedEvent && (savedEvent.payload[key] as Array<any>)) || []),
+            ...((newData[key] as Array<any>) || []),
+          ] as P[typeof key];
+        }
+      }
+
+      await db.put({
+        name,
+        payload,
+        streamingSessionId: newData.streamingSessionId,
+      });
+
+      return {
+        name,
+        payload,
+        streamingSessionId: newData.streamingSessionId,
+      };
     } catch (e) {
       console.error(e);
     }
-
-    return {
-      name: eventName,
-      payload: updatedPayload,
-    };
   };
 }

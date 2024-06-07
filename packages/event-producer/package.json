@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/event-producer",
-  "version": "1.1.3",
+  "version": "2.2.0",
   "type": "module",
   "files": [
     "dist"
@@ -13,15 +13,13 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
+    "import": "./dist/index.js",
+    "default": "./dist/index.js",
+    "legacy": "./dist/legacy/index.js"
   },
   "scripts": {
     "prepare": "vite build",
-    "build": "vite build",
+    "build": "vite build && vite build -c vite-legacy.config.ts",
     "build:dev": "vite build -m development",
     "clean": "rm -rf coverage dist .eslintcache",
     "dev": "vite --debug --cors -c=./vite.config.ts",
@@ -30,19 +28,21 @@
     "lint:fix": "pnpm run lint --fix",
     "preview": "vite preview",
     "test": "vitest --sequence.concurrent",
+    "test:ci": "pnpm run test:coverage --reporter=json-summary --reporter=json",
     "test:coverage": "pnpm run test --coverage",
     "test:ui": "pnpm run test:coverage --ui",
     "typecheck": "tsc"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "1.2.2",
-    "@vitest/ui": "1.2.2",
-    "@vitest/web-worker": "1.2.2",
-    "happy-dom": "13.3.8",
-    "typescript": "5.3.3",
-    "vite": "5.0.12",
-    "vite-plugin-dts": "3.7.2",
-    "vitest": "1.2.2",
+    "@vitest/coverage-v8": "1.6.0",
+    "@vitest/ui": "1.6.0",
+    "@vitest/web-worker": "1.6.0",
+    "happy-dom": "14.11.0",
+    "typescript": "5.4.5",
+    "vite": "5.2.11",
+    "vite-plugin-dts": "3.9.1",
+    "vite-plugin-top-level-await": "1.4.1",
+    "vitest": "1.6.0",
     "xml-js": "1.6.11"
   },
   "dependencies": {
@@ -50,6 +50,6 @@
     "@tidal-music/event-producer": "workspace:*",
     "@tidal-music/true-time": "workspace:^",
     "localforage": "1.10.0",
-    "nanoid": "5.0.5"
+    "nanoid": "5.0.7"
   }
 }

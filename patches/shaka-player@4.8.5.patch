@@ -1,23 +1,25 @@
 diff --git a/dist/shaka-player.compiled.d.ts b/dist/shaka-player.compiled.d.ts
-index 9c72e09e9727eac9b32dfce92087b6a4481b1ea7..32a7c646b2040b76ba60d9780618c35f512ece75 100644
+index e6dcbc69da69831c5b327d4ca4a28c4a648caf8a..19c4e9b9d816f5cf12a4e2b8b3d3cf2e326c4e57 100644
 --- a/dist/shaka-player.compiled.d.ts
 +++ b/dist/shaka-player.compiled.d.ts
-@@ -5276,3 +5276,5 @@ declare namespace ಠ_ಠ.clutz {
+@@ -5424,6 +5424,7 @@ declare namespace ಠ_ಠ.clutz {
      static isTypeSupported (keySystem : string , contentType : string ) : boolean ;
    }
  }
-+
 +export default shaka;
+ // Generated from /home/runner/work/shaka-player/shaka-player/externs/webos.js
+ declare namespace PalmSystem {
+   let deviceInfo : string ;
 diff --git a/dist/shaka-player.ui.d.ts b/dist/shaka-player.ui.d.ts
-index face310a3d869dc853764c7802f485c892a01ab6..b56ed09ac7184479cd0ce98248d37673b7e83525 100644
+index 5b3b8753930568a83a6d1d8d6d18357de4d8424a..4301fa807b03741f3384137432cb206df390287b 100644
 --- a/dist/shaka-player.ui.d.ts
 +++ b/dist/shaka-player.ui.d.ts
-@@ -5897,3 +5897,5 @@ declare namespace shaka.extern {
+@@ -6128,3 +6128,4 @@ declare namespace shaka.extern {
  declare namespace shaka.extern {
    type UIVolumeBarColors = { base : string , level : string } ;
  }
-+
 +export default shaka;
+\ No newline at end of file
 diff --git a/index.d.ts b/index.d.ts
 new file mode 100644
 index 0000000000000000000000000000000000000000..86130b219f20157404545f817f41485ab13ced25
@@ -26,15 +28,12 @@ index 0000000000000000000000000000000000000000..86130b219f20157404545f817f41485a
 @@ -0,0 +1,2 @@
 +/// <reference path="./dist/shaka-player.compiled.d.ts" />
 +/// <reference path="./dist/shaka-player.ui.d.ts" />
-diff --git a/package.json b/package.json
-index dee973bb19c28a74c5f13ef11cabe120ff683c02..fc0c9f02d0f931f2ab477dd258c355c60d3300d5 100644
---- a/package.json
-+++ b/package.json
-@@ -106,5 +106,6 @@
-     "remove": [
-       "engines"
-     ]
--  }
-+  },
-+  "types": "dist/shaka-player.compiled.d.ts"
- }
+diff --git a/ui.d.ts b/ui.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..5118563d30558c6692fd35b4f4bd04b6e8874288
+--- /dev/null
++++ b/ui.d.ts
+@@ -0,0 +1,3 @@
++import shaka from './dist/shaka-player.ui'
++export * from './dist/shaka-player.ui'
++export default shaka;

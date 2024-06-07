@@ -1,6 +1,6 @@
 import '@vitest/web-worker';
 
-import { epEvent1 } from '../../test/fixtures/events';
+import { epEvent1, epEvent2 } from '../../test/fixtures/events';
 import { init as initUuid } from '../uuid/uuid';
 
 import { db as _db } from './db';
@@ -48,9 +48,16 @@ describe.sequential('Queue', () => {
       action: 'persist',
       events: [epEvent1],
     });
-    vi.waitFor(() => {
+    await vi.waitFor(() => {
       expect(db.setItem).toHaveBeenCalledWith('events', [epEvent1]);
     });
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+  });
+
+  it('init: filters out designated event types', async () => {
+    db.getItem.mockResolvedValueOnce([epEvent1, epEvent2]);
+
+    await queue.initDB({ feralEventTypes: [epEvent2.name] });
+
+    expect(queue.getEvents()).toEqual([epEvent1]);
   });
 });

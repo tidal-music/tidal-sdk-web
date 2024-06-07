@@ -7,7 +7,7 @@ import * as monitor from '../monitor';
 import * as queue from '../queue';
 import * as uuid from '../uuid/uuid';
 
-import { type DispatchEventParams, dispatchEvent } from './dispatch';
+import { type SendEventParams, sendEvent } from './send';
 
 vi.mock('../monitor');
 vi.mock('../queue');
@@ -15,25 +15,25 @@ vi.mock('@tidal-music/true-time', () => ({
   trueTime: { now: vi.fn(() => 1337) },
 }));
 
-describe.sequential('dispatchEvent', () => {
+describe.sequential('sendEvent', () => {
   beforeEach(async () => {
     await uuid.init();
   });
   it('if event consentCategory is not blocked -> adds event to queue', async () => {
     vi.spyOn(uuid, 'uuid').mockReturnValue('fakeUuid');
-    const dispatchEventPayload: DispatchEventParams = {
+    const sendEventPayload: SendEventParams = {
       config,
       credentialsProvider: credentialsProvider1,
       event: eventPayload1,
     };
-    await dispatchEvent(dispatchEventPayload);
+    await sendEvent(sendEventPayload);
     const { consentCategory, ...eventWithoutConsentCategory } =
-      dispatchEventPayload.event;
+      sendEventPayload.event;
     expect(queue.addEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         payload: JSON.stringify({
           ...eventWithoutConsentCategory,
-          ts: '1337',
+          ts: 1337,
           uuid: 'fakeUuid',
         }),
       }),
@@ -41,7 +41,7 @@ describe.sequential('dispatchEvent', () => {
   });
 
   it('if event consentCategory is blocked -> monitor called', async () => {
-    const dispatchEventPayload: DispatchEventParams = {
+    const sendEventPayload: SendEventParams = {
       config,
       credentialsProvider: credentialsProvider1,
       event: {
@@ -49,7 +49,7 @@ describe.sequential('dispatchEvent', () => {
         consentCategory: 'TARGETING',
       },
     };
-    await dispatchEvent(dispatchEventPayload);
+    await sendEvent(sendEventPayload);
 
     expect(queue.addEvent).not.toHaveBeenCalled();
     expect(monitor.registerDroppedEvent).toHaveBeenCalledOnce();

@@ -4,7 +4,7 @@ function stringToUint8Array(str: string) {
   const arr = [];
   // eslint-disable-next-line @typescript-eslint/prefer-for-of
   for (let i = 0; i < str.length; i++) {
-    arr.push(str[i].charCodeAt(0));
+    arr.push(str[i]!.charCodeAt(0));
   }
   return new Uint8Array(arr);
 }
@@ -67,7 +67,8 @@ export function manipulateLicenseRequest(
     // @ts-expect-error String is assignable to body.
     request.body = JSON.stringify(wrapped);
 
-    if (/playready/.exec(request.uris[0])) {
+    const uri = request.uris[0];
+    if (uri && /playready/.exec(uri)) {
       // Strip unneeded header
       delete request.headers.SOAPAction;
     }

@@ -296,6 +296,32 @@ describe.sequential('auth', () => {
       expect(result).toBeUndefined();
     });
 
+    it('does not send a clientUniqueKey when omitted', async () => {
+      // make sure `init` gets the correct values from storage
+      vi.mocked(storage.loadCredentials).mockResolvedValue(fixtures.storage);
+      vi.mocked(fetchHandling.handleTokenFetch).mockResolvedValue(
+        new Response(JSON.stringify(fixtures.userJsonResponse)), // oauth/token
+      );
+
+      await init({ ...initConfig, clientUniqueKey: undefined });
+
+      const result = await finalizeLogin('code=foobar');
+      expect(storage.saveCredentialsToStorage).toHaveBeenCalled();
+      expect(fetchHandling.handleTokenFetch).toHaveBeenCalledWith({
+        body: {
+          client_id: 'CLIENT_ID',
+          client_secret: 'CLIENT_SECRET',
+          code: 'foobar',
+          code_verifier: 'CODE_CHALLENGE',
+          grant_type: 'authorization_code',
+          redirect_uri: 'https://redirect.uri',
+          scope: 'READ WRITE',
+        },
+        credentials: { ...fixtures.storage, clientUniqueKey: undefined },
+      });
+      expect(result).toBeUndefined();
+    });
+
     it('requests an auth token and handles retryableError', async () => {
       // make sure `init` gets the correct values from storage
       vi.mocked(storage.loadCredentials).mockResolvedValue(fixtures.storage);
@@ -594,28 +620,30 @@ describe.sequential('auth', () => {
 
     it('refresh an expired token (through client credentials) and return it', async () => {
       vi.mocked(storage.loadCredentials).mockResolvedValue({
-        ...fixtures.storage,
+        ...fixtures.storageClientCredentials,
         accessToken: {
-          ...fixtures.storage.accessToken,
+          ...fixtures.storageClientCredentials.accessToken,
           expires: 0,
         },
-        refreshToken: undefined,
       });
       vi.spyOn(trueTime, 'now').mockReturnValue(fixtures.expiresTimerMock);
       vi.mocked(fetchHandling.handleTokenFetch).mockResolvedValue(
-        new Response(JSON.stringify(fixtures.userJsonResponse)),
+        new Response(JSON.stringify(fixtures.clientCredentialsJsonResponse)),
       );
 
       await init({
-        ...initConfig,
-        clientSecret: 'SECRET',
+        clientId: 'CLIENT_ID',
+        clientSecret: 'CLIENT_SECRET',
+        credentialsStorageKey: 'CREDENTIALS_STORAGE_KEY',
       });
 
       const accessToken = await getCredentials();
 
       expect(fetchHandling.handleTokenFetch).toHaveBeenCalled();
       expect(storage.saveCredentialsToStorage).toHaveBeenCalled();
-      expect(accessToken).toEqual(fixtures.storage.accessToken);
+      expect(accessToken).toEqual(
+        fixtures.storageClientCredentials.accessToken,
+      );
     });
 
     it('handle non retryable errors in case token cannot be refreshed', async () => {
@@ -683,6 +711,32 @@ describe.sequential('auth', () => {
       });
     });
 
+    it('upgrade a token and return it (client credentials)', async () => {
+      vi.mocked(storage.loadCredentials).mockResolvedValue(
+        fixtures.storageClientCredentials,
+      );
+      vi.spyOn(trueTime, 'now').mockReturnValue(fixtures.expiresTimerMock);
+      vi.mocked(fetchHandling.handleTokenFetch).mockResolvedValue(
+        new Response(JSON.stringify(fixtures.clientCredentialsJsonResponse)),
+      );
+      vi.mocked(fetchHandling.prepareFetch).mockReturnValue(prepareFetchMock);
+
+      await init({
+        clientId: 'NEW_CLIENT_ID',
+        clientSecret: 'CLIENT_SECRET',
+        credentialsStorageKey: 'CREDENTIALS_STORAGE_KEY',
+      });
+
+      const accessToken = await getCredentials();
+
+      expect(fetchHandling.handleTokenFetch).toHaveBeenCalled();
+      expect(storage.saveCredentialsToStorage).toHaveBeenCalled();
+      expect(accessToken).toEqual({
+        ...fixtures.storageClientCredentials.accessToken,
+        clientId: 'NEW_CLIENT_ID',
+      });
+    });
+
     it('token failed to upgrade, throw error', async () => {
       vi.mocked(storage.loadCredentials).mockResolvedValue(fixtures.storage);
       vi.mocked(fetchHandling.exponentialBackoff).mockResolvedValueOnce(
@@ -717,6 +771,28 @@ describe.sequential('auth', () => {
       expect(storage.deleteCredentials).toHaveBeenCalled();
     });
 
+    it("token can't be upgraded (client credentials)", async () => {
+      vi.mocked(storage.loadCredentials).mockResolvedValue(
+        fixtures.storageClientCredentials,
+      );
+      vi.spyOn(trueTime, 'now').mockReturnValue(fixtures.expiresTimerMock);
+      vi.mocked(fetchHandling.handleTokenFetch).mockResolvedValue(
+        new RetryableError(authErrorCodeMap.retryableError),
+      );
+      vi.mocked(fetchHandling.prepareFetch).mockReturnValue(prepareFetchMock);
+
+      await init({
+        clientId: 'CLIENT_ID',
+        clientSecret: 'foo',
+        credentialsStorageKey: 'CREDENTIALS_STORAGE_KEY',
+      });
+
+      await expect(async () => await getCredentials()).rejects.toEqual(
+        new RetryableError(authErrorCodeMap.retryableError),
+      );
+      expect(fetchHandling.handleTokenFetch).toHaveBeenCalled();
+    });
+
     it('request the token when client secret is present', async () => {
       vi.mocked(fetchHandling.handleTokenFetch).mockResolvedValue(
         new Response(JSON.stringify(fixtures.userJsonResponse)),
@@ -736,13 +812,8 @@ describe.sequential('auth', () => {
     });
 
     it('make sure parallel requests are halted', async () => {
-      vi.mocked(storage.loadCredentials).mockResolvedValue({
-        ...fixtures.storage,
-        accessToken: {
-          ...fixtures.storage.accessToken,
-          expires: 0,
-        },
-      });
+      // make sure init is called with no previous stored data
+      vi.mocked(storage.loadCredentials).mockResolvedValueOnce(undefined);
       vi.mocked(fetchHandling.handleTokenFetch)
         .mockResolvedValueOnce(
           new Response(JSON.stringify(fixtures.userJsonResponse)),
@@ -757,10 +828,11 @@ describe.sequential('auth', () => {
 
       await init({
         ...initConfig,
-        clientSecret: 'SECRET',
+        clientSecret: 'CLIENT_SECRET',
       });
 
       const accessToken = await Promise.all([
+        getCredentials(),
         getCredentials(),
         getCredentials('6001'),
         getCredentials(),
@@ -770,6 +842,7 @@ describe.sequential('auth', () => {
       expect(fetchHandling.handleTokenFetch).toHaveBeenCalledTimes(2);
       expect(storage.saveCredentialsToStorage).toHaveBeenCalled();
       expect(accessToken).toEqual([
+        fixtures.storage.accessToken,
         fixtures.storage.accessToken,
         fixtures.storage.accessToken,
         fixtures.storage.accessToken,

@@ -1,5 +1,12 @@
-# v0.0.4
+# Changelog
 
-- Use the new cancelPreload method on NativePlayer to invalidate preloaded items.
-- Fix console error when trying to access localStorage in environments that does not support it. (Embed player in iframes)
-- Expose the new bitRate and sampleRate fields from the playback API in the PlaybackContext.
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.2.0] - 2024-04-16
+
+### Changed
+
+- Use of the new TrueTime module

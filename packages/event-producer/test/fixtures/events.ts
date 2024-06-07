@@ -1,6 +1,6 @@
-import type { DispatchedEvent, EPEvent } from '../../src';
+import type { EPEvent, SentEvent } from '../../src';
 
-export const eventPayload1: DispatchedEvent = {
+export const eventPayload1: SentEvent = {
   consentCategory: 'NECESSARY',
   name: 'display_page',
   payload: {
@@ -17,5 +17,12 @@ export const epEvent1: EPEvent = {
   headers: {},
   id: 'mcLovin',
   name: 'fakeName',
+  payload: JSON.stringify(eventPayload1.payload),
+};
+
+export const epEvent2: EPEvent = {
+  headers: {},
+  id: 'idnr2',
+  name: 'bacon',
   payload: JSON.stringify(eventPayload1.payload),
 };

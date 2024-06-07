@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/player-web-components",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,11 +13,8 @@
   },
   "license": "Apache-2.0",
   "exports": {
-    ".": {
-      "default": "./dist/index.js",
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
+    "default": "./dist/index.js",
+    "import": "./dist/index.js"
   },
   "keywords": [
     "tidal-music",
@@ -43,11 +40,11 @@
     "@tidal-music/auth": "workspace:^",
     "@tidal-music/common": "workspace:^",
     "@tidal-music/player": "workspace:^",
-    "@vitest/coverage-v8": "1.2.2",
-    "@vitest/ui": "1.2.2",
-    "typescript": "5.3.3",
-    "vite": "5.0.12",
-    "vite-plugin-dts": "3.7.2",
-    "vitest": "1.2.2"
+    "@vitest/coverage-v8": "1.6.0",
+    "@vitest/ui": "1.6.0",
+    "typescript": "5.4.5",
+    "vite": "5.2.11",
+    "vite-plugin-dts": "3.9.1",
+    "vitest": "1.6.0"
   }
 }

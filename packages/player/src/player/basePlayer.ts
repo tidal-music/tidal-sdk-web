@@ -108,6 +108,7 @@ export class BasePlayer {
         'streaming_metrics:playback_statistics:idealStartTimestamp',
         {
           detail: playerState.preloadedStreamingSessionId,
+          startTime: trueTime.now(),
         },
       );
     }
@@ -289,6 +290,7 @@ export class BasePlayer {
       'streaming_metrics:playback_statistics:actualStartTimestamp',
       {
         detail: streamingSessionId,
+        startTime: trueTime.now(),
       },
     );
 
@@ -378,6 +380,11 @@ export class BasePlayer {
   }
 
   finishCurrentMediaProduct(endReason: EndReason) {
+    // A media product was loaded but never started.
+    if (!this.hasStarted()) {
+      return;
+    }
+
     const cssi = this.#currentStreamingSessionId;
     const hasNotBeenFinished = cssi
       ? streamingSessionStore.hasStreamInfo(cssi)
@@ -405,6 +412,10 @@ export class BasePlayer {
    * Refetches playbackinfo.
    */
   async hardReload(mediaProduct: MediaProduct, assetPosition: number) {
+    if (this.currentStreamingSessionId) {
+      this.finishCurrentMediaProduct('skip');
+    }
+
     return load(mediaProduct, assetPosition);
   }
 

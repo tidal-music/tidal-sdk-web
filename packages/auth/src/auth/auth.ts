@@ -96,24 +96,26 @@ export const init = async ({
   tidalAuthServiceBaseUri,
   tidalLoginServiceBaseUri,
 }: InitArgs) => {
-  const persistedUser = await loadCredentials(credentialsStorageKey);
+  const persistedCredentials = await loadCredentials(credentialsStorageKey);
 
   const credentials = {
-    ...persistedUser,
+    ...persistedCredentials,
     clientId,
     ...(clientSecret && {
       clientSecret,
     }),
     clientUniqueKey,
     credentialsStorageKey,
+    // we store the clientSecret separately to determine if a token needs to be upgraded
+    previousClientSecret: persistedCredentials?.clientSecret,
     scopes: scopes ?? [],
     tidalAuthServiceBaseUri:
       tidalAuthServiceBaseUri ??
-      persistedUser?.tidalAuthServiceBaseUri ??
+      persistedCredentials?.tidalAuthServiceBaseUri ??
       TIDAL_AUTH_SERVICE_BASE_URI,
     tidalLoginServiceBaseUri:
       tidalLoginServiceBaseUri ??
-      persistedUser?.tidalLoginServiceBaseUri ??
+      persistedCredentials?.tidalLoginServiceBaseUri ??
       TIDAL_LOGIN_SERVICE_BASE_URI,
   };
 
@@ -186,6 +188,9 @@ export const initializeDeviceLogin = async () => {
 
   const body = {
     client_id: state.credentials.clientId,
+    ...(state.credentials.clientSecret && {
+      client_secret: state.credentials.clientSecret,
+    }),
     scope: state.credentials.scopes.join(' '),
   };
 
@@ -232,8 +237,14 @@ export const finalizeLogin = async (loginResponseQuery: string) => {
     throw new TidalError(authErrorCodeMap.initError);
   }
 
-  const { clientId, clientUniqueKey, codeChallenge, redirectUri, scopes } =
-    state.credentials;
+  const {
+    clientId,
+    clientSecret,
+    clientUniqueKey,
+    codeChallenge,
+    redirectUri,
+    scopes,
+  } = state.credentials;
 
   const params = Object.fromEntries(new URLSearchParams(loginResponseQuery));
 
@@ -243,7 +254,12 @@ export const finalizeLogin = async (loginResponseQuery: string) => {
 
   const body = {
     client_id: clientId,
-    client_unique_key: clientUniqueKey ?? '',
+    ...(clientUniqueKey && {
+      client_unique_key: clientUniqueKey,
+    }),
+    ...(clientSecret && {
+      client_secret: clientSecret,
+    }),
     code: params.code,
     code_verifier: codeChallenge,
     grant_type: 'authorization_code',
@@ -291,7 +307,9 @@ export const finalizeDeviceLogin = async () => {
     ...(clientSecret && {
       client_secret: clientSecret,
     }),
-    client_unique_key: clientUniqueKey ?? '',
+    ...(clientUniqueKey && {
+      client_unique_key: clientUniqueKey,
+    }),
     device_code: deviceCode,
     grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
     scope: scopes.join(' '),
@@ -366,6 +384,9 @@ export const logout = () => {
 const refreshAccessToken = async () => {
   if (state.credentials?.refreshToken) {
     const body = {
+      ...(state.credentials.clientSecret && {
+        client_secret: state.credentials.clientSecret,
+      }),
       client_id: state.credentials.clientId,
       grant_type: 'refresh_token',
       refresh_token: state.credentials.refreshToken,
@@ -383,7 +404,7 @@ const refreshAccessToken = async () => {
 
     const jsonResponse = (await response.json()) as TokenJSONResponse;
     return persistToken(jsonResponse);
-  } else if (state.credentials?.clientSecret) {
+  } else {
     return getTokenThroughClientCredentials();
   }
 };
@@ -391,6 +412,9 @@ const refreshAccessToken = async () => {
 const upgradeToken = async () => {
   if (state.credentials?.refreshToken) {
     const body = {
+      ...(state.credentials.clientSecret && {
+        client_secret: state.credentials.clientSecret,
+      }),
       client_id: state.credentials.clientId,
       grant_type: 'update_client',
       refresh_token: state.credentials.refreshToken,
@@ -418,6 +442,8 @@ const upgradeToken = async () => {
 
     const jsonResponse = (await response.json()) as TokenJSONResponse;
     return persistToken(jsonResponse);
+  } else {
+    return getTokenThroughClientCredentials();
   }
 };
 
@@ -478,6 +504,7 @@ export const getCredentials: GetCredentials = async (
   });
 };
 
+// eslint-disable-next-line complexity
 const getCredentialsInternal = async (apiErrorSubStatus?: string) => {
   if (state.credentials) {
     state.pending = true;
@@ -498,10 +525,20 @@ const getCredentialsInternal = async (apiErrorSubStatus?: string) => {
         throw new IllegalArgumentError(authErrorCodeMap.illegalArgumentError);
       }
 
-      if (state.credentials.clientId !== accessToken.clientId) {
+      const shouldUpgradeToken =
+        state.credentials.clientId !== accessToken?.clientId ||
+        Boolean(
+          state.credentials.previousClientSecret &&
+            state.credentials.previousClientSecret !==
+              state.credentials.clientSecret,
+        );
+
+      if (shouldUpgradeToken) {
         const upgradeTokenResponse = await upgradeToken();
         if (upgradeTokenResponse && 'token' in upgradeTokenResponse) {
           return upgradeTokenResponse;
+        } else {
+          throw new RetryableError(authErrorCodeMap.retryableError);
         }
       }
 
@@ -612,12 +649,16 @@ const persistToken = async (jsonResponse: TokenJSONResponse) => {
 
   const { clientId, clientUniqueKey, scopes } = state.credentials;
 
+  const grantedScopes = jsonResponse.scope?.length
+    ? jsonResponse.scope?.split(' ')
+    : [];
+
   const accessToken: Credentials = {
     clientId,
     clientUniqueKey,
     // `expires_in` is sent in seconds, needs transformation to milliseconds
     expires: trueTime.now() + jsonResponse.expires_in * 1000,
-    grantedScopes: jsonResponse.scope?.split(' '),
+    grantedScopes,
     requestedScopes: scopes,
     token: jsonResponse.access_token,
     ...(jsonResponse.user_id && {

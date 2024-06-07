@@ -8,14 +8,7 @@ export const getEventHeaders = ({
   authorize = true,
   consentCategory,
   credentials,
-  platformData: {
-    browserName,
-    browserVersion,
-    deviceVendor,
-    model,
-    osName,
-    version: osVersion,
-  },
+  platformData: { browserName, browserVersion, osName },
   sentTimestamp,
   suppliedHeaders,
 }: {
@@ -24,8 +17,8 @@ export const getEventHeaders = ({
   consentCategory: ConsentCategory;
   credentials?: Credentials;
   platformData: PlatformData;
-  sentTimestamp: string;
-  suppliedHeaders?: Record<string, string>;
+  sentTimestamp: number;
+  suppliedHeaders?: Record<string, number | string>;
 }) => {
   const accessToken = credentials?.token;
   const clientId = credentials?.clientId ?? 'clientIDMissing!';
@@ -37,15 +30,12 @@ export const getEventHeaders = ({
     'browser-version': browserVersion,
     'client-id': clientId,
     'consent-category': consentCategory,
-    'device-model': model,
-    'device-vendor': deviceVendor,
     'os-name': osName,
-    'os-version': osVersion,
     'requested-sent-timestamp': sentTimestamp,
   };
 
   if (authorize && accessToken) {
-    headers.Authorization = accessToken;
+    headers.authorization = accessToken;
   }
 
   if (suppliedHeaders) {

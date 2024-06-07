@@ -54,8 +54,25 @@ export function bootstrap(options: Options) {
   setPlayerConfig(options.players);
 }
 
+/**
+ * Remove the old IDB database which was used for storing events.
+ */
+function removeOldIDB() {
+  const ssuid = localStorage.getItem('ssuid');
+
+  try {
+    if (ssuid) {
+      indexedDB.deleteDatabase('streaming-sessions-' + ssuid);
+    }
+  } catch (e) {
+    console.warn(`DB streaming-sessions-${ssuid} could not be deleted`);
+    console.error(e);
+  }
+}
+
 mountVideoElements().then().catch(console.error);
 activateVideoElements().then().catch(console.error);
+removeOldIDB();
 
 export * from './api/index';
 export type * from './api/index';

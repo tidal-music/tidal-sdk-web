@@ -13,6 +13,10 @@ import { init as initUuid } from './uuid/uuid';
  */
 export const init = async (initialConfig: config.Config) => {
   config.init(initialConfig);
-  await Promise.all([trueTime.synchronize(), initUuid(), queue.initDB()]);
+  await Promise.all([
+    trueTime.synchronize(),
+    initUuid(),
+    queue.initDB({ feralEventTypes: initialConfig.feralEventTypes }),
+  ]);
   scheduler.init(config.getConfig());
 };

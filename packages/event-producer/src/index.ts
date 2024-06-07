@@ -3,29 +3,33 @@ import { IllegalArgumentError } from '@tidal-music/common';
 import * as bus from './bus';
 import type { Config } from './config';
 import { getConfig } from './config';
-import * as dispatch from './dispatch/dispatch';
 import { init as _init } from './init';
 import * as monitor from './monitor';
 import * as outage from './outage';
 import * as queue from './queue/queue';
+import * as send from './send/send';
 import { submitEvents } from './submit/submit';
-import type { DispatchedEvent } from './types';
+import type { SentEvent } from './types';
 
-export { setConsentCategory, setCredentialsProvider } from './config';
+export {
+  getConfig,
+  setConsentCategory,
+  setCredentialsProvider,
+} from './config';
 export type * from './types';
 
 /**
- * This is the user exposed function that wraps dispatchEvent with the config and credentialsProvider.
+ * This is the user exposed function that wraps sendEvent with the config and credentialsProvider.
  *
- * @param {DispatchedEvent} event The event to add to the queue
+ * @param {SentEvent} event The event to add to the queue
  */
 // TODO: error handling.
-export const dispatchEvent = (event: DispatchedEvent) => {
+export const sendEvent = (event: SentEvent) => {
   const config = getConfig();
   const { credentialsProvider } = config;
   if (credentialsProvider) {
-    dispatch
-      .dispatchEvent({
+    send
+      .sendEvent({
         config,
         credentialsProvider,
         event,

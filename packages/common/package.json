@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/common",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "type": "module",
   "files": [
     "dist"
@@ -13,11 +13,8 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
+    "import": "./dist/index.js",
+    "default": "./dist/index.js"
   },
   "scripts": {
     "prepare": "vite build",
@@ -38,11 +35,11 @@
     "@tidal-music/common": "workspace:*"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "1.2.2",
-    "@vitest/ui": "1.2.2",
-    "typescript": "5.3.3",
-    "vite": "5.0.12",
-    "vite-plugin-dts": "3.7.2",
-    "vitest": "1.2.2"
+    "@vitest/coverage-v8": "1.6.0",
+    "@vitest/ui": "1.6.0",
+    "typescript": "5.4.5",
+    "vite": "5.2.11",
+    "vite-plugin-dts": "3.9.1",
+    "vitest": "1.6.0"
   }
 }

@@ -1,13 +1,23 @@
 name: Cypress Tests
 
+# Paths: Cypress is only used in player pkg, so only run this workflow
+# when something in player changes, or in true-time since that's a hard dep.defaults:
+# (Auth is provided via credentials provider and not directly used)
 on:
   push:
     branches: [ "main" ]
     paths:
+      - packages/true-time/**
       - packages/player/**
   pull_request:
     branches: [ "main" ]
     paths:
+      - packages/true-time/**
+      - packages/player/**
+  merge_group:
+    types: [checks_requested]
+    paths:
+      - packages/true-time/**
       - packages/player/**
 
 concurrency:
@@ -21,7 +31,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - uses: ./.github/actions/build-projects
       - name: Prepare test user for player tests
         id: json
         run: |
@@ -33,11 +42,18 @@ jobs:
           echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
         env:
           TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
+      - name: Set up Cypress binary cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Cypress run
         uses: cypress-io/github-action@v6
+        env:
+          CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
         with:
           install: false
           browser: chrome
           start: pnpm --dir packages/player/ dev
           wait-on: 'http://localhost:5173/demo/test-case-1.html'
-          command: pnpm --dir packages/player/ cypress:run
+          command: pnpm --dir packages/player/ internal:cypress:run

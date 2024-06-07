@@ -18,6 +18,8 @@ export type Config = {
   credentialsProvider?: CredentialsProvider;
   // frequency of sending events to TL Consumer
   eventBatchInterval?: number;
+  // event types to exclude from persisted memory, ie a malformed event from a previous release
+  feralEventTypes?: Array<string>;
   // frequency of monitoring info sending
   monitoringInterval?: number;
   platform: PlatformData;

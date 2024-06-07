@@ -4,15 +4,15 @@ import { trueTime } from '@tidal-music/true-time';
 import type { Config } from '../config';
 import * as monitor from '../monitor';
 import * as queue from '../queue';
-import type { DispatchedEvent, EPEvent } from '../types';
+import type { EPEvent, SentEvent } from '../types';
 import { getEventHeaders } from '../utils/headerUtils';
 import { validateEvent } from '../utils/validateEvent';
 import { uuid } from '../uuid/uuid';
 
 type CreatePayloadParams = {
-  event: DispatchedEvent;
+  event: SentEvent;
   id: string;
-  ts: string;
+  ts: number;
 };
 /**
  * Creates a payload to be sent to backend. The payload is the whole raw event with uuid
@@ -30,7 +30,7 @@ const createPayload = ({ event, id, ts }: CreatePayloadParams): string => {
 /**
  * Creates an EPEvent to be sent to the event producer
  *
- * @param {DispatchEventParams} params
+ * @param {SendEventParams} params
  *
  * @returns {Promise<EPEvent>}
  */
@@ -38,9 +38,9 @@ const createEvent = async ({
   config,
   credentialsProvider,
   event,
-}: DispatchEventParams): Promise<EPEvent> => {
+}: SendEventParams): Promise<EPEvent> => {
   const id = uuid();
-  const sentTimestamp = trueTime.now().toString();
+  const sentTimestamp = trueTime.now();
   const headers = getEventHeaders({
     appInfo: config.appInfo,
     consentCategory: event.consentCategory,
@@ -62,7 +62,7 @@ const createEvent = async ({
 };
 
 /* c8 ignore start debug only */
-export const strictEventCheck = (event: DispatchedEvent) => {
+export const strictEventCheck = (event: SentEvent) => {
   if (!event.payload) {
     throw new Error(`Event is missing payload!: ${JSON.stringify(event)}`);
   }
@@ -77,32 +77,32 @@ export const strictEventCheck = (event: DispatchedEvent) => {
 };
 /* c8 ignore stop */
 
-export type DispatchEventParams = {
+export type SendEventParams = {
   config: Config;
   credentialsProvider: CredentialsProvider;
-  event: DispatchedEvent;
+  event: SentEvent;
 };
 
 /**
  * Receives an event, validates it, converts it to an EPEvent, and adds it to the queue
  *
- * @param {DispatchEventParams} params
+ * @param {SendEventParams} params
  *
  * @returns {Promise<void | EPEvent[]>}
  */
-export const dispatchEvent = async ({
+export const sendEvent = async ({
   config,
   credentialsProvider,
-  event: dispatchedEvent,
-}: DispatchEventParams): Promise<Array<EPEvent> | void> => {
+  event: sentEvent,
+}: SendEventParams): Promise<Array<EPEvent> | void> => {
   /* c8 ignore start debug only */
   if (config.strictMode) {
-    strictEventCheck(dispatchedEvent);
+    strictEventCheck(sentEvent);
   }
   /* c8 ignore stop */
-  if (config.blockedConsentCategories[dispatchedEvent.consentCategory]) {
+  if (config.blockedConsentCategories[sentEvent.consentCategory]) {
     monitor.registerDroppedEvent({
-      eventName: dispatchedEvent.name,
+      eventName: sentEvent.name,
       reason: 'consentFilteredEvents',
     });
     return Promise.resolve();
@@ -110,7 +110,7 @@ export const dispatchEvent = async ({
   const event = await createEvent({
     config,
     credentialsProvider,
-    event: dispatchedEvent,
+    event: sentEvent,
   });
 
   if (validateEvent(event)) {

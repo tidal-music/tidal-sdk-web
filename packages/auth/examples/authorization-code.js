@@ -1,10 +1,11 @@
 import { finalizeLogin, init, initializeLogin, logout } from '../dist';
 
-import { getUserInfo } from './shared';
+import { debounce, getUserInfo, searchForArtist } from './shared';
 
 window.addEventListener('load', () => {
-  const form = document.getElementById('loginRedirectForm');
+  const form = document.getElementById('authorizationCodeForm');
   const logoutButton = document.getElementById('logoutBtn');
+  const searchField = document.getElementById('searchField');
 
   form?.addEventListener('submit', event => {
     submitHandler(event).catch(error => console.error(error));
@@ -17,6 +18,17 @@ window.addEventListener('load', () => {
   });
 
   loadHandler().catch(error => console.error(error));
+
+  searchField?.addEventListener(
+    'keyup',
+    debounce(event => {
+      if (event.target.value.length > 0) {
+        searchForArtist(event.target.value).catch(error =>
+          console.error(error),
+        );
+      }
+    }, 500),
+  );
 });
 
 const submitHandler = async event => {
@@ -33,8 +45,7 @@ const submitHandler = async event => {
 
   await init({
     clientId,
-    clientUniqueKey: 'test',
-    credentialsStorageKey: 'loginRedirect',
+    credentialsStorageKey: 'authorizationCode',
   });
 
   const loginUrl = await initializeLogin({
@@ -47,34 +58,26 @@ const submitHandler = async event => {
 const loadHandler = async () => {
   const clientId = localStorage.getItem('clientId');
   const redirectUri = localStorage.getItem('redirectUri');
-  const form = document.getElementById('loginRedirectForm');
+  const form = document.getElementById('authorizationCodeForm');
 
   if (clientId && redirectUri) {
     form.style.display = 'none';
 
     await init({
       clientId,
-      clientUniqueKey: 'test',
-      credentialsStorageKey: 'loginRedirect',
+      credentialsStorageKey: 'authorizationCode',
     });
 
     if (window.location.search.length > 0) {
       await finalizeLogin(window.location.search);
-      window.location.replace('/examples/login-redirect.html');
+      window.location.replace('/examples/authorization-code.html');
     } else {
       await getUserInfo();
-      document.getElementById('getUserBtn').style.display = 'block';
+      document.getElementById('searchField').style.display = 'block';
       document.getElementById('forceRefreshBtn').style.display = 'block';
     }
   }
 };
-
-document.getElementById('getUserBtn')?.addEventListener('click', () => {
-  const userInfo = document.getElementById('userInfo');
-  // clear userInfo to make sure its filled again
-  userInfo.innerHTML = '';
-  getUserInfo().catch(error => console.error(error));
-});
 
 document.getElementById('forceRefreshBtn')?.addEventListener('click', () => {
   const userInfo = document.getElementById('userInfo');

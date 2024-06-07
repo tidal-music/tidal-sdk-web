@@ -279,4 +279,24 @@ describe.sequential('submit', () => {
     expect(monitor.registerDroppedEvent).not.toHaveBeenCalled();
     expect(queue.removeEvents).toHaveBeenCalledWith([]);
   });
+
+  it('error response with AWS.SimpleQueueService.BatchEntryIdsNotDistinct removes duplicates', async () => {
+    vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1, epEvent1]);
+    vi.mocked(queue).getEvents.mockReturnValue([epEvent1, epEvent1]);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValueOnce({
+        ok: false,
+        text: vi
+          .fn()
+          .mockResolvedValueOnce(
+            '<?xml version="1.0"?><ErrorResponse xmlns="http://queue.amazonaws.com/doc/2012-11-05/"><Error><Type>Sender</Type><Code>AWS.SimpleQueueService.BatchEntryIdsNotDistinct</Code><Message>Id a6f4964d-63da-4d66-86bf-e9155b4bb499 repeated.</Message><Detail/></Error><RequestId>635d186a-54a0-52e5-b8c0-4601e8f85440</RequestId></ErrorResponse>',
+          ),
+      }),
+    );
+
+    await submitEvents({ config });
+
+    expect(queue.setEvents).toHaveBeenCalledWith([epEvent1]);
+  });
 });

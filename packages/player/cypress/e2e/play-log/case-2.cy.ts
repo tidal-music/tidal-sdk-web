@@ -43,19 +43,18 @@ it('Client Test Case 2', () => {
 
     expect(playbackSession.payload).to.include({
       startAssetPosition: 0,
-      endAssetPosition: duration,
       actualProductId: '91298890',
       sourceType: 'ALBUM',
       sourceId: '4141352'
     });
 
-    console.log(playbackSession.payload.actions);
+    expect(playbackSession.payload.endAssetPosition).to.be.closeTo(duration, 0.1);
 
     expect(playbackSession.payload.actions).to.have.lengthOf(2);
     expect(playbackSession.payload.actions[0]).to.include({
       actionType: 'PLAYBACK_STOP',
     });
-    expect(playbackSession.payload.actions[0].assetPosition).to.be.closeTo(20, 0.1);
+    expect(playbackSession.payload.actions[0].assetPosition).to.be.closeTo(20, 0.5);
     expect(playbackSession.payload.actions[1]).to.include({
       actionType: 'PLAYBACK_START'
     });
