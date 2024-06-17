@@ -2,6 +2,12 @@ import { credentialsProvider, init as initAuth } from '@tidal-music/auth';
 
 import { createCatalogueClient } from '../dist';
 
+/**
+ * Runs the example with the provided client ID and client secret.
+ *
+ * @param {string} clientId The client ID.
+ * @param {string} clientSecret The client secret.
+ */
 async function runExample(clientId, clientSecret) {
   await initAuth({
     clientId,
@@ -30,39 +36,38 @@ async function runExample(clientId, clientSecret) {
         err => (results.innerHTML += `<li>${err.category}</li>`),
       );
     } else {
-      for (const [key, value] of Object.entries(data.resource)) {
+      for (const [key, value] of Object.entries(data.data.attributes)) {
         results.innerHTML += `<li><b>${key}:</b>${JSON.stringify(value)}</li>`;
       }
     }
   }
   // Example of an API request
-  await getAlbum('251380836');
+  await getAlbum('75413011');
 
   /**
    * Retrieves the tracks of an album by its ID.
    *
    * @param {string} albumId The ID of the album.
    */
-  async function getAlbumTracks(albumId) {
-    const { data, error } = await catalogueClient.GET(
-      '/albums/{albumId}/items',
-      {
-        params: {
-          path: { albumId },
-          query: { countryCode: 'no' },
-        },
+  async function getAlbumWithTracks(albumId) {
+    const { data, error } = await catalogueClient.GET('/albums/{albumId}', {
+      params: {
+        path: { albumId },
+        query: { countryCode: 'NO', include: 'items,artists,providers' }, // countryCode must be uppercase
       },
-    );
+    });
 
     if (error) {
       console.error(error);
     } else {
       // eslint-disable-next-line no-console
       console.log(data);
+      // eslint-disable-next-line no-console
+      console.log(JSON.stringify(data));
     }
   }
   // Example of another API request
-  await getAlbumTracks('251380836');
+  await getAlbumWithTracks('75413011');
 
   /**
    * Retrieves an artist by its ID.
