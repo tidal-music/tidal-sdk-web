@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/player-web-components",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,11 +13,8 @@
   },
   "license": "Apache-2.0",
   "exports": {
-    ".": {
-      "default": "./dist/index.js",
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
+    "default": "./dist/index.js",
+    "import": "./dist/index.js"
   },
   "keywords": [
     "tidal-music",

@@ -45,7 +45,6 @@ const submitHandler = async event => {
 
   await init({
     clientId,
-    clientUniqueKey: 'test',
     credentialsStorageKey: 'authorizationCode',
   });
 
@@ -66,7 +65,6 @@ const loadHandler = async () => {
 
     await init({
       clientId,
-      clientUniqueKey: 'test',
       credentialsStorageKey: 'authorizationCode',
     });
 
