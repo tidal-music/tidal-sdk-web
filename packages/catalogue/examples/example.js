@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { credentialsProvider, init as initAuth } from '@tidal-music/auth';
 
 import { createCatalogueClient } from '../dist';
@@ -21,19 +22,19 @@ async function runExample(clientId, clientSecret) {
   /**
    * Retrieves an album by its ID.
    *
-   * @param {string} id string The ID of the album.
+   * @param {string} id The ID of the album.
    */
   async function getAlbum(id) {
     const { data, error } = await catalogueClient.GET('/albums/{id}', {
       params: {
         path: { id },
-        query: { countryCode: 'no' }, // would be nice with a default value?
+        query: { countryCode: 'NO' },
       },
     });
 
     if (error) {
       error.errors.forEach(
-        err => (results.innerHTML += `<li>${err.category}</li>`),
+        err => (results.innerHTML += `<li>${err.detail}</li>`),
       );
     } else {
       for (const [key, value] of Object.entries(data.data.attributes)) {
@@ -45,7 +46,7 @@ async function runExample(clientId, clientSecret) {
   await getAlbum('75413011');
 
   /**
-   * Retrieves the tracks of an album by its ID.
+   * Retrieves an album with the tracks and other relationships.
    *
    * @param {string} albumId The ID of the album.
    */
@@ -53,16 +54,14 @@ async function runExample(clientId, clientSecret) {
     const { data, error } = await catalogueClient.GET('/albums/{albumId}', {
       params: {
         path: { albumId },
-        query: { countryCode: 'NO', include: 'items,artists,providers' }, // countryCode must be uppercase
+        query: { countryCode: 'NO', include: 'items,artists,providers' },
       },
     });
 
     if (error) {
       console.error(error);
     } else {
-      // eslint-disable-next-line no-console
       console.log(data);
-      // eslint-disable-next-line no-console
       console.log(JSON.stringify(data));
     }
   }
@@ -78,15 +77,14 @@ async function runExample(clientId, clientSecret) {
     const { data, error } = await catalogueClient.GET('/artists/{id}', {
       params: {
         path: { id },
-        query: { countryCode: 'no' },
+        query: { countryCode: 'NO' },
       },
     });
 
     if (error) {
       console.error(error);
     } else {
-      // eslint-disable-next-line no-console
-      console.log(data.resource.name);
+      console.log(data.data.attributes.name);
     }
   }
   // Example failing API request
@@ -101,13 +99,11 @@ const authenticateHandler = async (event, form) => {
   }
 
   const formData = new FormData(form);
-
   const clientId = formData.get('clientId');
   const clientSecret = formData.get('clientSecret');
 
   await runExample(clientId, clientSecret);
 
-  // hide form to signal "logged in state"
   form.style.display = 'none';
 };
 
