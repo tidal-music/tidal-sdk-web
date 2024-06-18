@@ -15,7 +15,7 @@ export function createCatalogueClient(
     async onRequest(req) {
       const credentials = await credentialsProvider.getCredentials();
 
-      // add Authorization header to every request
+      // Add Authorization header to every request
       req.headers.set('Authorization', `Bearer ${credentials.token}`);
       return req;
     },

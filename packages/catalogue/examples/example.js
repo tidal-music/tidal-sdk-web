@@ -4,7 +4,7 @@ import { credentialsProvider, init as initAuth } from '@tidal-music/auth';
 import { createCatalogueClient } from '../dist';
 
 /**
- * Runs the example with the provided client ID and client secret.
+ * Runs the example with a client ID and client secret (from https://developer.tidal.com).
  *
  * @param {string} clientId The client ID.
  * @param {string} clientSecret The client secret.
