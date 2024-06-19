@@ -23,9 +23,6 @@ export function createCatalogueClient(
 
   const catalogueClient = createClient<paths>({
     baseUrl: 'https://openapi.tidal.com/v2/',
-    /*headers: { // TODO: not needed for GET, but for POST etc.
-      'Content-Type': 'application/vnd.api+json',
-    },*/
   });
   catalogueClient.use(authMiddleware);
 
