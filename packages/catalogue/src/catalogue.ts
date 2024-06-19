@@ -6,7 +6,7 @@ import type { paths } from './catalogueAPI';
 /**
  * Create a Catalogue API client with the provided credentials.
  *
- * @param credentialsProvider The credentials provider.
+ * @param credentialsProvider The credentials provider, from Auth module.
  */
 export function createCatalogueClient(
   credentialsProvider: CredentialsProvider,
