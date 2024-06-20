@@ -1,3 +1,3 @@
-import { helloSearch } from './search';
+export { createSearchClient } from './search';
 
-helloSearch();
+export type { components } from './searchAPI';

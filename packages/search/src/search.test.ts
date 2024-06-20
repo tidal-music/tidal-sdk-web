@@ -1,10 +1,11 @@
-import { helloSearch } from './search';
+import { createSearchClient } from './search';
 
-describe('helloSearch', () => {
-  it("greets with Search's name", () => {
-    const debug = vi.fn();
-    vi.stubGlobal('console', { debug });
-    helloSearch();
-    expect(debug).toHaveBeenCalledWith('This is a hello from Search');
+describe('createSearchClient', () => {
+  it('creates a Search API client', () => {
+    const client = createSearchClient({
+      bus: vi.fn(),
+      getCredentials: vi.fn(),
+    });
+    expect(client).toBeDefined();
   });
 });
