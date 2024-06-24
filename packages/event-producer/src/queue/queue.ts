@@ -1,12 +1,14 @@
 import type { Config, EPEvent } from '../types';
 
-import WorkerUrl from './worker?sharedworker&url';
+import WorkerUrl from './worker?worker&url';
 
-export const worker = new SharedWorker(new URL(WorkerUrl, import.meta.url), {
+if (!window.Worker) {
+  throw new Error('Web Workers are not supported in this browser');
+}
+
+export const worker = new Worker(new URL(WorkerUrl, import.meta.url), {
   type: 'module',
 });
-
-worker.port.start();
 
 type WorkerMessages = MessageEvent<
   | {
@@ -59,7 +61,7 @@ export const initDB = (options?: {
   feralEventTypes: Config['feralEventTypes'];
 }): Promise<void> =>
   new Promise<void>((resolve, reject) => {
-    worker.port.onmessage = (message: WorkerMessages) => {
+    worker.onmessage = (message: WorkerMessages) => {
       const { data } = message;
       switch (data.action) {
         case 'initSuccess': {
@@ -81,14 +83,14 @@ export const initDB = (options?: {
       }
     };
 
-    worker.port.postMessage({ action: 'init' });
+    worker.postMessage({ action: 'init' });
   });
 
 /**
  * Persists events in db.
  */
 export function persistEvents() {
-  worker.port.postMessage({ action: 'persist', events: getEvents() });
+  worker.postMessage({ action: 'persist', events: getEvents() });
 }
 
 /**

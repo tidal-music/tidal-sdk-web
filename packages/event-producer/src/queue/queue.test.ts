@@ -39,7 +39,7 @@ describe.sequential('Queue', () => {
     db.getItem.mockResolvedValueOnce(undefined);
     db.setItem.mockResolvedValueOnce(true);
 
-    const postMessageSpy = vi.spyOn(queue.worker.port, 'postMessage');
+    const postMessageSpy = vi.spyOn(queue.worker, 'postMessage');
     await queue.initDB();
     queue.addEvent(epEvent1);
 
