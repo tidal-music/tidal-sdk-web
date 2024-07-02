@@ -17,14 +17,16 @@ vi.mock('./db', () => ({
   },
 }));
 
-describe.sequential('Queue', () => {
+describe('Queue', () => {
   beforeAll(async () => {
     await initUuid();
   });
 
-  beforeEach(() => {
+  afterEach(() => {
     // reset queue events between tests
     queue.setEvents([]);
+    // reset worker between tests
+    queue.worker.terminate();
   });
 
   it('initDB: restores saved queue', async () => {
@@ -55,7 +57,6 @@ describe.sequential('Queue', () => {
 
   it('init: filters out designated event types', async () => {
     db.getItem.mockResolvedValueOnce([epEvent1, epEvent2]);
-
     await queue.initDB({ feralEventTypes: [epEvent2.name] });
 
     expect(queue.getEvents()).toEqual([epEvent1]);
