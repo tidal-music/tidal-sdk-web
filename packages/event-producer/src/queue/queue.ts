@@ -61,7 +61,7 @@ export const initDB = (options?: {
   feralEventTypes: Config['feralEventTypes'];
 }): Promise<void> =>
   new Promise<void>((resolve, reject) => {
-    worker.onmessage = (message: WorkerMessages) => {
+    worker.addEventListener('message', (message: WorkerMessages) => {
       const { data } = message;
       switch (data.action) {
         case 'initSuccess': {
@@ -81,7 +81,7 @@ export const initDB = (options?: {
           console.error('Unknown action:', message);
           reject(new Error('Unknown action'));
       }
-    };
+    });
 
     worker.postMessage({ action: 'init' });
   });
