@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@tidal-music/search": "workspace:*",
-    "openapi-fetch": "0.10.2"
+    "openapi-fetch": "0.9.8"
   },
   "devDependencies": {
     "@tidal-music/auth": "workspace:^",
