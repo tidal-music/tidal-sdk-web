@@ -17,12 +17,12 @@ vi.mock('./db', () => ({
   },
 }));
 
-describe('Queue', () => {
+describe.sequential('Queue', () => {
   beforeAll(async () => {
     await initUuid();
   });
 
-  afterEach(() => {
+  beforeEach(() => {
     // reset queue events between tests
     queue.setEvents([]);
     // reset worker between tests
