@@ -10,3 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Event Producer timestamps are now integer values which fixes an ingestion error for CDF events and a warning for older style events.
+
+## [2.3.0] - 2024-07-02
+
+### Fixed
+
+- Event Producer now uses (Web)Worker instead of SharedWorker, which should make it Android compatible
