@@ -3,14 +3,14 @@
   "extends": [
     "config:recommended"
   ],
+  "ignoreDeps": [
+    "shaka-player",
+    "openapi-fetch"
+  ],
   "packageRules": [{
     "description": "Group Npm packages",
     "groupName": "Npm non-major dependencies",
     "groupSlug": "npm-minor-patch",
-    "ignoreDeps": [
-      "shaka-player",
-      "openapi-fetch"
-    ],
     "matchDatasources": [
       "npm"
     ],
