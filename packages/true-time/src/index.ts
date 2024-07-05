@@ -19,7 +19,7 @@ export class TrueTime {
    * @returns The current adjusted time (or the client time if not synced yet).
    */
   // eslint-disable-next-line no-restricted-syntax
-  now(clientCurrentTime = Date.now()): number {
+  now(clientCurrentTime: number = Date.now()): number {
     if (!this.#serverTime || !this.#clientStartTime) {
       console.warn('TrueTime is not yet synchronized');
       return clientCurrentTime;
@@ -91,4 +91,4 @@ export class TrueTime {
   }
 }
 
-export const trueTime = new TrueTime('https://api.tidal.com/v1/ping');
+export const trueTime: TrueTime = new TrueTime('https://api.tidal.com/v1/ping');
