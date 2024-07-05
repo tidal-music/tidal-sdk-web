@@ -1,4 +1,4 @@
-import { createReducer } from '../../helpers/reducer';
+import { createReducer, type Reducer } from '../../helpers/reducer';
 
 export type Payload = {
   endReason: 'COMPLETE' | 'ERROR' | 'OTHER';
@@ -23,7 +23,7 @@ const defaultPayload: Payload = {
   streamingSessionId: '',
 };
 
-const reducer = await createReducer<Payload, 'playback_info_fetch'>(
+const reducer: Reducer<Payload, 'playback_info_fetch'> = await createReducer(
   'playback_info_fetch',
   defaultPayload,
 );
@@ -31,6 +31,10 @@ const reducer = await createReducer<Payload, 'playback_info_fetch'>(
 /**
  * Create playbackInfoFetch event.
  */
-export function playbackInfoFetch(newData: Parameters<typeof reducer>[0]) {
+export function playbackInfoFetch(newData: Parameters<typeof reducer>[0]): Promise<{
+  payload: Payload;
+  name: "playback_info_fetch";
+  streamingSessionId: string;
+} | undefined> {
   return reducer(newData);
 }

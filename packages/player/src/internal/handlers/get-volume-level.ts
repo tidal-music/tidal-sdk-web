@@ -5,6 +5,6 @@ import * as Config from '../../config';
  *
  * @returns {number}
  */
-export function getVolumeLevel() {
+export function getVolumeLevel(): number {
   return Config.get('desiredVolumeLevel');
 }

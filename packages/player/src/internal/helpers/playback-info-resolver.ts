@@ -241,7 +241,7 @@ async function _fetch(options: Options): Promise<PlaybackInfo> {
   };
 }
 
-export async function fetchPlaybackInfo(options: Options) {
+export async function fetchPlaybackInfo(options: Options): Promise<PlaybackInfo> {
   const { streamingSessionId } = options;
   const events = [];
 
@@ -268,7 +268,7 @@ export async function fetchPlaybackInfo(options: Options) {
     const hasAds = 'adInfo' in playbackInfo;
 
     if ('trackId' in playbackInfo) {
-      StreamingMetrics.playbackStatistics({
+      StreamingMetrics.playbackStatisticsTrack({
         actualAssetPresentation: playbackInfo.assetPresentation,
         actualAudioMode: playbackInfo.audioMode,
         actualProductId: String(playbackInfo.trackId),
@@ -278,8 +278,8 @@ export async function fetchPlaybackInfo(options: Options) {
         productType: 'TRACK',
         streamingSessionId,
       }).catch(console.error);
-    } else {
-      StreamingMetrics.playbackStatistics({
+    } else if ('videoId' in playbackInfo) {
+      StreamingMetrics.playbackStatisticsVideo({
         actualAssetPresentation: playbackInfo.assetPresentation,
         actualAudioMode: undefined,
         actualProductId: String(playbackInfo.videoId),
@@ -289,6 +289,8 @@ export async function fetchPlaybackInfo(options: Options) {
         productType: 'VIDEO',
         streamingSessionId,
       }).catch(console.error);
+    } else {
+      console.error('No trackId or videoId in playback info.');
     }
 
     performance.mark('streaming_metrics:playback_info_fetch:endTimestamp', {

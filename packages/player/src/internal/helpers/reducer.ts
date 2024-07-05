@@ -2,10 +2,16 @@ import * as Config from '../../config';
 
 import { db } from './event-session';
 
+export type Reducer<P, N extends string> = (newData: { streamingSessionId: string } & Partial<P>) => Promise<{
+  payload: P,
+  name: N,
+  streamingSessionId: string,
+} | undefined>;
+
 export async function createReducer<P, N extends string>(
   name: N,
   defaultPayload: P,
-) {
+): Promise<Reducer<P, N>> {
   if (!Config.get('gatherEvents')) {
     // @ts-expect-error - Not used
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -52,6 +58,8 @@ export async function createReducer<P, N extends string>(
       };
     } catch (e) {
       console.error(e);
+
+      return undefined;
     }
   };
 }

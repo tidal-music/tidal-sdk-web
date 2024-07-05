@@ -6,7 +6,7 @@ import { playerState } from '../../player/state';
  *
  * @returns {number}
  */
-export function getAssetPosition() {
+export function getAssetPosition(): number {
   const player = playerState.activePlayer;
 
   return player?.getPosition() ?? 0;

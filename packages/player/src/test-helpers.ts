@@ -6,8 +6,9 @@ import { playerState } from './player/state';
 export { waitFor } from './internal/helpers/wait-for';
 
 import * as Player from './index';
+import type { CredentialsProvider } from '@tidal-music/common';
 
-export function getPreloadedStreamingSessionId() {
+export function getPreloadedStreamingSessionId(): string | undefined {
   return playerState.preloadedStreamingSessionId;
 }
 
@@ -44,9 +45,9 @@ await Auth.setCredentials({
 });
 
 Player.setCredentialsProvider(Auth.credentialsProvider);
-export const credentialsProvider = Auth.credentialsProvider;
+export const credentialsProvider: CredentialsProvider = Auth.credentialsProvider;
 
-export function waitForEvent(target: EventTarget, eventName: string) {
+export function waitForEvent(target: EventTarget, eventName: string): Promise<Event> {
   return new Promise(resolve => {
     target.addEventListener(eventName, event => resolve(event), false);
   });
@@ -88,7 +89,7 @@ class NativePlayerMock extends EventTarget {
   }
 }
 
-export function mockNativePlayer() {
+export function mockNativePlayer(): void {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   window.NativePlayerComponent = {

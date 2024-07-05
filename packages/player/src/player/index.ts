@@ -30,11 +30,11 @@ const players = {
   shaka: undefined as ShakaPlayerType | undefined,
 };
 
-export function setPlayerConfig(allowedPlayers: Array<PlayerConfig>) {
+export function setPlayerConfig(allowedPlayers: Array<PlayerConfig>): void {
   playerConfig = allowedPlayers;
 }
 
-export async function resetAllPlayers() {
+export async function resetAllPlayers(): Promise<void> {
   await Promise.all(
     playerConfig.map(pc => {
       const player = players[pc.player];
@@ -51,7 +51,7 @@ export async function resetAllPlayers() {
   playerState.preloadPlayer = undefined;
 }
 
-export function setActivePlayer(player: Player) {
+export function setActivePlayer(player: Player): void {
   if (player.name !== 'nativePlayer' && players.native) {
     players.native.abandon();
   }
@@ -90,11 +90,11 @@ async function switchPlayerOnPlaybackEnd(_preloadPlayer: Player) {
  *
  * @see maybeSwitchPlayerOnEnd
  */
-export function cancelQueuedOnendedHandler() {
+export function cancelQueuedOnendedHandler(): void {
   events.removeEventListener('ended', endedHandler);
 }
 
-export function maybeSwitchPlayerOnEnd(preloadPlayer: Player) {
+export function maybeSwitchPlayerOnEnd(preloadPlayer: Player): void {
   if (preloadPlayer === playerState.activePlayer) {
     return;
   }
@@ -105,7 +105,7 @@ export function maybeSwitchPlayerOnEnd(preloadPlayer: Player) {
   events.addEventListener('ended', endedHandler, { once: true });
 }
 
-export async function getNativePlayer() {
+export async function getNativePlayer(): Promise<NativePlayerType> {
   const { default: NativePlayer } = await import('./nativePlayer');
 
   if (!players.native) {
@@ -115,7 +115,7 @@ export async function getNativePlayer() {
   return players.native;
 }
 
-async function getBrowserPlayer() {
+async function getBrowserPlayer(): Promise<BrowserPlayerType> {
   const { default: BrowserPlayer } = await import('./browserPlayer');
 
   if (!players.browser) {
@@ -138,7 +138,7 @@ async function getShakaPlayer() {
 export async function getAppropriatePlayer(
   productType: 'track' | 'video',
   audioQuality: AudioQuality | undefined,
-) {
+): Promise<BrowserPlayerType | NativePlayerType | ShakaPlayerType> {
   const appropriatePlayers = playerConfig
     .filter(pc => pc.itemTypes.includes(productType))
     .filter(pc =>
@@ -173,7 +173,7 @@ export async function getAppropriatePlayer(
 /**
  * Unload preloads in all booted players.
  */
-export async function unloadPreloadedMediaProduct() {
+export async function unloadPreloadedMediaProduct(): Promise<void> {
   await Promise.all(
     playerConfig.map(pc => {
       const player = players[pc.player];

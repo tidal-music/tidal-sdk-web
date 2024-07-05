@@ -1,7 +1,7 @@
 import { waitForPlayers } from '../internal/helpers/wait-for-players';
 
-export const mediaElementOne = document.createElement('video');
-export const mediaElementTwo = document.createElement('video');
+export const mediaElementOne: HTMLVideoElement = document.createElement('video');
+export const mediaElementTwo: HTMLVideoElement = document.createElement('video');
 
 const prepareMediaElement = (mediaEl: HTMLMediaElement) => {
   mediaEl.setAttribute('crossorigin', 'anonymous');
@@ -16,7 +16,7 @@ mediaElementTwo.id = 'video-two';
 
 const tidalPlayerRootId = 'tidal-player-root';
 
-export function mountVideoElements() {
+export function mountVideoElements(): Promise<void | void[]> {
   let templateEl = document.getElementById(tidalPlayerRootId);
 
   if (!templateEl) {
@@ -30,7 +30,7 @@ export function mountVideoElements() {
   return ensureVideoElementsMounted();
 }
 
-export function ensureVideoElementsMounted() {
+export function ensureVideoElementsMounted(): Promise<void | void[]> {
   const templateEl = document.getElementById(
     tidalPlayerRootId,
   ) as HTMLTemplateElement | null;
@@ -48,8 +48,8 @@ export function ensureVideoElementsMounted() {
   return waitForPlayers();
 }
 
-export function activateVideoElements() {
-  return new Promise<void>(resolve =>
+export function activateVideoElements(): Promise<void> {
+  return new Promise(resolve =>
     document.addEventListener(
       'click',
       () => {

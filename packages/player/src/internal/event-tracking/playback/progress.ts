@@ -1,4 +1,4 @@
-import { createReducer } from '../../helpers/reducer';
+import { createReducer, type Reducer } from '../../helpers/reducer';
 
 export type Payload = {
   playback: {
@@ -35,11 +35,15 @@ const defaultPayload: Payload = {
   },
 };
 
-const reducer = await createReducer<Payload, 'progress'>(
+const reducer: Reducer<Payload, 'progress'> = await createReducer(
   'progress',
   defaultPayload,
 );
 
-export function progress(newData: Parameters<typeof reducer>[0]) {
+export function progress(newData: Parameters<typeof reducer>[0]): Promise<{
+  payload: Payload;
+  name: "progress";
+  streamingSessionId: string;
+} | undefined> {
   return reducer(newData);
 }

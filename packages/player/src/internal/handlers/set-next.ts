@@ -31,7 +31,7 @@ export let latestNextCall: {
 async function _setNext(
   mediaProduct?: MediaProduct,
   sessionTags: Array<string> = [],
-) {
+): Promise<void> {
   cancelQueuedOnendedHandler();
 
   // If next handler is called with undefined/null as media product, we treat that as an unset.
@@ -178,7 +178,7 @@ async function _setNext(
 export function setNext(
   mediaProduct?: MediaProduct,
   sessionTags: Array<string> = [],
-) {
+): Promise<void> {
   /**
    * If next has already been called with the same media product,
    * return that promise instead of fetching playback info and

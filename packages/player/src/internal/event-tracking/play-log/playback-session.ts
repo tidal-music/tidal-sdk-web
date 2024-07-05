@@ -1,4 +1,4 @@
-import { createReducer } from '../../helpers/reducer';
+import { createReducer, type Reducer } from '../../helpers/reducer';
 import type {
   AssetPresentation,
   AudioMode,
@@ -53,7 +53,7 @@ const defaultPayload: Payload = {
   startTimestamp: -1,
 };
 
-const reducer = await createReducer<Payload, 'playback_session'>(
+const reducer: Reducer<Payload, 'playback_session'> = await createReducer(
   'playback_session',
   defaultPayload,
 );
@@ -69,14 +69,22 @@ const reducer = await createReducer<Payload, 'playback_session'>(
  * of media for a certain media product has been presented
  * to the user.
  */
-export function playbackSession(newData: Parameters<typeof reducer>[0]) {
+export function playbackSession(newData: Parameters<typeof reducer>[0]): Promise<{
+  payload: Payload;
+  name: "playback_session";
+  streamingSessionId: string;
+} | undefined> {
   return reducer(newData);
 }
 
 export function playbackSessionAction(
   streamingSessionId: string,
   action: Action,
-) {
+): Promise<{
+  payload: Payload;
+  name: "playback_session";
+  streamingSessionId: string;
+} | undefined> {
   return reducer({
     actions: [action],
     streamingSessionId,
