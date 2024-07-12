@@ -1,5 +1,5 @@
 // Certificate loading logic:
-export async function loadServerCertificate() {
+export async function loadServerCertificate(): Promise<Uint8Array> {
   try {
     const response = await fetch(
       'https://resources.tidal.com/drm/fairplay/certificate',

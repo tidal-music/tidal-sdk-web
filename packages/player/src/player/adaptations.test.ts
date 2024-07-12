@@ -37,7 +37,7 @@ describe('saveAdaptation', () => {
       activeShakaTrack,
       1337,
     );
-    const event = await StreamingMetrics.playbackStatistics({
+    const event = await StreamingMetrics.playbackStatisticsVideo({
       streamingSessionId: 'jeremy-session',
     });
 

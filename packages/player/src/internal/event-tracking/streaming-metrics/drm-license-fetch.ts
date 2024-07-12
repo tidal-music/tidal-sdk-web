@@ -1,4 +1,4 @@
-import { createReducer } from '../../helpers/reducer';
+import { createReducer, type Reducer } from '../../helpers/reducer';
 
 export type Payload = {
   endReason: 'COMPLETE' | 'ERROR' | 'OTHER';
@@ -23,11 +23,15 @@ const defaultPayload: Payload = {
   streamingSessionId: '',
 };
 
-const reducer = await createReducer<Payload, 'drm_license_fetch'>(
+const reducer: Reducer<Payload, 'drm_license_fetch'> = await createReducer(
   'drm_license_fetch',
   defaultPayload,
 );
 
-export function drmLicenseFetch(newData: Parameters<typeof reducer>[0]) {
+export function drmLicenseFetch(newData: Parameters<typeof reducer>[0]): Promise<{
+  payload: Payload;
+  name: "drm_license_fetch";
+  streamingSessionId: string;
+} | undefined> {
   return reducer(newData);
 }

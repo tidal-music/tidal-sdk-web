@@ -1,4 +1,4 @@
-import { createReducer } from '../../helpers/reducer';
+import { createReducer, type Reducer } from '../../helpers/reducer';
 import type { OutputType } from '../../output-devices';
 import type { AudioQuality, VideoQuality } from '../../types';
 
@@ -49,21 +49,19 @@ export type BasePayload = {
   streamingSessionId: string;
 };
 
-export type TrackPayload = {
-  actualQuality: AudioQuality;
-  productType: 'TRACK';
-};
-
-export type VideoPayload = {
+export type VideoPayload = BasePayload & {
   actualQuality: VideoQuality;
   productType: 'VIDEO';
 };
 
-export type Payload = BasePayload & (TrackPayload | VideoPayload);
+export type TrackPayload = BasePayload & {
+  actualQuality: AudioQuality;
+  productType: 'TRACK';
+};
 
 export type PlaybackStatistics = {
   name: 'playback_statistics';
-  payload: Payload;
+  payload: TrackPayload | VideoPayload;
 };
 
 export function transformOutputType(
@@ -92,7 +90,7 @@ export function transformOutputType(
   }
 }
 
-const defaultPayload: Payload = {
+const defaultTrackPayload: TrackPayload = {
   actualAssetPresentation: 'FULL',
   actualAudioMode: 'STEREO',
   actualProductId: null,
@@ -114,14 +112,69 @@ const defaultPayload: Payload = {
   streamingSessionId: '',
 };
 
-const reducer = await createReducer<Payload, 'playback_statistics'>(
+const defaultVideoPayload: VideoPayload = {
+  actualAssetPresentation: 'FULL',
+  actualAudioMode: 'STEREO',
+  actualProductId: null,
+  actualQuality: 'HIGH',
+  actualStartTimestamp: 0,
+  actualStreamType: 'ON_DEMAND',
+  adaptations: [],
+  cdm: 'WIDEVINE',
+  cdmVersion: null,
+  endReason: 'COMPLETE',
+  endTimestamp: 0,
+  errorCode: null,
+  errorMessage: null,
+  hasAds: false,
+  idealStartTimestamp: 0,
+  outputDevice: null,
+  productType: 'VIDEO',
+  stalls: [],
+  streamingSessionId: '',
+};
+
+const reducer: Reducer<TrackPayload, "playback_statistics"> = await createReducer(
   'playback_statistics',
-  defaultPayload,
+  defaultTrackPayload,
 );
 
 /**
  * Create playbackStatistics event.
  */
-export function playbackStatistics(newData: Parameters<typeof reducer>[0]) {
+export function playbackStatistics(newData: Parameters<typeof reducer>[0]): Promise<{
+  payload: TrackPayload | VideoPayload;
+  name: "playback_statistics";
+  streamingSessionId: string;
+} | undefined> {
   return reducer(newData);
+}
+
+const trackPayloadReducer: Reducer<TrackPayload, "playback_statistics"> = await createReducer(
+  'playback_statistics',
+  defaultTrackPayload,
+);
+
+/**
+ * Create playbackStatistics event.
+ */
+export function playbackStatisticsTrack(newData: Parameters<typeof trackPayloadReducer>[0]): Promise<{
+  payload: TrackPayload;
+  name: "playback_statistics";
+  streamingSessionId: string;
+} | undefined> {
+  return trackPayloadReducer(newData);
+}
+
+const videoPayloadReducer: Reducer<VideoPayload, "playback_statistics"> = await createReducer(
+  'playback_statistics',
+  defaultVideoPayload,
+);
+
+export function playbackStatisticsVideo(newData: Parameters<typeof videoPayloadReducer>[0]): Promise<{
+  payload: VideoPayload;
+  name: "playback_statistics";
+  streamingSessionId: string;
+} | undefined> {
+  return videoPayloadReducer(newData);
 }

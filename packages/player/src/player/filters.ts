@@ -9,7 +9,7 @@ function stringToUint8Array(str: string) {
   return new Uint8Array(arr);
 }
 
-export function manipulateLicenseResponse(response: shaka.extern.Response) {
+export function manipulateLicenseResponse(response: shaka.extern.Response): void {
   // This is the wrapped license, which is a JSON string.
   const wrappedString = shaka.util.StringUtils.fromUTF8(response.data);
   // Parse the JSON string into an object
@@ -39,7 +39,7 @@ export function manipulateLicenseRequest(
     securityToken: string;
     streamingSessionId: string;
   },
-) {
+): void {
   if (
     request.body instanceof ArrayBuffer ||
     request.body instanceof Uint8Array

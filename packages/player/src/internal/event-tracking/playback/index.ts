@@ -7,7 +7,7 @@ import { runIfAuthorizedWithUser } from '../../helpers/run-if-authorized-with-us
 /**
  * Send event to event system scoped to playback category.
  */
-export function commit(data: Pick<CommitData, 'events'>) {
+export function commit(data: Pick<CommitData, 'events'>): Promise<CommitData> {
   return runIfAuthorizedWithUser(() =>
     beaconCommit(worker, {
       ...data,

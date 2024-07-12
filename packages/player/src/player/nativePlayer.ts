@@ -210,7 +210,7 @@ export default class NativePlayer extends BasePlayer {
   /**
    * Clean up native player before leaving for another player.
    */
-  abandon() {
+  abandon(): void {
     if (outputDevices && outputDevices.deviceMode === 'exclusive') {
       /*
         Remove lock on audio device so shaka can use it. Otherwise throws error later when shaka is
@@ -220,7 +220,7 @@ export default class NativePlayer extends BasePlayer {
     }
   }
 
-  getPosition() {
+  getPosition(): number {
     return this.currentTime;
   }
 
@@ -231,7 +231,7 @@ export default class NativePlayer extends BasePlayer {
    * I.e. wait for player to load it and emit mediaduration event, then we
    * can gather the duration data and send a media product transition.
    */
-  async handleAutomaticTransitionToPreloadedMediaProduct() {
+  async handleAutomaticTransitionToPreloadedMediaProduct(): Promise<void> {
     await this.nativeEvent('mediaduration');
 
     this.#preloadedLoadPayload = undefined;
@@ -278,7 +278,7 @@ export default class NativePlayer extends BasePlayer {
     this.mediaProductStarted(this.currentStreamingSessionId);
   }
 
-  async load(payload: LoadPayload, transition: 'explicit' | 'implicit') {
+  async load(payload: LoadPayload, transition: 'explicit' | 'implicit'): Promise<void> {
     this.debugLog('load', payload);
 
     this.currentTime = payload.assetPosition;
@@ -369,7 +369,7 @@ export default class NativePlayer extends BasePlayer {
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
-  async next(payload: LoadPayload) {
+  async next(payload: LoadPayload): Promise<void> {
     this.debugLog('next', payload);
 
     // Cancel previous preload to load a new one.
@@ -408,11 +408,11 @@ export default class NativePlayer extends BasePlayer {
     this.#preloadedLoadPayload = payload;
   }
 
-  pause() {
+  pause(): void {
     this.#player.pause();
   }
 
-  async play() {
+  async play(): Promise<void> {
     this.debugLog('play');
 
     await this.maybeHardReload();
@@ -433,7 +433,7 @@ export default class NativePlayer extends BasePlayer {
     this.#player.play();
   }
 
-  async playbackEngineEndedHandler(e: EndedEvent) {
+  async playbackEngineEndedHandler(e: EndedEvent): Promise<void> {
     if (this.isActivePlayer) {
       const { reason } = e.detail;
 
@@ -456,7 +456,7 @@ export default class NativePlayer extends BasePlayer {
     }
   }
 
-  registerEventListeners() {
+  registerEventListeners(): void {
     this.debugLog('registerEventListeners');
 
     this.#player.addEventListener('mediacurrenttime', (e: Event) => {
@@ -530,7 +530,7 @@ export default class NativePlayer extends BasePlayer {
   // eslint-disable-next-line @typescript-eslint/require-await
   async reset(
     { keepPreload }: { keepPreload: boolean } = { keepPreload: false },
-  ) {
+  ): Promise<void> {
     if (this.#isReset) {
       return;
     }
@@ -559,7 +559,7 @@ export default class NativePlayer extends BasePlayer {
     this.#isReset = true;
   }
 
-  async seek(seconds: number) {
+  async seek(seconds: number): Promise<void> {
     // Native player cannot seek until active state has happened.
     if (!this.hasStarted()) {
       await this.mediaStateChange('active');
@@ -574,7 +574,7 @@ export default class NativePlayer extends BasePlayer {
   }
 
   // Handles track "skip next" and progressions between shaka and native player
-  async skipToPreloadedMediaProduct() {
+  async skipToPreloadedMediaProduct(): Promise<void> {
     this.debugLog(
       'skipToPreloadedMediaProduct',
       this.preloadedStreamingSessionId,
@@ -613,7 +613,7 @@ export default class NativePlayer extends BasePlayer {
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
-  async unloadPreloadedMediaProduct() {
+  async unloadPreloadedMediaProduct(): Promise<void> {
     this.debugLog(
       'unloadPreloadedMediaProduct',
       this.preloadedStreamingSessionId,
@@ -630,7 +630,7 @@ export default class NativePlayer extends BasePlayer {
     }
   }
 
-  updateDeviceMode() {
+  updateDeviceMode(): void {
     this.updateOutputDevice()?.catch(console.error);
 
     if (outputDevices) {
@@ -640,7 +640,7 @@ export default class NativePlayer extends BasePlayer {
     }
   }
 
-  updateOutputDevice() {
+  updateOutputDevice(): Promise<void> {
     if (!outputDevices) {
       return Promise.resolve();
     }
@@ -692,7 +692,7 @@ export default class NativePlayer extends BasePlayer {
    *
    * TODO: Refactor when `this._player.enableMQADecoder();` works....
    */
-  updatePassThrough() {
+  updatePassThrough(): void {
     if (!outputDevices) {
       return;
     }
@@ -735,7 +735,7 @@ export default class NativePlayer extends BasePlayer {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  get ready() {
+  get ready(): Promise<void> {
     return Promise.resolve();
   }
 

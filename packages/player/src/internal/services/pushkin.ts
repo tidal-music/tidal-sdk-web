@@ -48,7 +48,7 @@ let pushkin: Pushkin | undefined;
 
 // Only exported for testing.
 // eslint-disable-next-line disable-autofix/jsdoc/require-jsdoc
-export async function fetchWebSocketURL(accessToken: string) {
+export async function fetchWebSocketURL(accessToken: string): Promise<string> {
   const apiUrl = Config.get('apiUrl');
   const response = await fetch(apiUrl + '/rt/connect', {
     headers: new Headers({
@@ -69,7 +69,7 @@ export async function fetchWebSocketURL(accessToken: string) {
 
 // Only exported for testing.
 // eslint-disable-next-line disable-autofix/jsdoc/require-jsdoc
-export function socketOpen(webSocket: WebSocket) {
+export function socketOpen(webSocket: WebSocket): Promise<void> {
   return new Promise<void>(resolve => {
     webSocket.addEventListener('open', () => resolve(), { once: true });
   });
@@ -104,7 +104,7 @@ export class Pushkin {
   /**
    * Call this method to ensure pushkin is running.
    */
-  static async ensure() {
+  static async ensure(): Promise<void> {
     const allowed = await isAuthorizedWithUser();
 
     if (!allowed) {
@@ -121,7 +121,7 @@ export class Pushkin {
   /**
    * Call this method when credentials changes to re-setup pushkin with the new credentials
    */
-  static async refresh() {
+  static async refresh(): Promise<void>{
     const allowed = await isAuthorizedWithUser();
 
     if (!allowed) {
@@ -226,7 +226,7 @@ export class Pushkin {
    * Call this method to tell Pushkin a user action happened, so it can
    * make good qualified guesses if you're the session with allowed playback-
    */
-  async userAction() {
+  async userAction(): Promise<void> {
     if (!this.connected) {
       await this.reconnect();
     }
@@ -243,7 +243,7 @@ export class Pushkin {
     }
   }
 
-  get connected() {
+  get connected(): boolean | undefined {
     return this.#socket && this.#socket.readyState === WebSocket.OPEN;
   }
 }
