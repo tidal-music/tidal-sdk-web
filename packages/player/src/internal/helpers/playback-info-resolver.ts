@@ -1,5 +1,6 @@
 import type { MediaProduct } from '../../api/interfaces';
 import * as Config from '../../config';
+import { mimeTypes } from '../../internal/constants';
 import type { ErrorCodes, ErrorIds } from '../../internal/index';
 import { PlayerError } from '../../internal/index';
 import type { AudioQuality } from '../../internal/types';
@@ -41,15 +42,28 @@ export type PlaybackInfoVideo = BasePlaybackInfo & {
   videoQuality: VideoQuality;
 };
 
+export type PlaybackInfoDemo = Pick<
+  BasePlaybackInfo,
+  'assetPresentation' | 'manifest' | 'prefetched' | 'streamingSessionId'
+> & {
+  audioMode: AudioMode;
+  audioQuality: AudioQuality;
+  manifestMimeType: typeof mimeTypes.EMU;
+  trackId: string;
+};
+
 type ExtraFields = {
   expires: number;
 };
 
-export type PlaybackInfo = BasePlaybackInfo &
-  (PlaybackInfoTrack | PlaybackInfoVideo) &
+export type PlaybackInfo = (
+  | PlaybackInfoDemo
+  | PlaybackInfoTrack
+  | PlaybackInfoVideo
+) &
   ExtraFields;
 
-type Options = {
+export type Options = {
   accessToken: string | undefined;
   audioQuality: AudioQuality;
   clientId: null | string;
@@ -158,11 +172,11 @@ async function _fetch(options: Options): Promise<PlaybackInfo> {
     prefetch,
     streamingSessionId,
   } = options;
+
   const apiUrl = Config.get('apiUrl');
   const url = new URL(
     `${apiUrl}/${mediaProduct.productType}s/${mediaProduct.productId}/playbackinfo`,
   );
-
   const searchParams = url.searchParams as URLSearchParamsCustomSetters<
     'assetpresentation' | 'audioquality' | 'playbackmode' | 'videoquality'
   >;
@@ -237,7 +251,34 @@ async function _fetch(options: Options): Promise<PlaybackInfo> {
 
   return {
     ...json,
+    // eslint-disable-next-line no-restricted-syntax
+    expires: Date.now() + 3600000,
     prefetched: prefetch,
+  };
+}
+
+export function getDemoPlaybackInfo(options: Options): PlaybackInfo {
+  const { mediaProduct, streamingSessionId } = options;
+
+  return {
+    assetPresentation: 'FULL',
+    audioMode: 'STEREO',
+    audioQuality: 'LOW',
+    // eslint-disable-next-line no-restricted-syntax
+    expires: Date.now() + 3600000,
+    manifest: btoa(
+      JSON.stringify({
+        mimeType: mimeTypes.HLS,
+        urls: [
+          `https://fsu.fa.tidal.com/storage/${mediaProduct.productId}.m3u8`,
+        ],
+      }),
+    ),
+    manifestMimeType: mimeTypes.EMU,
+    prefetched: false,
+    streamType: 'ON_DEMAND',
+    streamingSessionId,
+    trackId: mediaProduct.productId,
   };
 }
 
@@ -251,7 +292,13 @@ export async function fetchPlaybackInfo(options: Options) {
   });
 
   try {
-    const playbackInfo = await _fetch(options);
+    let playbackInfo: PlaybackInfo;
+
+    if (options.mediaProduct.productType === 'demo') {
+      playbackInfo = getDemoPlaybackInfo(options);
+    } else {
+      playbackInfo = await _fetch(options);
+    }
 
     if (playbackInfo === undefined) {
       throw new Error('Playback info was fetched, but undefined.');
@@ -261,9 +308,6 @@ export async function fetchPlaybackInfo(options: Options) {
       endReason: 'COMPLETE',
       streamingSessionId,
     }).catch(console.error);
-
-    // eslint-disable-next-line no-restricted-syntax
-    playbackInfo.expires = Date.now() + 3600000; // An hour after fetch
 
     const hasAds = 'adInfo' in playbackInfo;
 
