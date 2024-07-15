@@ -410,32 +410,58 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
-    player.getNetworkingEngine()?.registerRequestFilter((type, request) => {
-      // Manipulate license requests
-      if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
-        const streamingSessionId =
-          player === this.currentPlayer
-            ? this.currentStreamingSessionId
-            : this.preloadedStreamingSessionId;
+    player
+      .getNetworkingEngine()
+      ?.registerRequestFilter(async (type, request) => {
+        // Manipulate license requests
+        if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
+          const streamingSessionId =
+            player === this.currentPlayer
+              ? this.currentStreamingSessionId
+              : this.preloadedStreamingSessionId;
 
-        performance.mark('streaming_metrics:drm_license_fetch:startTimestamp', {
-          detail: streamingSessionId,
-          startTime: trueTime.now(),
-        });
+          performance.mark(
+            'streaming_metrics:drm_license_fetch:startTimestamp',
+            {
+              detail: streamingSessionId,
+              startTime: trueTime.now(),
+            },
+          );
 
-        const streamInfo =
-          streamingSessionStore.getStreamInfo(streamingSessionId);
+          const streamInfo =
+            streamingSessionStore.getStreamInfo(streamingSessionId);
 
-        if (streamInfo?.securityToken && streamingSessionId) {
-          manipulateLicenseRequest(request, {
-            securityToken: streamInfo.securityToken,
-            streamingSessionId,
-          });
-        } else {
-          console.error('Missing data for DRM request filter.');
+          if (streamInfo?.securityToken && streamingSessionId) {
+            manipulateLicenseRequest(request, {
+              securityToken: streamInfo.securityToken,
+              streamingSessionId,
+            });
+          } else {
+            console.error('Missing data for DRM request filter.');
+          }
         }
-      }
-    });
+
+        // Manipulate manifest and segment requests that are sent to
+        // fsu.fa.tidal.com or ugcf.fa.tidal.com
+        const isRequestToFsuOrUgcf =
+          Array.isArray(request.uris) &&
+          request.uris.find(
+            uri =>
+              uri.startsWith('https://fsu.fa.tidal.com') ||
+              uri.startsWith('https://ugcf.fa.tidal.com'),
+          );
+
+        if (
+          (type === shaka.net.NetworkingEngine.RequestType.MANIFEST ||
+            type === shaka.net.NetworkingEngine.RequestType.SEGMENT) &&
+          isRequestToFsuOrUgcf
+        ) {
+          const { token } =
+            await credentialsProviderStore.credentialsProvider.getCredentials();
+
+          request.headers.authorization = `Bearer ${token}`;
+        }
+      });
 
     player.getNetworkingEngine()?.registerResponseFilter((type, response) => {
       // Manipulate license responses
