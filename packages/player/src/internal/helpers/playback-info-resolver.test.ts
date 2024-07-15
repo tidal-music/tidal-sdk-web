@@ -1,5 +1,6 @@
-import type { MediaProduct } from 'api/interfaces';
 import { expect } from 'chai';
+
+import type { MediaProduct } from 'api/interfaces';
 
 import { credentialsProvider } from '../../test-helpers';
 import { mimeTypes } from '../constants';
