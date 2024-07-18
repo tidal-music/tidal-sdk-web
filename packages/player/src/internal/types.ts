@@ -8,4 +8,4 @@ export type AudioQuality =
   | 'LOSSLESS'
   | 'LOW';
 export type VideoQuality = 'AUDIO_ONLY' | 'HIGH' | 'LOW' | 'MEDIUM';
-export type Codec = 'aac' | 'flac' | 'mp3' | 'mqa';
+export type Codec = 'aac' | 'flac' | 'mp3';

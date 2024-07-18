@@ -38,8 +38,6 @@ function extractStreamFormat(
         return 'mp4a.40.5';
       case 'flac':
         return 'flac';
-      case 'mqa':
-        return 'mqa';
       case 'mp3':
         return 'mp3';
       default:
@@ -79,7 +77,6 @@ export type StreamInfo = {
     | 'mp3'
     | 'mp4a.40.2'
     | 'mp4a.40.5'
-    | 'mqa'
     | 'none';
   streamUrl: string;
   streamingSessionId: string;
@@ -100,7 +97,6 @@ function streamFormatToCodec(
     case 'mp4a.40.5':
       return 'aac';
     case 'flac':
-    case 'mqa':
       return streamFormat;
     default:
       return undefined;
@@ -119,10 +115,6 @@ function dashFindCodec(manifest: string): Codec | undefined {
 
   if (codecs.includes('mp4a') || codecs.includes('aac')) {
     return 'aac';
-  }
-
-  if (codecs === 'mqa') {
-    return codecs;
   }
 
   if (codecs === 'flac') {
