@@ -19,10 +19,7 @@ export function waitForPlayers() {
     return Promise.reject('No player root');
   }
 
-  if (
-    'video-one' in playerRoot.children &&
-    'video-two' in playerRoot.children
-  ) {
+  if ('video-one' in playerRoot.children) {
     return Promise.resolve();
   }
 
@@ -33,16 +30,6 @@ export function waitForPlayers() {
       new Promise<void>(resolve => {
         new MutationObserver(mutationList =>
           handler(mutationList, 'video-one', resolve),
-        ).observe(playerRoot, { childList: true });
-      }),
-    );
-  }
-
-  if (!('video-two' in playerRoot.children)) {
-    promises.push(
-      new Promise<void>(resolve => {
-        new MutationObserver(mutationList =>
-          handler(mutationList, 'video-two', resolve),
         ).observe(playerRoot, { childList: true });
       }),
     );

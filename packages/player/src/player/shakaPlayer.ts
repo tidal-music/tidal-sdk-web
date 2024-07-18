@@ -23,7 +23,6 @@ import { registerAdaptations } from './adaptations';
 import {
   ensureVideoElementsMounted,
   mediaElementOne,
-  mediaElementTwo,
 } from './audio-context-store';
 import type { LoadPayload } from './basePlayer';
 import { BasePlayer } from './basePlayer';
@@ -606,12 +605,6 @@ export default class ShakaPlayer extends BasePlayer {
       this.#shakaInstanceOne = instanceOne;
     }
 
-    const instanceTwo = await this.#createShakaPlayer(mediaElementTwo);
-
-    if (instanceTwo !== undefined) {
-      this.#shakaInstanceTwo = instanceTwo;
-    }
-
     this.currentPlayer = this.#shakaInstanceOne;
   }
 
@@ -1064,10 +1057,6 @@ export default class ShakaPlayer extends BasePlayer {
       // @ts-ignore - setSinkId exists
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       await mediaElementOne.setSinkId(sinkId);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore - setSinkId exists
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      await mediaElementTwo.setSinkId(sinkId);
 
       events.dispatchEvent(
         activeDeviceChangedEvent(outputDevices.activeDevice.id),

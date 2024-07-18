@@ -9,7 +9,6 @@ import { waitFor } from '../internal/helpers/wait-for';
 import {
   ensureVideoElementsMounted,
   mediaElementOne,
-  mediaElementTwo,
 } from './audio-context-store';
 import type { LoadPayload } from './basePlayer';
 import { BasePlayer } from './basePlayer';
@@ -136,7 +135,6 @@ export default class BrowserPlayer extends BasePlayer {
     ensureVideoElementsMounted().then().catch(console.error);
 
     this.#instanceOne = mediaElementOne;
-    this.#instanceTwo = mediaElementTwo;
 
     this.currentPlayer = this.#instanceOne;
   }
