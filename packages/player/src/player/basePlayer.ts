@@ -418,12 +418,7 @@ export class BasePlayer {
   }
 
   hasNextItem() {
-    return (
-      this.preloadedStreamingSessionId &&
-      streamingSessionStore.hasMediaProductTransition(
-        this.preloadedStreamingSessionId,
-      )
-    );
+    return this.preloadedStreamingSessionId;
   }
 
   hasStarted() {

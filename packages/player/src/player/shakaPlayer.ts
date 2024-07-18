@@ -5,6 +5,7 @@ import shaka from 'shaka-player';
 import { activeDeviceChanged as activeDeviceChangedEvent } from '../api/event/active-device-changed';
 import type { EndedEvent } from '../api/event/ended';
 import { mediaProductTransition as mediaProductTransitionEvent } from '../api/event/media-product-transition';
+import type { MediaProduct } from '../api/interfaces';
 import * as Config from '../config';
 import { events } from '../event-bus';
 import {
@@ -14,6 +15,8 @@ import {
 } from '../internal';
 import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
 import { composePlaybackContext } from '../internal/helpers/compose-playback-context';
+import type { StreamInfo } from '../internal/helpers/manifest-parser';
+import type { PlaybackInfo } from '../internal/helpers/playback-info-resolver';
 import { streamingSessionStore } from '../internal/helpers/streaming-session-store';
 import { waitFor } from '../internal/helpers/wait-for';
 import type { OutputDevices } from '../internal/output-devices';
@@ -116,6 +119,9 @@ export default class ShakaPlayer extends BasePlayer {
     timeUpdateHandler: EventListener;
     waitingHandler: EventListener;
   };
+
+  #preloadManager: null | shaka.media.PreloadManager = null;
+  #preloadedPayload: LoadPayload | null = null;
 
   #shakaEventHandlers: {
     bufferingHandler: EventListener;
@@ -403,15 +409,13 @@ export default class ShakaPlayer extends BasePlayer {
       ?.registerRequestFilter(async (type, request) => {
         // Manipulate license requests
         if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
-          // TODO: Fix preload?
-          /*
-          const streamingSessionId =
-            player === this.currentPlayer
-              ? this.currentStreamingSessionId
-              : this.preloadedStreamingSessionId;
-          */
+          // TODO: Need to be preloadSessionId is license request is coming from preload manager.
+          let streamingSessionId = this.currentStreamingSessionId;
 
-          const streamingSessionId = this.currentStreamingSessionId;
+          // This is too brittle though...
+          if (this.preloadedStreamingSessionId) {
+            streamingSessionId = this.preloadedStreamingSessionId;
+          }
 
           performance.mark(
             'streaming_metrics:drm_license_fetch:startTimestamp',
@@ -424,7 +428,7 @@ export default class ShakaPlayer extends BasePlayer {
           const streamInfo =
             streamingSessionStore.getStreamInfo(streamingSessionId);
 
-          if (streamInfo?.securityToken && streamingSessionId) {
+          if (streamingSessionId && streamInfo?.securityToken) {
             manipulateLicenseRequest(request, {
               securityToken: streamInfo.securityToken,
               streamingSessionId,
@@ -582,6 +586,82 @@ export default class ShakaPlayer extends BasePlayer {
     }
   }
 
+  async #loadAndDispatchMediaProductTransition({
+    assetPosition,
+    assetUriOrPreloader,
+    mediaProduct,
+    playbackInfo,
+    streamInfo,
+  }: {
+    assetPosition: number;
+    assetUriOrPreloader: shaka.media.PreloadManager | string;
+    mediaProduct: MediaProduct;
+    playbackInfo: PlaybackInfo;
+    streamInfo: StreamInfo;
+  }) {
+    this.debugLog('loadAndDispatchMediaProductTransition');
+
+    const { shakaInstance } = this;
+
+    if (!shakaInstance) {
+      return;
+    }
+
+    const playerLoad = new Promise<void>(resolve => {
+      shakaInstance.addEventListener(
+        'loaded',
+        () => {
+          resolve();
+        },
+        { once: true },
+      );
+    });
+
+    shakaInstance
+      .load(assetUriOrPreloader, assetPosition)
+      .catch((e: shaka.extern.Error) =>
+        this.#handleShakaError(
+          new CustomEvent<shaka.extern.Error>('shaka-error', { detail: e }),
+        ),
+      );
+
+    const duration = await new Promise<number>(resolve =>
+      mediaElementOne.addEventListener(
+        'durationchange',
+        e => {
+          if (e.target instanceof HTMLMediaElement) {
+            resolve(e.target.duration);
+          }
+        },
+        { once: true },
+      ),
+    );
+
+    await playerLoad;
+
+    // Player was reset during load, do not continue.
+    if (this.currentStreamingSessionId !== streamInfo.streamingSessionId) {
+      return;
+    }
+
+    const playbackContext = composePlaybackContext({
+      assetPosition,
+      duration,
+      playbackInfo,
+      streamInfo,
+    });
+
+    streamingSessionStore.saveMediaProductTransition(
+      streamInfo.streamingSessionId,
+      { mediaProduct, playbackContext },
+    );
+
+    this.debugLog('dispatching mediaProductTransition');
+    events.dispatchEvent(
+      mediaProductTransitionEvent(mediaProduct, playbackContext),
+    );
+  }
+
   async #loadLibraries() {
     this.debugLog('loadLibraries');
 
@@ -702,63 +782,28 @@ export default class ShakaPlayer extends BasePlayer {
       this.playbackState = 'NOT_PLAYING';
     }
 
-    const { mediaElement, shakaInstance: currentPlayer } = this;
+    const { mediaElement, shakaInstance } = this;
 
-    if (!currentPlayer || !mediaElement) {
+    if (!shakaInstance || !mediaElement) {
       return;
     }
 
-    const playerLoad = new Promise<void>(resolve => {
-      currentPlayer.addEventListener('loaded', () => resolve(), { once: true });
-    });
-
-    currentPlayer
-      .load(streamInfo.streamUrl, assetPosition)
-      .catch((e: shaka.extern.Error) =>
-        this.#handleShakaError(
-          new CustomEvent<shaka.extern.Error>('shaka-error', { detail: e }),
-        ),
-      );
-
-    const duration = await new Promise<number>(resolve =>
-      mediaElement.addEventListener(
-        'durationchange',
-        e => {
-          if (e.target instanceof HTMLMediaElement) {
-            resolve(e.target.duration);
-          }
-        },
-        { once: true },
-      ),
-    );
-
-    await playerLoad;
-
-    // Player was reset during load, do not continue.
-    if (this.currentStreamingSessionId !== streamInfo.streamingSessionId) {
-      return;
-    }
-
-    const playbackContext = composePlaybackContext({
+    return this.#loadAndDispatchMediaProductTransition({
       assetPosition,
-      duration,
+      assetUriOrPreloader: streamInfo.streamUrl,
+      mediaProduct,
       playbackInfo,
       streamInfo,
     });
-
-    streamingSessionStore.saveMediaProductTransition(
-      streamInfo.streamingSessionId,
-      { mediaProduct, playbackContext },
-    );
-
-    this.debugLog('dispatching mediaProductTransition');
-    events.dispatchEvent(
-      mediaProductTransitionEvent(mediaProduct, playbackContext),
-    );
   }
 
   async next(payload: LoadPayload) {
     this.debugLog('next', payload);
+
+    if (!this.shakaInstance) {
+      console.warn('Shaka not initialized.');
+      return;
+    }
 
     /*
       A play action can only start playback if playback state is not IDLE.
@@ -769,44 +814,17 @@ export default class ShakaPlayer extends BasePlayer {
       this.playbackState = 'NOT_PLAYING';
     }
 
-    const { mediaProduct, playbackInfo, streamInfo } = payload;
-
-    this.preloadedStreamingSessionId = streamInfo.streamingSessionId;
+    this.preloadedStreamingSessionId = payload.streamInfo.streamingSessionId;
 
     // Load the manifest in the player and make sure to catch durationchange event for
-    const playerLoad = this.shakaInstance
-      ?.load(streamInfo.streamUrl)
-      .catch(e => console.error(e)); // Just log error for preloads
-
-    const duration = await new Promise<number>(
-      resolve =>
-        this.shakaInstance?.getMediaElement()?.addEventListener(
-          'durationchange',
-          e => {
-            if (e.target instanceof HTMLMediaElement) {
-              resolve(e.target.duration);
-            }
-          },
-          { once: true },
-        ),
+    this.#preloadManager = await this.shakaInstance.preload(
+      payload.streamInfo.streamUrl,
     );
+    this.#preloadedPayload = payload;
 
-    await playerLoad;
-
-    const playbackContext = composePlaybackContext({
-      assetPosition: 0,
-      duration,
-      playbackInfo,
-      streamInfo,
+    console.log({
+      couldPreload: Boolean(this.#preloadManager),
     });
-
-    streamingSessionStore.saveMediaProductTransition(
-      streamInfo.streamingSessionId,
-      {
-        mediaProduct,
-        playbackContext,
-      },
-    );
   }
 
   pause() {
@@ -953,31 +971,22 @@ export default class ShakaPlayer extends BasePlayer {
       this.preloadedStreamingSessionId,
     );
 
-    const mediaProductTransition =
-      streamingSessionStore.getMediaProductTransition(
-        this.preloadedStreamingSessionId,
-      );
+    if (this.#preloadedPayload && this.#preloadManager) {
+      this.currentStreamingSessionId = this.preloadedStreamingSessionId;
+      this.preloadedStreamingSessionId = undefined;
 
-    if (!mediaProductTransition) {
-      this.playbackState = 'NOT_PLAYING';
+      const { mediaProduct, playbackInfo, streamInfo } = this.#preloadedPayload;
 
-      return;
+      return this.#loadAndDispatchMediaProductTransition({
+        assetPosition: 0,
+        assetUriOrPreloader: this.#preloadManager,
+        mediaProduct,
+        playbackInfo,
+        streamInfo,
+      });
     }
 
-    this.currentStreamingSessionId = String(this.preloadedStreamingSessionId);
-    this.preloadedStreamingSessionId = undefined;
-
-    const { mediaProduct, playbackContext } = mediaProductTransition;
-
-    this.currentTime = playbackContext.assetPosition;
-
-    events.dispatchEvent(
-      mediaProductTransitionEvent(mediaProduct, playbackContext),
-    );
-
-    if (this.playbackState === 'IDLE') {
-      this.playbackState = 'NOT_PLAYING';
-    }
+    return Promise.reject('Nothing preloaded.');
   }
 
   togglePlayback() {
@@ -1005,7 +1014,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     this.cleanUpStoredPreloadInfo();
 
-    await this.shakaInstance?.unload();
+    await this.#preloadManager?.destroy();
   }
 
   async updateOutputDevice() {
