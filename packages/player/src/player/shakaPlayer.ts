@@ -100,9 +100,6 @@ const serverCertificateWidevine = new Uint8Array([
 
 // eslint-disable-next-line import/no-default-export
 export default class ShakaPlayer extends BasePlayer {
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  #currentPlayer: shaka.Player | undefined;
-
   #isReset = true;
 
   #librariesLoad: Promise<void>;
@@ -127,15 +124,11 @@ export default class ShakaPlayer extends BasePlayer {
     stallDetectedHandler: EventListener;
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  #shakaInstanceOne: shaka.Player | undefined;
-
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  #shakaInstanceTwo: shaka.Player | undefined;
-
   #shouldRetryStreaming = false;
 
   name = 'shakaPlayer';
+
+  shakaInstance: shaka.Player | undefined;
 
   constructor() {
     super();
@@ -153,12 +146,8 @@ export default class ShakaPlayer extends BasePlayer {
     }
 
     credentialsProviderStore.addEventListener('authorized', () => {
-      if (this.#shakaInstanceOne) {
-        this.#configureDRM(this.#shakaInstanceOne).catch(console.error);
-      }
-
-      if (this.#shakaInstanceTwo) {
-        this.#configureDRM(this.#shakaInstanceTwo).catch(console.error);
+      if (this.shakaInstance) {
+        this.#configureDRM(this.shakaInstance).catch(console.error);
       }
     });
 
@@ -414,10 +403,15 @@ export default class ShakaPlayer extends BasePlayer {
       ?.registerRequestFilter(async (type, request) => {
         // Manipulate license requests
         if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
+          // TODO: Fix preload?
+          /*
           const streamingSessionId =
             player === this.currentPlayer
               ? this.currentStreamingSessionId
               : this.preloadedStreamingSessionId;
+          */
+
+          const streamingSessionId = this.currentStreamingSessionId;
 
           performance.mark(
             'streaming_metrics:drm_license_fetch:startTimestamp',
@@ -512,13 +506,10 @@ export default class ShakaPlayer extends BasePlayer {
       }
     });
 
-    return player;
-  }
+    this.#shakaEvents(player, true);
+    this.#mediaElementEvents(mediaElementOne, true);
 
-  #getNextPlayerInstance() {
-    return [this.#shakaInstanceOne, this.#shakaInstanceTwo]
-      .filter(x => x !== this.#currentPlayer)
-      .pop();
+    return player;
   }
 
   #handleShakaError(e: CustomEvent<shaka.extern.Error>) {
@@ -599,13 +590,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     await ensureVideoElementsMounted();
 
-    const instanceOne = await this.#createShakaPlayer(mediaElementOne);
-
-    if (instanceOne !== undefined) {
-      this.#shakaInstanceOne = instanceOne;
-    }
-
-    this.currentPlayer = this.#shakaInstanceOne;
+    this.shakaInstance = await this.#createShakaPlayer(mediaElementOne);
   }
 
   #mediaElementEvents(mediaElement: HTMLMediaElement, eventsEnabled: boolean) {
@@ -717,7 +702,7 @@ export default class ShakaPlayer extends BasePlayer {
       this.playbackState = 'NOT_PLAYING';
     }
 
-    const { currentPlayer, mediaElement } = this;
+    const { mediaElement, shakaInstance: currentPlayer } = this;
 
     if (!currentPlayer || !mediaElement) {
       return;
@@ -786,22 +771,16 @@ export default class ShakaPlayer extends BasePlayer {
 
     const { mediaProduct, playbackInfo, streamInfo } = payload;
 
-    const preloadPlayer = this.#getNextPlayerInstance();
-
-    if (!preloadPlayer) {
-      return;
-    }
-
     this.preloadedStreamingSessionId = streamInfo.streamingSessionId;
 
     // Load the manifest in the player and make sure to catch durationchange event for
-    const playerLoad = preloadPlayer
-      .load(streamInfo.streamUrl)
+    const playerLoad = this.shakaInstance
+      ?.load(streamInfo.streamUrl)
       .catch(e => console.error(e)); // Just log error for preloads
 
     const duration = await new Promise<number>(
       resolve =>
-        preloadPlayer.getMediaElement()?.addEventListener(
+        this.shakaInstance?.getMediaElement()?.addEventListener(
           'durationchange',
           e => {
             if (e.target instanceof HTMLMediaElement) {
@@ -845,7 +824,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     // Handle 100 % data loss w NLC
     if (this.#shouldRetryStreaming) {
-      const retrySuccessful = this.#currentPlayer?.retryStreaming();
+      const retrySuccessful = this.shakaInstance?.retryStreaming();
 
       this.#shouldRetryStreaming = !retrySuccessful;
 
@@ -926,7 +905,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     this.#isReset = true;
 
-    const { currentPlayer, mediaElement } = this;
+    const { mediaElement, shakaInstance: currentPlayer } = this;
 
     if (currentPlayer && mediaElement && mediaElement.readyState !== 0) {
       return currentPlayer.unload(/* initializeMediaSource */ true);
@@ -985,9 +964,6 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
-    const preloadPlayer = this.#getNextPlayerInstance();
-
-    this.currentPlayer = preloadPlayer;
     this.currentStreamingSessionId = String(this.preloadedStreamingSessionId);
     this.preloadedStreamingSessionId = undefined;
 
@@ -1029,11 +1005,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     this.cleanUpStoredPreloadInfo();
 
-    const preloadPlayer = this.#getNextPlayerInstance();
-
-    if (preloadPlayer) {
-      await preloadPlayer.unload();
-    }
+    await this.shakaInstance?.unload();
   }
 
   async updateOutputDevice() {
@@ -1066,43 +1038,8 @@ export default class ShakaPlayer extends BasePlayer {
     }
   }
 
-  get currentPlayer() {
-    return this.#currentPlayer;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  set currentPlayer(newCurrentPlayer: shaka.Player | undefined) {
-    this.debugLog('set currentPlayer', newCurrentPlayer);
-
-    if (this.#currentPlayer && this.mediaElement) {
-      this.#shakaEvents(this.#currentPlayer, false);
-      this.#mediaElementEvents(this.mediaElement, false);
-      this.#currentPlayer.unload().catch(console.error);
-    }
-
-    this.#currentPlayer = newCurrentPlayer;
-
-    if (newCurrentPlayer) {
-      this.#shakaEvents(newCurrentPlayer, true);
-
-      const newMediaElement = newCurrentPlayer.getMediaElement();
-
-      if (newMediaElement) {
-        this.#mediaElementEvents(newMediaElement, true);
-      }
-    }
-  }
-
   get mediaElement(): HTMLMediaElement | null {
-    // this.debugLog('get mediaElement');
-
-    const currentPlayer = this.currentPlayer;
-
-    if (currentPlayer) {
-      return currentPlayer.getMediaElement();
-    }
-
-    return null;
+    return mediaElementOne;
   }
 
   get ready() {
