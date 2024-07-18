@@ -6,7 +6,6 @@ import type { MediaProduct, PlaybackState } from '../api/interfaces';
 import * as Config from '../config';
 import { events } from '../event-bus';
 import * as PlayLog from '../internal/event-tracking/play-log/index';
-import * as Playback from '../internal/event-tracking/playback/index';
 import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
 import {
   type BasePayload as PlaybackStatisticsPayload,
@@ -126,7 +125,6 @@ export class BasePlayer {
       endAssetPosition,
       endReason,
     });
-    this.reportPlaybackProgress(streamingSessionId);
 
     streamingSessionStore.deleteSession(streamingSessionId);
 
@@ -537,37 +535,6 @@ export class BasePlayer {
     return Promise.resolve();
   }
 
-  reportPlaybackProgress(streamingSessionId: string) {
-    const mediaProductTransition =
-      streamingSessionStore.getMediaProductTransition(streamingSessionId);
-
-    if (!mediaProductTransition) {
-      return;
-    }
-
-    const { mediaProduct, playbackContext } = mediaProductTransition;
-
-    if (this.#currentStreamingSessionId) {
-      Playback.commit({
-        events: [
-          Playback.progress({
-            playback: {
-              durationMS: Math.floor(playbackContext.actualDuration * 1000),
-              id: mediaProduct.productId,
-              playedMS: Math.floor(this.currentTime * 1000),
-              source: {
-                id: mediaProduct.sourceId,
-                type: mediaProduct.sourceType,
-              },
-              type: mediaProduct.productType === 'track' ? 'TRACK' : 'VIDEO',
-            },
-            streamingSessionId: this.#currentStreamingSessionId,
-          }),
-        ],
-      }).catch(console.error);
-    }
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   reset(_options: { keepPreload: boolean }) {
     return Promise.resolve();
@@ -773,8 +740,6 @@ export class BasePlayer {
         return;
       case fromTo('PLAYING', 'NOT_PLAYING'):
       case fromTo('PLAYING', 'IDLE'): {
-        this.reportPlaybackProgress(this.currentStreamingSessionId);
-
         if (this.duration && this.currentTime < this.duration) {
           PlayLog.playbackSessionAction(this.currentStreamingSessionId, {
             actionType: 'PLAYBACK_STOP',

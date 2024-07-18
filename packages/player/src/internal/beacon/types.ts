@@ -1,5 +1,4 @@
 import type { PlaybackSession } from '../../internal/event-tracking/play-log/playback-session';
-import type { Progress } from '../../internal/event-tracking/playback/progress';
 import type { DrmLicenseFetch } from '../../internal/event-tracking/streaming-metrics/drm-license-fetch';
 import type { PlaybackInfoFetch } from '../../internal/event-tracking/streaming-metrics/playback-info-fetch';
 import type { PlaybackStatistics } from '../../internal/event-tracking/streaming-metrics/playback-statistics';
@@ -27,7 +26,6 @@ export type PrematureEvents =
   | PlaybackInfoFetch
   | PlaybackSession
   | PlaybackStatistics
-  | Progress
   | StreamingSessionEnd
   | StreamingSessionStart;
 
@@ -42,5 +40,5 @@ export type CommitData = {
     | Array<PrematureEvents | undefined>
     | Array<Promise<PrematureEvents | undefined>>;
   ts: number;
-  type: 'play_log' | 'playback' | 'streaming_metrics';
+  type: 'play_log' | 'streaming_metrics';
 };
