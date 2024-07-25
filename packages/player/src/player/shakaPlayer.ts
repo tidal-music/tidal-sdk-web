@@ -144,6 +144,8 @@ export default class ShakaPlayer extends BasePlayer {
     this.playbackState = 'IDLE';
     this.#librariesLoad = this.#loadLibraries();
 
+    // this.name = `shakaPlayer${this.#demo ? 'Demo' : ''}`;
+
     if (Config.get('outputDevicesEnabled')) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       (async () => {
@@ -398,7 +400,8 @@ export default class ShakaPlayer extends BasePlayer {
          * for triggering tracking events etc.
          */
         // failureCallback() {},
-        useNativeHlsOnSafari: isFairPlaySupported,
+
+        useNativeHlsForFairPlay: isFairPlaySupported,
       },
     });
 
@@ -1074,6 +1077,16 @@ export default class ShakaPlayer extends BasePlayer {
       );
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  updatePlayerConfig(config: Record<string, any>) {
+    if (this.#shakaInstanceOne) {
+      this.#shakaInstanceOne.configure(config);
+    }
+
+    if (this.#shakaInstanceTwo) {
+      this.#shakaInstanceTwo.configure(config);
     }
   }
 

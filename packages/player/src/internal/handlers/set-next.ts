@@ -1,3 +1,7 @@
+/* eslint-disable complexity */
+import type ShakaPlayer from 'player/shakaPlayer';
+import shaka from 'shaka-player';
+
 import type { MediaProduct } from '../../api/interfaces';
 import * as Config from '../../config';
 import { generateGUID } from '../../internal/helpers/generate-guid';
@@ -106,6 +110,21 @@ async function _setNext(
     mediaProduct.productType,
     'trackId' in playbackInfo ? playbackInfo.audioQuality : undefined,
   );
+
+  if (playerState.preloadPlayer.name === 'shakaPlayer') {
+    const isFairPlaySupported =
+      await shaka.util.FairPlayUtils.isFairPlaySupported();
+
+    const isDemo = mediaProduct.productType === 'demo';
+    const config = {
+      streaming: {
+        preferNativeHls: isDemo ? false : isFairPlaySupported,
+        useNativeHlsForFairPlay: isDemo ? false : isFairPlaySupported,
+      },
+    };
+
+    (playerState.preloadPlayer as ShakaPlayer).updatePlayerConfig(config);
+  }
 
   const streamInfo = parseManifest(playbackInfo);
 
