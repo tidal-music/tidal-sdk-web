@@ -144,8 +144,6 @@ export default class ShakaPlayer extends BasePlayer {
     this.playbackState = 'IDLE';
     this.#librariesLoad = this.#loadLibraries();
 
-    // this.name = `shakaPlayer${this.#demo ? 'Demo' : ''}`;
-
     if (Config.get('outputDevicesEnabled')) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       (async () => {
