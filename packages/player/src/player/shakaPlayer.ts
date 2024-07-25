@@ -398,7 +398,8 @@ export default class ShakaPlayer extends BasePlayer {
          * for triggering tracking events etc.
          */
         // failureCallback() {},
-        useNativeHlsOnSafari: isFairPlaySupported,
+
+        useNativeHlsForFairPlay: isFairPlaySupported,
       },
     });
 
@@ -1074,6 +1075,16 @@ export default class ShakaPlayer extends BasePlayer {
       );
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  updatePlayerConfig(config: Record<string, any>) {
+    if (this.#shakaInstanceOne) {
+      this.#shakaInstanceOne.configure(config);
+    }
+
+    if (this.#shakaInstanceTwo) {
+      this.#shakaInstanceTwo.configure(config);
     }
   }
 

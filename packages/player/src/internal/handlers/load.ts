@@ -1,3 +1,7 @@
+import shaka from 'shaka-player';
+
+import type ShakaPlayer from 'player/shakaPlayer';
+
 import type { MediaProduct } from '../../api/interfaces';
 import * as Config from '../../config';
 import { events } from '../../event-bus';
@@ -157,6 +161,21 @@ export async function load(
     mediaProduct.productType,
     audioQuality,
   );
+
+  if (player.name === 'shakaPlayer') {
+    const isFairPlaySupported =
+      await shaka.util.FairPlayUtils.isFairPlaySupported();
+
+    const isDemo = mediaProduct.productType === 'demo';
+    const config = {
+      streaming: {
+        preferNativeHls: isDemo ? false : isFairPlaySupported,
+        useNativeHlsForFairPlay: isDemo ? false : isFairPlaySupported,
+      },
+    };
+
+    (player as ShakaPlayer).updatePlayerConfig(config);
+  }
 
   setActivePlayer(player);
 
