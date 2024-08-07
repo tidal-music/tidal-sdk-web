@@ -127,7 +127,7 @@ async function getBrowserPlayer() {
   return players.browser;
 }
 
-export async function getShakaPlayer(instantiateForFairPlay: boolean) {
+async function getShakaPlayer(instantiateForFairPlay: boolean) {
   const { default: ShakaPlayer } = await import('./shakaPlayer');
 
   if (!players.shaka) {
