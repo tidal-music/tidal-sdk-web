@@ -104,11 +104,10 @@ importers:
         version: 1.6.0(@types/node@20.14.9)(@vitest/ui@1.6.0)(happy-dom@14.12.3)(terser@5.31.0)
 
   packages/common:
-    dependencies:
-      '@tidal-music/common':
-        specifier: workspace:*
-        version: 'link:'
     devDependencies:
+      '@tidal-music/event-producer':
+        specifier: workspace:*
+        version: link:../event-producer
       '@vitest/coverage-v8':
         specifier: 1.6.0
         version: 1.6.0(vitest@1.6.0(@types/node@20.14.9)(@vitest/ui@1.6.0)(happy-dom@14.12.3)(terser@5.31.0))

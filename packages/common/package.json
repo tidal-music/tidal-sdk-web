@@ -31,10 +31,8 @@
     "test:ui": "pnpm run test:coverage --ui",
     "typecheck": "tsc"
   },
-  "dependencies": {
-    "@tidal-music/common": "workspace:*"
-  },
   "devDependencies": {
+    "@tidal-music/event-producer": "workspace:*",
     "@vitest/coverage-v8": "1.6.0",
     "@vitest/ui": "1.6.0",
     "typescript": "5.5.3",
