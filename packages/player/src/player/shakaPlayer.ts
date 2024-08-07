@@ -138,11 +138,11 @@ export default class ShakaPlayer extends BasePlayer {
 
   name = 'shakaPlayer';
 
-  constructor() {
+  constructor(instantiateForFairPlay: boolean) {
     super();
 
     this.playbackState = 'IDLE';
-    this.#librariesLoad = this.#loadLibraries();
+    this.#librariesLoad = this.#loadLibraries(instantiateForFairPlay);
 
     if (Config.get('outputDevicesEnabled')) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -348,7 +348,10 @@ export default class ShakaPlayer extends BasePlayer {
     } */
   }
 
-  async #createShakaPlayer(mediaEl: HTMLMediaElement) {
+  async #createShakaPlayer(
+    mediaEl: HTMLMediaElement,
+    instantiateForFairPlay: boolean,
+  ) {
     this.debugLog('createShakaPlayer', mediaEl);
 
     const player = new shaka.Player();
@@ -389,7 +392,7 @@ export default class ShakaPlayer extends BasePlayer {
         // The number of seconds of content that the StreamingEngine will attempt to buffer ahead of the playhead. This value must be greater than or equal to the rebuffering goal.
         bufferingGoal: 40,
 
-        preferNativeHls: isFairPlaySupported,
+        preferNativeHls: instantiateForFairPlay ? isFairPlaySupported : false,
 
         // The number of seconds of content that the StreamingEngine will attempt to buffer behind of the playhead.
         retryParameters,
@@ -399,7 +402,9 @@ export default class ShakaPlayer extends BasePlayer {
          */
         // failureCallback() {},
 
-        useNativeHlsForFairPlay: isFairPlaySupported,
+        useNativeHlsForFairPlay: instantiateForFairPlay
+          ? isFairPlaySupported
+          : false,
       },
     });
 
@@ -593,7 +598,7 @@ export default class ShakaPlayer extends BasePlayer {
     }
   }
 
-  async #loadLibraries() {
+  async #loadLibraries(instantiateForFairPlay: boolean) {
     this.debugLog('loadLibraries');
 
     // Install built-in polyfills to patch browser incompatibilities
@@ -601,13 +606,19 @@ export default class ShakaPlayer extends BasePlayer {
 
     await ensureVideoElementsMounted();
 
-    const instanceOne = await this.#createShakaPlayer(mediaElementOne);
+    const instanceOne = await this.#createShakaPlayer(
+      mediaElementOne,
+      instantiateForFairPlay,
+    );
 
     if (instanceOne !== undefined) {
       this.#shakaInstanceOne = instanceOne;
     }
 
-    const instanceTwo = await this.#createShakaPlayer(mediaElementTwo);
+    const instanceTwo = await this.#createShakaPlayer(
+      mediaElementTwo,
+      instantiateForFairPlay,
+    );
 
     if (instanceTwo !== undefined) {
       this.#shakaInstanceTwo = instanceTwo;
@@ -1078,7 +1089,7 @@ export default class ShakaPlayer extends BasePlayer {
     }
   }
 
-  updatePlayerConfig(config: Record<string, any>) {
+  updatePlayerConfig(config: object) {
     if (this.#shakaInstanceOne) {
       this.#shakaInstanceOne.configure(config);
     }

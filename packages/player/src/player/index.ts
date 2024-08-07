@@ -127,11 +127,11 @@ async function getBrowserPlayer() {
   return players.browser;
 }
 
-async function getShakaPlayer() {
+async function getShakaPlayer(instantiateForFairPlay: boolean) {
   const { default: ShakaPlayer } = await import('./shakaPlayer');
 
   if (!players.shaka) {
-    players.shaka = new ShakaPlayer();
+    players.shaka = new ShakaPlayer(instantiateForFairPlay);
   }
 
   return players.shaka;
@@ -162,7 +162,7 @@ export async function getAppropriatePlayer(
 
   switch (player) {
     case 'shaka':
-      return getShakaPlayer();
+      return getShakaPlayer(productType !== 'demo');
     case 'browser':
       return getBrowserPlayer();
     case 'native':
