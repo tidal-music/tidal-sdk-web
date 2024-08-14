@@ -27,7 +27,7 @@
     "lint:fix": "pnpm run lint --fix",
     "preview": "vite preview",
     "generateTypes": "openapi-typescript https://developer.tidal.com/apiref/api-specifications/api-public-search-jsonapi/tidal-search-v2-openapi-3.0.json --output ./src/searchAPI.d.ts && echo \"/* eslint-disable */\n$(cat ./src/searchAPI.d.ts)\" > ./src/searchAPI.d.ts",
-    "test": "vitest --sequence.concurrent",
+    "test": "vitest",
     "test:coverage": "pnpm run test --coverage",
     "test:ui": "pnpm run test:coverage --ui",
     "typecheck": "tsc"

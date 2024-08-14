@@ -13,7 +13,7 @@
     "lint:ci": "eslint . --quiet",
     "lint:fix": "pnpm run lint --fix",
     "preview": "vite preview",
-    "test": "vitest --sequence.concurrent",
+    "test": "vitest",
     "test:coverage": "pnpm run test --coverage"
   },
   "dependencies": {
