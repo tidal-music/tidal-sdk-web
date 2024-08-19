@@ -1129,16 +1129,6 @@ export default class ShakaPlayer extends BasePlayer {
     }
   }
 
-  updatePlayerConfig(config: object) {
-    if (this.#shakaInstanceOne) {
-      this.#shakaInstanceOne.configure(config);
-    }
-
-    if (this.#shakaInstanceTwo) {
-      this.#shakaInstanceTwo.configure(config);
-    }
-  }
-
   get currentPlayer() {
     return this.#currentPlayer;
   }
