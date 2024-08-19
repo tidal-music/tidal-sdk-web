@@ -518,7 +518,7 @@ const getCredentialsInternal = async (apiErrorSubStatus?: string) => {
 
       if (
         state.credentials.clientUniqueKey !== accessToken.clientUniqueKey ||
-        newScopeIsSameOrSubset === false
+        (accessToken.userId && newScopeIsSameOrSubset === false)
       ) {
         logout();
         throw new IllegalArgumentError(authErrorCodeMap.illegalArgumentError);

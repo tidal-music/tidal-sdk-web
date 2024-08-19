@@ -565,10 +565,15 @@ describe.sequential('auth', () => {
         clientSecret: 'CLIENT_SECRET',
       });
 
-      const accessToken = await getCredentials();
-
+      expect(await getCredentials()).toEqual({
+        ...fixtures.storageClientCredentials.accessToken,
+        clientUniqueKey: 'CLIENT_UNIQUE_KEY',
+        requestedScopes: ['READ', 'WRITE'],
+      });
       expect(fetchHandling.handleTokenFetch).toHaveBeenCalled();
-      expect(accessToken).toEqual({
+
+      // second time access token is requested, scope check needs to be skipped for client credentials
+      expect(await getCredentials()).toEqual({
         ...fixtures.storageClientCredentials.accessToken,
         clientUniqueKey: 'CLIENT_UNIQUE_KEY',
         requestedScopes: ['READ', 'WRITE'],
