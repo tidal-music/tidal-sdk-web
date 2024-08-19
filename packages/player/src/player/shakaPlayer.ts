@@ -556,9 +556,11 @@ export default class ShakaPlayer extends BasePlayer {
   }
 
   #getNextPlayerInstance() {
-    return [this.#shakaInstanceOne, this.#shakaInstanceTwo]
+    const nextPlayerInstance = [this.#shakaInstanceOne, this.#shakaInstanceTwo]
       .filter(x => x !== this.#currentPlayer)
       .pop();
+
+    return nextPlayerInstance ?? this.#currentPlayer;
   }
 
   #handleShakaError(e: CustomEvent<shaka.extern.Error>) {
@@ -844,6 +846,7 @@ export default class ShakaPlayer extends BasePlayer {
     const preloadPlayer = this.#getNextPlayerInstance();
 
     if (!preloadPlayer) {
+      console.error('There is no player to preload in.');
       return;
     }
 
@@ -883,6 +886,8 @@ export default class ShakaPlayer extends BasePlayer {
         playbackContext,
       },
     );
+
+    this.#isReset = false;
   }
 
   pause() {
