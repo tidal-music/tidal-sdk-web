@@ -1,7 +1,4 @@
 /* eslint-disable complexity */
-import type ShakaPlayer from 'player/shakaPlayer';
-import shaka from 'shaka-player';
-
 import type { MediaProduct } from '../../api/interfaces';
 import * as Config from '../../config';
 import { generateGUID } from '../../internal/helpers/generate-guid';
