@@ -405,6 +405,7 @@ export default class NativePlayer extends BasePlayer {
     });
 
     this.#preloadedLoadPayload = payload;
+    this.#isReset = false;
   }
 
   pause() {
