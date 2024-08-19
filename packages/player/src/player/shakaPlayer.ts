@@ -5,6 +5,7 @@ import shaka from 'shaka-player';
 import { activeDeviceChanged as activeDeviceChangedEvent } from '../api/event/active-device-changed';
 import type { EndedEvent } from '../api/event/ended';
 import { mediaProductTransition as mediaProductTransitionEvent } from '../api/event/media-product-transition';
+import type { MediaProduct } from '../api/interfaces';
 import * as Config from '../config';
 import { events } from '../event-bus';
 import {
@@ -138,11 +139,11 @@ export default class ShakaPlayer extends BasePlayer {
 
   name = 'shakaPlayer';
 
-  constructor(instantiateForFairPlay: boolean) {
+  constructor() {
     super();
 
     this.playbackState = 'IDLE';
-    this.#librariesLoad = this.#loadLibraries(instantiateForFairPlay);
+    this.#librariesLoad = this.#loadLibraries();
 
     if (Config.get('outputDevicesEnabled')) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -348,10 +349,44 @@ export default class ShakaPlayer extends BasePlayer {
     } */
   }
 
-  async #createShakaPlayer(
-    mediaEl: HTMLMediaElement,
-    instantiateForFairPlay: boolean,
+  /**
+   * Playback of media product type demo needs to be done with
+   * useNativeHlsForFairPlay and preferNativeHls set to false.
+   */
+  async #configureHlsForPlayback(
+    instance: shaka.Player | undefined,
+    mediaProduct: MediaProduct,
   ) {
+    const isFairPlaySupported =
+      await shaka.util.FairPlayUtils.isFairPlaySupported();
+
+    if (isFairPlaySupported && instance) {
+      if (
+        instance.getConfiguration().streaming.preferNativeHls !==
+        (mediaProduct.productType !== 'demo')
+      ) {
+        instance.configure(
+          'streaming.preferNativeHls',
+          mediaProduct.productType !== 'demo',
+        );
+      }
+
+      if (
+        instance.getConfiguration().streaming.useNativeHlsForFairPlay !==
+        (mediaProduct.productType !== 'demo')
+      ) {
+        instance.configure(
+          'streaming.useNativeHlsForFairPlay',
+          mediaProduct.productType !== 'demo',
+        );
+      }
+
+      // await instance.release();
+      await instance.unload(true);
+    }
+  }
+
+  async #createShakaPlayer(mediaEl: HTMLMediaElement) {
     this.debugLog('createShakaPlayer', mediaEl);
 
     const player = new shaka.Player();
@@ -392,7 +427,7 @@ export default class ShakaPlayer extends BasePlayer {
         // The number of seconds of content that the StreamingEngine will attempt to buffer ahead of the playhead. This value must be greater than or equal to the rebuffering goal.
         bufferingGoal: 40,
 
-        preferNativeHls: instantiateForFairPlay ? isFairPlaySupported : false,
+        preferNativeHls: isFairPlaySupported,
 
         // The number of seconds of content that the StreamingEngine will attempt to buffer behind of the playhead.
         retryParameters,
@@ -402,9 +437,7 @@ export default class ShakaPlayer extends BasePlayer {
          */
         // failureCallback() {},
 
-        useNativeHlsForFairPlay: instantiateForFairPlay
-          ? isFairPlaySupported
-          : false,
+        useNativeHlsForFairPlay: isFairPlaySupported,
       },
     });
 
@@ -598,7 +631,7 @@ export default class ShakaPlayer extends BasePlayer {
     }
   }
 
-  async #loadLibraries(instantiateForFairPlay: boolean) {
+  async #loadLibraries() {
     this.debugLog('loadLibraries');
 
     // Install built-in polyfills to patch browser incompatibilities
@@ -606,19 +639,13 @@ export default class ShakaPlayer extends BasePlayer {
 
     await ensureVideoElementsMounted();
 
-    const instanceOne = await this.#createShakaPlayer(
-      mediaElementOne,
-      instantiateForFairPlay,
-    );
+    const instanceOne = await this.#createShakaPlayer(mediaElementOne);
 
     if (instanceOne !== undefined) {
       this.#shakaInstanceOne = instanceOne;
     }
 
-    const instanceTwo = await this.#createShakaPlayer(
-      mediaElementTwo,
-      instantiateForFairPlay,
-    );
+    const instanceTwo = await this.#createShakaPlayer(mediaElementTwo);
 
     if (instanceTwo !== undefined) {
       this.#shakaInstanceTwo = instanceTwo;
@@ -720,6 +747,15 @@ export default class ShakaPlayer extends BasePlayer {
 
     this.currentTime = payload.assetPosition;
     this.startAssetPosition = payload.assetPosition;
+
+    await this.#configureHlsForPlayback(
+      this.#shakaInstanceOne,
+      payload.mediaProduct,
+    );
+    await this.#configureHlsForPlayback(
+      this.#shakaInstanceTwo,
+      payload.mediaProduct,
+    );
 
     // Ensure reset and set reset to false since we're loading anew.
     await this.reset();
@@ -933,6 +969,10 @@ export default class ShakaPlayer extends BasePlayer {
       this.finishCurrentMediaProduct('skip');
     }
 
+    if (!this.currentPlayer?.getMediaElement()?.paused) {
+      this.currentPlayer?.getMediaElement()?.pause();
+    }
+
     this.playbackState = 'IDLE';
 
     this.detachPlaybackEngineEndedHandler();
@@ -1086,16 +1126,6 @@ export default class ShakaPlayer extends BasePlayer {
       );
     } catch (e) {
       console.error(e);
-    }
-  }
-
-  updatePlayerConfig(config: object) {
-    if (this.#shakaInstanceOne) {
-      this.#shakaInstanceOne.configure(config);
-    }
-
-    if (this.#shakaInstanceTwo) {
-      this.#shakaInstanceTwo.configure(config);
     }
   }
 
