@@ -1,9 +1,9 @@
 import topLevelAwait from 'vite-plugin-top-level-await';
-import { defineConfig, mergeConfig } from 'vitest/config';
+import { defineConfig, mergeConfig, type UserConfig } from 'vitest/config';
 
 import defaultViteConfig from './vite.config';
 
-export default mergeConfig(
+const config: UserConfig = mergeConfig(
   defaultViteConfig,
   defineConfig({
     build: {
@@ -18,3 +18,5 @@ export default mergeConfig(
     plugins: [topLevelAwait()],
   }),
 );
+
+export default config;

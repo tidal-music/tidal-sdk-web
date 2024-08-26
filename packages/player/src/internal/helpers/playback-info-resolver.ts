@@ -282,7 +282,7 @@ export function getDemoPlaybackInfo(options: Options): PlaybackInfo {
   };
 }
 
-export async function fetchPlaybackInfo(options: Options) {
+export async function fetchPlaybackInfo(options: Options): Promise<PlaybackInfo> {
   const { streamingSessionId } = options;
   const events = [];
 
