@@ -447,13 +447,12 @@ export default class ShakaPlayer extends BasePlayer {
       ?.registerRequestFilter(async (type, request) => {
         // Manipulate license requests
         if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
-          // TODO: Need to be preloadSessionId is license request is coming from preload manager.
-          let streamingSessionId = this.currentStreamingSessionId;
+          // @ts-expect-error - Shaka types are not up to date
+          const isPreload = context?.isPreload;
 
-          // This is too brittle though...
-          if (this.preloadedStreamingSessionId) {
-            streamingSessionId = this.preloadedStreamingSessionId;
-          }
+          const streamingSessionId = isPreload
+            ? this.preloadedStreamingSessionId
+            : this.currentStreamingSessionId;
 
           performance.mark(
             'streaming_metrics:drm_license_fetch:startTimestamp',
@@ -498,55 +497,67 @@ export default class ShakaPlayer extends BasePlayer {
         }
       });
 
-    player.getNetworkingEngine()?.registerResponseFilter((type, response) => {
-      // Manipulate license responses
-      if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
-        manipulateLicenseResponse(response);
+    player
+      .getNetworkingEngine()
+      ?.registerResponseFilter((type, response, context) => {
+        // @ts-expect-error - Shaka types are not up to date
+        const isPreload = context?.isPreload;
 
-        if (this.currentStreamingSessionId) {
-          performance.mark('streaming_metrics:drm_license_fetch:endTimestamp', {
-            detail: this.currentStreamingSessionId,
-            startTime: trueTime.now(),
-          });
+        const streamingSessionId = isPreload
+          ? this.preloadedStreamingSessionId
+          : this.currentStreamingSessionId;
 
-          performance.measure('streaming_metrics:drm_license_fetch', {
-            detail: this.currentStreamingSessionId,
-            end: 'streaming_metrics:drm_license_fetch:endTimestamp',
-            start: 'streaming_metrics:drm_license_fetch:startTimestamp',
-          });
+        // Manipulate license responses
+        if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
+          manipulateLicenseResponse(response);
 
-          StreamingMetrics.playbackStatistics({
-            cdm: responseURIToCDMType(response.uri),
-            cdmVersion: null,
-            streamingSessionId: this.currentStreamingSessionId,
-          });
+          if (streamingSessionId) {
+            performance.mark(
+              'streaming_metrics:drm_license_fetch:endTimestamp',
+              {
+                detail: streamingSessionId,
+                startTime: trueTime.now(),
+              },
+            );
 
-          StreamingMetrics.commit({
-            events: [
-              StreamingMetrics.drmLicenseFetch({
-                endReason: 'COMPLETE',
-                endTimestamp: trueTime.timestamp(
-                  'streaming_metrics:drm_license_fetch:endTimestamp',
-                ),
-                errorCode: null,
-                errorMessage: null,
-                startTimestamp: trueTime.timestamp(
-                  'streaming_metrics:drm_license_fetch:startTimestamp',
-                ),
-                streamingSessionId: this.currentStreamingSessionId,
-              }),
-            ],
-          }).catch(console.error);
+            performance.measure('streaming_metrics:drm_license_fetch', {
+              detail: streamingSessionId,
+              end: 'streaming_metrics:drm_license_fetch:endTimestamp',
+              start: 'streaming_metrics:drm_license_fetch:startTimestamp',
+            });
 
-          performance.clearMarks(
-            'streaming_metrics:drm_license_fetch:endTimestamp',
-          );
-          performance.clearMarks(
-            'streaming_metrics:drm_license_fetch:startTimestamp',
-          );
+            StreamingMetrics.playbackStatistics({
+              cdm: responseURIToCDMType(response.uri),
+              cdmVersion: null,
+              streamingSessionId: streamingSessionId,
+            });
+
+            StreamingMetrics.commit({
+              events: [
+                StreamingMetrics.drmLicenseFetch({
+                  endReason: 'COMPLETE',
+                  endTimestamp: trueTime.timestamp(
+                    'streaming_metrics:drm_license_fetch:endTimestamp',
+                  ),
+                  errorCode: null,
+                  errorMessage: null,
+                  startTimestamp: trueTime.timestamp(
+                    'streaming_metrics:drm_license_fetch:startTimestamp',
+                  ),
+                  streamingSessionId: streamingSessionId,
+                }),
+              ],
+            }).catch(console.error);
+
+            performance.clearMarks(
+              'streaming_metrics:drm_license_fetch:endTimestamp',
+            );
+            performance.clearMarks(
+              'streaming_metrics:drm_license_fetch:startTimestamp',
+            );
+          }
         }
-      }
-    });
+      });
 
     this.#shakaEvents(player, true);
     this.#mediaElementEvents(mediaElementOne, true);
