@@ -60,7 +60,7 @@ export interface paths {
      * Relationship: similar tracks
      * @description This endpoint can be used to retrieve a list of tracks similar to the given track.
      */
-    get: operations["getSimilarAlbums"];
+    get: operations["getSimilarTracks"];
   };
   "/tracks/{id}/relationships/providers": {
     /**
@@ -125,6 +125,13 @@ export interface paths {
      */
     get: operations["getArtistTracks"];
   };
+  "/artists/{id}/relationships/trackProviders": {
+    /**
+     * Relationship: track providers
+     * @description Retrieve providers that have released tracks for this artist
+     */
+    get: operations["getArtistTrackProviders"];
+  };
   "/artists/{id}/relationships/similarArtists": {
     /**
      * Relationship: similar artists
@@ -158,7 +165,7 @@ export interface paths {
      * Relationship: similar albums
      * @description This endpoint can be used to retrieve a list of albums similar to the given album.
      */
-    get: operations["getSimilarAlbums_1"];
+    get: operations["getSimilarAlbums"];
   };
   "/albums/{id}/relationships/providers": {
     /**
@@ -234,6 +241,7 @@ export interface components {
        */
       next?: string;
     };
+    /** @description attributes object representing some of the resource's data */
     Album_Attributes: {
       /**
        * @description Original title
@@ -294,6 +302,61 @@ export interface components {
       /** @description Represents available links to something that is related to an album resource, but external to the TIDAL API */
       externalLinks?: components["schemas"]["External_Link"][];
     };
+    Album_Item_Resource_Identifier: {
+      /**
+       * @description resource unique identifier
+       * @example 12345
+       */
+      id: string;
+      /**
+       * @description resource unique type
+       * @example tracks
+       */
+      type: string;
+      meta?: components["schemas"]["Album_Item_Resource_Identifier_Meta"];
+    };
+    Album_Item_Resource_Identifier_Meta: {
+      /**
+       * Format: int32
+       * @description volume number
+       * @example 1
+       */
+      volumeNumber: number;
+      /**
+       * Format: int32
+       * @description track number
+       * @example 4
+       */
+      trackNumber: number;
+    };
+    /** @description Album items (tracks/videos) relationship */
+    Album_Items_Relationship: {
+      data?: components["schemas"]["Album_Item_Resource_Identifier"][][];
+      links?: components["schemas"]["Links"];
+    };
+    /** @description relationships object describing relationships between the resource and other resources */
+    Album_Relationships: {
+      artists: components["schemas"]["Multi_Data_Relationships"];
+      items: components["schemas"]["Album_Items_Relationship"];
+      similarAlbums: components["schemas"]["Multi_Data_Relationships"];
+      providers: components["schemas"]["Multi_Data_Relationships"];
+    };
+    Album_Resource: {
+      attributes?: components["schemas"]["Album_Attributes"];
+      relationships?: components["schemas"]["Album_Relationships"];
+      links?: components["schemas"]["Links"];
+      /**
+       * @description resource unique identifier
+       * @example 12345
+       */
+      id: string;
+      /**
+       * @description resource unique type
+       * @example tracks
+       */
+      type: string;
+    };
+    /** @description attributes object representing some of the resource's data */
     Artist_Attributes: {
       /**
        * @description Artist name
@@ -310,6 +373,55 @@ export interface components {
       imageLinks?: components["schemas"]["Image_Link"][];
       /** @description Represents available links to something that is related to an artist resource, but external to the TIDAL API */
       externalLinks?: components["schemas"]["External_Link"][];
+    };
+    /** @description relationships object describing relationships between the resource and other resources */
+    Artist_Relationships: {
+      albums: components["schemas"]["Multi_Data_Relationships"];
+      tracks: components["schemas"]["Multi_Data_Relationships"];
+      videos: components["schemas"]["Multi_Data_Relationships"];
+      similarArtists: components["schemas"]["Multi_Data_Relationships"];
+      trackProviders: components["schemas"]["Artist_Track_Providers_Relationship"];
+    };
+    Artist_Resource: {
+      attributes?: components["schemas"]["Artist_Attributes"];
+      relationships?: components["schemas"]["Artist_Relationships"];
+      links?: components["schemas"]["Links"];
+      /**
+       * @description resource unique identifier
+       * @example 12345
+       */
+      id: string;
+      /**
+       * @description resource unique type
+       * @example tracks
+       */
+      type: string;
+    };
+    /** @description Providers that have released tracks for this artist */
+    Artist_Track_Providers_Relationship: {
+      data?: components["schemas"]["Artist_Track_Providers_Resource_Identifier"][][];
+      links?: components["schemas"]["Links"];
+    };
+    Artist_Track_Providers_Resource_Identifier: {
+      /**
+       * @description resource unique identifier
+       * @example 12345
+       */
+      id: string;
+      /**
+       * @description resource unique type
+       * @example tracks
+       */
+      type: string;
+      meta?: components["schemas"]["Artist_Track_Providers_Resource_Identifier_Meta"];
+    };
+    Artist_Track_Providers_Resource_Identifier_Meta: {
+      /**
+       * Format: int64
+       * @description total number of tracks released together with the provider
+       * @example 14
+       */
+      numberOfTracks: number;
     };
     External_Link: {
       /**
@@ -351,6 +463,13 @@ export interface components {
        */
       height: number;
     };
+    /** @description Album providers relationship */
+    Multi_Data_Relationships: {
+      /** @description array of relationship resource linkages */
+      data?: components["schemas"]["Resource_Identifier"][];
+      links?: components["schemas"]["Links"];
+    };
+    /** @description attributes object representing some of the resource's data */
     Provider_Attributes: {
       /**
        * @description Provider name. Conditionally visible.
@@ -359,11 +478,23 @@ export interface components {
       name: string;
     };
     /** @description relationships object describing relationships between the resource and other resources */
-    Relationship: {
-      /** @description resource linkage */
-      data?: components["schemas"]["Resource_Identifier"][];
+    Provider_Relationships: Record<string, never>;
+    Provider_Resource: {
+      attributes?: components["schemas"]["Provider_Attributes"];
+      relationships?: components["schemas"]["Provider_Relationships"];
       links?: components["schemas"]["Links"];
+      /**
+       * @description resource unique identifier
+       * @example 12345
+       */
+      id: string;
+      /**
+       * @description resource unique type
+       * @example tracks
+       */
+      type: string;
     };
+    /** @description array of relationship resource linkages */
     Resource_Identifier: {
       /**
        * @description resource unique identifier
@@ -450,31 +581,16 @@ export interface components {
        */
       height: number;
     };
-    /** @description attributes object representing some of the resource's data */
-    Video_Relationship: components["schemas"]["Album_Attributes"] | components["schemas"]["Artist_Attributes"] | components["schemas"]["Provider_Attributes"];
-    /** @description array of resource objects that are related to the primary data and/or each other */
-    Video_Relationship_Resource: {
-      attributes?: components["schemas"]["Video_Relationship"];
-      /** @description relationships object describing relationships between the resource and other resources */
-      relationships?: {
-        [key: string]: components["schemas"]["Relationship"];
-      };
-      links?: components["schemas"]["Links"];
-      /**
-       * @description resource unique identifier
-       * @example 12345
-       */
-      id: string;
-      /**
-       * @description resource unique type
-       * @example tracks
-       */
-      type: string;
+    /** @description relationships object describing relationships between the resource and other resources */
+    Video_Relationships: {
+      albums: components["schemas"]["Multi_Data_Relationships"];
+      artists: components["schemas"]["Multi_Data_Relationships"];
+      providers: components["schemas"]["Multi_Data_Relationships"];
     };
-    /** @description document's primary data */
+    /** @description array of primary resource data */
     Video_Resource: {
       attributes?: components["schemas"]["Video_Attributes"];
-      relationships?: components["schemas"]["Available_Video_Relationships"];
+      relationships?: components["schemas"]["Video_Relationships"];
       links?: components["schemas"]["Links"];
       /**
        * @description resource unique identifier
@@ -488,25 +604,35 @@ export interface components {
       type: string;
     };
     Videos_Data_Document: {
-      /** @description document's primary data */
-      data: components["schemas"]["Video_Resource"][];
+      /** @description array of primary resource data */
+      data?: components["schemas"]["Video_Resource"][];
       links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Video_Relationship_Resource"][];
+      included?: (components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["Provider_Resource"])[];
     };
     Video_Data_Document: {
-      data: components["schemas"]["Video_Resource"];
+      data?: components["schemas"]["Video_Resource"];
       links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Video_Relationship_Resource"][];
+      included?: (components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["Provider_Resource"])[];
     };
-    Video_Relationships_Document: {
-      /** @description document's primary data, consist of resource linkage objects */
-      data: components["schemas"]["Resource_Identifier"][];
+    Providers_Relationship_Document: {
+      /** @description array of relationship resource linkages */
+      data?: components["schemas"]["Resource_Identifier"][];
       links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Video_Relationship_Resource"][];
+      included?: components["schemas"]["Provider_Resource"][];
     };
+    Artists_Relationship_Document: {
+      /** @description array of relationship resource linkages */
+      data?: components["schemas"]["Resource_Identifier"][];
+      links?: components["schemas"]["Links"];
+      included?: components["schemas"]["Artist_Resource"][];
+    };
+    Albums_Relationship_Document: {
+      /** @description array of relationship resource linkages */
+      data?: components["schemas"]["Resource_Identifier"][];
+      links?: components["schemas"]["Links"];
+      included?: components["schemas"]["Album_Resource"][];
+    };
+    /** @description attributes object representing some of the resource's data */
     Track_Attributes: {
       /**
        * @description Album item's title
@@ -550,31 +676,16 @@ export interface components {
       /** @description Represents available links to something that is related to a catalog item, but external to the TIDAL API */
       externalLinks?: components["schemas"]["External_Link"][];
     };
-    /** @description attributes object representing some of the resource's data */
-    Track_Relationship: components["schemas"]["Album_Attributes"] | components["schemas"]["Artist_Attributes"] | components["schemas"]["Provider_Attributes"] | components["schemas"]["Track_Attributes"];
-    /** @description array of resource objects that are related to the primary data and/or each other */
-    Track_Relationship_Resource: {
-      attributes?: components["schemas"]["Track_Relationship"];
-      /** @description relationships object describing relationships between the resource and other resources */
-      relationships?: {
-        [key: string]: components["schemas"]["Relationship"];
-      };
-      links?: components["schemas"]["Links"];
-      /**
-       * @description resource unique identifier
-       * @example 12345
-       */
-      id: string;
-      /**
-       * @description resource unique type
-       * @example tracks
-       */
-      type: string;
+    /** @description relationships object describing relationships between the resource and other resources */
+    Track_Relationships: {
+      albums: components["schemas"]["Multi_Data_Relationships"];
+      artists: components["schemas"]["Multi_Data_Relationships"];
+      providers: components["schemas"]["Multi_Data_Relationships"];
+      similarTracks: components["schemas"]["Multi_Data_Relationships"];
     };
-    /** @description document's primary data */
     Track_Resource: {
       attributes?: components["schemas"]["Track_Attributes"];
-      relationships?: components["schemas"]["Available_Track_Relationships"];
+      relationships?: components["schemas"]["Track_Relationships"];
       links?: components["schemas"]["Links"];
       /**
        * @description resource unique identifier
@@ -588,251 +699,69 @@ export interface components {
       type: string;
     };
     Tracks_Data_Document: {
-      /** @description document's primary data */
-      data: components["schemas"]["Track_Resource"][];
+      /** @description array of primary resource data */
+      data?: components["schemas"]["Track_Resource"][];
       links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Track_Relationship_Resource"][];
+      included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["Provider_Resource"])[];
     };
     Track_Data_Document: {
-      data: components["schemas"]["Track_Resource"];
+      data?: components["schemas"]["Track_Resource"];
       links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Track_Relationship_Resource"][];
+      included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["Provider_Resource"])[];
     };
     Track_Relationships_Document: {
-      /** @description document's primary data, consist of resource linkage objects */
-      data: components["schemas"]["Resource_Identifier"][];
-      links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Track_Relationship_Resource"][];
-    };
-    /** @description attributes object representing some of the resource's data */
-    Provider_Relationship: Record<string, never>;
-    /** @description array of resource objects that are related to the primary data and/or each other */
-    Provider_Relationship_Resource: {
-      attributes?: components["schemas"]["Provider_Relationship"];
-      /** @description relationships object describing relationships between the resource and other resources */
-      relationships?: {
-        [key: string]: components["schemas"]["Relationship"];
-      };
-      links?: components["schemas"]["Links"];
-      /**
-       * @description resource unique identifier
-       * @example 12345
-       */
-      id: string;
-      /**
-       * @description resource unique type
-       * @example tracks
-       */
-      type: string;
-    };
-    /** @description document's primary data */
-    Provider_Resource: {
-      attributes?: components["schemas"]["Provider_Attributes"];
-      relationships?: components["schemas"]["Available_Provider_Relationships"];
-      links?: components["schemas"]["Links"];
-      /**
-       * @description resource unique identifier
-       * @example 12345
-       */
-      id: string;
-      /**
-       * @description resource unique type
-       * @example tracks
-       */
-      type: string;
-    };
-    Providers_Data_Document: {
-      /** @description document's primary data */
-      data: components["schemas"]["Provider_Resource"][];
-      links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Provider_Relationship_Resource"][];
-    };
-    Provider_Data_Document: {
-      data: components["schemas"]["Provider_Resource"];
-      links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Provider_Relationship_Resource"][];
-    };
-    /** @description attributes object representing some of the resource's data */
-    Artist_Relationship: components["schemas"]["Album_Attributes"] | components["schemas"]["Track_Attributes"] | components["schemas"]["Video_Attributes"] | components["schemas"]["Artist_Attributes"];
-    /** @description array of resource objects that are related to the primary data and/or each other */
-    Artist_Relationship_Resource: {
-      attributes?: components["schemas"]["Artist_Relationship"];
-      /** @description relationships object describing relationships between the resource and other resources */
-      relationships?: {
-        [key: string]: components["schemas"]["Relationship"];
-      };
-      links?: components["schemas"]["Links"];
-      /**
-       * @description resource unique identifier
-       * @example 12345
-       */
-      id: string;
-      /**
-       * @description resource unique type
-       * @example tracks
-       */
-      type: string;
-    };
-    /** @description document's primary data */
-    Artist_Resource: {
-      attributes?: components["schemas"]["Artist_Attributes"];
-      relationships?: components["schemas"]["Available_Artist_Relationships"];
-      links?: components["schemas"]["Links"];
-      /**
-       * @description resource unique identifier
-       * @example 12345
-       */
-      id: string;
-      /**
-       * @description resource unique type
-       * @example tracks
-       */
-      type: string;
-    };
-    Artists_Data_Document: {
-      /** @description document's primary data */
-      data: components["schemas"]["Artist_Resource"][];
-      links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Artist_Relationship_Resource"][];
-    };
-    Artist_Data_Document: {
-      data: components["schemas"]["Artist_Resource"];
-      links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Artist_Relationship_Resource"][];
-    };
-    Artist_Relationships_Document: {
-      /** @description document's primary data, consist of resource linkage objects */
-      data: components["schemas"]["Resource_Identifier"][];
-      links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Artist_Relationship_Resource"][];
-    };
-    /** @description attributes object representing some of the resource's data */
-    Album_Relationship: components["schemas"]["Artist_Attributes"] | components["schemas"]["Track_Attributes"] | components["schemas"]["Video_Attributes"] | components["schemas"]["Album_Attributes"] | components["schemas"]["Provider_Attributes"];
-    /** @description array of resource objects that are related to the primary data and/or each other */
-    Album_Relationship_Resource: {
-      attributes?: components["schemas"]["Album_Relationship"];
-      /** @description relationships object describing relationships between the resource and other resources */
-      relationships?: {
-        [key: string]: components["schemas"]["Relationship"];
-      };
-      links?: components["schemas"]["Links"];
-      /**
-       * @description resource unique identifier
-       * @example 12345
-       */
-      id: string;
-      /**
-       * @description resource unique type
-       * @example tracks
-       */
-      type: string;
-    };
-    /** @description document's primary data */
-    Album_Resource: {
-      attributes?: components["schemas"]["Album_Attributes"];
-      relationships?: components["schemas"]["Available_Album_Relationships"];
-      links?: components["schemas"]["Links"];
-      /**
-       * @description resource unique identifier
-       * @example 12345
-       */
-      id: string;
-      /**
-       * @description resource unique type
-       * @example tracks
-       */
-      type: string;
-    };
-    Albums_Data_Document: {
-      /** @description document's primary data */
-      data: components["schemas"]["Album_Resource"][];
-      links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Album_Relationship_Resource"][];
-    };
-    Album_Data_Document: {
-      data: components["schemas"]["Album_Resource"];
-      links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Album_Relationship_Resource"][];
-    };
-    Album_Relationships_Document: {
-      /** @description document's primary data, consist of resource linkage objects */
-      data: components["schemas"]["Resource_Identifier"][];
-      links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Album_Relationship_Resource"][];
-    };
-    /** @description Available video relationships */
-    Available_Video_Relationships: {
-      albums?: components["schemas"]["Resource_Relationship"];
-      artists?: components["schemas"]["Resource_Relationship"];
-      providers?: components["schemas"]["Resource_Relationship"];
-    };
-    Resource_Relationship: {
-      /** @description resource linkage */
+      /** @description array of relationship resource linkages */
       data?: components["schemas"]["Resource_Identifier"][];
       links?: components["schemas"]["Links"];
+      included?: components["schemas"]["Track_Resource"][];
     };
-    /** @description Available track relationships */
-    Available_Track_Relationships: {
-      albums?: components["schemas"]["Resource_Relationship"];
-      artists?: components["schemas"]["Resource_Relationship"];
-      similarTracks?: components["schemas"]["Resource_Relationship"];
-      providers?: components["schemas"]["Resource_Relationship"];
+    Providers_Data_Document: {
+      /** @description array of primary resource data */
+      data?: components["schemas"]["Provider_Resource"][];
+      links?: components["schemas"]["Links"];
     };
-    /** @description Available artist relationships */
-    Available_Artist_Relationships: {
-      similarArtists?: components["schemas"]["Resource_Relationship"];
-      albums?: components["schemas"]["Resource_Relationship"];
-      videos?: components["schemas"]["Resource_Relationship"];
-      tracks?: components["schemas"]["Resource_Relationship"];
+    Provider_Data_Document: {
+      data?: components["schemas"]["Provider_Resource"];
+      links?: components["schemas"]["Links"];
     };
-    /** @description Available album relationships */
-    Available_Album_Relationships: {
-      artists?: components["schemas"]["Resource_Relationship"];
-      similarAlbums?: components["schemas"]["Resource_Relationship"];
-      items?: {
-        data?: {
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
-            meta?: {
-              /**
-               * Format: int32
-               * @description volume number
-               * @example 1
-               */
-              volumeNumber: number;
-              /**
-               * Format: int32
-               * @description track number
-               * @example 4
-               */
-              trackNumber: number;
-            };
-          }[];
-        links?: components["schemas"]["Links"];
-      };
-      providers?: components["schemas"]["Resource_Relationship"];
+    Artists_Data_Document: {
+      /** @description array of primary resource data */
+      data?: components["schemas"]["Artist_Resource"][];
+      links?: components["schemas"]["Links"];
+      included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"])[];
     };
-    /** @description Available provider relationships */
-    Available_Provider_Relationships: unknown;
+    Artist_Data_Document: {
+      data?: components["schemas"]["Artist_Resource"];
+      links?: components["schemas"]["Links"];
+      included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"])[];
+    };
+    Video_Relationships_Document: {
+      /** @description array of relationship resource linkages */
+      data?: components["schemas"]["Resource_Identifier"][];
+      links?: components["schemas"]["Links"];
+      included?: components["schemas"]["Video_Resource"][];
+    };
+    Artist_Track_Providers_Relationship_Document: {
+      data?: components["schemas"]["Artist_Track_Providers_Resource_Identifier"][][];
+      links?: components["schemas"]["Links"];
+      included?: components["schemas"]["Provider_Resource"][];
+    };
+    Albums_Data_Document: {
+      /** @description array of primary resource data */
+      data?: components["schemas"]["Album_Resource"][];
+      links?: components["schemas"]["Links"];
+      included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["Provider_Resource"])[];
+    };
+    Album_Data_Document: {
+      data?: components["schemas"]["Album_Resource"];
+      links?: components["schemas"]["Links"];
+      included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["Provider_Resource"])[];
+    };
+    Album_Items_Relationship_Document: {
+      data?: components["schemas"]["Album_Item_Resource_Identifier"][][];
+      links?: components["schemas"]["Links"];
+      included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"])[];
+    };
   };
   responses: never;
   parameters: never;
@@ -859,17 +788,21 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: artists, albums, providers */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: artists, albums, providers
+         * @example artists
+         */
         include?: string[];
-        /** @description Allows to filter the collection of resources based on id attribute value */
+        /**
+         * @description Allows to filter the collection of resources based on id attribute value
+         * @example 75623239
+         */
         "filter[id]"?: string[];
-        /** @description Allows to filter the collection of resources based on isrc attribute value */
+        /**
+         * @description Allows to filter the collection of resources based on isrc attribute value
+         * @example USSM21600755
+         */
         "filter[isrc]"?: string[];
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -1083,7 +1016,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: artists, albums, providers */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: artists, albums, providers
+         * @example artists
+         */
         include?: string[];
       };
       path: {
@@ -1092,11 +1028,6 @@ export interface operations {
          * @example 75623239
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -1310,7 +1241,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: providers */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: providers
+         * @example providers
+         */
         include?: string[];
       };
       path: {
@@ -1319,11 +1253,6 @@ export interface operations {
          * @example 75623239
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -1352,7 +1281,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Video_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Providers_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1537,7 +1466,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: artists */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: artists
+         * @example artists
+         */
         include?: string[];
       };
       path: {
@@ -1546,11 +1478,6 @@ export interface operations {
          * @example 75623239
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -1579,7 +1506,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Video_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Artists_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1764,7 +1691,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: albums */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: albums
+         * @example albums
+         */
         include?: string[];
       };
       path: {
@@ -1773,11 +1703,6 @@ export interface operations {
          * @example 75623239
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -1806,7 +1731,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Video_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Albums_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1991,17 +1916,21 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: artists, albums, providers, similarTracks */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: artists, albums, providers, similarTracks
+         * @example artists
+         */
         include?: string[];
-        /** @description Allows to filter the collection of resources based on id attribute value */
+        /**
+         * @description Allows to filter the collection of resources based on id attribute value
+         * @example 251380837
+         */
         "filter[id]"?: string[];
-        /** @description Allows to filter the collection of resources based on isrc attribute value */
+        /**
+         * @description Allows to filter the collection of resources based on isrc attribute value
+         * @example USSM12209515
+         */
         "filter[isrc]"?: string[];
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -2215,7 +2144,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: artists, albums, providers, similarTracks */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: artists, albums, providers, similarTracks
+         * @example artists
+         */
         include?: string[];
       };
       path: {
@@ -2224,11 +2156,6 @@ export interface operations {
          * @example 251380837
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -2434,7 +2361,7 @@ export interface operations {
    * Relationship: similar tracks
    * @description This endpoint can be used to retrieve a list of tracks similar to the given track.
    */
-  getSimilarAlbums: {
+  getSimilarTracks: {
     parameters: {
       query: {
         /**
@@ -2442,7 +2369,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: similarTracks */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: similarTracks
+         * @example similarTracks
+         */
         include?: string[];
       };
       path: {
@@ -2451,11 +2381,6 @@ export interface operations {
          * @example 251380837
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -2669,7 +2594,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: providers */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: providers
+         * @example providers
+         */
         include?: string[];
       };
       path: {
@@ -2678,11 +2606,6 @@ export interface operations {
          * @example 251380837
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -2711,7 +2634,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Track_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Providers_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -2896,7 +2819,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: artists */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: artists
+         * @example artists
+         */
         include?: string[];
       };
       path: {
@@ -2905,11 +2831,6 @@ export interface operations {
          * @example 251380837
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -2938,7 +2859,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Track_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Artists_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -3123,7 +3044,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: albums */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: albums
+         * @example albums
+         */
         include?: string[];
       };
       path: {
@@ -3132,11 +3056,6 @@ export interface operations {
          * @example 251380837
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -3165,7 +3084,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Track_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Albums_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -3347,13 +3266,11 @@ export interface operations {
       query?: {
         /** @description Allows the client to customize which related resources should be returned */
         include?: string[];
-        /** @description Allows to filter the collection of resources based on id attribute value */
+        /**
+         * @description Allows to filter the collection of resources based on id attribute value
+         * @example 771
+         */
         "filter[id]"?: string[];
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -3573,11 +3490,6 @@ export interface operations {
         id: string;
       };
     };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
-      };
-    };
     responses: {
       /** @description Successfully executed request. */
       200: {
@@ -3789,15 +3701,16 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: albums, tracks, videos, similarArtists */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: albums, tracks, videos, similarArtists, trackProviders
+         * @example albums
+         */
         include?: string[];
-        /** @description Allows to filter the collection of resources based on id attribute value */
+        /**
+         * @description Allows to filter the collection of resources based on id attribute value
+         * @example 1566
+         */
         "filter[id]"?: string[];
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -4011,7 +3924,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: albums, tracks, videos, similarArtists */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: albums, tracks, videos, similarArtists, trackProviders
+         * @example albums
+         */
         include?: string[];
       };
       path: {
@@ -4020,11 +3936,6 @@ export interface operations {
          * @example 1566
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -4238,7 +4149,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: videos */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: videos
+         * @example videos
+         */
         include?: string[];
       };
       path: {
@@ -4247,11 +4161,6 @@ export interface operations {
          * @example 1566
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -4280,7 +4189,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Artist_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Video_Relationships_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -4465,7 +4374,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: tracks */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: tracks
+         * @example tracks
+         */
         include?: string[];
       };
       path: {
@@ -4474,11 +4386,6 @@ export interface operations {
          * @example 1566
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -4507,7 +4414,227 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Artist_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Track_Relationships_Document"];
+        };
+      };
+      /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+      400: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.api+json": components["schemas"]["Error_Document"];
+        };
+      };
+      /** @description Resource not found. The requested resource is not found. */
+      404: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.api+json": components["schemas"]["Error_Document"];
+        };
+      };
+      /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+      405: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.api+json": components["schemas"]["Error_Document"];
+        };
+      };
+      /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+      406: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.api+json": components["schemas"]["Error_Document"];
+        };
+      };
+      /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+      415: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.api+json": components["schemas"]["Error_Document"];
+        };
+      };
+      /** @description Internal Server Error. Something went wrong on the server party. */
+      500: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.api+json": components["schemas"]["Error_Document"];
+        };
+      };
+    };
+  };
+  /**
+   * Relationship: track providers
+   * @description Retrieve providers that have released tracks for this artist
+   */
+  getArtistTrackProviders: {
+    parameters: {
+      query?: {
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: trackProviders
+         * @example trackProviders
+         */
+        include?: string[];
+      };
+      path: {
+        /**
+         * @description TIDAL id of the artist
+         * @example 1566
+         */
+        id: string;
+      };
+    };
+    responses: {
+      /** @description Successfully executed request. */
+      200: {
+        headers: {
+          /**
+           * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+           * @example 5
+           */
+          "X-RateLimit-Remaining": number;
+          /**
+           * @description Initial number of tokens, and max number of tokens that can be replenished.
+           * @example 20
+           */
+          "X-RateLimit-Burst-Capacity": number;
+          /**
+           * @description Number of tokens replenished per second.
+           * @example 5
+           */
+          "X-RateLimit-Replenish-Rate": number;
+          /**
+           * @description Request cost in tokens.
+           * @example 5
+           */
+          "X-RateLimit-Requested-Tokens": number;
+        };
+        content: {
+          "application/vnd.api+json": components["schemas"]["Artist_Track_Providers_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -4692,7 +4819,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: similarArtists */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: similarArtists
+         * @example similarArtists
+         */
         include?: string[];
       };
       path: {
@@ -4701,11 +4831,6 @@ export interface operations {
          * @example 1566
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -4734,7 +4859,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Artist_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Artists_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -4919,7 +5044,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: albums */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: albums
+         * @example albums
+         */
         include?: string[];
       };
       path: {
@@ -4928,11 +5056,6 @@ export interface operations {
          * @example 1566
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -4961,7 +5084,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Artist_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Albums_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -5146,17 +5269,21 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: artists, items, providers, similarAlbums */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: artists, items, providers, similarAlbums
+         * @example artists
+         */
         include?: string[];
-        /** @description Allows to filter the collection of resources based on id attribute value */
+        /**
+         * @description Allows to filter the collection of resources based on id attribute value
+         * @example 251380836
+         */
         "filter[id]"?: string[];
-        /** @description Allows to filter the collection of resources based on barcodeId attribute value */
+        /**
+         * @description Allows to filter the collection of resources based on barcodeId attribute value
+         * @example 196589525444
+         */
         "filter[barcodeId]"?: string[];
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -5370,7 +5497,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: artists, items, providers, similarAlbums */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: artists, items, providers, similarAlbums
+         * @example artists
+         */
         include?: string[];
       };
       path: {
@@ -5379,11 +5509,6 @@ export interface operations {
          * @example 251380836
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -5589,7 +5714,7 @@ export interface operations {
    * Relationship: similar albums
    * @description This endpoint can be used to retrieve a list of albums similar to the given album.
    */
-  getSimilarAlbums_1: {
+  getSimilarAlbums: {
     parameters: {
       query: {
         /**
@@ -5597,7 +5722,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: similarAlbums */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: similarAlbums
+         * @example similarAlbums
+         */
         include?: string[];
       };
       path: {
@@ -5606,11 +5734,6 @@ export interface operations {
          * @example 251380836
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -5639,7 +5762,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Album_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Albums_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -5824,7 +5947,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: providers */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: providers
+         * @example providers
+         */
         include?: string[];
       };
       path: {
@@ -5833,11 +5959,6 @@ export interface operations {
          * @example 251380836
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -5866,7 +5987,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Album_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Providers_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -6051,7 +6172,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: items */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: items
+         * @example items
+         */
         include?: string[];
       };
       path: {
@@ -6060,11 +6184,6 @@ export interface operations {
          * @example 251380836
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -6093,7 +6212,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Album_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Album_Items_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -6278,7 +6397,10 @@ export interface operations {
          * @example US
          */
         countryCode: string;
-        /** @description Allows the client to customize which related resources should be returned. Available options: artists */
+        /**
+         * @description Allows the client to customize which related resources should be returned. Available options: artists
+         * @example artists
+         */
         include?: string[];
       };
       path: {
@@ -6287,11 +6409,6 @@ export interface operations {
          * @example 251380836
          */
         id: string;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/vnd.api+json": unknown;
       };
     };
     responses: {
@@ -6320,7 +6437,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Album_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Artists_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */

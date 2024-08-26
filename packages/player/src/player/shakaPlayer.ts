@@ -342,6 +342,43 @@ export default class ShakaPlayer extends BasePlayer {
     } */
   }
 
+  /**
+   * Playback of media product type demo needs to be done with
+   * useNativeHlsForFairPlay and preferNativeHls set to false.
+   */
+  async #configureHlsForPlayback(
+    instance: shaka.Player | undefined,
+    mediaProduct: MediaProduct,
+  ) {
+    const isFairPlaySupported =
+      await shaka.util.FairPlayUtils.isFairPlaySupported();
+
+    if (isFairPlaySupported && instance) {
+      if (
+        instance.getConfiguration().streaming.preferNativeHls !==
+        (mediaProduct.productType !== 'demo')
+      ) {
+        instance.configure(
+          'streaming.preferNativeHls',
+          mediaProduct.productType !== 'demo',
+        );
+      }
+
+      if (
+        instance.getConfiguration().streaming.useNativeHlsForFairPlay !==
+        (mediaProduct.productType !== 'demo')
+      ) {
+        instance.configure(
+          'streaming.useNativeHlsForFairPlay',
+          mediaProduct.productType !== 'demo',
+        );
+      }
+
+      // await instance.release();
+      await instance.unload(true);
+    }
+  }
+
   async #createShakaPlayer(mediaEl: HTMLMediaElement) {
     this.debugLog('createShakaPlayer', mediaEl);
 
@@ -392,7 +429,8 @@ export default class ShakaPlayer extends BasePlayer {
          * for triggering tracking events etc.
          */
         // failureCallback() {},
-        useNativeHlsOnSafari: isFairPlaySupported,
+
+        useNativeHlsForFairPlay: isFairPlaySupported,
       },
     });
 
@@ -767,6 +805,11 @@ export default class ShakaPlayer extends BasePlayer {
     this.currentTime = payload.assetPosition;
     this.startAssetPosition = payload.assetPosition;
 
+    await this.#configureHlsForPlayback(
+      this.shakaInstance,
+      payload.mediaProduct,
+    );
+
     // Ensure reset and set reset to false since we're loading anew.
     await this.reset();
     this.#isReset = false;
@@ -822,6 +865,7 @@ export default class ShakaPlayer extends BasePlayer {
     );
     this.#preloadedPayload = payload;
 
+    // eslint-disable-next-line no-console
     console.log({
       couldPreload: Boolean(this.#preloadManager),
     });

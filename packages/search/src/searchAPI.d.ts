@@ -101,6 +101,7 @@ export interface components {
        */
       next?: string;
     };
+    /** @description attributes object representing some of the resource's data */
     Album_Attributes: {
       /**
        * @description Original title
@@ -161,6 +162,61 @@ export interface components {
       /** @description Represents available links to something that is related to an album resource, but external to the TIDAL API */
       externalLinks?: components["schemas"]["External_Link"][];
     };
+    Album_Item_Resource_Identifier: {
+      /**
+       * @description resource unique identifier
+       * @example 12345
+       */
+      id: string;
+      /**
+       * @description resource unique type
+       * @example tracks
+       */
+      type: string;
+      meta?: components["schemas"]["Album_Item_Resource_Identifier_Meta"];
+    };
+    Album_Item_Resource_Identifier_Meta: {
+      /**
+       * Format: int32
+       * @description volume number
+       * @example 1
+       */
+      volumeNumber: number;
+      /**
+       * Format: int32
+       * @description track number
+       * @example 4
+       */
+      trackNumber: number;
+    };
+    /** @description Album items (tracks/videos) relationship */
+    Album_Items_Relationship: {
+      data?: components["schemas"]["Album_Item_Resource_Identifier"][][];
+      links?: components["schemas"]["Links"];
+    };
+    /** @description relationships object describing relationships between the resource and other resources */
+    Album_Relationships: {
+      artists: components["schemas"]["Multi_Data_Relationships"];
+      items: components["schemas"]["Album_Items_Relationship"];
+      similarAlbums: components["schemas"]["Multi_Data_Relationships"];
+      providers: components["schemas"]["Multi_Data_Relationships"];
+    };
+    Album_Resource: {
+      attributes?: components["schemas"]["Album_Attributes"];
+      relationships?: components["schemas"]["Album_Relationships"];
+      links?: components["schemas"]["Links"];
+      /**
+       * @description resource unique identifier
+       * @example 12345
+       */
+      id: string;
+      /**
+       * @description resource unique type
+       * @example tracks
+       */
+      type: string;
+    };
+    /** @description attributes object representing some of the resource's data */
     Artist_Attributes: {
       /**
        * @description Artist name
@@ -177,6 +233,28 @@ export interface components {
       imageLinks?: components["schemas"]["Image_Link"][];
       /** @description Represents available links to something that is related to an artist resource, but external to the TIDAL API */
       externalLinks?: components["schemas"]["External_Link"][];
+    };
+    /** @description relationships object describing relationships between the resource and other resources */
+    Artist_Relationships: {
+      albums: components["schemas"]["Multi_Data_Relationships"];
+      tracks: components["schemas"]["Multi_Data_Relationships"];
+      videos: components["schemas"]["Multi_Data_Relationships"];
+      similarArtists: components["schemas"]["Multi_Data_Relationships"];
+    };
+    Artist_Resource: {
+      attributes?: components["schemas"]["Artist_Attributes"];
+      relationships?: components["schemas"]["Artist_Relationships"];
+      links?: components["schemas"]["Links"];
+      /**
+       * @description resource unique identifier
+       * @example 12345
+       */
+      id: string;
+      /**
+       * @description resource unique type
+       * @example tracks
+       */
+      type: string;
     };
     External_Link: {
       /**
@@ -218,12 +296,13 @@ export interface components {
        */
       height: number;
     };
-    /** @description relationships object describing relationships between the resource and other resources */
-    Relationship: {
-      /** @description resource linkage */
+    /** @description Album providers relationship */
+    Multi_Data_Relationships: {
+      /** @description array of relationship resource linkages */
       data?: components["schemas"]["Resource_Identifier"][];
       links?: components["schemas"]["Links"];
     };
+    /** @description array of relationship resource linkages */
     Resource_Identifier: {
       /**
        * @description resource unique identifier
@@ -236,8 +315,14 @@ export interface components {
        */
       type: string;
     };
-    /** @description attributes object representing some of the resource's data */
-    Search_Result_Relationship: components["schemas"]["Album_Attributes"] | components["schemas"]["Track_Attributes"] | components["schemas"]["Video_Attributes"] | components["schemas"]["Artist_Attributes"];
+    /** @description relationships object describing relationships between the resource and other resources */
+    Search_Result_Relationships: {
+      albums: components["schemas"]["Multi_Data_Relationships"];
+      artists: components["schemas"]["Multi_Data_Relationships"];
+      tracks: components["schemas"]["Multi_Data_Relationships"];
+      videos: components["schemas"]["Multi_Data_Relationships"];
+      topHits: components["schemas"]["Multi_Data_Relationships"];
+    };
     /** @description attributes object representing some of the resource's data */
     Search_Results_Attributes: {
       /**
@@ -252,34 +337,14 @@ export interface components {
       didYouMean?: string;
     };
     Search_Results_Data_Document: {
-      data: components["schemas"]["Search_Results_Resource"];
+      data?: components["schemas"]["Search_Results_Resource"];
       links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Search_Results_Relationship_Resource"][];
+      included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"])[];
     };
-    /** @description array of resource objects that are related to the primary data and/or each other */
-    Search_Results_Relationship_Resource: {
-      attributes?: components["schemas"]["Search_Result_Relationship"];
-      /** @description relationships object describing relationships between the resource and other resources */
-      relationships?: {
-        [key: string]: components["schemas"]["Relationship"];
-      };
-      links?: components["schemas"]["Links"];
-      /**
-       * @description resource unique identifier
-       * @example 12345
-       */
-      id: string;
-      /**
-       * @description resource unique type
-       * @example tracks
-       */
-      type: string;
-    };
-    /** @description document's primary data */
+    /** @description primary resource data */
     Search_Results_Resource: {
       attributes?: components["schemas"]["Search_Results_Attributes"];
-      relationships?: components["schemas"]["Available_Searchresult_Relationships"];
+      relationships?: components["schemas"]["Search_Result_Relationships"];
       links?: components["schemas"]["Links"];
       /**
        * @description resource unique identifier
@@ -292,6 +357,7 @@ export interface components {
        */
       type: string;
     };
+    /** @description attributes object representing some of the resource's data */
     Track_Attributes: {
       /**
        * @description Album item's title
@@ -335,6 +401,29 @@ export interface components {
       /** @description Represents available links to something that is related to a catalog item, but external to the TIDAL API */
       externalLinks?: components["schemas"]["External_Link"][];
     };
+    /** @description relationships object describing relationships between the resource and other resources */
+    Track_Relationships: {
+      albums: components["schemas"]["Multi_Data_Relationships"];
+      artists: components["schemas"]["Multi_Data_Relationships"];
+      providers: components["schemas"]["Multi_Data_Relationships"];
+      similarTracks: components["schemas"]["Multi_Data_Relationships"];
+    };
+    Track_Resource: {
+      attributes?: components["schemas"]["Track_Attributes"];
+      relationships?: components["schemas"]["Track_Relationships"];
+      links?: components["schemas"]["Links"];
+      /**
+       * @description resource unique identifier
+       * @example 12345
+       */
+      id: string;
+      /**
+       * @description resource unique type
+       * @example tracks
+       */
+      type: string;
+    };
+    /** @description attributes object representing some of the resource's data */
     Video_Attributes: {
       /**
        * @description Album item's title
@@ -408,25 +497,56 @@ export interface components {
        */
       height: number;
     };
-    Search_Results_Relationships_Document: {
-      /** @description document's primary data, consist of resource linkage objects */
-      data: components["schemas"]["Resource_Identifier"][];
+    /** @description relationships object describing relationships between the resource and other resources */
+    Video_Relationships: {
+      albums: components["schemas"]["Multi_Data_Relationships"];
+      artists: components["schemas"]["Multi_Data_Relationships"];
+      providers: components["schemas"]["Multi_Data_Relationships"];
+    };
+    Video_Resource: {
+      attributes?: components["schemas"]["Video_Attributes"];
+      relationships?: components["schemas"]["Video_Relationships"];
       links?: components["schemas"]["Links"];
-      /** @description array of resource objects that are related to the primary data and/or each other */
-      included?: components["schemas"]["Search_Results_Relationship_Resource"][];
+      /**
+       * @description resource unique identifier
+       * @example 12345
+       */
+      id: string;
+      /**
+       * @description resource unique type
+       * @example tracks
+       */
+      type: string;
     };
-    /** @description Available searchresult relationships */
-    Available_Searchresult_Relationships: {
-      albums?: components["schemas"]["Resource_Relationships"];
-      artists?: components["schemas"]["Resource_Relationships"];
-      videos?: components["schemas"]["Resource_Relationships"];
-      topHits?: components["schemas"]["Resource_Relationships"];
-      tracks?: components["schemas"]["Resource_Relationships"];
-    };
-    Resource_Relationships: {
-      /** @description resource linkage */
+    Video_Relationships_Document: {
+      /** @description array of relationship resource linkages */
       data?: components["schemas"]["Resource_Identifier"][];
       links?: components["schemas"]["Links"];
+      included?: components["schemas"]["Video_Resource"][];
+    };
+    Track_Relationships_Document: {
+      /** @description array of relationship resource linkages */
+      data?: components["schemas"]["Resource_Identifier"][];
+      links?: components["schemas"]["Links"];
+      included?: components["schemas"]["Track_Resource"][];
+    };
+    Top_Hits_Relationship_Document: {
+      /** @description array of relationship resource linkages */
+      data?: components["schemas"]["Resource_Identifier"][];
+      links?: components["schemas"]["Links"];
+      included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"])[];
+    };
+    Artists_Relationship_Document: {
+      /** @description array of relationship resource linkages */
+      data?: components["schemas"]["Resource_Identifier"][];
+      links?: components["schemas"]["Links"];
+      included?: components["schemas"]["Artist_Resource"][];
+    };
+    Albums_Relationship_Document: {
+      /** @description array of relationship resource linkages */
+      data?: components["schemas"]["Resource_Identifier"][];
+      links?: components["schemas"]["Links"];
+      included?: components["schemas"]["Album_Resource"][];
     };
   };
   responses: never;
@@ -719,7 +839,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Search_Results_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Video_Relationships_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -944,7 +1064,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Search_Results_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Track_Relationships_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1169,7 +1289,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Search_Results_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Top_Hits_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1394,7 +1514,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Search_Results_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Artists_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1619,7 +1739,7 @@ export interface operations {
           "X-RateLimit-Requested-Tokens": number;
         };
         content: {
-          "application/vnd.api+json": components["schemas"]["Search_Results_Relationships_Document"];
+          "application/vnd.api+json": components["schemas"]["Albums_Relationship_Document"];
         };
       };
       /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
