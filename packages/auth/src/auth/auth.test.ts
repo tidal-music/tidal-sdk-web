@@ -553,6 +553,33 @@ describe.sequential('auth', () => {
       });
     });
 
+    it('use client credentials to retrieve token, omitting passed scopes', async () => {
+      vi.spyOn(trueTime, 'now').mockReturnValue(fixtures.expiresTimerMock);
+      vi.mocked(fetchHandling.handleTokenFetch).mockResolvedValue(
+        new Response(JSON.stringify(fixtures.clientCredentialsJsonResponse)),
+      );
+      vi.mocked(fetchHandling.prepareFetch).mockReturnValue(prepareFetchMock);
+
+      await init({
+        ...initConfig,
+        clientSecret: 'CLIENT_SECRET',
+      });
+
+      expect(await getCredentials()).toEqual({
+        ...fixtures.storageClientCredentials.accessToken,
+        clientUniqueKey: 'CLIENT_UNIQUE_KEY',
+        requestedScopes: ['READ', 'WRITE'],
+      });
+      expect(fetchHandling.handleTokenFetch).toHaveBeenCalled();
+
+      // second time access token is requested, scope check needs to be skipped for client credentials
+      expect(await getCredentials()).toEqual({
+        ...fixtures.storageClientCredentials.accessToken,
+        clientUniqueKey: 'CLIENT_UNIQUE_KEY',
+        requestedScopes: ['READ', 'WRITE'],
+      });
+    });
+
     it('get the right token from storage and return it', async () => {
       vi.mocked(storage.loadCredentials).mockResolvedValue(fixtures.storage);
       vi.spyOn(trueTime, 'now').mockReturnValue(0); // make sure token isn't expired

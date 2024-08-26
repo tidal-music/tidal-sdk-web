@@ -41,13 +41,12 @@ export type NativePlayerComponentSupportedEvents =
   | 'mediaerror'
   | 'mediaformat'
   | 'mediamaxconnectionsreached'
-  | 'mediamqadecoderstate'
   | 'mediastate'
   | 'version';
 
 export type NativePlayerDeviceMode = 'exclusive' | 'shared';
 
-export type NativePlayerDeviceType = 'airplay' | 'default' | 'mqa';
+export type NativePlayerDeviceType = 'airplay' | 'default';
 
 export type NativePlayerComponentDeviceDescription = {
   controllableVolume: boolean;
@@ -63,7 +62,6 @@ export type NativePlayerStreamFormat =
   | 'mp3'
   | 'mp4a.40.2'
   | 'mp4a.40.5'
-  | 'mqa'
   | 'none';
 
 export type NativePlayerComponentInterface = {
@@ -72,8 +70,6 @@ export type NativePlayerComponentInterface = {
     listener: (...args: Array<any>) => void,
   ): void;
   cancelPreload(): void;
-  disableMQADecoder(): void;
-  enableMQADecoder(): void;
   listDevices(): void;
   load(
     url: string,

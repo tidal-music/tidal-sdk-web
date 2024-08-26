@@ -161,19 +161,6 @@ export function beacon(): void {
     const events = data.events as Array<PrematureEvents>;
 
     events.forEach(streamingEvent => {
-      // streamingSessionId not allowed in the progress event
-      if (
-        streamingEvent.name === 'progress' &&
-        'streamingSessionId' in streamingEvent.payload
-      ) {
-        postMessage({
-          command: 'cleanUp',
-          eventName: streamingEvent.name,
-          streamingSessionId: streamingEvent.payload.streamingSessionId,
-        });
-        delete streamingEvent.payload.streamingSessionId;
-      }
-
       const event = {
         client: {
           platform: clientPlatform,
@@ -190,10 +177,18 @@ export function beacon(): void {
           id: userSession?.userId,
         },
         uuid: generateGUID(),
-        version: data.type === 'playback' ? 1 : 2,
+        version: 2,
       } as BeaconEvent;
 
       queue.push(event);
+
+      /* TODO: Adapt for other events or wait for Event Producer.
+      postMessage({
+        command: 'cleanUp',
+        eventName: streamingEvent.name,
+        streamingSessionId: streamingEvent.payload.streamingSessionId,
+      });
+      */
     });
   };
 }

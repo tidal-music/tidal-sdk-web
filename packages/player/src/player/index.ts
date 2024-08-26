@@ -1,3 +1,5 @@
+import type { MediaProduct } from 'api/interfaces';
+
 import { events } from '../event-bus';
 import type { AudioQuality } from '../internal/types';
 
@@ -11,14 +13,14 @@ let endedHandler: EventListenerOrEventListenerObject;
 type Player = BrowserPlayerType | NativePlayerType | ShakaPlayerType;
 
 export type PlayerConfig = {
-  itemTypes: Array<'track' | 'video'>;
+  itemTypes: Array<MediaProduct['productType']>;
   player: 'browser' | 'native' | 'shaka';
   qualities?: Array<AudioQuality>;
 };
 
 const defaultPlayerConfig: Array<PlayerConfig> = [
   {
-    itemTypes: ['track', 'video'],
+    itemTypes: ['track', 'video', 'demo'],
     player: 'shaka',
     qualities: ['HIGH', 'LOSSLESS', 'LOW', 'HI_RES_LOSSLESS'],
   },
@@ -95,7 +97,10 @@ export function cancelQueuedOnendedHandler(): void {
 }
 
 export function maybeSwitchPlayerOnEnd(preloadPlayer: Player): void {
-  if (preloadPlayer === playerState.activePlayer) {
+  if (
+    playerState.activePlayer &&
+    preloadPlayer.name === playerState.activePlayer.name
+  ) {
     return;
   }
 
@@ -136,7 +141,7 @@ async function getShakaPlayer() {
 }
 
 export async function getAppropriatePlayer(
-  productType: 'track' | 'video',
+  productType: 'demo' | 'track' | 'video',
   audioQuality: AudioQuality | undefined,
 ): Promise<BrowserPlayerType | NativePlayerType | ShakaPlayerType> {
   const appropriatePlayers = playerConfig

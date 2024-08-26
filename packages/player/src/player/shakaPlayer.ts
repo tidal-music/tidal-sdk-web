@@ -5,6 +5,7 @@ import shaka from 'shaka-player';
 import { activeDeviceChanged as activeDeviceChangedEvent } from '../api/event/active-device-changed';
 import type { EndedEvent } from '../api/event/ended';
 import { mediaProductTransition as mediaProductTransitionEvent } from '../api/event/media-product-transition';
+import type { MediaProduct } from '../api/interfaces';
 import * as Config from '../config';
 import { events } from '../event-bus';
 import {
@@ -348,6 +349,43 @@ export default class ShakaPlayer extends BasePlayer {
     } */
   }
 
+  /**
+   * Playback of media product type demo needs to be done with
+   * useNativeHlsForFairPlay and preferNativeHls set to false.
+   */
+  async #configureHlsForPlayback(
+    instance: shaka.Player | undefined,
+    mediaProduct: MediaProduct,
+  ) {
+    const isFairPlaySupported =
+      await shaka.util.FairPlayUtils.isFairPlaySupported();
+
+    if (isFairPlaySupported && instance) {
+      if (
+        instance.getConfiguration().streaming.preferNativeHls !==
+        (mediaProduct.productType !== 'demo')
+      ) {
+        instance.configure(
+          'streaming.preferNativeHls',
+          mediaProduct.productType !== 'demo',
+        );
+      }
+
+      if (
+        instance.getConfiguration().streaming.useNativeHlsForFairPlay !==
+        (mediaProduct.productType !== 'demo')
+      ) {
+        instance.configure(
+          'streaming.useNativeHlsForFairPlay',
+          mediaProduct.productType !== 'demo',
+        );
+      }
+
+      // await instance.release();
+      await instance.unload(true);
+    }
+  }
+
   async #createShakaPlayer(mediaEl: HTMLMediaElement) {
     this.debugLog('createShakaPlayer', mediaEl);
 
@@ -398,7 +436,8 @@ export default class ShakaPlayer extends BasePlayer {
          * for triggering tracking events etc.
          */
         // failureCallback() {},
-        useNativeHlsOnSafari: isFairPlaySupported,
+
+        useNativeHlsForFairPlay: isFairPlaySupported,
       },
     });
 
@@ -410,32 +449,58 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
-    player.getNetworkingEngine()?.registerRequestFilter((type, request) => {
-      // Manipulate license requests
-      if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
-        const streamingSessionId =
-          player === this.currentPlayer
-            ? this.currentStreamingSessionId
-            : this.preloadedStreamingSessionId;
+    player
+      .getNetworkingEngine()
+      ?.registerRequestFilter(async (type, request) => {
+        // Manipulate license requests
+        if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
+          const streamingSessionId =
+            player === this.currentPlayer
+              ? this.currentStreamingSessionId
+              : this.preloadedStreamingSessionId;
 
-        performance.mark('streaming_metrics:drm_license_fetch:startTimestamp', {
-          detail: streamingSessionId,
-          startTime: trueTime.now(),
-        });
+          performance.mark(
+            'streaming_metrics:drm_license_fetch:startTimestamp',
+            {
+              detail: streamingSessionId,
+              startTime: trueTime.now(),
+            },
+          );
 
-        const streamInfo =
-          streamingSessionStore.getStreamInfo(streamingSessionId);
+          const streamInfo =
+            streamingSessionStore.getStreamInfo(streamingSessionId);
 
-        if (streamInfo?.securityToken && streamingSessionId) {
-          manipulateLicenseRequest(request, {
-            securityToken: streamInfo.securityToken,
-            streamingSessionId,
-          });
-        } else {
-          console.error('Missing data for DRM request filter.');
+          if (streamInfo?.securityToken && streamingSessionId) {
+            manipulateLicenseRequest(request, {
+              securityToken: streamInfo.securityToken,
+              streamingSessionId,
+            });
+          } else {
+            console.error('Missing data for DRM request filter.');
+          }
         }
-      }
-    });
+
+        // Manipulate manifest and segment requests that are sent to
+        // fsu.fa.tidal.com or ugcf.fa.tidal.com
+        const isRequestToFsuOrUgcf =
+          Array.isArray(request.uris) &&
+          request.uris.find(
+            uri =>
+              uri.startsWith('https://fsu.fa.tidal.com') ||
+              uri.startsWith('https://ugcf.fa.tidal.com'),
+          );
+
+        if (
+          (type === shaka.net.NetworkingEngine.RequestType.MANIFEST ||
+            type === shaka.net.NetworkingEngine.RequestType.SEGMENT) &&
+          isRequestToFsuOrUgcf
+        ) {
+          const { token } =
+            await credentialsProviderStore.credentialsProvider.getCredentials();
+
+          request.headers.authorization = `Bearer ${token}`;
+        }
+      });
 
     player.getNetworkingEngine()?.registerResponseFilter((type, response) => {
       // Manipulate license responses
@@ -491,9 +556,11 @@ export default class ShakaPlayer extends BasePlayer {
   }
 
   #getNextPlayerInstance() {
-    return [this.#shakaInstanceOne, this.#shakaInstanceTwo]
+    const nextPlayerInstance = [this.#shakaInstanceOne, this.#shakaInstanceTwo]
       .filter(x => x !== this.#currentPlayer)
       .pop();
+
+    return nextPlayerInstance ?? this.#currentPlayer;
   }
 
   #handleShakaError(e: CustomEvent<shaka.extern.Error>) {
@@ -683,6 +750,15 @@ export default class ShakaPlayer extends BasePlayer {
     this.currentTime = payload.assetPosition;
     this.startAssetPosition = payload.assetPosition;
 
+    await this.#configureHlsForPlayback(
+      this.#shakaInstanceOne,
+      payload.mediaProduct,
+    );
+    await this.#configureHlsForPlayback(
+      this.#shakaInstanceTwo,
+      payload.mediaProduct,
+    );
+
     // Ensure reset and set reset to false since we're loading anew.
     await this.reset();
     this.#isReset = false;
@@ -770,6 +846,7 @@ export default class ShakaPlayer extends BasePlayer {
     const preloadPlayer = this.#getNextPlayerInstance();
 
     if (!preloadPlayer) {
+      console.error('There is no player to preload in.');
       return;
     }
 
@@ -809,6 +886,8 @@ export default class ShakaPlayer extends BasePlayer {
         playbackContext,
       },
     );
+
+    this.#isReset = false;
   }
 
   pause(): void {
@@ -893,6 +972,10 @@ export default class ShakaPlayer extends BasePlayer {
 
     if (this.playbackState !== 'IDLE') {
       this.finishCurrentMediaProduct('skip');
+    }
+
+    if (!this.currentPlayer?.getMediaElement()?.paused) {
+      this.currentPlayer?.getMediaElement()?.pause();
     }
 
     this.playbackState = 'IDLE';

@@ -1,7 +1,6 @@
 import { activeDeviceChanged as activeDeviceChangedEvent } from '../api/event/active-device-changed';
 import { activeDeviceDisconnected as activeDeviceDisconnectedEvent } from '../api/event/active-device-disconnected';
 import { activeDeviceModeChanged as activeDeviceModeChangedEvent } from '../api/event/active-device-mode-changed';
-import { activeDevicePassThroughChanged as activeDevicePassThroughChangedEvent } from '../api/event/active-device-pass-through-changed';
 import type { EndedEvent } from '../api/event/ended';
 import { mediaProductTransition as mediaProductTransitionEvent } from '../api/event/media-product-transition';
 import * as Config from '../config';
@@ -406,6 +405,7 @@ export default class NativePlayer extends BasePlayer {
     });
 
     this.#preloadedLoadPayload = payload;
+    this.#isReset = false;
   }
 
   pause(): void {
@@ -680,58 +680,6 @@ export default class NativePlayer extends BasePlayer {
     }
 
     return Promise.resolve();
-  }
-
-  /**
-   * WIMPWC-7901
-   * This is a temporary fix as there is currently no way to enable
-   * the MQA decoder in Native Player after disabling it.
-   *
-   * Switching devices forces the Native Player to use the new device settings.
-   * By default `device.passThrough` is `undefined`, that's why we check explicitly for `false`.
-   *
-   * TODO: Refactor when `this._player.enableMQADecoder();` works....
-   */
-  updatePassThrough(): void {
-    if (!outputDevices) {
-      return;
-    }
-
-    const { activeDevice } = outputDevices;
-
-    if (outputDevices.passThrough === true) {
-      this.#player.disableMQADecoder();
-      events.dispatchEvent(activeDevicePassThroughChangedEvent(true));
-
-      return;
-    }
-
-    // Has been disabled before
-    if (outputDevices.passThrough === false) {
-      this.#player.selectSystemDevice();
-
-      if (activeDevice.nativeDeviceId) {
-        const deviceDescription = outputDevices.getNativeDevice(
-          activeDevice.nativeDeviceId,
-        );
-
-        if (deviceDescription) {
-          this.#player.selectDevice(
-            deviceDescription,
-            outputDevices.deviceMode,
-          );
-        }
-      } else {
-        console.error(
-          'Passthrough could not be properly disabled since the nativeDeviceId is missing for',
-          activeDevice,
-        );
-      }
-    }
-
-    this.#player.enableMQADecoder();
-
-    events.dispatchEvent(activeDevicePassThroughChangedEvent(false));
   }
 
   // eslint-disable-next-line class-methods-use-this

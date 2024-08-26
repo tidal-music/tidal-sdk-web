@@ -453,7 +453,6 @@ const getTokenThroughClientCredentials = async () => {
       client_id: state.credentials.clientId,
       client_secret: state.credentials.clientSecret,
       grant_type: 'client_credentials',
-      scope: state.credentials.scopes.join(' '),
     };
 
     const response = await handleTokenFetch({
@@ -519,7 +518,7 @@ const getCredentialsInternal = async (apiErrorSubStatus?: string) => {
 
       if (
         state.credentials.clientUniqueKey !== accessToken.clientUniqueKey ||
-        newScopeIsSameOrSubset === false
+        (accessToken.userId && newScopeIsSameOrSubset === false)
       ) {
         logout();
         throw new IllegalArgumentError(authErrorCodeMap.illegalArgumentError);

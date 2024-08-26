@@ -1,3 +1,4 @@
+import { mimeTypes } from '../../internal/constants';
 import type { NativePlayerStreamFormat } from '../../player/nativeInterface';
 import type { AudioQuality, Codec, VideoQuality } from '../types';
 
@@ -37,8 +38,6 @@ function extractStreamFormat(
         return 'mp4a.40.5';
       case 'flac':
         return 'flac';
-      case 'mqa':
-        return 'mqa';
       case 'mp3':
         return 'mp3';
       default:
@@ -78,13 +77,12 @@ export type StreamInfo = {
     | 'mp3'
     | 'mp4a.40.2'
     | 'mp4a.40.5'
-    | 'mqa'
     | 'none';
   streamUrl: string;
   streamingSessionId: string;
   trackPeakAmplitude?: number;
   trackReplayGain?: number;
-  type: 'track' | 'video';
+  type: 'demo' | 'track' | 'video';
 };
 
 function streamFormatToCodec(
@@ -99,7 +97,6 @@ function streamFormatToCodec(
     case 'mp4a.40.5':
       return 'aac';
     case 'flac':
-    case 'mqa':
       return streamFormat;
     default:
       return undefined;
@@ -118,10 +115,6 @@ function dashFindCodec(manifest: string): Codec | undefined {
 
   if (codecs.includes('mp4a') || codecs.includes('aac')) {
     return 'aac';
-  }
-
-  if (codecs === 'mqa') {
-    return codecs;
   }
 
   if (codecs === 'flac') {
@@ -157,8 +150,8 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
   };
 
   if (
-    playbackInfo.manifestMimeType === 'application/vnd.tidal.bts' ||
-    playbackInfo.manifestMimeType === 'application/vnd.tidal.emu'
+    playbackInfo.manifestMimeType === mimeTypes.BTS ||
+    playbackInfo.manifestMimeType === mimeTypes.EMU
   ) {
     const parsedManifest = parseJSONManifest(playbackInfo.manifest);
     const streamUrl = parsedManifest.urls[0]!;
@@ -199,7 +192,7 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
     };
   }
 
-  if (playbackInfo.manifestMimeType === 'application/dash+xml') {
+  if (playbackInfo.manifestMimeType === mimeTypes.DASH) {
     const streamUrl = `data:${playbackInfo.manifestMimeType};base64,${playbackInfo.manifest}`;
     const decodedManifest = atob(playbackInfo.manifest);
 

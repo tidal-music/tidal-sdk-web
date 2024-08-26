@@ -356,6 +356,7 @@ export default class BrowserPlayer extends BasePlayer {
         playbackContext,
       },
     );
+    this.#isReset = false;
   }
 
   pause(): void {

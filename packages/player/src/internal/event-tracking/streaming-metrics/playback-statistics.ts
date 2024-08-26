@@ -7,7 +7,6 @@ export type StatisticsOutputType =
   | 'BUILT_IN'
   | 'DISPLAY_PORT'
   | 'HDMI'
-  | 'MQA'
   | 'SYSTEM_DEFAULT'
   | 'USB';
 
@@ -72,8 +71,6 @@ export function transformOutputType(
       return 'BLUETOOTH';
     case 'displayPort':
       return 'DISPLAY_PORT';
-    case 'mqa':
-      return 'MQA';
     case 'builtIn':
       return 'BUILT_IN';
     case 'hdmi':
