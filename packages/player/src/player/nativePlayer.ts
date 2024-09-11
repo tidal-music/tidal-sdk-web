@@ -675,8 +675,7 @@ export default class NativePlayer extends BasePlayer {
         this.#currentOutputId = sinkId;
       }
     } else {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      console.warn(`Device with sinkId ${sinkId} not found.`);
+      throw new Error(`Device with sinkId ${sinkId} not found.`);
     }
 
     return Promise.resolve();
