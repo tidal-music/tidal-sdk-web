@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  shaka-player@4.8.5:
-    hash: rfvab77lcmgxccfhgljk4ro3vq
-    path: patches/shaka-player@4.8.5.patch
-
 importers:
 
   .:
@@ -255,8 +250,8 @@ importers:
         specifier: 4.20.0
         version: 4.20.0
       shaka-player:
-        specifier: 4.8.5
-        version: 4.8.5(patch_hash=rfvab77lcmgxccfhgljk4ro3vq)
+        specifier: 4.11.1
+        version: 4.11.1
       sinon:
         specifier: 18.0.0
         version: 18.0.0
@@ -4805,8 +4800,8 @@ packages:
   setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
 
-  shaka-player@4.8.5:
-    resolution: {integrity: sha512-fdBa9LHlHfHJ6Ja4/c0pUmeAUc0LAfDWE7fO1TvuFWMoSVQ8LAxGeTAI1NJCPI3lGlOKa3kc3xU90n/00nW80Q==}
+  shaka-player@4.11.1:
+    resolution: {integrity: sha512-faZwa5UssCWPLdhHBunLha/Ly0wQ5TOhhoGQLiIqZlI6rAHxMId/ohAxPlOrzM/7TBakZoQYokWj94fSchYl+A==}
     engines: {node: '>=14'}
 
   shebang-command@2.0.0:
@@ -8840,7 +8835,7 @@ snapshots:
       eslint: 8.56.0
       eslint-config-prettier: 9.1.0(eslint@8.56.0)
       eslint-config-xo: 0.43.1(eslint@8.56.0)
-      eslint-config-xo-react: 0.27.0(eslint-plugin-react-hooks@4.6.0(eslint@8.57.0))(eslint-plugin-react@7.33.2(eslint@8.56.0))(eslint@8.56.0)
+      eslint-config-xo-react: 0.27.0(eslint-plugin-react-hooks@4.6.0(eslint@8.57.0))(eslint-plugin-react@7.33.2(eslint@8.57.0))(eslint@8.56.0)
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.15.0(eslint@8.57.0)(typescript@5.3.3))(eslint-plugin-import@2.29.1)(eslint@8.56.0)
       eslint-plugin-cypress: 2.15.1(eslint@8.56.0)
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.15.0(eslint@8.57.0)(typescript@5.3.3))(eslint@8.57.0)
@@ -8881,7 +8876,7 @@ snapshots:
       - terser
       - vue-eslint-parser
 
-  eslint-config-xo-react@0.27.0(eslint-plugin-react-hooks@4.6.0(eslint@8.57.0))(eslint-plugin-react@7.33.2(eslint@8.56.0))(eslint@8.56.0):
+  eslint-config-xo-react@0.27.0(eslint-plugin-react-hooks@4.6.0(eslint@8.57.0))(eslint-plugin-react@7.33.2(eslint@8.57.0))(eslint@8.56.0):
     dependencies:
       eslint: 8.56.0
       eslint-plugin-react: 7.33.2(eslint@8.56.0)
@@ -10690,7 +10685,7 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  shaka-player@4.8.5(patch_hash=rfvab77lcmgxccfhgljk4ro3vq):
+  shaka-player@4.11.1:
     dependencies:
       eme-encryption-scheme-polyfill: 2.1.5
 
