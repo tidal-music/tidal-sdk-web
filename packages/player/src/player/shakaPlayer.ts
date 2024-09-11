@@ -120,6 +120,7 @@ export default class ShakaPlayer extends BasePlayer {
     waitingHandler: EventListener;
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   #preloadManager: null | shaka.media.PreloadManager = null;
   #preloadedPayload: LoadPayload | null = null;
 
@@ -134,6 +135,7 @@ export default class ShakaPlayer extends BasePlayer {
 
   name = 'shakaPlayer';
 
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   shakaInstance: shaka.Player | undefined;
 
   constructor() {
@@ -347,6 +349,7 @@ export default class ShakaPlayer extends BasePlayer {
    * useNativeHlsForFairPlay and preferNativeHls set to false.
    */
   async #configureHlsForPlayback(
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     instance: shaka.Player | undefined,
     mediaProduct: MediaProduct,
   ) {
@@ -500,7 +503,6 @@ export default class ShakaPlayer extends BasePlayer {
     player
       .getNetworkingEngine()
       ?.registerResponseFilter((type, response, context) => {
-        // @ts-expect-error - Shaka types are not up to date
         const isPreload = context?.isPreload;
 
         const streamingSessionId = isPreload
@@ -643,6 +645,7 @@ export default class ShakaPlayer extends BasePlayer {
     streamInfo,
   }: {
     assetPosition: number;
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     assetUriOrPreloader: shaka.media.PreloadManager | string;
     mediaProduct: MediaProduct;
     playbackInfo: PlaybackInfo;

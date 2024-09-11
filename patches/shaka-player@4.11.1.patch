@@ -1,0 +1,39 @@
+diff --git a/dist/shaka-player.compiled.d.ts b/dist/shaka-player.compiled.d.ts
+index ba937d653c8927987fc86d28fdac35002baaed8c..164ec3490b0b84551931e3d1afc83d66dfc03ec5 100644
+--- a/dist/shaka-player.compiled.d.ts
++++ b/dist/shaka-player.compiled.d.ts
+@@ -5108,3 +5108,5 @@ declare namespace shaka.extern {
+ declare namespace shaka.extern {
+   type TransmuxerPlugin = ( ) => shaka.extern.Transmuxer ;
+ }
++
++export default shaka;
+diff --git a/dist/shaka-player.ui.d.ts b/dist/shaka-player.ui.d.ts
+index b5d4d89cdc6012c3124ee9e93e7f52684df460d4..dfa473f25a185dc03fe8253317fc6676d56285ef 100644
+--- a/dist/shaka-player.ui.d.ts
++++ b/dist/shaka-player.ui.d.ts
+@@ -5821,3 +5821,5 @@ declare namespace shaka.extern {
+ declare namespace shaka.extern {
+   type UIVolumeBarColors = { base : string , level : string } ;
+ }
++
++export default shaka;
+\ No newline at end of file
+diff --git a/index.d.ts b/index.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..86130b219f20157404545f817f41485ab13ced25
+--- /dev/null
++++ b/index.d.ts
+@@ -0,0 +1,2 @@
++/// <reference path="./dist/shaka-player.compiled.d.ts" />
++/// <reference path="./dist/shaka-player.ui.d.ts" />
+diff --git a/ui.d.ts b/ui.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..e5c05d687e22014d4ba6bbdd4bf73e62b67b0ad6
+--- /dev/null
++++ b/ui.d.ts
+@@ -0,0 +1,4 @@
++import shaka from './dist/shaka-player.ui';
++export * from './dist/shaka-player.ui';
++
++export default shaka;

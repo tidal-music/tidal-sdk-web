@@ -29,5 +29,10 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "pnpm": {
+    "patchedDependencies": {
+      "shaka-player@4.11.1": "patches/shaka-player@4.11.1.patch"
+    }
+  }
 }
