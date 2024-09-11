@@ -447,11 +447,10 @@ export default class ShakaPlayer extends BasePlayer {
 
     player
       .getNetworkingEngine()
-      ?.registerRequestFilter(async (type, request) => {
+      ?.registerRequestFilter(async (type, request, context) => {
         // Manipulate license requests
         if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
-          // @ts-expect-error - Shaka types are not up to date
-          const isPreload = context?.isPreload;
+          const isPreload = context?.isPreload ?? false;
 
           const streamingSessionId = isPreload
             ? this.preloadedStreamingSessionId
@@ -652,6 +651,7 @@ export default class ShakaPlayer extends BasePlayer {
     streamInfo: StreamInfo;
   }) {
     this.debugLog('loadAndDispatchMediaProductTransition');
+    this.currentTime = assetPosition;
 
     const { shakaInstance } = this;
 
@@ -878,11 +878,6 @@ export default class ShakaPlayer extends BasePlayer {
       payload.streamInfo.streamUrl,
     );
     this.#preloadedPayload = payload;
-
-    // eslint-disable-next-line no-console
-    console.log({
-      couldPreload: Boolean(this.#preloadManager),
-    });
   }
 
   pause() {
