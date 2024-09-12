@@ -64,6 +64,7 @@ export type StreamInfo = {
   albumReplayGain?: number;
   bitDepth?: number;
   codec?: Codec;
+  duration?: number;
   expires: number;
   id: string;
   prefetched: boolean;
@@ -119,6 +120,45 @@ function dashFindCodec(manifest: string): Codec | undefined {
 
   if (codecs === 'flac') {
     return codecs;
+  }
+
+  return undefined;
+}
+
+/**
+ * Convert duration format to seconds.
+ * (PT2M26.47S -> seconds)
+ */
+function parseDuration(duration: string): number {
+  const regex = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?/;
+  const match = regex.exec(duration);
+
+  if (!match) {
+    throw new Error('Invalid duration format');
+  }
+
+  const hours = parseFloat(match[1] || '0'); // hours part, if present
+  const minutes = parseFloat(match[2] || '0'); // minutes part, if present
+  const seconds = parseFloat(match[3] || '0'); // seconds part, if present
+
+  // Convert the duration to total seconds
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
+/**
+ * Find duration in a DASH manifest
+ */
+function dashFindDuration(manifest: string): number | undefined {
+  // Dash manifest
+  const regex = /mediaPresentationDuration="([^"]+)"/;
+  const match = regex.exec(manifest);
+
+  if (match) {
+    const duration = match[1];
+
+    if (duration) {
+      return parseDuration(duration);
+    }
   }
 
   return undefined;
@@ -203,6 +243,7 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
           ? playbackInfo.bitDepth ?? undefined // API sends null, cast to undefined
           : undefined,
       codec: dashFindCodec(decodedManifest),
+      duration: dashFindDuration(decodedManifest),
       prefetched,
       quality,
       sampleRate:

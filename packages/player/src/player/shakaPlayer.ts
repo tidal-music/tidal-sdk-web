@@ -1,11 +1,9 @@
-// @ts-expect-error - No declarations for mux
-import muxjs from 'mux.js';
 import shaka from 'shaka-player';
 
 import { activeDeviceChanged as activeDeviceChangedEvent } from '../api/event/active-device-changed';
 import type { EndedEvent } from '../api/event/ended';
 import { mediaProductTransition as mediaProductTransitionEvent } from '../api/event/media-product-transition';
-import type { MediaProduct } from '../api/interfaces';
+import type { MediaProduct, PlaybackContext } from '../api/interfaces';
 import * as Config from '../config';
 import { events } from '../event-bus';
 import {
@@ -33,11 +31,6 @@ import * as FairplayDRM from './fairplay-drm';
 import { manipulateLicenseRequest, manipulateLicenseResponse } from './filters';
 import { registerStalls } from './stalls';
 import { playerState } from './state';
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-window.muxjs = muxjs;
 
 let outputDevices: OutputDevices | undefined;
 
@@ -120,7 +113,6 @@ export default class ShakaPlayer extends BasePlayer {
     waitingHandler: EventListener;
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   #preloadManager: null | shaka.media.PreloadManager = null;
   #preloadedPayload: LoadPayload | null = null;
 
@@ -135,7 +127,6 @@ export default class ShakaPlayer extends BasePlayer {
 
   name = 'shakaPlayer';
 
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   shakaInstance: shaka.Player | undefined;
 
   constructor() {
@@ -453,7 +444,7 @@ export default class ShakaPlayer extends BasePlayer {
           const isPreload = context?.isPreload ?? false;
 
           const streamingSessionId = isPreload
-            ? this.preloadedStreamingSessionId
+            ? this.preloadedStreamingSessionId ?? this.currentStreamingSessionId // If we switch quickly from preload -> current.
             : this.currentStreamingSessionId;
 
           performance.mark(
@@ -505,7 +496,7 @@ export default class ShakaPlayer extends BasePlayer {
         const isPreload = context?.isPreload;
 
         const streamingSessionId = isPreload
-          ? this.preloadedStreamingSessionId
+          ? this.preloadedStreamingSessionId ?? this.currentStreamingSessionId
           : this.currentStreamingSessionId;
 
         // Manipulate license responses
@@ -567,6 +558,10 @@ export default class ShakaPlayer extends BasePlayer {
   }
 
   #handleShakaError(e: CustomEvent<shaka.extern.Error>) {
+    if (this.#isReset) {
+      return;
+    }
+
     const error = e.detail;
     const errorCode = `S${error.code}` as ErrorCodes;
 
@@ -677,36 +672,56 @@ export default class ShakaPlayer extends BasePlayer {
         ),
       );
 
-    const duration = await new Promise<number>(resolve =>
-      mediaElementOne.addEventListener(
-        'durationchange',
-        e => {
-          if (e.target instanceof HTMLMediaElement) {
-            resolve(e.target.duration);
-          }
-        },
-        { once: true },
-      ),
-    );
+    this.currentStreamingSessionId = playbackInfo.streamingSessionId;
+    this.preloadedStreamingSessionId = undefined;
 
-    await playerLoad;
+    let playbackContext: PlaybackContext;
 
-    // Player was reset during load, do not continue.
-    if (this.currentStreamingSessionId !== streamInfo.streamingSessionId) {
-      return;
+    // If there is a saved mediaProductTransition, use it instead of created a new one.
+    // This is the case when using setNext+load.
+    if (
+      streamingSessionStore.hasMediaProductTransition(
+        playbackInfo.streamingSessionId,
+      )
+    ) {
+      const mediaProductTransition =
+        streamingSessionStore.getMediaProductTransition(
+          playbackInfo.streamingSessionId,
+        )!;
+
+      playbackContext = mediaProductTransition.playbackContext;
+    } else {
+      const duration = await new Promise<number>(resolve =>
+        mediaElementOne.addEventListener(
+          'durationchange',
+          e => {
+            if (e.target instanceof HTMLMediaElement) {
+              resolve(e.target.duration);
+            }
+          },
+          { once: true },
+        ),
+      );
+
+      await playerLoad;
+
+      // Player was reset during load, do not continue.
+      if (this.currentStreamingSessionId !== streamInfo.streamingSessionId) {
+        return;
+      }
+
+      playbackContext = composePlaybackContext({
+        assetPosition,
+        duration,
+        playbackInfo,
+        streamInfo,
+      });
+
+      streamingSessionStore.saveMediaProductTransition(
+        streamInfo.streamingSessionId,
+        { mediaProduct, playbackContext },
+      );
     }
-
-    const playbackContext = composePlaybackContext({
-      assetPosition,
-      duration,
-      playbackInfo,
-      streamInfo,
-    });
-
-    streamingSessionStore.saveMediaProductTransition(
-      streamInfo.streamingSessionId,
-      { mediaProduct, playbackContext },
-    );
 
     this.debugLog('dispatching mediaProductTransition');
     events.dispatchEvent(
@@ -873,11 +888,31 @@ export default class ShakaPlayer extends BasePlayer {
 
     this.preloadedStreamingSessionId = payload.streamInfo.streamingSessionId;
 
-    // Load the manifest in the player and make sure to catch durationchange event for
     this.#preloadManager = await this.shakaInstance.preload(
       payload.streamInfo.streamUrl,
     );
+
+    // If we could parse duration from manifest, we can save the media product transition
+    // and support "touch n go" playback. (re-using a preloaded item for a load)
+    if (payload.streamInfo.duration) {
+      const playbackContext = composePlaybackContext({
+        assetPosition: 0,
+        duration: payload.streamInfo.duration,
+        playbackInfo: payload.playbackInfo,
+        streamInfo: payload.streamInfo,
+      });
+
+      streamingSessionStore.saveMediaProductTransition(
+        payload.streamInfo.streamingSessionId,
+        {
+          mediaProduct: payload.mediaProduct,
+          playbackContext,
+        },
+      );
+    }
+
     this.#preloadedPayload = payload;
+    this.#isReset = false;
   }
 
   pause() {
@@ -1025,9 +1060,6 @@ export default class ShakaPlayer extends BasePlayer {
     );
 
     if (this.#preloadedPayload && this.#preloadManager) {
-      this.currentStreamingSessionId = this.preloadedStreamingSessionId;
-      this.preloadedStreamingSessionId = undefined;
-
       const { mediaProduct, playbackInfo, streamInfo } = this.#preloadedPayload;
 
       return this.#loadAndDispatchMediaProductTransition({
