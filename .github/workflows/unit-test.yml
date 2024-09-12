@@ -2,6 +2,7 @@ name: Run Unit Tests
 
 on:
   workflow_call:
+  push:
 
 jobs:
   unit-tests:
