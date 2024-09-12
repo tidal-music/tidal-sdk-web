@@ -2,7 +2,6 @@ name: Run Unit Tests
 
 on:
   workflow_call:
-  push:
 
 jobs:
   unit-tests:
@@ -10,6 +9,8 @@ jobs:
     name: Run Unit Tests
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
       - uses: ./.github/actions/setup
       - name: Prepare test user for player tests
         id: json
