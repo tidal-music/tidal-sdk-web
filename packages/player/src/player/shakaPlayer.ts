@@ -891,10 +891,6 @@ export default class ShakaPlayer extends BasePlayer {
       payload.streamInfo.streamUrl,
     );
 
-    if (!this.#preloadManager) {
-      throw new Error('Preload failed.');
-    }
-
     // If we could parse duration from manifest, we can save the media product transition
     // and support "touch n go" playback. (re-using a preloaded item for a load)
     if (payload.streamInfo.duration) {
@@ -1067,7 +1063,7 @@ export default class ShakaPlayer extends BasePlayer {
 
       return this.#loadAndDispatchMediaProductTransition({
         assetPosition: 0,
-        assetUriOrPreloader: this.#preloadManager,
+        assetUriOrPreloader: this.#preloadManager ?? streamInfo.streamUrl,
         mediaProduct,
         playbackInfo,
         streamInfo,
