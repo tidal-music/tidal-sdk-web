@@ -703,13 +703,6 @@ export default class ShakaPlayer extends BasePlayer {
         ),
       );
 
-      await playerLoad;
-
-      // Player was reset during load, do not continue.
-      if (this.currentStreamingSessionId !== streamInfo.streamingSessionId) {
-        return;
-      }
-
       playbackContext = composePlaybackContext({
         assetPosition,
         duration,
@@ -723,7 +716,13 @@ export default class ShakaPlayer extends BasePlayer {
       );
     }
 
-    this.debugLog('dispatching mediaProductTransition');
+    await playerLoad;
+
+    // Player was reset during load, do not continue.
+    if (this.currentStreamingSessionId !== streamInfo.streamingSessionId) {
+      return;
+    }
+
     events.dispatchEvent(
       mediaProductTransitionEvent(mediaProduct, playbackContext),
     );
