@@ -110,7 +110,7 @@ export function findOutputType(
   return undefined;
 }
 
-export function marshalLabel(deviceLabel: string, operatingSystem: string) {
+export function marshalLabel(deviceLabel: string, operatingSystem: string): string {
   const osName = operatingSystem.toLowerCase();
   let nicerLabel = deviceLabel;
 
@@ -141,7 +141,7 @@ export function isWindowsCommunicationsDevice(
 export function getOutputDeviceByName(
   devices: Set<OutputDevice>,
   name: string,
-) {
+): OutputDevice | undefined {
   name = marshalLabel(name, platform.os.name || '');
 
   if ([...devices].length === 0 || name === '') {
@@ -226,7 +226,7 @@ export class OutputDevices {
     }) as EventListener);
   }
 
-  addNativeDevices(devices: Array<NativePlayerComponentDeviceDescription>) {
+  addNativeDevices(devices: Array<NativePlayerComponentDeviceDescription>): void {
     this.#events.dispatchEvent(
       new CustomEvent('native-devices', {
         detail: devices,
@@ -234,7 +234,7 @@ export class OutputDevices {
     );
   }
 
-  addWebDevices(devices: Array<MediaDeviceInfo>) {
+  addWebDevices(devices: Array<MediaDeviceInfo>): void {
     // Filter out the default device.
     devices = devices.filter(d => d.deviceId !== 'default');
 
@@ -245,7 +245,7 @@ export class OutputDevices {
     );
   }
 
-  emitDeviceChange() {
+  emitDeviceChange(): void {
     events.dispatchEvent(deviceChange([...this.outputDevices]));
   }
 
@@ -255,14 +255,14 @@ export class OutputDevices {
     return [...this.#nativeDevices].find(nd => nd.id === id);
   }
 
-  async hydrateWebDevices() {
+  async hydrateWebDevices(): Promise<void> {
     const mediaDevices = await navigator.mediaDevices.enumerateDevices();
     const audioOutputs = mediaDevices.filter(d => d.kind === 'audiooutput');
 
     this.addWebDevices(audioOutputs);
   }
 
-  mergeDevices() {
+  mergeDevices(): void {
     // Remove previous native and web IDs for non-default devices
     // but keep the names and id.
     [...this.outputDevices]
@@ -327,7 +327,7 @@ export class OutputDevices {
       .forEach(od => this.outputDevices.delete(od));
   }
 
-  async queueUpdate() {
+  async queueUpdate(): Promise<void> {
     const nativeDeviceChange = new Promise<
       Array<NativePlayerComponentDeviceDescription>
     >(resolve =>
@@ -390,4 +390,4 @@ export class OutputDevices {
   }
 }
 
-export const outputDevices = new OutputDevices();
+export const outputDevices: OutputDevices = new OutputDevices();

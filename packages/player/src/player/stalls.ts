@@ -59,7 +59,7 @@ async function handlePlayingEvent(
     startTimestamp,
   };
 
-  StreamingMetrics.playbackStatistics({
+  StreamingMetrics.playbackStatisticsVideo({
     stalls: [stall],
     streamingSessionId,
   });
@@ -92,7 +92,7 @@ export function registerStalls(mediaEl: HTMLMediaElement) {
   mediaEl.addEventListener('playing', onPlaying);
   mediaEl.addEventListener('paused', onPaused);
 
-  return function unregister() {
+  return function unregister(): void {
     mediaEl.removeEventListener('seeking', onSeeking);
     mediaEl.removeEventListener('seeked', onSeeked);
     mediaEl.removeEventListener('playing', onPlaying);

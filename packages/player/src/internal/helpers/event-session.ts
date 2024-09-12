@@ -80,4 +80,4 @@ class EventSessionDB {
   }
 }
 
-export const db = new EventSessionDB();
+export const db: EventSessionDB = new EventSessionDB();

@@ -10,6 +10,6 @@ import { credentialsProviderStore } from '../index';
  */
 export function setCredentialsProvider(
   newCredentialsProvider: CredentialsProvider,
-) {
+): void {
   credentialsProviderStore.credentialsProvider = newCredentialsProvider;
 }

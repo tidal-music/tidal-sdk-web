@@ -1,7 +1,11 @@
 import dts from 'vite-plugin-dts';
-import { type UserConfig, defineConfig } from 'vitest/config';
+import {
+  type UserConfig,
+  type UserConfigFnObject,
+  defineConfig,
+} from 'vitest/config';
 
-export default defineConfig(({ command }) => {
+const config: UserConfigFnObject = defineConfig(({ command }) => {
   // needed for demo cors
   const serverExtras: UserConfig =
     command === 'serve'
@@ -49,3 +53,5 @@ export default defineConfig(({ command }) => {
     ...serverExtras,
   };
 });
+
+export default config;

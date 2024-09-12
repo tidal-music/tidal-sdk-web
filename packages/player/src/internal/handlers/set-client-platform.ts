@@ -7,7 +7,7 @@ import * as Config from '../../config';
  *
  * @param {string} clientPlatform
  */
-export function setClientPlatform(clientPlatform: string) {
+export function setClientPlatform(clientPlatform: string): void {
   Config.update({
     clientPlatform,
   });

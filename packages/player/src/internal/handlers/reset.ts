@@ -13,7 +13,7 @@ import ConnectionHandler from '../services/connection-handler';
  * @returns {Promise<void>}
  * @see {@link import('../../api/event/playback-state-change').PlaybackStateChange}
  */
-export async function reset() {
+export async function reset(): Promise<void> {
   cancelQueuedOnendedHandler();
   ConnectionHandler.disable();
 

@@ -5,7 +5,7 @@ import { playerState } from '../../player/state';
  *
  * @param {number} time - seconds
  */
-export async function seek(time: number) {
+export async function seek(time: number): Promise<number | void> {
   const { activePlayer: player } = playerState;
 
   return player?.seek(time);

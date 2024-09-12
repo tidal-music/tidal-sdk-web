@@ -12,7 +12,9 @@
     "types": [
       "mocha"
     ],
-    "sourceMap": false
+    "sourceMap": false,
+    "declaration": true,
+    "isolatedDeclarations": true,
   },
   "include": [
     "."
