@@ -72,7 +72,7 @@ export async function load(
 
     await player.reset({ keepPreload: true });
 
-    if (playerState.preloadedStreamingSessionId) {
+    if (mediaProduct.referenceId && playerState.preloadedStreamingSessionId) {
       player.overwriteMediaProduct(
         playerState.preloadedStreamingSessionId,
         mediaProduct,
