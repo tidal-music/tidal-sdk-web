@@ -4,7 +4,7 @@ import createClient, { type Middleware } from 'openapi-fetch';
 import type { paths } from './playlistAPI';
 
 /**
- * Create a Catalogue API client with the provided credentials.
+ * Create a Playlist API client with the provided credentials.
  *
  * @param credentialsProvider The credentials provider, from Auth module.
  */
