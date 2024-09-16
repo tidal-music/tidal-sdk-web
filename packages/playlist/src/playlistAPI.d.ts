@@ -313,7 +313,7 @@ export interface components {
              */
             type: string;
         };
-        /** @description User entitlements */
+        /** @description Public profile */
         Singleton_Data_Relationship_Doc: {
             data?: components["schemas"]["Resource_Identifier"];
             links?: components["schemas"]["Links"];
@@ -421,6 +421,7 @@ export interface components {
         /** @description relationships object describing relationships between the resource and other resources */
         User_Relationships: {
             entitlements: components["schemas"]["Singleton_Data_Relationship_Doc"];
+            publicProfile: components["schemas"]["Singleton_Data_Relationship_Doc"];
         };
         User_Resource: {
             attributes?: components["schemas"]["User_Attributes"];
