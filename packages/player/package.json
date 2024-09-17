@@ -73,7 +73,7 @@
     "mux.js": "6.3.0",
     "rollup": "4.20.0",
     "shaka-player": "4.8.5",
-    "sinon": "18.0.0",
+    "sinon": "19.0.2",
     "typescript": "5.5.4",
     "vite": "5.4.0",
     "vite-plugin-dts": "4.0.2",
