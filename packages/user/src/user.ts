@@ -10,12 +10,12 @@ import type { paths } from './userAPI';
  */
 export function createUserClient(credentialsProvider: CredentialsProvider) {
   const authMiddleware: Middleware = {
-    async onRequest(req) {
+    async onRequest({ request }) {
       const credentials = await credentialsProvider.getCredentials();
 
       // Add Authorization header to every request
-      req.headers.set('Authorization', `Bearer ${credentials.token}`);
-      return req;
+      request.headers.set('Authorization', `Bearer ${credentials.token}`);
+      return request;
     },
   };
 
