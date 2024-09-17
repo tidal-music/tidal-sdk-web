@@ -306,6 +306,43 @@ importers:
         specifier: 2.0.4
         version: 2.0.4(@types/node@20.14.15)(@vitest/ui@2.0.4)(happy-dom@15.0.0)(terser@5.31.0)
 
+  packages/playlist:
+    dependencies:
+      '@tidal-music/playlist':
+        specifier: workspace:*
+        version: 'link:'
+      openapi-fetch:
+        specifier: 0.9.8
+        version: 0.9.8
+    devDependencies:
+      '@tidal-music/auth':
+        specifier: workspace:^
+        version: link:../auth
+      '@tidal-music/common':
+        specifier: workspace:^
+        version: link:../common
+      '@vitest/coverage-v8':
+        specifier: 2.0.4
+        version: 2.0.4(vitest@2.0.4(@types/node@20.14.15)(@vitest/ui@2.0.4)(happy-dom@15.0.0)(terser@5.31.0))
+      '@vitest/ui':
+        specifier: 2.0.4
+        version: 2.0.4(vitest@2.0.4)
+      openapi-typescript:
+        specifier: 7.3.0
+        version: 7.3.0(typescript@5.5.4)
+      typescript:
+        specifier: 5.5.4
+        version: 5.5.4
+      vite:
+        specifier: 5.4.0
+        version: 5.4.0(@types/node@20.14.15)(terser@5.31.0)
+      vite-plugin-dts:
+        specifier: 4.0.2
+        version: 4.0.2(@types/node@20.14.15)(rollup@4.20.0)(typescript@5.5.4)(vite@5.4.0(@types/node@20.14.15)(terser@5.31.0))
+      vitest:
+        specifier: 2.0.4
+        version: 2.0.4(@types/node@20.14.15)(@vitest/ui@2.0.4)(happy-dom@15.0.0)(terser@5.31.0)
+
   packages/search:
     dependencies:
       '@tidal-music/search':
@@ -8834,7 +8871,7 @@ snapshots:
       eslint: 8.56.0
       eslint-config-prettier: 9.1.0(eslint@8.56.0)
       eslint-config-xo: 0.43.1(eslint@8.56.0)
-      eslint-config-xo-react: 0.27.0(eslint-plugin-react-hooks@4.6.0(eslint@8.57.0))(eslint-plugin-react@7.33.2(eslint@8.56.0))(eslint@8.56.0)
+      eslint-config-xo-react: 0.27.0(eslint-plugin-react-hooks@4.6.0(eslint@8.57.0))(eslint-plugin-react@7.33.2(eslint@8.57.0))(eslint@8.56.0)
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.15.0(eslint@8.57.0)(typescript@5.3.3))(eslint-plugin-import@2.29.1)(eslint@8.56.0)
       eslint-plugin-cypress: 2.15.1(eslint@8.56.0)
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@6.15.0(eslint@8.57.0)(typescript@5.3.3))(eslint@8.57.0)
@@ -8875,7 +8912,7 @@ snapshots:
       - terser
       - vue-eslint-parser
 
-  eslint-config-xo-react@0.27.0(eslint-plugin-react-hooks@4.6.0(eslint@8.57.0))(eslint-plugin-react@7.33.2(eslint@8.56.0))(eslint@8.56.0):
+  eslint-config-xo-react@0.27.0(eslint-plugin-react-hooks@4.6.0(eslint@8.57.0))(eslint-plugin-react@7.33.2(eslint@8.57.0))(eslint@8.56.0):
     dependencies:
       eslint: 8.56.0
       eslint-plugin-react: 7.33.2(eslint@8.56.0)
