@@ -24,6 +24,8 @@ type User = {
 const user = JSON.parse(atob(process.env.TEST_USER)) as User;
 const scopes = ['r_usr', 'w_usr'];
 
+console.debug('Running tests for user id:', user.userId);
+
 await Auth.init({
   clientId: user.clientId,
   clientUniqueKey: 'FALLBACK',

@@ -60,8 +60,6 @@ export class BasePlayer {
 
   #startAssetPosition!: number;
 
-  #startedStreamInfos = new Map<string, boolean>();
-
   name: string | undefined;
 
   constructor() {
@@ -127,8 +125,6 @@ export class BasePlayer {
     });
 
     streamingSessionStore.deleteSession(streamingSessionId);
-
-    this.#startedStreamInfos.delete(streamingSessionId);
 
     // Check that ended SSI is still same as current before unsetting
     // yo prevent unsetting a started preload.
@@ -336,7 +332,7 @@ export class BasePlayer {
         started for the same streamingSessionId then we have somehow lost the media product
         transition which is an error.
       */
-      if (this.#startedStreamInfos.has(streamingSessionId)) {
+      if (streamingSessionStore.hasStartedStreamInfo(streamingSessionId)) {
         console.error(
           `A media product transition for streaming session #${streamingSessionId} has not been saved and could thus not be found for play log reporting.`,
         );
@@ -418,18 +414,13 @@ export class BasePlayer {
   }
 
   hasNextItem() {
-    return (
-      this.preloadedStreamingSessionId &&
-      streamingSessionStore.hasMediaProductTransition(
-        this.preloadedStreamingSessionId,
-      )
-    );
+    return this.preloadedStreamingSessionId;
   }
 
   hasStarted() {
     return (
       this.currentStreamingSessionId &&
-      this.#startedStreamInfos.has(this.currentStreamingSessionId)
+      streamingSessionStore.hasStartedStreamInfo(this.currentStreamingSessionId)
     );
   }
 
@@ -466,7 +457,7 @@ export class BasePlayer {
   mediaProductStarted(streamingSessionId: string | undefined) {
     if (
       !streamingSessionId ||
-      this.#startedStreamInfos.has(streamingSessionId)
+      streamingSessionStore.hasStartedStreamInfo(streamingSessionId)
     ) {
       return;
     }
@@ -474,7 +465,7 @@ export class BasePlayer {
     this.debugLog('mediaProductStarted');
 
     this.eventTrackingStreamingStarted(streamingSessionId);
-    this.#startedStreamInfos.set(streamingSessionId, true);
+    streamingSessionStore.setStartedStreamInfo(streamingSessionId);
     this.updateVolumeLevel();
     this.#hasEmittedPreloadRequest = false;
 

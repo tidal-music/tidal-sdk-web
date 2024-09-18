@@ -169,6 +169,8 @@ describe('nextHandler', () => {
 
     await Player.play();
 
+    await waitFor(500);
+
     await Player.setNext({
       productId: '154872415',
       productType: 'track',
