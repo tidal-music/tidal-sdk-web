@@ -22,14 +22,6 @@
     "typedoc": "0.26.7",
     "vitest": "2.0.4"
   },
-  "prettier": {
-    "arrowParens": "avoid",
-    "singleQuote": true,
-    "trailingComma": "all"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
   "pnpm": {
     "patchedDependencies": {
       "shaka-player@4.11.2": "patches/shaka-player@4.11.2.patch"
