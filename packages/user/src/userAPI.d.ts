@@ -5,7 +5,7 @@
  */
 
 export interface paths {
-    "/videos": {
+    "/userPublicProfilePicks/{id}/relationships/item": {
         parameters: {
             query?: never;
             header?: never;
@@ -13,10 +13,34 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get multiple videos
-         * @description Retrieve multiple video details.
+         * Relationship: item (read)
+         * @description Retrieves a picks item relationship
          */
-        get: operations["getVideos"];
+        get: operations["getPickItem"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Relationship: item (update)
+         * @description Updates a picks item relationship, e.g. sets a 'track', 'album' or 'artist' reference.
+         */
+        patch: operations["setPickData"];
+        trace?: never;
+    };
+    "/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple users by id
+         * @description Get multiple users by id
+         */
+        get: operations["getUsers"];
         put?: never;
         post?: never;
         delete?: never;
@@ -25,7 +49,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/videos/{id}": {
+    "/users/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -33,10 +57,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get single video
-         * @description Retrieve video details by TIDAL video id.
+         * Get a single user by id
+         * @description Get a single user by id
          */
-        get: operations["getVideo"];
+        get: operations["getUser"];
         put?: never;
         post?: never;
         delete?: never;
@@ -45,7 +69,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/videos/{id}/relationships/providers": {
+    "/users/{id}/relationships/publicProfile": {
         parameters: {
             query?: never;
             header?: never;
@@ -53,10 +77,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: providers
-         * @description This endpoint can be used to retrieve a list of video's related providers.
+         * Relationship: public profile
+         * @description Get user public profile
          */
-        get: operations["getVideoProviders"];
+        get: operations["getUserPublicProfile"];
         put?: never;
         post?: never;
         delete?: never;
@@ -65,7 +89,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/videos/{id}/relationships/artists": {
+    "/users/{id}/relationships/entitlements": {
         parameters: {
             query?: never;
             header?: never;
@@ -73,10 +97,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: artists
-         * @description Retrieve artist details of the related video.
+         * Relationship: entitlements
+         * @description Get user entitlements relationship
          */
-        get: operations["getVideoArtists"];
+        get: operations["getUserEntitlements"];
         put?: never;
         post?: never;
         delete?: never;
@@ -85,7 +109,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/videos/{id}/relationships/albums": {
+    "/users/me": {
         parameters: {
             query?: never;
             header?: never;
@@ -93,10 +117,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: albums
-         * @description Retrieve album details of the related video.
+         * Get the current user
+         * @description Get the current user
          */
-        get: operations["getVideoAlbums"];
+        get: operations["me"];
         put?: never;
         post?: never;
         delete?: never;
@@ -105,7 +129,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/tracks": {
+    "/userRecommendations/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -113,10 +137,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get multiple tracks
-         * @description Retrieve multiple track details.
+         * Get user recommendations for user
+         * @description Get user recommendations for user
          */
-        get: operations["getTracks"];
+        get: operations["getUserRecommendations"];
         put?: never;
         post?: never;
         delete?: never;
@@ -125,7 +149,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/tracks/{id}": {
+    "/userRecommendations/{id}/relationships/newArrivalMixes": {
         parameters: {
             query?: never;
             header?: never;
@@ -133,10 +157,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get single track
-         * @description Retrieve track details by TIDAL track id.
+         * Relationship: new arrivals mixes
+         * @description Get new arrival mixes relationship
          */
-        get: operations["getTrack"];
+        get: operations["getNewArrivalMixes"];
         put?: never;
         post?: never;
         delete?: never;
@@ -145,7 +169,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/tracks/{id}/relationships/similarTracks": {
+    "/userRecommendations/{id}/relationships/myMixes": {
         parameters: {
             query?: never;
             header?: never;
@@ -153,10 +177,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: similar tracks
-         * @description This endpoint can be used to retrieve a list of tracks similar to the given track.
+         * Relationship: my mixes
+         * @description Get my mixes relationship
          */
-        get: operations["getSimilarTracks"];
+        get: operations["getMyMixes"];
         put?: never;
         post?: never;
         delete?: never;
@@ -165,7 +189,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/tracks/{id}/relationships/radio": {
+    "/userRecommendations/{id}/relationships/discoveryMixes": {
         parameters: {
             query?: never;
             header?: never;
@@ -173,10 +197,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: radio
-         * @description This endpoint can be used to retrieve a list of radios for the given track.
+         * Relationship: discovery mixes
+         * @description Get discovery mixes relationship
          */
-        get: operations["getTrackRadio"];
+        get: operations["getDiscoveryMixes"];
         put?: never;
         post?: never;
         delete?: never;
@@ -185,7 +209,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/tracks/{id}/relationships/providers": {
+    "/userRecommendations/me": {
         parameters: {
             query?: never;
             header?: never;
@@ -193,10 +217,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: providers
-         * @description This endpoint can be used to retrieve a list of track's related providers.
+         * Get the current users recommendations
+         * @description Get the current users recommendations
          */
-        get: operations["getTrackProviders"];
+        get: operations["getMyRecommendations"];
         put?: never;
         post?: never;
         delete?: never;
@@ -205,7 +229,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/tracks/{id}/relationships/artists": {
+    "/userPublicProfiles": {
         parameters: {
             query?: never;
             header?: never;
@@ -213,10 +237,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: artists
-         * @description Retrieve artist details of the related track.
+         * Get user public profiles
+         * @description Reads user public profile details by TIDAL user ids.
          */
-        get: operations["getTrackArtists"];
+        get: operations["getProfiles"];
         put?: never;
         post?: never;
         delete?: never;
@@ -225,7 +249,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/tracks/{id}/relationships/albums": {
+    "/userPublicProfiles/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -233,10 +257,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: albums
-         * @description Retrieve album details of the related track.
+         * Get user public profile by id
+         * @description Retrieve user public profile details by TIDAL user id.
          */
-        get: operations["getTrackAlbums"];
+        get: operations["getProfile"];
         put?: never;
         post?: never;
         delete?: never;
@@ -245,7 +269,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/providers": {
+    "/userPublicProfiles/{id}/relationships/publicPlaylists": {
         parameters: {
             query?: never;
             header?: never;
@@ -253,10 +277,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get multiple providers
-         * @description Retrieve multiple provider details.
+         * Relationship: playlists
+         * @description Retrieves user's public playlists.
          */
-        get: operations["getProviders"];
+        get: operations["getPublicPlaylists"];
         put?: never;
         post?: never;
         delete?: never;
@@ -265,7 +289,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/providers/{id}": {
+    "/userPublicProfiles/{id}/relationships/publicPicks": {
         parameters: {
             query?: never;
             header?: never;
@@ -273,10 +297,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get single provider
-         * @description Retrieve provider details by TIDAL provider id.
+         * Relationship: picks
+         * @description Retrieve user's public picks.
          */
-        get: operations["getProvider"];
+        get: operations["getPublicPicks"];
         put?: never;
         post?: never;
         delete?: never;
@@ -285,7 +309,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/artists": {
+    "/userPublicProfiles/{id}/relationships/following": {
         parameters: {
             query?: never;
             header?: never;
@@ -293,10 +317,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get multiple artists
-         * @description Retrieve multiple artist details.
+         * Relationship: following
+         * @description Retrieve user's public followings
          */
-        get: operations["getArtists"];
+        get: operations["getPublicFollowings"];
         put?: never;
         post?: never;
         delete?: never;
@@ -305,7 +329,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/artists/{id}": {
+    "/userPublicProfiles/{id}/relationships/followers": {
         parameters: {
             query?: never;
             header?: never;
@@ -313,10 +337,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get single artist
-         * @description Retrieve artist details by TIDAL artist id.
+         * Relationship: followers
+         * @description Retrieve user's public followers
          */
-        get: operations["getArtist"];
+        get: operations["getPublicFollowers"];
         put?: never;
         post?: never;
         delete?: never;
@@ -325,7 +349,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/artists/{id}/relationships/videos": {
+    "/userPublicProfiles/me": {
         parameters: {
             query?: never;
             header?: never;
@@ -333,10 +357,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: videos
-         * @description Retrieve video details by related artist.
+         * Get my user profile
+         * @description Retrieve the logged-in user's public profile details.
          */
-        get: operations["getArtistVideos"];
+        get: operations["getMyProfile"];
         put?: never;
         post?: never;
         delete?: never;
@@ -345,7 +369,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/artists/{id}/relationships/tracks": {
+    "/userPublicProfilePicks": {
         parameters: {
             query?: never;
             header?: never;
@@ -353,10 +377,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: tracks
-         * @description Retrieve track details by related artist.
+         * Get picks
+         * @description Retrieves a filtered collection of user's public picks.
          */
-        get: operations["getArtistTracks"];
+        get: operations["getPicks"];
         put?: never;
         post?: never;
         delete?: never;
@@ -365,7 +389,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/artists/{id}/relationships/trackProviders": {
+    "/userPublicProfilePicks/{id}/relationships/userPublicProfile": {
         parameters: {
             query?: never;
             header?: never;
@@ -373,10 +397,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: track providers
-         * @description Retrieve providers that have released tracks for this artist
+         * Relationship: user public profile
+         * @description Retrieves a picks owner public profile
          */
-        get: operations["getArtistTrackProviders"];
+        get: operations["getPickPublicUserProfile"];
         put?: never;
         post?: never;
         delete?: never;
@@ -385,7 +409,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/artists/{id}/relationships/similarArtists": {
+    "/userPublicProfilePicks/me": {
         parameters: {
             query?: never;
             header?: never;
@@ -393,10 +417,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: similar artists
-         * @description This endpoint can be used to retrieve a list of artists similar to the given artist.
+         * Get my picks
+         * @description Retrieves picks for the logged-in user.
          */
-        get: operations["getSimilarArtists"];
+        get: operations["getMyPicks"];
         put?: never;
         post?: never;
         delete?: never;
@@ -405,7 +429,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/artists/{id}/relationships/radio": {
+    "/userEntitlements/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -413,10 +437,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: radio
-         * @description This endpoint can be used to retrieve a list of radios for the given artist.
+         * Get user entitlements for user
+         * @description Get user entitlements for user
          */
-        get: operations["getArtistRadio"];
+        get: operations["getEntitlements"];
         put?: never;
         post?: never;
         delete?: never;
@@ -425,7 +449,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/artists/{id}/relationships/albums": {
+    "/userEntitlements/me": {
         parameters: {
             query?: never;
             header?: never;
@@ -433,130 +457,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: albums
-         * @description Retrieve album details of the related artist.
+         * Get the current users entitlements
+         * @description Get the current users entitlements
          */
-        get: operations["getArtistAlbums"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/albums": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get multiple albums
-         * @description Retrieve multiple album details.
-         */
-        get: operations["getAlbums"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/albums/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get single album
-         * @description Retrieve album details by TIDAL album id.
-         */
-        get: operations["getAlbum"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/albums/{id}/relationships/similarAlbums": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Relationship: similar albums
-         * @description This endpoint can be used to retrieve a list of albums similar to the given album.
-         */
-        get: operations["getSimilarAlbums"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/albums/{id}/relationships/providers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Relationship: providers
-         * @description This endpoint can be used to retrieve a list of album's related providers.
-         */
-        get: operations["getAlbumProviders"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/albums/{id}/relationships/items": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Relationship: items
-         * @description Retrieve album item details.
-         */
-        get: operations["getAlbumItems"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/albums/{id}/relationships/artists": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Relationship: artists
-         * @description Retrieve artist details of the related album.
-         */
-        get: operations["getAlbumArtists"];
+        get: operations["getMyEntitlements"];
         put?: never;
         post?: never;
         delete?: never;
@@ -603,7 +507,7 @@ export interface components {
              */
             header?: string;
         };
-        /** @description links object */
+        /** @description links object containing links related to the resource */
         Links: {
             /**
              * @description the link that generated the current response document
@@ -615,6 +519,438 @@ export interface components {
              * @example /artists/xyz/relationships/tracks?page[cursor]=zyx
              */
             next?: string;
+        };
+        /** @description attributes object representing some of the resource's data */
+        Pick_Attributes: {
+            /**
+             * @description Pick title
+             * @example My favorite track on repeat
+             */
+            title: string;
+            /**
+             * @description Description of pick
+             * @example This is the track I listen to when I need to focus
+             */
+            description: string;
+            /**
+             * @description CatalogueResourceType for supported item for the pick
+             * @example TRACK
+             * @enum {string}
+             */
+            supportedContentType: "TRACKS" | "VIDEOS" | "ALBUMS" | "ARTISTS" | "PROVIDERS";
+            colors: components["schemas"]["Prompt_Colors"];
+            /**
+             * Format: date-time
+             * @description Date of last modification of the pick (ISO 8601)
+             * @example 2021-08-31T12:00:00Z
+             */
+            lastModifiedAt?: string;
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        Pick_Relationships: {
+            item: components["schemas"]["Singleton_Data_Relationship_Doc"];
+            userPublicProfile: components["schemas"]["Singleton_Data_Relationship_Doc"];
+        };
+        Pick_Relationships_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
+            links?: components["schemas"]["Links"];
+            included?: components["schemas"]["Pick_Resource"][];
+        };
+        Pick_Resource: {
+            attributes?: components["schemas"]["Pick_Attributes"];
+            relationships?: components["schemas"]["Pick_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        /**
+         * @description Primary and Secondary color to visually render the pick
+         * @example [
+         *       "#FF0000",
+         *       "#00FF00"
+         *     ]
+         */
+        Prompt_Colors: {
+            primary?: string;
+            secondary?: string;
+        };
+        /** @description relationship resource linkage */
+        Resource_Identifier: {
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        /** @description Pick's owning user public profile relationship */
+        Singleton_Data_Relationship_Doc: {
+            data?: components["schemas"]["Resource_Identifier"];
+            links?: components["schemas"]["Links"];
+        };
+        /** @description attributes object representing some of the resource's data */
+        User_Attributes: {
+            /**
+             * @description user name
+             * @example username
+             */
+            username: string;
+            /**
+             * @description ISO 3166-1 alpha-2 country code
+             * @example US
+             */
+            country: string;
+            /**
+             * @description email address
+             * @example test@test.com
+             */
+            email?: string;
+            /**
+             * @description Is the email verified
+             * @example true
+             */
+            emailVerified?: boolean;
+            /**
+             * @description Users first name
+             * @example John
+             */
+            firstName?: string;
+            /**
+             * @description Users last name
+             * @example Rambo
+             */
+            lastName?: string;
+        };
+        /** @description attributes object representing some of the resource's data */
+        User_Entitlement_Attributes: {
+            /** @description entitlements for user */
+            entitlements: ("MUSIC" | "DJ")[];
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        User_Entitlement_Relationships: Record<string, never>;
+        User_Entitlement_Resource: {
+            attributes?: components["schemas"]["User_Entitlement_Attributes"];
+            relationships?: components["schemas"]["User_Entitlement_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        User_Relationships: {
+            entitlements: components["schemas"]["Singleton_Data_Relationship_Doc"];
+            publicProfile: components["schemas"]["Singleton_Data_Relationship_Doc"];
+        };
+        /** @description array of primary resource data */
+        User_Resource: {
+            attributes?: components["schemas"]["User_Attributes"];
+            relationships?: components["schemas"]["User_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        Users_Data_Document: {
+            /** @description array of primary resource data */
+            data?: components["schemas"]["User_Resource"][];
+            links?: components["schemas"]["Links"];
+            included?: components["schemas"]["User_Entitlement_Resource"][];
+        };
+        User_Data_Document: {
+            data?: components["schemas"]["User_Resource"];
+            links?: components["schemas"]["Links"];
+        };
+        /** @description ImageLink to the users image */
+        Image_Link: {
+            /**
+             * @description link to an image
+             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.jpg
+             */
+            href: string;
+            meta?: components["schemas"]["Image_Link_Meta"];
+        };
+        /** @description metadata about an image */
+        Image_Link_Meta: {
+            /**
+             * Format: int32
+             * @description image width (in pixels)
+             * @example 80
+             */
+            width: number;
+            /**
+             * Format: int32
+             * @description image height (in pixels)
+             * @example 80
+             */
+            height: number;
+        };
+        /** @description User profile public picks */
+        Multi_Data_Relationship_Doc: {
+            /** @description array of relationship resource linkages */
+            data?: components["schemas"]["Resource_Identifier"][];
+            links?: components["schemas"]["Links"];
+        };
+        /** @description attributes object representing some of the resource's data */
+        User_Profile_Attributes: {
+            /**
+             * @description Public Name of the user profile
+             * @example JohnSmith
+             */
+            profileName?: string;
+            picture?: components["schemas"]["Image_Link"];
+            /** @description Color information for the user profile when no image is available */
+            color?: string[];
+            /** @description ExternalLinks for the user's profile */
+            externalLinks?: components["schemas"]["User_Profile_Social_External_Link"][];
+            /**
+             * Format: int32
+             * @description Number of followers for the user
+             * @example 32
+             */
+            numberOfFollowers?: number;
+            /**
+             * Format: int32
+             * @description Number of users the user follows
+             * @example 32
+             */
+            numberOfFollows?: number;
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        User_Profile_Relationships: {
+            followers: components["schemas"]["Multi_Data_Relationship_Doc"];
+            following: components["schemas"]["Multi_Data_Relationship_Doc"];
+            publicPlaylists: components["schemas"]["Multi_Data_Relationship_Doc"];
+            publicPicks: components["schemas"]["Multi_Data_Relationship_Doc"];
+        };
+        User_Profile_Resource: {
+            attributes?: components["schemas"]["User_Profile_Attributes"];
+            relationships?: components["schemas"]["User_Profile_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        User_Profile_Social_External_Link: {
+            /**
+             * @description link to something that is related to a resource
+             * @example https://tidal.com/browse/artist/1566
+             */
+            href: string;
+            meta: components["schemas"]["User_Profile_Social_External_Link_Meta"];
+        };
+        /** @description metadata about an external link */
+        User_Profile_Social_External_Link_Meta: {
+            /**
+             * @description external link type
+             * @example TIDAL_SHARING
+             * @enum {string}
+             */
+            type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "HOMEPAGE";
+            /**
+             * @description external link handle
+             * @example JohnSmith
+             */
+            handle: string;
+        };
+        User_Public_Profiles_Relationship_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
+            links?: components["schemas"]["Links"];
+            included?: components["schemas"]["User_Profile_Resource"][];
+        };
+        Users_Entitlement_Relationship_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
+            links?: components["schemas"]["Links"];
+            included?: components["schemas"]["User_Entitlement_Resource"][];
+        };
+        /** @description attributes object representing some of the resource's data */
+        User_Recommendations_Attributes: Record<string, never>;
+        User_Recommendations_Data_Document: {
+            data?: components["schemas"]["User_Recommendations_Resource"];
+            links?: components["schemas"]["Links"];
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        User_Recommendations_Relationships: {
+            myMixes: components["schemas"]["Multi_Data_Relationship_Doc"];
+            discoveryMixes: components["schemas"]["Multi_Data_Relationship_Doc"];
+            newArrivalMixes: components["schemas"]["Multi_Data_Relationship_Doc"];
+        };
+        /** @description primary resource data */
+        User_Recommendations_Resource: {
+            attributes?: components["schemas"]["User_Recommendations_Attributes"];
+            relationships?: components["schemas"]["User_Recommendations_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        /** @description metadata about an external link */
+        External_Link_Meta: {
+            /**
+             * @description external link type
+             * @example TIDAL_SHARING
+             * @enum {string}
+             */
+            type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "HOMEPAGE";
+        };
+        /** @description attributes object representing some of the resource's data */
+        Playlist_Attributes: {
+            /**
+             * @description ${public.usercontent.fields.playlists.name.descr}
+             * @example My Playlist
+             */
+            name: string;
+            /**
+             * @description ${public.usercontent.fields.playlists.description.descr}
+             * @example All the good details about what is inside this playlist
+             */
+            description?: string;
+            /**
+             * @description ${public.usercontent.fields.playlists.bounded.descr}
+             * @example true
+             */
+            bounded: boolean;
+            /**
+             * @description ${public.usercontent.fields.playlists.duration.descr}
+             * @example P30M5S
+             */
+            duration?: string;
+            /**
+             * Format: int32
+             * @description ${public.usercontent.fields.playlists.numberOfItems.descr}
+             * @example 5
+             */
+            numberOfItems?: number;
+            /**
+             * @description ${public.usercontent.fields.playlists.externalLinks.descr}
+             * @example true
+             */
+            externalLinks: components["schemas"]["Playlist_External_Link"][];
+            /**
+             * Format: date-time
+             * @description ${public.usercontent.fields.playlists.createdAt.descr}
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description ${public.usercontent.fields.playlists.lastModifiedAt.descr}
+             */
+            lastModifiedAt: string;
+            /**
+             * @description ${public.usercontent.fields.playlists.privacy.descr}
+             * @example PUBLIC
+             */
+            privacy: string;
+            /**
+             * @description ${public.usercontent.fields.playlists.type.descr}
+             * @example EDITORIAL
+             */
+            playlistType: string;
+            /**
+             * @description ${public.usercontent.fields.playlists.imageLinks.descr}
+             * @example true
+             */
+            imageLinks: components["schemas"]["Image_Link"][];
+        };
+        /**
+         * @description ${public.usercontent.fields.playlists.externalLinks.descr}
+         * @example true
+         */
+        Playlist_External_Link: {
+            /**
+             * @description link to something that is related to a resource
+             * @example https://tidal.com/browse/artist/1566
+             */
+            href: string;
+            meta: components["schemas"]["External_Link_Meta"];
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        Playlist_Relationships: {
+            items: components["schemas"]["Multi_Data_Relationship_Doc"];
+            owners: components["schemas"]["Multi_Data_Relationship_Doc"];
+        };
+        Playlist_Resource: {
+            attributes?: components["schemas"]["Playlist_Attributes"];
+            relationships?: components["schemas"]["Playlist_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        User_Public_Profile_Data_Document: {
+            /** @description array of primary resource data */
+            data?: components["schemas"]["User_Profile_Resource"][];
+            links?: components["schemas"]["Links"];
+            included?: (components["schemas"]["Playlist_Resource"] | components["schemas"]["Pick_Resource"] | components["schemas"]["User_Resource"])[];
+        };
+        User_Profile_Data_Document: {
+            data?: components["schemas"]["User_Profile_Resource"];
+            links?: components["schemas"]["Links"];
+            included?: (components["schemas"]["Playlist_Resource"] | components["schemas"]["Pick_Resource"] | components["schemas"]["User_Resource"])[];
+        };
+        Playlist_Relationships_Document: {
+            /** @description array of relationship resource linkages */
+            data?: components["schemas"]["Resource_Identifier"][];
+            links?: components["schemas"]["Links"];
+            included?: components["schemas"]["Playlist_Resource"][];
+        };
+        Picks_Relationships_Document: {
+            /** @description array of relationship resource linkages */
+            data?: components["schemas"]["Resource_Identifier"][];
+            links?: components["schemas"]["Links"];
+            included?: components["schemas"]["Pick_Resource"][];
+        };
+        Users_Relationship_Document: {
+            /** @description array of relationship resource linkages */
+            data?: components["schemas"]["Resource_Identifier"][];
+            links?: components["schemas"]["Links"];
+            included?: components["schemas"]["User_Resource"][];
         };
         /** @description attributes object representing some of the resource's data */
         Album_Attributes: {
@@ -807,206 +1143,11 @@ export interface components {
             href: string;
             meta: components["schemas"]["External_Link_Meta"];
         };
-        /** @description metadata about an external link */
-        External_Link_Meta: {
-            /**
-             * @description external link type
-             * @example TIDAL_SHARING
-             * @enum {string}
-             */
-            type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "HOMEPAGE";
-        };
-        Image_Link: {
-            /**
-             * @description link to an image
-             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.jpg
-             */
-            href: string;
-            meta: components["schemas"]["Image_Link_Meta"];
-        };
-        /** @description metadata about an image */
-        Image_Link_Meta: {
-            /**
-             * Format: int32
-             * @description image width (in pixels)
-             * @example 80
-             */
-            width: number;
-            /**
-             * Format: int32
-             * @description image height (in pixels)
-             * @example 80
-             */
-            height: number;
-        };
-        /** @description Album providers relationship */
-        Multi_Data_Relationship_Doc: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-        };
-        /** @description attributes object representing some of the resource's data */
-        Provider_Attributes: {
-            /**
-             * @description Provider name. Conditionally visible.
-             * @example Columbia/Legacy
-             */
-            name: string;
-        };
-        /** @description relationships object describing relationships between the resource and other resources */
-        Provider_Relationships: Record<string, never>;
-        Provider_Resource: {
-            attributes?: components["schemas"]["Provider_Attributes"];
-            relationships?: components["schemas"]["Provider_Relationships"];
-            links?: components["schemas"]["Links"];
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
-        };
-        /** @description array of relationship resource linkages */
-        Resource_Identifier: {
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
-        };
-        /** @description attributes object representing some of the resource's data */
-        Video_Attributes: {
-            /**
-             * @description Album item's title
-             * @example Kill Jay Z
-             */
-            title: string;
-            /**
-             * @description Version of the album's item; complements title
-             * @example Kill Jay Z
-             */
-            version?: string;
-            /**
-             * @description ISRC code
-             * @example TIDAL2274
-             */
-            isrc: string;
-            /**
-             * @description Duration expressed in accordance with ISO 8601
-             * @example P30M5S
-             */
-            duration: string;
-            /**
-             * @description Copyright information
-             * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
-             */
-            copyright?: string;
-            /**
-             * Format: date
-             * @description Release date (ISO-8601)
-             * @example 2017-06-27
-             */
-            releaseDate?: string;
-            /**
-             * @description Indicates whether a catalog item consist of any explicit content
-             * @example false
-             */
-            explicit: boolean;
-            /**
-             * Format: double
-             * @description Track or video popularity (ranged in 0.00 ... 1.00). Conditionally visible
-             * @example 0.56
-             */
-            popularity: number;
-            /** @description Defines a catalog item availability e.g. for streaming, DJs, stems */
-            availability?: ("STREAM" | "DJ" | "STEM")[];
-            /** @description Represents available links to, and metadata about, an album item images */
-            imageLinks?: components["schemas"]["Image_Link"][];
-            /** @description Represents available links to something that is related to a catalog item, but external to the TIDAL API */
-            externalLinks?: components["schemas"]["External_Link"][];
-        };
-        Video_Link: {
-            /**
-             * @description link to a video
-             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.mp4
-             */
-            href: string;
-            meta: components["schemas"]["Video_Link_Meta"];
-        };
-        /** @description metadata about a video */
-        Video_Link_Meta: {
-            /**
-             * Format: int32
-             * @description video width (in pixels)
-             * @example 80
-             */
-            width: number;
-            /**
-             * Format: int32
-             * @description video height (in pixels)
-             * @example 80
-             */
-            height: number;
-        };
-        /** @description relationships object describing relationships between the resource and other resources */
-        Video_Relationships: {
-            albums: components["schemas"]["Multi_Data_Relationship_Doc"];
-            artists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            providers: components["schemas"]["Multi_Data_Relationship_Doc"];
-        };
-        /** @description array of primary resource data */
-        Video_Resource: {
-            attributes?: components["schemas"]["Video_Attributes"];
-            relationships?: components["schemas"]["Video_Relationships"];
-            links?: components["schemas"]["Links"];
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
-        };
-        Videos_Data_Document: {
+        Picks_Data_Document: {
             /** @description array of primary resource data */
-            data?: components["schemas"]["Video_Resource"][];
+            data?: components["schemas"]["Pick_Resource"][];
             links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["Provider_Resource"])[];
-        };
-        Video_Data_Document: {
-            data?: components["schemas"]["Video_Resource"];
-            links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["Provider_Resource"])[];
-        };
-        Providers_Relationship_Document: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Provider_Resource"][];
-        };
-        Artists_Relationship_Document: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Artist_Resource"][];
-        };
-        Albums_Relationship_Document: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Album_Resource"][];
+            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["User_Resource"])[];
         };
         /** @description attributes object representing some of the resource's data */
         Track_Attributes: {
@@ -1075,69 +1216,37 @@ export interface components {
              */
             type: string;
         };
-        Tracks_Data_Document: {
-            /** @description array of primary resource data */
-            data?: components["schemas"]["Track_Resource"][];
-            links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["Provider_Resource"])[];
+        Video_Link: {
+            /**
+             * @description link to a video
+             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.mp4
+             */
+            href: string;
+            meta: components["schemas"]["Video_Link_Meta"];
         };
-        Track_Data_Document: {
-            data?: components["schemas"]["Track_Resource"];
-            links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["Provider_Resource"])[];
+        /** @description metadata about a video */
+        Video_Link_Meta: {
+            /**
+             * Format: int32
+             * @description video width (in pixels)
+             * @example 80
+             */
+            width: number;
+            /**
+             * Format: int32
+             * @description video height (in pixels)
+             * @example 80
+             */
+            height: number;
         };
-        Track_Relationships_Document: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
+        Pick_Item_Relationship_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
             links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Track_Resource"][];
+            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"])[];
         };
-        Providers_Data_Document: {
-            /** @description array of primary resource data */
-            data?: components["schemas"]["Provider_Resource"][];
+        User_Entitlement_Data_Document: {
+            data?: components["schemas"]["User_Entitlement_Resource"];
             links?: components["schemas"]["Links"];
-        };
-        Provider_Data_Document: {
-            data?: components["schemas"]["Provider_Resource"];
-            links?: components["schemas"]["Links"];
-        };
-        Artists_Data_Document: {
-            /** @description array of primary resource data */
-            data?: components["schemas"]["Artist_Resource"][];
-            links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"])[];
-        };
-        Artist_Data_Document: {
-            data?: components["schemas"]["Artist_Resource"];
-            links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"])[];
-        };
-        Video_Relationships_Document: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Video_Resource"][];
-        };
-        Artist_Track_Providers_Relationship_Document: {
-            data?: components["schemas"]["Artist_Track_Providers_Resource_Identifier"][][];
-            links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Provider_Resource"][];
-        };
-        Albums_Data_Document: {
-            /** @description array of primary resource data */
-            data?: components["schemas"]["Album_Resource"][];
-            links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["Provider_Resource"])[];
-        };
-        Album_Data_Document: {
-            data?: components["schemas"]["Album_Resource"];
-            links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["Provider_Resource"])[];
-        };
-        Album_Items_Relationship_Document: {
-            data?: components["schemas"]["Album_Item_Resource_Identifier"][][];
-            links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"])[];
         };
     };
     responses: never;
@@ -1148,260 +1257,25 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    getVideos: {
+    getPickItem: {
         parameters: {
             query: {
                 /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
+                 * @description Locale language tag (IETF BCP 47 Language Tag)
+                 * @example en-US
                  */
-                countryCode: string;
+                locale: string;
                 /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: artists, albums, providers
-                 * @example artists
+                 * @description Allows the client to customize which related resources should be returned. Available options: item
+                 * @example item
                  */
-                include?: ("artists" | "albums" | "providers")[];
-                /**
-                 * @description Allows to filter the collection of resources based on id attribute value
-                 * @example 75623239
-                 */
-                "filter[id]"?: string[];
-                /**
-                 * @description Allows to filter the collection of resources based on isrc attribute value
-                 * @example USSM21600755
-                 */
-                "filter[isrc]"?: string[];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Videos_Data_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getVideo: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: artists, albums, providers
-                 * @example artists
-                 */
-                include?: ("artists" | "albums" | "providers")[];
+                include?: "item"[];
             };
             header?: never;
             path: {
                 /**
-                 * @description TIDAL video id
-                 * @example 75623239
+                 * @description TIDAL pick id
+                 * @example b73h3
                  */
                 id: string;
             };
@@ -1435,7 +1309,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Video_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["Pick_Item_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1614,34 +1488,27 @@ export interface operations {
             };
         };
     };
-    getVideoProviders: {
+    setPickData: {
         parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: providers
-                 * @example providers
-                 */
-                include?: "providers"[];
-            };
+            query?: never;
             header?: never;
             path: {
                 /**
-                 * @description TIDAL id of the video
-                 * @example 75623239
+                 * @description TIDAL pick id
+                 * @example b73h=3
                  */
                 id: string;
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/vnd.api+json": components["schemas"]["Pick_Relationships_Document"];
+            };
+        };
         responses: {
             /** @description Successfully executed request. */
-            200: {
+            202: {
                 headers: {
                     /**
                      * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
@@ -1666,7 +1533,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Providers_Relationship_Document"];
+                    "*/*": Record<string, never>;
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1845,4404 +1712,19 @@ export interface operations {
             };
         };
     };
-    getVideoArtists: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: artists
-                 * @example artists
-                 */
-                include?: "artists"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL video id
-                 * @example 75623239
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Artists_Relationship_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getVideoAlbums: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: albums
-                 * @example albums
-                 */
-                include?: "albums"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL video id
-                 * @example 75623239
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Albums_Relationship_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getTracks: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: artists, albums, providers, similarTracks, radio
-                 * @example artists
-                 */
-                include?: ("artists" | "albums" | "providers" | "similarTracks" | "radio")[];
-                /**
-                 * @description Allows to filter the collection of resources based on id attribute value
-                 * @example 251380837
-                 */
-                "filter[id]"?: string[];
-                /**
-                 * @description Allows to filter the collection of resources based on isrc attribute value
-                 * @example USSM12209515
-                 */
-                "filter[isrc]"?: string[];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Tracks_Data_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getTrack: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: artists, albums, providers, similarTracks, radio
-                 * @example artists
-                 */
-                include?: ("artists" | "albums" | "providers" | "similarTracks" | "radio")[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL track id
-                 * @example 251380837
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Track_Data_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getSimilarTracks: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: similarTracks
-                 * @example similarTracks
-                 */
-                include?: "similarTracks"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL id of the track
-                 * @example 251380837
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Track_Relationships_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getTrackRadio: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: radio
-                 * @example radio
-                 */
-                include?: "radio"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL id of the track
-                 * @example 251380837
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Track_Relationships_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getTrackProviders: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: providers
-                 * @example providers
-                 */
-                include?: "providers"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL id of the track
-                 * @example 251380837
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Providers_Relationship_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getTrackArtists: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: artists
-                 * @example artists
-                 */
-                include?: "artists"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL track id
-                 * @example 251380837
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Artists_Relationship_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getTrackAlbums: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: albums
-                 * @example albums
-                 */
-                include?: "albums"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL track id
-                 * @example 251380837
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Albums_Relationship_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getProviders: {
-        parameters: {
-            query?: {
-                /** @description Allows the client to customize which related resources should be returned */
-                include?: never[];
-                /**
-                 * @description Allows to filter the collection of resources based on id attribute value
-                 * @example 771
-                 */
-                "filter[id]"?: string[];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Providers_Data_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getProvider: {
-        parameters: {
-            query?: {
-                /** @description Allows the client to customize which related resources should be returned */
-                include?: never[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL provider id
-                 * @example 771
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Provider_Data_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getArtists: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: albums, tracks, videos, similarArtists, trackProviders, radio
-                 * @example albums
-                 */
-                include?: ("albums" | "tracks" | "videos" | "similarArtists" | "trackProviders" | "radio")[];
-                /**
-                 * @description Allows to filter the collection of resources based on id attribute value
-                 * @example 1566
-                 */
-                "filter[id]"?: string[];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Artists_Data_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getArtist: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: albums, tracks, videos, similarArtists, trackProviders, radio
-                 * @example albums
-                 */
-                include?: ("albums" | "tracks" | "videos" | "similarArtists" | "trackProviders" | "radio")[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL artist id
-                 * @example 1566
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Artist_Data_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getArtistVideos: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: videos
-                 * @example videos
-                 */
-                include?: "videos"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL artist id
-                 * @example 1566
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Video_Relationships_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getArtistTracks: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Collapse by options for getting artist tracks. Available options: FINGERPRINT, ID. FINGERPRINT option might collapse similar tracks based item fingerprints while collapsing by ID always returns all available items.
-                 * @example FINGERPRINT
-                 */
-                collapseBy?: "FINGERPRINT" | "NONE";
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: tracks
-                 * @example tracks
-                 */
-                include?: "tracks"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL artist id
-                 * @example 1566
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Track_Relationships_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getArtistTrackProviders: {
+    getUsers: {
         parameters: {
             query?: {
                 /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: trackProviders
-                 * @example trackProviders
+                 * @description Allows the client to customize which related resources should be returned. Available options: entitlements, publicProfile
+                 * @example entitlements
                  */
-                include?: "trackProviders"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL id of the artist
-                 * @example 1566
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Artist_Track_Providers_Relationship_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getSimilarArtists: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: similarArtists
-                 * @example similarArtists
-                 */
-                include?: "similarArtists"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL id of the artist
-                 * @example 1566
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Artists_Relationship_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getArtistRadio: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: radio
-                 * @example radio
-                 */
-                include?: "radio"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL id of the artist
-                 * @example 1566
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Artists_Relationship_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getArtistAlbums: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: albums
-                 * @example albums
-                 */
-                include?: "albums"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description TIDAL artist id
-                 * @example 1566
-                 */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Albums_Relationship_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    getAlbums: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: artists, items, providers, similarAlbums
-                 * @example artists
-                 */
-                include?: ("artists" | "items" | "providers" | "similarAlbums")[];
+                include?: ("entitlements" | "publicProfile")[];
                 /**
                  * @description Allows to filter the collection of resources based on id attribute value
                  * @example 251380836
                  */
                 "filter[id]"?: string[];
-                /**
-                 * @description Allows to filter the collection of resources based on barcodeId attribute value
-                 * @example 196589525444
-                 */
-                "filter[barcodeId]"?: string[];
             };
             header?: never;
             path?: never;
@@ -6276,7 +1758,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Albums_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["Users_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -6455,24 +1937,19 @@ export interface operations {
             };
         };
     };
-    getAlbum: {
+    getUser: {
         parameters: {
-            query: {
+            query?: {
                 /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
+                 * @description Allows the client to customize which related resources should be returned. Available options: entitlements, publicProfile
+                 * @example entitlements
                  */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: artists, items, providers, similarAlbums
-                 * @example artists
-                 */
-                include?: ("artists" | "items" | "providers" | "similarAlbums")[];
+                include?: ("entitlements" | "publicProfile")[];
             };
             header?: never;
             path: {
                 /**
-                 * @description TIDAL album id
+                 * @description User Id
                  * @example 251380836
                  */
                 id: string;
@@ -6507,7 +1984,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Album_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -6686,24 +2163,24 @@ export interface operations {
             };
         };
     };
-    getSimilarAlbums: {
+    getUserPublicProfile: {
         parameters: {
             query: {
                 /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
+                 * @description Locale language tag (IETF BCP 47 Language Tag)
+                 * @example en-US
                  */
-                countryCode: string;
+                locale: string;
                 /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: similarAlbums
-                 * @example similarAlbums
+                 * @description Allows the client to customize which related resources should be returned. Available options: publicProfile
+                 * @example publicProfile
                  */
-                include?: "similarAlbums"[];
+                include?: "publicProfile"[];
             };
             header?: never;
             path: {
                 /**
-                 * @description TIDAL id of the album
+                 * @description User Id
                  * @example 251380836
                  */
                 id: string;
@@ -6738,7 +2215,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Albums_Relationship_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Public_Profiles_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -6917,24 +2394,19 @@ export interface operations {
             };
         };
     };
-    getAlbumProviders: {
+    getUserEntitlements: {
         parameters: {
-            query: {
+            query?: {
                 /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
+                 * @description Allows the client to customize which related resources should be returned. Available options: entitlements
+                 * @example entitlements
                  */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: providers
-                 * @example providers
-                 */
-                include?: "providers"[];
+                include?: "entitlements"[];
             };
             header?: never;
             path: {
                 /**
-                 * @description TIDAL id of the album
+                 * @description User Id
                  * @example 251380836
                  */
                 id: string;
@@ -6969,7 +2441,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Providers_Relationship_Document"];
+                    "application/vnd.api+json": components["schemas"]["Users_Entitlement_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -7148,28 +2620,17 @@ export interface operations {
             };
         };
     };
-    getAlbumItems: {
+    me: {
         parameters: {
-            query: {
+            query?: {
                 /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
+                 * @description Allows the client to customize which related resources should be returned. Available options: entitlements, publicProfile
+                 * @example entitlements
                  */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: items
-                 * @example items
-                 */
-                include?: "items"[];
+                include?: ("entitlements" | "publicProfile")[];
             };
             header?: never;
-            path: {
-                /**
-                 * @description TIDAL album id
-                 * @example 251380836
-                 */
-                id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -7200,7 +2661,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Album_Items_Relationship_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -7379,24 +2840,19 @@ export interface operations {
             };
         };
     };
-    getAlbumArtists: {
+    getUserRecommendations: {
         parameters: {
-            query: {
+            query?: {
                 /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
+                 * @description Allows the client to customize which related resources should be returned. Available options: myMixes, discoveryMixes, newArrivalMixes
+                 * @example myMixes
                  */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: artists
-                 * @example artists
-                 */
-                include?: "artists"[];
+                include?: ("myMixes" | "discoveryMixes" | "newArrivalMixes")[];
             };
             header?: never;
             path: {
                 /**
-                 * @description TIDAL album id
+                 * @description User recommendations id
                  * @example 251380836
                  */
                 id: string;
@@ -7431,7 +2887,3620 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Artists_Relationship_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Recommendations_Data_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getNewArrivalMixes: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: newArrivalMixes
+                 * @example newArrivalMixes
+                 */
+                include?: "newArrivalMixes"[];
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description User recommendations id
+                 * @example 251380836
+                 */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully executed request. */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Multi_Data_Relationship_Doc"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getMyMixes: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: myMixes
+                 * @example myMixes
+                 */
+                include?: "myMixes"[];
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description User recommendations id
+                 * @example 251380836
+                 */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully executed request. */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Multi_Data_Relationship_Doc"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getDiscoveryMixes: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: discoveryMixes
+                 * @example discoveryMixes
+                 */
+                include?: "discoveryMixes"[];
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description User recommendations id
+                 * @example 251380836
+                 */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully executed request. */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Multi_Data_Relationship_Doc"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getMyRecommendations: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: myMixes, discoveryMixes, newArrivalMixes
+                 * @example myMixes
+                 */
+                include?: ("myMixes" | "discoveryMixes" | "newArrivalMixes")[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully executed request. */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["User_Recommendations_Data_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getProfiles: {
+        parameters: {
+            query: {
+                /**
+                 * @description Locale language tag (IETF BCP 47 Language Tag)
+                 * @example en-US
+                 */
+                locale: string;
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: publicPlaylists, publicPicks, followers, following
+                 * @example publicPlaylists
+                 */
+                include?: ("publicPlaylists" | "publicPicks" | "followers" | "following")[];
+                /**
+                 * @description ${public.usercontent.getProfiles.id.descr}
+                 * @example 1234567890
+                 */
+                "filter[id]"?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description User profile retrieved successfully */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["User_Public_Profile_Data_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getProfile: {
+        parameters: {
+            query: {
+                /**
+                 * @description Locale language tag (IETF BCP 47 Language Tag)
+                 * @example en-US
+                 */
+                locale: string;
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: publicPlaylists, publicPicks, followers, following
+                 * @example publicPlaylists
+                 */
+                include?: ("publicPlaylists" | "publicPicks" | "followers" | "following")[];
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description TIDAL user id
+                 * @example 1234567890
+                 */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description User profile retrieved successfully */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["User_Profile_Data_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getPublicPlaylists: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: publicPlaylists
+                 * @example publicPlaylists
+                 */
+                include?: "publicPlaylists"[];
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description TIDAL user id
+                 * @example 1234567890
+                 */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Public playlists retrieved successfully */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Playlist_Relationships_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getPublicPicks: {
+        parameters: {
+            query: {
+                /**
+                 * @description Locale language tag (IETF BCP 47 Language Tag)
+                 * @example en-US
+                 */
+                locale: string;
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: publicPicks
+                 * @example publicPicks
+                 */
+                include?: "publicPicks"[];
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description TIDAL user id
+                 * @example 1234567890
+                 */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Public picks retrieved successfully */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Picks_Relationships_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getPublicFollowings: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: following
+                 * @example following
+                 */
+                include?: "following"[];
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description TIDAL user id
+                 * @example 1234567890
+                 */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Public following retrieved successfully */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Users_Relationship_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getPublicFollowers: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: followers
+                 * @example followers
+                 */
+                include?: "followers"[];
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description TIDAL user id
+                 * @example 1234567890
+                 */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Public followers retrieved successfully */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Users_Relationship_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getMyProfile: {
+        parameters: {
+            query: {
+                /**
+                 * @description Locale language tag (IETF BCP 47 Language Tag)
+                 * @example en-US
+                 */
+                locale: string;
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: publicPlaylists, publicPicks, followers, following
+                 * @example publicPlaylists
+                 */
+                include?: ("publicPlaylists" | "publicPicks" | "followers" | "following")[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description User profile retrieved successfully */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["User_Profile_Data_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getPicks: {
+        parameters: {
+            query: {
+                /**
+                 * @description Locale language tag (IETF BCP 47 Language Tag)
+                 * @example en-US
+                 */
+                locale: string;
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: item, userPublicProfile
+                 * @example item
+                 */
+                include?: ("item" | "userPublicProfile")[];
+                /**
+                 * @description Allows to filter the collection of resources based on id attribute value
+                 * @example 123123
+                 */
+                "filter[id]"?: string[];
+                /**
+                 * @description Allows to filter the collection of resources based on userPublicProfile.id attribute value
+                 * @example 123123
+                 */
+                "filter[userPublicProfile.id]"?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully executed request. */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Picks_Data_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getPickPublicUserProfile: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: userPublicProfile
+                 * @example userPublicProfile
+                 */
+                include?: "userPublicProfile"[];
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description TIDAL pick id
+                 * @example b73h=3
+                 */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully executed request. */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["User_Public_Profiles_Relationship_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getMyPicks: {
+        parameters: {
+            query: {
+                /**
+                 * @description Locale language tag (IETF BCP 47 Language Tag)
+                 * @example en-US
+                 */
+                locale: string;
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: item, userPublicProfile
+                 * @example item
+                 */
+                include?: ("item" | "userPublicProfile")[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully executed request. */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Picks_Data_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getEntitlements: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description User entitlements id
+                 * @example 251380836
+                 */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully executed request. */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["User_Entitlement_Data_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getMyEntitlements: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully executed request. */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["User_Entitlement_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */

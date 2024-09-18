@@ -1,7 +1,6 @@
 {
-  "name": "@tidal-music/template",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@tidal-music/playlist",
+  "version": "0.1.1",
   "type": "module",
   "files": [
     "dist"
@@ -18,8 +17,8 @@
     "import": "./dist/index.js"
   },
   "scripts": {
-    "prepare": "vite build",
-    "build": "vite build",
+    "prepare": "vite build && cp src/playlistAPI.d.ts dist/",
+    "build": "vite build && cp src/playlistAPI.d.ts dist/",
     "build:dev": "vite build -m development",
     "clean": "rm -rf coverage dist .eslintcache",
     "dev": "vite --debug --cors -c=./vite.config.ts",
@@ -27,17 +26,22 @@
     "lint:ci": "eslint . --quiet",
     "lint:fix": "pnpm run lint --fix",
     "preview": "vite preview",
+    "generateTypes": "openapi-typescript https://developer.tidal.com/apiref/api-specifications/api-public-user-content/tidal-user-content-openapi-3.0.json --output ./src/playlistAPI.d.ts && echo \"/* eslint-disable */\n$(cat ./src/playlistAPI.d.ts)\" > ./src/playlistAPI.d.ts",
     "test": "vitest",
     "test:coverage": "pnpm run test --coverage",
     "test:ui": "pnpm run test:coverage --ui",
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@tidal-music/template": "workspace:*"
+    "@tidal-music/playlist": "workspace:*",
+    "openapi-fetch": "0.12.0"
   },
   "devDependencies": {
+    "@tidal-music/auth": "workspace:^",
+    "@tidal-music/common": "workspace:^",
     "@vitest/coverage-v8": "2.0.4",
     "@vitest/ui": "2.0.4",
+    "openapi-typescript": "7.4.0",
     "typescript": "5.6.2",
     "vite": "5.4.6",
     "vite-plugin-dts": "4.2.1",

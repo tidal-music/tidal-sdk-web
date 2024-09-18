@@ -23,6 +23,17 @@ cd ./packages/event-producer
 
 pnpm dev
 ```
+
+## Update workspace dependencies
+Normally handled by Renovate, but if you need to do it manually:
+```bash
+pnpm recursive update --latest
+
+# can also trim some sub-dependencies with:
+pnpm update
+pnpm dedupe
+```
+
 ## Create a new module
 Run:
 ```bash

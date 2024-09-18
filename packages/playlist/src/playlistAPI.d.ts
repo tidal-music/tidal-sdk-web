@@ -5,7 +5,7 @@
  */
 
 export interface paths {
-    "/searchresults/{query}": {
+    "/playlists": {
         parameters: {
             query?: never;
             header?: never;
@@ -13,10 +13,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Search for music metadata by a query
-         * @description Search for music: albums, artists, tracks, etc.
+         * Get multiple playlists
+         * @description Get user playlists
          */
-        get: operations["getSearchResults"];
+        get: operations["getPlaylistsByIds"];
         put?: never;
         post?: never;
         delete?: never;
@@ -25,7 +25,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/searchresults/{query}/relationships/videos": {
+    "/playlists/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -33,10 +33,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: videos
-         * @description Search for videos by a query.
+         * Get single playlist
+         * @description Get playlist by id
          */
-        get: operations["searchForVideos"];
+        get: operations["getPlaylist"];
         put?: never;
         post?: never;
         delete?: never;
@@ -45,7 +45,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/searchresults/{query}/relationships/tracks": {
+    "/playlists/{id}/relationships/owners": {
         parameters: {
             query?: never;
             header?: never;
@@ -53,10 +53,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: tracks
-         * @description Search for tracks by a query.
+         * Relationship: owner
+         * @description Get playlist owner
          */
-        get: operations["searchForTracks"];
+        get: operations["getPlaylistOwnersRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -65,7 +65,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/searchresults/{query}/relationships/topHits": {
+    "/playlists/{id}/relationships/items": {
         parameters: {
             query?: never;
             header?: never;
@@ -73,10 +73,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: topHits
-         * @description Search for top hits by a query: artists, albums, tracks, videos.
+         * Relationship: items
+         * @description Get playlist items
          */
-        get: operations["searchForTopHits"];
+        get: operations["getPlaylistItemsRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -85,7 +85,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/searchresults/{query}/relationships/playlists": {
+    "/playlists/me": {
         parameters: {
             query?: never;
             header?: never;
@@ -93,50 +93,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Relationship: playlists
-         * @description Search for playlists by a query.
+         * Get current user's playlists
+         * @description Get my playlists
          */
-        get: operations["searchForPlaylists"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/searchresults/{query}/relationships/artists": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Relationship: artists
-         * @description Search for artists by a query.
-         */
-        get: operations["searchForArtists"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/searchresults/{query}/relationships/albums": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Relationship: albums
-         * @description Search for albums by a query.
-         */
-        get: operations["searchForAlbums"];
+        get: operations["getPlaylistCollection"];
         put?: never;
         post?: never;
         delete?: never;
@@ -196,68 +156,139 @@ export interface components {
              */
             next?: string;
         };
+        External_Link: {
+            /**
+             * @description link to something that is related to a resource
+             * @example https://tidal.com/browse/artist/1566
+             */
+            href: string;
+            meta: components["schemas"]["External_Link_Meta"];
+        };
+        /** @description metadata about an external link */
+        External_Link_Meta: {
+            /**
+             * @description external link type
+             * @example TIDAL_SHARING
+             * @enum {string}
+             */
+            type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "HOMEPAGE";
+        };
+        Image_Link: {
+            /**
+             * @description link to an image
+             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.jpg
+             */
+            href: string;
+            meta: components["schemas"]["Image_Link_Meta"];
+        };
+        /** @description metadata about an image */
+        Image_Link_Meta: {
+            /**
+             * Format: int32
+             * @description image width (in pixels)
+             * @example 80
+             */
+            width: number;
+            /**
+             * Format: int32
+             * @description image height (in pixels)
+             * @example 80
+             */
+            height: number;
+        };
+        /** @description Video providers relationship */
+        Multi_Data_Relationship_Doc: {
+            /** @description array of relationship resource linkages */
+            data?: components["schemas"]["Resource_Identifier"][];
+            links?: components["schemas"]["Links"];
+        };
         /** @description attributes object representing some of the resource's data */
-        Album_Attributes: {
+        Playlist_Attributes: {
             /**
-             * @description Original title
-             * @example 4:44
+             * @description Playlist name
+             * @example My Playlist
              */
-            title: string;
+            name: string;
             /**
-             * @description Barcode id (EAN-13 or UPC-A)
-             * @example 00854242007552
+             * @description Playlist description
+             * @example All the good details about what is inside this playlist
              */
-            barcodeId: string;
+            description?: string;
             /**
-             * Format: int32
-             * @description Number of volumes
-             * @example 1
-             */
-            numberOfVolumes: number;
-            /**
-             * Format: int32
-             * @description Number of album items
-             * @example 13
-             */
-            numberOfItems: number;
-            /**
-             * @description Duration (ISO-8601)
-             * @example P41M5S
-             */
-            duration: string;
-            /**
-             * @description Indicates whether an album consist of any explicit content
+             * @description Indicates if the playlist has a duration and set number of tracks
              * @example true
              */
-            explicit: boolean;
+            bounded: boolean;
             /**
-             * Format: date
-             * @description Release date (ISO-8601)
-             * @example 2017-06-30
+             * @description Duration of the playlist expressed in accordance with ISO 8601
+             * @example P30M5S
              */
-            releaseDate?: string;
+            duration?: string;
             /**
-             * @description Copyright information
-             * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
+             * Format: int32
+             * @description Number of items in the playlist
+             * @example 5
              */
-            copyright?: string;
+            numberOfItems?: number;
             /**
-             * Format: double
-             * @description Album popularity (ranged in 0.00 ... 1.00). Conditionally visible
-             * @example 0.56
+             * @description Sharing links to the playlist
+             * @example true
              */
-            popularity: number;
-            /** @description Defines an album availability e.g. for streaming, DJs, stems */
-            availability?: ("STREAM" | "DJ" | "STEM")[];
-            mediaTags: string[];
-            /** @description Represents available links to, and metadata about, an album cover images */
-            imageLinks?: components["schemas"]["Image_Link"][];
-            /** @description Represents available links to, and metadata about, an album cover videos */
-            videoLinks?: components["schemas"]["Video_Link"][];
-            /** @description Represents available links to something that is related to an album resource, but external to the TIDAL API */
-            externalLinks?: components["schemas"]["External_Link"][];
+            externalLinks: components["schemas"]["Playlist_External_Link"][];
+            /**
+             * Format: date-time
+             * @description Datetime of playlist creation (ISO 8601)
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Datetime of last modification of the playlist (ISO 8601)
+             */
+            lastModifiedAt: string;
+            /**
+             * @description Privacy setting of the playlist
+             * @example PUBLIC
+             */
+            privacy: string;
+            /**
+             * @description The type of the playlist
+             * @example EDITORIAL
+             */
+            playlistType: string;
+            /**
+             * @description Images associated with the playlist
+             * @example true
+             */
+            imageLinks: components["schemas"]["Image_Link"][];
         };
-        Album_Item_Resource_Identifier: {
+        Playlist_Data_Document: {
+            /** @description array of primary resource data */
+            data?: components["schemas"]["Playlist_Resource"][];
+            links?: components["schemas"]["Links"];
+            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["User_Resource"])[];
+        };
+        /**
+         * @description Sharing links to the playlist
+         * @example true
+         */
+        Playlist_External_Link: {
+            /**
+             * @description link to something that is related to a resource
+             * @example https://tidal.com/browse/artist/1566
+             */
+            href: string;
+            meta: components["schemas"]["External_Link_Meta"];
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        Playlist_Relationships: {
+            items: components["schemas"]["Multi_Data_Relationship_Doc"];
+            owners: components["schemas"]["Multi_Data_Relationship_Doc"];
+        };
+        /** @description array of primary resource data */
+        Playlist_Resource: {
+            attributes?: components["schemas"]["Playlist_Attributes"];
+            relationships?: components["schemas"]["Playlist_Relationships"];
+            links?: components["schemas"]["Links"];
             /**
              * @description resource unique identifier
              * @example 12345
@@ -268,37 +299,205 @@ export interface components {
              * @example tracks
              */
             type: string;
-            meta?: components["schemas"]["Album_Item_Resource_Identifier_Meta"];
         };
-        Album_Item_Resource_Identifier_Meta: {
+        /** @description relationship resource linkage */
+        Resource_Identifier: {
             /**
-             * Format: int32
-             * @description volume number
-             * @example 1
+             * @description resource unique identifier
+             * @example 12345
              */
-            volumeNumber: number;
+            id: string;
             /**
-             * Format: int32
-             * @description track number
-             * @example 4
+             * @description resource unique type
+             * @example tracks
              */
-            trackNumber: number;
+            type: string;
         };
-        /** @description Album items (tracks/videos) relationship */
-        Album_Items_Relationship: {
-            data?: components["schemas"]["Album_Item_Resource_Identifier"][][];
+        /** @description Public profile */
+        Singleton_Data_Relationship_Doc: {
+            data?: components["schemas"]["Resource_Identifier"];
             links?: components["schemas"]["Links"];
         };
+        /** @description attributes object representing some of the resource's data */
+        Track_Attributes: {
+            /**
+             * @description Album item's title
+             * @example Kill Jay Z
+             */
+            title: string;
+            /**
+             * @description Version of the album's item; complements title
+             * @example Kill Jay Z
+             */
+            version?: string;
+            /**
+             * @description ISRC code
+             * @example TIDAL2274
+             */
+            isrc: string;
+            /**
+             * @description Duration expressed in accordance with ISO 8601
+             * @example P30M5S
+             */
+            duration: string;
+            /**
+             * @description Copyright information
+             * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
+             */
+            copyright?: string;
+            /**
+             * @description Indicates whether a catalog item consist of any explicit content
+             * @example false
+             */
+            explicit: boolean;
+            /**
+             * Format: double
+             * @description Track or video popularity (ranged in 0.00 ... 1.00). Conditionally visible
+             * @example 0.56
+             */
+            popularity: number;
+            /** @description Defines a catalog item availability e.g. for streaming, DJs, stems */
+            availability?: ("STREAM" | "DJ" | "STEM")[];
+            mediaTags: string[];
+            /** @description Represents available links to something that is related to a catalog item, but external to the TIDAL API */
+            externalLinks?: components["schemas"]["External_Link"][];
+        };
         /** @description relationships object describing relationships between the resource and other resources */
-        Album_Relationships: {
+        Track_Relationships: {
+            albums: components["schemas"]["Multi_Data_Relationship_Doc"];
             artists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            items: components["schemas"]["Album_Items_Relationship"];
-            similarAlbums: components["schemas"]["Multi_Data_Relationship_Doc"];
+            providers: components["schemas"]["Multi_Data_Relationship_Doc"];
+            similarTracks: components["schemas"]["Multi_Data_Relationship_Doc"];
+            radio: components["schemas"]["Multi_Data_Relationship_Doc"];
+        };
+        Track_Resource: {
+            attributes?: components["schemas"]["Track_Attributes"];
+            relationships?: components["schemas"]["Track_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        /** @description attributes object representing some of the resource's data */
+        User_Attributes: {
+            /**
+             * @description user name
+             * @example username
+             */
+            username: string;
+            /**
+             * @description ISO 3166-1 alpha-2 country code
+             * @example US
+             */
+            country: string;
+            /**
+             * @description email address
+             * @example test@test.com
+             */
+            email?: string;
+            /**
+             * @description Is the email verified
+             * @example true
+             */
+            emailVerified?: boolean;
+            /**
+             * @description Users first name
+             * @example John
+             */
+            firstName?: string;
+            /**
+             * @description Users last name
+             * @example Rambo
+             */
+            lastName?: string;
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        User_Relationships: {
+            entitlements: components["schemas"]["Singleton_Data_Relationship_Doc"];
+            publicProfile: components["schemas"]["Singleton_Data_Relationship_Doc"];
+        };
+        User_Resource: {
+            attributes?: components["schemas"]["User_Attributes"];
+            relationships?: components["schemas"]["User_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        /** @description attributes object representing some of the resource's data */
+        Video_Attributes: {
+            /**
+             * @description Album item's title
+             * @example Kill Jay Z
+             */
+            title: string;
+            /**
+             * @description Version of the album's item; complements title
+             * @example Kill Jay Z
+             */
+            version?: string;
+            /**
+             * @description ISRC code
+             * @example TIDAL2274
+             */
+            isrc: string;
+            /**
+             * @description Duration expressed in accordance with ISO 8601
+             * @example P30M5S
+             */
+            duration: string;
+            /**
+             * @description Copyright information
+             * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
+             */
+            copyright?: string;
+            /**
+             * Format: date
+             * @description Release date (ISO-8601)
+             * @example 2017-06-27
+             */
+            releaseDate?: string;
+            /**
+             * @description Indicates whether a catalog item consist of any explicit content
+             * @example false
+             */
+            explicit: boolean;
+            /**
+             * Format: double
+             * @description Track or video popularity (ranged in 0.00 ... 1.00). Conditionally visible
+             * @example 0.56
+             */
+            popularity: number;
+            /** @description Defines a catalog item availability e.g. for streaming, DJs, stems */
+            availability?: ("STREAM" | "DJ" | "STEM")[];
+            /** @description Represents available links to, and metadata about, an album item images */
+            imageLinks?: components["schemas"]["Image_Link"][];
+            /** @description Represents available links to something that is related to a catalog item, but external to the TIDAL API */
+            externalLinks?: components["schemas"]["External_Link"][];
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        Video_Relationships: {
+            albums: components["schemas"]["Multi_Data_Relationship_Doc"];
+            artists: components["schemas"]["Multi_Data_Relationship_Doc"];
             providers: components["schemas"]["Multi_Data_Relationship_Doc"];
         };
-        Album_Resource: {
-            attributes?: components["schemas"]["Album_Attributes"];
-            relationships?: components["schemas"]["Album_Relationships"];
+        Video_Resource: {
+            attributes?: components["schemas"]["Video_Attributes"];
+            relationships?: components["schemas"]["Video_Relationships"];
             links?: components["schemas"]["Links"];
             /**
              * @description resource unique identifier
@@ -379,396 +578,17 @@ export interface components {
              */
             numberOfTracks: number;
         };
-        External_Link: {
-            /**
-             * @description link to something that is related to a resource
-             * @example https://tidal.com/browse/artist/1566
-             */
-            href: string;
-            meta: components["schemas"]["External_Link_Meta"];
-        };
-        /** @description metadata about an external link */
-        External_Link_Meta: {
-            /**
-             * @description external link type
-             * @example TIDAL_SHARING
-             * @enum {string}
-             */
-            type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "HOMEPAGE";
-        };
-        Image_Link: {
-            /**
-             * @description link to an image
-             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.jpg
-             */
-            href: string;
-            meta: components["schemas"]["Image_Link_Meta"];
-        };
-        /** @description metadata about an image */
-        Image_Link_Meta: {
-            /**
-             * Format: int32
-             * @description image width (in pixels)
-             * @example 80
-             */
-            width: number;
-            /**
-             * Format: int32
-             * @description image height (in pixels)
-             * @example 80
-             */
-            height: number;
-        };
-        /** @description Album providers relationship */
-        Multi_Data_Relationship_Doc: {
+        Playlist_Owners_Relationship_Document: {
             /** @description array of relationship resource linkages */
             data?: components["schemas"]["Resource_Identifier"][];
             links?: components["schemas"]["Links"];
+            included?: (components["schemas"]["User_Resource"] | components["schemas"]["Artist_Resource"])[];
         };
-        /** @description array of relationship resource linkages */
-        Resource_Identifier: {
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
-        };
-        /** @description relationships object describing relationships between the resource and other resources */
-        Search_Result_Relationships: {
-            albums: components["schemas"]["Multi_Data_Relationship_Doc"];
-            artists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            tracks: components["schemas"]["Multi_Data_Relationship_Doc"];
-            videos: components["schemas"]["Multi_Data_Relationship_Doc"];
-            playlists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            topHits: components["schemas"]["Multi_Data_Relationship_Doc"];
-        };
-        /** @description attributes object representing some of the resource's data */
-        Search_Results_Attributes: {
-            /**
-             * @description search request unique tracking number
-             * @example 5896e37d-e847-4ca6-9629-ef8001719f7f
-             */
-            trackingId: string;
-            /**
-             * @description 'did you mean' prompt
-             * @example beatles
-             */
-            didYouMean?: string;
-        };
-        Search_Results_Data_Document: {
-            data?: components["schemas"]["Search_Results_Resource"];
-            links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"])[];
-        };
-        /** @description primary resource data */
-        Search_Results_Resource: {
-            attributes?: components["schemas"]["Search_Results_Attributes"];
-            relationships?: components["schemas"]["Search_Result_Relationships"];
-            links?: components["schemas"]["Links"];
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
-        };
-        /** @description attributes object representing some of the resource's data */
-        Track_Attributes: {
-            /**
-             * @description Album item's title
-             * @example Kill Jay Z
-             */
-            title: string;
-            /**
-             * @description Version of the album's item; complements title
-             * @example Kill Jay Z
-             */
-            version?: string;
-            /**
-             * @description ISRC code
-             * @example TIDAL2274
-             */
-            isrc: string;
-            /**
-             * @description Duration expressed in accordance with ISO 8601
-             * @example P30M5S
-             */
-            duration: string;
-            /**
-             * @description Copyright information
-             * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
-             */
-            copyright?: string;
-            /**
-             * @description Indicates whether a catalog item consist of any explicit content
-             * @example false
-             */
-            explicit: boolean;
-            /**
-             * Format: double
-             * @description Track or video popularity (ranged in 0.00 ... 1.00). Conditionally visible
-             * @example 0.56
-             */
-            popularity: number;
-            /** @description Defines a catalog item availability e.g. for streaming, DJs, stems */
-            availability?: ("STREAM" | "DJ" | "STEM")[];
-            mediaTags: string[];
-            /** @description Represents available links to something that is related to a catalog item, but external to the TIDAL API */
-            externalLinks?: components["schemas"]["External_Link"][];
-        };
-        /** @description relationships object describing relationships between the resource and other resources */
-        Track_Relationships: {
-            albums: components["schemas"]["Multi_Data_Relationship_Doc"];
-            artists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            providers: components["schemas"]["Multi_Data_Relationship_Doc"];
-            similarTracks: components["schemas"]["Multi_Data_Relationship_Doc"];
-            radio: components["schemas"]["Multi_Data_Relationship_Doc"];
-        };
-        Track_Resource: {
-            attributes?: components["schemas"]["Track_Attributes"];
-            relationships?: components["schemas"]["Track_Relationships"];
-            links?: components["schemas"]["Links"];
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
-        };
-        /** @description attributes object representing some of the resource's data */
-        Video_Attributes: {
-            /**
-             * @description Album item's title
-             * @example Kill Jay Z
-             */
-            title: string;
-            /**
-             * @description Version of the album's item; complements title
-             * @example Kill Jay Z
-             */
-            version?: string;
-            /**
-             * @description ISRC code
-             * @example TIDAL2274
-             */
-            isrc: string;
-            /**
-             * @description Duration expressed in accordance with ISO 8601
-             * @example P30M5S
-             */
-            duration: string;
-            /**
-             * @description Copyright information
-             * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
-             */
-            copyright?: string;
-            /**
-             * Format: date
-             * @description Release date (ISO-8601)
-             * @example 2017-06-27
-             */
-            releaseDate?: string;
-            /**
-             * @description Indicates whether a catalog item consist of any explicit content
-             * @example false
-             */
-            explicit: boolean;
-            /**
-             * Format: double
-             * @description Track or video popularity (ranged in 0.00 ... 1.00). Conditionally visible
-             * @example 0.56
-             */
-            popularity: number;
-            /** @description Defines a catalog item availability e.g. for streaming, DJs, stems */
-            availability?: ("STREAM" | "DJ" | "STEM")[];
-            /** @description Represents available links to, and metadata about, an album item images */
-            imageLinks?: components["schemas"]["Image_Link"][];
-            /** @description Represents available links to something that is related to a catalog item, but external to the TIDAL API */
-            externalLinks?: components["schemas"]["External_Link"][];
-        };
-        Video_Link: {
-            /**
-             * @description link to a video
-             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.mp4
-             */
-            href: string;
-            meta: components["schemas"]["Video_Link_Meta"];
-        };
-        /** @description metadata about a video */
-        Video_Link_Meta: {
-            /**
-             * Format: int32
-             * @description video width (in pixels)
-             * @example 80
-             */
-            width: number;
-            /**
-             * Format: int32
-             * @description video height (in pixels)
-             * @example 80
-             */
-            height: number;
-        };
-        /** @description relationships object describing relationships between the resource and other resources */
-        Video_Relationships: {
-            albums: components["schemas"]["Multi_Data_Relationship_Doc"];
-            artists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            providers: components["schemas"]["Multi_Data_Relationship_Doc"];
-        };
-        Video_Resource: {
-            attributes?: components["schemas"]["Video_Attributes"];
-            relationships?: components["schemas"]["Video_Relationships"];
-            links?: components["schemas"]["Links"];
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
-        };
-        Video_Relationships_Document: {
+        Playlist_Items_Relationship_Document: {
             /** @description array of relationship resource linkages */
             data?: components["schemas"]["Resource_Identifier"][];
             links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Video_Resource"][];
-        };
-        Track_Relationships_Document: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Track_Resource"][];
-        };
-        Top_Hits_Relationship_Document: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"])[];
-        };
-        /** @description attributes object representing some of the resource's data */
-        Playlist_Attributes: {
-            /**
-             * @description ${public.usercontent.fields.playlists.name.descr}
-             * @example My Playlist
-             */
-            name: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.description.descr}
-             * @example All the good details about what is inside this playlist
-             */
-            description?: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.bounded.descr}
-             * @example true
-             */
-            bounded: boolean;
-            /**
-             * @description ${public.usercontent.fields.playlists.duration.descr}
-             * @example P30M5S
-             */
-            duration?: string;
-            /**
-             * Format: int32
-             * @description ${public.usercontent.fields.playlists.numberOfItems.descr}
-             * @example 5
-             */
-            numberOfItems?: number;
-            /**
-             * @description ${public.usercontent.fields.playlists.externalLinks.descr}
-             * @example true
-             */
-            externalLinks: components["schemas"]["Playlist_External_Link"][];
-            /**
-             * Format: date-time
-             * @description ${public.usercontent.fields.playlists.createdAt.descr}
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description ${public.usercontent.fields.playlists.lastModifiedAt.descr}
-             */
-            lastModifiedAt: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.privacy.descr}
-             * @example PUBLIC
-             */
-            privacy: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.type.descr}
-             * @example EDITORIAL
-             */
-            playlistType: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.imageLinks.descr}
-             * @example true
-             */
-            imageLinks: components["schemas"]["Image_Link"][];
-        };
-        /**
-         * @description ${public.usercontent.fields.playlists.externalLinks.descr}
-         * @example true
-         */
-        Playlist_External_Link: {
-            /**
-             * @description link to something that is related to a resource
-             * @example https://tidal.com/browse/artist/1566
-             */
-            href: string;
-            meta: components["schemas"]["External_Link_Meta"];
-        };
-        /** @description relationships object describing relationships between the resource and other resources */
-        Playlist_Relationships: {
-            items: components["schemas"]["Multi_Data_Relationship_Doc"];
-            owners: components["schemas"]["Multi_Data_Relationship_Doc"];
-        };
-        Playlist_Relationships_Document: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Playlist_Resource"][];
-        };
-        Playlist_Resource: {
-            attributes?: components["schemas"]["Playlist_Attributes"];
-            relationships?: components["schemas"]["Playlist_Relationships"];
-            links?: components["schemas"]["Links"];
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
-        };
-        Artists_Relationship_Document: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Artist_Resource"][];
-        };
-        Albums_Relationship_Document: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Album_Resource"][];
+            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"])[];
         };
     };
     responses: never;
@@ -779,33 +599,32 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    getSearchResults: {
+    getPlaylistsByIds: {
         parameters: {
             query: {
                 /**
-                 * @description ISO 3166-1 alpha-2 country code
+                 * @description Country code (ISO 3166-1 alpha-2)
                  * @example US
                  */
                 countryCode: string;
                 /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: artists, albums, tracks, videos, playlists, topHits
-                 * @example artists
+                 * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                 * @example items
                  */
-                include?: ("artists" | "albums" | "tracks" | "videos" | "playlists" | "topHits")[];
+                include?: ("items" | "owners")[];
+                /**
+                 * @description public.usercontent.getPlaylists.ids.descr
+                 * @example 123456
+                 */
+                "filter[id]"?: string[];
             };
             header?: never;
-            path: {
-                /**
-                 * @description Search query
-                 * @example moon
-                 */
-                query: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Successfully executed request. */
+            /** @description Playlists retrieved successfully */
             200: {
                 headers: {
                     /**
@@ -831,7 +650,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Search_Results_Data_Document"];
+                    "*/*": components["schemas"]["Playlist_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1010,33 +829,33 @@ export interface operations {
             };
         };
     };
-    searchForVideos: {
+    getPlaylist: {
         parameters: {
             query: {
                 /**
-                 * @description ISO 3166-1 alpha-2 country code
+                 * @description Country code (ISO 3166-1 alpha-2)
                  * @example US
                  */
                 countryCode: string;
                 /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: videos
-                 * @example videos
+                 * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                 * @example items
                  */
-                include?: "videos"[];
+                include?: ("items" | "owners")[];
             };
             header?: never;
             path: {
                 /**
-                 * @description Search query
-                 * @example moon
+                 * @description TIDAL playlist id
+                 * @example 12345678
                  */
-                query: string;
+                id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Successfully executed request. */
+            /** @description Playlist retrieved successfully */
             200: {
                 headers: {
                     /**
@@ -1062,7 +881,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Video_Relationships_Document"];
+                    "application/vnd.api+json": components["schemas"]["Playlist_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1241,33 +1060,33 @@ export interface operations {
             };
         };
     };
-    searchForTracks: {
+    getPlaylistOwnersRelationship: {
         parameters: {
             query: {
                 /**
-                 * @description ISO 3166-1 alpha-2 country code
+                 * @description Country code (ISO 3166-1 alpha-2)
                  * @example US
                  */
                 countryCode: string;
                 /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: tracks
-                 * @example tracks
+                 * @description Allows the client to customize which related resources should be returned. Available options: owners
+                 * @example owners
                  */
-                include?: "tracks"[];
+                include?: "owners"[];
             };
             header?: never;
             path: {
                 /**
-                 * @description Search query
-                 * @example moon
+                 * @description TIDAL playlist id
+                 * @example 12345678
                  */
-                query: string;
+                id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Successfully executed request. */
+            /** @description Playlist owner retrieved successfully */
             200: {
                 headers: {
                     /**
@@ -1293,7 +1112,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Track_Relationships_Document"];
+                    "application/vnd.api+json": components["schemas"]["Playlist_Owners_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1472,33 +1291,33 @@ export interface operations {
             };
         };
     };
-    searchForTopHits: {
+    getPlaylistItemsRelationship: {
         parameters: {
             query: {
                 /**
-                 * @description ISO 3166-1 alpha-2 country code
+                 * @description Country code (ISO 3166-1 alpha-2)
                  * @example US
                  */
                 countryCode: string;
                 /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: topHits
-                 * @example topHits
+                 * @description Allows the client to customize which related resources should be returned. Available options: items
+                 * @example items
                  */
-                include?: "topHits"[];
+                include?: "items"[];
             };
             header?: never;
             path: {
                 /**
-                 * @description Search query
-                 * @example moon
+                 * @description TIDAL playlist id
+                 * @example 12345678
                  */
-                query: string;
+                id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Successfully executed request. */
+            /** @description Playlist items retrieved successfully */
             200: {
                 headers: {
                     /**
@@ -1524,7 +1343,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Top_Hits_Relationship_Document"];
+                    "application/vnd.api+json": components["schemas"]["Playlist_Items_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1703,33 +1522,22 @@ export interface operations {
             };
         };
     };
-    searchForPlaylists: {
+    getPlaylistCollection: {
         parameters: {
-            query: {
+            query?: {
                 /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
+                 * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                 * @example items
                  */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: playlists
-                 * @example playlists
-                 */
-                include?: "playlists"[];
+                include?: ("items" | "owners")[];
             };
             header?: never;
-            path: {
-                /**
-                 * @description Searh query
-                 * @example moon
-                 */
-                query: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Successfully executed request. */
+            /** @description Playlists retrieved successfully */
             200: {
                 headers: {
                     /**
@@ -1755,469 +1563,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Playlist_Relationships_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    searchForArtists: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: artists
-                 * @example artists
-                 */
-                include?: "artists"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description Search query
-                 * @example moon
-                 */
-                query: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Artists_Relationship_Document"];
-                };
-            };
-            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
-            400: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Resource not found. The requested resource is not found. */
-            404: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
-            405: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
-            406: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
-            415: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-            /** @description Internal Server Error. Something went wrong on the server party. */
-            500: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Error_Document"];
-                };
-            };
-        };
-    };
-    searchForAlbums: {
-        parameters: {
-            query: {
-                /**
-                 * @description ISO 3166-1 alpha-2 country code
-                 * @example US
-                 */
-                countryCode: string;
-                /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: albums
-                 * @example albums
-                 */
-                include?: "albums"[];
-            };
-            header?: never;
-            path: {
-                /**
-                 * @description Search query
-                 * @example moon
-                 */
-                query: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully executed request. */
-            200: {
-                headers: {
-                    /**
-                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
-                     * @example 5
-                     */
-                    "X-RateLimit-Remaining": number;
-                    /**
-                     * @description Initial number of tokens, and max number of tokens that can be replenished.
-                     * @example 20
-                     */
-                    "X-RateLimit-Burst-Capacity": number;
-                    /**
-                     * @description Number of tokens replenished per second.
-                     * @example 5
-                     */
-                    "X-RateLimit-Replenish-Rate": number;
-                    /**
-                     * @description Request cost in tokens.
-                     * @example 5
-                     */
-                    "X-RateLimit-Requested-Tokens": number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/vnd.api+json": components["schemas"]["Albums_Relationship_Document"];
+                    "application/vnd.api+json": components["schemas"]["Playlist_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
