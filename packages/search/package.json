@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/search",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "type": "module",
   "files": [
     "dist"
@@ -17,8 +17,8 @@
     "import": "./dist/index.js"
   },
   "scripts": {
-    "prepare": "vite build && cp src/searchAPI.d.ts dist/",
-    "build": "vite build && cp src/searchAPI.d.ts dist/",
+    "prepare": "vite build",
+    "build": "vite build",
     "build:dev": "vite build -m development",
     "clean": "rm -rf coverage dist .eslintcache",
     "dev": "vite --debug --cors -c=./vite.config.ts",
@@ -26,7 +26,7 @@
     "lint:ci": "eslint . --quiet",
     "lint:fix": "pnpm run lint --fix",
     "preview": "vite preview",
-    "generateTypes": "openapi-typescript https://developer.tidal.com/apiref/api-specifications/api-public-search-jsonapi/tidal-search-v2-openapi-3.0.json --output ./src/searchAPI.d.ts && echo \"/* eslint-disable */\n$(cat ./src/searchAPI.d.ts)\" > ./src/searchAPI.d.ts",
+    "generateTypes": "openapi-typescript https://developer.tidal.com/apiref/api-specifications/api-public-search-jsonapi/tidal-search-v2-openapi-3.0.json --output ./src/searchAPI.ts && echo \"/* eslint-disable */\n$(cat ./src/searchAPI.ts)\" > ./src/searchAPI.ts",
     "test": "vitest",
     "test:coverage": "pnpm run test --coverage",
     "test:ui": "pnpm run test:coverage --ui",
