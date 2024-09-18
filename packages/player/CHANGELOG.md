@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2024-09-18
+
+### Changed
+
+- Use Shaka Preload API for preparing the next track, instead of dual instances of shaka.
+- Removed mux.js dependency as shaka no longer requires that
+- Add authorization header to Widevine license request, to enable playback for Open API clients
+
 ## [0.4.3] - 2024-09-10
 
 ### Changed
