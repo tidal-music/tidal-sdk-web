@@ -15,7 +15,7 @@
     "typecheck": "pnpm -r typecheck"
   },
   "devDependencies": {
-    "eslint": "8.57.1",
+    "eslint": "9.10.0",
     "eslint-config-tidal": "3.2.0",
     "eslint-plugin-disable-autofix": "5.0.1",
     "eslint-plugin-jsdoc": "50.2.3",
