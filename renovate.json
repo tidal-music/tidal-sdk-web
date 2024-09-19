@@ -4,8 +4,7 @@
     "config:recommended"
   ],
   "ignoreDeps": [
-    "shaka-player",
-    "openapi-fetch"
+    "shaka-player"
   ],
   "packageRules": [{
     "description": "Group Npm packages",
