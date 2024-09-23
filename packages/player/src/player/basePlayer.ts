@@ -250,29 +250,25 @@ export class BasePlayer {
   ) {
     const endTimestamp = trueTime.now();
 
-    PlayLog.commit({
-      events: [
-        PlayLog.playbackSession({
-          endAssetPosition,
-          endTimestamp,
-          streamingSessionId,
-        }),
-      ],
-    }).catch(console.error);
+    PlayLog.commit([
+      PlayLog.playbackSession({
+        endAssetPosition,
+        endTimestamp,
+        streamingSessionId,
+      }),
+    ]).catch(console.error);
 
-    StreamingMetrics.commit({
-      events: [
-        StreamingMetrics.playbackStatistics({
-          endReason: playbackStatisticsEndReason(endReason),
-          endTimestamp,
-          streamingSessionId,
-        }),
-        StreamingMetrics.streamingSessionEnd({
-          streamingSessionId,
-          timestamp: endTimestamp,
-        }),
-      ],
-    }).catch(console.error);
+    StreamingMetrics.commit([
+      StreamingMetrics.playbackStatistics({
+        endReason: playbackStatisticsEndReason(endReason),
+        endTimestamp,
+        streamingSessionId,
+      }),
+      StreamingMetrics.streamingSessionEnd({
+        streamingSessionId,
+        timestamp: endTimestamp,
+      }),
+    ]).catch(console.error);
   }
 
   eventTrackingStreamingStarted(streamingSessionId: string) {

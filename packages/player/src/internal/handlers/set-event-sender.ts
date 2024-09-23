@@ -1,4 +1,6 @@
-import type { EventSender } from '@tidal-music/common';
+import type * as _EventSender from '@tidal-music/event-producer';
+
+type EventSender = typeof _EventSender;
 
 import { eventSenderStore } from '../index';
 
