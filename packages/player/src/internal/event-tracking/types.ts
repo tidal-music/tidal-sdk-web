@@ -1,5 +1,4 @@
 import type { PlaybackSession } from './play-log/playback-session';
-import type { Progress } from './playback/progress';
 import type { DrmLicenseFetch } from './streaming-metrics/drm-license-fetch';
 import type { PlaybackInfoFetch } from './streaming-metrics/playback-info-fetch';
 import type { PlaybackStatistics } from './streaming-metrics/playback-statistics';
@@ -27,7 +26,6 @@ export type PrematureEvents =
   | PlaybackInfoFetch
   | PlaybackSession
   | PlaybackStatistics
-  | Progress
   | StreamingSessionEnd
   | StreamingSessionStart;
 
