@@ -1,0 +1,26 @@
+<html>
+<head>
+  <style>
+    label {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <form id="clientCredentialsForm">
+    <label>
+      <span>Client ID</span>
+      <input type="text" name="clientId" />
+    </label>
+    <label>
+      <span>Client Secret</span>
+      <input type="text" name="clientSecret" />
+    </label>
+    <button type="submit">Authenticate</button>
+  </form>
+
+  <ul id="results"></ul>
+
+  <script type="module" src="./examples/example.js"></script>
+</body>
+</html>

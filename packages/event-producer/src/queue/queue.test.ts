@@ -25,6 +25,8 @@ describe.sequential('Queue', () => {
   beforeEach(() => {
     // reset queue events between tests
     queue.setEvents([]);
+    // reset worker between tests
+    queue.worker.terminate();
   });
 
   it('initDB: restores saved queue', async () => {
@@ -39,7 +41,7 @@ describe.sequential('Queue', () => {
     db.getItem.mockResolvedValueOnce(undefined);
     db.setItem.mockResolvedValueOnce(true);
 
-    const postMessageSpy = vi.spyOn(queue.worker.port, 'postMessage');
+    const postMessageSpy = vi.spyOn(queue.worker, 'postMessage');
     await queue.initDB();
     queue.addEvent(epEvent1);
 
@@ -55,7 +57,6 @@ describe.sequential('Queue', () => {
 
   it('init: filters out designated event types', async () => {
     db.getItem.mockResolvedValueOnce([epEvent1, epEvent2]);
-
     await queue.initDB({ feralEventTypes: [epEvent2.name] });
 
     expect(queue.getEvents()).toEqual([epEvent1]);

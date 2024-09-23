@@ -6,7 +6,6 @@ import type { MediaProduct, PlaybackState } from '../api/interfaces';
 import * as Config from '../config';
 import { events } from '../event-bus';
 import * as PlayLog from '../internal/event-tracking/play-log/index';
-import * as Playback from '../internal/event-tracking/playback/index';
 import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
 import {
   type BasePayload as PlaybackStatisticsPayload,
@@ -60,8 +59,6 @@ export class BasePlayer {
   #preloadedStreamingSessionId: string | undefined;
 
   #startAssetPosition!: number;
-
-  #startedStreamInfos = new Map<string, boolean>();
 
   name: string | undefined;
 
@@ -126,11 +123,8 @@ export class BasePlayer {
       endAssetPosition,
       endReason,
     });
-    this.reportPlaybackProgress(streamingSessionId);
 
     streamingSessionStore.deleteSession(streamingSessionId);
-
-    this.#startedStreamInfos.delete(streamingSessionId);
 
     // Check that ended SSI is still same as current before unsetting
     // yo prevent unsetting a started preload.
@@ -338,7 +332,7 @@ export class BasePlayer {
         started for the same streamingSessionId then we have somehow lost the media product
         transition which is an error.
       */
-      if (this.#startedStreamInfos.has(streamingSessionId)) {
+      if (streamingSessionStore.hasStartedStreamInfo(streamingSessionId)) {
         console.error(
           `A media product transition for streaming session #${streamingSessionId} has not been saved and could thus not be found for play log reporting.`,
         );
@@ -420,18 +414,13 @@ export class BasePlayer {
   }
 
   hasNextItem() {
-    return (
-      this.preloadedStreamingSessionId &&
-      streamingSessionStore.hasMediaProductTransition(
-        this.preloadedStreamingSessionId,
-      )
-    );
+    return this.preloadedStreamingSessionId;
   }
 
   hasStarted() {
     return (
       this.currentStreamingSessionId &&
-      this.#startedStreamInfos.has(this.currentStreamingSessionId)
+      streamingSessionStore.hasStartedStreamInfo(this.currentStreamingSessionId)
     );
   }
 
@@ -468,7 +457,7 @@ export class BasePlayer {
   mediaProductStarted(streamingSessionId: string | undefined) {
     if (
       !streamingSessionId ||
-      this.#startedStreamInfos.has(streamingSessionId)
+      streamingSessionStore.hasStartedStreamInfo(streamingSessionId)
     ) {
       return;
     }
@@ -476,7 +465,7 @@ export class BasePlayer {
     this.debugLog('mediaProductStarted');
 
     this.eventTrackingStreamingStarted(streamingSessionId);
-    this.#startedStreamInfos.set(streamingSessionId, true);
+    streamingSessionStore.setStartedStreamInfo(streamingSessionId);
     this.updateVolumeLevel();
     this.#hasEmittedPreloadRequest = false;
 
@@ -535,37 +524,6 @@ export class BasePlayer {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   playbackEngineEndedHandler(_e: EndedEvent) {
     return Promise.resolve();
-  }
-
-  reportPlaybackProgress(streamingSessionId: string) {
-    const mediaProductTransition =
-      streamingSessionStore.getMediaProductTransition(streamingSessionId);
-
-    if (!mediaProductTransition) {
-      return;
-    }
-
-    const { mediaProduct, playbackContext } = mediaProductTransition;
-
-    if (this.#currentStreamingSessionId) {
-      Playback.commit({
-        events: [
-          Playback.progress({
-            playback: {
-              durationMS: Math.floor(playbackContext.actualDuration * 1000),
-              id: mediaProduct.productId,
-              playedMS: Math.floor(this.currentTime * 1000),
-              source: {
-                id: mediaProduct.sourceId,
-                type: mediaProduct.sourceType,
-              },
-              type: mediaProduct.productType === 'track' ? 'TRACK' : 'VIDEO',
-            },
-            streamingSessionId: this.#currentStreamingSessionId,
-          }),
-        ],
-      }).catch(console.error);
-    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -773,8 +731,6 @@ export class BasePlayer {
         return;
       case fromTo('PLAYING', 'NOT_PLAYING'):
       case fromTo('PLAYING', 'IDLE'): {
-        this.reportPlaybackProgress(this.currentStreamingSessionId);
-
         if (this.duration && this.currentTime < this.duration) {
           PlayLog.playbackSessionAction(this.currentStreamingSessionId, {
             actionType: 'PLAYBACK_STOP',
