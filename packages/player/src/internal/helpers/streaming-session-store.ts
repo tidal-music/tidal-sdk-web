@@ -8,6 +8,8 @@ class StreamingSessionStore {
 
   #playbackInfos = new Map<string, PlaybackInfo>();
 
+  #startedStreamInfos = new Map<string, boolean>();
+
   #streamInfos = new Map<string, StreamInfo>();
 
   /**
@@ -57,7 +59,12 @@ class StreamingSessionStore {
   deleteSession(streamingSessionId: string) {
     this.deleteMediaProductTransition(streamingSessionId);
     this.#playbackInfos.delete(streamingSessionId);
+    this.#startedStreamInfos.delete(streamingSessionId);
     this.deleteStreamInfo(streamingSessionId);
+  }
+
+  deleteStartedStreamInfo(streamingSessionId: string) {
+    this.#startedStreamInfos.delete(streamingSessionId);
   }
 
   deleteStreamInfo(streamingSessionId: string) {
@@ -96,6 +103,10 @@ class StreamingSessionStore {
     return this.#playbackInfos.has(streamingSessionId);
   }
 
+  hasStartedStreamInfo(streamingSessionId: string) {
+    return this.#startedStreamInfos.has(streamingSessionId);
+  }
+
   hasStreamInfo(streamingSessionId: string) {
     return this.#streamInfos.has(streamingSessionId);
   }
@@ -132,6 +143,10 @@ class StreamingSessionStore {
 
   saveStreamInfo(streamingSessionId: string, streamInfo: StreamInfo) {
     this.#streamInfos.set(streamingSessionId, streamInfo);
+  }
+
+  setStartedStreamInfo(streamingSessionId: string) {
+    return this.#startedStreamInfos.set(streamingSessionId, true);
   }
 }
 

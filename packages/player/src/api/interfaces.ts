@@ -56,11 +56,11 @@ export type MediaProduct = {
   /** The id of the product to play */
   productId: string;
   /** The type of the product to play */
-  productType: 'track' | 'video';
+  productType: 'demo' | 'track' | 'video';
   /** Optional client-set reference id to handle duplicated in a play queue implementation */
   referenceId?: string;
-  /** The id of the source to playing, passed along for event tracking */
+  /** The id of the source to play, passed along for event tracking */
   sourceId: string;
-  /** The type of the source to playing, passed along for event tracking */
+  /** The type of the source to play, passed along for event tracking */
   sourceType: string;
 };

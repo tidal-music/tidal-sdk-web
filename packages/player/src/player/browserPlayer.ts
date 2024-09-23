@@ -9,7 +9,6 @@ import { waitFor } from '../internal/helpers/wait-for';
 import {
   ensureVideoElementsMounted,
   mediaElementOne,
-  mediaElementTwo,
 } from './audio-context-store';
 import type { LoadPayload } from './basePlayer';
 import { BasePlayer } from './basePlayer';
@@ -19,9 +18,6 @@ export default class BrowserPlayer extends BasePlayer {
   #currentPlayer: HTMLVideoElement | undefined;
 
   #instanceOne: HTMLVideoElement;
-
-  #instanceTwo: HTMLVideoElement;
-
   #isReset = true;
 
   #librariesLoad: Promise<void> | undefined;
@@ -38,6 +34,8 @@ export default class BrowserPlayer extends BasePlayer {
     timeUpdateHandler: EventListener;
     waitingHandler: EventListener;
   };
+
+  #preloadPlayer: HTMLVideoElement = document.createElement('video');
 
   #triedToPlay = false;
 
@@ -136,15 +134,8 @@ export default class BrowserPlayer extends BasePlayer {
     ensureVideoElementsMounted().then().catch(console.error);
 
     this.#instanceOne = mediaElementOne;
-    this.#instanceTwo = mediaElementTwo;
 
     this.currentPlayer = this.#instanceOne;
-  }
-
-  #getNextPlayerInstance() {
-    return [this.#instanceOne, this.#instanceTwo]
-      .filter(x => x !== this.#currentPlayer)
-      .pop();
   }
 
   #mediaElementEvents(mediaElement: HTMLMediaElement, eventsEnabled: boolean) {
@@ -318,7 +309,7 @@ export default class BrowserPlayer extends BasePlayer {
 
     const { mediaProduct, playbackInfo, streamInfo } = payload;
 
-    const preloadPlayer = this.#getNextPlayerInstance();
+    const preloadPlayer = this.#preloadPlayer;
 
     this.preloadedStreamingSessionId = streamInfo.streamingSessionId;
 
@@ -356,6 +347,7 @@ export default class BrowserPlayer extends BasePlayer {
         playbackContext,
       },
     );
+    this.#isReset = false;
   }
 
   pause() {
@@ -492,10 +484,8 @@ export default class BrowserPlayer extends BasePlayer {
       this.preloadedStreamingSessionId,
     );
 
-    const preloadPlayer = this.#getNextPlayerInstance();
-
-    if (preloadPlayer) {
-      this.currentPlayer = preloadPlayer;
+    if (this.#preloadPlayer.src && this.currentPlayer) {
+      this.currentPlayer.src = this.#preloadPlayer.src;
       this.currentStreamingSessionId = String(this.preloadedStreamingSessionId);
       this.preloadedStreamingSessionId = undefined;
 
@@ -532,7 +522,7 @@ export default class BrowserPlayer extends BasePlayer {
 
     this.cleanUpStoredPreloadInfo();
 
-    const preloadPlayer = this.#getNextPlayerInstance();
+    const preloadPlayer = this.#preloadPlayer;
 
     if (preloadPlayer) {
       preloadPlayer.src = '';

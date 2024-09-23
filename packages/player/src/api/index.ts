@@ -21,7 +21,6 @@ export { setLoudnessNormalizationMode } from '../internal/handlers/set-loudness-
 export { setNext } from '../internal/handlers/set-next';
 export { setOutputDevice } from '../internal/handlers/set-output-device';
 export { setOutputDeviceMode } from '../internal/handlers/set-output-device-mode';
-export { setOutputDevicePassThrough } from '../internal/handlers/set-output-device-pass-through';
 export { setStreamingWifiAudioQuality } from '../internal/handlers/set-streaming-wifi-audio-quality';
 export { setVolumeLevel } from '../internal/handlers/set-volume-level';
 

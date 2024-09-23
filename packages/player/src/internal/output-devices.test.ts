@@ -151,7 +151,7 @@ describe('OutputDevices', () => {
     new OutputDevice({
       name: 'Germanys Saurkraut (1ff:ss:trrtt)',
       nativeDeviceId: 'native-breaky-supertrouper-booper',
-      type: 'mqa',
+      type: 'airplay',
       webDeviceId: 'web-breaky-supertrouper-booper',
     }),
   ]);
@@ -188,12 +188,23 @@ describe('OutputDevices', () => {
     }
   });
 
-  it('can detect output type if native device is mqa', () => {
+  it('can detect output type if native device is airplay', () => {
     const before = getOutputDeviceByName(devices, 'Germanys Saurkraut');
 
     if (before) {
-      expect(before.type).to.equal('mqa');
+      expect(before.type).to.equal('airplay');
     }
+  });
+
+  // TODO: Add active device and boot player to fix test.
+  it.skip('can change device mode', () => {
+    const outputDevices = new OutputDevices();
+
+    expect(outputDevices.deviceMode).to.equal('shared');
+
+    outputDevices.deviceMode = 'exclusive';
+
+    expect(outputDevices.deviceMode).to.equal('exclusive');
   });
 
   // eslint-disable-next-line vitest/expect-expect

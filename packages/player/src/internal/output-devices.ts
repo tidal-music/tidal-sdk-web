@@ -20,7 +20,6 @@ export type OutputType =
   | 'builtIn'
   | 'displayPort'
   | 'hdmi'
-  | 'mqa'
   | 'systemDefault'
   | 'usb'
   | 'windowsCommunication';
@@ -77,10 +76,6 @@ export function findOutputType(
   if ('type' in device) {
     if (device.type === 'airplay') {
       return 'airplay';
-    }
-
-    if (device.type === 'mqa') {
-      return 'mqa';
     }
   }
 
@@ -190,8 +185,6 @@ export class OutputDevices {
   #events: EventTarget;
 
   #nativeDevices: Set<NativePlayerComponentDeviceDescription>;
-
-  #passThrough: boolean | undefined = undefined;
 
   #webDevices: Set<MediaDeviceInfo>;
 
@@ -365,7 +358,6 @@ export class OutputDevices {
   set activeDevice(device: OutputDevice) {
     this.#activeDevice = device;
 
-    this.#passThrough = false;
     this.#deviceMode = 'shared';
 
     playerState.activePlayer?.updateOutputDevice()?.catch(console.error);
@@ -395,28 +387,6 @@ export class OutputDevices {
 
   get deviceMode() {
     return this.#deviceMode;
-  }
-
-  /**
-   * Set to true to disable software MQA decoder.
-   */
-  set passThrough(passThrough: boolean) {
-    const { activeDevice } = this;
-    const { activePlayer } = playerState;
-
-    if (
-      activeDevice &&
-      activePlayer &&
-      activePlayer.name === 'nativePlayer' &&
-      this.passThrough !== passThrough
-    ) {
-      this.#passThrough = passThrough;
-      (activePlayer as NativePlayer).updatePassThrough();
-    }
-  }
-
-  get passThrough() {
-    return Boolean(this.#passThrough);
   }
 }
 

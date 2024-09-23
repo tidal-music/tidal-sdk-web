@@ -1,3 +1,4 @@
+import { mimeTypes } from '../../internal/constants';
 import type { NativePlayerStreamFormat } from '../../player/nativeInterface';
 import type { AudioQuality, Codec, VideoQuality } from '../types';
 
@@ -37,8 +38,6 @@ function extractStreamFormat(
         return 'mp4a.40.5';
       case 'flac':
         return 'flac';
-      case 'mqa':
-        return 'mqa';
       case 'mp3':
         return 'mp3';
       default:
@@ -65,6 +64,7 @@ export type StreamInfo = {
   albumReplayGain?: number;
   bitDepth?: number;
   codec?: Codec;
+  duration?: number;
   expires: number;
   id: string;
   prefetched: boolean;
@@ -78,13 +78,12 @@ export type StreamInfo = {
     | 'mp3'
     | 'mp4a.40.2'
     | 'mp4a.40.5'
-    | 'mqa'
     | 'none';
   streamUrl: string;
   streamingSessionId: string;
   trackPeakAmplitude?: number;
   trackReplayGain?: number;
-  type: 'track' | 'video';
+  type: 'demo' | 'track' | 'video';
 };
 
 function streamFormatToCodec(
@@ -99,7 +98,6 @@ function streamFormatToCodec(
     case 'mp4a.40.5':
       return 'aac';
     case 'flac':
-    case 'mqa':
       return streamFormat;
     default:
       return undefined;
@@ -120,12 +118,47 @@ function dashFindCodec(manifest: string): Codec | undefined {
     return 'aac';
   }
 
-  if (codecs === 'mqa') {
+  if (codecs === 'flac') {
     return codecs;
   }
 
-  if (codecs === 'flac') {
-    return codecs;
+  return undefined;
+}
+
+/**
+ * Convert duration format to seconds.
+ * (PT2M26.47S -> seconds)
+ */
+function parseDuration(duration: string): number {
+  const regex = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?/;
+  const match = regex.exec(duration);
+
+  if (!match) {
+    throw new Error('Invalid duration format');
+  }
+
+  const hours = parseFloat(match[1] || '0'); // hours part, if present
+  const minutes = parseFloat(match[2] || '0'); // minutes part, if present
+  const seconds = parseFloat(match[3] || '0'); // seconds part, if present
+
+  // Convert the duration to total seconds
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
+/**
+ * Find duration in a DASH manifest
+ */
+function dashFindDuration(manifest: string): number | undefined {
+  // Dash manifest
+  const regex = /mediaPresentationDuration="([^"]+)"/;
+  const match = regex.exec(manifest);
+
+  if (match) {
+    const duration = match[1];
+
+    if (duration) {
+      return parseDuration(duration);
+    }
   }
 
   return undefined;
@@ -157,8 +190,8 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
   };
 
   if (
-    playbackInfo.manifestMimeType === 'application/vnd.tidal.bts' ||
-    playbackInfo.manifestMimeType === 'application/vnd.tidal.emu'
+    playbackInfo.manifestMimeType === mimeTypes.BTS ||
+    playbackInfo.manifestMimeType === mimeTypes.EMU
   ) {
     const parsedManifest = parseJSONManifest(playbackInfo.manifest);
     const streamUrl = parsedManifest.urls[0]!;
@@ -199,7 +232,7 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
     };
   }
 
-  if (playbackInfo.manifestMimeType === 'application/dash+xml') {
+  if (playbackInfo.manifestMimeType === mimeTypes.DASH) {
     const streamUrl = `data:${playbackInfo.manifestMimeType};base64,${playbackInfo.manifest}`;
     const decodedManifest = atob(playbackInfo.manifest);
 
@@ -210,6 +243,7 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
           ? playbackInfo.bitDepth ?? undefined // API sends null, cast to undefined
           : undefined,
       codec: dashFindCodec(decodedManifest),
+      duration: dashFindDuration(decodedManifest),
       prefetched,
       quality,
       sampleRate:

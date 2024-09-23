@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import type { MediaProduct } from '../../api/interfaces';
 import * as Config from '../../config';
 import { generateGUID } from '../../internal/helpers/generate-guid';
@@ -43,13 +44,20 @@ async function _setNext(
     return unloadPreloadedMediaProduct();
   }
 
-  const streamingSessionId = generateGUID();
+  let streamingSessionId =
+    playerState.preloadedStreamingSessionId ?? generateGUID();
 
+  // For repeat playbacks, we clone the streaming session to a new streaming session id.
   if (
     playerState.preloadedStreamingSessionId &&
     playerState.preloadedMediaProduct &&
-    playerState.preloadedMediaProduct.productId === mediaProduct.productId
+    playerState.preloadedMediaProduct.productId === mediaProduct.productId &&
+    streamingSessionStore.hasStartedStreamInfo(
+      playerState.preloadedStreamingSessionId,
+    )
   ) {
+    streamingSessionId = generateGUID();
+
     streamingSessionStore.clone(
       playerState.preloadedStreamingSessionId,
       streamingSessionId,

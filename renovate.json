@@ -3,6 +3,9 @@
   "extends": [
     "config:recommended"
   ],
+  "ignoreDeps": [
+    "shaka-player"
+  ],
   "packageRules": [{
     "description": "Group Npm packages",
     "groupName": "Npm non-major dependencies",

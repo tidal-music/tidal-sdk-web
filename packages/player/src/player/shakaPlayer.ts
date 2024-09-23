@@ -1,10 +1,9 @@
-// @ts-expect-error - No declarations for mux
-import muxjs from 'mux.js';
 import shaka from 'shaka-player';
 
 import { activeDeviceChanged as activeDeviceChangedEvent } from '../api/event/active-device-changed';
 import type { EndedEvent } from '../api/event/ended';
 import { mediaProductTransition as mediaProductTransitionEvent } from '../api/event/media-product-transition';
+import type { MediaProduct, PlaybackContext } from '../api/interfaces';
 import * as Config from '../config';
 import { events } from '../event-bus';
 import {
@@ -14,6 +13,8 @@ import {
 } from '../internal';
 import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
 import { composePlaybackContext } from '../internal/helpers/compose-playback-context';
+import type { StreamInfo } from '../internal/helpers/manifest-parser';
+import type { PlaybackInfo } from '../internal/helpers/playback-info-resolver';
 import { streamingSessionStore } from '../internal/helpers/streaming-session-store';
 import { waitFor } from '../internal/helpers/wait-for';
 import type { OutputDevices } from '../internal/output-devices';
@@ -23,7 +24,6 @@ import { registerAdaptations } from './adaptations';
 import {
   ensureVideoElementsMounted,
   mediaElementOne,
-  mediaElementTwo,
 } from './audio-context-store';
 import type { LoadPayload } from './basePlayer';
 import { BasePlayer } from './basePlayer';
@@ -31,11 +31,6 @@ import * as FairplayDRM from './fairplay-drm';
 import { manipulateLicenseRequest, manipulateLicenseResponse } from './filters';
 import { registerStalls } from './stalls';
 import { playerState } from './state';
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-window.muxjs = muxjs;
 
 let outputDevices: OutputDevices | undefined;
 
@@ -101,9 +96,6 @@ const serverCertificateWidevine = new Uint8Array([
 
 // eslint-disable-next-line import/no-default-export
 export default class ShakaPlayer extends BasePlayer {
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  #currentPlayer: shaka.Player | undefined;
-
   #isReset = true;
 
   #librariesLoad: Promise<void>;
@@ -121,6 +113,9 @@ export default class ShakaPlayer extends BasePlayer {
     waitingHandler: EventListener;
   };
 
+  #preloadManager: null | shaka.media.PreloadManager = null;
+  #preloadedPayload: LoadPayload | null = null;
+
   #shakaEventHandlers: {
     bufferingHandler: EventListener;
     errorHandler: EventListener;
@@ -128,15 +123,11 @@ export default class ShakaPlayer extends BasePlayer {
     stallDetectedHandler: EventListener;
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  #shakaInstanceOne: shaka.Player | undefined;
-
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  #shakaInstanceTwo: shaka.Player | undefined;
-
   #shouldRetryStreaming = false;
 
   name = 'shakaPlayer';
+
+  shakaInstance: shaka.Player | undefined;
 
   constructor() {
     super();
@@ -154,12 +145,8 @@ export default class ShakaPlayer extends BasePlayer {
     }
 
     credentialsProviderStore.addEventListener('authorized', () => {
-      if (this.#shakaInstanceOne) {
-        this.#configureDRM(this.#shakaInstanceOne).catch(console.error);
-      }
-
-      if (this.#shakaInstanceTwo) {
-        this.#configureDRM(this.#shakaInstanceTwo).catch(console.error);
+      if (this.shakaInstance) {
+        this.#configureDRM(this.shakaInstance).catch(console.error);
       }
     });
 
@@ -348,6 +335,44 @@ export default class ShakaPlayer extends BasePlayer {
     } */
   }
 
+  /**
+   * Playback of media product type demo needs to be done with
+   * useNativeHlsForFairPlay and preferNativeHls set to false.
+   */
+  async #configureHlsForPlayback(
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    instance: shaka.Player | undefined,
+    mediaProduct: MediaProduct,
+  ) {
+    const isFairPlaySupported =
+      await shaka.util.FairPlayUtils.isFairPlaySupported();
+
+    if (isFairPlaySupported && instance) {
+      if (
+        instance.getConfiguration().streaming.preferNativeHls !==
+        (mediaProduct.productType !== 'demo')
+      ) {
+        instance.configure(
+          'streaming.preferNativeHls',
+          mediaProduct.productType !== 'demo',
+        );
+      }
+
+      if (
+        instance.getConfiguration().streaming.useNativeHlsForFairPlay !==
+        (mediaProduct.productType !== 'demo')
+      ) {
+        instance.configure(
+          'streaming.useNativeHlsForFairPlay',
+          mediaProduct.productType !== 'demo',
+        );
+      }
+
+      // await instance.release();
+      await instance.unload(true);
+    }
+  }
+
   async #createShakaPlayer(mediaEl: HTMLMediaElement) {
     this.debugLog('createShakaPlayer', mediaEl);
 
@@ -398,7 +423,8 @@ export default class ShakaPlayer extends BasePlayer {
          * for triggering tracking events etc.
          */
         // failureCallback() {},
-        useNativeHlsOnSafari: isFairPlaySupported,
+
+        useNativeHlsForFairPlay: isFairPlaySupported,
       },
     });
 
@@ -410,91 +436,134 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
-    player.getNetworkingEngine()?.registerRequestFilter((type, request) => {
-      // Manipulate license requests
-      if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
-        const streamingSessionId =
-          player === this.currentPlayer
-            ? this.currentStreamingSessionId
-            : this.preloadedStreamingSessionId;
+    player
+      .getNetworkingEngine()
+      ?.registerRequestFilter(async (type, request, context) => {
+        // Manipulate license requests
+        if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
+          const isPreload = context?.isPreload ?? false;
 
-        performance.mark('streaming_metrics:drm_license_fetch:startTimestamp', {
-          detail: streamingSessionId,
-          startTime: trueTime.now(),
-        });
+          const streamingSessionId = isPreload
+            ? this.preloadedStreamingSessionId ?? this.currentStreamingSessionId // If we switch quickly from preload -> current.
+            : this.currentStreamingSessionId;
 
-        const streamInfo =
-          streamingSessionStore.getStreamInfo(streamingSessionId);
-
-        if (streamInfo?.securityToken && streamingSessionId) {
-          manipulateLicenseRequest(request, {
-            securityToken: streamInfo.securityToken,
-            streamingSessionId,
-          });
-        } else {
-          console.error('Missing data for DRM request filter.');
-        }
-      }
-    });
-
-    player.getNetworkingEngine()?.registerResponseFilter((type, response) => {
-      // Manipulate license responses
-      if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
-        manipulateLicenseResponse(response);
-
-        if (this.currentStreamingSessionId) {
-          performance.mark('streaming_metrics:drm_license_fetch:endTimestamp', {
-            detail: this.currentStreamingSessionId,
-            startTime: trueTime.now(),
-          });
-
-          performance.measure('streaming_metrics:drm_license_fetch', {
-            detail: this.currentStreamingSessionId,
-            end: 'streaming_metrics:drm_license_fetch:endTimestamp',
-            start: 'streaming_metrics:drm_license_fetch:startTimestamp',
-          });
-
-          StreamingMetrics.playbackStatistics({
-            cdm: responseURIToCDMType(response.uri),
-            cdmVersion: null,
-            streamingSessionId: this.currentStreamingSessionId,
-          });
-
-          StreamingMetrics.commit([
-            StreamingMetrics.drmLicenseFetch({
-              endReason: 'COMPLETE',
-              endTimestamp: trueTime.timestamp(
-                'streaming_metrics:drm_license_fetch:endTimestamp',
-              ),
-              errorCode: null,
-              errorMessage: null,
-              startTimestamp: trueTime.timestamp(
-                'streaming_metrics:drm_license_fetch:startTimestamp',
-              ),
-              streamingSessionId: this.currentStreamingSessionId,
-            }),
-          ]).catch(console.error);
-
-          performance.clearMarks(
-            'streaming_metrics:drm_license_fetch:endTimestamp',
-          );
-          performance.clearMarks(
+          performance.mark(
             'streaming_metrics:drm_license_fetch:startTimestamp',
+            {
+              detail: streamingSessionId,
+              startTime: trueTime.now(),
+            },
           );
+
+          const streamInfo =
+            streamingSessionStore.getStreamInfo(streamingSessionId);
+
+          if (streamingSessionId && streamInfo?.securityToken) {
+            manipulateLicenseRequest(request, {
+              securityToken: streamInfo.securityToken,
+              streamingSessionId,
+            });
+          } else {
+            console.error('Missing data for DRM request filter.');
+          }
         }
-      }
-    });
+
+        // Manipulate manifest and segment requests that are sent to
+        // fsu.fa.tidal.com or ugcf.fa.tidal.com
+        const isRequestToFsuOrUgcf =
+          Array.isArray(request.uris) &&
+          request.uris.find(
+            (uri: string) =>
+              uri.startsWith('https://fsu.fa.tidal.com') ||
+              uri.startsWith('https://ugcf.fa.tidal.com'),
+          );
+
+        const demoContent =
+          isRequestToFsuOrUgcf &&
+          (type === shaka.net.NetworkingEngine.RequestType.MANIFEST ||
+            type === shaka.net.NetworkingEngine.RequestType.SEGMENT);
+
+        if (
+          demoContent ||
+          type === shaka.net.NetworkingEngine.RequestType.LICENSE
+        ) {
+          const { token } =
+            await credentialsProviderStore.credentialsProvider.getCredentials();
+
+          request.headers.authorization = `Bearer ${token}`;
+        }
+      });
+
+    player
+      .getNetworkingEngine()
+      ?.registerResponseFilter((type, response, context) => {
+        const isPreload = context?.isPreload;
+
+        const streamingSessionId = isPreload
+          ? this.preloadedStreamingSessionId ?? this.currentStreamingSessionId
+          : this.currentStreamingSessionId;
+
+        // Manipulate license responses
+        if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
+          manipulateLicenseResponse(response);
+
+          if (streamingSessionId) {
+            performance.mark(
+              'streaming_metrics:drm_license_fetch:endTimestamp',
+              {
+                detail: streamingSessionId,
+                startTime: trueTime.now(),
+              },
+            );
+
+            performance.measure('streaming_metrics:drm_license_fetch', {
+              detail: streamingSessionId,
+              end: 'streaming_metrics:drm_license_fetch:endTimestamp',
+              start: 'streaming_metrics:drm_license_fetch:startTimestamp',
+            });
+
+            StreamingMetrics.playbackStatistics({
+              cdm: responseURIToCDMType(response.uri),
+              cdmVersion: null,
+              streamingSessionId: streamingSessionId,
+            });
+
+            StreamingMetrics.commit([
+              StreamingMetrics.drmLicenseFetch({
+                endReason: 'COMPLETE',
+                endTimestamp: trueTime.timestamp(
+                  'streaming_metrics:drm_license_fetch:endTimestamp',
+                ),
+                errorCode: null,
+                errorMessage: null,
+                startTimestamp: trueTime.timestamp(
+                  'streaming_metrics:drm_license_fetch:startTimestamp',
+                ),
+                streamingSessionId: streamingSessionId,
+              }),
+            ]).catch(console.error);
+
+            performance.clearMarks(
+              'streaming_metrics:drm_license_fetch:endTimestamp',
+            );
+            performance.clearMarks(
+              'streaming_metrics:drm_license_fetch:startTimestamp',
+            );
+          }
+        }
+      });
+
+    this.#shakaEvents(player, true);
+    this.#mediaElementEvents(mediaElementOne, true);
 
     return player;
   }
 
-  #getNextPlayerInstance() {
-    return [this.#shakaInstanceOne, this.#shakaInstanceTwo]
-      .filter(x => x !== this.#currentPlayer)
-      .pop();
-  }
-
   #handleShakaError(e: CustomEvent<shaka.extern.Error>) {
+    if (this.#isReset) {
+      return;
+    }
+
     const error = e.detail;
     const errorCode = `S${error.code}` as ErrorCodes;
 
@@ -562,6 +631,103 @@ export default class ShakaPlayer extends BasePlayer {
     }
   }
 
+  async #loadAndDispatchMediaProductTransition({
+    assetPosition,
+    assetUriOrPreloader,
+    mediaProduct,
+    playbackInfo,
+    streamInfo,
+  }: {
+    assetPosition: number;
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    assetUriOrPreloader: shaka.media.PreloadManager | string;
+    mediaProduct: MediaProduct;
+    playbackInfo: PlaybackInfo;
+    streamInfo: StreamInfo;
+  }) {
+    this.debugLog('loadAndDispatchMediaProductTransition');
+    this.currentTime = assetPosition;
+
+    const { shakaInstance } = this;
+
+    if (!shakaInstance) {
+      return;
+    }
+
+    const playerLoad = new Promise<void>(resolve => {
+      shakaInstance.addEventListener(
+        'loaded',
+        () => {
+          resolve();
+        },
+        { once: true },
+      );
+    });
+
+    shakaInstance
+      .load(assetUriOrPreloader, assetPosition)
+      .catch((e: shaka.extern.Error) =>
+        this.#handleShakaError(
+          new CustomEvent<shaka.extern.Error>('shaka-error', { detail: e }),
+        ),
+      );
+
+    this.currentStreamingSessionId = playbackInfo.streamingSessionId;
+    this.preloadedStreamingSessionId = undefined;
+
+    let playbackContext: PlaybackContext;
+
+    // If there is a saved mediaProductTransition, use it instead of created a new one.
+    // This is the case when using setNext+load.
+    if (
+      streamingSessionStore.hasMediaProductTransition(
+        playbackInfo.streamingSessionId,
+      )
+    ) {
+      const mediaProductTransition =
+        streamingSessionStore.getMediaProductTransition(
+          playbackInfo.streamingSessionId,
+        )!;
+
+      playbackContext = mediaProductTransition.playbackContext;
+    } else {
+      const duration = await new Promise<number>(resolve =>
+        mediaElementOne.addEventListener(
+          'durationchange',
+          e => {
+            if (e.target instanceof HTMLMediaElement) {
+              resolve(e.target.duration);
+            }
+          },
+          { once: true },
+        ),
+      );
+
+      playbackContext = composePlaybackContext({
+        assetPosition,
+        duration,
+        playbackInfo,
+        streamInfo,
+      });
+
+      streamingSessionStore.saveMediaProductTransition(
+        streamInfo.streamingSessionId,
+        { mediaProduct, playbackContext },
+      );
+    }
+
+    await playerLoad;
+
+    // Player was reset during load, do not continue.
+    if (this.currentStreamingSessionId !== streamInfo.streamingSessionId) {
+      return;
+    }
+
+    events.dispatchEvent(
+      mediaProductTransitionEvent(mediaProduct, playbackContext),
+    );
+  }
+
   async #loadLibraries() {
     this.debugLog('loadLibraries');
 
@@ -570,19 +736,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     await ensureVideoElementsMounted();
 
-    const instanceOne = await this.#createShakaPlayer(mediaElementOne);
-
-    if (instanceOne !== undefined) {
-      this.#shakaInstanceOne = instanceOne;
-    }
-
-    const instanceTwo = await this.#createShakaPlayer(mediaElementTwo);
-
-    if (instanceTwo !== undefined) {
-      this.#shakaInstanceTwo = instanceTwo;
-    }
-
-    this.currentPlayer = this.#shakaInstanceOne;
+    this.shakaInstance = await this.#createShakaPlayer(mediaElementOne);
   }
 
   #mediaElementEvents(mediaElement: HTMLMediaElement, eventsEnabled: boolean) {
@@ -679,6 +833,11 @@ export default class ShakaPlayer extends BasePlayer {
     this.currentTime = payload.assetPosition;
     this.startAssetPosition = payload.assetPosition;
 
+    await this.#configureHlsForPlayback(
+      this.shakaInstance,
+      payload.mediaProduct,
+    );
+
     // Ensure reset and set reset to false since we're loading anew.
     await this.reset();
     this.#isReset = false;
@@ -694,63 +853,28 @@ export default class ShakaPlayer extends BasePlayer {
       this.playbackState = 'NOT_PLAYING';
     }
 
-    const { currentPlayer, mediaElement } = this;
+    const { mediaElement, shakaInstance } = this;
 
-    if (!currentPlayer || !mediaElement) {
+    if (!shakaInstance || !mediaElement) {
       return;
     }
 
-    const playerLoad = new Promise<void>(resolve => {
-      currentPlayer.addEventListener('loaded', () => resolve(), { once: true });
-    });
-
-    currentPlayer
-      .load(streamInfo.streamUrl, assetPosition)
-      .catch((e: shaka.extern.Error) =>
-        this.#handleShakaError(
-          new CustomEvent<shaka.extern.Error>('shaka-error', { detail: e }),
-        ),
-      );
-
-    const duration = await new Promise<number>(resolve =>
-      mediaElement.addEventListener(
-        'durationchange',
-        e => {
-          if (e.target instanceof HTMLMediaElement) {
-            resolve(e.target.duration);
-          }
-        },
-        { once: true },
-      ),
-    );
-
-    await playerLoad;
-
-    // Player was reset during load, do not continue.
-    if (this.currentStreamingSessionId !== streamInfo.streamingSessionId) {
-      return;
-    }
-
-    const playbackContext = composePlaybackContext({
+    return this.#loadAndDispatchMediaProductTransition({
       assetPosition,
-      duration,
+      assetUriOrPreloader: streamInfo.streamUrl,
+      mediaProduct,
       playbackInfo,
       streamInfo,
     });
-
-    streamingSessionStore.saveMediaProductTransition(
-      streamInfo.streamingSessionId,
-      { mediaProduct, playbackContext },
-    );
-
-    this.debugLog('dispatching mediaProductTransition');
-    events.dispatchEvent(
-      mediaProductTransitionEvent(mediaProduct, playbackContext),
-    );
   }
 
   async next(payload: LoadPayload) {
     this.debugLog('next', payload);
+
+    if (!this.shakaInstance) {
+      console.warn('Shaka not initialized.');
+      return;
+    }
 
     /*
       A play action can only start playback if playback state is not IDLE.
@@ -761,50 +885,33 @@ export default class ShakaPlayer extends BasePlayer {
       this.playbackState = 'NOT_PLAYING';
     }
 
-    const { mediaProduct, playbackInfo, streamInfo } = payload;
+    this.preloadedStreamingSessionId = payload.streamInfo.streamingSessionId;
 
-    const preloadPlayer = this.#getNextPlayerInstance();
+    this.#preloadManager = await this.shakaInstance.preload(
+      payload.streamInfo.streamUrl,
+    );
 
-    if (!preloadPlayer) {
-      return;
+    // If we could parse duration from manifest, we can save the media product transition
+    // and support "touch n go" playback. (re-using a preloaded item for a load)
+    if (payload.streamInfo.duration) {
+      const playbackContext = composePlaybackContext({
+        assetPosition: 0,
+        duration: payload.streamInfo.duration,
+        playbackInfo: payload.playbackInfo,
+        streamInfo: payload.streamInfo,
+      });
+
+      streamingSessionStore.saveMediaProductTransition(
+        payload.streamInfo.streamingSessionId,
+        {
+          mediaProduct: payload.mediaProduct,
+          playbackContext,
+        },
+      );
     }
 
-    this.preloadedStreamingSessionId = streamInfo.streamingSessionId;
-
-    // Load the manifest in the player and make sure to catch durationchange event for
-    const playerLoad = preloadPlayer
-      .load(streamInfo.streamUrl)
-      .catch(e => console.error(e)); // Just log error for preloads
-
-    const duration = await new Promise<number>(
-      resolve =>
-        preloadPlayer.getMediaElement()?.addEventListener(
-          'durationchange',
-          e => {
-            if (e.target instanceof HTMLMediaElement) {
-              resolve(e.target.duration);
-            }
-          },
-          { once: true },
-        ),
-    );
-
-    await playerLoad;
-
-    const playbackContext = composePlaybackContext({
-      assetPosition: 0,
-      duration,
-      playbackInfo,
-      streamInfo,
-    });
-
-    streamingSessionStore.saveMediaProductTransition(
-      streamInfo.streamingSessionId,
-      {
-        mediaProduct,
-        playbackContext,
-      },
-    );
+    this.#preloadedPayload = payload;
+    this.#isReset = false;
   }
 
   pause() {
@@ -822,7 +929,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     // Handle 100 % data loss w NLC
     if (this.#shouldRetryStreaming) {
-      const retrySuccessful = this.#currentPlayer?.retryStreaming();
+      const retrySuccessful = this.shakaInstance?.retryStreaming();
 
       this.#shouldRetryStreaming = !retrySuccessful;
 
@@ -903,7 +1010,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     this.#isReset = true;
 
-    const { currentPlayer, mediaElement } = this;
+    const { mediaElement, shakaInstance: currentPlayer } = this;
 
     if (currentPlayer && mediaElement && mediaElement.readyState !== 0) {
       return currentPlayer.unload(/* initializeMediaSource */ true);
@@ -951,34 +1058,19 @@ export default class ShakaPlayer extends BasePlayer {
       this.preloadedStreamingSessionId,
     );
 
-    const mediaProductTransition =
-      streamingSessionStore.getMediaProductTransition(
-        this.preloadedStreamingSessionId,
-      );
+    if (this.#preloadedPayload && this.#preloadManager) {
+      const { mediaProduct, playbackInfo, streamInfo } = this.#preloadedPayload;
 
-    if (!mediaProductTransition) {
-      this.playbackState = 'NOT_PLAYING';
-
-      return;
+      return this.#loadAndDispatchMediaProductTransition({
+        assetPosition: 0,
+        assetUriOrPreloader: this.#preloadManager ?? streamInfo.streamUrl,
+        mediaProduct,
+        playbackInfo,
+        streamInfo,
+      });
     }
 
-    const preloadPlayer = this.#getNextPlayerInstance();
-
-    this.currentPlayer = preloadPlayer;
-    this.currentStreamingSessionId = String(this.preloadedStreamingSessionId);
-    this.preloadedStreamingSessionId = undefined;
-
-    const { mediaProduct, playbackContext } = mediaProductTransition;
-
-    this.currentTime = playbackContext.assetPosition;
-
-    events.dispatchEvent(
-      mediaProductTransitionEvent(mediaProduct, playbackContext),
-    );
-
-    if (this.playbackState === 'IDLE') {
-      this.playbackState = 'NOT_PLAYING';
-    }
+    return Promise.reject('Nothing preloaded.');
   }
 
   togglePlayback() {
@@ -1006,11 +1098,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     this.cleanUpStoredPreloadInfo();
 
-    const preloadPlayer = this.#getNextPlayerInstance();
-
-    if (preloadPlayer) {
-      await preloadPlayer.unload();
-    }
+    await this.#preloadManager?.destroy();
   }
 
   async updateOutputDevice() {
@@ -1034,10 +1122,6 @@ export default class ShakaPlayer extends BasePlayer {
       // @ts-ignore - setSinkId exists
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       await mediaElementOne.setSinkId(sinkId);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore - setSinkId exists
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      await mediaElementTwo.setSinkId(sinkId);
 
       events.dispatchEvent(
         activeDeviceChangedEvent(outputDevices.activeDevice.id),
@@ -1047,43 +1131,8 @@ export default class ShakaPlayer extends BasePlayer {
     }
   }
 
-  get currentPlayer() {
-    return this.#currentPlayer;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  set currentPlayer(newCurrentPlayer: shaka.Player | undefined) {
-    this.debugLog('set currentPlayer', newCurrentPlayer);
-
-    if (this.#currentPlayer && this.mediaElement) {
-      this.#shakaEvents(this.#currentPlayer, false);
-      this.#mediaElementEvents(this.mediaElement, false);
-      this.#currentPlayer.unload().catch(console.error);
-    }
-
-    this.#currentPlayer = newCurrentPlayer;
-
-    if (newCurrentPlayer) {
-      this.#shakaEvents(newCurrentPlayer, true);
-
-      const newMediaElement = newCurrentPlayer.getMediaElement();
-
-      if (newMediaElement) {
-        this.#mediaElementEvents(newMediaElement, true);
-      }
-    }
-  }
-
   get mediaElement(): HTMLMediaElement | null {
-    // this.debugLog('get mediaElement');
-
-    const currentPlayer = this.currentPlayer;
-
-    if (currentPlayer) {
-      return currentPlayer.getMediaElement();
-    }
-
-    return null;
+    return mediaElementOne;
   }
 
   get ready() {
