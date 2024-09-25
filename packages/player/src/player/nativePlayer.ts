@@ -77,8 +77,6 @@ export default class NativePlayer extends BasePlayer {
    */
   #duration!: number;
 
-  #isReset = true;
-
   #player!: NativePlayerComponentInterface;
 
   #preloadedLoadPayload: LoadPayload | undefined;
@@ -283,9 +281,7 @@ export default class NativePlayer extends BasePlayer {
     this.currentTime = payload.assetPosition;
     this.startAssetPosition = payload.assetPosition;
 
-    // Ensure reset and set reset to false since we're loading anew.
     await this.reset();
-    this.#isReset = false;
 
     const { assetPosition, mediaProduct, playbackInfo, streamInfo } = payload;
     const { securityToken, streamFormat, streamUrl } = streamInfo;
@@ -386,6 +382,10 @@ export default class NativePlayer extends BasePlayer {
 
     if (streamFormat) {
       this.#player.preload(streamUrl, streamFormat, securityToken);
+
+      if (!this.isActivePlayer) {
+        this.#player.pause();
+      }
     } else {
       console.error('Stream format undefined for preload.');
     }
@@ -405,7 +405,6 @@ export default class NativePlayer extends BasePlayer {
     });
 
     this.#preloadedLoadPayload = payload;
-    this.#isReset = false;
   }
 
   pause() {
@@ -531,7 +530,7 @@ export default class NativePlayer extends BasePlayer {
   async reset(
     { keepPreload }: { keepPreload: boolean } = { keepPreload: false },
   ) {
-    if (this.#isReset) {
+    if (this.currentStreamingSessionId === undefined) {
       return;
     }
 
@@ -556,7 +555,6 @@ export default class NativePlayer extends BasePlayer {
     }
 
     this.playbackState = 'IDLE';
-    this.#isReset = true;
   }
 
   async seek(seconds: number) {
