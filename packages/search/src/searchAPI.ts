@@ -16,7 +16,7 @@ export interface paths {
          * Search for music metadata by a query
          * @description Search for music: albums, artists, tracks, etc.
          */
-        get: operations["getSearchResults"];
+        get: operations["getSearchResultsByQuery"];
         put?: never;
         post?: never;
         delete?: never;
@@ -36,7 +36,7 @@ export interface paths {
          * Relationship: videos
          * @description Search for videos by a query.
          */
-        get: operations["searchForVideos"];
+        get: operations["getSearchResultsVideosRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -56,7 +56,7 @@ export interface paths {
          * Relationship: tracks
          * @description Search for tracks by a query.
          */
-        get: operations["searchForTracks"];
+        get: operations["getSearchResultsTracksRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -76,7 +76,7 @@ export interface paths {
          * Relationship: topHits
          * @description Search for top hits by a query: artists, albums, tracks, videos.
          */
-        get: operations["searchForTopHits"];
+        get: operations["getSearchResultsTopHitsRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -96,7 +96,7 @@ export interface paths {
          * Relationship: playlists
          * @description Search for playlists by a query.
          */
-        get: operations["searchForPlaylists"];
+        get: operations["getSearchResultsPlaylistsRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -116,7 +116,7 @@ export interface paths {
          * Relationship: artists
          * @description Search for artists by a query.
          */
-        get: operations["searchForArtists"];
+        get: operations["getSearchResultsArtistsRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -136,7 +136,7 @@ export interface paths {
          * Relationship: albums
          * @description Search for albums by a query.
          */
-        get: operations["searchForAlbums"];
+        get: operations["getSearchResultsAlbumsRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -197,7 +197,7 @@ export interface components {
             next?: string;
         };
         /** @description attributes object representing some of the resource's data */
-        Album_Attributes: {
+        Albums_Attributes: {
             /**
              * @description Original title
              * @example 4:44
@@ -251,13 +251,13 @@ export interface components {
             availability?: ("STREAM" | "DJ" | "STEM")[];
             mediaTags: string[];
             /** @description Represents available links to, and metadata about, an album cover images */
-            imageLinks?: components["schemas"]["Image_Link"][];
+            imageLinks?: components["schemas"]["Catalogue_Item_Image_Link"][];
             /** @description Represents available links to, and metadata about, an album cover videos */
-            videoLinks?: components["schemas"]["Video_Link"][];
+            videoLinks?: components["schemas"]["Catalogue_Item_Video_Link"][];
             /** @description Represents available links to something that is related to an album resource, but external to the TIDAL API */
-            externalLinks?: components["schemas"]["External_Link"][];
+            externalLinks?: components["schemas"]["Catalogue_Item_External_Link"][];
         };
-        Album_Item_Resource_Identifier: {
+        Albums_Item_Resource_Identifier: {
             /**
              * @description resource unique identifier
              * @example 12345
@@ -268,9 +268,9 @@ export interface components {
              * @example tracks
              */
             type: string;
-            meta?: components["schemas"]["Album_Item_Resource_Identifier_Meta"];
+            meta?: components["schemas"]["Albums_Item_Resource_Identifier_Meta"];
         };
-        Album_Item_Resource_Identifier_Meta: {
+        Albums_Item_Resource_Identifier_Meta: {
             /**
              * Format: int32
              * @description volume number
@@ -285,20 +285,20 @@ export interface components {
             trackNumber: number;
         };
         /** @description Album items (tracks/videos) relationship */
-        Album_Items_Relationship: {
-            data?: components["schemas"]["Album_Item_Resource_Identifier"][][];
+        Albums_Items_Relationship: {
+            data?: components["schemas"]["Albums_Item_Resource_Identifier"][][];
             links?: components["schemas"]["Links"];
         };
         /** @description relationships object describing relationships between the resource and other resources */
-        Album_Relationships: {
+        Albums_Relationships: {
             artists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            items: components["schemas"]["Album_Items_Relationship"];
+            items: components["schemas"]["Albums_Items_Relationship"];
             similarAlbums: components["schemas"]["Multi_Data_Relationship_Doc"];
             providers: components["schemas"]["Multi_Data_Relationship_Doc"];
         };
-        Album_Resource: {
-            attributes?: components["schemas"]["Album_Attributes"];
-            relationships?: components["schemas"]["Album_Relationships"];
+        Albums_Resource: {
+            attributes?: components["schemas"]["Albums_Attributes"];
+            relationships?: components["schemas"]["Albums_Relationships"];
             links?: components["schemas"]["Links"];
             /**
              * @description resource unique identifier
@@ -312,7 +312,7 @@ export interface components {
             type: string;
         };
         /** @description attributes object representing some of the resource's data */
-        Artist_Attributes: {
+        Artists_Attributes: {
             /**
              * @description Artist name
              * @example JAY Z
@@ -325,22 +325,22 @@ export interface components {
              */
             popularity: number;
             /** @description Represents available links to, and metadata about, an artist images */
-            imageLinks?: components["schemas"]["Image_Link"][];
+            imageLinks?: components["schemas"]["Catalogue_Item_Image_Link"][];
             /** @description Represents available links to something that is related to an artist resource, but external to the TIDAL API */
-            externalLinks?: components["schemas"]["External_Link"][];
+            externalLinks?: components["schemas"]["Catalogue_Item_External_Link"][];
         };
         /** @description relationships object describing relationships between the resource and other resources */
-        Artist_Relationships: {
+        Artists_Relationships: {
             albums: components["schemas"]["Multi_Data_Relationship_Doc"];
             tracks: components["schemas"]["Multi_Data_Relationship_Doc"];
             videos: components["schemas"]["Multi_Data_Relationship_Doc"];
             similarArtists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            trackProviders: components["schemas"]["Artist_Track_Providers_Relationship"];
+            trackProviders: components["schemas"]["Artists_Track_Providers_Relationship"];
             radio: components["schemas"]["Multi_Data_Relationship_Doc"];
         };
-        Artist_Resource: {
-            attributes?: components["schemas"]["Artist_Attributes"];
-            relationships?: components["schemas"]["Artist_Relationships"];
+        Artists_Resource: {
+            attributes?: components["schemas"]["Artists_Attributes"];
+            relationships?: components["schemas"]["Artists_Relationships"];
             links?: components["schemas"]["Links"];
             /**
              * @description resource unique identifier
@@ -354,11 +354,11 @@ export interface components {
             type: string;
         };
         /** @description Providers that have released tracks for this artist */
-        Artist_Track_Providers_Relationship: {
-            data?: components["schemas"]["Artist_Track_Providers_Resource_Identifier"][][];
+        Artists_Track_Providers_Relationship: {
+            data?: components["schemas"]["Artists_Track_Providers_Resource_Identifier"][][];
             links?: components["schemas"]["Links"];
         };
-        Artist_Track_Providers_Resource_Identifier: {
+        Artists_Track_Providers_Resource_Identifier: {
             /**
              * @description resource unique identifier
              * @example 12345
@@ -369,9 +369,9 @@ export interface components {
              * @example tracks
              */
             type: string;
-            meta?: components["schemas"]["Artist_Track_Providers_Resource_Identifier_Meta"];
+            meta?: components["schemas"]["Artists_Track_Providers_Resource_Identifier_Meta"];
         };
-        Artist_Track_Providers_Resource_Identifier_Meta: {
+        Artists_Track_Providers_Resource_Identifier_Meta: {
             /**
              * Format: int64
              * @description total number of tracks released together with the provider
@@ -379,13 +379,29 @@ export interface components {
              */
             numberOfTracks: number;
         };
-        External_Link: {
+        Catalogue_Item_External_Link: {
             /**
              * @description link to something that is related to a resource
              * @example https://tidal.com/browse/artist/1566
              */
             href: string;
             meta: components["schemas"]["External_Link_Meta"];
+        };
+        Catalogue_Item_Image_Link: {
+            /**
+             * @description link to an image
+             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.jpg
+             */
+            href: string;
+            meta: components["schemas"]["Image_Link_Meta"];
+        };
+        Catalogue_Item_Video_Link: {
+            /**
+             * @description link to a video
+             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.mp4
+             */
+            href: string;
+            meta: components["schemas"]["Video_Link_Meta"];
         };
         /** @description metadata about an external link */
         External_Link_Meta: {
@@ -395,14 +411,6 @@ export interface components {
              * @enum {string}
              */
             type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "HOMEPAGE";
-        };
-        Image_Link: {
-            /**
-             * @description link to an image
-             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.jpg
-             */
-            href: string;
-            meta: components["schemas"]["Image_Link_Meta"];
         };
         /** @description metadata about an image */
         Image_Link_Meta: {
@@ -419,14 +427,104 @@ export interface components {
              */
             height: number;
         };
-        /** @description Album providers relationship */
+        /** @description Playlist owners relationship */
         Multi_Data_Relationship_Doc: {
             /** @description array of relationship resource linkages */
             data?: components["schemas"]["Resource_Identifier"][];
             links?: components["schemas"]["Links"];
         };
-        /** @description array of relationship resource linkages */
-        Resource_Identifier: {
+        /** @description attributes object representing some of the resource's data */
+        Playlists_Attributes: {
+            /**
+             * @description Playlist name
+             * @example My Playlist
+             */
+            name: string;
+            /**
+             * @description Playlist description
+             * @example All the good details about what is inside this playlist
+             */
+            description?: string;
+            /**
+             * @description Indicates if the playlist has a duration and set number of tracks
+             * @example true
+             */
+            bounded: boolean;
+            /**
+             * @description Duration of the playlist expressed in accordance with ISO 8601
+             * @example P30M5S
+             */
+            duration?: string;
+            /**
+             * Format: int32
+             * @description Number of items in the playlist
+             * @example 5
+             */
+            numberOfItems?: number;
+            /**
+             * @description Sharing links to the playlist
+             * @example true
+             */
+            externalLinks: components["schemas"]["Playlists_External_Link"][];
+            /**
+             * Format: date-time
+             * @description Datetime of playlist creation (ISO 8601)
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Datetime of last modification of the playlist (ISO 8601)
+             */
+            lastModifiedAt: string;
+            /**
+             * @description Privacy setting of the playlist
+             * @example PUBLIC
+             */
+            privacy: string;
+            /**
+             * @description The type of the playlist
+             * @example EDITORIAL
+             */
+            playlistType: string;
+            /**
+             * @description Images associated with the playlist
+             * @example true
+             */
+            imageLinks: components["schemas"]["Playlists_Image_Link"][];
+        };
+        /**
+         * @description Sharing links to the playlist
+         * @example true
+         */
+        Playlists_External_Link: {
+            /**
+             * @description link to something that is related to a resource
+             * @example https://tidal.com/browse/artist/1566
+             */
+            href: string;
+            meta: components["schemas"]["External_Link_Meta"];
+        };
+        /**
+         * @description Images associated with the playlist
+         * @example true
+         */
+        Playlists_Image_Link: {
+            /**
+             * @description link to an image
+             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.jpg
+             */
+            href: string;
+            meta?: components["schemas"]["Image_Link_Meta"];
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        Playlists_Relationships: {
+            items: components["schemas"]["Multi_Data_Relationship_Doc"];
+            owners: components["schemas"]["Multi_Data_Relationship_Doc"];
+        };
+        Playlists_Resource: {
+            attributes?: components["schemas"]["Playlists_Attributes"];
+            relationships?: components["schemas"]["Playlists_Relationships"];
+            links?: components["schemas"]["Links"];
             /**
              * @description resource unique identifier
              * @example 12345
@@ -438,14 +536,43 @@ export interface components {
              */
             type: string;
         };
+        /** @description attributes object representing some of the resource's data */
+        Providers_Attributes: {
+            /**
+             * @description Provider name. Conditionally visible.
+             * @example Columbia/Legacy
+             */
+            name: string;
+        };
         /** @description relationships object describing relationships between the resource and other resources */
-        Search_Result_Relationships: {
-            albums: components["schemas"]["Multi_Data_Relationship_Doc"];
-            artists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            tracks: components["schemas"]["Multi_Data_Relationship_Doc"];
-            videos: components["schemas"]["Multi_Data_Relationship_Doc"];
-            playlists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            topHits: components["schemas"]["Multi_Data_Relationship_Doc"];
+        Providers_Relationships: Record<string, never>;
+        Providers_Resource: {
+            attributes?: components["schemas"]["Providers_Attributes"];
+            relationships?: components["schemas"]["Providers_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        /** @description relationship resource linkage */
+        Resource_Identifier: {
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
         };
         /** @description attributes object representing some of the resource's data */
         Search_Results_Attributes: {
@@ -460,15 +587,19 @@ export interface components {
              */
             didYouMean?: string;
         };
-        Search_Results_Data_Document: {
-            data?: components["schemas"]["Search_Results_Resource"];
-            links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"])[];
+        /** @description relationships object describing relationships between the resource and other resources */
+        Search_Results_Relationships: {
+            albums: components["schemas"]["Multi_Data_Relationship_Doc"];
+            artists: components["schemas"]["Multi_Data_Relationship_Doc"];
+            tracks: components["schemas"]["Multi_Data_Relationship_Doc"];
+            videos: components["schemas"]["Multi_Data_Relationship_Doc"];
+            playlists: components["schemas"]["Multi_Data_Relationship_Doc"];
+            topHits: components["schemas"]["Multi_Data_Relationship_Doc"];
         };
         /** @description primary resource data */
         Search_Results_Resource: {
             attributes?: components["schemas"]["Search_Results_Attributes"];
-            relationships?: components["schemas"]["Search_Result_Relationships"];
+            relationships?: components["schemas"]["Search_Results_Relationships"];
             links?: components["schemas"]["Links"];
             /**
              * @description resource unique identifier
@@ -481,8 +612,18 @@ export interface components {
              */
             type: string;
         };
+        Search_Results_Single_Data_Document: {
+            data?: components["schemas"]["Search_Results_Resource"];
+            links?: components["schemas"]["Links"];
+            included?: (components["schemas"]["Tracks_Resource"] | components["schemas"]["Videos_Resource"] | components["schemas"]["Artists_Resource"] | components["schemas"]["Albums_Resource"] | components["schemas"]["Playlists_Resource"] | components["schemas"]["Providers_Resource"] | components["schemas"]["Users_Resource"])[];
+        };
+        /** @description User recommendations */
+        Singleton_Data_Relationship_Doc: {
+            data?: components["schemas"]["Resource_Identifier"];
+            links?: components["schemas"]["Links"];
+        };
         /** @description attributes object representing some of the resource's data */
-        Track_Attributes: {
+        Tracks_Attributes: {
             /**
              * @description Album item's title
              * @example Kill Jay Z
@@ -523,19 +664,19 @@ export interface components {
             availability?: ("STREAM" | "DJ" | "STEM")[];
             mediaTags: string[];
             /** @description Represents available links to something that is related to a catalog item, but external to the TIDAL API */
-            externalLinks?: components["schemas"]["External_Link"][];
+            externalLinks?: components["schemas"]["Catalogue_Item_External_Link"][];
         };
         /** @description relationships object describing relationships between the resource and other resources */
-        Track_Relationships: {
+        Tracks_Relationships: {
             albums: components["schemas"]["Multi_Data_Relationship_Doc"];
             artists: components["schemas"]["Multi_Data_Relationship_Doc"];
             providers: components["schemas"]["Multi_Data_Relationship_Doc"];
             similarTracks: components["schemas"]["Multi_Data_Relationship_Doc"];
             radio: components["schemas"]["Multi_Data_Relationship_Doc"];
         };
-        Track_Resource: {
-            attributes?: components["schemas"]["Track_Attributes"];
-            relationships?: components["schemas"]["Track_Relationships"];
+        Tracks_Resource: {
+            attributes?: components["schemas"]["Tracks_Attributes"];
+            relationships?: components["schemas"]["Tracks_Relationships"];
             links?: components["schemas"]["Links"];
             /**
              * @description resource unique identifier
@@ -549,7 +690,76 @@ export interface components {
             type: string;
         };
         /** @description attributes object representing some of the resource's data */
-        Video_Attributes: {
+        Users_Attributes: {
+            /**
+             * @description user name
+             * @example username
+             */
+            username: string;
+            /**
+             * @description ISO 3166-1 alpha-2 country code
+             * @example US
+             */
+            country: string;
+            /**
+             * @description email address
+             * @example test@test.com
+             */
+            email?: string;
+            /**
+             * @description Is the email verified
+             * @example true
+             */
+            emailVerified?: boolean;
+            /**
+             * @description Users first name
+             * @example John
+             */
+            firstName?: string;
+            /**
+             * @description Users last name
+             * @example Rambo
+             */
+            lastName?: string;
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        Users_Relationships: {
+            entitlements: components["schemas"]["Singleton_Data_Relationship_Doc"];
+            publicProfile: components["schemas"]["Singleton_Data_Relationship_Doc"];
+            recommendations: components["schemas"]["Singleton_Data_Relationship_Doc"];
+        };
+        Users_Resource: {
+            attributes?: components["schemas"]["Users_Attributes"];
+            relationships?: components["schemas"]["Users_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        /** @description metadata about a video */
+        Video_Link_Meta: {
+            /**
+             * Format: int32
+             * @description video width (in pixels)
+             * @example 80
+             */
+            width: number;
+            /**
+             * Format: int32
+             * @description video height (in pixels)
+             * @example 80
+             */
+            height: number;
+        };
+        /** @description attributes object representing some of the resource's data */
+        Videos_Attributes: {
             /**
              * @description Album item's title
              * @example Kill Jay Z
@@ -595,42 +805,19 @@ export interface components {
             /** @description Defines a catalog item availability e.g. for streaming, DJs, stems */
             availability?: ("STREAM" | "DJ" | "STEM")[];
             /** @description Represents available links to, and metadata about, an album item images */
-            imageLinks?: components["schemas"]["Image_Link"][];
+            imageLinks?: components["schemas"]["Catalogue_Item_Image_Link"][];
             /** @description Represents available links to something that is related to a catalog item, but external to the TIDAL API */
-            externalLinks?: components["schemas"]["External_Link"][];
-        };
-        Video_Link: {
-            /**
-             * @description link to a video
-             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.mp4
-             */
-            href: string;
-            meta: components["schemas"]["Video_Link_Meta"];
-        };
-        /** @description metadata about a video */
-        Video_Link_Meta: {
-            /**
-             * Format: int32
-             * @description video width (in pixels)
-             * @example 80
-             */
-            width: number;
-            /**
-             * Format: int32
-             * @description video height (in pixels)
-             * @example 80
-             */
-            height: number;
+            externalLinks?: components["schemas"]["Catalogue_Item_External_Link"][];
         };
         /** @description relationships object describing relationships between the resource and other resources */
-        Video_Relationships: {
+        Videos_Relationships: {
             albums: components["schemas"]["Multi_Data_Relationship_Doc"];
             artists: components["schemas"]["Multi_Data_Relationship_Doc"];
             providers: components["schemas"]["Multi_Data_Relationship_Doc"];
         };
-        Video_Resource: {
-            attributes?: components["schemas"]["Video_Attributes"];
-            relationships?: components["schemas"]["Video_Relationships"];
+        Videos_Resource: {
+            attributes?: components["schemas"]["Videos_Attributes"];
+            relationships?: components["schemas"]["Videos_Relationships"];
             links?: components["schemas"]["Links"];
             /**
              * @description resource unique identifier
@@ -643,132 +830,41 @@ export interface components {
              */
             type: string;
         };
-        Video_Relationships_Document: {
+        Videos_Relationships_Document: {
             /** @description array of relationship resource linkages */
             data?: components["schemas"]["Resource_Identifier"][];
             links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Video_Resource"][];
+            included?: (components["schemas"]["Videos_Resource"] | components["schemas"]["Artists_Resource"] | components["schemas"]["Albums_Resource"] | components["schemas"]["Providers_Resource"])[];
         };
-        Track_Relationships_Document: {
+        Tracks_Relationships_Document: {
             /** @description array of relationship resource linkages */
             data?: components["schemas"]["Resource_Identifier"][];
             links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Track_Resource"][];
+            included?: (components["schemas"]["Tracks_Resource"] | components["schemas"]["Artists_Resource"] | components["schemas"]["Albums_Resource"] | components["schemas"]["Providers_Resource"] | components["schemas"]["Playlists_Resource"])[];
         };
-        Top_Hits_Relationship_Document: {
+        Search_Results_Top_Hits_Relationship_Document: {
             /** @description array of relationship resource linkages */
             data?: components["schemas"]["Resource_Identifier"][];
             links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Video_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"])[];
+            included?: (components["schemas"]["Tracks_Resource"] | components["schemas"]["Videos_Resource"] | components["schemas"]["Artists_Resource"] | components["schemas"]["Albums_Resource"] | components["schemas"]["Playlists_Resource"] | components["schemas"]["Users_Resource"])[];
         };
-        /** @description attributes object representing some of the resource's data */
-        Playlist_Attributes: {
-            /**
-             * @description ${public.usercontent.fields.playlists.name.descr}
-             * @example My Playlist
-             */
-            name: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.description.descr}
-             * @example All the good details about what is inside this playlist
-             */
-            description?: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.bounded.descr}
-             * @example true
-             */
-            bounded: boolean;
-            /**
-             * @description ${public.usercontent.fields.playlists.duration.descr}
-             * @example P30M5S
-             */
-            duration?: string;
-            /**
-             * Format: int32
-             * @description ${public.usercontent.fields.playlists.numberOfItems.descr}
-             * @example 5
-             */
-            numberOfItems?: number;
-            /**
-             * @description ${public.usercontent.fields.playlists.externalLinks.descr}
-             * @example true
-             */
-            externalLinks: components["schemas"]["Playlist_External_Link"][];
-            /**
-             * Format: date-time
-             * @description ${public.usercontent.fields.playlists.createdAt.descr}
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description ${public.usercontent.fields.playlists.lastModifiedAt.descr}
-             */
-            lastModifiedAt: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.privacy.descr}
-             * @example PUBLIC
-             */
-            privacy: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.type.descr}
-             * @example EDITORIAL
-             */
-            playlistType: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.imageLinks.descr}
-             * @example true
-             */
-            imageLinks: components["schemas"]["Image_Link"][];
-        };
-        /**
-         * @description ${public.usercontent.fields.playlists.externalLinks.descr}
-         * @example true
-         */
-        Playlist_External_Link: {
-            /**
-             * @description link to something that is related to a resource
-             * @example https://tidal.com/browse/artist/1566
-             */
-            href: string;
-            meta: components["schemas"]["External_Link_Meta"];
-        };
-        /** @description relationships object describing relationships between the resource and other resources */
-        Playlist_Relationships: {
-            items: components["schemas"]["Multi_Data_Relationship_Doc"];
-            owners: components["schemas"]["Multi_Data_Relationship_Doc"];
-        };
-        Playlist_Relationships_Document: {
+        Playlists_Relationship_Document: {
             /** @description array of relationship resource linkages */
             data?: components["schemas"]["Resource_Identifier"][];
             links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Playlist_Resource"][];
-        };
-        Playlist_Resource: {
-            attributes?: components["schemas"]["Playlist_Attributes"];
-            relationships?: components["schemas"]["Playlist_Relationships"];
-            links?: components["schemas"]["Links"];
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
+            included?: (components["schemas"]["Playlists_Resource"] | components["schemas"]["Tracks_Resource"] | components["schemas"]["Videos_Resource"] | components["schemas"]["Users_Resource"])[];
         };
         Artists_Relationship_Document: {
             /** @description array of relationship resource linkages */
             data?: components["schemas"]["Resource_Identifier"][];
             links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Artist_Resource"][];
+            included?: (components["schemas"]["Artists_Resource"] | components["schemas"]["Albums_Resource"] | components["schemas"]["Tracks_Resource"] | components["schemas"]["Videos_Resource"] | components["schemas"]["Providers_Resource"] | components["schemas"]["Playlists_Resource"])[];
         };
         Albums_Relationship_Document: {
             /** @description array of relationship resource linkages */
             data?: components["schemas"]["Resource_Identifier"][];
             links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Album_Resource"][];
+            included?: (components["schemas"]["Albums_Resource"] | components["schemas"]["Artists_Resource"] | components["schemas"]["Providers_Resource"] | components["schemas"]["Tracks_Resource"] | components["schemas"]["Videos_Resource"])[];
         };
     };
     responses: never;
@@ -779,7 +875,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    getSearchResults: {
+    getSearchResultsByQuery: {
         parameters: {
             query: {
                 /**
@@ -791,7 +887,12 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: artists, albums, tracks, videos, playlists, topHits
                  * @example artists
                  */
-                include?: ("artists" | "albums" | "tracks" | "videos" | "playlists" | "topHits")[];
+                include?: string[];
+                /**
+                 * @description Server-generated cursor value targeting a certain page of items.
+                 * @example 3nI1Esi53skehSd
+                 */
+                "page[cursor]"?: string;
             };
             header?: never;
             path: {
@@ -831,7 +932,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Search_Results_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["Search_Results_Single_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1010,7 +1111,7 @@ export interface operations {
             };
         };
     };
-    searchForVideos: {
+    getSearchResultsVideosRelationship: {
         parameters: {
             query: {
                 /**
@@ -1022,7 +1123,12 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: videos
                  * @example videos
                  */
-                include?: "videos"[];
+                include?: string[];
+                /**
+                 * @description Server-generated cursor value targeting a certain page of items.
+                 * @example 3nI1Esi53skehSd
+                 */
+                "page[cursor]"?: string;
             };
             header?: never;
             path: {
@@ -1062,7 +1168,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Video_Relationships_Document"];
+                    "application/vnd.api+json": components["schemas"]["Videos_Relationships_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1241,7 +1347,7 @@ export interface operations {
             };
         };
     };
-    searchForTracks: {
+    getSearchResultsTracksRelationship: {
         parameters: {
             query: {
                 /**
@@ -1253,7 +1359,12 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: tracks
                  * @example tracks
                  */
-                include?: "tracks"[];
+                include?: string[];
+                /**
+                 * @description Server-generated cursor value targeting a certain page of items.
+                 * @example 3nI1Esi53skehSd
+                 */
+                "page[cursor]"?: string;
             };
             header?: never;
             path: {
@@ -1293,7 +1404,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Track_Relationships_Document"];
+                    "application/vnd.api+json": components["schemas"]["Tracks_Relationships_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1472,7 +1583,7 @@ export interface operations {
             };
         };
     };
-    searchForTopHits: {
+    getSearchResultsTopHitsRelationship: {
         parameters: {
             query: {
                 /**
@@ -1484,7 +1595,12 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: topHits
                  * @example topHits
                  */
-                include?: "topHits"[];
+                include?: string[];
+                /**
+                 * @description Server-generated cursor value targeting a certain page of items.
+                 * @example 3nI1Esi53skehSd
+                 */
+                "page[cursor]"?: string;
             };
             header?: never;
             path: {
@@ -1524,7 +1640,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Top_Hits_Relationship_Document"];
+                    "application/vnd.api+json": components["schemas"]["Search_Results_Top_Hits_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1703,7 +1819,7 @@ export interface operations {
             };
         };
     };
-    searchForPlaylists: {
+    getSearchResultsPlaylistsRelationship: {
         parameters: {
             query: {
                 /**
@@ -1715,7 +1831,12 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: playlists
                  * @example playlists
                  */
-                include?: "playlists"[];
+                include?: string[];
+                /**
+                 * @description Server-generated cursor value targeting a certain page of items.
+                 * @example 3nI1Esi53skehSd
+                 */
+                "page[cursor]"?: string;
             };
             header?: never;
             path: {
@@ -1755,7 +1876,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Playlist_Relationships_Document"];
+                    "application/vnd.api+json": components["schemas"]["Playlists_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1934,7 +2055,7 @@ export interface operations {
             };
         };
     };
-    searchForArtists: {
+    getSearchResultsArtistsRelationship: {
         parameters: {
             query: {
                 /**
@@ -1946,7 +2067,12 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: artists
                  * @example artists
                  */
-                include?: "artists"[];
+                include?: string[];
+                /**
+                 * @description Server-generated cursor value targeting a certain page of items.
+                 * @example 3nI1Esi53skehSd
+                 */
+                "page[cursor]"?: string;
             };
             header?: never;
             path: {
@@ -2165,7 +2291,7 @@ export interface operations {
             };
         };
     };
-    searchForAlbums: {
+    getSearchResultsAlbumsRelationship: {
         parameters: {
             query: {
                 /**
@@ -2177,7 +2303,12 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: albums
                  * @example albums
                  */
-                include?: "albums"[];
+                include?: string[];
+                /**
+                 * @description Server-generated cursor value targeting a certain page of items.
+                 * @example 3nI1Esi53skehSd
+                 */
+                "page[cursor]"?: string;
             };
             header?: never;
             path: {

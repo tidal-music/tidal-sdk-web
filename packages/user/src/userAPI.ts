@@ -16,7 +16,7 @@ export interface paths {
          * Relationship: item (read)
          * @description Retrieves a picks item relationship
          */
-        get: operations["getPickItem"];
+        get: operations["getUserPublicProfilePickItemRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -26,7 +26,7 @@ export interface paths {
          * Relationship: item (update)
          * @description Updates a picks item relationship, e.g. sets a 'track', 'album' or 'artist' reference.
          */
-        patch: operations["setPickData"];
+        patch: operations["setUserPublicProfilePickItemRelationship"];
         trace?: never;
     };
     "/users": {
@@ -40,7 +40,7 @@ export interface paths {
          * Get multiple users by id
          * @description Get multiple users by id
          */
-        get: operations["getUsers"];
+        get: operations["getUsersByFilters"];
         put?: never;
         post?: never;
         delete?: never;
@@ -60,7 +60,27 @@ export interface paths {
          * Get a single user by id
          * @description Get a single user by id
          */
-        get: operations["getUser"];
+        get: operations["getUserById"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/relationships/recommendations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Relationship: user recommendations
+         * @description Get user recommendations
+         */
+        get: operations["getUserRecommendationsRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -80,7 +100,7 @@ export interface paths {
          * Relationship: public profile
          * @description Get user public profile
          */
-        get: operations["getUserPublicProfile"];
+        get: operations["getUserPublicProfileRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -100,7 +120,7 @@ export interface paths {
          * Relationship: entitlements
          * @description Get user entitlements relationship
          */
-        get: operations["getUserEntitlements"];
+        get: operations["getUserEntitlementsRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -120,7 +140,27 @@ export interface paths {
          * Get the current user
          * @description Get the current user
          */
-        get: operations["me"];
+        get: operations["getMyUser"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userRecommendations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get recommendations for users in batch
+         * @description Get recommendations for users in batch
+         */
+        get: operations["getUserRecommendationsByFilters"];
         put?: never;
         post?: never;
         delete?: never;
@@ -140,7 +180,7 @@ export interface paths {
          * Get user recommendations for user
          * @description Get user recommendations for user
          */
-        get: operations["getUserRecommendations"];
+        get: operations["getUserRecommendationsById"];
         put?: never;
         post?: never;
         delete?: never;
@@ -160,7 +200,7 @@ export interface paths {
          * Relationship: new arrivals mixes
          * @description Get new arrival mixes relationship
          */
-        get: operations["getNewArrivalMixes"];
+        get: operations["getUserRecommendationsNewArrivalMixesRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -180,7 +220,7 @@ export interface paths {
          * Relationship: my mixes
          * @description Get my mixes relationship
          */
-        get: operations["getMyMixes"];
+        get: operations["getUserRecommendationsMyMixesRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -200,7 +240,7 @@ export interface paths {
          * Relationship: discovery mixes
          * @description Get discovery mixes relationship
          */
-        get: operations["getDiscoveryMixes"];
+        get: operations["getUserRecommendationsDiscoveryMixesRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -220,7 +260,7 @@ export interface paths {
          * Get the current users recommendations
          * @description Get the current users recommendations
          */
-        get: operations["getMyRecommendations"];
+        get: operations["getMyUserRecommendations"];
         put?: never;
         post?: never;
         delete?: never;
@@ -240,7 +280,7 @@ export interface paths {
          * Get user public profiles
          * @description Reads user public profile details by TIDAL user ids.
          */
-        get: operations["getProfiles"];
+        get: operations["getUserPublicProfilesByFilters"];
         put?: never;
         post?: never;
         delete?: never;
@@ -260,7 +300,7 @@ export interface paths {
          * Get user public profile by id
          * @description Retrieve user public profile details by TIDAL user id.
          */
-        get: operations["getProfile"];
+        get: operations["getUserPublicProfileById"];
         put?: never;
         post?: never;
         delete?: never;
@@ -280,7 +320,7 @@ export interface paths {
          * Relationship: playlists
          * @description Retrieves user's public playlists.
          */
-        get: operations["getPublicPlaylists"];
+        get: operations["getUserPublicProfilePublicPlaylistsRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -300,7 +340,7 @@ export interface paths {
          * Relationship: picks
          * @description Retrieve user's public picks.
          */
-        get: operations["getPublicPicks"];
+        get: operations["getUserPublicProfilePublicPicksRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -320,7 +360,7 @@ export interface paths {
          * Relationship: following
          * @description Retrieve user's public followings
          */
-        get: operations["getPublicFollowings"];
+        get: operations["getUserPublicProfileFollowingRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -340,7 +380,7 @@ export interface paths {
          * Relationship: followers
          * @description Retrieve user's public followers
          */
-        get: operations["getPublicFollowers"];
+        get: operations["getUserPublicProfileFollowersRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -360,7 +400,7 @@ export interface paths {
          * Get my user profile
          * @description Retrieve the logged-in user's public profile details.
          */
-        get: operations["getMyProfile"];
+        get: operations["getMyUserPublicProfile"];
         put?: never;
         post?: never;
         delete?: never;
@@ -380,7 +420,7 @@ export interface paths {
          * Get picks
          * @description Retrieves a filtered collection of user's public picks.
          */
-        get: operations["getPicks"];
+        get: operations["getUserPublicProfilePicksByFilters"];
         put?: never;
         post?: never;
         delete?: never;
@@ -400,7 +440,7 @@ export interface paths {
          * Relationship: user public profile
          * @description Retrieves a picks owner public profile
          */
-        get: operations["getPickPublicUserProfile"];
+        get: operations["getUserPublicProfilePickUserPublicProfileRelationship"];
         put?: never;
         post?: never;
         delete?: never;
@@ -420,7 +460,7 @@ export interface paths {
          * Get my picks
          * @description Retrieves picks for the logged-in user.
          */
-        get: operations["getMyPicks"];
+        get: operations["getMyUserPublicProfilePicks"];
         put?: never;
         post?: never;
         delete?: never;
@@ -440,7 +480,7 @@ export interface paths {
          * Get user entitlements for user
          * @description Get user entitlements for user
          */
-        get: operations["getEntitlements"];
+        get: operations["getUserEntitlementsById"];
         put?: never;
         post?: never;
         delete?: never;
@@ -460,7 +500,7 @@ export interface paths {
          * Get the current users entitlements
          * @description Get the current users entitlements
          */
-        get: operations["getMyEntitlements"];
+        get: operations["getMyUserEntitlements"];
         put?: never;
         post?: never;
         delete?: never;
@@ -507,7 +547,7 @@ export interface components {
              */
             header?: string;
         };
-        /** @description links object containing links related to the resource */
+        /** @description links object */
         Links: {
             /**
              * @description the link that generated the current response document
@@ -520,8 +560,195 @@ export interface components {
              */
             next?: string;
         };
+        Resource_Identifier: {
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        Update_User_Public_Profile_Picks_Relationship_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
+        };
+        /** @description metadata about an external link */
+        External_Link_Meta: {
+            /**
+             * @description external link type
+             * @example TIDAL_SHARING
+             * @enum {string}
+             */
+            type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "HOMEPAGE";
+        };
+        /** @description metadata about an image */
+        Image_Link_Meta: {
+            /**
+             * Format: int32
+             * @description image width (in pixels)
+             * @example 80
+             */
+            width: number;
+            /**
+             * Format: int32
+             * @description image height (in pixels)
+             * @example 80
+             */
+            height: number;
+        };
+        /** @description Playlist owners relationship */
+        Multi_Data_Relationship_Doc: {
+            /** @description array of relationship resource linkages */
+            data?: components["schemas"]["Resource_Identifier"][];
+            links?: components["schemas"]["Links"];
+        };
         /** @description attributes object representing some of the resource's data */
-        Pick_Attributes: {
+        Playlists_Attributes: {
+            /**
+             * @description Playlist name
+             * @example My Playlist
+             */
+            name: string;
+            /**
+             * @description Playlist description
+             * @example All the good details about what is inside this playlist
+             */
+            description?: string;
+            /**
+             * @description Indicates if the playlist has a duration and set number of tracks
+             * @example true
+             */
+            bounded: boolean;
+            /**
+             * @description Duration of the playlist expressed in accordance with ISO 8601
+             * @example P30M5S
+             */
+            duration?: string;
+            /**
+             * Format: int32
+             * @description Number of items in the playlist
+             * @example 5
+             */
+            numberOfItems?: number;
+            /**
+             * @description Sharing links to the playlist
+             * @example true
+             */
+            externalLinks: components["schemas"]["Playlists_External_Link"][];
+            /**
+             * Format: date-time
+             * @description Datetime of playlist creation (ISO 8601)
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Datetime of last modification of the playlist (ISO 8601)
+             */
+            lastModifiedAt: string;
+            /**
+             * @description Privacy setting of the playlist
+             * @example PUBLIC
+             */
+            privacy: string;
+            /**
+             * @description The type of the playlist
+             * @example EDITORIAL
+             */
+            playlistType: string;
+            /**
+             * @description Images associated with the playlist
+             * @example true
+             */
+            imageLinks: components["schemas"]["Playlists_Image_Link"][];
+        };
+        /**
+         * @description Sharing links to the playlist
+         * @example true
+         */
+        Playlists_External_Link: {
+            /**
+             * @description link to something that is related to a resource
+             * @example https://tidal.com/browse/artist/1566
+             */
+            href: string;
+            meta: components["schemas"]["External_Link_Meta"];
+        };
+        /**
+         * @description Images associated with the playlist
+         * @example true
+         */
+        Playlists_Image_Link: {
+            /**
+             * @description link to an image
+             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.jpg
+             */
+            href: string;
+            meta?: components["schemas"]["Image_Link_Meta"];
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        Playlists_Relationships: {
+            items: components["schemas"]["Multi_Data_Relationship_Doc"];
+            owners: components["schemas"]["Multi_Data_Relationship_Doc"];
+        };
+        Playlists_Resource: {
+            attributes?: components["schemas"]["Playlists_Attributes"];
+            relationships?: components["schemas"]["Playlists_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        /** @description Primary and Secondary color to visually render the pick */
+        Prompt_Colors: {
+            /**
+             * @description Primary color to visually render the pick
+             * @example #FF0000
+             */
+            primary: string;
+            /**
+             * @description Secondary color to visually render the pick
+             * @example #00FF00
+             */
+            secondary: string;
+        };
+        /** @description Pick's owning user public profile relationship */
+        Singleton_Data_Relationship_Doc: {
+            data?: components["schemas"]["Resource_Identifier"];
+            links?: components["schemas"]["Links"];
+        };
+        /** @description attributes object representing some of the resource's data */
+        User_Entitlements_Attributes: {
+            /** @description entitlements for user */
+            entitlements: ("MUSIC" | "DJ")[];
+        };
+        User_Entitlements_Resource: {
+            attributes?: components["schemas"]["User_Entitlements_Attributes"];
+            /** @description relationships object describing relationships between the resource and other resources */
+            relationships?: Record<string, never>;
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        /** @description attributes object representing some of the resource's data */
+        User_Public_Profile_Picks_Attributes: {
             /**
              * @description Pick title
              * @example My favorite track on repeat
@@ -547,18 +774,13 @@ export interface components {
             lastModifiedAt?: string;
         };
         /** @description relationships object describing relationships between the resource and other resources */
-        Pick_Relationships: {
+        User_Public_Profile_Picks_Relationships: {
             item: components["schemas"]["Singleton_Data_Relationship_Doc"];
             userPublicProfile: components["schemas"]["Singleton_Data_Relationship_Doc"];
         };
-        Pick_Relationships_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
-            links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Pick_Resource"][];
-        };
-        Pick_Resource: {
-            attributes?: components["schemas"]["Pick_Attributes"];
-            relationships?: components["schemas"]["Pick_Relationships"];
+        User_Public_Profile_Picks_Resource: {
+            attributes?: components["schemas"]["User_Public_Profile_Picks_Attributes"];
+            relationships?: components["schemas"]["User_Public_Profile_Picks_Relationships"];
             links?: components["schemas"]["Links"];
             /**
              * @description resource unique identifier
@@ -570,38 +792,109 @@ export interface components {
              * @example tracks
              */
             type: string;
-        };
-        /**
-         * @description Primary and Secondary color to visually render the pick
-         * @example [
-         *       "#FF0000",
-         *       "#00FF00"
-         *     ]
-         */
-        Prompt_Colors: {
-            primary?: string;
-            secondary?: string;
-        };
-        /** @description relationship resource linkage */
-        Resource_Identifier: {
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
-        };
-        /** @description Pick's owning user public profile relationship */
-        Singleton_Data_Relationship_Doc: {
-            data?: components["schemas"]["Resource_Identifier"];
-            links?: components["schemas"]["Links"];
         };
         /** @description attributes object representing some of the resource's data */
-        User_Attributes: {
+        User_Public_Profiles_Attributes: {
+            /**
+             * @description Public Name of the user profile
+             * @example JohnSmith
+             */
+            profileName?: string;
+            picture?: components["schemas"]["User_Public_Profiles_Image_Link"];
+            color: string[];
+            /** @description ExternalLinks for the user's profile */
+            externalLinks?: components["schemas"]["User_Public_Profiles_External_Link"][];
+            /**
+             * Format: int32
+             * @description Number of followers for the user
+             * @example 32
+             */
+            numberOfFollowers?: number;
+            /**
+             * Format: int32
+             * @description Number of users the user follows
+             * @example 32
+             */
+            numberOfFollows?: number;
+        };
+        User_Public_Profiles_External_Link: {
+            /**
+             * @description link to something that is related to a resource
+             * @example https://tidal.com/browse/artist/1566
+             */
+            href: string;
+            meta: components["schemas"]["User_Public_Profiles_External_Link_Meta"];
+        };
+        /** @description metadata about an external link */
+        User_Public_Profiles_External_Link_Meta: {
+            /**
+             * @description external link type
+             * @example TIDAL_SHARING
+             * @enum {string}
+             */
+            type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "HOMEPAGE";
+            /**
+             * @description external link handle
+             * @example JohnSmith
+             */
+            handle: string;
+        };
+        /** @description ImageLink to the users image */
+        User_Public_Profiles_Image_Link: {
+            /**
+             * @description link to an image
+             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.jpg
+             */
+            href: string;
+            meta?: components["schemas"]["Image_Link_Meta"];
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        User_Public_Profiles_Relationships: {
+            followers: components["schemas"]["Multi_Data_Relationship_Doc"];
+            following: components["schemas"]["Multi_Data_Relationship_Doc"];
+            publicPlaylists: components["schemas"]["Multi_Data_Relationship_Doc"];
+            publicPicks: components["schemas"]["Multi_Data_Relationship_Doc"];
+        };
+        User_Public_Profiles_Resource: {
+            attributes?: components["schemas"]["User_Public_Profiles_Attributes"];
+            relationships?: components["schemas"]["User_Public_Profiles_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        /** @description attributes object representing some of the resource's data */
+        User_Recommendations_Attributes: Record<string, never>;
+        /** @description relationships object describing relationships between the resource and other resources */
+        User_Recommendations_Relationships: {
+            myMixes: components["schemas"]["Multi_Data_Relationship_Doc"];
+            discoveryMixes: components["schemas"]["Multi_Data_Relationship_Doc"];
+            newArrivalMixes: components["schemas"]["Multi_Data_Relationship_Doc"];
+        };
+        User_Recommendations_Resource: {
+            attributes?: components["schemas"]["User_Recommendations_Attributes"];
+            relationships?: components["schemas"]["User_Recommendations_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        /** @description attributes object representing some of the resource's data */
+        Users_Attributes: {
             /**
              * @description user name
              * @example username
@@ -633,37 +926,21 @@ export interface components {
              */
             lastName?: string;
         };
-        /** @description attributes object representing some of the resource's data */
-        User_Entitlement_Attributes: {
-            /** @description entitlements for user */
-            entitlements: ("MUSIC" | "DJ")[];
-        };
-        /** @description relationships object describing relationships between the resource and other resources */
-        User_Entitlement_Relationships: Record<string, never>;
-        User_Entitlement_Resource: {
-            attributes?: components["schemas"]["User_Entitlement_Attributes"];
-            relationships?: components["schemas"]["User_Entitlement_Relationships"];
+        Users_Multi_Data_Document: {
+            /** @description array of primary resource data */
+            data?: components["schemas"]["Users_Resource"][];
             links?: components["schemas"]["Links"];
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
+            included?: (components["schemas"]["User_Entitlements_Resource"] | components["schemas"]["User_Public_Profiles_Resource"] | components["schemas"]["User_Recommendations_Resource"] | components["schemas"]["Playlists_Resource"] | components["schemas"]["User_Public_Profile_Picks_Resource"] | components["schemas"]["Users_Resource"])[];
         };
         /** @description relationships object describing relationships between the resource and other resources */
-        User_Relationships: {
+        Users_Relationships: {
             entitlements: components["schemas"]["Singleton_Data_Relationship_Doc"];
             publicProfile: components["schemas"]["Singleton_Data_Relationship_Doc"];
+            recommendations: components["schemas"]["Singleton_Data_Relationship_Doc"];
         };
-        /** @description array of primary resource data */
-        User_Resource: {
-            attributes?: components["schemas"]["User_Attributes"];
-            relationships?: components["schemas"]["User_Relationships"];
+        Users_Resource: {
+            attributes?: components["schemas"]["Users_Attributes"];
+            relationships?: components["schemas"]["Users_Relationships"];
             links?: components["schemas"]["Links"];
             /**
              * @description resource unique identifier
@@ -676,226 +953,27 @@ export interface components {
              */
             type: string;
         };
-        Users_Data_Document: {
-            /** @description array of primary resource data */
-            data?: components["schemas"]["User_Resource"][];
+        Users_Single_Data_Document: {
+            data?: components["schemas"]["Users_Resource"];
             links?: components["schemas"]["Links"];
-            included?: components["schemas"]["User_Entitlement_Resource"][];
+            included?: (components["schemas"]["User_Entitlements_Resource"] | components["schemas"]["User_Public_Profiles_Resource"] | components["schemas"]["User_Recommendations_Resource"] | components["schemas"]["Playlists_Resource"] | components["schemas"]["User_Public_Profile_Picks_Resource"] | components["schemas"]["Users_Resource"])[];
         };
-        User_Data_Document: {
-            data?: components["schemas"]["User_Resource"];
+        Users_Recommendations_Relationship_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
             links?: components["schemas"]["Links"];
-        };
-        /** @description ImageLink to the users image */
-        Image_Link: {
-            /**
-             * @description link to an image
-             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.jpg
-             */
-            href: string;
-            meta?: components["schemas"]["Image_Link_Meta"];
-        };
-        /** @description metadata about an image */
-        Image_Link_Meta: {
-            /**
-             * Format: int32
-             * @description image width (in pixels)
-             * @example 80
-             */
-            width: number;
-            /**
-             * Format: int32
-             * @description image height (in pixels)
-             * @example 80
-             */
-            height: number;
-        };
-        /** @description User profile public picks */
-        Multi_Data_Relationship_Doc: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-        };
-        /** @description attributes object representing some of the resource's data */
-        User_Profile_Attributes: {
-            /**
-             * @description Public Name of the user profile
-             * @example JohnSmith
-             */
-            profileName?: string;
-            picture?: components["schemas"]["Image_Link"];
-            /** @description Color information for the user profile when no image is available */
-            color?: string[];
-            /** @description ExternalLinks for the user's profile */
-            externalLinks?: components["schemas"]["User_Profile_Social_External_Link"][];
-            /**
-             * Format: int32
-             * @description Number of followers for the user
-             * @example 32
-             */
-            numberOfFollowers?: number;
-            /**
-             * Format: int32
-             * @description Number of users the user follows
-             * @example 32
-             */
-            numberOfFollows?: number;
-        };
-        /** @description relationships object describing relationships between the resource and other resources */
-        User_Profile_Relationships: {
-            followers: components["schemas"]["Multi_Data_Relationship_Doc"];
-            following: components["schemas"]["Multi_Data_Relationship_Doc"];
-            publicPlaylists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            publicPicks: components["schemas"]["Multi_Data_Relationship_Doc"];
-        };
-        User_Profile_Resource: {
-            attributes?: components["schemas"]["User_Profile_Attributes"];
-            relationships?: components["schemas"]["User_Profile_Relationships"];
-            links?: components["schemas"]["Links"];
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
-        };
-        User_Profile_Social_External_Link: {
-            /**
-             * @description link to something that is related to a resource
-             * @example https://tidal.com/browse/artist/1566
-             */
-            href: string;
-            meta: components["schemas"]["User_Profile_Social_External_Link_Meta"];
-        };
-        /** @description metadata about an external link */
-        User_Profile_Social_External_Link_Meta: {
-            /**
-             * @description external link type
-             * @example TIDAL_SHARING
-             * @enum {string}
-             */
-            type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "HOMEPAGE";
-            /**
-             * @description external link handle
-             * @example JohnSmith
-             */
-            handle: string;
+            included?: (components["schemas"]["User_Recommendations_Resource"] | components["schemas"]["Playlists_Resource"])[];
         };
         User_Public_Profiles_Relationship_Document: {
             data?: components["schemas"]["Resource_Identifier"];
             links?: components["schemas"]["Links"];
-            included?: components["schemas"]["User_Profile_Resource"][];
+            included?: (components["schemas"]["User_Public_Profiles_Resource"] | components["schemas"]["Users_Resource"] | components["schemas"]["Playlists_Resource"] | components["schemas"]["User_Public_Profile_Picks_Resource"])[];
         };
-        Users_Entitlement_Relationship_Document: {
+        User_Entitlements_Relationship_Document: {
             data?: components["schemas"]["Resource_Identifier"];
             links?: components["schemas"]["Links"];
-            included?: components["schemas"]["User_Entitlement_Resource"][];
+            included?: components["schemas"]["User_Entitlements_Resource"][];
         };
-        /** @description attributes object representing some of the resource's data */
-        User_Recommendations_Attributes: Record<string, never>;
-        User_Recommendations_Data_Document: {
-            data?: components["schemas"]["User_Recommendations_Resource"];
-            links?: components["schemas"]["Links"];
-        };
-        /** @description relationships object describing relationships between the resource and other resources */
-        User_Recommendations_Relationships: {
-            myMixes: components["schemas"]["Multi_Data_Relationship_Doc"];
-            discoveryMixes: components["schemas"]["Multi_Data_Relationship_Doc"];
-            newArrivalMixes: components["schemas"]["Multi_Data_Relationship_Doc"];
-        };
-        /** @description primary resource data */
-        User_Recommendations_Resource: {
-            attributes?: components["schemas"]["User_Recommendations_Attributes"];
-            relationships?: components["schemas"]["User_Recommendations_Relationships"];
-            links?: components["schemas"]["Links"];
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
-        };
-        /** @description metadata about an external link */
-        External_Link_Meta: {
-            /**
-             * @description external link type
-             * @example TIDAL_SHARING
-             * @enum {string}
-             */
-            type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "HOMEPAGE";
-        };
-        /** @description attributes object representing some of the resource's data */
-        Playlist_Attributes: {
-            /**
-             * @description ${public.usercontent.fields.playlists.name.descr}
-             * @example My Playlist
-             */
-            name: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.description.descr}
-             * @example All the good details about what is inside this playlist
-             */
-            description?: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.bounded.descr}
-             * @example true
-             */
-            bounded: boolean;
-            /**
-             * @description ${public.usercontent.fields.playlists.duration.descr}
-             * @example P30M5S
-             */
-            duration?: string;
-            /**
-             * Format: int32
-             * @description ${public.usercontent.fields.playlists.numberOfItems.descr}
-             * @example 5
-             */
-            numberOfItems?: number;
-            /**
-             * @description ${public.usercontent.fields.playlists.externalLinks.descr}
-             * @example true
-             */
-            externalLinks: components["schemas"]["Playlist_External_Link"][];
-            /**
-             * Format: date-time
-             * @description ${public.usercontent.fields.playlists.createdAt.descr}
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description ${public.usercontent.fields.playlists.lastModifiedAt.descr}
-             */
-            lastModifiedAt: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.privacy.descr}
-             * @example PUBLIC
-             */
-            privacy: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.type.descr}
-             * @example EDITORIAL
-             */
-            playlistType: string;
-            /**
-             * @description ${public.usercontent.fields.playlists.imageLinks.descr}
-             * @example true
-             */
-            imageLinks: components["schemas"]["Image_Link"][];
-        };
-        /**
-         * @description ${public.usercontent.fields.playlists.externalLinks.descr}
-         * @example true
-         */
-        Playlist_External_Link: {
+        Catalogue_Item_External_Link: {
             /**
              * @description link to something that is related to a resource
              * @example https://tidal.com/browse/artist/1566
@@ -903,14 +981,69 @@ export interface components {
             href: string;
             meta: components["schemas"]["External_Link_Meta"];
         };
-        /** @description relationships object describing relationships between the resource and other resources */
-        Playlist_Relationships: {
-            items: components["schemas"]["Multi_Data_Relationship_Doc"];
-            owners: components["schemas"]["Multi_Data_Relationship_Doc"];
+        Catalogue_Item_Image_Link: {
+            /**
+             * @description link to an image
+             * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.jpg
+             */
+            href: string;
+            meta: components["schemas"]["Image_Link_Meta"];
         };
-        Playlist_Resource: {
-            attributes?: components["schemas"]["Playlist_Attributes"];
-            relationships?: components["schemas"]["Playlist_Relationships"];
+        /** @description attributes object representing some of the resource's data */
+        Tracks_Attributes: {
+            /**
+             * @description Album item's title
+             * @example Kill Jay Z
+             */
+            title: string;
+            /**
+             * @description Version of the album's item; complements title
+             * @example Kill Jay Z
+             */
+            version?: string;
+            /**
+             * @description ISRC code
+             * @example TIDAL2274
+             */
+            isrc: string;
+            /**
+             * @description Duration expressed in accordance with ISO 8601
+             * @example P30M5S
+             */
+            duration: string;
+            /**
+             * @description Copyright information
+             * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
+             */
+            copyright?: string;
+            /**
+             * @description Indicates whether a catalog item consist of any explicit content
+             * @example false
+             */
+            explicit: boolean;
+            /**
+             * Format: double
+             * @description Track or video popularity (ranged in 0.00 ... 1.00). Conditionally visible
+             * @example 0.56
+             */
+            popularity: number;
+            /** @description Defines a catalog item availability e.g. for streaming, DJs, stems */
+            availability?: ("STREAM" | "DJ" | "STEM")[];
+            mediaTags: string[];
+            /** @description Represents available links to something that is related to a catalog item, but external to the TIDAL API */
+            externalLinks?: components["schemas"]["Catalogue_Item_External_Link"][];
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        Tracks_Relationships: {
+            albums: components["schemas"]["Multi_Data_Relationship_Doc"];
+            artists: components["schemas"]["Multi_Data_Relationship_Doc"];
+            providers: components["schemas"]["Multi_Data_Relationship_Doc"];
+            similarTracks: components["schemas"]["Multi_Data_Relationship_Doc"];
+            radio: components["schemas"]["Multi_Data_Relationship_Doc"];
+        };
+        Tracks_Resource: {
+            attributes?: components["schemas"]["Tracks_Attributes"];
+            relationships?: components["schemas"]["Tracks_Relationships"];
             links?: components["schemas"]["Links"];
             /**
              * @description resource unique identifier
@@ -923,37 +1056,97 @@ export interface components {
              */
             type: string;
         };
-        User_Public_Profile_Data_Document: {
+        User_Recommendations_Multi_Data_Document: {
             /** @description array of primary resource data */
-            data?: components["schemas"]["User_Profile_Resource"][];
+            data?: components["schemas"]["User_Recommendations_Resource"][];
             links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Playlist_Resource"] | components["schemas"]["Pick_Resource"] | components["schemas"]["User_Resource"])[];
-        };
-        User_Profile_Data_Document: {
-            data?: components["schemas"]["User_Profile_Resource"];
-            links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Playlist_Resource"] | components["schemas"]["Pick_Resource"] | components["schemas"]["User_Resource"])[];
-        };
-        Playlist_Relationships_Document: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Playlist_Resource"][];
-        };
-        Picks_Relationships_Document: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-            included?: components["schemas"]["Pick_Resource"][];
-        };
-        Users_Relationship_Document: {
-            /** @description array of relationship resource linkages */
-            data?: components["schemas"]["Resource_Identifier"][];
-            links?: components["schemas"]["Links"];
-            included?: components["schemas"]["User_Resource"][];
+            included?: (components["schemas"]["Playlists_Resource"] | components["schemas"]["Tracks_Resource"] | components["schemas"]["Videos_Resource"] | components["schemas"]["Users_Resource"])[];
         };
         /** @description attributes object representing some of the resource's data */
-        Album_Attributes: {
+        Videos_Attributes: {
+            /**
+             * @description Album item's title
+             * @example Kill Jay Z
+             */
+            title: string;
+            /**
+             * @description Version of the album's item; complements title
+             * @example Kill Jay Z
+             */
+            version?: string;
+            /**
+             * @description ISRC code
+             * @example TIDAL2274
+             */
+            isrc: string;
+            /**
+             * @description Duration expressed in accordance with ISO 8601
+             * @example P30M5S
+             */
+            duration: string;
+            /**
+             * @description Copyright information
+             * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
+             */
+            copyright?: string;
+            /**
+             * Format: date
+             * @description Release date (ISO-8601)
+             * @example 2017-06-27
+             */
+            releaseDate?: string;
+            /**
+             * @description Indicates whether a catalog item consist of any explicit content
+             * @example false
+             */
+            explicit: boolean;
+            /**
+             * Format: double
+             * @description Track or video popularity (ranged in 0.00 ... 1.00). Conditionally visible
+             * @example 0.56
+             */
+            popularity: number;
+            /** @description Defines a catalog item availability e.g. for streaming, DJs, stems */
+            availability?: ("STREAM" | "DJ" | "STEM")[];
+            /** @description Represents available links to, and metadata about, an album item images */
+            imageLinks?: components["schemas"]["Catalogue_Item_Image_Link"][];
+            /** @description Represents available links to something that is related to a catalog item, but external to the TIDAL API */
+            externalLinks?: components["schemas"]["Catalogue_Item_External_Link"][];
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        Videos_Relationships: {
+            albums: components["schemas"]["Multi_Data_Relationship_Doc"];
+            artists: components["schemas"]["Multi_Data_Relationship_Doc"];
+            providers: components["schemas"]["Multi_Data_Relationship_Doc"];
+        };
+        Videos_Resource: {
+            attributes?: components["schemas"]["Videos_Attributes"];
+            relationships?: components["schemas"]["Videos_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        User_Recommendations_Single_Data_Document: {
+            data?: components["schemas"]["User_Recommendations_Resource"];
+            links?: components["schemas"]["Links"];
+            included?: (components["schemas"]["Playlists_Resource"] | components["schemas"]["Tracks_Resource"] | components["schemas"]["Videos_Resource"] | components["schemas"]["Users_Resource"])[];
+        };
+        Playlists_Relationship_Document: {
+            /** @description array of relationship resource linkages */
+            data?: components["schemas"]["Resource_Identifier"][];
+            links?: components["schemas"]["Links"];
+            included?: (components["schemas"]["Playlists_Resource"] | components["schemas"]["Tracks_Resource"] | components["schemas"]["Videos_Resource"] | components["schemas"]["Users_Resource"])[];
+        };
+        /** @description attributes object representing some of the resource's data */
+        Albums_Attributes: {
             /**
              * @description Original title
              * @example 4:44
@@ -1007,13 +1200,13 @@ export interface components {
             availability?: ("STREAM" | "DJ" | "STEM")[];
             mediaTags: string[];
             /** @description Represents available links to, and metadata about, an album cover images */
-            imageLinks?: components["schemas"]["Image_Link"][];
+            imageLinks?: components["schemas"]["Catalogue_Item_Image_Link"][];
             /** @description Represents available links to, and metadata about, an album cover videos */
-            videoLinks?: components["schemas"]["Video_Link"][];
+            videoLinks?: components["schemas"]["Catalogue_Item_Video_Link"][];
             /** @description Represents available links to something that is related to an album resource, but external to the TIDAL API */
-            externalLinks?: components["schemas"]["External_Link"][];
+            externalLinks?: components["schemas"]["Catalogue_Item_External_Link"][];
         };
-        Album_Item_Resource_Identifier: {
+        Albums_Item_Resource_Identifier: {
             /**
              * @description resource unique identifier
              * @example 12345
@@ -1024,9 +1217,9 @@ export interface components {
              * @example tracks
              */
             type: string;
-            meta?: components["schemas"]["Album_Item_Resource_Identifier_Meta"];
+            meta?: components["schemas"]["Albums_Item_Resource_Identifier_Meta"];
         };
-        Album_Item_Resource_Identifier_Meta: {
+        Albums_Item_Resource_Identifier_Meta: {
             /**
              * Format: int32
              * @description volume number
@@ -1041,20 +1234,20 @@ export interface components {
             trackNumber: number;
         };
         /** @description Album items (tracks/videos) relationship */
-        Album_Items_Relationship: {
-            data?: components["schemas"]["Album_Item_Resource_Identifier"][][];
+        Albums_Items_Relationship: {
+            data?: components["schemas"]["Albums_Item_Resource_Identifier"][][];
             links?: components["schemas"]["Links"];
         };
         /** @description relationships object describing relationships between the resource and other resources */
-        Album_Relationships: {
+        Albums_Relationships: {
             artists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            items: components["schemas"]["Album_Items_Relationship"];
+            items: components["schemas"]["Albums_Items_Relationship"];
             similarAlbums: components["schemas"]["Multi_Data_Relationship_Doc"];
             providers: components["schemas"]["Multi_Data_Relationship_Doc"];
         };
-        Album_Resource: {
-            attributes?: components["schemas"]["Album_Attributes"];
-            relationships?: components["schemas"]["Album_Relationships"];
+        Albums_Resource: {
+            attributes?: components["schemas"]["Albums_Attributes"];
+            relationships?: components["schemas"]["Albums_Relationships"];
             links?: components["schemas"]["Links"];
             /**
              * @description resource unique identifier
@@ -1068,7 +1261,7 @@ export interface components {
             type: string;
         };
         /** @description attributes object representing some of the resource's data */
-        Artist_Attributes: {
+        Artists_Attributes: {
             /**
              * @description Artist name
              * @example JAY Z
@@ -1081,22 +1274,22 @@ export interface components {
              */
             popularity: number;
             /** @description Represents available links to, and metadata about, an artist images */
-            imageLinks?: components["schemas"]["Image_Link"][];
+            imageLinks?: components["schemas"]["Catalogue_Item_Image_Link"][];
             /** @description Represents available links to something that is related to an artist resource, but external to the TIDAL API */
-            externalLinks?: components["schemas"]["External_Link"][];
+            externalLinks?: components["schemas"]["Catalogue_Item_External_Link"][];
         };
         /** @description relationships object describing relationships between the resource and other resources */
-        Artist_Relationships: {
+        Artists_Relationships: {
             albums: components["schemas"]["Multi_Data_Relationship_Doc"];
             tracks: components["schemas"]["Multi_Data_Relationship_Doc"];
             videos: components["schemas"]["Multi_Data_Relationship_Doc"];
             similarArtists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            trackProviders: components["schemas"]["Artist_Track_Providers_Relationship"];
+            trackProviders: components["schemas"]["Artists_Track_Providers_Relationship"];
             radio: components["schemas"]["Multi_Data_Relationship_Doc"];
         };
-        Artist_Resource: {
-            attributes?: components["schemas"]["Artist_Attributes"];
-            relationships?: components["schemas"]["Artist_Relationships"];
+        Artists_Resource: {
+            attributes?: components["schemas"]["Artists_Attributes"];
+            relationships?: components["schemas"]["Artists_Relationships"];
             links?: components["schemas"]["Links"];
             /**
              * @description resource unique identifier
@@ -1110,11 +1303,11 @@ export interface components {
             type: string;
         };
         /** @description Providers that have released tracks for this artist */
-        Artist_Track_Providers_Relationship: {
-            data?: components["schemas"]["Artist_Track_Providers_Resource_Identifier"][][];
+        Artists_Track_Providers_Relationship: {
+            data?: components["schemas"]["Artists_Track_Providers_Resource_Identifier"][][];
             links?: components["schemas"]["Links"];
         };
-        Artist_Track_Providers_Resource_Identifier: {
+        Artists_Track_Providers_Resource_Identifier: {
             /**
              * @description resource unique identifier
              * @example 12345
@@ -1125,9 +1318,9 @@ export interface components {
              * @example tracks
              */
             type: string;
-            meta?: components["schemas"]["Artist_Track_Providers_Resource_Identifier_Meta"];
+            meta?: components["schemas"]["Artists_Track_Providers_Resource_Identifier_Meta"];
         };
-        Artist_Track_Providers_Resource_Identifier_Meta: {
+        Artists_Track_Providers_Resource_Identifier_Meta: {
             /**
              * Format: int64
              * @description total number of tracks released together with the provider
@@ -1135,94 +1328,19 @@ export interface components {
              */
             numberOfTracks: number;
         };
-        External_Link: {
-            /**
-             * @description link to something that is related to a resource
-             * @example https://tidal.com/browse/artist/1566
-             */
-            href: string;
-            meta: components["schemas"]["External_Link_Meta"];
-        };
-        Picks_Data_Document: {
-            /** @description array of primary resource data */
-            data?: components["schemas"]["Pick_Resource"][];
-            links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"] | components["schemas"]["User_Resource"])[];
-        };
-        /** @description attributes object representing some of the resource's data */
-        Track_Attributes: {
-            /**
-             * @description Album item's title
-             * @example Kill Jay Z
-             */
-            title: string;
-            /**
-             * @description Version of the album's item; complements title
-             * @example Kill Jay Z
-             */
-            version?: string;
-            /**
-             * @description ISRC code
-             * @example TIDAL2274
-             */
-            isrc: string;
-            /**
-             * @description Duration expressed in accordance with ISO 8601
-             * @example P30M5S
-             */
-            duration: string;
-            /**
-             * @description Copyright information
-             * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
-             */
-            copyright?: string;
-            /**
-             * @description Indicates whether a catalog item consist of any explicit content
-             * @example false
-             */
-            explicit: boolean;
-            /**
-             * Format: double
-             * @description Track or video popularity (ranged in 0.00 ... 1.00). Conditionally visible
-             * @example 0.56
-             */
-            popularity: number;
-            /** @description Defines a catalog item availability e.g. for streaming, DJs, stems */
-            availability?: ("STREAM" | "DJ" | "STEM")[];
-            mediaTags: string[];
-            /** @description Represents available links to something that is related to a catalog item, but external to the TIDAL API */
-            externalLinks?: components["schemas"]["External_Link"][];
-        };
-        /** @description relationships object describing relationships between the resource and other resources */
-        Track_Relationships: {
-            albums: components["schemas"]["Multi_Data_Relationship_Doc"];
-            artists: components["schemas"]["Multi_Data_Relationship_Doc"];
-            providers: components["schemas"]["Multi_Data_Relationship_Doc"];
-            similarTracks: components["schemas"]["Multi_Data_Relationship_Doc"];
-            radio: components["schemas"]["Multi_Data_Relationship_Doc"];
-        };
-        Track_Resource: {
-            attributes?: components["schemas"]["Track_Attributes"];
-            relationships?: components["schemas"]["Track_Relationships"];
-            links?: components["schemas"]["Links"];
-            /**
-             * @description resource unique identifier
-             * @example 12345
-             */
-            id: string;
-            /**
-             * @description resource unique type
-             * @example tracks
-             */
-            type: string;
-        };
-        Video_Link: {
+        Catalogue_Item_Video_Link: {
             /**
              * @description link to a video
              * @example https://resources.tidal.com/images/717dfdae/beb0/4aea/a553/a70064c30386/80x80.mp4
              */
             href: string;
             meta: components["schemas"]["Video_Link_Meta"];
+        };
+        User_Public_Profiles_Multi_Data_Document: {
+            /** @description array of primary resource data */
+            data?: components["schemas"]["User_Public_Profiles_Resource"][];
+            links?: components["schemas"]["Links"];
+            included?: (components["schemas"]["Playlists_Resource"] | components["schemas"]["User_Public_Profile_Picks_Resource"] | components["schemas"]["Users_Resource"] | components["schemas"]["User_Public_Profiles_Resource"] | components["schemas"]["Tracks_Resource"] | components["schemas"]["Artists_Resource"] | components["schemas"]["Albums_Resource"] | components["schemas"]["Videos_Resource"] | components["schemas"]["User_Entitlements_Resource"] | components["schemas"]["User_Recommendations_Resource"])[];
         };
         /** @description metadata about a video */
         Video_Link_Meta: {
@@ -1239,13 +1357,61 @@ export interface components {
              */
             height: number;
         };
-        Pick_Item_Relationship_Document: {
+        User_Public_Profiles_Single_Data_Document: {
+            data?: components["schemas"]["User_Public_Profiles_Resource"];
+            links?: components["schemas"]["Links"];
+            included?: (components["schemas"]["Playlists_Resource"] | components["schemas"]["User_Public_Profile_Picks_Resource"] | components["schemas"]["Users_Resource"] | components["schemas"]["User_Public_Profiles_Resource"] | components["schemas"]["Tracks_Resource"] | components["schemas"]["Artists_Resource"] | components["schemas"]["Albums_Resource"] | components["schemas"]["Videos_Resource"] | components["schemas"]["User_Entitlements_Resource"] | components["schemas"]["User_Recommendations_Resource"])[];
+        };
+        User_Public_Profile_Picks_Relationship_Document: {
+            /** @description array of relationship resource linkages */
+            data?: components["schemas"]["Resource_Identifier"][];
+            links?: components["schemas"]["Links"];
+            included?: (components["schemas"]["User_Public_Profile_Picks_Resource"] | components["schemas"]["Tracks_Resource"] | components["schemas"]["Artists_Resource"] | components["schemas"]["Albums_Resource"] | components["schemas"]["User_Public_Profiles_Resource"])[];
+        };
+        Users_Relationship_Document: {
+            /** @description array of relationship resource linkages */
+            data?: components["schemas"]["Resource_Identifier"][];
+            links?: components["schemas"]["Links"];
+            included?: (components["schemas"]["Users_Resource"] | components["schemas"]["User_Entitlements_Resource"] | components["schemas"]["User_Public_Profiles_Resource"] | components["schemas"]["User_Recommendations_Resource"])[];
+        };
+        /** @description attributes object representing some of the resource's data */
+        Providers_Attributes: {
+            /**
+             * @description ${public.catalogue.fields.provider.name.descr}
+             * @example Columbia/Legacy
+             */
+            name: string;
+        };
+        /** @description relationships object describing relationships between the resource and other resources */
+        Providers_Relationships: Record<string, never>;
+        Providers_Resource: {
+            attributes?: components["schemas"]["Providers_Attributes"];
+            relationships?: components["schemas"]["Providers_Relationships"];
+            links?: components["schemas"]["Links"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description resource unique type
+             * @example tracks
+             */
+            type: string;
+        };
+        User_Public_Profile_Picks_Multi_Data_Document: {
+            /** @description array of primary resource data */
+            data?: components["schemas"]["User_Public_Profile_Picks_Resource"][];
+            links?: components["schemas"]["Links"];
+            included?: (components["schemas"]["Tracks_Resource"] | components["schemas"]["Artists_Resource"] | components["schemas"]["Albums_Resource"] | components["schemas"]["User_Public_Profiles_Resource"] | components["schemas"]["Videos_Resource"] | components["schemas"]["Providers_Resource"] | components["schemas"]["Playlists_Resource"] | components["schemas"]["User_Public_Profile_Picks_Resource"] | components["schemas"]["Users_Resource"])[];
+        };
+        User_Public_Profile_Picks_Item_Relationship_Document: {
             data?: components["schemas"]["Resource_Identifier"];
             links?: components["schemas"]["Links"];
-            included?: (components["schemas"]["Track_Resource"] | components["schemas"]["Artist_Resource"] | components["schemas"]["Album_Resource"])[];
+            included?: (components["schemas"]["Tracks_Resource"] | components["schemas"]["Artists_Resource"] | components["schemas"]["Albums_Resource"] | components["schemas"]["Videos_Resource"] | components["schemas"]["Providers_Resource"] | components["schemas"]["Playlists_Resource"])[];
         };
-        User_Entitlement_Data_Document: {
-            data?: components["schemas"]["User_Entitlement_Resource"];
+        User_Entitlements_Single_Data_Document: {
+            data?: components["schemas"]["User_Entitlements_Resource"];
             links?: components["schemas"]["Links"];
         };
     };
@@ -1257,7 +1423,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    getPickItem: {
+    getUserPublicProfilePickItemRelationship: {
         parameters: {
             query: {
                 /**
@@ -1269,7 +1435,7 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: item
                  * @example item
                  */
-                include?: "item"[];
+                include?: string[];
             };
             header?: never;
             path: {
@@ -1309,7 +1475,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Pick_Item_Relationship_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Public_Profile_Picks_Item_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1488,9 +1654,12 @@ export interface operations {
             };
         };
     };
-    setPickData: {
+    setUserPublicProfilePickItemRelationship: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Allows the client to customize which related resources should be returned */
+                include?: string[];
+            };
             header?: never;
             path: {
                 /**
@@ -1503,7 +1672,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/vnd.api+json": components["schemas"]["Pick_Relationships_Document"];
+                "application/vnd.api+json": components["schemas"]["Update_User_Public_Profile_Picks_Relationship_Document"];
             };
         };
         responses: {
@@ -1712,14 +1881,14 @@ export interface operations {
             };
         };
     };
-    getUsers: {
+    getUsersByFilters: {
         parameters: {
             query?: {
                 /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: entitlements, publicProfile
+                 * @description Allows the client to customize which related resources should be returned. Available options: entitlements, publicProfile, recommendations
                  * @example entitlements
                  */
-                include?: ("entitlements" | "publicProfile")[];
+                include?: string[];
                 /**
                  * @description Allows to filter the collection of resources based on id attribute value
                  * @example 251380836
@@ -1758,7 +1927,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Users_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["Users_Multi_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -1937,14 +2106,14 @@ export interface operations {
             };
         };
     };
-    getUser: {
+    getUserById: {
         parameters: {
             query?: {
                 /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: entitlements, publicProfile
+                 * @description Allows the client to customize which related resources should be returned. Available options: entitlements, publicProfile, recommendations
                  * @example entitlements
                  */
-                include?: ("entitlements" | "publicProfile")[];
+                include?: string[];
             };
             header?: never;
             path: {
@@ -1984,7 +2153,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["User_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["Users_Single_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -2163,7 +2332,233 @@ export interface operations {
             };
         };
     };
-    getUserPublicProfile: {
+    getUserRecommendationsRelationship: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: recommendations
+                 * @example recommendations
+                 */
+                include?: string[];
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description User Id
+                 * @example 251380836
+                 */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully executed request. */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Users_Recommendations_Relationship_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getUserPublicProfileRelationship: {
         parameters: {
             query: {
                 /**
@@ -2175,7 +2570,7 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: publicProfile
                  * @example publicProfile
                  */
-                include?: "publicProfile"[];
+                include?: string[];
             };
             header?: never;
             path: {
@@ -2394,14 +2789,14 @@ export interface operations {
             };
         };
     };
-    getUserEntitlements: {
+    getUserEntitlementsRelationship: {
         parameters: {
             query?: {
                 /**
                  * @description Allows the client to customize which related resources should be returned. Available options: entitlements
                  * @example entitlements
                  */
-                include?: "entitlements"[];
+                include?: string[];
             };
             header?: never;
             path: {
@@ -2441,7 +2836,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Users_Entitlement_Relationship_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Entitlements_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -2620,14 +3015,14 @@ export interface operations {
             };
         };
     };
-    me: {
+    getMyUser: {
         parameters: {
             query?: {
                 /**
-                 * @description Allows the client to customize which related resources should be returned. Available options: entitlements, publicProfile
+                 * @description Allows the client to customize which related resources should be returned. Available options: entitlements, publicProfile, recommendations
                  * @example entitlements
                  */
-                include?: ("entitlements" | "publicProfile")[];
+                include?: string[];
             };
             header?: never;
             path?: never;
@@ -2661,7 +3056,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["User_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["Users_Single_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -2840,14 +3235,239 @@ export interface operations {
             };
         };
     };
-    getUserRecommendations: {
+    getUserRecommendationsByFilters: {
         parameters: {
             query?: {
                 /**
                  * @description Allows the client to customize which related resources should be returned. Available options: myMixes, discoveryMixes, newArrivalMixes
                  * @example myMixes
                  */
-                include?: ("myMixes" | "discoveryMixes" | "newArrivalMixes")[];
+                include?: string[];
+                /**
+                 * @description User recommendations id
+                 * @example 251380836
+                 */
+                "filter[id]"?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully executed request. */
+            200: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["User_Recommendations_Multi_Data_Document"];
+                };
+            };
+            /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
+            400: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Resource not found. The requested resource is not found. */
+            404: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Method not supported. Ensure a proper HTTP method for an HTTP request is used. */
+            405: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Not acceptable. The server doesn't support any of the requested by client acceptable content types. */
+            406: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Unsupported Media Type. The API is using content negotiation. Ensure the proper media type is set into Content-Type header. */
+            415: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+            /** @description Internal Server Error. Something went wrong on the server party. */
+            500: {
+                headers: {
+                    /**
+                     * @description Number of tokens currently remaining. Refer to X-RateLimit-Replenish-Rate header for replenishment information.
+                     * @example 5
+                     */
+                    "X-RateLimit-Remaining": number;
+                    /**
+                     * @description Initial number of tokens, and max number of tokens that can be replenished.
+                     * @example 20
+                     */
+                    "X-RateLimit-Burst-Capacity": number;
+                    /**
+                     * @description Number of tokens replenished per second.
+                     * @example 5
+                     */
+                    "X-RateLimit-Replenish-Rate": number;
+                    /**
+                     * @description Request cost in tokens.
+                     * @example 5
+                     */
+                    "X-RateLimit-Requested-Tokens": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/vnd.api+json": components["schemas"]["Error_Document"];
+                };
+            };
+        };
+    };
+    getUserRecommendationsById: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Allows the client to customize which related resources should be returned. Available options: myMixes, discoveryMixes, newArrivalMixes
+                 * @example myMixes
+                 */
+                include?: string[];
             };
             header?: never;
             path: {
@@ -2887,7 +3507,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["User_Recommendations_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Recommendations_Single_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -3066,14 +3686,19 @@ export interface operations {
             };
         };
     };
-    getNewArrivalMixes: {
+    getUserRecommendationsNewArrivalMixesRelationship: {
         parameters: {
             query?: {
                 /**
                  * @description Allows the client to customize which related resources should be returned. Available options: newArrivalMixes
                  * @example newArrivalMixes
                  */
-                include?: "newArrivalMixes"[];
+                include?: string[];
+                /**
+                 * @description Server-generated cursor value targeting a certain page of items.
+                 * @example 3nI1Esi53skehSd
+                 */
+                "page[cursor]"?: string;
             };
             header?: never;
             path: {
@@ -3113,7 +3738,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Multi_Data_Relationship_Doc"];
+                    "application/vnd.api+json": components["schemas"]["Playlists_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -3292,14 +3917,19 @@ export interface operations {
             };
         };
     };
-    getMyMixes: {
+    getUserRecommendationsMyMixesRelationship: {
         parameters: {
             query?: {
                 /**
                  * @description Allows the client to customize which related resources should be returned. Available options: myMixes
                  * @example myMixes
                  */
-                include?: "myMixes"[];
+                include?: string[];
+                /**
+                 * @description Server-generated cursor value targeting a certain page of items.
+                 * @example 3nI1Esi53skehSd
+                 */
+                "page[cursor]"?: string;
             };
             header?: never;
             path: {
@@ -3339,7 +3969,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Multi_Data_Relationship_Doc"];
+                    "application/vnd.api+json": components["schemas"]["Playlists_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -3518,14 +4148,19 @@ export interface operations {
             };
         };
     };
-    getDiscoveryMixes: {
+    getUserRecommendationsDiscoveryMixesRelationship: {
         parameters: {
             query?: {
                 /**
                  * @description Allows the client to customize which related resources should be returned. Available options: discoveryMixes
                  * @example discoveryMixes
                  */
-                include?: "discoveryMixes"[];
+                include?: string[];
+                /**
+                 * @description Server-generated cursor value targeting a certain page of items.
+                 * @example 3nI1Esi53skehSd
+                 */
+                "page[cursor]"?: string;
             };
             header?: never;
             path: {
@@ -3565,7 +4200,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Multi_Data_Relationship_Doc"];
+                    "application/vnd.api+json": components["schemas"]["Playlists_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -3744,14 +4379,14 @@ export interface operations {
             };
         };
     };
-    getMyRecommendations: {
+    getMyUserRecommendations: {
         parameters: {
             query?: {
                 /**
                  * @description Allows the client to customize which related resources should be returned. Available options: myMixes, discoveryMixes, newArrivalMixes
                  * @example myMixes
                  */
-                include?: ("myMixes" | "discoveryMixes" | "newArrivalMixes")[];
+                include?: string[];
             };
             header?: never;
             path?: never;
@@ -3785,7 +4420,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["User_Recommendations_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Recommendations_Single_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -3964,7 +4599,7 @@ export interface operations {
             };
         };
     };
-    getProfiles: {
+    getUserPublicProfilesByFilters: {
         parameters: {
             query: {
                 /**
@@ -3976,9 +4611,9 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: publicPlaylists, publicPicks, followers, following
                  * @example publicPlaylists
                  */
-                include?: ("publicPlaylists" | "publicPicks" | "followers" | "following")[];
+                include?: string[];
                 /**
-                 * @description ${public.usercontent.getProfiles.id.descr}
+                 * @description TIDAL user id
                  * @example 1234567890
                  */
                 "filter[id]"?: string[];
@@ -4015,7 +4650,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["User_Public_Profile_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Public_Profiles_Multi_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -4194,7 +4829,7 @@ export interface operations {
             };
         };
     };
-    getProfile: {
+    getUserPublicProfileById: {
         parameters: {
             query: {
                 /**
@@ -4206,7 +4841,7 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: publicPlaylists, publicPicks, followers, following
                  * @example publicPlaylists
                  */
-                include?: ("publicPlaylists" | "publicPicks" | "followers" | "following")[];
+                include?: string[];
             };
             header?: never;
             path: {
@@ -4246,7 +4881,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["User_Profile_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Public_Profiles_Single_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -4425,14 +5060,19 @@ export interface operations {
             };
         };
     };
-    getPublicPlaylists: {
+    getUserPublicProfilePublicPlaylistsRelationship: {
         parameters: {
             query?: {
                 /**
                  * @description Allows the client to customize which related resources should be returned. Available options: publicPlaylists
                  * @example publicPlaylists
                  */
-                include?: "publicPlaylists"[];
+                include?: string[];
+                /**
+                 * @description Server-generated cursor value targeting a certain page of items.
+                 * @example 3nI1Esi53skehSd
+                 */
+                "page[cursor]"?: string;
             };
             header?: never;
             path: {
@@ -4472,7 +5112,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Playlist_Relationships_Document"];
+                    "application/vnd.api+json": components["schemas"]["Playlists_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -4651,7 +5291,7 @@ export interface operations {
             };
         };
     };
-    getPublicPicks: {
+    getUserPublicProfilePublicPicksRelationship: {
         parameters: {
             query: {
                 /**
@@ -4663,7 +5303,7 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: publicPicks
                  * @example publicPicks
                  */
-                include?: "publicPicks"[];
+                include?: string[];
             };
             header?: never;
             path: {
@@ -4703,7 +5343,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Picks_Relationships_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Public_Profile_Picks_Relationship_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -4882,14 +5522,19 @@ export interface operations {
             };
         };
     };
-    getPublicFollowings: {
+    getUserPublicProfileFollowingRelationship: {
         parameters: {
             query?: {
                 /**
                  * @description Allows the client to customize which related resources should be returned. Available options: following
                  * @example following
                  */
-                include?: "following"[];
+                include?: string[];
+                /**
+                 * @description Server-generated cursor value targeting a certain page of items.
+                 * @example 3nI1Esi53skehSd
+                 */
+                "page[cursor]"?: string;
             };
             header?: never;
             path: {
@@ -5108,14 +5753,19 @@ export interface operations {
             };
         };
     };
-    getPublicFollowers: {
+    getUserPublicProfileFollowersRelationship: {
         parameters: {
             query?: {
                 /**
                  * @description Allows the client to customize which related resources should be returned. Available options: followers
                  * @example followers
                  */
-                include?: "followers"[];
+                include?: string[];
+                /**
+                 * @description Server-generated cursor value targeting a certain page of items.
+                 * @example 3nI1Esi53skehSd
+                 */
+                "page[cursor]"?: string;
             };
             header?: never;
             path: {
@@ -5334,7 +5984,7 @@ export interface operations {
             };
         };
     };
-    getMyProfile: {
+    getMyUserPublicProfile: {
         parameters: {
             query: {
                 /**
@@ -5346,7 +5996,7 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: publicPlaylists, publicPicks, followers, following
                  * @example publicPlaylists
                  */
-                include?: ("publicPlaylists" | "publicPicks" | "followers" | "following")[];
+                include?: string[];
             };
             header?: never;
             path?: never;
@@ -5380,7 +6030,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["User_Profile_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Public_Profiles_Single_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -5559,7 +6209,7 @@ export interface operations {
             };
         };
     };
-    getPicks: {
+    getUserPublicProfilePicksByFilters: {
         parameters: {
             query: {
                 /**
@@ -5571,7 +6221,7 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: item, userPublicProfile
                  * @example item
                  */
-                include?: ("item" | "userPublicProfile")[];
+                include?: string[];
                 /**
                  * @description Allows to filter the collection of resources based on id attribute value
                  * @example 123123
@@ -5615,7 +6265,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Picks_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Public_Profile_Picks_Multi_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -5794,14 +6444,14 @@ export interface operations {
             };
         };
     };
-    getPickPublicUserProfile: {
+    getUserPublicProfilePickUserPublicProfileRelationship: {
         parameters: {
             query?: {
                 /**
                  * @description Allows the client to customize which related resources should be returned. Available options: userPublicProfile
                  * @example userPublicProfile
                  */
-                include?: "userPublicProfile"[];
+                include?: string[];
             };
             header?: never;
             path: {
@@ -6020,7 +6670,7 @@ export interface operations {
             };
         };
     };
-    getMyPicks: {
+    getMyUserPublicProfilePicks: {
         parameters: {
             query: {
                 /**
@@ -6032,7 +6682,7 @@ export interface operations {
                  * @description Allows the client to customize which related resources should be returned. Available options: item, userPublicProfile
                  * @example item
                  */
-                include?: ("item" | "userPublicProfile")[];
+                include?: string[];
             };
             header?: never;
             path?: never;
@@ -6066,7 +6716,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["Picks_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Public_Profile_Picks_Multi_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -6245,9 +6895,12 @@ export interface operations {
             };
         };
     };
-    getEntitlements: {
+    getUserEntitlementsById: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Allows the client to customize which related resources should be returned */
+                include?: string[];
+            };
             header?: never;
             path: {
                 /**
@@ -6286,7 +6939,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["User_Entitlement_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Entitlements_Single_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */
@@ -6465,9 +7118,12 @@ export interface operations {
             };
         };
     };
-    getMyEntitlements: {
+    getMyUserEntitlements: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Allows the client to customize which related resources should be returned */
+                include?: string[];
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -6500,7 +7156,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/vnd.api+json": components["schemas"]["User_Entitlement_Data_Document"];
+                    "application/vnd.api+json": components["schemas"]["User_Entitlements_Single_Data_Document"];
                 };
             };
             /** @description Bad request on client party. Ensure the proper HTTP request is sent (query parameters, request body, etc.). */

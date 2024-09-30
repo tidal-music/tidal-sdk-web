@@ -12,7 +12,8 @@
     "lint:fix": "pnpm -r lint:fix",
     "test": "pnpm -r test -- --run",
     "test:coverage": "pnpm -r test:coverage",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "generateTypes": "pnpm -r generateTypes"
   },
   "devDependencies": {
     "eslint": "8.57.1",
