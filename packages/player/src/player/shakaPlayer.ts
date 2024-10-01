@@ -570,6 +570,8 @@ export default class ShakaPlayer extends BasePlayer {
     const errorCode = `S${error.code}` as ErrorCodes;
 
     switch (error.code) {
+      case shaka.util.Error.Code.SRC_EQUALS_PRELOAD_NOT_SUPPORTED:
+        return; // Ignore this error, handled via promise rejection.
       case shaka.util.Error.Code.LICENSE_REQUEST_FAILED: // 6007
         if (this.currentStreamingSessionId) {
           StreamingMetrics.commit({
@@ -880,6 +882,10 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
+    this.#preloadManager = await this.shakaInstance.preload(
+      payload.streamInfo.streamUrl,
+    );
+
     /*
       A play action can only start playback if playback state is not IDLE.
       If shaka is currently not playing anything and we preload to play something soon,
@@ -890,10 +896,6 @@ export default class ShakaPlayer extends BasePlayer {
     }
 
     this.preloadedStreamingSessionId = payload.streamInfo.streamingSessionId;
-
-    this.#preloadManager = await this.shakaInstance.preload(
-      payload.streamInfo.streamUrl,
-    );
 
     // If we could parse duration from manifest, we can save the media product transition
     // and support "touch n go" playback. (re-using a preloaded item for a load)
@@ -1062,7 +1064,7 @@ export default class ShakaPlayer extends BasePlayer {
       this.preloadedStreamingSessionId,
     );
 
-    if (this.#preloadedPayload && this.#preloadManager) {
+    if (this.#preloadedPayload) {
       const { mediaProduct, playbackInfo, streamInfo } = this.#preloadedPayload;
 
       return this.#loadAndDispatchMediaProductTransition({
