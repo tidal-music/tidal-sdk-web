@@ -363,14 +363,16 @@ export class BasePlayer {
         playbackContext.actualVideoQuality,
       isPostPaywall: playbackContext.actualAssetPresentation === 'FULL',
       playbackSessionId: streamingSessionId,
-      productType: mediaProduct.productType === 'track' ? 'TRACK' : 'VIDEO',
+      productType: PlayLog.mapProductTypeToPlayLogProductType(
+        mediaProduct.productType,
+      ),
       requestedProductId: mediaProduct.productId,
       sourceId: mediaProduct.sourceId,
       sourceType: mediaProduct.sourceType,
       startAssetPosition: this.startAssetPosition,
       startTimestamp,
       streamingSessionId,
-    });
+    }).catch(console.error);
   }
 
   finishCurrentMediaProduct(endReason: EndReason) {
@@ -580,7 +582,7 @@ export class BasePlayer {
         actionType: 'PLAYBACK_STOP',
         assetPosition,
         timestamp: trueTime.now(),
-      });
+      }).catch(console.error);
     }
   }
 

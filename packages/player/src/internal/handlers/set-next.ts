@@ -133,14 +133,16 @@ async function _setNext(
     isPostPaywall: playbackInfo.assetPresentation === 'FULL',
     // Euw...
     playbackSessionId: streamingSessionId,
-    productType: mediaProduct.productType === 'track' ? 'TRACK' : 'VIDEO',
+    productType: PlayLog.mapProductTypeToPlayLogProductType(
+      mediaProduct.productType,
+    ),
     requestedProductId: mediaProduct.productId,
     sourceId: mediaProduct.sourceId,
     sourceType: mediaProduct.sourceType,
     startAssetPosition: 0,
     startTimestamp,
     streamingSessionId,
-  });
+  }).catch(console.error);
 
   StreamingMetrics.commit({
     events: [
