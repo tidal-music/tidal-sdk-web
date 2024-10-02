@@ -1605,10 +1605,7 @@ export interface operations {
                  * @example items
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;
@@ -1836,10 +1833,7 @@ export interface operations {
                  * @example items
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;

@@ -888,11 +888,6 @@ export interface operations {
                  * @example artists
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
-                "page[cursor]"?: string;
             };
             header?: never;
             path: {
@@ -1124,10 +1119,7 @@ export interface operations {
                  * @example videos
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;
@@ -1360,10 +1352,7 @@ export interface operations {
                  * @example tracks
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;
@@ -1596,10 +1585,7 @@ export interface operations {
                  * @example topHits
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;
@@ -1832,10 +1818,7 @@ export interface operations {
                  * @example playlists
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;
@@ -2068,10 +2051,7 @@ export interface operations {
                  * @example artists
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;
@@ -2304,10 +2284,7 @@ export interface operations {
                  * @example albums
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;

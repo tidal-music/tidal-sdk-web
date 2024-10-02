@@ -1377,7 +1377,7 @@ export interface components {
         /** @description attributes object representing some of the resource's data */
         Providers_Attributes: {
             /**
-             * @description ${public.catalogue.fields.provider.name.descr}
+             * @description Provider name. Conditionally visible.
              * @example Columbia/Legacy
              */
             name: string;
@@ -3694,10 +3694,7 @@ export interface operations {
                  * @example newArrivalMixes
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;
@@ -3925,10 +3922,7 @@ export interface operations {
                  * @example myMixes
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;
@@ -4156,10 +4150,7 @@ export interface operations {
                  * @example discoveryMixes
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;
@@ -5068,10 +5059,7 @@ export interface operations {
                  * @example publicPlaylists
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;
@@ -5530,10 +5518,7 @@ export interface operations {
                  * @example following
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;
@@ -5761,10 +5746,7 @@ export interface operations {
                  * @example followers
                  */
                 include?: string[];
-                /**
-                 * @description Server-generated cursor value targeting a certain page of items.
-                 * @example 3nI1Esi53skehSd
-                 */
+                /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                 "page[cursor]"?: string;
             };
             header?: never;
