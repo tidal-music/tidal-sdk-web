@@ -1065,7 +1065,19 @@ export default class ShakaPlayer extends BasePlayer {
     );
 
     if (this.#preloadedPayload) {
-      const { mediaProduct, playbackInfo, streamInfo } = this.#preloadedPayload;
+      const {
+        mediaProduct: mediaProductFromLoadPayload,
+        playbackInfo,
+        streamInfo,
+      } = this.#preloadedPayload;
+
+      const mediaProductTransition =
+        streamingSessionStore.getMediaProductTransition(
+          streamInfo.streamingSessionId,
+        );
+
+      const mediaProduct =
+        mediaProductTransition?.mediaProduct ?? mediaProductFromLoadPayload;
 
       return this.#loadAndDispatchMediaProductTransition({
         assetPosition: 0,
