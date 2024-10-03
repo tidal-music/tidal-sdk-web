@@ -40,8 +40,7 @@ async function _setNext(
     return unloadPreloadedMediaProduct();
   }
 
-  let streamingSessionId =
-    playerState.preloadedStreamingSessionId ?? generateGUID();
+  const streamingSessionId = generateGUID();
 
   // For repeat playbacks, we clone the streaming session to a new streaming session id.
   if (
@@ -52,8 +51,6 @@ async function _setNext(
       playerState.preloadedStreamingSessionId,
     )
   ) {
-    streamingSessionId = generateGUID();
-
     streamingSessionStore.clone(
       playerState.preloadedStreamingSessionId,
       streamingSessionId,
