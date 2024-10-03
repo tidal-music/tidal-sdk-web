@@ -4,15 +4,16 @@ export { getMediaProduct } from '../internal/handlers/get-media-product';
 export { getOutputDevices } from '../internal/handlers/get-output-devices';
 export { getPlaybackContext } from '../internal/handlers/get-playback-context';
 export { getPlaybackState } from '../internal/handlers/get-playback-state';
+export { getPlayerVersion } from '../internal/handlers/get-player-version';
 export { getStreamingWifiAudioQuality } from '../internal/handlers/get-streaming-wifi-audio-quality';
-export { getVolumeLevel } from '../internal/handlers/get-volume-level';
 
+export { getVolumeLevel } from '../internal/handlers/get-volume-level';
 export { load } from '../internal/handlers/load';
 export { pause } from '../internal/handlers/pause';
 export { play } from '../internal/handlers/play';
 export { reset } from '../internal/handlers/reset';
-export { seek } from '../internal/handlers/seek';
 
+export { seek } from '../internal/handlers/seek';
 export { setApiUrl } from '../internal/handlers/set-api-url';
 export { setAppVersion } from '../internal/handlers/set-app-version';
 export { setClientPlatform } from '../internal/handlers/set-client-platform';
