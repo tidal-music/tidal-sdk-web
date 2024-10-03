@@ -14,7 +14,7 @@
     "wtr": "web-test-runner",
     "test": "bash ./scripts/test.sh",
     "prepare": "vite build",
-    "build": "./scripts/version-dump.sh && vite build && vite build -c vite-legacy.config.ts",
+    "build": "vite build && vite build -c vite-legacy.config.ts",
     "clean": "rm -rf coverage dist .eslintcache",
     "dev": "vite --debug --cors -c=./vite.config.ts",
     "lint": "eslint . --cache --cache-strategy content",
@@ -76,6 +76,7 @@
     "typescript": "5.6.2",
     "vite": "5.4.6",
     "vite-plugin-dts": "4.2.1",
+    "vite-plugin-package-version": "1.1.0",
     "vite-plugin-top-level-await": "1.4.4",
     "vitest": "2.0.4"
   }

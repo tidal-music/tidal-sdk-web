@@ -1,3 +1,4 @@
+import version from 'vite-plugin-package-version';
 import topLevelAwait from 'vite-plugin-top-level-await';
 import { defineConfig, mergeConfig } from 'vitest/config';
 
@@ -15,6 +16,6 @@ export default mergeConfig(
       outDir: 'dist/legacy',
       target: 'chrome76',
     },
-    plugins: [topLevelAwait()],
+    plugins: [version(), topLevelAwait()],
   }),
 );
