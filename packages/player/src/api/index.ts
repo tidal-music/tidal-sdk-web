@@ -6,20 +6,19 @@ export { getPlaybackContext } from '../internal/handlers/get-playback-context';
 export { getPlaybackState } from '../internal/handlers/get-playback-state';
 export { getPlayerVersion } from '../internal/handlers/get-player-version';
 export { getStreamingWifiAudioQuality } from '../internal/handlers/get-streaming-wifi-audio-quality';
-
 export { getVolumeLevel } from '../internal/handlers/get-volume-level';
+
 export { load } from '../internal/handlers/load';
 export { pause } from '../internal/handlers/pause';
 export { play } from '../internal/handlers/play';
 export { reset } from '../internal/handlers/reset';
-
 export { seek } from '../internal/handlers/seek';
+
 export { setApiUrl } from '../internal/handlers/set-api-url';
 export { setAppVersion } from '../internal/handlers/set-app-version';
 export { setClientPlatform } from '../internal/handlers/set-client-platform';
 export { setCredentialsProvider } from '../internal/handlers/set-credentials-provider';
 export { setEventUrl } from '../internal/handlers/set-event-url';
-
 export { setLoudnessNormalizationMode } from '../internal/handlers/set-loudness-normalization-mode';
 export { setNext } from '../internal/handlers/set-next';
 export { setOutputDevice } from '../internal/handlers/set-output-device';
