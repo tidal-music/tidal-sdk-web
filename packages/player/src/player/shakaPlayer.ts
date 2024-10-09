@@ -835,20 +835,20 @@ export default class ShakaPlayer extends BasePlayer {
 
   async load(payload: LoadPayload, transition: 'explicit' | 'implicit') {
     this.debugLog('load', payload);
+    await this.ready;
 
     this.currentTime = payload.assetPosition;
     this.startAssetPosition = payload.assetPosition;
+
+    // Ensure reset and set reset to false since we're loading anew.
+    await this.reset();
+    this.#isReset = false;
 
     await this.#configureHlsForPlayback(
       this.shakaInstance,
       payload.mediaProduct,
     );
 
-    // Ensure reset and set reset to false since we're loading anew.
-    await this.reset();
-    this.#isReset = false;
-
-    await this.ready;
     await ensureVideoElementsMounted();
 
     const { assetPosition, mediaProduct, playbackInfo, streamInfo } = payload;
