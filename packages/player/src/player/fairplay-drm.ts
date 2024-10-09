@@ -1,4 +1,6 @@
-// Certificate loading logic:
+/**
+ * Certificate loading logic:
+ */
 export async function loadServerCertificate() {
   try {
     const response = await fetch(
