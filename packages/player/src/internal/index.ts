@@ -29,7 +29,7 @@ class CredentialsProviderStore extends EventTarget {
 
     this.#credentialsProvider.bus(event => {
       switch (event.detail.type) {
-        case 'credentialsUpdated':
+        case 'CredentialsUpdatedMessage':
           this.dispatchAuthorized().catch(console.error);
           break;
         default:
