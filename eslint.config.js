@@ -18,6 +18,7 @@ export default [
       'node_modules/*',
       'packages/*/node_modules/*',
       'packages/*/dist/*',
+      'packages/**/*.generated.ts',
       'coverage',
     ],
   },
