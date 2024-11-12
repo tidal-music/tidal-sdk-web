@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { credentialsProvider, init as initAuth } from '@tidal-music/auth';
 
 import { createSearchClient } from '../dist';
