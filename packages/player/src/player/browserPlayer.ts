@@ -381,7 +381,6 @@ export default class BrowserPlayer extends BasePlayer {
     this.setStateToXIfNotYInZMs(1000, 'PLAYING', 'STALLED');
 
     if (this.currentPlayer) {
-      // eslint-disable-next-line no-console
       await this.currentPlayer.play().catch(console.error);
     }
   }

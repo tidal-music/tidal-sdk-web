@@ -13,9 +13,8 @@ export {
   setCredentials,
 } from './auth/auth';
 
-export type * from './types';
-
 export { authErrorCodeMap } from './errors';
+
 export type {
   AuthErrorCodes,
   AuthErrorNames,
@@ -23,6 +22,8 @@ export type {
   TokenResponseError,
   UnexpectedError,
 } from './errors';
+
+export type * from './types';
 
 export const credentialsProvider: CredentialsProvider = {
   bus,

@@ -200,7 +200,6 @@ export class PlayerError extends Error {
   referenceId: string | undefined;
 
   constructor(errorId: ErrorIds, errorCode: ErrorCodes, referenceId?: string) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     super(`${errorId}: ${errorCode} (${referenceId})`);
 
     this.errorId = errorId;

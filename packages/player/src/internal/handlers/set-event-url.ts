@@ -8,7 +8,6 @@ import * as Config from '../../config';
 export function setEventUrl(eventUrl: string) {
   // eslint-disable-next-line no-useless-catch
   try {
-    // eslint-disable-next-line no-new
     new URL(eventUrl);
   } catch (e) {
     throw e;

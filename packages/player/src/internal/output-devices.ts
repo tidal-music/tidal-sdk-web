@@ -158,7 +158,7 @@ export function getOutputDeviceByName(
     .filter(device => name.includes(device.name) || device.name.includes(name))
     .map(device => ({
       device,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
       distance: levenshtein(device.name, name),
     }))
     .sort((a, b) => a.distance - b.distance)

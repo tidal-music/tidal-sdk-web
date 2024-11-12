@@ -28,38 +28,10 @@ export default class ConnectionHandler {
 
   static #playbackStateEventHandler: EventListener;
 
-  static disable() {
-    if (this.#enabled) {
-      if (this.#offlineHandler) {
-        window.removeEventListener('offline', this.#offlineHandler, false);
-      }
-
-      if (this.#onlineHandler) {
-        window.removeEventListener('online', this.#onlineHandler, false);
-      }
-
-      this.#onlineHandler = undefined;
-      this.#offlineHandler = undefined;
-      this.#enabled = false;
-    }
-  }
-
-  static enable() {
-    if (!this.#enabled) {
-      this.#onlineHandler = () => this.#handleOnline();
-      this.#offlineHandler = () => this.#handleOffline();
-
-      window.addEventListener('offline', this.#offlineHandler, false);
-      window.addEventListener('online', this.#onlineHandler, false);
-
-      this.#enabled = true;
-    }
-  }
-
   static #handleOffline() {
     const { activePlayer: player } = playerState;
 
-    if (!player || !player.hasStarted()) {
+    if (!player?.hasStarted()) {
       return;
     }
 
@@ -80,7 +52,7 @@ export default class ConnectionHandler {
   static #handleOnline() {
     const { activePlayer: player } = playerState;
 
-    if (!player || !player.hasStarted()) {
+    if (!player?.hasStarted()) {
       return;
     }
 
@@ -117,6 +89,34 @@ export default class ConnectionHandler {
 
     if (player) {
       this.#currentTime = player.currentTime;
+    }
+  }
+
+  static disable() {
+    if (this.#enabled) {
+      if (this.#offlineHandler) {
+        window.removeEventListener('offline', this.#offlineHandler, false);
+      }
+
+      if (this.#onlineHandler) {
+        window.removeEventListener('online', this.#onlineHandler, false);
+      }
+
+      this.#onlineHandler = undefined;
+      this.#offlineHandler = undefined;
+      this.#enabled = false;
+    }
+  }
+
+  static enable() {
+    if (!this.#enabled) {
+      this.#onlineHandler = () => this.#handleOnline();
+      this.#offlineHandler = () => this.#handleOffline();
+
+      window.addEventListener('offline', this.#offlineHandler, false);
+      window.addEventListener('online', this.#onlineHandler, false);
+
+      this.#enabled = true;
     }
   }
 }

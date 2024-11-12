@@ -22,13 +22,13 @@ export function manipulateLicenseResponse(response: shaka.extern.Response) {
   // Replace the 'response.data'
   if (/playready/.exec(response.uri)) {
     // PlayReady uses XML, so we need this dance:
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
     // @ts-expect-error - Uint8Array can go into number[]
     const xmlStr = atob(String.fromCharCode.apply(null, rawLicense)); // base64 string -> string with utf-8
     response.data = stringToUint8Array(xmlStr); // string -> Uint8Array
   } else {
     // If Widevine or Fairplay, feed raw license to the CDM.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     response.data = rawLicense;
   }
 }
