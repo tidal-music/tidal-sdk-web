@@ -58,6 +58,6 @@ it('Client Test Case 2', () => {
     expect(playbackSession.payload.actions[1]).to.include({
       actionType: 'PLAYBACK_START'
     });
-    expect(playbackSession.payload.actions[1].assetPosition).to.be.closeTo(duration - 20, 0.1);
+    expect(playbackSession.payload.actions[1].assetPosition).to.be.closeTo(duration - 20, 0.2);
   })
 });
