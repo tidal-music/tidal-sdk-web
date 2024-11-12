@@ -43,6 +43,7 @@ jobs:
         env:
           TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
       - name: Set up Cypress binary cache
+        id: cypress-cache
         uses: actions/cache@v4
         with:
           path: ~/.cache/Cypress
@@ -52,7 +53,7 @@ jobs:
         env:
           CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
         with:
-          install: false
+          install: ${{ steps.cypress-cache.outputs.cache-hit == 'true' && 'false' || 'true' }}
           browser: chrome
           start: pnpm --dir packages/player/ dev
           wait-on: 'http://localhost:5173/demo/test-case-1.html'
