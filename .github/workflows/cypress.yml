@@ -52,7 +52,6 @@ jobs:
         if: steps.cypress-cache.outputs.cache-hit != 'true'
         uses: cypress-io/github-action@v6
         with:
-          working-directory: packages/player
           runTests: false
       - name: Cypress run
         uses: cypress-io/github-action@v6
