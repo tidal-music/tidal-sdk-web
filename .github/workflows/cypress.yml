@@ -48,13 +48,20 @@ jobs:
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Install Cypress
+        if: steps.cypress-cache.outputs.cache-hit != 'true'
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: packages/player
+          runTests: false
       - name: Cypress run
         uses: cypress-io/github-action@v6
         env:
           CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
         with:
-          install: ${{ steps.cypress-cache.outputs.cache-hit == 'true' && 'false' || 'true' }}
+          install: false
           browser: chrome
-          start: pnpm --dir packages/player/ dev
+          working-directory: packages/player
+          start: pnpm dev
           wait-on: 'http://localhost:5173/demo/test-case-1.html'
-          command: pnpm --dir packages/player/ internal:cypress:run
+          command: pnpm internal:cypress:run
