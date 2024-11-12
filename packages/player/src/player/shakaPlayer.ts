@@ -166,7 +166,7 @@ export default class ShakaPlayer extends BasePlayer {
         this.mediaElement.networkState === HTMLMediaElement.NETWORK_LOADING;
 
       // Safari tend to send events wrongly. Verify the media event is actually paused before sending setting state.
-      if ((this.mediaElement && this.mediaElement.paused) || shakaWaiting) {
+      if (this.mediaElement?.paused || shakaWaiting) {
         this.playbackState = 'STALLED';
       }
     };
@@ -429,7 +429,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     try {
       await this.#configureDRM(player);
-    } catch (e) {
+    } catch {
       this.finishCurrentMediaProduct('error');
 
       return;
@@ -1025,6 +1025,7 @@ export default class ShakaPlayer extends BasePlayer {
     return;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   seek(currentTime: number) {
     this.debugLog('seek', currentTime);
 
@@ -1087,6 +1088,7 @@ export default class ShakaPlayer extends BasePlayer {
       });
     }
 
+    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
     return Promise.reject('Nothing preloaded.');
   }
 

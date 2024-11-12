@@ -438,6 +438,7 @@ export default class BrowserPlayer extends BasePlayer {
     return Promise.resolve();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   seek(currentTime: number) {
     this.debugLog('seek', currentTime);
 
@@ -453,8 +454,7 @@ export default class BrowserPlayer extends BasePlayer {
     if ('fastSeek' in mediaEl) {
       mediaEl.fastSeek(seconds);
     } else {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error it is (probably) a media element, just not with the fastSeek method
       mediaEl.currentTime = seconds;
     }
 

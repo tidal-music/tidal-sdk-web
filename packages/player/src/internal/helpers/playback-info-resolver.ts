@@ -228,7 +228,7 @@ async function _fetch(options: Options): Promise<PlaybackInfo> {
       },
       3,
     );
-  } catch (e) {
+  } catch {
     throw new PlayerError('PENetwork', 'NPBI0');
   }
 

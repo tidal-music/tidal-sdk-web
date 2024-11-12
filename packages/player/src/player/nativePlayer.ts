@@ -553,6 +553,7 @@ export default class NativePlayer extends BasePlayer {
     this.playbackState = 'IDLE';
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async seek(seconds: number) {
     // Native player cannot seek until active state has happened.
     if (!this.hasStarted()) {

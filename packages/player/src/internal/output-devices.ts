@@ -135,7 +135,7 @@ export function isWindowsCommunicationsDevice(
     name = d.name;
   }
 
-  return name !== undefined && name.startsWith('Communications');
+  return name?.startsWith('Communications') ?? false;
 }
 
 export function getOutputDeviceByName(
@@ -148,7 +148,7 @@ export function getOutputDeviceByName(
     return undefined;
   }
 
-  const exactMatch = [...devices].filter(od => od.name === name)[0];
+  const exactMatch = [...devices].find(od => od.name === name);
 
   if (exactMatch) {
     return exactMatch;
