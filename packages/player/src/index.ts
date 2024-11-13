@@ -30,10 +30,10 @@ export function getMediaElement(): HTMLMediaElement | null {
   }
 
   switch (player.name) {
-    case 'shakaPlayer':
-      return (player as ShakaPlayer).mediaElement;
     case 'browserPlayer':
       return (player as BrowserPlayer).mediaElement;
+    case 'shakaPlayer':
+      return (player as ShakaPlayer).mediaElement;
     default:
       return null;
   }

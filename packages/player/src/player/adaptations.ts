@@ -51,7 +51,7 @@ export function registerAdaptations(shakaPlayer: shaka.Player) {
   const onAdaptation = () => {
     const activeTrack: shaka.extern.Track = shakaPlayer
       .getVariantTracks()
-      .filter(v => v.active)[0]!;
+      .find(v => v.active)!;
 
     const mediaElement = shakaPlayer.getMediaElement();
 

@@ -71,19 +71,19 @@ export function transformOutputType(
   switch (outputType) {
     case 'bluetooth':
       return 'BLUETOOTH';
-    case 'displayPort':
-      return 'DISPLAY_PORT';
     case 'builtIn':
       return 'BUILT_IN';
+    case 'displayPort':
+      return 'DISPLAY_PORT';
     case 'hdmi':
       return 'HDMI';
-    case 'usb':
-      return 'USB';
     case 'systemDefault':
       return 'SYSTEM_DEFAULT';
+    case 'usb':
+      return 'USB';
     // Never happens (cannot be chose by user)
-    case 'windowsCommunication':
     case 'airplay':
+    case 'windowsCommunication':
     default:
       return undefined;
   }

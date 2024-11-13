@@ -30,29 +30,29 @@ function extractStreamFormat(
     switch (manifest.codecs) {
       case 'aac':
         return 'aac';
-      case 'mp4a.40.2':
-        return 'mp4a.40.2';
       case 'aac+':
         return 'aac+';
-      case 'mp4a.40.5':
-        return 'mp4a.40.5';
       case 'flac':
         return 'flac';
       case 'mp3':
         return 'mp3';
+      case 'mp4a.40.2':
+        return 'mp4a.40.2';
+      case 'mp4a.40.5':
+        return 'mp4a.40.5';
       default:
         break;
     }
   } else if (audioQuality) {
     switch (audioQuality) {
-      case 'LOW':
-        return 'mp4a.40.5';
-      case 'HIGH':
-        return 'mp4a.40.2';
-      case 'LOSSLESS':
       case 'HI_RES':
       case 'HI_RES_LOSSLESS':
+      case 'LOSSLESS':
         return 'flac';
+      case 'HIGH':
+        return 'mp4a.40.2';
+      case 'LOW':
+        return 'mp4a.40.5';
     }
   }
 
@@ -90,8 +90,6 @@ function streamFormatToCodec(
   streamFormat: NativePlayerStreamFormat,
 ): Codec | undefined {
   switch (streamFormat) {
-    case 'mp3':
-      return 'mp3';
     case 'aac':
     case 'aac+':
     case 'mp4a.40.2':
@@ -99,6 +97,8 @@ function streamFormatToCodec(
       return 'aac';
     case 'flac':
       return streamFormat;
+    case 'mp3':
+      return 'mp3';
     default:
       return undefined;
   }
@@ -214,14 +214,14 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
       ...replayGains,
       bitDepth:
         'bitDepth' in playbackInfo
-          ? playbackInfo.bitDepth ?? undefined // API sends null, cast to undefined
+          ? (playbackInfo.bitDepth ?? undefined) // API sends null, cast to undefined
           : undefined,
       codec: streamFormatToCodec(streamFormat),
       prefetched,
       quality,
       sampleRate:
         'sampleRate' in playbackInfo
-          ? playbackInfo.sampleRate ?? undefined // API sends null, cast to undefined
+          ? (playbackInfo.sampleRate ?? undefined) // API sends null, cast to undefined
           : undefined,
       securityToken,
       streamFormat,
@@ -240,7 +240,7 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
       ...replayGains,
       bitDepth:
         'bitDepth' in playbackInfo
-          ? playbackInfo.bitDepth ?? undefined // API sends null, cast to undefined
+          ? (playbackInfo.bitDepth ?? undefined) // API sends null, cast to undefined
           : undefined,
       codec: dashFindCodec(decodedManifest),
       duration: dashFindDuration(decodedManifest),
@@ -248,7 +248,7 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
       quality,
       sampleRate:
         'sampleRate' in playbackInfo
-          ? playbackInfo.sampleRate ?? undefined // API sends null, cast to undefined
+          ? (playbackInfo.sampleRate ?? undefined) // API sends null, cast to undefined
           : undefined,
       securityToken: playbackInfo.licenseSecurityToken,
       streamUrl,

@@ -512,8 +512,8 @@ const getCredentialsInternal = async (apiErrorSubStatus?: string) => {
     const oneMinute = 60 * 1000;
 
     if (accessToken) {
-      const newScopeIsSameOrSubset = state.credentials.scopes.every(
-        scope => accessToken.grantedScopes?.includes(scope),
+      const newScopeIsSameOrSubset = state.credentials.scopes.every(scope =>
+        accessToken.grantedScopes?.includes(scope),
       );
 
       if (
@@ -605,8 +605,8 @@ export const setCredentials = async ({
     throw new TidalError(authErrorCodeMap.initError);
   }
 
-  const newScopeIsSubset = state.credentials.scopes.every(
-    scope => accessToken.grantedScopes?.includes(scope),
+  const newScopeIsSubset = state.credentials.scopes.every(scope =>
+    accessToken.grantedScopes?.includes(scope),
   );
 
   if (

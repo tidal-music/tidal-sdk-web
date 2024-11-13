@@ -9,11 +9,11 @@ export async function createReducer<P, N extends string>(
   if (!Config.get('gatherEvents')) {
     // @ts-expect-error - Not used
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    return (newData: { streamingSessionId: string } & Partial<P>) =>
+    return (newData: Partial<P> & { streamingSessionId: string }) =>
       Promise.resolve(undefined);
   }
 
-  return async (newData: { streamingSessionId: string } & Partial<P>) => {
+  return async (newData: Partial<P> & { streamingSessionId: string }) => {
     try {
       const savedEvent = await db.get<P>({
         name,

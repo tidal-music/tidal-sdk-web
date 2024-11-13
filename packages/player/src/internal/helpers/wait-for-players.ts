@@ -16,6 +16,7 @@ export function waitForPlayers() {
   const playerRoot = document.getElementById('tidal-player-root');
 
   if (!playerRoot) {
+    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
     return Promise.reject('No player root');
   }
 

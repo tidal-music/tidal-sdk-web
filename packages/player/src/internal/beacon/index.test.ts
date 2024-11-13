@@ -45,7 +45,9 @@ describe('commit', () => {
       );
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expect(message.accessToken).to.not.be.undefined;
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expect(message.clientId).to.not.be.undefined;
   });
 

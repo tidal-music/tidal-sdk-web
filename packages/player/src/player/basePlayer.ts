@@ -190,7 +190,6 @@ export class BasePlayer {
       document.location.href.includes('localhost') &&
       document.location.hash.includes('debug')
     ) {
-      // eslint-disable-next-line prefer-rest-params
       console.debug(
         `[%cPlayerSDK${
           this.name
@@ -426,7 +425,7 @@ export class BasePlayer {
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   load(_lp: LoadPayload, _transition: 'explicit' | 'implicit') {
     return Promise.resolve();
   }
@@ -477,7 +476,7 @@ export class BasePlayer {
     this.attachPlaybackEngineEndedHandler();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next(_lp: LoadPayload) {
     return Promise.resolve();
   }
@@ -523,7 +522,7 @@ export class BasePlayer {
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   playbackEngineEndedHandler(_e: EndedEvent) {
     return Promise.resolve();
   }
@@ -533,7 +532,7 @@ export class BasePlayer {
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   seek(_number: number) {}
 
   /**
@@ -707,7 +706,6 @@ export class BasePlayer {
     return undefined;
   }
 
-  // eslint-disable-next-line accessor-pairs
   set outputDeviceType(ot: OutputType | undefined) {
     this.#outputDeviceType = ot ? transformOutputType(ot) : undefined;
   }
@@ -775,7 +773,7 @@ export class BasePlayer {
       this.currentStreamingSessionId,
     );
 
-    return streamInfo && streamInfo.prefetched;
+    return streamInfo?.prefetched;
   }
 
   set preloadedStreamingSessionId(ssi: string | undefined) {
@@ -794,7 +792,6 @@ export class BasePlayer {
     this.#startAssetPosition = assetPosition;
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
   get volume() {
     return 1;
   }

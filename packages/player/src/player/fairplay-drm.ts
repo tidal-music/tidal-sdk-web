@@ -9,6 +9,7 @@ export async function loadServerCertificate() {
     const buffer = await response.arrayBuffer();
     return new Uint8Array(buffer);
   } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/only-throw-error
     throw console.error('Failed to retrieve the server certificate.', err);
   }
 }

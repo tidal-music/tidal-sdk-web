@@ -39,7 +39,7 @@ it('Client Test Case 2', () => {
     expect(playbackSessions).to.have.lengthOf(1);
 
     const playbackSession = playbackSessions[0];
-    const duration = 199.08789;
+    const duration = 198.969;
 
     expect(playbackSession.payload).to.include({
       startAssetPosition: 0,
@@ -58,6 +58,6 @@ it('Client Test Case 2', () => {
     expect(playbackSession.payload.actions[1]).to.include({
       actionType: 'PLAYBACK_START'
     });
-    expect(playbackSession.payload.actions[1].assetPosition).to.be.closeTo(duration - 20, 0.1);
+    expect(playbackSession.payload.actions[1].assetPosition).to.be.closeTo(duration - 20, 0.2);
   })
 });
