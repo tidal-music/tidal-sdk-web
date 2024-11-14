@@ -103,43 +103,6 @@ importers:
         specifier: 2.0.4
         version: 2.0.4(@types/node@22.5.5)(@vitest/ui@2.0.4)(happy-dom@15.10.2)(terser@5.31.0)
 
-  packages/catalogue:
-    dependencies:
-      '@tidal-music/catalogue':
-        specifier: workspace:*
-        version: 'link:'
-      openapi-fetch:
-        specifier: 0.12.0
-        version: 0.12.0
-    devDependencies:
-      '@tidal-music/auth':
-        specifier: workspace:^
-        version: link:../auth
-      '@tidal-music/common':
-        specifier: workspace:^
-        version: link:../common
-      '@vitest/coverage-v8':
-        specifier: 2.0.4
-        version: 2.0.4(vitest@2.0.4(@types/node@22.5.5)(@vitest/ui@2.0.4)(happy-dom@15.10.2)(terser@5.31.0))
-      '@vitest/ui':
-        specifier: 2.0.4
-        version: 2.0.4(vitest@2.0.4)
-      openapi-typescript:
-        specifier: 7.4.0
-        version: 7.4.0(typescript@5.6.2)
-      typescript:
-        specifier: 5.6.2
-        version: 5.6.2
-      vite:
-        specifier: 5.4.6
-        version: 5.4.6(@types/node@22.5.5)(terser@5.31.0)
-      vite-plugin-dts:
-        specifier: 4.2.1
-        version: 4.2.1(@types/node@22.5.5)(rollup@4.22.4)(typescript@5.6.2)(vite@5.4.6(@types/node@22.5.5)(terser@5.31.0))
-      vitest:
-        specifier: 2.0.4
-        version: 2.0.4(@types/node@22.5.5)(@vitest/ui@2.0.4)(happy-dom@15.10.2)(terser@5.31.0)
-
   packages/common:
     dependencies:
       '@tidal-music/common':
@@ -343,80 +306,6 @@ importers:
         specifier: 2.0.4
         version: 2.0.4(@types/node@22.5.5)(@vitest/ui@2.0.4)(happy-dom@15.10.2)(terser@5.31.0)
 
-  packages/playlist:
-    dependencies:
-      '@tidal-music/playlist':
-        specifier: workspace:*
-        version: 'link:'
-      openapi-fetch:
-        specifier: 0.12.0
-        version: 0.12.0
-    devDependencies:
-      '@tidal-music/auth':
-        specifier: workspace:^
-        version: link:../auth
-      '@tidal-music/common':
-        specifier: workspace:^
-        version: link:../common
-      '@vitest/coverage-v8':
-        specifier: 2.0.4
-        version: 2.0.4(vitest@2.0.4(@types/node@22.5.5)(@vitest/ui@2.0.4)(happy-dom@15.10.2)(terser@5.31.0))
-      '@vitest/ui':
-        specifier: 2.0.4
-        version: 2.0.4(vitest@2.0.4)
-      openapi-typescript:
-        specifier: 7.4.0
-        version: 7.4.0(typescript@5.6.2)
-      typescript:
-        specifier: 5.6.2
-        version: 5.6.2
-      vite:
-        specifier: 5.4.6
-        version: 5.4.6(@types/node@22.5.5)(terser@5.31.0)
-      vite-plugin-dts:
-        specifier: 4.2.1
-        version: 4.2.1(@types/node@22.5.5)(rollup@4.22.4)(typescript@5.6.2)(vite@5.4.6(@types/node@22.5.5)(terser@5.31.0))
-      vitest:
-        specifier: 2.0.4
-        version: 2.0.4(@types/node@22.5.5)(@vitest/ui@2.0.4)(happy-dom@15.10.2)(terser@5.31.0)
-
-  packages/search:
-    dependencies:
-      '@tidal-music/search':
-        specifier: workspace:*
-        version: 'link:'
-      openapi-fetch:
-        specifier: 0.12.0
-        version: 0.12.0
-    devDependencies:
-      '@tidal-music/auth':
-        specifier: workspace:^
-        version: link:../auth
-      '@tidal-music/common':
-        specifier: workspace:^
-        version: link:../common
-      '@vitest/coverage-v8':
-        specifier: 2.0.4
-        version: 2.0.4(vitest@2.0.4(@types/node@22.5.5)(@vitest/ui@2.0.4)(happy-dom@15.10.2)(terser@5.31.0))
-      '@vitest/ui':
-        specifier: 2.0.4
-        version: 2.0.4(vitest@2.0.4)
-      openapi-typescript:
-        specifier: 7.4.0
-        version: 7.4.0(typescript@5.6.2)
-      typescript:
-        specifier: 5.6.2
-        version: 5.6.2
-      vite:
-        specifier: 5.4.6
-        version: 5.4.6(@types/node@22.5.5)(terser@5.31.0)
-      vite-plugin-dts:
-        specifier: 4.2.1
-        version: 4.2.1(@types/node@22.5.5)(rollup@4.22.4)(typescript@5.6.2)(vite@5.4.6(@types/node@22.5.5)(terser@5.31.0))
-      vitest:
-        specifier: 2.0.4
-        version: 2.0.4(@types/node@22.5.5)(@vitest/ui@2.0.4)(happy-dom@15.10.2)(terser@5.31.0)
-
   packages/template:
     dependencies:
       '@tidal-music/template':
@@ -454,43 +343,6 @@ importers:
       '@vitest/ui':
         specifier: 2.0.4
         version: 2.0.4(vitest@2.0.4)
-      typescript:
-        specifier: 5.6.2
-        version: 5.6.2
-      vite:
-        specifier: 5.4.6
-        version: 5.4.6(@types/node@22.5.5)(terser@5.31.0)
-      vite-plugin-dts:
-        specifier: 4.2.1
-        version: 4.2.1(@types/node@22.5.5)(rollup@4.22.4)(typescript@5.6.2)(vite@5.4.6(@types/node@22.5.5)(terser@5.31.0))
-      vitest:
-        specifier: 2.0.4
-        version: 2.0.4(@types/node@22.5.5)(@vitest/ui@2.0.4)(happy-dom@15.10.2)(terser@5.31.0)
-
-  packages/user:
-    dependencies:
-      '@tidal-music/user':
-        specifier: workspace:*
-        version: 'link:'
-      openapi-fetch:
-        specifier: 0.12.0
-        version: 0.12.0
-    devDependencies:
-      '@tidal-music/auth':
-        specifier: workspace:^
-        version: link:../auth
-      '@tidal-music/common':
-        specifier: workspace:^
-        version: link:../common
-      '@vitest/coverage-v8':
-        specifier: 2.0.4
-        version: 2.0.4(vitest@2.0.4(@types/node@22.5.5)(@vitest/ui@2.0.4)(happy-dom@15.10.2)(terser@5.31.0))
-      '@vitest/ui':
-        specifier: 2.0.4
-        version: 2.0.4(vitest@2.0.4)
-      openapi-typescript:
-        specifier: 7.4.0
-        version: 7.4.0(typescript@5.6.2)
       typescript:
         specifier: 5.6.2
         version: 5.6.2
