@@ -78,6 +78,6 @@
     "vite-plugin-dts": "4.3.0",
     "vite-plugin-package-version": "1.1.0",
     "vite-plugin-top-level-await": "1.4.4",
-    "vitest": "2.1.5"
+    "vitest": "2.0.4"
   }
 }
