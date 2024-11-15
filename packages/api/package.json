@@ -34,17 +34,17 @@
   },
   "dependencies": {
     "@tidal-music/api": "workspace:*",
-    "openapi-fetch": "0.12.0"
+    "openapi-fetch": "0.13.0"
   },
   "devDependencies": {
     "@tidal-music/auth": "workspace:^",
     "@tidal-music/common": "workspace:^",
-    "@vitest/coverage-v8": "2.0.4",
-    "@vitest/ui": "2.0.4",
-    "openapi-typescript": "7.4.0",
-    "typescript": "5.6.2",
-    "vite": "5.4.6",
-    "vite-plugin-dts": "4.2.1",
-    "vitest": "2.0.4"
+    "@vitest/coverage-v8": "2.1.5",
+    "@vitest/ui": "2.1.5",
+    "openapi-typescript": "7.4.3",
+    "typescript": "5.6.3",
+    "vite": "5.4.11",
+    "vite-plugin-dts": "4.3.0",
+    "vitest": "2.1.5"
   }
 }
