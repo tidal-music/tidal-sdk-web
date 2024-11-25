@@ -70,7 +70,6 @@ export function beacon() {
       importance: 'low',
     });
 
-    // eslint-disable-next-line require-atomic-updates
     const session = (await response.json()) as Sessions;
 
     userSessions.set(_accessToken, session);
@@ -121,7 +120,7 @@ export function beacon() {
               // progress event is handled before send due to streamingSessionId missing here.
             }
           });
-          // eslint-disable-next-line require-atomic-updates
+
           queue = [];
         } else {
           throw new Error('Response not ok');

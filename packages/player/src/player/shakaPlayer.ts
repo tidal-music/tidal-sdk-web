@@ -38,12 +38,12 @@ function responseURIToCDMType(uri: string) {
   const lastPath = uri.split('/').pop()?.split('?')[0];
 
   switch (lastPath) {
-    case 'widevine':
-      return 'WIDEVINE';
-    case 'playready':
-      return 'PLAY_READY';
     case 'fairplay':
       return 'FAIR_PLAY';
+    case 'playready':
+      return 'PLAY_READY';
+    case 'widevine':
+      return 'WIDEVINE';
     default:
       return 'NONE';
   }
@@ -166,7 +166,7 @@ export default class ShakaPlayer extends BasePlayer {
         this.mediaElement.networkState === HTMLMediaElement.NETWORK_LOADING;
 
       // Safari tend to send events wrongly. Verify the media event is actually paused before sending setting state.
-      if ((this.mediaElement && this.mediaElement.paused) || shakaWaiting) {
+      if (this.mediaElement?.paused || shakaWaiting) {
         this.playbackState = 'STALLED';
       }
     };
@@ -320,7 +320,7 @@ export default class ShakaPlayer extends BasePlayer {
                 'https://resources.tidal.com/drm/fairplay/certificate',
             },
           },
-          // eslint-disable-next-line @typescript-eslint/unbound-method
+
           initDataTransform:
             shaka.util.FairPlayUtils.verimatrixInitDataTransform,
           servers: {
@@ -340,7 +340,6 @@ export default class ShakaPlayer extends BasePlayer {
    * useNativeHlsForFairPlay and preferNativeHls set to false.
    */
   async #configureHlsForPlayback(
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     instance: shaka.Player | undefined,
     mediaProduct: MediaProduct,
   ) {
@@ -430,7 +429,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     try {
       await this.#configureDRM(player);
-    } catch (e) {
+    } catch {
       this.finishCurrentMediaProduct('error');
 
       return;
@@ -444,7 +443,8 @@ export default class ShakaPlayer extends BasePlayer {
           const isPreload = context?.isPreload ?? false;
 
           const streamingSessionId = isPreload
-            ? this.preloadedStreamingSessionId ?? this.currentStreamingSessionId // If we switch quickly from preload -> current.
+            ? (this.preloadedStreamingSessionId ??
+              this.currentStreamingSessionId) // If we switch quickly from preload -> current.
             : this.currentStreamingSessionId;
 
           performance.mark(
@@ -500,7 +500,7 @@ export default class ShakaPlayer extends BasePlayer {
         const isPreload = context?.isPreload;
 
         const streamingSessionId = isPreload
-          ? this.preloadedStreamingSessionId ?? this.currentStreamingSessionId
+          ? (this.preloadedStreamingSessionId ?? this.currentStreamingSessionId)
           : this.currentStreamingSessionId;
 
         // Manipulate license responses
@@ -525,7 +525,7 @@ export default class ShakaPlayer extends BasePlayer {
             StreamingMetrics.playbackStatistics({
               cdm: responseURIToCDMType(response.uri),
               cdmVersion: null,
-              streamingSessionId: streamingSessionId,
+              streamingSessionId,
             });
 
             StreamingMetrics.commit({
@@ -540,7 +540,7 @@ export default class ShakaPlayer extends BasePlayer {
                   startTimestamp: trueTime.timestamp(
                     'streaming_metrics:drm_license_fetch:startTimestamp',
                   ),
-                  streamingSessionId: streamingSessionId,
+                  streamingSessionId,
                 }),
               ],
             }).catch(console.error);
@@ -592,6 +592,8 @@ export default class ShakaPlayer extends BasePlayer {
         break;
       case shaka.util.Error.Code.LOAD_INTERRUPTED: // 7000
         return;
+      case shaka.util.Error.Code.SRC_EQUALS_PRELOAD_NOT_SUPPORTED:
+        return; // Ignore this error, handled via promise rejection.
       case shaka.util.Error.Code.TIMEOUT: // 1003
         console.warn('Shaka: TIMEOUT');
         console.warn('Shaka: URI', error.data[0]);
@@ -643,7 +645,7 @@ export default class ShakaPlayer extends BasePlayer {
     streamInfo,
   }: {
     assetPosition: number;
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+
     assetUriOrPreloader: shaka.media.PreloadManager | string;
     mediaProduct: MediaProduct;
     playbackInfo: PlaybackInfo;
@@ -833,20 +835,20 @@ export default class ShakaPlayer extends BasePlayer {
 
   async load(payload: LoadPayload, transition: 'explicit' | 'implicit') {
     this.debugLog('load', payload);
+    await this.ready;
 
     this.currentTime = payload.assetPosition;
     this.startAssetPosition = payload.assetPosition;
+
+    // Ensure reset and set reset to false since we're loading anew.
+    await this.reset();
+    this.#isReset = false;
 
     await this.#configureHlsForPlayback(
       this.shakaInstance,
       payload.mediaProduct,
     );
 
-    // Ensure reset and set reset to false since we're loading anew.
-    await this.reset();
-    this.#isReset = false;
-
-    await this.ready;
     await ensureVideoElementsMounted();
 
     const { assetPosition, mediaProduct, playbackInfo, streamInfo } = payload;
@@ -880,6 +882,10 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
+    this.#preloadManager = await this.shakaInstance.preload(
+      payload.streamInfo.streamUrl,
+    );
+
     /*
       A play action can only start playback if playback state is not IDLE.
       If shaka is currently not playing anything and we preload to play something soon,
@@ -890,10 +896,6 @@ export default class ShakaPlayer extends BasePlayer {
     }
 
     this.preloadedStreamingSessionId = payload.streamInfo.streamingSessionId;
-
-    this.#preloadManager = await this.shakaInstance.preload(
-      payload.streamInfo.streamUrl,
-    );
 
     // If we could parse duration from manifest, we can save the media product transition
     // and support "touch n go" playback. (re-using a preloaded item for a load)
@@ -1023,6 +1025,7 @@ export default class ShakaPlayer extends BasePlayer {
     return;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   seek(currentTime: number) {
     this.debugLog('seek', currentTime);
 
@@ -1055,15 +1058,26 @@ export default class ShakaPlayer extends BasePlayer {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   async skipToPreloadedMediaProduct() {
     this.debugLog(
       'skipToPreloadedMediaProduct',
       this.preloadedStreamingSessionId,
     );
 
-    if (this.#preloadedPayload && this.#preloadManager) {
-      const { mediaProduct, playbackInfo, streamInfo } = this.#preloadedPayload;
+    if (this.#preloadedPayload) {
+      const {
+        mediaProduct: mediaProductFromLoadPayload,
+        playbackInfo,
+        streamInfo,
+      } = this.#preloadedPayload;
+
+      const mediaProductTransition =
+        streamingSessionStore.getMediaProductTransition(
+          streamInfo.streamingSessionId,
+        );
+
+      const mediaProduct =
+        mediaProductTransition?.mediaProduct ?? mediaProductFromLoadPayload;
 
       return this.#loadAndDispatchMediaProductTransition({
         assetPosition: 0,
@@ -1074,6 +1088,7 @@ export default class ShakaPlayer extends BasePlayer {
       });
     }
 
+    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
     return Promise.reject('Nothing preloaded.');
   }
 
@@ -1124,7 +1139,7 @@ export default class ShakaPlayer extends BasePlayer {
     try {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore - setSinkId exists
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
       await mediaElementOne.setSinkId(sinkId);
 
       events.dispatchEvent(

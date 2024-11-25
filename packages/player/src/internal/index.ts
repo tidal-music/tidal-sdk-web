@@ -43,7 +43,7 @@ class CredentialsProviderStore extends EventTarget {
 
     this.#credentialsProvider.bus(event => {
       switch (event.detail.type) {
-        case 'credentialsUpdated':
+        case 'CredentialsUpdatedMessage':
           this.dispatchAuthorized().catch(console.error);
           break;
         default:
@@ -214,7 +214,6 @@ export class PlayerError extends Error {
   referenceId: string | undefined;
 
   constructor(errorId: ErrorIds, errorCode: ErrorCodes, referenceId?: string) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     super(`${errorId}: ${errorCode} (${referenceId})`);
 
     this.errorId = errorId;

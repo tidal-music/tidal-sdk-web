@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.4] - 2024-10-10
+
+### Fixed
+
+- Avoid shaka error 3016 on Safari. #218
+
+## [0.5.3] - 2024-10-03
+
+### Fixed
+
+- Fix steaming-session-id linked to wrong playback info on some preloads. #214
+
+## [0.5.2] - 2024-10-02
+
+### Fixed
+
+- Handle products that are not preloadable in the shaka-player PreloadManager.
+
+
+## [0.5.1] - 2024-09-25
+
+### Changed
+
+- Rework reset state for native player to avoid incorrect states. (Could be the trigger for various "wrong track displayed" issues.)
+
+
 ## [0.5.0] - 2024-09-18
 
 ### Changed

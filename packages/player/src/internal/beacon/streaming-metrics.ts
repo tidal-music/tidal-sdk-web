@@ -12,7 +12,7 @@ type StreamingMetricsEvent = BaseEvent & {
 
 export type StreamingSessionStartEvent = StreamingMetricsEvent &
   StreamingSessionStart;
-export type PlaybackInfoFetchEvent = StreamingMetricsEvent & PlaybackInfoFetch;
-export type DrmLicenceFetchEvent = StreamingMetricsEvent & DrmLicenseFetch;
-export type PlaybackStatisticsEvent = StreamingMetricsEvent &
-  PlaybackStatistics;
+export type PlaybackInfoFetchEvent = PlaybackInfoFetch & StreamingMetricsEvent;
+export type DrmLicenceFetchEvent = DrmLicenseFetch & StreamingMetricsEvent;
+export type PlaybackStatisticsEvent = PlaybackStatistics &
+  StreamingMetricsEvent;

@@ -164,12 +164,12 @@ export async function getAppropriatePlayer(
   const { player } = appropriatePlayers[0]!;
 
   switch (player) {
-    case 'shaka':
-      return getShakaPlayer();
     case 'browser':
       return getBrowserPlayer();
     case 'native':
       return getNativePlayer();
+    case 'shaka':
+      return getShakaPlayer();
     default:
       throw new Error('No player found.');
   }
