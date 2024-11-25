@@ -20,7 +20,6 @@ type User = {
   userId: number;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 // @ts-expect-error Environment variable
 const user = JSON.parse(atob(process.env.TEST_USER)) as User;
 const scopes = ['r_usr', 'w_usr'];

@@ -16,7 +16,6 @@ import { trueTime } from '../internal/true-time';
 // eslint-disable-next-line import/order
 import type { LoadPayload } from './basePlayer';
 
-// eslint-disable-next-line import/no-cycle
 import { BasePlayer } from './basePlayer';
 import type {
   NativePlayerComponent,
@@ -77,8 +76,6 @@ export default class NativePlayer extends BasePlayer {
    */
   #duration!: number;
 
-  #isReset = true;
-
   #player!: NativePlayerComponentInterface;
 
   #preloadedLoadPayload: LoadPayload | undefined;
@@ -111,7 +108,6 @@ export default class NativePlayer extends BasePlayer {
     this.#player.setVolume(100);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   #handleDeviceError(errorName: DeviceErrorNames) {
     events.dispatchError(
       new PlayerError('EUnexpected', deviceErrorCodeMap[errorName]),
@@ -139,22 +135,22 @@ export default class NativePlayer extends BasePlayer {
     this.debugLog('handleNativePlayerStateChange', state);
 
     switch (state) {
+      case 'active':
+        this.playbackState = 'PLAYING';
+        break;
+      case 'idle':
+      case 'seeking':
+        this.playbackState = 'STALLED';
+        break;
       case 'paused':
       case 'ready':
         this.playbackState = 'NOT_PLAYING';
         break;
-      case 'active':
-        this.playbackState = 'PLAYING';
-        break;
-      case 'seeking':
-      case 'idle':
-        this.playbackState = 'STALLED';
+      case 'stopped': // Happens when stopping to buffer more data?
+        this.playbackState = 'NOT_PLAYING';
         break;
       case 'uninitialized':
         this.playbackState = 'IDLE';
-        break;
-      case 'stopped': // Happens when stopping to buffer more data?
-        this.playbackState = 'NOT_PLAYING';
         break;
       default:
         this.debugLog('No handling for state', state);
@@ -283,9 +279,7 @@ export default class NativePlayer extends BasePlayer {
     this.currentTime = payload.assetPosition;
     this.startAssetPosition = payload.assetPosition;
 
-    // Ensure reset and set reset to false since we're loading anew.
     await this.reset();
-    this.#isReset = false;
 
     const { assetPosition, mediaProduct, playbackInfo, streamInfo } = payload;
     const { securityToken, streamFormat, streamUrl } = streamInfo;
@@ -367,7 +361,6 @@ export default class NativePlayer extends BasePlayer {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   async next(payload: LoadPayload) {
     this.debugLog('next', payload);
 
@@ -386,6 +379,10 @@ export default class NativePlayer extends BasePlayer {
 
     if (streamFormat) {
       this.#player.preload(streamUrl, streamFormat, securityToken);
+
+      if (!this.isActivePlayer) {
+        this.#player.pause();
+      }
     } else {
       console.error('Stream format undefined for preload.');
     }
@@ -405,7 +402,6 @@ export default class NativePlayer extends BasePlayer {
     });
 
     this.#preloadedLoadPayload = payload;
-    this.#isReset = false;
   }
 
   pause() {
@@ -527,11 +523,10 @@ export default class NativePlayer extends BasePlayer {
     // this.#player.listDevices();
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   async reset(
     { keepPreload }: { keepPreload: boolean } = { keepPreload: false },
   ) {
-    if (this.#isReset) {
+    if (this.currentStreamingSessionId === undefined) {
       return;
     }
 
@@ -556,9 +551,9 @@ export default class NativePlayer extends BasePlayer {
     }
 
     this.playbackState = 'IDLE';
-    this.#isReset = true;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async seek(seconds: number) {
     // Native player cannot seek until active state has happened.
     if (!this.hasStarted()) {
@@ -681,12 +676,10 @@ export default class NativePlayer extends BasePlayer {
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line class-methods-use-this
   get ready() {
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line class-methods-use-this
   get volume() {
     return Config.get('desiredVolumeLevel');
   }

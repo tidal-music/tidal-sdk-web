@@ -66,7 +66,7 @@ export const loadCredentials = async (credentialsStorageKey: string) => {
         key: secretKey,
       });
       return JSON.parse(decodeCredentials(credentials)) as UserCredentials;
-    } catch (error) {
+    } catch {
       throw new TidalError(authErrorCodeMap.storageError);
     }
   } else {

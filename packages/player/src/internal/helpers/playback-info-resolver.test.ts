@@ -91,7 +91,7 @@ describe('playbackInfoResolver', () => {
       assetPresentation: 'FULL',
       audioMode: 'STEREO',
       audioQuality: 'LOW',
-      // eslint-disable-next-line no-restricted-syntax
+
       manifest: btoa(
         JSON.stringify({
           mimeType: mimeTypes.HLS,

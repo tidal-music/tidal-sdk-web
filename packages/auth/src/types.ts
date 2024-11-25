@@ -11,7 +11,10 @@ export type InitArgs = {
   tidalLoginServiceBaseUri?: string;
 };
 
-export type UserCredentials = {
+export type UserCredentials = Omit<
+  InitArgs,
+  'scopes' | 'tidalAuthServiceBaseUri' | 'tidalLoginServiceBaseUri'
+> & {
   accessToken?: Credentials;
   codeChallenge?: string;
   expiresIn?: number;
@@ -21,17 +24,14 @@ export type UserCredentials = {
   scopes: Array<string>;
   tidalAuthServiceBaseUri: string;
   tidalLoginServiceBaseUri: string;
-} & Omit<
-  InitArgs,
-  'scopes' | 'tidalAuthServiceBaseUri' | 'tidalLoginServiceBaseUri'
->;
+};
 
 export type SocialNetwork = 'APPLE' | 'FACEBOOK' | 'TWITTER';
 
-export type LoginConfig = {
+export type LoginConfig = Record<string, string> & {
   email?: string;
   language?: string;
-} & Record<string, string>;
+};
 
 export type TokenJSONResponse = {
   access_token: string;

@@ -4,6 +4,7 @@ export { getMediaProduct } from '../internal/handlers/get-media-product';
 export { getOutputDevices } from '../internal/handlers/get-output-devices';
 export { getPlaybackContext } from '../internal/handlers/get-playback-context';
 export { getPlaybackState } from '../internal/handlers/get-playback-state';
+export { getPlayerVersion } from '../internal/handlers/get-player-version';
 export { getStreamingWifiAudioQuality } from '../internal/handlers/get-streaming-wifi-audio-quality';
 export { getVolumeLevel } from '../internal/handlers/get-volume-level';
 

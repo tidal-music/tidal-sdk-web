@@ -54,7 +54,6 @@ describe.sequential('monitor', () => {
       }),
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call
     const messageBody = (
       vi.mocked(fetch).mock.calls[0]?.[1]?.body as URLSearchParams | undefined
     )?.get('SendMessageBatchRequestEntry.1.MessageBody');

@@ -18,7 +18,7 @@ const getWrappingKey = (keyMaterial: CryptoKey, salt: BufferSource) => {
       hash: 'SHA-256',
       iterations: 100000,
       name: 'PBKDF2',
-      salt: salt,
+      salt,
     },
     keyMaterial,
     { length: 256, name: 'AES-KW' },

@@ -1,0 +1,17 @@
+apis:
+  catalogue:
+    root: https://developer.tidal.com/apiref/api-specifications/api-public-catalogue-jsonapi/tidal-catalog-v2-openapi-3.0.json
+    x-openapi-ts:
+      output: ./src/catalogueAPI.generated.ts
+  playlist:
+    root: https://developer.tidal.com/apiref/api-specifications/api-public-user-content/tidal-user-content-openapi-3.0.json
+    x-openapi-ts:
+      output: ./src/playlistAPI.generated.ts
+  search:
+    root: https://developer.tidal.com/apiref/api-specifications/api-public-search-jsonapi/tidal-search-v2-openapi-3.0.json
+    x-openapi-ts:
+      output: ./src/searchAPI.generated.ts
+  user:
+    root: https://developer.tidal.com/apiref/api-specifications/api-public-user-jsonapi/tidal-user-v2-openapi-3.0.json
+    x-openapi-ts:
+      output: ./src/userAPI.generated.ts

@@ -143,16 +143,16 @@ describe('OutputDevice', () => {
 describe('OutputDevices', () => {
   const devices = new Set([
     new OutputDevice({
-      name: 'My Cool Speaker (Bluetooth)',
-      nativeDeviceId: 'native-breaky-superliscous-disher',
-      type: 'bluetooth',
-      webDeviceId: 'web-breaky-superliscous-disher',
-    }),
-    new OutputDevice({
       name: 'Germanys Saurkraut (1ff:ss:trrtt)',
       nativeDeviceId: 'native-breaky-supertrouper-booper',
       type: 'airplay',
       webDeviceId: 'web-breaky-supertrouper-booper',
+    }),
+    new OutputDevice({
+      name: 'My Cool Speaker (Bluetooth)',
+      nativeDeviceId: 'native-breaky-superliscous-disher',
+      type: 'bluetooth',
+      webDeviceId: 'web-breaky-superliscous-disher',
     }),
   ]);
 

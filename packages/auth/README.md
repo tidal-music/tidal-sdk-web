@@ -23,7 +23,6 @@ This authentication method uses `clientId` and `clientSecret`, e.g. when utilizi
 4. That's it!
 
 ## Authorization Code Flow (user login)
-(Only available for TIDAL internally developed applications for now)
 
 To implement the login redirect flow, follow these steps or refer to our example for ["authorization code"](./examples/authorization-code.html).
 

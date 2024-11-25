@@ -1,3 +1,4 @@
+export * from './credentialsProvider';
 export * from './illegalArgumentError';
 export * from './networkError';
 export * from './retryableError';

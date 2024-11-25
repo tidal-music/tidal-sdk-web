@@ -190,7 +190,6 @@ export class BasePlayer {
       document.location.href.includes('localhost') &&
       document.location.hash.includes('debug')
     ) {
-      // eslint-disable-next-line prefer-rest-params
       console.debug(
         `[%cPlayerSDK${
           this.name
@@ -359,14 +358,16 @@ export class BasePlayer {
         playbackContext.actualVideoQuality,
       isPostPaywall: playbackContext.actualAssetPresentation === 'FULL',
       playbackSessionId: streamingSessionId,
-      productType: mediaProduct.productType === 'track' ? 'TRACK' : 'VIDEO',
+      productType: PlayLog.mapProductTypeToPlayLogProductType(
+        mediaProduct.productType,
+      ),
       requestedProductId: mediaProduct.productId,
       sourceId: mediaProduct.sourceId,
       sourceType: mediaProduct.sourceType,
       startAssetPosition: this.startAssetPosition,
       startTimestamp,
       streamingSessionId,
-    });
+    }).catch(console.error);
   }
 
   finishCurrentMediaProduct(endReason: EndReason) {
@@ -420,7 +421,7 @@ export class BasePlayer {
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   load(_lp: LoadPayload, _transition: 'explicit' | 'implicit') {
     return Promise.resolve();
   }
@@ -471,7 +472,7 @@ export class BasePlayer {
     this.attachPlaybackEngineEndedHandler();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next(_lp: LoadPayload) {
     return Promise.resolve();
   }
@@ -517,7 +518,7 @@ export class BasePlayer {
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   playbackEngineEndedHandler(_e: EndedEvent) {
     return Promise.resolve();
   }
@@ -527,7 +528,7 @@ export class BasePlayer {
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   seek(_number: number) {}
 
   /**
@@ -576,7 +577,7 @@ export class BasePlayer {
         actionType: 'PLAYBACK_STOP',
         assetPosition,
         timestamp: trueTime.now(),
-      });
+      }).catch(console.error);
     }
   }
 
@@ -701,7 +702,6 @@ export class BasePlayer {
     return undefined;
   }
 
-  // eslint-disable-next-line accessor-pairs
   set outputDeviceType(ot: OutputType | undefined) {
     this.#outputDeviceType = ot ? transformOutputType(ot) : undefined;
   }
@@ -769,7 +769,7 @@ export class BasePlayer {
       this.currentStreamingSessionId,
     );
 
-    return streamInfo && streamInfo.prefetched;
+    return streamInfo?.prefetched;
   }
 
   set preloadedStreamingSessionId(ssi: string | undefined) {
@@ -788,7 +788,6 @@ export class BasePlayer {
     this.#startAssetPosition = assetPosition;
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
   get volume() {
     return 1;
   }
