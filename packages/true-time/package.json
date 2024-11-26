@@ -22,7 +22,7 @@
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.5",
     "@vitest/ui": "2.1.5",
-    "typescript": "5.6.3",
+    "typescript": "5.7.2",
     "vite": "5.4.11",
     "vite-plugin-dts": "4.3.0",
     "vitest": "2.1.5"
