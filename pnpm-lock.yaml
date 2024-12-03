@@ -189,8 +189,8 @@ importers:
         specifier: 6.0.4
         version: 6.0.4(@babel/core@7.24.5)(rollup@4.27.4)
       '@rollup/plugin-commonjs':
-        specifier: 26.0.3
-        version: 26.0.3(rollup@4.27.4)
+        specifier: 28.0.1
+        version: 28.0.1(rollup@4.27.4)
       '@rollup/plugin-node-resolve':
         specifier: 15.3.0
         version: 15.3.0(rollup@4.27.4)
@@ -1441,8 +1441,8 @@ packages:
       rollup:
         optional: true
 
-  '@rollup/plugin-commonjs@26.0.3':
-    resolution: {integrity: sha512-2BJcolt43MY+y5Tz47djHkodCC3c1VKVrBDKpVqHKpQ9z9S158kCCqB8NF6/gzxLdNlYW9abB3Ibh+kOWLp8KQ==}
+  '@rollup/plugin-commonjs@28.0.1':
+    resolution: {integrity: sha512-+tNWdlWKbpB3WgBN7ijjYkq9X5uhjmcvyjEght4NmH5fAU++zfQzAJ6wumLS+dNcvwEZhKx2Z+skY8m7v0wGSA==}
     engines: {node: '>=16.0.0 || 14 >= 14.17'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0||^4.0.0
@@ -6614,14 +6614,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@rollup/plugin-commonjs@26.0.3(rollup@4.27.4)':
+  '@rollup/plugin-commonjs@28.0.1(rollup@4.27.4)':
     dependencies:
       '@rollup/pluginutils': 5.1.0(rollup@4.27.4)
       commondir: 1.0.1
       estree-walker: 2.0.2
-      glob: 10.4.1
+      fdir: 6.4.2(picomatch@4.0.2)
       is-reference: 1.2.1
       magic-string: 0.30.12
+      picomatch: 4.0.2
     optionalDependencies:
       rollup: 4.27.4
 
