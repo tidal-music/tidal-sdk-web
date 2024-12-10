@@ -4,7 +4,7 @@
 
 `npm install @tidal-music/player` (or similar for other package managers)
 
-Then see [the docs](https://tidal-music.github.io/tidal-sdk-web/modules/_tidal_music_player.html) or the examples elsewhere in this repository.
+Then see [the docs](https://tidal-music.github.io/tidal-sdk-web/modules/_tidal-music_player.html) or the examples elsewhere in this repository.
 
 ## Development
 
