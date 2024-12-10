@@ -68,7 +68,7 @@ Some examples needs a proxy to run, but there is one configured if you use `pnpm
 For the examples to work you might need to build the library once with `pnpm build`.
 
 # Documentation
-[All public methods are documented and described](https://tidal-music.github.io/tidal-sdk-web/modules/_tidal_music_auth.html). Please also have a look at the examples since they should document most use cases.
+[All public methods are documented and described](https://tidal-music.github.io/tidal-sdk-web/modules/_tidal-music_auth.html). Please also have a look at the examples since they should document most use cases.
 
 
 # Development
