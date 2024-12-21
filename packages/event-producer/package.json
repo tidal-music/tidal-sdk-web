@@ -40,7 +40,7 @@
     "happy-dom": "15.11.7",
     "typescript": "5.7.2",
     "vite": "5.4.11",
-    "vite-plugin-dts": "4.3.0",
+    "vite-plugin-dts": "4.4.0",
     "vite-plugin-top-level-await": "1.4.4",
     "vitest": "2.1.8",
     "xml-js": "1.6.11"
