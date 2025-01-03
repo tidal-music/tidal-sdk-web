@@ -13,8 +13,8 @@
   "module": "dist/index.js",
   "exports": {
     "import": "./dist/index.js",
-    "default": "./dist/index.js",
-    "legacy": "./dist/legacy/index.js"
+    "legacy": "./dist/legacy/index.js",
+    "default": "./dist/index.js"
   },
   "types": "./dist/index.d.ts",
   "scripts": {
