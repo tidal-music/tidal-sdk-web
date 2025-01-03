@@ -13,8 +13,8 @@
   },
   "license": "Apache-2.0",
   "exports": {
-    "default": "./dist/index.js",
-    "import": "./dist/index.js"
+    "import": "./dist/index.js",
+    "default": "./dist/index.js"
   },
   "keywords": [
     "tidal-music",
