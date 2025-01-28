@@ -1,12 +1,10 @@
 import type { Config, EPEvent } from '../types';
 
-import WorkerUrl from './worker?worker&url';
-
 if (!window.Worker) {
   throw new Error('Web Workers are not supported in this browser');
 }
 
-export const worker = new Worker(new URL(WorkerUrl, import.meta.url), {
+export const worker = new Worker(new URL('./worker', import.meta.url), {
   type: 'module',
 });
 
