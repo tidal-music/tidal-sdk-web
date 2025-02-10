@@ -16,16 +16,22 @@
     "generateTypes": "pnpm -r generateTypes"
   },
   "devDependencies": {
-    "eslint": "9.19.0",
+    "eslint": "9.20.0",
     "eslint-config-tidal": "4.0.0",
     "eslint-plugin-disable-autofix": "5.0.1",
     "eslint-plugin-jsdoc": "50.6.3",
-    "typedoc": "0.27.6",
+    "typedoc": "0.27.7",
     "vitest": "2.1.9"
   },
   "pnpm": {
     "patchedDependencies": {
       "shaka-player@4.11.2": "patches/shaka-player@4.11.2.patch"
-    }
+    },
+    "ignoredBuiltDependencies": [
+      "esbuild"
+    ],
+    "onlyBuiltDependencies": [
+      "cypress"
+    ]
   }
 }
