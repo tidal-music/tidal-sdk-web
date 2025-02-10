@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   shaka-player@4.11.2:
-    hash: 3hwafgbl4iodhlnznzbdea4zeu
+    hash: b2a948a860068eaa77a53faa30ea86c50e08583beb73ad0ec7ff309a6055c47d
     path: patches/shaka-player@4.11.2.patch
 
 importers:
@@ -256,7 +256,7 @@ importers:
         version: 4.32.0
       shaka-player:
         specifier: 4.11.2
-        version: 4.11.2(patch_hash=3hwafgbl4iodhlnznzbdea4zeu)
+        version: 4.11.2(patch_hash=b2a948a860068eaa77a53faa30ea86c50e08583beb73ad0ec7ff309a6055c47d)
       sinon:
         specifier: 19.0.2
         version: 19.0.2
@@ -8230,7 +8230,7 @@ snapshots:
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.14.0)
       eslint-plugin-no-only-tests: 3.3.0
       eslint-plugin-perfectionist: 3.9.1(eslint@9.14.0)(typescript@5.6.3)
-      eslint-plugin-prettier: 5.2.1(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@9.14.0))(eslint@9.14.0)(prettier@3.3.3)
+      eslint-plugin-prettier: 5.2.1(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@9.19.0))(eslint@9.14.0)(prettier@3.3.3)
       eslint-plugin-react: 7.37.2(eslint@9.14.0)
       eslint-plugin-react-hooks: 5.0.0(eslint@9.14.0)
       eslint-plugin-storybook: 0.11.0(eslint@9.14.0)(typescript@5.6.3)
@@ -8405,7 +8405,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-prettier@5.2.1(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@9.14.0))(eslint@9.14.0)(prettier@3.3.3):
+  eslint-plugin-prettier@5.2.1(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@9.19.0))(eslint@9.14.0)(prettier@3.3.3):
     dependencies:
       eslint: 9.14.0
       prettier: 3.3.3
@@ -9937,7 +9937,7 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  shaka-player@4.11.2(patch_hash=3hwafgbl4iodhlnznzbdea4zeu):
+  shaka-player@4.11.2(patch_hash=b2a948a860068eaa77a53faa30ea86c50e08583beb73ad0ec7ff309a6055c47d):
     dependencies:
       eme-encryption-scheme-polyfill: 2.1.5
 
