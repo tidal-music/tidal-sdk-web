@@ -1,12 +1,12 @@
 import type { Config, EPEvent } from '../types';
 
+import QueueWebWorker from './worker?worker&inline';
+
 if (!window.Worker) {
   throw new Error('Web Workers are not supported in this browser');
 }
 
-export const worker = new Worker(new URL('./worker', import.meta.url), {
-  type: 'module',
-});
+export const worker = new QueueWebWorker();
 
 type WorkerMessages = MessageEvent<
   | {
