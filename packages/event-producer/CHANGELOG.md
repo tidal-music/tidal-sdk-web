@@ -22,3 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Queue Worker is now built in a slightly different way, making it more compatible with Vite
+
+## [2.3.2] - 2025-02-19
+
+### Fixed
+
+- Queue Worker is now inlined, hopefully making it more compatible with Vite dev mode
