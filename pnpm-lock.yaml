@@ -60,11 +60,11 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       vite:
-        specifier: 5.4.14
-        version: 5.4.14(@types/node@22.13.5)(terser@5.31.0)
+        specifier: 6.2.0
+        version: 6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)
       vite-plugin-dts:
         specifier: 4.5.0
-        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0))
+        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1))
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.5)(@vitest/ui@2.1.9)(happy-dom@17.1.8)(terser@5.31.0)
@@ -91,14 +91,14 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       vite:
-        specifier: 5.4.14
-        version: 5.4.14(@types/node@22.13.5)(terser@5.31.0)
+        specifier: 6.2.0
+        version: 6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)
       vite-plugin-dts:
         specifier: 4.5.0
-        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0))
+        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1))
       vite-plugin-top-level-await:
         specifier: 1.5.0
-        version: 1.5.0(rollup@4.34.8)(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0))
+        version: 1.5.0(rollup@4.34.8)(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1))
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.5)(@vitest/ui@2.1.9)(happy-dom@17.1.8)(terser@5.31.0)
@@ -119,11 +119,11 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       vite:
-        specifier: 5.4.14
-        version: 5.4.14(@types/node@22.13.5)(terser@5.31.0)
+        specifier: 6.2.0
+        version: 6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)
       vite-plugin-dts:
         specifier: 4.5.0
-        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0))
+        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1))
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.5)(@vitest/ui@2.1.9)(happy-dom@17.1.8)(terser@5.31.0)
@@ -162,14 +162,14 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       vite:
-        specifier: 5.4.14
-        version: 5.4.14(@types/node@22.13.5)(terser@5.31.0)
+        specifier: 6.2.0
+        version: 6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)
       vite-plugin-dts:
         specifier: 4.5.0
-        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0))
+        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1))
       vite-plugin-top-level-await:
         specifier: 1.5.0
-        version: 1.5.0(rollup@4.34.8)(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0))
+        version: 1.5.0(rollup@4.34.8)(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1))
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.5)(@vitest/ui@2.1.9)(happy-dom@17.1.8)(terser@5.31.0)
@@ -264,17 +264,17 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       vite:
-        specifier: 5.4.14
-        version: 5.4.14(@types/node@22.13.5)(terser@5.31.0)
+        specifier: 6.2.0
+        version: 6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)
       vite-plugin-dts:
         specifier: 4.5.0
-        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0))
+        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1))
       vite-plugin-package-version:
         specifier: 1.1.0
-        version: 1.1.0(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0))
+        version: 1.1.0(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1))
       vite-plugin-top-level-await:
         specifier: 1.5.0
-        version: 1.5.0(rollup@4.34.8)(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0))
+        version: 1.5.0(rollup@4.34.8)(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1))
 
   packages/player-web-components:
     devDependencies:
@@ -297,11 +297,11 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       vite:
-        specifier: 5.4.14
-        version: 5.4.14(@types/node@22.13.5)(terser@5.31.0)
+        specifier: 6.2.0
+        version: 6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)
       vite-plugin-dts:
         specifier: 4.5.0
-        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0))
+        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1))
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.5)(@vitest/ui@2.1.9)(happy-dom@17.1.8)(terser@5.31.0)
@@ -322,11 +322,11 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       vite:
-        specifier: 5.4.14
-        version: 5.4.14(@types/node@22.13.5)(terser@5.31.0)
+        specifier: 6.2.0
+        version: 6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)
       vite-plugin-dts:
         specifier: 4.5.0
-        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0))
+        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1))
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.5)(@vitest/ui@2.1.9)(happy-dom@17.1.8)(terser@5.31.0)
@@ -347,11 +347,11 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       vite:
-        specifier: 5.4.14
-        version: 5.4.14(@types/node@22.13.5)(terser@5.31.0)
+        specifier: 6.2.0
+        version: 6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)
       vite-plugin-dts:
         specifier: 4.5.0
-        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0))
+        version: 4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1))
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.5)(@vitest/ui@2.1.9)(happy-dom@17.1.8)(terser@5.31.0)
@@ -4079,6 +4079,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanoid@3.3.8:
+    resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
   nanoid@5.1.2:
     resolution: {integrity: sha512-b+CiXQCNMUGe0Ri64S9SXFcP9hogjAJ2Rd6GdVxhPLRm7mhGaM7VgOvCAJ1ZshfHbqVDI3uqTI5C8/GaKuLI7g==}
     engines: {node: ^18 || >=20}
@@ -4270,6 +4275,9 @@ packages:
   picocolors@1.1.0:
     resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
 
+  picocolors@1.1.1:
+    resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
+
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
@@ -4299,6 +4307,10 @@ packages:
 
   postcss@8.4.47:
     resolution: {integrity: sha512-56rxCq7G/XfB4EkXq9Egn5GCqugWvDFjafDOThIdMBsI15iqPqR5r15TfSr1YPYeEI19YeaXMCbY6u88Y76GLQ==}
+    engines: {node: ^10 || ^12 || >=14}
+
+  postcss@8.5.3:
+    resolution: {integrity: sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==}
     engines: {node: ^10 || ^12 || >=14}
 
   prelude-ls@1.2.1:
@@ -5079,6 +5091,46 @@ packages:
       sugarss:
         optional: true
       terser:
+        optional: true
+
+  vite@6.2.0:
+    resolution: {integrity: sha512-7dPxoo+WsT/64rDcwoOjk76XHj+TqNTIvHKcuMQ1k4/SeHDaQt5GFAeLYzrimZrMpn/O6DtdI03WUjdxuPM0oQ==}
+    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || ^20.0.0 || >=22.0.0
+      jiti: '>=1.21.0'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      sass-embedded: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
         optional: true
 
   vitest@2.1.4:
@@ -8367,7 +8419,7 @@ snapshots:
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.14.0)
       eslint-plugin-no-only-tests: 3.3.0
       eslint-plugin-perfectionist: 3.9.1(eslint@9.14.0)(typescript@5.6.3)
-      eslint-plugin-prettier: 5.2.1(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@9.14.0))(eslint@9.14.0)(prettier@3.3.3)
+      eslint-plugin-prettier: 5.2.1(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@9.21.0))(eslint@9.14.0)(prettier@3.3.3)
       eslint-plugin-react: 7.37.2(eslint@9.14.0)
       eslint-plugin-react-hooks: 5.0.0(eslint@9.14.0)
       eslint-plugin-storybook: 0.11.0(eslint@9.14.0)(typescript@5.6.3)
@@ -8542,7 +8594,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-prettier@5.2.1(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@9.14.0))(eslint@9.14.0)(prettier@3.3.3):
+  eslint-plugin-prettier@5.2.1(@types/eslint@8.56.10)(eslint-config-prettier@9.1.0(eslint@9.21.0))(eslint@9.14.0)(prettier@3.3.3):
     dependencies:
       eslint: 9.14.0
       prettier: 3.3.3
@@ -9579,6 +9631,8 @@ snapshots:
 
   nanoid@3.3.7: {}
 
+  nanoid@3.3.8: {}
+
   nanoid@5.1.2: {}
 
   natural-compare-lite@1.4.0: {}
@@ -9776,6 +9830,8 @@ snapshots:
 
   picocolors@1.1.0: {}
 
+  picocolors@1.1.1: {}
+
   picomatch@2.3.1: {}
 
   picomatch@4.0.2: {}
@@ -9804,6 +9860,12 @@ snapshots:
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.1.0
+      source-map-js: 1.2.1
+
+  postcss@8.5.3:
+    dependencies:
+      nanoid: 3.3.8
+      picocolors: 1.1.1
       source-map-js: 1.2.1
 
   prelude-ls@1.2.1: {}
@@ -10624,7 +10686,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-dts@4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0)):
+  vite-plugin-dts@4.5.0(@types/node@22.13.5)(rollup@4.34.8)(typescript@5.7.3)(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)):
     dependencies:
       '@microsoft/api-extractor': 7.49.1(@types/node@22.13.5)
       '@rollup/pluginutils': 5.1.4(rollup@4.34.8)
@@ -10637,22 +10699,22 @@ snapshots:
       magic-string: 0.30.17
       typescript: 5.7.3
     optionalDependencies:
-      vite: 5.4.14(@types/node@22.13.5)(terser@5.31.0)
+      vite: 6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
 
-  vite-plugin-package-version@1.1.0(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0)):
+  vite-plugin-package-version@1.1.0(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)):
     dependencies:
-      vite: 5.4.14(@types/node@22.13.5)(terser@5.31.0)
+      vite: 6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)
 
-  vite-plugin-top-level-await@1.5.0(rollup@4.34.8)(vite@5.4.14(@types/node@22.13.5)(terser@5.31.0)):
+  vite-plugin-top-level-await@1.5.0(rollup@4.34.8)(vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)):
     dependencies:
       '@rollup/plugin-virtual': 3.0.2(rollup@4.34.8)
       '@swc/core': 1.10.16
       uuid: 10.0.0
-      vite: 5.4.14(@types/node@22.13.5)(terser@5.31.0)
+      vite: 6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1)
     transitivePeerDependencies:
       - '@swc/helpers'
       - rollup
@@ -10666,6 +10728,17 @@ snapshots:
       '@types/node': 22.13.5
       fsevents: 2.3.3
       terser: 5.31.0
+
+  vite@6.2.0(@types/node@22.13.5)(terser@5.31.0)(yaml@2.6.1):
+    dependencies:
+      esbuild: 0.25.0
+      postcss: 8.5.3
+      rollup: 4.34.8
+    optionalDependencies:
+      '@types/node': 22.13.5
+      fsevents: 2.3.3
+      terser: 5.31.0
+      yaml: 2.6.1
 
   vitest@2.1.4(@types/node@22.13.5)(happy-dom@17.1.8)(terser@5.31.0):
     dependencies:
