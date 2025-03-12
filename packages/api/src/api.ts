@@ -1,10 +1,7 @@
 import type { CredentialsProvider } from '@tidal-music/common';
 import createClient, { type Middleware } from 'openapi-fetch';
 
-import type { paths as cataloguePaths } from './catalogueAPI.generated';
-import type { paths as playlistPaths } from './playlistAPI.generated';
-import type { paths as searchPaths } from './searchAPI.generated';
-import type { paths as userPaths } from './userAPI.generated';
+import type { paths } from './allAPI.generated';
 
 /**
  * Create a Catalogue API client with the provided credentials.
@@ -22,9 +19,7 @@ export function createAPIClient(credentialsProvider: CredentialsProvider) {
     },
   };
 
-  type AllPaths = cataloguePaths & playlistPaths & searchPaths & userPaths;
-
-  const apiClient = createClient<AllPaths>({
+  const apiClient = createClient<paths>({
     baseUrl: 'https://openapi.tidal.com/v2/',
   });
   apiClient.use(authMiddleware);
