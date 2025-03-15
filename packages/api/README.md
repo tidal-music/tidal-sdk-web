@@ -24,3 +24,4 @@ Which approach to choose will depend on how much control you need over the Auth 
 ## Development
 
 Run `pnpm generateTypes` to regenerate the types from the API specs.
+.
