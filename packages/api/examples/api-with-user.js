@@ -108,9 +108,6 @@ const createPlaylist = async event => {
         type: 'playlists',
       },
     },
-    headers: {
-      'Content-Type': 'application/vnd.api+json', // TODO: set this by default for all POST/PUT requests
-    },
   });
 
   const results = document.getElementById('playlistResults');

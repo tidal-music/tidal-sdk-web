@@ -15,6 +15,16 @@ export function createAPIClient(credentialsProvider: CredentialsProvider) {
 
       // Add Authorization header to every request
       request.headers.set('Authorization', `Bearer ${credentials.token}`);
+
+      // Set JsonAPI Content-Type header for requests with data
+      if (
+        request.method === 'POST' ||
+        request.method === 'PATCH' ||
+        request.method === 'DELETE'
+      ) {
+        request.headers.set('Content-Type', 'application/vnd.api+json');
+      }
+
       return request;
     },
   };
