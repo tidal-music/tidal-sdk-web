@@ -1,5 +1,10 @@
-/* eslint-disable no-console */
-import { credentialsProvider, finalizeLogin, init, initializeLogin, logout } from '@tidal-music/auth';
+import {
+  credentialsProvider,
+  finalizeLogin,
+  init,
+  initializeLogin,
+  logout,
+} from '@tidal-music/auth';
 
 import { createAPIClient } from '../dist';
 
@@ -82,7 +87,6 @@ const loadHandler = async () => {
   }
 };
 
-
 const createPlaylist = async event => {
   event.preventDefault();
 
@@ -93,22 +97,21 @@ const createPlaylist = async event => {
 
   const apiClient = createAPIClient(credentialsProvider);
 
-  const apiResults = await apiClient
-    .POST('/playlists', {
-      body: {
-        data: {
-          attributes: {
-            name,
-            privacy,
-            description,
-          },
-          type: 'playlists',
+  const apiResults = await apiClient.POST('/playlists', {
+    body: {
+      data: {
+        attributes: {
+          description,
+          name,
+          privacy,
         },
+        type: 'playlists',
       },
-      headers: {
-        'Content-Type': 'application/vnd.api+json', // TODO: set this by default for all POST/PUT requests
-      },
-    });
+    },
+    headers: {
+      'Content-Type': 'application/vnd.api+json', // TODO: set this by default for all POST/PUT requests
+    },
+  });
 
   const results = document.getElementById('playlistResults');
   results.innerHTML = '';
@@ -118,8 +121,10 @@ const createPlaylist = async event => {
       err => (results.innerHTML += `<li>${err.detail}</li>`),
     );
   } else {
-    for (const [key, value] of Object.entries(apiResults.data.data.attributes)) {
+    for (const [key, value] of Object.entries(
+      apiResults.data.data.attributes,
+    )) {
       results.innerHTML += `<li><b>${key}:</b>${JSON.stringify(value)}</li>`;
     }
   }
-}
+};
