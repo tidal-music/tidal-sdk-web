@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+  <a href="../">Back to all examples</a>
+  <h1>Logged in API usage</h1>
+
+  <form id="authorizationCodeForm">
+    <label>
+      <span>Client Id</span>
+      <input type="text" name="clientId" required />
+    </label>
+    <label>
+      <span>Redirect url</span>
+      <input type="text" name="redirectUrl" required />
+    </label>
+    <button type="submit">Login</button>
+  </form>
+
+  <button id="logoutBtn" style="display: none;">Logout</button>
+
+  <form id="createPlaylistForm" style="display: none;">
+    <h2>Create a playlist</h2>
+    <label>
+      <span>Playlist name</span>
+      <input type="text" name="playlistName" required />
+    </label>
+    <label>
+      <span>Playlist description</span>
+      <input type="text" name="playlistDescription" />
+    </label>
+    <label>
+      <span>Playlist visibility</span>
+      <select name="playlistVisibility">
+        <option value="PRIVATE">Private</option>
+        <option value="PUBLIC">Public</option>
+      </select>
+    </label>
+    <button type="submit">Create</button>
+  </form>
+  <ul id="playlistResults"></ul>
+
+  <script type="module" src="./api-with-user.js"></script>
+</body>
+</html>
