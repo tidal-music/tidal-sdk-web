@@ -9,7 +9,13 @@ export default defineConfig({
       formats: ['es'],
     },
   },
-  plugins: [dts({ rollupTypes: true, tsconfigPath: 'tsconfig.build.json' })],
+  plugins: [
+    dts({
+      // Bundle the event sender types from event-producer
+      bundledPackages: ['@tidal-music/event-producer'],
+      tsconfigPath: 'tsconfig.build.json',
+    }),
+  ],
   test: {
     coverage: {
       exclude: ['./src/index.ts'].concat(configDefaults.coverage.exclude ?? []), // ignore barrel file
