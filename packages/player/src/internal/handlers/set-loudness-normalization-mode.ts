@@ -7,7 +7,7 @@ import { playerState } from '../../player/state';
  *
  * @param {LoudnessNormalizationMode} mode
  */
-export function setLoudnessNormalizationMode(mode: LoudnessNormalizationMode) {
+export function setLoudnessNormalizationMode(mode: LoudnessNormalizationMode): void {
   Config.update({
     loudnessNormalizationMode: mode,
   });

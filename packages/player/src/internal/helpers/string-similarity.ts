@@ -34,7 +34,11 @@ function compareTwoStrings(first: string, second: string) {
 export function findBestMatch(
   mainString: string,
   targetStrings: Array<string>,
-) {
+): {
+  bestMatch: { rating: number; target: string } | undefined;
+  bestMatchIndex: number;
+  ratings: Array<{ rating: number; target: string }>;
+} {
   if (!areArgsValid(mainString, targetStrings)) {
     throw new Error(
       'Bad arguments: First argument should be a string, second should be an array of strings',

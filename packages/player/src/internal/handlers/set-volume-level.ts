@@ -6,7 +6,7 @@ import * as Config from '../../config';
  *
  * @param {number} desiredVolumeLevel
  */
-export function setVolumeLevel(desiredVolumeLevel: number) {
+export function setVolumeLevel(desiredVolumeLevel: number): void {
   Config.update({
     desiredVolumeLevel,
   });

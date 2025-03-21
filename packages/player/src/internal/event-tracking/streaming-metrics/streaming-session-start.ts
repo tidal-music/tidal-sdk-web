@@ -1,6 +1,6 @@
 import Bowser from 'bowser';
 
-import { createReducer } from '../../helpers/reducer';
+import { createReducer, type Reducer } from '../../helpers/reducer';
 
 const platform = Bowser.parse(navigator.userAgent);
 
@@ -53,7 +53,7 @@ const defaultPayload: Payload = {
   timestamp: 0,
 };
 
-const reducer = await createReducer<Payload, 'streaming_session_start'>(
+const reducer: Reducer<Payload, 'streaming_session_start'> = await createReducer(
   'streaming_session_start',
   defaultPayload,
 );
@@ -68,6 +68,10 @@ const reducer = await createReducer<Payload, 'streaming_session_start'>(
  * A new streaming session starts whenever a client
  * decides that a media asset should be played.
  */
-export function streamingSessionStart(newData: Parameters<typeof reducer>[0]) {
+export function streamingSessionStart(newData: Parameters<typeof reducer>[0]): Promise<{
+  payload: Payload;
+  name: "streaming_session_start";
+  streamingSessionId: string;
+} | undefined> {
   return reducer(newData);
 }
