@@ -26,7 +26,6 @@ describe('shakaTrackToAdaptation', () => {
   });
 });
 
-// eslint-disable-next-line vitest/valid-describe-callback
 describe('saveAdaptation', () => {
   it('saves the adaptation in streaming metrics', async () => {
     const activeShakaTrack = JSON.parse(

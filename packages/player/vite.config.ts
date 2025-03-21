@@ -1,5 +1,6 @@
 import dts from 'vite-plugin-dts';
-import { defineConfig, type UserConfig } from 'vitest/config';
+import version from 'vite-plugin-package-version';
+import { type UserConfig, defineConfig } from 'vitest/config';
 
 const config: UserConfig = defineConfig({
   build: {
@@ -10,7 +11,10 @@ const config: UserConfig = defineConfig({
     },
     target: 'es2022',
   },
-  plugins: [dts({ rollupTypes: true, tsconfigPath: 'tsconfig.build.json' })],
+  plugins: [
+    version(),
+    dts({ rollupTypes: true, tsconfigPath: 'tsconfig.build.json' }),
+  ],
   server: {
     open: '/demo/index.html',
   },

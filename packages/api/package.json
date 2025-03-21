@@ -1,6 +1,6 @@
 {
-  "name": "@tidal-music/search",
-  "version": "0.2.0",
+  "name": "@tidal-music/api",
+  "version": "0.2.1",
   "type": "module",
   "files": [
     "dist"
@@ -13,12 +13,12 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
-    "default": "./dist/index.js",
-    "import": "./dist/index.js"
+    "import": "./dist/index.js",
+    "default": "./dist/index.js"
   },
   "scripts": {
-    "prepare": "vite build && cp src/searchAPI.d.ts dist/",
-    "build": "vite build && cp src/searchAPI.d.ts dist/",
+    "prepare": "vite build",
+    "build": "vite build",
     "build:dev": "vite build -m development",
     "clean": "rm -rf coverage dist .eslintcache",
     "dev": "vite --debug --cors -c=./vite.config.ts",
@@ -26,25 +26,25 @@
     "lint:ci": "eslint . --quiet",
     "lint:fix": "pnpm run lint --fix",
     "preview": "vite preview",
-    "generateTypes": "openapi-typescript https://developer.tidal.com/apiref/api-specifications/api-public-search-jsonapi/tidal-search-v2-openapi-3.0.json --output ./src/searchAPI.d.ts && echo \"/* eslint-disable */\n$(cat ./src/searchAPI.d.ts)\" > ./src/searchAPI.d.ts",
+    "generateTypes": "openapi-typescript",
     "test": "vitest",
     "test:coverage": "pnpm run test --coverage",
     "test:ui": "pnpm run test:coverage --ui",
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@tidal-music/search": "workspace:*",
-    "openapi-fetch": "0.9.8"
+    "@tidal-music/api": "workspace:*",
+    "openapi-fetch": "0.13.5"
   },
   "devDependencies": {
     "@tidal-music/auth": "workspace:^",
     "@tidal-music/common": "workspace:^",
-    "@vitest/coverage-v8": "2.0.4",
-    "@vitest/ui": "2.0.4",
-    "openapi-typescript": "7.3.0",
-    "typescript": "5.5.4",
-    "vite": "5.4.0",
-    "vite-plugin-dts": "4.0.2",
-    "vitest": "2.0.4"
+    "@vitest/coverage-v8": "3.0.8",
+    "@vitest/ui": "3.0.8",
+    "openapi-typescript": "7.6.1",
+    "typescript": "5.8.2",
+    "vite": "6.2.2",
+    "vite-plugin-dts": "4.5.3",
+    "vitest": "3.0.8"
   }
 }

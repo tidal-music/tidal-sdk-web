@@ -1,9 +1,11 @@
 export { getAssetPosition } from '../internal/handlers/get-asset-position';
 export { getLoudnessNormalizationMode } from '../internal/handlers/get-loudness-normalization-mode';
 export { getMediaProduct } from '../internal/handlers/get-media-product';
+export { getNextMediaProduct } from '../internal/handlers/get-next-media-product';
 export { getOutputDevices } from '../internal/handlers/get-output-devices';
 export { getPlaybackContext } from '../internal/handlers/get-playback-context';
 export { getPlaybackState } from '../internal/handlers/get-playback-state';
+export { getPlayerVersion } from '../internal/handlers/get-player-version';
 export { getStreamingWifiAudioQuality } from '../internal/handlers/get-streaming-wifi-audio-quality';
 export { getVolumeLevel } from '../internal/handlers/get-volume-level';
 
@@ -18,7 +20,6 @@ export { setAppVersion } from '../internal/handlers/set-app-version';
 export { setClientPlatform } from '../internal/handlers/set-client-platform';
 export { setCredentialsProvider } from '../internal/handlers/set-credentials-provider';
 export { setEventUrl } from '../internal/handlers/set-event-url';
-
 export { setLoudnessNormalizationMode } from '../internal/handlers/set-loudness-normalization-mode';
 export { setNext } from '../internal/handlers/set-next';
 export { setOutputDevice } from '../internal/handlers/set-output-device';

@@ -49,9 +49,6 @@ type MessageParams = MessageEvent<
 self.onmessage = async (message: MessageParams) => {
   const { data } = message;
   switch (data.action) {
-    case 'persist':
-      db.setItem('events', data.events).catch(console.error);
-      break;
     case 'init': {
       await initDB();
       const events = await getStoredEvents();
@@ -59,5 +56,8 @@ self.onmessage = async (message: MessageParams) => {
       self.postMessage({ action: 'initSuccess', events });
       break;
     }
+    case 'persist':
+      db.setItem('events', data.events).catch(console.error);
+      break;
   }
 };

@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import type { MediaProduct } from '../../api/interfaces';
 import * as Config from '../../config';
 import { generateGUID } from '../../internal/helpers/generate-guid';
@@ -42,10 +41,14 @@ async function _setNext(
 
   const streamingSessionId = generateGUID();
 
+  // For repeat playbacks, we clone the streaming session to a new streaming session id.
   if (
     playerState.preloadedStreamingSessionId &&
     playerState.preloadedMediaProduct &&
-    playerState.preloadedMediaProduct.productId === mediaProduct.productId
+    playerState.preloadedMediaProduct.productId === mediaProduct.productId &&
+    streamingSessionStore.hasStartedStreamInfo(
+      playerState.preloadedStreamingSessionId,
+    )
   ) {
     streamingSessionStore.clone(
       playerState.preloadedStreamingSessionId,
@@ -126,14 +129,16 @@ async function _setNext(
     isPostPaywall: playbackInfo.assetPresentation === 'FULL',
     // Euw...
     playbackSessionId: streamingSessionId,
-    productType: mediaProduct.productType === 'track' ? 'TRACK' : 'VIDEO',
+    productType: PlayLog.mapProductTypeToPlayLogProductType(
+      mediaProduct.productType,
+    ),
     requestedProductId: mediaProduct.productId,
     sourceId: mediaProduct.sourceId,
     sourceType: mediaProduct.sourceType,
     startAssetPosition: 0,
     startTimestamp,
     streamingSessionId,
-  });
+  }).catch(console.error);
 
   StreamingMetrics.commit({
     events: [

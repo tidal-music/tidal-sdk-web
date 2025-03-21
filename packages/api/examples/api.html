@@ -1,7 +1,9 @@
+<!DOCTYPE html>
 <html>
 <head>
   <style>
     label {
+      display: block;
       margin-bottom: 5px;
     }
   </style>
@@ -20,11 +22,11 @@
       <span>Search term</span>
       <input type="search" name="searchTerm" />
     </label>
-    <button type="submit">Search</button>
+    <button type="submit">Authenticate and Search</button>
   </form>
 
   <ul id="results"></ul>
 
-  <script type="module" src="./examples/example.js"></script>
+  <script type="module" src="./api.js"></script>
 </body>
 </html>

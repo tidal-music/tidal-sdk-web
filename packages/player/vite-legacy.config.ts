@@ -1,3 +1,4 @@
+import version from 'vite-plugin-package-version';
 import topLevelAwait from 'vite-plugin-top-level-await';
 import { defineConfig, mergeConfig, type UserConfig } from 'vitest/config';
 
@@ -15,7 +16,7 @@ const config: UserConfig = mergeConfig(
       outDir: 'dist/legacy',
       target: 'chrome76',
     },
-    plugins: [topLevelAwait()],
+    plugins: [version(), topLevelAwait()],
   }),
 );
 

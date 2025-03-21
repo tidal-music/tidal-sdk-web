@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/tidal-sdk-web",
-  "packageManager": "pnpm@9.7.0",
+  "packageManager": "pnpm@10.6.3",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,27 +12,26 @@
     "lint:fix": "pnpm -r lint:fix",
     "test": "pnpm -r test -- --run",
     "test:coverage": "pnpm -r test:coverage",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "generateTypes": "pnpm -r generateTypes"
   },
   "devDependencies": {
-    "eslint": "8.57.0",
-    "eslint-config-tidal": "3.2.0",
+    "eslint": "9.22.0",
+    "eslint-config-tidal": "4.0.0",
     "eslint-plugin-disable-autofix": "5.0.1",
-    "eslint-plugin-jsdoc": "50.2.1",
-    "typedoc": "0.26.5",
-    "vitest": "2.0.4"
+    "eslint-plugin-jsdoc": "50.6.6",
+    "typedoc": "0.28.0",
+    "vitest": "3.0.8"
   },
-  "prettier": {
-    "arrowParens": "avoid",
-    "singleQuote": true,
-    "trailingComma": "all"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
   "pnpm": {
     "patchedDependencies": {
-      "shaka-player@4.8.5": "patches/shaka-player@4.8.5.patch"
-    }
+      "shaka-player@4.11.2": "patches/shaka-player@4.11.2.patch"
+    },
+    "ignoredBuiltDependencies": [
+      "esbuild"
+    ],
+    "onlyBuiltDependencies": [
+      "cypress"
+    ]
   }
 }

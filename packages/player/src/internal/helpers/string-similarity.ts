@@ -59,9 +59,9 @@ export function findBestMatch(
   const bestMatch = ratings[bestMatchIndex];
 
   return {
-    bestMatch: bestMatch,
-    bestMatchIndex: bestMatchIndex,
-    ratings: ratings,
+    bestMatch,
+    bestMatchIndex,
+    ratings,
   };
 }
 

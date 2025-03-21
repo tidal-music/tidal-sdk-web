@@ -23,7 +23,6 @@ This authentication method uses `clientId` and `clientSecret`, e.g. when utilizi
 4. That's it!
 
 ## Authorization Code Flow (user login)
-(Only available for TIDAL internally developed applications for now)
 
 To implement the login redirect flow, follow these steps or refer to our example for ["authorization code"](./examples/authorization-code.html).
 
@@ -69,7 +68,7 @@ Some examples needs a proxy to run, but there is one configured if you use `pnpm
 For the examples to work you might need to build the library once with `pnpm build`.
 
 # Documentation
-[All public methods are documented and described](https://tidal-music.github.io/tidal-sdk-web/modules/_tidal_music_auth.html). Please also have a look at the examples since they should document most use cases.
+[All public methods are documented and described](https://tidal-music.github.io/tidal-sdk-web/modules/_tidal-music_auth.html). Please also have a look at the examples since they should document most use cases.
 
 
 # Development

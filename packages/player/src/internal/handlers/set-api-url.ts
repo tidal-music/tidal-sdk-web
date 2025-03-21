@@ -8,7 +8,6 @@ import * as Config from '../../config';
 export function setApiUrl(apiUrl: string): void {
   // eslint-disable-next-line no-useless-catch
   try {
-    // eslint-disable-next-line no-new
     new URL(apiUrl);
   } catch (e) {
     throw e;

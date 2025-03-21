@@ -60,8 +60,6 @@ export class BasePlayer {
 
   #startAssetPosition!: number;
 
-  #startedStreamInfos = new Map<string, boolean>();
-
   name: string | undefined;
 
   constructor() {
@@ -128,8 +126,6 @@ export class BasePlayer {
 
     streamingSessionStore.deleteSession(streamingSessionId);
 
-    this.#startedStreamInfos.delete(streamingSessionId);
-
     // Check that ended SSI is still same as current before unsetting
     // yo prevent unsetting a started preload.
     if (this.currentStreamingSessionId === streamingSessionId) {
@@ -194,7 +190,6 @@ export class BasePlayer {
       document.location.href.includes('localhost') &&
       document.location.hash.includes('debug')
     ) {
-      // eslint-disable-next-line prefer-rest-params
       console.debug(
         `[%cPlayerSDK${
           this.name
@@ -336,7 +331,7 @@ export class BasePlayer {
         started for the same streamingSessionId then we have somehow lost the media product
         transition which is an error.
       */
-      if (this.#startedStreamInfos.has(streamingSessionId)) {
+      if (streamingSessionStore.hasStartedStreamInfo(streamingSessionId)) {
         console.error(
           `A media product transition for streaming session #${streamingSessionId} has not been saved and could thus not be found for play log reporting.`,
         );
@@ -367,14 +362,16 @@ export class BasePlayer {
         playbackContext.actualVideoQuality,
       isPostPaywall: playbackContext.actualAssetPresentation === 'FULL',
       playbackSessionId: streamingSessionId,
-      productType: mediaProduct.productType === 'track' ? 'TRACK' : 'VIDEO',
+      productType: PlayLog.mapProductTypeToPlayLogProductType(
+        mediaProduct.productType,
+      ),
       requestedProductId: mediaProduct.productId,
       sourceId: mediaProduct.sourceId,
       sourceType: mediaProduct.sourceType,
       startAssetPosition: this.startAssetPosition,
       startTimestamp,
       streamingSessionId,
-    });
+    }).catch(console.error);
   }
 
   finishCurrentMediaProduct(endReason: EndReason): void {
@@ -418,22 +415,17 @@ export class BasePlayer {
   }
 
   hasNextItem(): boolean {
-    return Boolean(
-      this.preloadedStreamingSessionId &&
-      streamingSessionStore.hasMediaProductTransition(
-        this.preloadedStreamingSessionId,
-      )
-    );
+    return Boolean(this.preloadedStreamingSessionId);
   }
 
   hasStarted(): boolean {
     return Boolean(
       this.currentStreamingSessionId &&
-      this.#startedStreamInfos.has(this.currentStreamingSessionId)
+      streamingSessionStore.hasStartedStreamInfo(this.currentStreamingSessionId)
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   load(_lp: LoadPayload, _transition: 'explicit' | 'implicit'): Promise<void> {
     return Promise.resolve();
   }
@@ -466,7 +458,7 @@ export class BasePlayer {
   mediaProductStarted(streamingSessionId: string | undefined): void {
     if (
       !streamingSessionId ||
-      this.#startedStreamInfos.has(streamingSessionId)
+      streamingSessionStore.hasStartedStreamInfo(streamingSessionId)
     ) {
       return;
     }
@@ -474,7 +466,7 @@ export class BasePlayer {
     this.debugLog('mediaProductStarted');
 
     this.eventTrackingStreamingStarted(streamingSessionId);
-    this.#startedStreamInfos.set(streamingSessionId, true);
+    streamingSessionStore.setStartedStreamInfo(streamingSessionId);
     this.updateVolumeLevel();
     this.#hasEmittedPreloadRequest = false;
 
@@ -484,7 +476,7 @@ export class BasePlayer {
     this.attachPlaybackEngineEndedHandler();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next(_lp: LoadPayload): Promise<void> {
     return Promise.resolve();
   }
@@ -530,7 +522,7 @@ export class BasePlayer {
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   playbackEngineEndedHandler(_e: EndedEvent): Promise<void> {
     return Promise.resolve();
   }
@@ -540,7 +532,7 @@ export class BasePlayer {
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   seek(_number: number): void {}
 
   /**
@@ -589,7 +581,7 @@ export class BasePlayer {
         actionType: 'PLAYBACK_STOP',
         assetPosition,
         timestamp: trueTime.now(),
-      });
+      }).catch(console.error);
     }
   }
 
@@ -714,7 +706,6 @@ export class BasePlayer {
     return undefined;
   }
 
-  // eslint-disable-next-line accessor-pairs
   set outputDeviceType(ot: OutputType | undefined) {
     this.#outputDeviceType = ot ? transformOutputType(ot) : undefined;
   }
@@ -782,7 +773,7 @@ export class BasePlayer {
       this.currentStreamingSessionId,
     );
 
-    return Boolean(streamInfo && streamInfo.prefetched);
+    return Boolean(streamInfo?.prefetched);
   }
 
   set preloadedStreamingSessionId(ssi: string | undefined) {
@@ -801,7 +792,6 @@ export class BasePlayer {
     this.#startAssetPosition = assetPosition;
   }
 
-  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
   get volume() {
     return 1;
   }

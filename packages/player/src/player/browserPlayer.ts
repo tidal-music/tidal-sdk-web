@@ -9,7 +9,6 @@ import { waitFor } from '../internal/helpers/wait-for';
 import {
   ensureVideoElementsMounted,
   mediaElementOne,
-  mediaElementTwo,
 } from './audio-context-store';
 import type { LoadPayload } from './basePlayer';
 import { BasePlayer } from './basePlayer';
@@ -19,9 +18,6 @@ export default class BrowserPlayer extends BasePlayer {
   #currentPlayer: HTMLVideoElement | undefined;
 
   #instanceOne: HTMLVideoElement;
-
-  #instanceTwo: HTMLVideoElement;
-
   #isReset = true;
 
   #librariesLoad: Promise<void> = Promise.resolve();
@@ -38,6 +34,8 @@ export default class BrowserPlayer extends BasePlayer {
     timeUpdateHandler: EventListener;
     waitingHandler: EventListener;
   };
+
+  #preloadPlayer: HTMLVideoElement = document.createElement('video');
 
   #triedToPlay = false;
 
@@ -136,15 +134,8 @@ export default class BrowserPlayer extends BasePlayer {
     ensureVideoElementsMounted().then().catch(console.error);
 
     this.#instanceOne = mediaElementOne;
-    this.#instanceTwo = mediaElementTwo;
 
     this.currentPlayer = this.#instanceOne;
-  }
-
-  #getNextPlayerInstance() {
-    return [this.#instanceOne, this.#instanceTwo]
-      .filter(x => x !== this.#currentPlayer)
-      .pop();
   }
 
   #mediaElementEvents(mediaElement: HTMLMediaElement, eventsEnabled: boolean) {
@@ -318,7 +309,7 @@ export default class BrowserPlayer extends BasePlayer {
 
     const { mediaProduct, playbackInfo, streamInfo } = payload;
 
-    const preloadPlayer = this.#getNextPlayerInstance();
+    const preloadPlayer = this.#preloadPlayer;
 
     this.preloadedStreamingSessionId = streamInfo.streamingSessionId;
 
@@ -390,7 +381,6 @@ export default class BrowserPlayer extends BasePlayer {
     this.setStateToXIfNotYInZMs(1000, 'PLAYING', 'STALLED');
 
     if (this.currentPlayer) {
-      // eslint-disable-next-line no-console
       await this.currentPlayer.play().catch(console.error);
     }
   }
@@ -448,6 +438,7 @@ export default class BrowserPlayer extends BasePlayer {
     return Promise.resolve();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   seek(currentTime: number): Promise<number> {
     this.debugLog('seek', currentTime);
 
@@ -463,8 +454,7 @@ export default class BrowserPlayer extends BasePlayer {
     if ('fastSeek' in mediaEl) {
       mediaEl.fastSeek(seconds);
     } else {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      // @ts-expect-error it is (probably) a media element, just not with the fastSeek method
       mediaEl.currentTime = seconds;
     }
 
@@ -493,10 +483,8 @@ export default class BrowserPlayer extends BasePlayer {
       this.preloadedStreamingSessionId,
     );
 
-    const preloadPlayer = this.#getNextPlayerInstance();
-
-    if (preloadPlayer) {
-      this.currentPlayer = preloadPlayer;
+    if (this.#preloadPlayer.src && this.currentPlayer) {
+      this.currentPlayer.src = this.#preloadPlayer.src;
       this.currentStreamingSessionId = String(this.preloadedStreamingSessionId);
       this.preloadedStreamingSessionId = undefined;
 
@@ -533,7 +521,7 @@ export default class BrowserPlayer extends BasePlayer {
 
     this.cleanUpStoredPreloadInfo();
 
-    const preloadPlayer = this.#getNextPlayerInstance();
+    const preloadPlayer = this.#preloadPlayer;
 
     if (preloadPlayer) {
       preloadPlayer.src = '';

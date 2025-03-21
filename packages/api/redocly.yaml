@@ -1,0 +1,5 @@
+apis:
+  all:
+    root: https://developer.tidal.com/specs/tidal/tidal-api/tidal-api-oas-prod.json
+    x-openapi-ts:
+      output: ./src/allAPI.generated.ts

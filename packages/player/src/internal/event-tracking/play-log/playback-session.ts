@@ -12,6 +12,8 @@ type Action = {
   timestamp: number;
 };
 
+export type PlayLogProductType = 'TRACK' | 'UC' | 'VIDEO';
+
 export type Payload = {
   actions: Array<Action>;
   actualAssetPresentation: AssetPresentation;
@@ -22,7 +24,7 @@ export type Payload = {
   endTimestamp: number;
   isPostPaywall: boolean;
   playbackSessionId: string;
-  productType: 'TRACK' | 'VIDEO';
+  productType: PlayLogProductType;
   requestedProductId: string;
   sourceId: string;
   sourceType: string;

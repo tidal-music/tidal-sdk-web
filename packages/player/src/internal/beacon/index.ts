@@ -8,7 +8,7 @@ import type { CommitData, PrematureEvents } from './types';
 /**
  * Generates a Web Worker from a function.
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export function workerize(method: Function): string {
   const functionBody = `(${method.toString()})();`;
   const workerBlob = new Blob([functionBody], { type: 'text/javascript' });

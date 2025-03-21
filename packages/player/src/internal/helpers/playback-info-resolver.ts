@@ -128,13 +128,13 @@ const fetchWithRetries = async (
 
 function getErrorId(status: number, subStatus: number): ErrorIds {
   switch (subStatus) {
+    case 4010:
+      return 'PEMonthlyStreamQuotaExceeded';
     case 4032:
     case 4035:
       return 'PEContentNotAvailableInLocation';
     case 4033:
       return 'PEContentNotAvailableForSubscription';
-    case 4010:
-      return 'PEMonthlyStreamQuotaExceeded';
     default:
       break;
   }
@@ -228,7 +228,7 @@ async function _fetch(options: Options): Promise<PlaybackInfo> {
       },
       3,
     );
-  } catch (e) {
+  } catch {
     throw new PlayerError('PENetwork', 'NPBI0');
   }
 

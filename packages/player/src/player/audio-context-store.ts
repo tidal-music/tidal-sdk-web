@@ -1,7 +1,6 @@
 import { waitForPlayers } from '../internal/helpers/wait-for-players';
 
 export const mediaElementOne: HTMLVideoElement = document.createElement('video');
-export const mediaElementTwo: HTMLVideoElement = document.createElement('video');
 
 const prepareMediaElement = (mediaEl: HTMLMediaElement) => {
   mediaEl.setAttribute('crossorigin', 'anonymous');
@@ -10,9 +9,6 @@ const prepareMediaElement = (mediaEl: HTMLMediaElement) => {
 
 prepareMediaElement(mediaElementOne);
 mediaElementOne.id = 'video-one';
-
-prepareMediaElement(mediaElementTwo);
-mediaElementTwo.id = 'video-two';
 
 const tidalPlayerRootId = 'tidal-player-root';
 
@@ -39,10 +35,6 @@ export function ensureVideoElementsMounted(): Promise<void | void[]> {
     if (!(mediaElementOne.id in templateEl.children)) {
       templateEl.appendChild(mediaElementOne);
     }
-
-    if (!(mediaElementTwo.id in templateEl.children)) {
-      templateEl.appendChild(mediaElementTwo);
-    }
   }
 
   return waitForPlayers();
@@ -58,13 +50,6 @@ export function activateVideoElements(): Promise<void> {
           !mediaElementOne.src
         ) {
           mediaElementOne.load();
-        }
-
-        if (
-          mediaElementTwo.readyState === HTMLMediaElement.HAVE_NOTHING &&
-          !mediaElementTwo.src
-        ) {
-          mediaElementTwo.load();
         }
 
         resolve();
@@ -126,12 +111,10 @@ export async function createContext (sampleRate: number, onlyCreateNewIfNoneAlre
   console.debug('Audio context created with sample rate', sampleRate);
 
   const sourceNodeOne = getConnectedSourceNode(mediaElementOne);
-  const sourceNodeTwo = getConnectedSourceNode(mediaElementTwo);
 
   analyser = audioContext.createAnalyser();
 
   sourceNodeOne.connect(analyser);
-  sourceNodeTwo.connect(analyser);
 
   analyser.connect(audioContext.destination);
 

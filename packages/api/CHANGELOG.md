@@ -5,14 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.0] - 2024-08-07
+## [0.2.1] - 2025-03-15
 
 ### Changed
 
-- Pull in new generated types, fixing `getSimilarTracks`, adding more examples and other cleanup
+- Testing infra
+
+## [0.2.0] - 2025-03-12
+
+### Changed
+
+- Update to new single OpenAPI definition file for all API endpoints
 
 ## [0.1.0] - 2024-xx-xx
 
 ### Changed
 
-- Initial release of Catalogue API types and `fetch` wrapper
+- Initial release of joined API types and `fetch` wrapper

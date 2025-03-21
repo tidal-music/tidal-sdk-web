@@ -2,7 +2,18 @@
 
 import { TrueTime } from '.';
 
-vi.useFakeTimers();
+vi.useFakeTimers({
+  // Use same faking as Vitest 2, ie. not faking `performance`. See: https://github.com/vitest-dev/vitest/issues/7198
+  toFake: [
+    'setTimeout',
+    'clearTimeout',
+    'setInterval',
+    'clearInterval',
+    'setImmediate',
+    'clearImmediate',
+    'Date',
+  ],
+});
 
 describe('TrueTime', () => {
   describe('tidal true time', () => {
