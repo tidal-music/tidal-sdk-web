@@ -40,6 +40,7 @@ Run:
 ./bin/generate-module.sh
 ```
 And follow the prompts.
+
 ## Create a module release
 1. Bump your module's version to the desired value in your module's `package.json` file. You'll find an entry looking like this:
     ```

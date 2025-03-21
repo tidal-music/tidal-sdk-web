@@ -1,6 +1,7 @@
 export { getAssetPosition } from '../internal/handlers/get-asset-position';
 export { getLoudnessNormalizationMode } from '../internal/handlers/get-loudness-normalization-mode';
 export { getMediaProduct } from '../internal/handlers/get-media-product';
+export { getNextMediaProduct } from '../internal/handlers/get-next-media-product';
 export { getOutputDevices } from '../internal/handlers/get-output-devices';
 export { getPlaybackContext } from '../internal/handlers/get-playback-context';
 export { getPlaybackState } from '../internal/handlers/get-playback-state';

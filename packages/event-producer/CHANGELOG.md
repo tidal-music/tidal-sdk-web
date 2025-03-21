@@ -16,3 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Event Producer now uses (Web)Worker instead of SharedWorker, which should make it Android compatible
+
+## [2.3.1] - 2025-01-28
+
+### Fixed
+
+- Queue Worker is now built in a slightly different way, making it more compatible with Vite
+
+## [2.3.2] - 2025-02-19
+
+### Fixed
+
+- Queue Worker is now inlined, hopefully making it more compatible with Vite dev mode
