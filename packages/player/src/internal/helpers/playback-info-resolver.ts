@@ -378,9 +378,7 @@ export async function fetchPlaybackInfo(options: Options) {
       }),
     );
 
-    StreamingMetrics.commit({
-      events,
-    }).catch(console.error);
+    StreamingMetrics.commit(events).catch(console.error);
 
     performance.clearMarks(
       'streaming_metrics:playback_info_fetch:endTimestamp',

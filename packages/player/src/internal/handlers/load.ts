@@ -7,7 +7,11 @@ import { parseManifest } from '../../internal/helpers/manifest-parser';
 import { fetchPlaybackInfo } from '../../internal/helpers/playback-info-resolver';
 import type { PlaybackInfo } from '../../internal/helpers/playback-info-resolver';
 import { streamingSessionStore } from '../../internal/helpers/streaming-session-store';
-import { PlayerError, credentialsProviderStore } from '../../internal/index';
+import {
+  PlayerError,
+  credentialsProviderStore,
+  eventSenderStore,
+} from '../../internal/index';
 import ConnectionHandler from '../../internal/services/connection-handler';
 import { getAppropriatePlayer, setActivePlayer } from '../../player/index';
 import { playerState } from '../../player/state';
@@ -36,6 +40,10 @@ export async function load(
   assetPosition = 0,
   prefetch = false,
 ) {
+  if (!eventSenderStore.hasEventSender()) {
+    throw new Error('Playback not allowed without an event sender.');
+  }
+
   await trueTime.synchronize();
 
   Pushkin.ensure().catch(console.error);
@@ -88,19 +96,17 @@ export async function load(
 
   const streamingSessionId = generateGUID();
 
-  StreamingMetrics.commit({
-    events: [
-      StreamingMetrics.streamingSessionStart({
-        sessionProductId: mediaProduct.productId,
-        sessionProductType:
-          mediaProduct.productType === 'track' ? 'TRACK' : 'VIDEO',
-        sessionType: 'PLAYBACK',
-        startReason: 'EXPLICIT',
-        streamingSessionId,
-        timestamp: trueTime.now(),
-      }),
-    ],
-  }).catch(console.error);
+  StreamingMetrics.commit([
+    StreamingMetrics.streamingSessionStart({
+      sessionProductId: mediaProduct.productId,
+      sessionProductType:
+        mediaProduct.productType === 'track' ? 'TRACK' : 'VIDEO',
+      sessionType: 'PLAYBACK',
+      startReason: 'EXPLICIT',
+      streamingSessionId,
+      timestamp: trueTime.now(),
+    }),
+  ]).catch(console.error);
 
   performance.mark(
     'streaming_metrics:playback_statistics:idealStartTimestamp',
