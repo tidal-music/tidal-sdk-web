@@ -28,7 +28,7 @@ export function mapProductTypeToPlayLogProductType(
 /**
  * Send event to event system scoped to play_log category.
  */
-export function commit(data: Pick<CommitData, 'events'>) {
+export function commit(data: Pick<CommitData, 'events'>): Promise<CommitData> {
   return runIfAuthorizedWithUser(() =>
     beaconCommit(worker, {
       type: 'play_log' as const,

@@ -35,7 +35,7 @@ export async function load(
   mediaProduct: MediaProduct,
   assetPosition = 0,
   prefetch = false,
-) {
+): Promise<void> {
   await trueTime.synchronize();
 
   Pushkin.ensure().catch(console.error);

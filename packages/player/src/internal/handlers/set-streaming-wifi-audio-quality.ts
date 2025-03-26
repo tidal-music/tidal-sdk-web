@@ -8,7 +8,7 @@ import type { AudioQuality } from '../../internal/types';
  */
 export function setStreamingWifiAudioQuality(
   streamingWifiAudioQuality: AudioQuality,
-) {
+): void {
   Config.update({
     streamingWifiAudioQuality,
   });

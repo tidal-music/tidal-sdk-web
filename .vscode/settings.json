@@ -9,5 +9,6 @@
     "cSpell.words": [
       "Retryable",
       "typecheck"
-    ]
+    ],
+    "typescript.tsdk": "./node_modules/typescript/lib"
 }
