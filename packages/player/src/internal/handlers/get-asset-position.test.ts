@@ -1,11 +1,13 @@
 import { expect } from 'chai';
 
 import * as Player from '../../index';
-import { waitFor } from '../../test-helpers';
+import { authAndEvents, waitFor } from '../../test-helpers';
 
 import { getAssetPosition } from './get-asset-position';
 
 describe('getAssetPosition', () => {
+  authAndEvents(before, after);
+
   it('returns 0 if there is no active player', () => {
     const playerPosition = getAssetPosition();
 

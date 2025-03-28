@@ -1,4 +1,7 @@
-import type { CredentialsProvider, EventSender } from '@tidal-music/common';
+import type { CredentialsProvider } from '@tidal-music/common';
+import type * as _EventSender from '@tidal-music/event-producer';
+
+type EventSender = typeof _EventSender;
 
 import * as Config from '../config';
 
@@ -8,6 +11,10 @@ class EventSenderStore extends EventTarget {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore - Setter
   #eventSender: EventSender;
+
+  hasEventSender() {
+    return Boolean(this.#eventSender);
+  }
 
   set eventSender(newEventSender: EventSender) {
     this.#eventSender = newEventSender;
@@ -268,19 +275,13 @@ async function handleAuthorized() {
     return Pushkin.refresh();
   };
 
-  const startBeacon = async () => {
-    const Beacon = await import('./beacon/index');
-
-    return Beacon.start();
-  };
-
   if (authorizedWithUser) {
     Config.update({
       gatherEvents: true,
     });
 
     try {
-      await Promise.all([startPushkin(), startBeacon()]);
+      await Promise.all([startPushkin()]);
     } catch (e) {
       console.error(e);
     }

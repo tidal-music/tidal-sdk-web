@@ -5,9 +5,9 @@ import * as Config from './config';
 describe('Config', () => {
   it('can set/get value', async () => {
     Config.update({
-      eventUrl: 'tidal-hifi',
+      desiredVolumeLevel: 0.1,
     });
 
-    expect(Config.get('eventUrl')).to.equal('tidal-hifi');
+    expect(Config.get('desiredVolumeLevel')).to.equal(0.1);
   });
 });
