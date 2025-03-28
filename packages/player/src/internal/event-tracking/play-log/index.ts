@@ -1,10 +1,10 @@
 export { playbackSession, playbackSessionAction } from './playback-session';
 
-import { commit as baseCommit } from '../index';
-import type { Events } from '../types';
 import type { MediaProduct } from 'api/interfaces';
 
 import { runIfAuthorizedWithUser } from '../../helpers/run-if-authorized-with-user';
+import { commit as baseCommit } from '../index';
+import type { Events } from '../types';
 
 import type { PlayLogProductType } from './playback-session';
 
@@ -30,14 +30,17 @@ export function mapProductTypeToPlayLogProductType(
  */
 export async function commit(data: Events) {
   return runIfAuthorizedWithUser(async () => {
-    for await (const event of data) {
+    for (const event of data) {
       if (event) {
-        await baseCommit({
-          group: 'play_log',
-          name: event.name,
-          payload: event.payload,
-          version: 2,
-        });
+        const resolvedEvent = await event;
+        if (resolvedEvent) {
+          await baseCommit({
+            group: 'play_log',
+            name: resolvedEvent.name,
+            payload: resolvedEvent.payload,
+            version: 2,
+          });
+        }
       }
     }
   });

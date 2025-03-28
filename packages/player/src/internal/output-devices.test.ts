@@ -211,7 +211,6 @@ describe('OutputDevices', () => {
   it('emits devicechange event when emitDeviceChange is called', done => {
     const outputDevices = new OutputDevices();
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     events.addEventListener('device-change', () => done(), { once: true });
 
     outputDevices.emitDeviceChange();

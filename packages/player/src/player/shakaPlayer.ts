@@ -539,7 +539,7 @@ export default class ShakaPlayer extends BasePlayer {
                 startTimestamp: trueTime.timestamp(
                   'streaming_metrics:drm_license_fetch:startTimestamp',
                 ),
-                streamingSessionId: streamingSessionId,
+                streamingSessionId,
               }),
             ]).catch(console.error);
 
