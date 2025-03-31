@@ -57,6 +57,7 @@
     "@rollup/plugin-typescript": "12.1.2",
     "@tidal-music/auth": "workspace:^",
     "@tidal-music/common": "workspace:^",
+    "@tidal-music/event-producer": "workspace:^",
     "@tidal-music/true-time": "workspace:^",
     "@types/chai": "5.2.1",
     "@types/js-levenshtein": "1.1.3",

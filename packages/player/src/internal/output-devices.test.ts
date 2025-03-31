@@ -1,9 +1,7 @@
 import { expect } from 'chai';
 
-import * as Player from '../';
 import { events } from '../event-bus';
 import type { NativePlayerComponentDeviceDescription } from '../player/nativeInterface';
-import { credentialsProvider } from '../test-helpers';
 
 import {
   OutputDevice,
@@ -11,20 +9,6 @@ import {
   findOutputType,
   getOutputDeviceByName,
 } from './output-devices';
-
-Player.setCredentialsProvider(credentialsProvider);
-
-beforeEach(async () => {
-  await Player.load(
-    {
-      productId: '141120674',
-      productType: 'track',
-      sourceId: 'tidal-player-tests',
-      sourceType: 'tidal-player-tests',
-    },
-    0,
-  );
-});
 
 const defaultWd: MediaDeviceInfo = {
   deviceId: '12d6as',
@@ -227,7 +211,7 @@ describe('OutputDevices', () => {
   it('emits devicechange event when emitDeviceChange is called', done => {
     const outputDevices = new OutputDevices();
 
-    events.addEventListener('device-change', () => done());
+    events.addEventListener('device-change', () => done(), { once: true });
 
     outputDevices.emitDeviceChange();
   });

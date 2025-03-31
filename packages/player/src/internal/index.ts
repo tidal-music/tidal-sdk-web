@@ -1,8 +1,29 @@
 import type { CredentialsProvider } from '@tidal-music/common';
+import type * as _EventSender from '@tidal-music/event-producer';
+
+type EventSender = typeof _EventSender;
 
 import * as Config from '../config';
 
 import { waitForEvent } from './helpers/wait-for';
+
+class EventSenderStore extends EventTarget {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore - Setter
+  #eventSender: EventSender;
+
+  hasEventSender() {
+    return Boolean(this.#eventSender);
+  }
+
+  set eventSender(newEventSender: EventSender) {
+    this.#eventSender = newEventSender;
+  }
+
+  get eventSender() {
+    return this.#eventSender;
+  }
+}
 
 class CredentialsProviderStore extends EventTarget {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -240,6 +261,7 @@ export async function isAuthorizedWithUser() {
 }
 
 export const credentialsProviderStore = new CredentialsProviderStore();
+export const eventSenderStore = new EventSenderStore();
 
 /**
  * Starts streaming privileges and event code if the credentials allow it.
@@ -253,19 +275,13 @@ async function handleAuthorized() {
     return Pushkin.refresh();
   };
 
-  const startBeacon = async () => {
-    const Beacon = await import('./beacon/index');
-
-    return Beacon.start();
-  };
-
   if (authorizedWithUser) {
     Config.update({
       gatherEvents: true,
     });
 
     try {
-      await Promise.all([startPushkin(), startBeacon()]);
+      await Promise.all([startPushkin()]);
     } catch (e) {
       console.error(e);
     }
