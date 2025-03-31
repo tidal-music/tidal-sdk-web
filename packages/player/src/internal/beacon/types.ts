@@ -40,5 +40,5 @@ export type CommitData = {
     | Array<PrematureEvents | undefined>
     | Array<Promise<PrematureEvents | undefined>>;
   ts: number;
-  type: 'play_log' | 'streaming_metrics';
+  type: 'play_log' | 'play_log_open' | 'streaming_metrics';
 };
