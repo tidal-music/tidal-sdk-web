@@ -5,10 +5,9 @@ type EventSender = typeof _EventSender;
 import { eventSenderStore } from '../index';
 
 /**
- * Set the credentials provider TIDAL Player SDK should use for getting
- * session information
+ * Set the event sender TIDAL Player SDK should use for sending events.
  *
- * @param {CredentialsProvider} newCredentialsProvider
+ * @param {EventSender} newEventSender
  */
 export function setEventSender(newEventSender: EventSender) {
   eventSenderStore.eventSender = newEventSender;
