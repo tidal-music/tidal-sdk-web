@@ -101,9 +101,8 @@ export async function commitOpen(
 
     data.events = definedEvents;
 
-    const credentials =
+    const { clientId } =
       await credentialsProviderStore.credentialsProvider.getCredentials();
-    const { clientId } = credentials;
 
     const message = {
       ...data,
