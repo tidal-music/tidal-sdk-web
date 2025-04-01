@@ -56,7 +56,7 @@ const EVENT_BEACON_NOT_RUNNING = 'Event beacon is not running.';
 export async function commit(
   beaconWorker: Worker | undefined,
   data: Pick<CommitData, 'events' | 'type'>,
-) {
+): Promise<CommitData | undefined> {
   if (beaconWorker) {
     const finishedEvents = await Promise.all(data.events);
     const definedEvents: Array<PrematureEvents> =
@@ -71,7 +71,7 @@ export async function commit(
       throw new Error('No accessToken');
     }
 
-    const message = {
+    const message: CommitData = {
       ...data,
       accessToken: token,
       apiUrl: Config.get('apiUrl'),
@@ -93,7 +93,7 @@ export async function commit(
 export async function commitOpen(
   beaconWorker: Worker | undefined,
   data: Pick<CommitData, 'events' | 'type'>,
-) {
+): Promise<CommitData | undefined> {
   if (beaconWorker) {
     const finishedEvents = await Promise.all(data.events);
     const definedEvents: Array<PrematureEvents> =
@@ -104,8 +104,9 @@ export async function commitOpen(
     const { clientId } =
       await credentialsProviderStore.credentialsProvider.getCredentials();
 
-    const message = {
+    const message: CommitData = {
       ...data,
+      accessToken: '',
       apiUrl: Config.get('apiUrl'),
       appVersion: Config.get('appVersion'),
       clientId,
