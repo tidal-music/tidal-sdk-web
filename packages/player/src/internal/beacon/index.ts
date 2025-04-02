@@ -51,10 +51,12 @@ function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined;
 }
 
+const EVENT_BEACON_NOT_RUNNING = 'Event beacon is not running.';
+
 export async function commit(
   beaconWorker: Worker | undefined,
   data: Pick<CommitData, 'events' | 'type'>,
-) {
+): Promise<CommitData | undefined> {
   if (beaconWorker) {
     const finishedEvents = await Promise.all(data.events);
     const definedEvents: Array<PrematureEvents> =
@@ -69,7 +71,7 @@ export async function commit(
       throw new Error('No accessToken');
     }
 
-    const message = {
+    const message: CommitData = {
       ...data,
       accessToken: token,
       apiUrl: Config.get('apiUrl'),
@@ -84,6 +86,39 @@ export async function commit(
 
     return message;
   } else {
-    console.warn('Event beacon is not running.');
+    console.warn(EVENT_BEACON_NOT_RUNNING);
+  }
+}
+
+export async function commitOpen(
+  beaconWorker: Worker | undefined,
+  data: Pick<CommitData, 'events' | 'type'>,
+): Promise<CommitData | undefined> {
+  if (beaconWorker) {
+    const finishedEvents = await Promise.all(data.events);
+    const definedEvents: Array<PrematureEvents> =
+      finishedEvents.filter(notEmpty);
+
+    data.events = definedEvents;
+
+    const { clientId } =
+      await credentialsProviderStore.credentialsProvider.getCredentials();
+
+    const message: CommitData = {
+      ...data,
+      accessToken: '',
+      apiUrl: Config.get('apiUrl'),
+      appVersion: Config.get('appVersion'),
+      clientId,
+      clientPlatform: Config.get('clientPlatform'),
+      eventUrl: Config.get('eventUrl'),
+      ts: trueTime.now(),
+    };
+
+    beaconWorker.postMessage(JSON.stringify(message));
+
+    return message;
+  } else {
+    console.warn(EVENT_BEACON_NOT_RUNNING);
   }
 }

@@ -2,6 +2,7 @@ import type { CredentialsProvider } from '@tidal-music/common';
 
 import * as Config from '../config';
 
+import { EVENT_URL_AUTH, EVENT_URL_PUBLIC } from './constants';
 import { waitForEvent } from './helpers/wait-for';
 
 class CredentialsProviderStore extends EventTarget {
@@ -19,6 +20,10 @@ class CredentialsProviderStore extends EventTarget {
             credentials,
           },
         }),
+      );
+    } else {
+      this.dispatchEvent(
+        new CustomEvent('unauthenticated', { detail: { credentials } }),
       );
     }
   }
@@ -261,6 +266,7 @@ async function handleAuthorized() {
 
   if (authorizedWithUser) {
     Config.update({
+      eventUrl: EVENT_URL_AUTH,
       gatherEvents: true,
     });
 
@@ -276,8 +282,33 @@ async function handleAuthorized() {
   }
 }
 
+/**
+ * Starts event tracking if user is unauthenticated.
+ */
+async function handleUnauthenticated() {
+  const startBeacon = async () => {
+    const Beacon = await import('./beacon/index');
+    return Beacon.start();
+  };
+
+  Config.update({
+    eventUrl: EVENT_URL_PUBLIC,
+    gatherEvents: true,
+  });
+
+  try {
+    await startBeacon();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 credentialsProviderStore.addEventListener('authorized', () => {
   handleAuthorized().then().catch(console.error);
+});
+
+credentialsProviderStore.addEventListener('unauthenticated', () => {
+  handleUnauthenticated().then().catch(console.error);
 });
 
 /**

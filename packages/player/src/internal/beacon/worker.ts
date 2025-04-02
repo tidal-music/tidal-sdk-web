@@ -79,7 +79,7 @@ export function beacon() {
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   setInterval(async () => {
-    if (queue.length > 0 && accessToken && eventUrl) {
+    if (queue.length > 0 && eventUrl) {
       const batch: Batch = {
         batchId: generateGUID(),
         events: [...queue],
@@ -135,16 +135,20 @@ export function beacon() {
     const data = JSON.parse((e as MessageEvent<string>).data) as CommitData;
 
     eventUrl = data.eventUrl;
-    const userSession = await fetchUserSession(data.apiUrl, data.accessToken);
+
+    const userSession =
+      data.type === 'play_log_open'
+        ? undefined
+        : await fetchUserSession(data.apiUrl, data.accessToken);
 
     if (data.accessToken) {
       accessToken = data.accessToken;
     }
 
-    if (!accessToken) {
+    if (!accessToken && data.type !== 'play_log_open') {
       // eslint-disable-next-line no-console
       console.trace(
-        'An accessToken is missing. Make sure to send at least one commit-payload with it defined, we cannot send events unless we have an access token.',
+        'An accessToken is missing. Make sure to send at least one commit-payload with it defined (not needed for play_log_open events).',
       );
     }
 
@@ -171,9 +175,9 @@ export function beacon() {
         payload: streamingEvent.payload,
         ts: data.ts,
         user: {
-          accessToken,
-          clientId: userSession?.client.id,
-          id: userSession?.userId,
+          accessToken: accessToken ?? '',
+          clientId: userSession?.client.id ?? 0,
+          id: userSession?.userId ?? 0,
         },
         uuid: generateGUID(),
         version: 2,

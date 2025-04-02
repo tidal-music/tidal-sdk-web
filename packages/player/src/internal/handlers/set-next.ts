@@ -1,6 +1,7 @@
 import type { MediaProduct } from '../../api/interfaces';
 import * as Config from '../../config';
 import { generateGUID } from '../../internal/helpers/generate-guid';
+import { getIsPostPaywall } from '../../internal/helpers/get-is-post-paywall';
 import { parseManifest } from '../../internal/helpers/manifest-parser';
 import { fetchPlaybackInfo } from '../../internal/helpers/playback-info-resolver';
 import type { PlaybackInfo } from '../../internal/helpers/playback-info-resolver';
@@ -126,8 +127,10 @@ async function _setNext(
       'videoId' in playbackInfo ? playbackInfo.videoId : playbackInfo.trackId,
     ),
     actualQuality: streamInfo.quality,
-    isPostPaywall: playbackInfo.assetPresentation === 'FULL',
-    // Euw...
+    isPostPaywall: getIsPostPaywall(
+      playbackInfo.assetPresentation,
+      mediaProduct,
+    ),
     playbackSessionId: streamingSessionId,
     productType: PlayLog.mapProductTypeToPlayLogProductType(
       mediaProduct.productType,
