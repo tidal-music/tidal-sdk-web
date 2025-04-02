@@ -13,7 +13,7 @@ import { trueTime } from '../true-time';
  * @returns {Promise<void>}
  * @see {@link import('../../api/event/playback-state-change').PlaybackStateChange}
  */
-export async function play() {
+export async function play(): Promise<void> {
   await trueTime.synchronize();
 
   const { activePlayer: player } = playerState;

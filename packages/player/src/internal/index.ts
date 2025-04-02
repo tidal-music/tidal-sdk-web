@@ -9,7 +9,7 @@ class CredentialsProviderStore extends EventTarget {
   // @ts-ignore - Setter
   #credentialsProvider: CredentialsProvider;
 
-  async dispatchAuthorized() {
+  async dispatchAuthorized(): Promise<void> {
     const credentials = await this.#credentialsProvider.getCredentials();
 
     if (credentials?.token) {
@@ -207,7 +207,11 @@ export class PlayerError extends Error {
     this.referenceId = referenceId;
   }
 
-  toJSON() {
+  toJSON(): {
+    errorCode: ErrorCodes | null,
+    errorId: ErrorIds | null,
+    referenceId: string | undefined,
+  } {
     return {
       errorCode: this.errorCode,
       errorId: this.errorId,
@@ -215,7 +219,7 @@ export class PlayerError extends Error {
     };
   }
 
-  toString() {
+  toString(): string {
     return JSON.stringify(this.toJSON());
   }
 }
@@ -226,7 +230,7 @@ export class PlayerError extends Error {
  *
  * @returns {Promise<boolean>}
  */
-export async function isAuthorizedWithUser() {
+export async function isAuthorizedWithUser(): Promise<boolean> {
   if (credentialsProviderStore.credentialsProvider) {
     const credentials =
       await credentialsProviderStore.credentialsProvider.getCredentials();
@@ -239,7 +243,7 @@ export async function isAuthorizedWithUser() {
   return isAuthorizedWithUser();
 }
 
-export const credentialsProviderStore = new CredentialsProviderStore();
+export const credentialsProviderStore: CredentialsProviderStore = new CredentialsProviderStore();
 
 /**
  * Starts streaming privileges and event code if the credentials allow it.
@@ -285,7 +289,7 @@ credentialsProviderStore.addEventListener('authorized', () => {
  * Returns null if credentials provider is not set up or
  * if the token is undefined.
  */
-export async function getAccessToken() {
+export async function getAccessToken(): Promise<string | null> {
   if (credentialsProviderStore.credentialsProvider) {
     const credentials =
       await credentialsProviderStore.credentialsProvider.getCredentials();

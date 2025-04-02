@@ -44,4 +44,4 @@ export function update(updates: Partial<Config>): Config {
   return state;
 }
 
-export const events = new EventTarget();
+export const events: EventTarget = new EventTarget();
