@@ -490,7 +490,9 @@ export default class ShakaPlayer extends BasePlayer {
           const { token } =
             await credentialsProviderStore.credentialsProvider.getCredentials();
 
-          request.headers.authorization = `Bearer ${token}`;
+          if (token) {
+            request.headers.authorization = `Bearer ${token}`;
+          }
         }
       });
 
