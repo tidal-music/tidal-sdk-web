@@ -9,7 +9,7 @@ import type { CommitData, PrematureEvents } from './types';
  * Generates a Web Worker from a function.
  */
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-export function workerize(method: Function) {
+export function workerize(method: Function): string {
   const functionBody = `(${method.toString()})();`;
   const workerBlob = new Blob([functionBody], { type: 'text/javascript' });
 
@@ -34,7 +34,7 @@ async function handleWorkerMessage(
 /**
  * Start the event beacon worker.
  */
-export async function start() {
+export async function start(): Promise<void> {
   if (!worker) {
     const { beacon } = await import('./worker');
 
@@ -54,7 +54,7 @@ function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
 export async function commit(
   beaconWorker: Worker | undefined,
   data: Pick<CommitData, 'events' | 'type'>,
-) {
+): Promise<CommitData | undefined> {
   if (beaconWorker) {
     const finishedEvents = await Promise.all(data.events);
     const definedEvents: Array<PrematureEvents> =
@@ -86,4 +86,6 @@ export async function commit(
   } else {
     console.warn('Event beacon is not running.');
   }
+
+  return undefined;
 }

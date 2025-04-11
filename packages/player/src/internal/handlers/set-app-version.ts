@@ -7,7 +7,7 @@ import * as Config from '../../config';
  *
  * @param {string} appVersion
  */
-export function setAppVersion(appVersion: string) {
+export function setAppVersion(appVersion: string): void {
   Config.update({
     appVersion,
   });

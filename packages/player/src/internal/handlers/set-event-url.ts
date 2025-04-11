@@ -5,7 +5,7 @@ import * as Config from '../../config';
  *
  * @param {string} eventUrl
  */
-export function setEventUrl(eventUrl: string) {
+export function setEventUrl(eventUrl: string): void {
   // eslint-disable-next-line no-useless-catch
   try {
     new URL(eventUrl);

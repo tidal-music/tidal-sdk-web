@@ -1,8 +1,8 @@
 import dts from 'vite-plugin-dts';
 import version from 'vite-plugin-package-version';
-import { defineConfig } from 'vitest/config';
+import { type UserConfig, defineConfig } from 'vitest/config';
 
-export default defineConfig({
+const config: UserConfig = defineConfig({
   build: {
     lib: {
       entry: 'src/index.ts',
@@ -27,3 +27,5 @@ export default defineConfig({
     unstubGlobals: true,
   },
 });
+
+export default config;

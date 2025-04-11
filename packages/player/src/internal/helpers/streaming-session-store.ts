@@ -18,7 +18,7 @@ class StreamingSessionStore {
    * @param from - streamingSessionId to clone
    * @param to - target streamingSessionId
    */
-  clone(from: string, to: string) {
+  clone(from: string, to: string): void {
     const mediaProductTransition = this.getMediaProductTransition(from);
     const streamInfo = this.getStreamInfo(from);
     const playbackInfo = this.getPlaybackInfo(from);
@@ -46,7 +46,7 @@ class StreamingSessionStore {
     });
   }
 
-  deleteMediaProductTransition(streamingSessionId: string) {
+  deleteMediaProductTransition(streamingSessionId: string): void {
     this.#mediaProductTransitions.delete(streamingSessionId);
   }
 
@@ -56,18 +56,18 @@ class StreamingSessionStore {
    *
    * @see {@link StreamingSessionStore.clone}
    */
-  deleteSession(streamingSessionId: string) {
+  deleteSession(streamingSessionId: string): void {
     this.deleteMediaProductTransition(streamingSessionId);
     this.#playbackInfos.delete(streamingSessionId);
     this.#startedStreamInfos.delete(streamingSessionId);
     this.deleteStreamInfo(streamingSessionId);
   }
 
-  deleteStartedStreamInfo(streamingSessionId: string) {
+  deleteStartedStreamInfo(streamingSessionId: string): void {
     this.#startedStreamInfos.delete(streamingSessionId);
   }
 
-  deleteStreamInfo(streamingSessionId: string) {
+  deleteStreamInfo(streamingSessionId: string): void {
     this.#streamInfos.delete(streamingSessionId);
   }
 
@@ -95,23 +95,23 @@ class StreamingSessionStore {
       : undefined;
   }
 
-  hasMediaProductTransition(streamingSessionId: string) {
+  hasMediaProductTransition(streamingSessionId: string): boolean {
     return this.#mediaProductTransitions.has(streamingSessionId);
   }
 
-  hasPlaybackInfo(streamingSessionId: string) {
+  hasPlaybackInfo(streamingSessionId: string): boolean {
     return this.#playbackInfos.has(streamingSessionId);
   }
 
-  hasStartedStreamInfo(streamingSessionId: string) {
+  hasStartedStreamInfo(streamingSessionId: string): boolean {
     return this.#startedStreamInfos.has(streamingSessionId);
   }
 
-  hasStreamInfo(streamingSessionId: string) {
+  hasStreamInfo(streamingSessionId: string): boolean {
     return this.#streamInfos.has(streamingSessionId);
   }
 
-  overwriteDuration(streamingSessionId: string, updatedDuration: number) {
+  overwriteDuration(streamingSessionId: string, updatedDuration: number): void {
     const mediaProductTransition =
       this.#mediaProductTransitions.get(streamingSessionId);
 
@@ -130,18 +130,18 @@ class StreamingSessionStore {
   saveMediaProductTransition(
     streamingSessionId: string,
     mediaProductTransition: MediaProductTransitionPayload,
-  ) {
+  ): void {
     this.#mediaProductTransitions.set(
       streamingSessionId,
       mediaProductTransition,
     );
   }
 
-  savePlaybackInfo(streamingSessionId: string, streamInfo: PlaybackInfo) {
+  savePlaybackInfo(streamingSessionId: string, streamInfo: PlaybackInfo): void {
     this.#playbackInfos.set(streamingSessionId, streamInfo);
   }
 
-  saveStreamInfo(streamingSessionId: string, streamInfo: StreamInfo) {
+  saveStreamInfo(streamingSessionId: string, streamInfo: StreamInfo): void {
     this.#streamInfos.set(streamingSessionId, streamInfo);
   }
 
@@ -150,4 +150,4 @@ class StreamingSessionStore {
   }
 }
 
-export const streamingSessionStore = new StreamingSessionStore();
+export const streamingSessionStore: StreamingSessionStore = new StreamingSessionStore();

@@ -7,6 +7,6 @@ import { playerState } from '../../player/state';
  *
  * @see {@link import('../../api/event/playback-state-change').PlaybackStateChange}
  */
-export function pause() {
+export function pause(): void {
   return playerState.activePlayer?.pause();
 }

@@ -36,7 +36,7 @@ export async function saveAdaptation(
   const adaptation = shakaTrackToAdaptation(activeTrack, currentTime);
 
   if (adaptation.mimeType && adaptation.codecs) {
-    await StreamingMetrics.playbackStatistics({
+    await StreamingMetrics.playbackStatisticsVideo({
       adaptations: [adaptation],
       streamingSessionId,
     });
@@ -77,7 +77,7 @@ export function registerAdaptations(shakaPlayer: shaka.Player) {
 
   events.addEventListener('media-product-transition', onMediaProductTransition);
 
-  return function unregister() {
+  return function unregister(): void {
     shakaPlayer.removeEventListener('adaptation', onAdaptation);
     shakaPlayer.removeEventListener('variantchanged', onAdaptation);
     events.removeEventListener(

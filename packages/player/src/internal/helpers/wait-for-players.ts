@@ -12,7 +12,7 @@ const handler = (
   }
 };
 
-export function waitForPlayers() {
+export function waitForPlayers(): Promise<void | void[]> {
   const playerRoot = document.getElementById('tidal-player-root');
 
   if (!playerRoot) {

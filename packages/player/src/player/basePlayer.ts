@@ -158,7 +158,7 @@ export class BasePlayer {
   }
 
   // Implements
-  attachPlaybackEngineEndedHandler() {
+  attachPlaybackEngineEndedHandler(): void {
     if (!this.#endedHandler) {
       this.#endedHandler = this.playbackEngineEndedHandler.bind(this);
       // TS is weird with CustomEvent event listeners.
@@ -174,7 +174,7 @@ export class BasePlayer {
    * for preloadedStreamingSessionId if it does not match
    * currentStreamingSessionId.
    */
-  cleanUpStoredPreloadInfo() {
+  cleanUpStoredPreloadInfo(): void {
     if (
       this.preloadedStreamingSessionId &&
       this.preloadedStreamingSessionId !== this.currentStreamingSessionId
@@ -185,7 +185,7 @@ export class BasePlayer {
   }
 
   // Implements
-  debugLog(...args: Array<unknown>) {
+  debugLog(...args: Array<unknown>): void {
     if (
       document.location.href.includes('localhost') &&
       document.location.hash.includes('debug')
@@ -221,7 +221,7 @@ export class BasePlayer {
     }
   }
 
-  detachPlaybackEngineEndedHandler() {
+  detachPlaybackEngineEndedHandler(): void {
     if (this.#endedHandler) {
       // TS is weird with CustomEvent event listeners.
       events.removeEventListener(
@@ -246,7 +246,7 @@ export class BasePlayer {
       endAssetPosition: number;
       endReason: EndReason;
     },
-  ) {
+  ): void {
     const endTimestamp = trueTime.now();
 
     PlayLog.commit({
@@ -274,7 +274,7 @@ export class BasePlayer {
     }).catch(console.error);
   }
 
-  eventTrackingStreamingStarted(streamingSessionId: string) {
+  eventTrackingStreamingStarted(streamingSessionId: string): void {
     if (!streamingSessionId) {
       return;
     }
@@ -374,7 +374,7 @@ export class BasePlayer {
     }).catch(console.error);
   }
 
-  finishCurrentMediaProduct(endReason: EndReason) {
+  finishCurrentMediaProduct(endReason: EndReason): void {
     // A media product was loaded but never started.
     if (!this.hasStarted()) {
       return;
@@ -406,7 +406,7 @@ export class BasePlayer {
   /**
    * Refetches playbackinfo.
    */
-  async hardReload(mediaProduct: MediaProduct, assetPosition: number) {
+  async hardReload(mediaProduct: MediaProduct, assetPosition: number): Promise<void> {
     if (this.currentStreamingSessionId) {
       this.finishCurrentMediaProduct('skip');
     }
@@ -414,19 +414,19 @@ export class BasePlayer {
     return load(mediaProduct, assetPosition);
   }
 
-  hasNextItem() {
-    return this.preloadedStreamingSessionId;
+  hasNextItem(): boolean {
+    return Boolean(this.preloadedStreamingSessionId);
   }
 
-  hasStarted() {
-    return (
+  hasStarted(): boolean {
+    return Boolean(
       this.currentStreamingSessionId &&
       streamingSessionStore.hasStartedStreamInfo(this.currentStreamingSessionId)
     );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  load(_lp: LoadPayload, _transition: 'explicit' | 'implicit') {
+  load(_lp: LoadPayload, _transition: 'explicit' | 'implicit'): Promise<void> {
     return Promise.resolve();
   }
 
@@ -435,7 +435,7 @@ export class BasePlayer {
    *
    * @returns {boolean} True if hard reloaded, else false.
    */
-  async maybeHardReload() {
+  async maybeHardReload(): Promise<boolean> {
     // Not the same as OR in an if statement.
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const prefetchedOrExpired = this.prefetched || this.expired;
@@ -455,7 +455,7 @@ export class BasePlayer {
    *
    * @param streamingSessionId
    */
-  mediaProductStarted(streamingSessionId: string | undefined) {
+  mediaProductStarted(streamingSessionId: string | undefined): void {
     if (
       !streamingSessionId ||
       streamingSessionStore.hasStartedStreamInfo(streamingSessionId)
@@ -477,7 +477,7 @@ export class BasePlayer {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  next(_lp: LoadPayload) {
+  next(_lp: LoadPayload): Promise<void> {
     return Promise.resolve();
   }
 
@@ -492,7 +492,7 @@ export class BasePlayer {
   overwriteMediaProduct(
     streamingSessionId: string,
     partialMediaProduct: Partial<MediaProduct>,
-  ) {
+  ): void {
     const oldMediaProductTransition =
       streamingSessionStore.getMediaProductTransition(streamingSessionId);
 
@@ -516,30 +516,30 @@ export class BasePlayer {
     }
   }
 
-  pause() {}
+  pause(): void {}
 
-  play() {
+  play(): Promise<void> {
     return Promise.resolve();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  playbackEngineEndedHandler(_e: EndedEvent) {
+  playbackEngineEndedHandler(_e: EndedEvent): Promise<void> {
     return Promise.resolve();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  reset(_options: { keepPreload: boolean }) {
+  reset(_options: { keepPreload: boolean }): Promise<void> {
     return Promise.resolve();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  seek(_number: number) {}
+  seek(_number: number): void {}
 
   /**
    * Handle play log reporting for seeking.
    * Seek start should log a PLAYBACK_START action if playing post seek.
    */
-  seekEnd(assetPosition: number) {
+  seekEnd(assetPosition: number): void {
     const streamingSessionId = this.currentStreamingSessionId;
 
     if (streamingSessionId) {
@@ -575,7 +575,7 @@ export class BasePlayer {
    * Handle play log reporting for seeking.
    * Seek start should log a PLAYBACK_STOP action.
    */
-  seekStart(assetPosition: number) {
+  seekStart(assetPosition: number): void {
     if (this.currentStreamingSessionId) {
       PlayLog.playbackSessionAction(this.currentStreamingSessionId, {
         actionType: 'PLAYBACK_STOP',
@@ -589,7 +589,7 @@ export class BasePlayer {
     ms: number,
     ifNotState: PlaybackState,
     setToState: PlaybackState,
-  ) {
+  ): Promise<void> {
     await waitFor(ms);
 
     if (this.playbackState !== ifNotState) {
@@ -597,15 +597,15 @@ export class BasePlayer {
     }
   }
 
-  skipToPreloadedMediaProduct() {
+  skipToPreloadedMediaProduct(): Promise<void> {
     return Promise.resolve();
   }
 
-  unloadPreloadedMediaProduct() {
+  unloadPreloadedMediaProduct(): Promise<void> {
     return Promise.resolve();
   }
 
-  updateOutputDevice() {
+  updateOutputDevice(): Promise<void> {
     return Promise.resolve();
   }
 
@@ -614,7 +614,7 @@ export class BasePlayer {
    * it before setting, if loudness normalization is
    * enabled.
    */
-  updateVolumeLevel() {
+  updateVolumeLevel(): void {
     const streamInfo = streamingSessionStore.getStreamInfo(
       this.currentStreamingSessionId,
     );
@@ -630,7 +630,7 @@ export class BasePlayer {
    * Adjusts the volume for the next track.
    * Can be called on product ended to have the level ready.
    */
-  updateVolumeLevelForNextProduct() {
+  updateVolumeLevelForNextProduct(): void {
     const streamInfo = streamingSessionStore.getStreamInfo(
       this.preloadedStreamingSessionId,
     );
@@ -640,7 +640,7 @@ export class BasePlayer {
     } // else: Will be adjusted on start instead.
   }
 
-  get currentMediaProduct() {
+  get currentMediaProduct(): MediaProduct | null {
     return (
       streamingSessionStore.getMediaProductTransition(
         this.currentStreamingSessionId,
@@ -665,7 +665,7 @@ export class BasePlayer {
     return this.#currentTime;
   }
 
-  get duration() {
+  get duration(): number | null {
     const mtp = streamingSessionStore.getMediaProductTransition(
       this.currentStreamingSessionId,
     );
@@ -677,7 +677,7 @@ export class BasePlayer {
     return null;
   }
 
-  get expired() {
+  get expired(): boolean {
     const streamInfo = streamingSessionStore.getStreamInfo(
       this.currentStreamingSessionId,
     );
@@ -690,13 +690,13 @@ export class BasePlayer {
     return streamInfo.expires <= Date.now();
   }
 
-  get isActivePlayer() {
+  get isActivePlayer(): boolean | undefined {
     return (
       playerState.activePlayer && this.name === playerState.activePlayer.name
     );
   }
 
-  get nextItem() {
+  get nextItem(): MediaProductTransitionPayload | undefined {
     if (this.preloadedStreamingSessionId) {
       return streamingSessionStore.getMediaProductTransition(
         this.preloadedStreamingSessionId,
@@ -768,12 +768,12 @@ export class BasePlayer {
     return this.#playbackState;
   }
 
-  get prefetched() {
+  get prefetched(): boolean {
     const streamInfo = streamingSessionStore.getStreamInfo(
       this.currentStreamingSessionId,
     );
 
-    return streamInfo?.prefetched;
+    return Boolean(streamInfo?.prefetched);
   }
 
   set preloadedStreamingSessionId(ssi: string | undefined) {

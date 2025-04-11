@@ -5,7 +5,7 @@ import * as Config from '../../config';
  *
  * @param {string} apiUrl
  */
-export function setApiUrl(apiUrl: string) {
+export function setApiUrl(apiUrl: string): void {
   // eslint-disable-next-line no-useless-catch
   try {
     new URL(apiUrl);

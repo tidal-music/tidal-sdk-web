@@ -831,11 +831,14 @@ export default class ShakaPlayer extends BasePlayer {
     );
   }
 
-  getPosition() {
+  getPosition(): number {
     return this.currentTime;
   }
 
-  async load(payload: LoadPayload, transition: 'explicit' | 'implicit') {
+  async load(
+    payload: LoadPayload,
+    transition: 'explicit' | 'implicit',
+  ): Promise<void> {
     this.debugLog('load', payload);
     await this.ready;
 
@@ -876,7 +879,7 @@ export default class ShakaPlayer extends BasePlayer {
     });
   }
 
-  async next(payload: LoadPayload) {
+  async next(payload: LoadPayload): Promise<void> {
     this.debugLog('next', payload);
 
     if (!this.shakaInstance) {
@@ -922,7 +925,7 @@ export default class ShakaPlayer extends BasePlayer {
     this.#isReset = false;
   }
 
-  pause() {
+  pause(): void {
     this.debugLog('pause');
 
     if (this.mediaElement) {
@@ -930,7 +933,7 @@ export default class ShakaPlayer extends BasePlayer {
     }
   }
 
-  async play() {
+  async play(): Promise<void> {
     this.debugLog('play');
 
     await this.maybeHardReload();
@@ -966,7 +969,7 @@ export default class ShakaPlayer extends BasePlayer {
     await this.mediaElement?.play();
   }
 
-  async playbackEngineEndedHandler(e: EndedEvent) {
+  async playbackEngineEndedHandler(e: EndedEvent): Promise<void> {
     if (this.isActivePlayer) {
       const { reason } = e.detail;
 
@@ -991,7 +994,7 @@ export default class ShakaPlayer extends BasePlayer {
 
   async reset(
     { keepPreload }: { keepPreload: boolean } = { keepPreload: false },
-  ) {
+  ): Promise<void> {
     this.debugLog('reset');
 
     if (this.#isReset) {
@@ -1028,13 +1031,13 @@ export default class ShakaPlayer extends BasePlayer {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  seek(currentTime: number) {
+  seek(currentTime: number): Promise<number> {
     this.debugLog('seek', currentTime);
 
     const { mediaElement } = this;
 
     if (!mediaElement) {
-      return;
+      return Promise.resolve(0);
     }
 
     this.seekStart(this.currentTime);
@@ -1060,7 +1063,7 @@ export default class ShakaPlayer extends BasePlayer {
     });
   }
 
-  async skipToPreloadedMediaProduct() {
+  async skipToPreloadedMediaProduct(): Promise<void> {
     this.debugLog(
       'skipToPreloadedMediaProduct',
       this.preloadedStreamingSessionId,
@@ -1094,7 +1097,7 @@ export default class ShakaPlayer extends BasePlayer {
     return Promise.reject('Nothing preloaded.');
   }
 
-  togglePlayback() {
+  togglePlayback(): void {
     this.debugLog('togglePlayback');
     const { mediaElement } = this;
 
@@ -1107,7 +1110,7 @@ export default class ShakaPlayer extends BasePlayer {
     }
   }
 
-  async unloadPreloadedMediaProduct() {
+  async unloadPreloadedMediaProduct(): Promise<void> {
     this.debugLog(
       'unloadPreloadedMediaProduct',
       this.preloadedStreamingSessionId,
@@ -1122,7 +1125,7 @@ export default class ShakaPlayer extends BasePlayer {
     await this.#preloadManager?.destroy();
   }
 
-  async updateOutputDevice() {
+  async updateOutputDevice(): Promise<void> {
     if (!outputDevices) {
       return;
     }
@@ -1156,7 +1159,7 @@ export default class ShakaPlayer extends BasePlayer {
     return mediaElementOne;
   }
 
-  get ready() {
+  get ready(): Promise<void> {
     return this.#librariesLoad;
   }
 

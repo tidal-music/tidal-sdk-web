@@ -1,6 +1,6 @@
 export { drmLicenseFetch } from './drm-license-fetch';
 export { playbackInfoFetch } from './playback-info-fetch';
-export { playbackStatistics } from './playback-statistics';
+export { playbackStatisticsTrack, playbackStatisticsVideo, playbackStatistics } from './playback-statistics';
 export { streamingSessionEnd } from './streaming-session-end';
 export { streamingSessionStart } from './streaming-session-start';
 
@@ -11,7 +11,7 @@ import { runIfAuthorizedWithUser } from '../../helpers/run-if-authorized-with-us
 /**
  * Send event to event system scoped to streaming_metrics category.
  */
-export function commit(data: Pick<CommitData, 'events'>) {
+export function commit(data: Pick<CommitData, 'events'>): Promise<CommitData> {
   return runIfAuthorizedWithUser(() =>
     beaconCommit(worker, {
       type: 'streaming_metrics',

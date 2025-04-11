@@ -92,7 +92,7 @@ export default class ConnectionHandler {
     }
   }
 
-  static disable() {
+  static disable(): void {
     if (this.#enabled) {
       if (this.#offlineHandler) {
         window.removeEventListener('offline', this.#offlineHandler, false);
@@ -108,7 +108,7 @@ export default class ConnectionHandler {
     }
   }
 
-  static enable() {
+  static enable(): void {
     if (!this.#enabled) {
       this.#onlineHandler = () => this.#handleOnline();
       this.#offlineHandler = () => this.#handleOffline();

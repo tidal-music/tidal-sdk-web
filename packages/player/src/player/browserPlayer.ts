@@ -20,7 +20,7 @@ export default class BrowserPlayer extends BasePlayer {
   #instanceOne: HTMLVideoElement;
   #isReset = true;
 
-  #librariesLoad: Promise<void> | undefined;
+  #librariesLoad: Promise<void> = Promise.resolve();
 
   #mediaElementEventHandlers: {
     durationChangeHandler: EventListener;
@@ -199,7 +199,7 @@ export default class BrowserPlayer extends BasePlayer {
     );
   }
 
-  getPosition() {
+  getPosition(): number {
     this.debugLog('getPosition');
 
     if (this.mediaElement) {
@@ -213,7 +213,7 @@ export default class BrowserPlayer extends BasePlayer {
     return this.currentTime;
   }
 
-  async load(payload: LoadPayload, transition: 'explicit' | 'implicit') {
+  async load(payload: LoadPayload, transition: 'explicit' | 'implicit'): Promise<void> {
     this.debugLog('load', payload);
 
     this.currentTime = payload.assetPosition;
@@ -295,7 +295,7 @@ export default class BrowserPlayer extends BasePlayer {
     return Promise.resolve();
   }
 
-  async next(payload: LoadPayload) {
+  async next(payload: LoadPayload): Promise<void> {
     this.debugLog('next', payload);
 
     /*
@@ -350,7 +350,7 @@ export default class BrowserPlayer extends BasePlayer {
     this.#isReset = false;
   }
 
-  pause() {
+  pause(): void {
     this.debugLog('pause');
 
     if (this.mediaElement) {
@@ -358,7 +358,7 @@ export default class BrowserPlayer extends BasePlayer {
     }
   }
 
-  async play() {
+  async play(): Promise<void> {
     this.debugLog('play');
 
     await this.maybeHardReload();
@@ -385,7 +385,7 @@ export default class BrowserPlayer extends BasePlayer {
     }
   }
 
-  async playbackEngineEndedHandler(e: EndedEvent) {
+  async playbackEngineEndedHandler(e: EndedEvent): Promise<void> {
     if (this.isActivePlayer) {
       const { reason } = e.detail;
 
@@ -403,7 +403,7 @@ export default class BrowserPlayer extends BasePlayer {
 
   async reset(
     { keepPreload }: { keepPreload: boolean } = { keepPreload: false },
-  ) {
+  ): Promise<void> {
     if (this.#isReset) {
       return Promise.resolve();
     }
@@ -439,14 +439,14 @@ export default class BrowserPlayer extends BasePlayer {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  seek(currentTime: number) {
+  seek(currentTime: number): Promise<number> {
     this.debugLog('seek', currentTime);
 
     const { currentPlayer: mediaEl } = this;
     const seconds = currentTime;
 
     if (!mediaEl) {
-      return;
+      return Promise.resolve(0);
     }
 
     this.seekStart(this.currentTime);
@@ -466,7 +466,7 @@ export default class BrowserPlayer extends BasePlayer {
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
-  async skipToPreloadedMediaProduct() {
+  async skipToPreloadedMediaProduct(): Promise<void> {
     const mediaProductTransition =
       streamingSessionStore.getMediaProductTransition(
         this.preloadedStreamingSessionId,
@@ -500,7 +500,7 @@ export default class BrowserPlayer extends BasePlayer {
     }
   }
 
-  togglePlayback() {
+  togglePlayback(): void {
     this.debugLog('togglePlayback');
 
     if (this.mediaElement) {
@@ -513,7 +513,7 @@ export default class BrowserPlayer extends BasePlayer {
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
-  async unloadPreloadedMediaProduct() {
+  async unloadPreloadedMediaProduct(): Promise<void> {
     this.debugLog(
       'unloadPreloadedMediaProduct',
       this.preloadedStreamingSessionId,
@@ -551,7 +551,7 @@ export default class BrowserPlayer extends BasePlayer {
     return this.currentPlayer ?? null;
   }
 
-  get ready() {
+  get ready(): Promise<void> {
     return this.#librariesLoad;
   }
 

@@ -1,9 +1,13 @@
 import topLevelAwait from 'vite-plugin-top-level-await';
-import { defineConfig, mergeConfig } from 'vitest/config';
+import {
+  type UserConfigFnObject,
+  defineConfig,
+  mergeConfig,
+} from 'vitest/config';
 
 import defaultViteConfig from './vite.config';
 
-export default defineConfig(configEnv =>
+const config: UserConfigFnObject = defineConfig(configEnv =>
   mergeConfig(
     defaultViteConfig(configEnv),
     defineConfig({
@@ -20,3 +24,5 @@ export default defineConfig(configEnv =>
     }),
   ),
 );
+
+export default config;

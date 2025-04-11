@@ -1,7 +1,7 @@
 import { PlayerError } from './internal';
 
 class PlayerEventTarget extends EventTarget {
-  dispatchError(error: PlayerError) {
+  dispatchError(error: PlayerError): void {
     this.dispatchEvent(
       new CustomEvent('error', {
         detail: error.toJSON(),
@@ -10,4 +10,4 @@ class PlayerEventTarget extends EventTarget {
   }
 }
 
-export const events = new PlayerEventTarget();
+export const events: PlayerEventTarget = new PlayerEventTarget();

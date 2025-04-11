@@ -34,7 +34,7 @@ type Sessions = {
   userId: number;
 };
 
-export function beacon() {
+export function beacon(): void {
   let queue: Array<BeaconEvent> = [];
   let accessToken: string | undefined;
   let clientId: string | undefined;
