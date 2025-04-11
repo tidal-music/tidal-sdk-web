@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Next
 
+## [0.6.1] - 2025-04-11
+
 ### Fixed
 
-- Avoid setting invalid Bearer token header
+- Avoid setting invalid Bearer token header (#289)
 
 ## [0.6.0] - 2025-03-07
 
