@@ -1,3 +1,4 @@
+import type { MediaProduct } from '../../api/interfaces';
 import type { PlaybackSession } from '../../internal/event-tracking/play-log/playback-session';
 import type { DrmLicenseFetch } from '../../internal/event-tracking/streaming-metrics/drm-license-fetch';
 import type { PlaybackInfoFetch } from '../../internal/event-tracking/streaming-metrics/playback-info-fetch';
@@ -11,6 +12,7 @@ export type BaseEvent = {
     token: string;
     version: string;
   };
+  extras?: MediaProduct['extras'];
   ts: number;
   user: {
     accessToken: string;

@@ -1,7 +1,6 @@
 export { playbackSession, playbackSessionAction } from './playback-session';
 
-import type { MediaProduct } from 'api/interfaces';
-
+import type { MediaProduct } from '../../../api/interfaces';
 import {
   commit as beaconCommit,
   commitOpen as beaconCommitOpen,

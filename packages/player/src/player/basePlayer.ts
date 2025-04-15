@@ -361,6 +361,7 @@ export class BasePlayer {
       actualQuality:
         playbackContext.actualAudioQuality ||
         playbackContext.actualVideoQuality,
+      extras: mediaProduct.extras,
       isPostPaywall: getIsPostPaywall(
         playbackContext.actualAssetPresentation,
         mediaProduct,
