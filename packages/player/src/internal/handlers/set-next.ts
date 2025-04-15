@@ -127,6 +127,7 @@ async function _setNext(
       'videoId' in playbackInfo ? playbackInfo.videoId : playbackInfo.trackId,
     ),
     actualQuality: streamInfo.quality,
+    extras: mediaProduct.extras,
     isPostPaywall: getIsPostPaywall(
       playbackInfo.assetPresentation,
       mediaProduct,

@@ -1,5 +1,5 @@
-import type { MediaProduct } from 'api/interfaces';
-import type { AssetPresentation } from 'internal/types';
+import type { MediaProduct } from '../../api/interfaces';
+import type { AssetPresentation } from '../types';
 
 /**
  * Returns a boolean indicating whether the user is in a post-paywall state.

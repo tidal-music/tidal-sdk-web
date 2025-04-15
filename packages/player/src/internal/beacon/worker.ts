@@ -170,6 +170,7 @@ export function beacon() {
           token: clientId,
           version: data.appVersion,
         },
+        ...('extras' in streamingEvent && { extras: streamingEvent.extras }),
         group: data.type,
         name: streamingEvent.name,
         payload: streamingEvent.payload,
