@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Next
 
+## [0.7.0] - 2025-04-15
+
+### Changed
+
+- Add `extras` to playback events (#295)
+
 ## [0.6.2] - 2025-04-11
 
 ### Changed
