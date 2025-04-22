@@ -2,7 +2,6 @@ import type { CredentialsProvider } from '@tidal-music/common';
 
 import * as Config from '../config';
 
-import { EVENT_URL_AUTH, EVENT_URL_PUBLIC } from './constants';
 import { waitForEvent } from './helpers/wait-for';
 
 class CredentialsProviderStore extends EventTarget {
@@ -266,7 +265,6 @@ async function handleAuthorized() {
 
   if (authorizedWithUser) {
     Config.update({
-      eventUrl: EVENT_URL_AUTH,
       gatherEvents: true,
     });
 
@@ -292,7 +290,6 @@ async function handleUnauthenticated() {
   };
 
   Config.update({
-    eventUrl: EVENT_URL_PUBLIC,
     gatherEvents: true,
   });
 

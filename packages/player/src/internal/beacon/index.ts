@@ -78,7 +78,7 @@ export async function commit(
       appVersion: Config.get('appVersion'),
       clientId,
       clientPlatform: Config.get('clientPlatform'),
-      eventUrl: Config.get('eventUrl'),
+      eventUrl: Config.get('eventUrl') + '/events',
       ts: trueTime.now(),
     };
 
@@ -111,7 +111,7 @@ export async function commitOpen(
       appVersion: Config.get('appVersion'),
       clientId,
       clientPlatform: Config.get('clientPlatform'),
-      eventUrl: Config.get('eventUrl'),
+      eventUrl: Config.get('eventUrl') + '/public/events',
       ts: trueTime.now(),
     };
 
