@@ -1,5 +1,4 @@
 import type { LoudnessNormalizationMode } from './api/interfaces';
-import { EVENT_URL_AUTH } from './internal/constants';
 import type { AudioQuality } from './internal/types';
 
 type Config = {
@@ -19,7 +18,7 @@ let state = Object.freeze({
   appVersion: 'TIDAL Player',
   clientPlatform: 'web',
   desiredVolumeLevel: 1,
-  eventUrl: EVENT_URL_AUTH,
+  eventUrl: 'https://et.tidal.com/api',
   gatherEvents: true,
   loudnessNormalizationMode: 'ALBUM',
   outputDevicesEnabled: false,
