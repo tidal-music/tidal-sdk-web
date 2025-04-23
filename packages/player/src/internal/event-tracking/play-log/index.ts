@@ -1,10 +1,13 @@
 export { playbackSession, playbackSessionAction } from './playback-session';
 
-import type { MediaProduct } from 'api/interfaces';
+import type { MediaProduct } from '../../../api/interfaces';
 
+//import { commit as beaconCommit, commitOpen as beaconCommitOpen, worker } from '../../beacon/index';
+//import type { CommitData } from '../../beacon/types';
 import { runIfAuthorizedWithUser } from '../../helpers/run-if-authorized-with-user';
 import { commit as baseCommit } from '../index';
 import type { Events } from '../types';
+//import { runConditionalOnAuth } from '../../helpers/run-conditional-on-auth';
 
 import type { PlayLogProductType } from './playback-session';
 
@@ -26,7 +29,7 @@ export function mapProductTypeToPlayLogProductType(
 }
 
 /**
- * Send event to event system scoped to play_log category.
+ * Send event to event system scoped to play_log / play_log_open category.
  */
 export async function commit(data: Events) {
   return runIfAuthorizedWithUser(async () => {
@@ -44,4 +47,17 @@ export async function commit(data: Events) {
       }
     }
   });
+  /*
+   return runConditionalOnAuth({
+    auth: () =>
+      beaconCommit(worker, {
+        type: 'play_log' as const,
+        ...data,
+      }),
+    open: () =>
+      beaconCommitOpen(worker, {
+        type: 'play_log_open' as const,
+        ...data,
+      }),
+  }); */
 }

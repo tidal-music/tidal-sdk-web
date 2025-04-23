@@ -41,6 +41,10 @@ class CredentialsProviderStore extends EventTarget {
           },
         }),
       );
+    } else {
+      this.dispatchEvent(
+        new CustomEvent('unauthenticated', { detail: { credentials } }),
+      );
     }
   }
 
@@ -292,8 +296,32 @@ async function handleAuthorized() {
   }
 }
 
+/**
+ * Starts event tracking if user is unauthenticated.
+ */
+async function handleUnauthenticated() {
+  const startBeacon = async () => {
+    const Beacon = await import('./beacon/index');
+    return Beacon.start();
+  };
+
+  Config.update({
+    gatherEvents: true,
+  });
+
+  try {
+    await startBeacon();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 credentialsProviderStore.addEventListener('authorized', () => {
   handleAuthorized().then().catch(console.error);
+});
+
+credentialsProviderStore.addEventListener('unauthenticated', () => {
+  handleUnauthenticated().then().catch(console.error);
 });
 
 /**
