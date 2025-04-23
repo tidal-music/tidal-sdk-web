@@ -1,7 +1,6 @@
 export { playbackSession, playbackSessionAction } from './playback-session';
 
 import type { MediaProduct } from '../../../api/interfaces';
-
 //import { commit as beaconCommit, commitOpen as beaconCommitOpen, worker } from '../../beacon/index';
 //import type { CommitData } from '../../beacon/types';
 import { runIfAuthorizedWithUser } from '../../helpers/run-if-authorized-with-user';
