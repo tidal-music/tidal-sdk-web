@@ -299,21 +299,10 @@ async function handleAuthorized() {
 /**
  * Starts event tracking if user is unauthenticated.
  */
-async function handleUnauthenticated() {
-  /*const startBeacon = async () => {
-    const Beacon = await import('./beacon/index');
-    return Beacon.start();
-  };*/
-
+function handleUnauthenticated() {
   Config.update({
     gatherEvents: true,
   });
-  /*
-  try {
-    await startBeacon();
-  } catch (e) {
-    console.error(e);
-  }*/
 }
 
 credentialsProviderStore.addEventListener('authorized', () => {
@@ -321,7 +310,7 @@ credentialsProviderStore.addEventListener('authorized', () => {
 });
 
 credentialsProviderStore.addEventListener('unauthenticated', () => {
-  handleUnauthenticated().then().catch(console.error);
+  handleUnauthenticated();
 });
 
 /**
