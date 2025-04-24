@@ -287,6 +287,9 @@ importers:
       '@tidal-music/common':
         specifier: workspace:^
         version: link:../common
+      '@tidal-music/event-producer':
+        specifier: workspace:^
+        version: link:../event-producer
       '@tidal-music/player':
         specifier: workspace:^
         version: link:../player
