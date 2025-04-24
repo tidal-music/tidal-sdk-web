@@ -9,7 +9,7 @@ type BaseCommitData = {
 };
 
 /**
- * Send event to event system scoped to streaming_metrics category.
+ * Send event to event system (used by all streaming/playback events).
  */
 export async function commit(baseCommitData: BaseCommitData) {
   const event = {

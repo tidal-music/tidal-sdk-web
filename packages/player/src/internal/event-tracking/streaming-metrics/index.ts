@@ -9,7 +9,7 @@ import { commit as baseCommit } from '../index';
 import type { Events } from '../types';
 
 /**
- * Send event to event system scoped to streaming_metrics category.
+ * Send event to event system scoped to streaming_metrics group.
  */
 export async function commit(events: Events) {
   return runIfAuthorizedWithUser(async () => {

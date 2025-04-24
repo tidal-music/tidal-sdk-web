@@ -25,7 +25,7 @@ export function mapProductTypeToPlayLogProductType(
 }
 
 /**
- * Send event to event system scoped to play_log / play_log_open category.
+ * Send event to event system scoped to play_log / play_log_open group.
  */
 export async function commit(data: Events) {
   const authorizedWithUser = await isAuthorizedWithUser();
