@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Next
 
+## [0.8.0] - 2025-04-25
+
+### Changed
+
+- Switch event tracking implementation (#91)
+
 ## [0.7.1] - 2025-04-22
 
 ### Fixed
