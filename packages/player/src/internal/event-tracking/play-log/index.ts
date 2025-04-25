@@ -1,13 +1,9 @@
 export { playbackSession, playbackSessionAction } from './playback-session';
 
 import type { MediaProduct } from '../../../api/interfaces';
-import {
-  commit as beaconCommit,
-  commitOpen as beaconCommitOpen,
-  worker,
-} from '../../beacon/index';
-import type { CommitData } from '../../beacon/types';
-import { runConditionalOnAuth } from '../../helpers/run-conditional-on-auth';
+import { isAuthorizedWithUser } from '../../index';
+import { commit as baseCommit } from '../index';
+import type { Events } from '../types';
 
 import type { PlayLogProductType } from './playback-session';
 
@@ -29,19 +25,22 @@ export function mapProductTypeToPlayLogProductType(
 }
 
 /**
- * Send event to event system scoped to play_log / play_log_open category.
+ * Send event to event system scoped to play_log / play_log_open group.
  */
-export function commit(data: Pick<CommitData, 'events'>) {
-  return runConditionalOnAuth({
-    auth: () =>
-      beaconCommit(worker, {
-        type: 'play_log' as const,
-        ...data,
-      }),
-    open: () =>
-      beaconCommitOpen(worker, {
-        type: 'play_log_open' as const,
-        ...data,
-      }),
-  });
+export async function commit(data: Events) {
+  const authorizedWithUser = await isAuthorizedWithUser();
+  for (const event of data) {
+    if (event) {
+      const resolvedEvent = await event;
+      if (resolvedEvent) {
+        await baseCommit({
+          ...('extras' in resolvedEvent && { extras: resolvedEvent.extras }),
+          group: authorizedWithUser ? 'play_log' : 'play_log_open',
+          name: resolvedEvent.name,
+          payload: resolvedEvent.payload,
+          version: 2,
+        });
+      }
+    }
+  }
 }

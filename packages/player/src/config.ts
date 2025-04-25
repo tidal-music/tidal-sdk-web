@@ -3,10 +3,7 @@ import type { AudioQuality } from './internal/types';
 
 type Config = {
   apiUrl: string;
-  appVersion: string;
-  clientPlatform: string;
   desiredVolumeLevel: number;
-  eventUrl: string;
   gatherEvents: boolean;
   loudnessNormalizationMode: LoudnessNormalizationMode;
   outputDevicesEnabled: boolean;
@@ -15,10 +12,7 @@ type Config = {
 
 let state = Object.freeze({
   apiUrl: 'https://api.tidal.com/v1',
-  appVersion: 'TIDAL Player',
-  clientPlatform: 'web',
   desiredVolumeLevel: 1,
-  eventUrl: 'https://et.tidal.com/api',
   gatherEvents: true,
   loudnessNormalizationMode: 'ALBUM',
   outputDevicesEnabled: false,

@@ -530,22 +530,20 @@ export default class ShakaPlayer extends BasePlayer {
               streamingSessionId,
             });
 
-            StreamingMetrics.commit({
-              events: [
-                StreamingMetrics.drmLicenseFetch({
-                  endReason: 'COMPLETE',
-                  endTimestamp: trueTime.timestamp(
-                    'streaming_metrics:drm_license_fetch:endTimestamp',
-                  ),
-                  errorCode: null,
-                  errorMessage: null,
-                  startTimestamp: trueTime.timestamp(
-                    'streaming_metrics:drm_license_fetch:startTimestamp',
-                  ),
-                  streamingSessionId,
-                }),
-              ],
-            }).catch(console.error);
+            StreamingMetrics.commit([
+              StreamingMetrics.drmLicenseFetch({
+                endReason: 'COMPLETE',
+                endTimestamp: trueTime.timestamp(
+                  'streaming_metrics:drm_license_fetch:endTimestamp',
+                ),
+                errorCode: null,
+                errorMessage: null,
+                startTimestamp: trueTime.timestamp(
+                  'streaming_metrics:drm_license_fetch:startTimestamp',
+                ),
+                streamingSessionId,
+              }),
+            ]).catch(console.error);
 
             performance.clearMarks(
               'streaming_metrics:drm_license_fetch:endTimestamp',
@@ -574,22 +572,20 @@ export default class ShakaPlayer extends BasePlayer {
     switch (error.code) {
       case shaka.util.Error.Code.LICENSE_REQUEST_FAILED: // 6007
         if (this.currentStreamingSessionId) {
-          StreamingMetrics.commit({
-            events: [
-              StreamingMetrics.drmLicenseFetch({
-                endReason: 'ERROR',
-                endTimestamp: trueTime.timestamp(
-                  'streaming_metrics:drm_license_fetch:endTimestamp',
-                ),
-                errorCode,
-                errorMessage: JSON.stringify(error),
-                startTimestamp: trueTime.timestamp(
-                  'streaming_metrics:drm_license_fetch:startTimestamp',
-                ),
-                streamingSessionId: this.currentStreamingSessionId,
-              }),
-            ],
-          }).catch(console.error);
+          StreamingMetrics.commit([
+            StreamingMetrics.drmLicenseFetch({
+              endReason: 'ERROR',
+              endTimestamp: trueTime.timestamp(
+                'streaming_metrics:drm_license_fetch:endTimestamp',
+              ),
+              errorCode,
+              errorMessage: JSON.stringify(error),
+              startTimestamp: trueTime.timestamp(
+                'streaming_metrics:drm_license_fetch:startTimestamp',
+              ),
+              streamingSessionId: this.currentStreamingSessionId,
+            }),
+          ]).catch(console.error);
         }
         break;
       case shaka.util.Error.Code.LOAD_INTERRUPTED: // 7000

@@ -4,7 +4,7 @@ import * as Config from '../../config';
 
 import { setApiUrl } from './set-api-url';
 
-describe('setEventUrl', () => {
+describe('setApiUrl', () => {
   it('sets the url in config', () => {
     setApiUrl('https://cool-api-service.com');
 

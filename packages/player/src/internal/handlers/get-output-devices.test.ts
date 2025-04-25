@@ -2,13 +2,13 @@ import { expect } from 'chai';
 
 import * as Player from '../../index';
 import { outputDevices } from '../../internal/output-devices';
-import { credentialsProvider } from '../../test-helpers';
+import { authAndEvents } from '../../test-helpers';
 
 import { getOutputDevices } from './get-output-devices';
 
-Player.setCredentialsProvider(credentialsProvider);
-
 describe('getOutputDevices', () => {
+  authAndEvents(before, after);
+
   beforeEach(async () => {
     // Output devices is reported by the player, thus need one to
     await Player.load(

@@ -4,10 +4,12 @@ import type { MediaProductTransition } from '../../api/event/media-product-trans
 import { events } from '../../event-bus';
 import * as Player from '../../index';
 import { playerState } from '../../player/state';
-import { waitForEvent } from '../../test-helpers';
+import { authAndEvents, waitForEvent } from '../../test-helpers';
 import { waitFor } from '../helpers/wait-for';
 
 describe('ConnectionHandler', () => {
+  authAndEvents(before, after);
+
   it('reloads the mediaProduct when connection was lost and player stopped playing', async () => {
     await Player.load(
       {

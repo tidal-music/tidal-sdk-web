@@ -35,7 +35,19 @@ it('Client Test Case 2', () => {
   // Assert on event batch
   // @ts-expect-error - Wrong type from Cypress
   cy.get('@playerSdkEventsRequest').should(({ request }) => {
-    const playbackSessions = request.body.events.filter(({ name }) => name === 'playback_session');
+    // Parse the form data to get all message bodies
+    const formData = new URLSearchParams(request.body);
+    const events = [];
+
+    // Iterate through all entries to find MessageBody parameters
+    for (const [key, value] of formData.entries()) {
+      if (key.includes('MessageBody')) {
+        const event = JSON.parse(decodeURIComponent(value));
+        events.push(event);
+      }
+    }
+
+    const playbackSessions = events.filter(({ name }) => name === 'playback_session');
     expect(playbackSessions).to.have.lengthOf(1);
 
     const playbackSession = playbackSessions[0];
