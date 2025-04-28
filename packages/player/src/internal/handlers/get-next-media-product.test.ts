@@ -1,11 +1,13 @@
 import { expect } from 'chai';
 
 import * as Player from '../../index';
-import { waitFor } from '../../test-helpers';
+import { authAndEvents, waitFor } from '../../test-helpers';
 
 import { getNextMediaProduct } from './get-next-media-product';
 
 describe('getMediaProduct', () => {
+  authAndEvents(before, after);
+
   beforeEach(async () => {
     await Player.reset();
   });
