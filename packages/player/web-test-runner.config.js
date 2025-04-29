@@ -46,7 +46,7 @@ export default {
   staticLogging: true,
   testFramework: {
     config: {
-      timeout: '120000',
+      timeout: '20000',
       ui: 'bdd',
     },
   },
