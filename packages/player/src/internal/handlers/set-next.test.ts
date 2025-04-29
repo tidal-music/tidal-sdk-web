@@ -64,6 +64,8 @@ describe('nextHandler', () => {
       playbackSessionId: firstSessionId,
     } = playbackContextOne;
 
+    await waitFor(500);
+
     await Player.setNext({
       productId: '141120674',
       productType: 'track',
@@ -113,6 +115,8 @@ describe('nextHandler', () => {
       actualProductId: firstProductId,
       playbackSessionId: firstSessionId,
     } = playbackContextOne;
+
+    await waitFor(500);
 
     await Player.setNext(testMediaProduct('2'));
 

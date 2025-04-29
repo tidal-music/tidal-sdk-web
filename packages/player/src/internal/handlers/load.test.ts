@@ -4,7 +4,6 @@ import * as Player from '../../index';
 import {
   authAndEvents,
   getPreloadedStreamingSessionId,
-  waitFor,
 } from '../../test-helpers';
 
 describe('load', () => {
@@ -29,8 +28,6 @@ describe('load', () => {
       sourceId: 'next-call',
       sourceType: 'next-call',
     });
-
-    await waitFor(500);
 
     const preloadedStreamingSessionId = getPreloadedStreamingSessionId();
 
