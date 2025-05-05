@@ -39,7 +39,7 @@
     "@vitest/web-worker": "3.1.1",
     "happy-dom": "17.4.4",
     "typescript": "5.8.3",
-    "vite": "6.2.6",
+    "vite": "6.2.7",
     "vite-plugin-dts": "4.5.3",
     "vite-plugin-top-level-await": "1.5.0",
     "vitest": "3.1.1",
