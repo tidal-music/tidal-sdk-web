@@ -1,24 +1,23 @@
 diff --git a/dist/shaka-player.compiled.d.ts b/dist/shaka-player.compiled.d.ts
-index ba937d653c8927987fc86d28fdac35002baaed8c..164ec3490b0b84551931e3d1afc83d66dfc03ec5 100644
+index 55092e9ba315631d00850773eb84a9fa7fc2b09a..601eb2642c9a288a5ab9901d4afab60112cae1b9 100644
 --- a/dist/shaka-player.compiled.d.ts
 +++ b/dist/shaka-player.compiled.d.ts
-@@ -5108,3 +5108,5 @@ declare namespace shaka.extern {
+@@ -5338,3 +5338,5 @@ declare namespace shaka.extern {
  declare namespace shaka.extern {
    type TransmuxerPlugin = ( ) => shaka.extern.Transmuxer ;
  }
 +
 +export default shaka;
 diff --git a/dist/shaka-player.ui.d.ts b/dist/shaka-player.ui.d.ts
-index b5d4d89cdc6012c3124ee9e93e7f52684df460d4..dfa473f25a185dc03fe8253317fc6676d56285ef 100644
+index b655be09cad62c2099a34ea8a67b4e8a7ffccad4..b9ca3424f30b5d7eb173e5df34f1fb98f8b10cde 100644
 --- a/dist/shaka-player.ui.d.ts
 +++ b/dist/shaka-player.ui.d.ts
-@@ -5821,3 +5821,5 @@ declare namespace shaka.extern {
- declare namespace shaka.extern {
-   type UIVolumeBarColors = { base : string , level : string } ;
+@@ -6084,3 +6084,5 @@ declare namespace shaka.extern {
+ declare namespace shaka.ui.Watermark {
+   type Options = { alpha : number , color : string , displayDuration : number , interval : number , position : string , size : number , skip : number , text : string , transitionDuration : number , type : string } ;
  }
 +
 +export default shaka;
-\ No newline at end of file
 diff --git a/index.d.ts b/index.d.ts
 new file mode 100644
 index 0000000000000000000000000000000000000000..86130b219f20157404545f817f41485ab13ced25
@@ -29,11 +28,10 @@ index 0000000000000000000000000000000000000000..86130b219f20157404545f817f41485a
 +/// <reference path="./dist/shaka-player.ui.d.ts" />
 diff --git a/ui.d.ts b/ui.d.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..e5c05d687e22014d4ba6bbdd4bf73e62b67b0ad6
+index 0000000000000000000000000000000000000000..2448bf7128d5d9a66fbcf44da8b5e4e9b423a13d
 --- /dev/null
 +++ b/ui.d.ts
-@@ -0,0 +1,4 @@
-+import shaka from './dist/shaka-player.ui';
-+export * from './dist/shaka-player.ui';
-+
+@@ -0,0 +1,3 @@
++import shaka from 'shaka-player/dist/shaka-player.ui';
++export * from 'shaka-player/dist/shaka-player.ui';
 +export default shaka;

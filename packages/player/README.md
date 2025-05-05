@@ -36,8 +36,3 @@ To load TIDAL Player into a project locally without publishing to npm; using `pn
 4. Run `npm/yarn/pnpm install` in your destination project.
 
 !! Remove the entry in `"resolution"` and run `npm/yarn/pnpm install` again when you are done testing to have the NPM version of the package load instead.
-
-
-## Types in shaka
-
-Run the `patch-shaka` script to get TS working for shaka-player.
