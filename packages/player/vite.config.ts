@@ -9,6 +9,7 @@ export default defineConfig({
       fileName: 'index',
       formats: ['es'],
     },
+    sourcemap: true,
     target: 'es2022',
   },
   plugins: [

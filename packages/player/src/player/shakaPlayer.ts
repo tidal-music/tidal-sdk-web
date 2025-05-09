@@ -1,4 +1,6 @@
 import shaka from 'shaka-player';
+// If you want to use the debug version, switch to the line below:
+// import shaka from 'shaka-player/dist/shaka-player.compiled.debug.js';
 
 import { activeDeviceChanged as activeDeviceChangedEvent } from '../api/event/active-device-changed';
 import type { EndedEvent } from '../api/event/ended';
@@ -282,12 +284,9 @@ export default class ShakaPlayer extends BasePlayer {
         drm: {
           advanced: {
             'com.widevine.alpha': {
-              audioRobustness: 'SW_SECURE_CRYPTO',
-              // VIZIO does not support inline cert. Will be fetched.
-              serverCertificate:
-                'VIZIO' in window ? undefined : serverCertificateWidevine,
-
-              videoRobustness: 'SW_SECURE_CRYPTO',
+              audioRobustness: ['SW_SECURE_CRYPTO'],
+              serverCertificate: serverCertificateWidevine,
+              videoRobustness: ['SW_SECURE_CRYPTO'],
             },
           },
           servers: {
