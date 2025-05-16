@@ -12,6 +12,7 @@
     "noEmit": true,
     "allowSyntheticDefaultImports": true, // needed for vitest
     "sourceMap": true,
+    "skipLibCheck": true,
 
     /* Linting */
     "strict": true,
