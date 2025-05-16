@@ -34,7 +34,9 @@ export default {
   nodeResolve: true,
   plugins: [
     // Transform dependencies that doesn't provide ESM from CJS to ESM.
-    commonjs(),
+    commonjs({
+      strictRequires: 'auto',
+    }),
     replace({
       preventAssignment: true,
       'process.env.TEST_USER': process.env.TEST_USER,
