@@ -74,7 +74,7 @@
     "js-levenshtein": "1.1.6",
     "rollup": "4.41.1",
     "shaka-player": "4.14.15",
-    "sinon": "20.0.0",
+    "sinon": "21.0.0",
     "typescript": "5.8.3",
     "vite": "6.3.5",
     "vite-plugin-dts": "4.5.4",
