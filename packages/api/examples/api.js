@@ -116,17 +116,17 @@ async function runExample(clientId, clientSecret, searchTerm) {
     }
   }
   // Example of a playlist API request
-  await getPlaylist('bd878bbc-c0a1-4b81-9a2a-a16dc9926300');
+  await getPlaylist('58d7349f-e79a-4e3e-aaa4-2281556fa565');
 
   /**
    * Do a search for a term
    *
-   * @param {string} query The search term.
+   * @param {string} id The search term.
    */
-  async function doSearch(query) {
-    const { data, error } = await apiClient.GET('/searchresults/{query}', {
+  async function doSearch(id) {
+    const { data, error } = await apiClient.GET('/searchResults/{id}', {
       params: {
-        path: { query },
+        path: { id },
         query: { countryCode: 'NO', include: 'topHits' },
       },
     });
@@ -145,32 +145,6 @@ async function runExample(clientId, clientSecret, searchTerm) {
   }
   // Example of a search API request
   await doSearch(searchTerm);
-
-  /**
-   * Retrieves User Public Profile by their ID.
-   *
-   * @param {string} id The ID of the user.
-   */
-  async function getUserPublicProfile(id) {
-    const { data, error } = await apiClient.GET('/userPublicProfiles/{id}', {
-      params: {
-        path: { id },
-        query: { countryCode: 'NO' },
-      },
-    });
-
-    if (error) {
-      error.errors.forEach(
-        err => (results.innerHTML += `<li>${err.detail}</li>`),
-      );
-    } else {
-      for (const [key, value] of Object.entries(data.data)) {
-        results.innerHTML += `<li><b>${key}:</b>${JSON.stringify(value)}</li>`;
-      }
-    }
-  }
-  // Example of a user API request
-  await getUserPublicProfile('12345');
 }
 
 const authenticateHandler = async (event, form) => {
