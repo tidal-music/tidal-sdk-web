@@ -1,18 +1,18 @@
 diff --git a/dist/shaka-player.compiled.d.ts b/dist/shaka-player.compiled.d.ts
-index 53815afc3d93759b9bfb1ce0fdfce7e8438c654f..8e23f5a00e0ce5a767fad81d733f474691b263f0 100644
+index 6ba67ac00cad3dcd07e73df92f04c267694c78b6..8ebd2319b54ef52b55186e3b866befc6dfa4be27 100644
 --- a/dist/shaka-player.compiled.d.ts
 +++ b/dist/shaka-player.compiled.d.ts
-@@ -5364,3 +5364,5 @@ declare namespace shaka.extern {
+@@ -5556,3 +5556,5 @@ declare namespace shaka.extern {
  declare namespace shaka.extern {
    type TransmuxerPlugin = ( ) => shaka.extern.Transmuxer ;
  }
 +
 +export default shaka;
 diff --git a/dist/shaka-player.ui.d.ts b/dist/shaka-player.ui.d.ts
-index 4f23ea25d04e7573ce77dd6bfdae2820514ff37d..bea990967c5e424efe9748dc87ab7b834daebaf8 100644
+index 8ec9cf9fd77ddf616d2d990ff81bfea28138f437..e2bcd721059be55be7bf6de7e0015253f34ba580 100644
 --- a/dist/shaka-player.ui.d.ts
 +++ b/dist/shaka-player.ui.d.ts
-@@ -6110,3 +6110,5 @@ declare namespace shaka.extern {
+@@ -6311,3 +6311,5 @@ declare namespace shaka.extern {
  declare namespace shaka.ui.Watermark {
    type Options = { alpha : number , color : string , displayDuration : number , interval : number , position : string , size : number , skip : number , text : string , transitionDuration : number , type : string } ;
  }
