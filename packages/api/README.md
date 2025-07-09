@@ -1,6 +1,6 @@
 # TIDAL API v2 Beta
 
-A thin wrapper around the API domains described at: https://developer.tidal.com/apiref (which is again built on the JSON API spec: https://jsonapi.org/format/)
+A thin wrapper around the API domains described at: https://tidal-music.github.io/tidal-api-reference/ (which is again built on the JSON API spec: https://jsonapi.org/format/)
 
 The module provides Typescript types and a `fetch` based function for getting data, using: https://openapi-ts.pages.dev/
 
