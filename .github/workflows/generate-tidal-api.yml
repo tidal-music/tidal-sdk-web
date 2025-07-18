@@ -56,19 +56,25 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
       - name: Install dependencies
         run: |
-          npm ci
+          pnpm install
 
       - name: Generate API types
         run: |
           cd ${{ env.API_FOLDER }}
           if [ "${{ inputs.use_downloaded_spec }}" == "true" ] && [ -f "/tmp/api-check/latest-api.json" ]; then
             echo "Using downloaded API spec"
-            npm run generateTypes /tmp/api-check/latest-api.json --output-file ${{ env.GENERATED_FILE }}
+            pnpm run generateTypes /tmp/api-check/latest-api.json --output-file ${{ env.GENERATED_FILE }}
           else
             echo "Downloading API spec as part of generation"
-            npm run generateTypes https://tidal-music.github.io/tidal-api-reference/tidal-api-oas.json --output-file ${{ env.GENERATED_FILE }}
+            pnpm run generateTypes https://tidal-music.github.io/tidal-api-reference/tidal-api-oas.json --output-file ${{ env.GENERATED_FILE }}
           fi
 
       - name: Check for changes
