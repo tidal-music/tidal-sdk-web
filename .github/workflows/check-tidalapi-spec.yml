@@ -1,0 +1,84 @@
+name: Check API Spec Changes
+
+on:
+  schedule:
+    # Runs at 00:00 UTC every day
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+  pull-requests: write
+
+jobs:
+  check-api-spec:
+    runs-on: ubuntu-latest
+    outputs:
+      changes_found: ${{ steps.compare.outputs.changes_found }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for existing PR
+        id: check_pr
+        uses: ./.github/actions/check-api-pr
+
+      - name: Checkout PR branch if exists
+        if: steps.check_pr.outputs.existing_pr == 'true'
+        run: |
+          git fetch origin ${{ steps.check_pr.outputs.pr_branch }}
+          git checkout ${{ steps.check_pr.outputs.pr_branch }}
+          echo "Using API spec from PR branch: ${{ steps.check_pr.outputs.pr_branch }}"
+
+      - name: Download latest API spec
+        run: |
+          mkdir -p /tmp/api-check
+          curl -s https://tidal-music.github.io/tidal-api-reference/tidal-api-oas.json -o /tmp/api-check/latest-api.json
+      
+      - name: Compare API specs
+        id: compare
+        run: |
+          if cmp -s "packages/api/src/allAPI.generated.ts" <(npx openapi-typescript /tmp/api-check/latest-api.json --output-file /dev/stdout); then
+            echo "No changes found in the API specification"
+            echo "changes_found=false" >> $GITHUB_OUTPUT
+          else
+            echo "Changes found in the API specification"
+            echo "changes_found=true" >> $GITHUB_OUTPUT
+            echo "::group::API Specification Diff"
+            diff -u "packages/api/src/allAPI.generated.ts" <(npx openapi-typescript /tmp/api-check/latest-api.json --output-file /dev/stdout) || true
+            echo "::endgroup::"
+          fi
+          
+      - name: Upload API spec as artifact
+        if: steps.compare.outputs.changes_found == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-spec
+          path: /tmp/api-check/latest-api.json
+          retention-days: 1
+
+      - name: Output result
+        run: |
+          if [ "${{ steps.compare.outputs.changes_found }}" == "true" ]; then
+            echo "Changes found - see diff above"
+            if [ "${{ steps.check_pr.outputs.existing_pr }}" == "true" ]; then
+                echo "Updating the existing PR..."
+            else
+              echo "Creating a new PR..."
+            fi
+          else
+            echo "No Changes found"
+          fi
+
+  regenerate-api:
+    needs: check-api-spec
+    if: needs.check-api-spec.outputs.changes_found == 'true'
+    uses: ./.github/workflows/generate-tidal-api.yml
+    permissions:
+      contents: write
+      pull-requests: write
+    with:
+      use_downloaded_spec: "true"
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}

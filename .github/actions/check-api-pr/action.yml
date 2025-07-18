@@ -1,0 +1,44 @@
+name: 'Check API PR'
+description: 'Checks for an existing API update PR and returns its details'
+outputs:
+  existing_pr:
+    description: 'Whether an existing PR was found (true/false)'
+    value: ${{ steps.check_pr.outputs.existing_pr }}
+  pr_number:
+    description: 'The PR number if found'
+    value: ${{ steps.check_pr.outputs.pr_number }}
+  pr_branch:
+    description: 'The branch name of the PR if found'
+    value: ${{ steps.check_pr.outputs.pr_branch }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check for existing PR
+      id: check_pr
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: |
+        # Search for open PRs that contain "Automatic Tidal API module update" in the title
+        pr_data=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls?state=open")
+        
+        existing_pr_number=$(echo "$pr_data" | jq -r '.[] | select(.title | contains("Automatic Tidal API module update")) | .number' | head -n 1)
+        
+        if [ -n "$existing_pr_number" ] && [ "$existing_pr_number" != "null" ]; then
+          echo "Found existing PR #$existing_pr_number"
+          echo "existing_pr=true" >> $GITHUB_OUTPUT
+          echo "pr_number=$existing_pr_number" >> $GITHUB_OUTPUT
+          
+          # Get the branch name from the PR
+          pr_details=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/$existing_pr_number")
+          branch_name=$(echo "$pr_details" | jq -r '.head.ref')
+          echo "pr_branch=$branch_name" >> $GITHUB_OUTPUT
+          
+          echo "Will use branch: $branch_name"
+        else
+          echo "No existing PR found"
+          echo "existing_pr=false" >> $GITHUB_OUTPUT
+        fi
