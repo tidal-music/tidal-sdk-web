@@ -1,6 +1,9 @@
 name: Check API Spec Changes
 
 on:
+  push:
+    branches:
+      
   schedule:
     # Runs at 00:00 UTC every day
     - cron: '0 0 * * *'
