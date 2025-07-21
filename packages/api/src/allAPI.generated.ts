@@ -23,11 +23,18 @@ export interface paths {
                      * @example US
                      */
                     countryCode: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artists, coverArt, items, providers, similarAlbums
+                     * @description Allows the client to customize which related resources should be returned. Available options: artists, coverArt, items, owners, providers, similarAlbums
                      * @example artists
                      */
                     include?: string[];
+                    /**
+                     * @description User id
+                     * @example 123456
+                     */
+                    "filter[r.owners.id]"?: string[];
                     /**
                      * @description Album id
                      * @example 251380836
@@ -56,7 +63,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -64,7 +71,41 @@ export interface paths {
             };
         };
         put?: never;
-        post?: never;
+        /**
+         * Create single album.
+         * @description Creates a new album.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["AlbumCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Albums_Single_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -91,7 +132,7 @@ export interface paths {
                      */
                     countryCode: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artists, coverArt, items, providers, similarAlbums
+                     * @description Allows the client to customize which related resources should be returned. Available options: artists, coverArt, items, owners, providers, similarAlbums
                      * @example artists
                      */
                     include?: string[];
@@ -119,7 +160,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -128,7 +169,34 @@ export interface paths {
         };
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete single album.
+         * @description Deletes existing album.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Album id
+                     * @example 251380836
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
         options?: never;
         head?: never;
         patch?: never;
@@ -184,7 +252,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -249,7 +317,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -261,7 +329,38 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update coverArt relationship ("to-many").
+         * @description Updates coverArt relationship.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Album id
+                     * @example 251380836
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["AlbumCoverArtRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
         trace?: never;
     };
     "/albums/{id}/relationships/items": {
@@ -314,7 +413,67 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/albums/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Album id
+                     * @example 251380836
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Albums_Multi_Data_Relationship_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -379,7 +538,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -444,7 +603,223 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistBiographies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple artistBiographies.
+         * @description Retrieves multiple artistBiographies by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    "filter[id]"?: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistBiographies_Multi_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistBiographies/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single artistBiographie.
+         * @description Retrieves single artistBiographie by id.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistBiographies_Single_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update single artistBiographie.
+         * @description Updates existing artistBiographie.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ArtistBiographyUpdateBody"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/artistBiographies/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistBiographies_Multi_Data_Relationship_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -496,7 +871,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -548,7 +923,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -583,7 +958,7 @@ export interface paths {
                      */
                     countryCode: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, biography, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
@@ -615,7 +990,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -651,7 +1026,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -684,7 +1059,7 @@ export interface paths {
                      */
                     countryCode: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, biography, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
@@ -712,7 +1087,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -749,7 +1124,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -808,7 +1183,70 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artists/{id}/relationships/biography": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get biography relationship ("to-one").
+         * @description Retrieves biography relationship.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: biography
+                     * @example biography
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Artists_Singleton_Data_Relationship_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -868,7 +1306,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -933,7 +1371,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -970,7 +1408,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1029,7 +1467,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1089,7 +1527,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1154,7 +1592,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1214,7 +1652,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1284,7 +1722,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1349,7 +1787,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1411,7 +1849,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1447,7 +1885,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1508,7 +1946,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1568,7 +2006,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1637,7 +2075,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1679,7 +2117,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1740,7 +2178,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1770,7 +2208,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1810,7 +2248,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1869,7 +2307,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1906,7 +2344,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -1965,7 +2403,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2004,7 +2442,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2036,7 +2474,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2070,7 +2508,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2129,7 +2567,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2181,7 +2619,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2233,7 +2671,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2301,7 +2739,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2371,7 +2809,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2441,7 +2879,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2511,7 +2949,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2581,7 +3019,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2651,7 +3089,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2721,7 +3159,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2785,7 +3223,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2851,7 +3289,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2902,7 +3340,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -2956,7 +3394,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3014,7 +3452,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3074,7 +3512,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3148,7 +3586,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3184,7 +3622,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3245,7 +3683,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3275,7 +3713,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3309,7 +3747,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3368,7 +3806,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3433,7 +3871,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3493,7 +3931,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3558,7 +3996,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3618,7 +4056,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3683,7 +4121,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3741,7 +4179,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3809,7 +4247,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3879,7 +4317,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3918,7 +4356,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -3950,7 +4388,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4017,7 +4455,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4056,7 +4494,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4088,7 +4526,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4145,7 +4583,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4210,7 +4648,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4243,7 +4681,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4275,7 +4713,7 @@ export interface paths {
             responses: {
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4324,7 +4762,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4389,7 +4827,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4457,7 +4895,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4527,7 +4965,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4597,7 +5035,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4667,7 +5105,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4719,7 +5157,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4763,7 +5201,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4830,7 +5268,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4893,7 +5331,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -4958,7 +5396,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -5023,7 +5461,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -5088,7 +5526,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -5153,7 +5591,7 @@ export interface paths {
                 };
                 400: components["responses"]["Bad_Request_Response"];
                 404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Supported_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
                 406: components["responses"]["Not_Acceptable_Response"];
                 415: components["responses"]["Unsupported_Media_Type_Response"];
                 429: components["responses"]["Too_Many_Requests_Response"];
@@ -5172,6 +5610,49 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AlbumCoverArtRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["AlbumCoverArtRelationshipUpdateOperation_Payload_Data"][];
+        };
+        AlbumCoverArtRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artworks";
+        };
+        AlbumCreateOperation_Payload: {
+            data: components["schemas"]["AlbumCreateOperation_Payload_Data"];
+        };
+        AlbumCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["AlbumCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["AlbumCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "albums";
+        };
+        AlbumCreateOperation_Payload_Data_Attributes: {
+            copyright?: components["schemas"]["AlbumCreateOperation_Payload_Data_Attributes_Copyright"];
+            explicitLyrics?: boolean;
+            genres?: string[];
+            /** Format: date */
+            releaseDate?: string;
+            title: string;
+            upc?: string;
+            version?: string;
+        };
+        AlbumCreateOperation_Payload_Data_Attributes_Copyright: {
+            text: string;
+            /** Format: int32 */
+            year?: number;
+        };
+        AlbumCreateOperation_Payload_Data_Relationships: {
+            artists: components["schemas"]["AlbumCreateOperation_Payload_Data_Relationships_Artists"];
+        };
+        AlbumCreateOperation_Payload_Data_Relationships_Artists: {
+            data: components["schemas"]["AlbumCreateOperation_Payload_Data_Relationships_Artists_Data"][];
+        };
+        AlbumCreateOperation_Payload_Data_Relationships_Artists_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artists";
+        };
         Albums_Attributes: {
             /** @description Available usage for this album */
             availability?: ("STREAM" | "DJ" | "STEM")[];
@@ -5279,6 +5760,7 @@ export interface components {
             artists: components["schemas"]["Multi_Data_Relationship_Doc"];
             coverArt: components["schemas"]["Multi_Data_Relationship_Doc"];
             items: components["schemas"]["Albums_Items_Multi_Data_Relationship_Document"];
+            owners: components["schemas"]["Multi_Data_Relationship_Doc"];
             providers: components["schemas"]["Multi_Data_Relationship_Doc"];
             similarAlbums: components["schemas"]["Multi_Data_Relationship_Doc"];
         };
@@ -5300,6 +5782,57 @@ export interface components {
             data?: components["schemas"]["Albums_Resource"];
             included?: components["schemas"]["Included"];
             links?: components["schemas"]["Links"];
+        };
+        ArtistBiographies_Attributes: {
+            /**
+             * @description Artist biography
+             * @example Once upon a time an artist is born
+             */
+            text: string;
+        };
+        ArtistBiographies_Multi_Data_Document: {
+            data?: components["schemas"]["ArtistBiographies_Resource"][];
+            included?: components["schemas"]["Included"];
+            links?: components["schemas"]["Links"];
+        };
+        ArtistBiographies_Multi_Data_Relationship_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links?: components["schemas"]["Links"];
+        };
+        ArtistBiographies_Relationships: {
+            owners: components["schemas"]["Multi_Data_Relationship_Doc"];
+        };
+        ArtistBiographies_Resource: {
+            attributes?: components["schemas"]["ArtistBiographies_Attributes"];
+            /**
+             * @description resource unique identifier
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["ArtistBiographies_Relationships"];
+            /**
+             * @description resource unique type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "artistBiographies";
+        };
+        ArtistBiographies_Single_Data_Document: {
+            data?: components["schemas"]["ArtistBiographies_Resource"];
+            included?: components["schemas"]["Included"];
+            links?: components["schemas"]["Links"];
+        };
+        ArtistBiographyUpdateBody: {
+            data: components["schemas"]["ArtistBiographyUpdateBody_Data"];
+        };
+        ArtistBiographyUpdateBody_Data: {
+            attributes: components["schemas"]["ArtistBiographyUpdateBody_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "artistBiographies";
+        };
+        ArtistBiographyUpdateBody_Data_Attributes: {
+            text?: string;
         };
         ArtistCreateOperation_Meta: {
             dryRun?: boolean;
@@ -5412,6 +5945,7 @@ export interface components {
         };
         Artists_Relationships: {
             albums: components["schemas"]["Multi_Data_Relationship_Doc"];
+            biography: components["schemas"]["Singleton_Data_Relationship_Doc"];
             owners: components["schemas"]["Multi_Data_Relationship_Doc"];
             profileArt: components["schemas"]["Multi_Data_Relationship_Doc"];
             radio: components["schemas"]["Multi_Data_Relationship_Doc"];
@@ -5437,6 +5971,11 @@ export interface components {
         };
         Artists_Single_Data_Document: {
             data?: components["schemas"]["Artists_Resource"];
+            included?: components["schemas"]["Included"];
+            links?: components["schemas"]["Links"];
+        };
+        Artists_Singleton_Data_Relationship_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
             included?: components["schemas"]["Included"];
             links?: components["schemas"]["Links"];
         };
@@ -5646,7 +6185,7 @@ export interface components {
             /** @description HTTP method */
             method: string;
         };
-        Included: (components["schemas"]["Albums_Resource"] | components["schemas"]["ArtistRoles_Resource"] | components["schemas"]["Artists_Resource"] | components["schemas"]["Artworks_Resource"] | components["schemas"]["Playlists_Resource"] | components["schemas"]["Providers_Resource"] | components["schemas"]["SearchResults_Resource"] | components["schemas"]["SearchSuggestions_Resource"] | components["schemas"]["TrackFiles_Resource"] | components["schemas"]["TrackManifests_Resource"] | components["schemas"]["TrackStatistics_Resource"] | components["schemas"]["Tracks_Resource"] | components["schemas"]["UserCollections_Resource"] | components["schemas"]["UserEntitlements_Resource"] | components["schemas"]["UserRecommendations_Resource"] | components["schemas"]["UserReports_Resource"] | components["schemas"]["Users_Resource"] | components["schemas"]["Videos_Resource"])[];
+        Included: (components["schemas"]["Albums_Resource"] | components["schemas"]["ArtistBiographies_Resource"] | components["schemas"]["ArtistRoles_Resource"] | components["schemas"]["Artists_Resource"] | components["schemas"]["Artworks_Resource"] | components["schemas"]["Playlists_Resource"] | components["schemas"]["Providers_Resource"] | components["schemas"]["SearchResults_Resource"] | components["schemas"]["SearchSuggestions_Resource"] | components["schemas"]["TrackFiles_Resource"] | components["schemas"]["TrackManifests_Resource"] | components["schemas"]["TrackStatistics_Resource"] | components["schemas"]["Tracks_Resource"] | components["schemas"]["UserCollections_Resource"] | components["schemas"]["UserEntitlements_Resource"] | components["schemas"]["UserRecommendations_Resource"] | components["schemas"]["UserReports_Resource"] | components["schemas"]["Users_Resource"] | components["schemas"]["Videos_Resource"])[];
         /** @description Links JSON:API object */
         Links: {
             /**
@@ -6208,9 +6747,9 @@ export interface components {
             explicit?: boolean;
             genreTags?: string[];
             /** @enum {string} */
-            key?: "A" | "Ab" | "B" | "Bb" | "C" | "CSharp" | "D" | "E" | "Eb" | "F" | "FSharp" | "G";
+            key?: "UNKNOWN" | "A" | "Ab" | "B" | "Bb" | "C" | "CSharp" | "D" | "E" | "Eb" | "F" | "FSharp" | "G";
             /** @enum {string} */
-            keyScale?: "MAJOR" | "MINOR";
+            keyScale?: "UNKNOWN" | "MAJOR" | "MINOR" | "AEOLIAN" | "BLUES" | "DORIAN" | "HARMONIC_MINOR" | "LOCRIAN" | "LYDIAN" | "MIXOLYDIAN" | "PENTATONIC_MAJOR" | "PHRYGIAN" | "MELODIC_MINOR" | "PENTATONIC_MINOR";
             title?: string;
             toneTags?: string[];
         };
@@ -6261,12 +6800,12 @@ export interface components {
              * @description Key
              * @enum {string}
              */
-            key?: "A" | "Ab" | "B" | "Bb" | "C" | "CSharp" | "D" | "E" | "Eb" | "F" | "FSharp" | "G";
+            key: "UNKNOWN" | "A" | "Ab" | "B" | "Bb" | "C" | "CSharp" | "D" | "E" | "Eb" | "F" | "FSharp" | "G";
             /**
              * @description The scale of the key
              * @enum {string}
              */
-            keyScale?: "MAJOR" | "MINOR";
+            keyScale: "UNKNOWN" | "MAJOR" | "MINOR" | "AEOLIAN" | "BLUES" | "DORIAN" | "HARMONIC_MINOR" | "LOCRIAN" | "LYDIAN" | "MIXOLYDIAN" | "PENTATONIC_MAJOR" | "PHRYGIAN" | "MELODIC_MINOR" | "PENTATONIC_MINOR";
             mediaTags: string[];
             /**
              * Format: double
@@ -6774,13 +7313,13 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Error_Document"];
             };
         };
-        /** @description Method not supported - The request method is not supported for the requested resource */
-        Method_Not_Supported_Response: {
+        /** @description Method not allowed - The request method is not allowed for the requested resource */
+        Method_Not_Allowed_Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                /** @example {"errors":[{"code":"METHOD_NOT_SUPPORTED","detail":"The resource doesnt support the requested HTTP method: POST","meta":{"category":"INVALID_REQUEST_ERROR"}}]} */
+                /** @example {"errors":[{"code":"METHOD_NOT_ALLOWED","detail":"The resource doesnt support the requested HTTP method: POST","meta":{"category":"INVALID_REQUEST_ERROR"}}]} */
                 "application/vnd.api+json": components["schemas"]["Error_Document"];
             };
         };
@@ -6807,19 +7346,11 @@ export interface components {
         /** @description Too many requests - The user has sent too many requests in a given amount of time */
         Too_Many_Requests_Response: {
             headers: {
-                /** @description Initial number of tokens, and max number of tokens that can be replenished. */
-                "X-RateLimit-Burst-Capacity"?: number;
-                /** @description The number of remaining tokens in the current period */
-                "X-RateLimit-Remaining"?: number;
-                /** @description The number of tokens replenished per second. */
-                "X-RateLimit-Replenish-Rate"?: number;
-                /** @description The request cost in tokens. */
-                "X-RateLimit-Requested-Tokens"?: number;
+                /** @description Time to wait before making a new request, in seconds. */
+                "Retry-After"?: number;
                 [name: string]: unknown;
             };
-            content: {
-                "application/vnd.api+json": components["schemas"]["Error_Document"];
-            };
+            content?: never;
         };
         /** @description Unsupported media type - The request entity has a media type which the server or resource does not support */
         Unsupported_Media_Type_Response: {
