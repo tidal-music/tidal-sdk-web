@@ -196,13 +196,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH_NAME: ${{ steps.commit_changes.outputs.branch_name }}
         run: |
-          if [ "${{ steps.check_pr.outputs.existing_pr }}" == "true" ]; then
-            # Force push current state to existing PR branch
-            echo "Force pushing changes to existing PR branch: ${{env.BRANCH_NAME}}"
+          # Check if remote branch exists, regardless of PR status
+          if git ls-remote --exit-code origin "${{env.BRANCH_NAME}}" >/dev/null 2>&1; then
+            echo "Remote branch exists - force pushing changes to: ${{env.BRANCH_NAME}}"
             git push origin HEAD:"${{env.BRANCH_NAME}}" --force
           else
-            # Push new branch
-            echo "Pushing new branch: ${{env.BRANCH_NAME}}"
+            echo "Creating new branch: ${{env.BRANCH_NAME}}"
             git push --set-upstream origin "${{env.BRANCH_NAME}}"
           fi
 
