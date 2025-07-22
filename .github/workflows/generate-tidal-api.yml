@@ -1,6 +1,8 @@
 name: Generate API Types and Create PR
 
 on:
+  push:
+    branches:
   workflow_dispatch:
     inputs:
       use_downloaded_spec:
