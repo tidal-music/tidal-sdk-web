@@ -1,9 +1,6 @@
 name: Check API Spec Changes
 
-on:
-  push:
-    branches:
-      
+on:   
   schedule:
     # Runs at 00:00 UTC every day
     - cron: '0 0 * * *'
@@ -34,42 +31,25 @@ jobs:
           git checkout ${{ steps.check_pr.outputs.pr_branch }}
           echo "Using API spec from PR branch: ${{ steps.check_pr.outputs.pr_branch }}"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 10
-          run_install: false
-
-      - name: Install dependencies
-        run: |
-          pnpm install
-
       - name: Download latest API spec
         run: |
           mkdir -p /tmp/api-check
           curl -s https://tidal-music.github.io/tidal-api-reference/tidal-api-oas.json -o /tmp/api-check/latest-api.json
-      
-      - name: Generate new API types for comparison
-        run: |
-          cd packages/api
-          pnpm run generateTypes /tmp/api-check/latest-api.json --output-file /tmp/api-check/new-api-types.ts
-      
+          # Save the spec to a location that can be used by the regeneration workflow
+          mkdir -p packages/api/bin
+          cp /tmp/api-check/latest-api.json packages/api/bin/tidal-api-oas.json
+
       - name: Compare API specs
         id: compare
         run: |
-          if cmp -s "packages/api/src/allAPI.generated.ts" "/tmp/api-check/new-api-types.ts"; then
+          if cmp -s "packages/api/bin/tidal-api-oas.json" "/tmp/api-check/latest-api.json"; then
             echo "No changes found in the API specification"
             echo "changes_found=false" >> $GITHUB_OUTPUT
           else
             echo "Changes found in the API specification"
             echo "changes_found=true" >> $GITHUB_OUTPUT
             echo "::group::API Specification Diff"
-            diff -u "packages/api/src/allAPI.generated.ts" "/tmp/api-check/new-api-types.ts" || true
+            diff -u "packages/api/bin/tidal-api-oas.json" "/tmp/api-check/latest-api.json" || true
             echo "::endgroup::"
           fi
           

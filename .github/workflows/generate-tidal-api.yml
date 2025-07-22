@@ -29,6 +29,7 @@ jobs:
     env:
       API_FOLDER: packages/api
       GENERATED_FILE: src/allAPI.generated.ts
+      SPEC_FILE: bin/tidal-api-oas.json
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -69,35 +70,59 @@ jobs:
       - name: Generate API types
         run: |
           cd ${{ env.API_FOLDER }}
+          
+          # Ensure the bin directory exists
+          mkdir -p bin
+          
           if [ "${{ inputs.use_downloaded_spec }}" == "true" ] && [ -f "/tmp/api-check/latest-api.json" ]; then
             echo "Using downloaded API spec"
-            pnpm run generateTypes /tmp/api-check/latest-api.json --output-file ${{ env.GENERATED_FILE }}
+            # Copy the downloaded spec to the committed location
+            cp /tmp/api-check/latest-api.json ${{ env.SPEC_FILE }}
+            pnpm run generateTypes ${{ env.SPEC_FILE }} --output-file ${{ env.GENERATED_FILE }}
           else
             echo "Downloading API spec as part of generation"
-            pnpm run generateTypes https://tidal-music.github.io/tidal-api-reference/tidal-api-oas.json --output-file ${{ env.GENERATED_FILE }}
+            # Download the spec and save it to the committed location
+            curl -s https://tidal-music.github.io/tidal-api-reference/tidal-api-oas.json -o ${{ env.SPEC_FILE }}
+            pnpm run generateTypes ${{ env.SPEC_FILE }} --output-file ${{ env.GENERATED_FILE }}
           fi
 
       - name: Check for changes
         id: check_for_changes
         run: |
           cd ${{ env.API_FOLDER }}
-          git add ${{ env.GENERATED_FILE }}
+          git add ${{ env.GENERATED_FILE }} ${{ env.SPEC_FILE }}
           changes_in_generated=$(git status -s ${{ env.GENERATED_FILE }} | sed 's/"//g')
+          changes_in_spec=$(git status -s ${{ env.SPEC_FILE }} | sed 's/"//g')
+          
           echo "Changes in ${{ env.GENERATED_FILE }}:"
           echo "$changes_in_generated"
+          echo "Changes in ${{ env.SPEC_FILE }}:"
+          echo "$changes_in_spec"
 
-          if [ -n "$changes_in_generated" ]; then
+          if [ -n "$changes_in_generated" ] || [ -n "$changes_in_spec" ]; then
             changes_detected="true"
-            changed_file_count=1
+            changed_file_count=0
+            if [ -n "$changes_in_generated" ]; then
+              changed_file_count=$((changed_file_count + 1))
+            fi
+            if [ -n "$changes_in_spec" ]; then
+              changed_file_count=$((changed_file_count + 1))
+            fi
           else
             changes_detected="false"
             changed_file_count=0
-            echo "No changes detected in generated file."
+            echo "No changes detected in generated files."
           fi
 
           {
             echo 'CHANGES_IN_GENERATED<<EOF'
             echo "$changes_in_generated"
+            echo 'EOF'
+          } >> $GITHUB_OUTPUT
+
+          {
+            echo 'CHANGES_IN_SPEC<<EOF'
+            echo "$changes_in_spec"
             echo 'EOF'
           } >> $GITHUB_OUTPUT
 
@@ -128,10 +153,10 @@ jobs:
           # Generate commit message with the number of changed files in the title and the list in the body
           commit_title="Update Tidal API - ${{ steps.check_for_changes.outputs.CHANGED_FILE_COUNT }} files changed"
           
-          # Create commit message with changes in generated file
-          commit_body="Changes in generated file:\n${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}"
+          # Create commit message with changes in both generated file and spec
+          commit_body="Changes in generated file:\n${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}\n\nChanges in spec file:\n${{ steps.check_for_changes.outputs.CHANGES_IN_SPEC }}"
           
-          git add ${{ env.API_FOLDER }}/${{ env.GENERATED_FILE }}
+          git add ${{ env.API_FOLDER }}/${{ env.GENERATED_FILE }} ${{ env.API_FOLDER }}/${{ env.SPEC_FILE }}
           
           # Use a consistent branch name for API updates, so we can edit the PR later
           standard_branch_name="tidal-music-tools/auto-update-tidal-api"
@@ -144,7 +169,7 @@ jobs:
             git fetch origin "$branch_name" || true
             
             # Check if current changes are different from existing PR branch
-            if git diff --quiet "origin/$branch_name" HEAD -- ${{ env.API_FOLDER }}/${{ env.GENERATED_FILE }}; then
+            if git diff --quiet "origin/$branch_name" HEAD -- ${{ env.API_FOLDER }}/${{ env.GENERATED_FILE }} ${{ env.API_FOLDER }}/${{ env.SPEC_FILE }}; then
               echo "No new changes compared to existing PR branch - skipping update"
               echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
               echo "commit_made=false" >> $GITHUB_OUTPUT
@@ -188,7 +213,7 @@ jobs:
           pr_title="Automatic Tidal API module update - ${{ steps.check_for_changes.outputs.CHANGED_FILE_COUNT }} files changed"
           
           # Create PR body with current date and note about automatic updates
-          pr_body="**Changes in Generated file:**\n\n${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}\n\nAutomatically generated on $current_date\n\nThis PR is automatically updated when API changes are detected."
+          pr_body="**Changes in Generated file:**\n\n${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}\n\n**Changes in Spec file:**\n\n${{ steps.check_for_changes.outputs.CHANGES_IN_SPEC }}\n\nAutomatically generated on $current_date\n\nThis PR is automatically updated when API changes are detected."
           pr_body=$(echo -e "$pr_body")
           
           if [ "${{ steps.check_pr.outputs.existing_pr }}" == "true" ]; then
