@@ -750,18 +750,22 @@ describe.sequential('auth', () => {
 
       await init({
         clientId: 'NEW_CLIENT_ID',
-        clientSecret: 'CLIENT_SECRET',
+        clientSecret: 'NEW_CLIENT_SECRET',
         credentialsStorageKey: 'CREDENTIALS_STORAGE_KEY',
       });
 
       const accessToken = await getCredentials();
 
-      expect(fetchHandling.handleTokenFetch).toHaveBeenCalled();
       expect(storage.saveCredentialsToStorage).toHaveBeenCalled();
       expect(accessToken).toEqual({
         ...fixtures.storageClientCredentials.accessToken,
         clientId: 'NEW_CLIENT_ID',
       });
+
+      // second time should not call the fetch again, upgrade loop was stopped
+      await getCredentials();
+
+      expect(fetchHandling.handleTokenFetch).toHaveBeenCalledTimes(1);
     });
 
     it('token failed to upgrade, throw error', async () => {

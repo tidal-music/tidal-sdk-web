@@ -443,7 +443,17 @@ const upgradeToken = async () => {
     const jsonResponse = (await response.json()) as TokenJSONResponse;
     return persistToken(jsonResponse);
   } else {
-    return getTokenThroughClientCredentials();
+    if (state.credentials) {
+      const accessTokenResponse = await getTokenThroughClientCredentials();
+      if (accessTokenResponse && 'token' in accessTokenResponse) {
+        // update to stop the upgrade loop
+        state.credentials.previousClientSecret = state.credentials.clientSecret;
+        return accessTokenResponse;
+      } else {
+        throw new RetryableError(authErrorCodeMap.retryableError);
+      }
+    }
+    throw new TidalError(authErrorCodeMap.unexpectedError);
   }
 };
 
