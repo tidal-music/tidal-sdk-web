@@ -38,10 +38,10 @@
     "@vitest/ui": "3.2.4",
     "@vitest/web-worker": "3.2.4",
     "happy-dom": "18.0.1",
-    "typescript": "5.8.3",
-    "vite": "7.0.0",
+    "typescript": "5.9.2",
+    "vite": "7.1.1",
     "vite-plugin-dts": "4.5.4",
-    "vite-plugin-top-level-await": "1.5.0",
+    "vite-plugin-top-level-await": "1.6.0",
     "vitest": "3.2.4",
     "xml-js": "1.6.11"
   },
