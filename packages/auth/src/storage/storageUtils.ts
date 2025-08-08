@@ -27,7 +27,7 @@ const getWrappingKey = (keyMaterial: CryptoKey, salt: BufferSource) => {
   );
 };
 
-const getUnwrappingKey = async (salt: ArrayBuffer, password: string) => {
+const getUnwrappingKey = async (salt: BufferSource, password: string) => {
   const keyMaterial = await getKeyMaterial(password);
   return getWrappingKey(keyMaterial, salt);
 };
@@ -37,7 +37,7 @@ export const encodeCredentials = (credentials: string) => {
   return textEnc.encode(credentials);
 };
 
-export const decodeCredentials = (credentials: ArrayBuffer) => {
+export const decodeCredentials = (credentials: BufferSource) => {
   const textEnc = new TextDecoder();
   return textEnc.decode(credentials);
 };
@@ -68,8 +68,8 @@ export const unwrapCryptoKey = async ({
   wrappedKeyBuffer,
 }: {
   password: string;
-  salt: ArrayBuffer;
-  wrappedKeyBuffer: ArrayBuffer;
+  salt: BufferSource;
+  wrappedKeyBuffer: BufferSource;
 }) => {
   const unwrappingKey = await getUnwrappingKey(salt, password);
   return globalThis.crypto.subtle.unwrapKey(
@@ -88,7 +88,7 @@ export const encryptCredentials = ({
   counter,
   key,
 }: {
-  content: ArrayBuffer;
+  content: BufferSource;
   counter: BufferSource;
   key: CryptoKey;
 }) => {
@@ -105,7 +105,7 @@ export const decryptCredentials = ({
   key,
 }: {
   counter: BufferSource;
-  encryptedCredentials: ArrayBuffer;
+  encryptedCredentials: BufferSource;
   key: CryptoKey;
 }) => {
   return globalThis.crypto.subtle.decrypt(

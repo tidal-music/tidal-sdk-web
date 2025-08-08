@@ -57,12 +57,12 @@ export const loadCredentials = async (credentialsStorageKey: string) => {
     try {
       const secretKey = await unwrapCryptoKey({
         password: credentialsStorageKey,
-        salt,
-        wrappedKeyBuffer: wrappedKey,
+        salt: salt as BufferSource,
+        wrappedKeyBuffer: wrappedKey as BufferSource,
       });
       const credentials = await decryptCredentials({
-        counter,
-        encryptedCredentials,
+        counter: counter as BufferSource,
+        encryptedCredentials: encryptedCredentials as BufferSource,
         key: secretKey,
       });
       return JSON.parse(decodeCredentials(credentials)) as UserCredentials;
@@ -95,13 +95,13 @@ export const saveCredentialsToStorage = async (
   try {
     const secretKey = await unwrapCryptoKey({
       password: mergedCredentials.credentialsStorageKey,
-      salt,
-      wrappedKeyBuffer: wrappedKey,
+      salt: salt as BufferSource,
+      wrappedKeyBuffer: wrappedKey as BufferSource,
     });
 
     const encryptedCredentials = await encryptCredentials({
       content: encodeCredentials(JSON.stringify(mergedCredentials)),
-      counter,
+      counter: counter as BufferSource,
       key: secretKey,
     });
 
