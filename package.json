@@ -16,11 +16,11 @@
     "generateTypes": "pnpm -r generateTypes"
   },
   "devDependencies": {
-    "eslint": "9.32.0",
+    "eslint": "9.33.0",
     "eslint-config-tidal": "4.0.0",
     "eslint-plugin-disable-autofix": "5.0.1",
     "eslint-plugin-jsdoc": "52.0.4",
-    "typedoc": "0.28.9",
+    "typedoc": "0.28.10",
     "vitest": "3.2.4"
   },
   "pnpm": {
