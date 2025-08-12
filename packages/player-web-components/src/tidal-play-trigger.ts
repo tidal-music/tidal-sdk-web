@@ -11,8 +11,7 @@ class TidalPlayTrigger extends HTMLElement {
   constructor() {
     super();
 
-    this.#clickHandler = clickEvent => {
-      clickEvent.preventDefault();
+    this.#clickHandler = () => {
       this.#loadAndPlay().catch(console.error);
     };
 
