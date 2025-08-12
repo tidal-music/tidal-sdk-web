@@ -1,5 +1,5 @@
 export const messageTypes = {
-  credentialsUpdated: 'CredentialsUpdatedMessage',
+  credentialsUpdated: 'CredentialsUpdatedMessage' as const,
 };
 
 export type BusEvent = CustomEvent<{
