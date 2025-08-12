@@ -45,6 +45,28 @@ window.credform.addEventListener('submit', async submitEvent => {
     playerWebComponents.setCredentialsProvider(auth.credentialsProvider);
     playerWebComponents.setEventSender(eventProducer);
 
+    // Player hooks
+    playerWebComponents.events.addEventListener('playback-state-change', e => {
+      if (e instanceof CustomEvent) {
+        console.log('playback-state-change', e.detail);
+      }
+    });
+
+    playerWebComponents.events.addEventListener('media-product-transition', e => {
+      if (e instanceof CustomEvent) {
+        /** @type {import('@tidal-music/player').MediaProductTransition} */
+        console.log('media-product-transition', e.detail);
+      }
+    });
+
+    playerWebComponents.events.addEventListener(
+      'ended',
+      () => {
+        console.log('ended');
+      },
+      { passive: true },
+    );
+
     const span = document.createElement('span');
     span.textContent = 'Credentials are set!';
 
