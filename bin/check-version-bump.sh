@@ -35,9 +35,29 @@ is_version_bump() {
     old_version=${old_version##*:}
     new_version=${new_version##*:}
 
-    if  [[ "$new_version" > "$old_version" ]]; then
+    # Extract major, minor, patch versions
+    IFS='.' read -r old_major old_minor old_patch <<< "$old_version"
+    IFS='.' read -r new_major new_minor new_patch <<< "$new_version"
+
+    # Remove any non-numeric suffixes from patch versions
+    old_patch=${old_patch%%[^0-9]*}
+    new_patch=${new_patch%%[^0-9]*}
+
+    # Convert to integers for proper numeric comparison
+    old_major=$((10#$old_major))
+    old_minor=$((10#$old_minor))
+    old_patch=$((10#$old_patch))
+    new_major=$((10#$new_major))
+    new_minor=$((10#$new_minor))
+    new_patch=$((10#$new_patch))
+
+    # Compare versions semantically
+    if [ $new_major -gt $old_major ] || \
+       ([ $new_major -eq $old_major ] && [ $new_minor -gt $old_minor ]) || \
+       ([ $new_major -eq $old_major ] && [ $new_minor -eq $old_minor ] && [ $new_patch -gt $old_patch ]); then
         result="true"
     fi
+
     echo $result
 }
 
