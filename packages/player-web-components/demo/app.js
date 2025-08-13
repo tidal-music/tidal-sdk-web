@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as auth from '@tidal-music/auth';
 import * as eventProducer from '@tidal-music/event-producer';
 
@@ -52,12 +53,15 @@ window.credform.addEventListener('submit', async submitEvent => {
       }
     });
 
-    playerWebComponents.events.addEventListener('media-product-transition', e => {
-      if (e instanceof CustomEvent) {
-        /** @type {import('@tidal-music/player').MediaProductTransition} */
-        console.log('media-product-transition', e.detail);
-      }
-    });
+    playerWebComponents.events.addEventListener(
+      'media-product-transition',
+      e => {
+        if (e instanceof CustomEvent) {
+          /** @type {import('@tidal-music/player').MediaProductTransition} */
+          console.log('media-product-transition', e.detail);
+        }
+      },
+    );
 
     playerWebComponents.events.addEventListener(
       'ended',
