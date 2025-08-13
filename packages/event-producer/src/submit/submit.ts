@@ -25,7 +25,6 @@ export const submitEvents = async ({
     return Promise.resolve();
   }
   const headers = new Headers({
-    Action: 'SendMessageBatch',
     'Content-Type': 'application/x-www-form-urlencoded',
   });
   if (!config.credentialsProvider) {

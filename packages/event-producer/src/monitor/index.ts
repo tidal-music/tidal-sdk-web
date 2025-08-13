@@ -65,7 +65,6 @@ export const sendMonitoringInfo = async () => {
     }
 
     const headers = new Headers({
-      Action: 'SendMessageBatch',
       'Content-Type': 'application/x-www-form-urlencoded',
     });
     const monitoringEvent: EPEvent = {
@@ -85,7 +84,7 @@ export const sendMonitoringInfo = async () => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (globalThis.__tepTlDebug?.debug) {
       // eslint-disable-next-line no-console
-      console.log('monitoringEvent sendt:', monitoringEvent);
+      console.log('monitoringEvent sent:', monitoringEvent);
     }
     const body = eventsToSqsRequestParameters([monitoringEvent]);
     fetch(config.tlPublicConsumerUri, {
