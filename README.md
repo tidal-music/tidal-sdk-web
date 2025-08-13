@@ -27,7 +27,7 @@ pnpm dev
 ## Update workspace dependencies
 Normally handled by Renovate, but if you need to do it manually:
 ```bash
-pnpm recursive update --latest
+pnpm update --interactive --latest --recursive
 
 # can also trim some sub-dependencies with:
 pnpm update
