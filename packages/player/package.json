@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/player",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "Player logic for TIDAL",
   "type": "module",
   "exports": {
