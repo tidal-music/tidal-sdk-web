@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.38"
+    "version" : "0.1.52"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -29,6 +29,10 @@
   }, {
     "name" : "artworks"
   }, {
+    "name" : "genres"
+  }, {
+    "name" : "lyrics"
+  }, {
     "name" : "playlists"
   }, {
     "name" : "providers"
@@ -40,6 +44,8 @@
     "name" : "trackFiles"
   }, {
     "name" : "trackManifests"
+  }, {
+    "name" : "trackSourceFiles"
   }, {
     "name" : "trackStatistics"
   }, {
@@ -79,7 +85,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: artists, coverArt, items, owners, providers, similarAlbums",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums",
           "example" : "artists",
           "in" : "query",
           "name" : "include",
@@ -136,7 +142,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Albums_Multi_Data_Document"
+                  "$ref" : "#/components/schemas/Albums_Multi_Resource_Data_Document"
                 }
               }
             },
@@ -192,7 +198,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Albums_Single_Data_Document"
+                  "$ref" : "#/components/schemas/Albums_Single_Resource_Data_Document"
                 }
               }
             },
@@ -296,7 +302,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: artists, coverArt, items, owners, providers, similarAlbums",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums",
           "example" : "artists",
           "in" : "query",
           "name" : "include",
@@ -314,7 +320,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Albums_Single_Data_Document"
+                  "$ref" : "#/components/schemas/Albums_Single_Resource_Data_Document"
                 }
               }
             },
@@ -351,6 +357,59 @@
         "tags" : [ "albums" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      },
+      "patch" : {
+        "description" : "Updates existing album.",
+        "parameters" : [ {
+          "description" : "Album id",
+          "example" : "251380836",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AlbumUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update single album.",
+        "tags" : [ "albums" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -402,7 +461,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Albums_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Albums_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -490,7 +549,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Albums_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Albums_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -583,6 +642,94 @@
         }
       }
     },
+    "/albums/{id}/relationships/genres" : {
+      "get" : {
+        "description" : "Retrieves genres relationship.",
+        "parameters" : [ {
+          "description" : "Album id",
+          "example" : "251380836",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: genres",
+          "example" : "genres",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "genres"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Albums_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get genres relationship (\"to-many\").",
+        "tags" : [ "albums" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/albums/{id}/relationships/items" : {
       "get" : {
         "description" : "Retrieves items relationship.",
@@ -631,7 +778,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Albums_Items_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Albums_Items_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -710,7 +857,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Albums_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Albums_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -796,7 +943,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Albums_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Albums_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -884,7 +1031,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Albums_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Albums_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -968,7 +1115,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ArtistBiographies_Multi_Data_Document"
+                  "$ref" : "#/components/schemas/ArtistBiographies_Multi_Resource_Data_Document"
                 }
               }
             },
@@ -1048,7 +1195,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ArtistBiographies_Single_Data_Document"
+                  "$ref" : "#/components/schemas/ArtistBiographies_Single_Resource_Data_Document"
                 }
               }
             },
@@ -1180,7 +1327,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ArtistBiographies_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/ArtistBiographies_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -1240,7 +1387,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ArtistRoles_Multi_Data_Document"
+                  "$ref" : "#/components/schemas/ArtistRoles_Multi_Resource_Data_Document"
                 }
               }
             },
@@ -1298,7 +1445,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ArtistRoles_Single_Data_Document"
+                  "$ref" : "#/components/schemas/ArtistRoles_Single_Resource_Data_Document"
                 }
               }
             },
@@ -1395,7 +1542,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artists_Multi_Data_Document"
+                  "$ref" : "#/components/schemas/Artists_Multi_Resource_Data_Document"
                 }
               }
             },
@@ -1451,7 +1598,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artists_Single_Data_Document"
+                  "$ref" : "#/components/schemas/Artists_Single_Resource_Data_Document"
                 }
               }
             },
@@ -1529,7 +1676,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artists_Single_Data_Document"
+                  "$ref" : "#/components/schemas/Artists_Single_Resource_Data_Document"
                 }
               }
             },
@@ -1670,7 +1817,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artists_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Artists_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -1750,7 +1897,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artists_Singleton_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Artists_Single_Relationship_Data_Document"
                 }
               }
             },
@@ -1829,7 +1976,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artists_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Artists_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -1915,7 +2062,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artists_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Artists_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -2056,7 +2203,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artists_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Artists_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -2135,7 +2282,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artists_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Artists_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -2223,7 +2370,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artists_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Artists_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -2302,7 +2449,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artists_TrackProviders_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Artists_TrackProviders_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -2399,7 +2546,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artists_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Artists_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -2487,7 +2634,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artists_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Artists_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -2571,7 +2718,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artworks_Multi_Data_Document"
+                  "$ref" : "#/components/schemas/Artworks_Multi_Resource_Data_Document"
                 }
               }
             },
@@ -2627,7 +2774,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artworks_Single_Data_Document"
+                  "$ref" : "#/components/schemas/Artworks_Single_Resource_Data_Document"
                 }
               }
             },
@@ -2705,7 +2852,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artworks_Single_Data_Document"
+                  "$ref" : "#/components/schemas/Artworks_Single_Resource_Data_Document"
                 }
               }
             },
@@ -2784,7 +2931,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Artworks_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Artworks_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -2819,6 +2966,365 @@
         "tags" : [ "artworks" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/genres" : {
+      "get" : {
+        "description" : "Retrieves multiple genres by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from",
+          "example" : "'1,2,3' or 'USER_SELECTABLE'",
+          "in" : "query",
+          "name" : "filter[id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "'1,2,3' or 'USER_SELECTABLE'"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Genres_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple genres.",
+        "tags" : [ "genres" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/genres/{id}" : {
+      "get" : {
+        "description" : "Retrieves single genre by id.",
+        "parameters" : [ {
+          "description" : "Genre id",
+          "example" : "123",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Genres_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get single genre.",
+        "tags" : [ "genres" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/lyrics/{id}" : {
+      "get" : {
+        "description" : "Retrieves single lyric by id.",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners, track",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Lyrics_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get single lyric.",
+        "tags" : [ "lyrics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/lyrics/{id}/relationships/owners" : {
+      "get" : {
+        "description" : "Retrieves owners relationship.",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Lyrics_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "lyrics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/lyrics/{id}/relationships/track" : {
+      "get" : {
+        "description" : "Retrieves track relationship.",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: track",
+          "example" : "track",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "track"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Lyrics_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get track relationship (\"to-one\").",
+        "tags" : [ "lyrics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -2887,7 +3393,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Playlists_Multi_Data_Document"
+                  "$ref" : "#/components/schemas/Playlists_Multi_Resource_Data_Document"
                 }
               }
             },
@@ -2952,7 +3458,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Playlists_Single_Data_Document"
+                  "$ref" : "#/components/schemas/Playlists_Single_Resource_Data_Document"
                 }
               }
             },
@@ -3074,7 +3580,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Playlists_Single_Data_Document"
+                  "$ref" : "#/components/schemas/Playlists_Single_Resource_Data_Document"
                 }
               }
             },
@@ -3224,7 +3730,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Playlists_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Playlists_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -3418,7 +3924,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Playlists_Items_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Playlists_Items_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -3621,7 +4127,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Playlists_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Playlists_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -3681,7 +4187,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Providers_Multi_Data_Document"
+                  "$ref" : "#/components/schemas/Providers_Multi_Resource_Data_Document"
                 }
               }
             },
@@ -3739,7 +4245,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Providers_Single_Data_Document"
+                  "$ref" : "#/components/schemas/Providers_Single_Resource_Data_Document"
                 }
               }
             },
@@ -3828,7 +4334,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SearchResults_Single_Data_Document"
+                  "$ref" : "#/components/schemas/SearchResults_Single_Resource_Data_Document"
                 }
               }
             },
@@ -3925,7 +4431,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SearchResults_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/SearchResults_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -4022,7 +4528,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SearchResults_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/SearchResults_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -4119,7 +4625,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SearchResults_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/SearchResults_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -4216,7 +4722,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SearchResults_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/SearchResults_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -4313,7 +4819,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SearchResults_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/SearchResults_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -4410,7 +4916,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SearchResults_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/SearchResults_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -4497,7 +5003,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SearchSuggestions_Single_Data_Document"
+                  "$ref" : "#/components/schemas/SearchSuggestions_Single_Resource_Data_Document"
                 }
               }
             },
@@ -4592,7 +5098,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SearchSuggestions_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/SearchSuggestions_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -4662,7 +5168,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/TrackFiles_Single_Data_Document"
+                  "$ref" : "#/components/schemas/TrackFiles_Single_Resource_Data_Document"
                 }
               }
             },
@@ -4753,7 +5259,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/TrackManifests_Single_Data_Document"
+                  "$ref" : "#/components/schemas/TrackManifests_Single_Resource_Data_Document"
                 }
               }
             },
@@ -4793,6 +5299,279 @@
         }
       }
     },
+    "/trackSourceFiles" : {
+      "get" : {
+        "description" : "Retrieves multiple trackSourceFiles by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Track source file id",
+          "example" : "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+          "in" : "query",
+          "name" : "filter[id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TrackSourceFiles_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple trackSourceFiles.",
+        "tags" : [ "trackSourceFiles" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "post" : {
+        "description" : "Creates a new trackSourceFile.",
+        "parameters" : [ ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TrackSourceFileCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TrackSourceFiles_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single trackSourceFile.",
+        "tags" : [ "trackSourceFiles" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/trackSourceFiles/{id}" : {
+      "get" : {
+        "description" : "Retrieves single trackSourceFile by id.",
+        "parameters" : [ {
+          "description" : "Track source file id",
+          "example" : "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TrackSourceFiles_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get single trackSourceFile.",
+        "tags" : [ "trackSourceFiles" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/trackSourceFiles/{id}/relationships/owners" : {
+      "get" : {
+        "description" : "Retrieves owners relationship.",
+        "parameters" : [ {
+          "description" : "Track source file id",
+          "example" : "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TrackSourceFiles_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "trackSourceFiles" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/trackStatistics/{id}" : {
       "get" : {
         "description" : "Retrieves single trackStatistic by id.",
@@ -4824,7 +5603,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/TrackStatistics_Single_Data_Document"
+                  "$ref" : "#/components/schemas/TrackStatistics_Single_Resource_Data_Document"
                 }
               }
             },
@@ -4901,7 +5680,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/TrackStatistics_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/TrackStatistics_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -4960,7 +5739,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, owners, providers, radio, similarTracks, trackStatistics",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, trackStatistics",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -5017,7 +5796,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tracks_Multi_Data_Document"
+                  "$ref" : "#/components/schemas/Tracks_Multi_Resource_Data_Document"
                 }
               }
             },
@@ -5073,7 +5852,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tracks_Single_Data_Document"
+                  "$ref" : "#/components/schemas/Tracks_Single_Resource_Data_Document"
                 }
               }
             },
@@ -5177,7 +5956,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, owners, providers, radio, similarTracks, trackStatistics",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, trackStatistics",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -5195,7 +5974,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tracks_Single_Data_Document"
+                  "$ref" : "#/components/schemas/Tracks_Single_Resource_Data_Document"
                 }
               }
             },
@@ -5336,7 +6115,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tracks_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Tracks_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -5424,7 +6203,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tracks_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Tracks_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -5461,6 +6240,173 @@
         "tags" : [ "tracks" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/tracks/{id}/relationships/genres" : {
+      "get" : {
+        "description" : "Retrieves genres relationship.",
+        "parameters" : [ {
+          "description" : "A Tidal catalogue ID",
+          "example" : "75413016",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: genres",
+          "example" : "genres",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "genres"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Tracks_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get genres relationship (\"to-many\").",
+        "tags" : [ "tracks" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/tracks/{id}/relationships/lyrics" : {
+      "get" : {
+        "description" : "Retrieves lyrics relationship.",
+        "parameters" : [ {
+          "description" : "A Tidal catalogue ID",
+          "example" : "75413016",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: lyrics",
+          "example" : "lyrics",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "lyrics"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Tracks_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get lyrics relationship (\"to-many\").",
+        "tags" : [ "tracks" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -5503,7 +6449,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tracks_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Tracks_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -5589,7 +6535,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tracks_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Tracks_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -5668,7 +6614,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tracks_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Tracks_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -5756,7 +6702,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tracks_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Tracks_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -5827,7 +6773,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tracks_Singleton_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Tracks_Single_Relationship_Data_Document"
                 }
               }
             },
@@ -5916,7 +6862,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserCollections_Single_Data_Document"
+                  "$ref" : "#/components/schemas/UserCollections_Single_Resource_Data_Document"
                 }
               }
             },
@@ -6064,7 +7010,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserCollections_Albums_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/UserCollections_Albums_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -6274,7 +7220,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserCollections_Artists_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/UserCollections_Artists_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -6413,7 +7359,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserCollections_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/UserCollections_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -6552,7 +7498,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserCollections_Playlists_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/UserCollections_Playlists_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -6661,7 +7607,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserEntitlements_Single_Data_Document"
+                  "$ref" : "#/components/schemas/UserEntitlements_Single_Resource_Data_Document"
                 }
               }
             },
@@ -6740,7 +7686,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserRecommendations_Single_Data_Document"
+                  "$ref" : "#/components/schemas/UserRecommendations_Single_Resource_Data_Document"
                 }
               }
             },
@@ -6827,7 +7773,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserRecommendations_Single_Data_Document"
+                  "$ref" : "#/components/schemas/UserRecommendations_Single_Resource_Data_Document"
                 }
               }
             },
@@ -6922,7 +7868,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserRecommendations_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/UserRecommendations_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -7017,7 +7963,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserRecommendations_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/UserRecommendations_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -7112,7 +8058,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserRecommendations_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/UserRecommendations_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -7168,7 +8114,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserReports_Single_Data_Document"
+                  "$ref" : "#/components/schemas/UserReports_Single_Resource_Data_Document"
                 }
               }
             },
@@ -7215,7 +8161,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Users_Single_Data_Document"
+                  "$ref" : "#/components/schemas/Users_Single_Resource_Data_Document"
                 }
               }
             },
@@ -7310,7 +8256,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Videos_Multi_Data_Document"
+                  "$ref" : "#/components/schemas/Videos_Multi_Resource_Data_Document"
                 }
               }
             },
@@ -7390,7 +8336,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Videos_Single_Data_Document"
+                  "$ref" : "#/components/schemas/Videos_Single_Resource_Data_Document"
                 }
               }
             },
@@ -7478,7 +8424,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Videos_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Videos_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -7566,7 +8512,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Videos_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Videos_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -7654,7 +8600,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Videos_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Videos_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -7742,7 +8688,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Videos_Multi_Data_Relationship_Document"
+                  "$ref" : "#/components/schemas/Videos_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -7790,7 +8736,7 @@
           "application/vnd.api+json" : {
             "example" : "{\"errors\":[{\"code\":\"GENERIC_REQUEST_ERROR\",\"detail\":\"The request contains validation errors\",\"meta\":{\"category\":\"INVALID_REQUEST_ERROR\"}}]}",
             "schema" : {
-              "$ref" : "#/components/schemas/Error_Document"
+              "$ref" : "#/components/schemas/Errors_Document"
             }
           }
         },
@@ -7801,7 +8747,7 @@
           "application/vnd.api+json" : {
             "example" : "{\"errors\":[{\"code\":\"INTERNAL_SERVER_ERROR\",\"detail\":\"The service encountered an error\",\"meta\":{\"category\":\"API_ERROR\"}}]}",
             "schema" : {
-              "$ref" : "#/components/schemas/Error_Document"
+              "$ref" : "#/components/schemas/Errors_Document"
             }
           }
         },
@@ -7812,7 +8758,7 @@
           "application/vnd.api+json" : {
             "example" : "{\"errors\":[{\"code\":\"METHOD_NOT_ALLOWED\",\"detail\":\"The resource doesnt support the requested HTTP method: POST\",\"meta\":{\"category\":\"INVALID_REQUEST_ERROR\"}}]}",
             "schema" : {
-              "$ref" : "#/components/schemas/Error_Document"
+              "$ref" : "#/components/schemas/Errors_Document"
             }
           }
         },
@@ -7823,7 +8769,7 @@
           "application/vnd.api+json" : {
             "example" : "{\"errors\":[{\"code\":\"NOT_ACCEPTABLE\",\"detail\":\"Not acceptable response media type on client. Supported media types on server: application/vnd.api+json, application/json\",\"meta\":{\"category\":\"INVALID_REQUEST_ERROR\"}}]}",
             "schema" : {
-              "$ref" : "#/components/schemas/Error_Document"
+              "$ref" : "#/components/schemas/Errors_Document"
             }
           }
         },
@@ -7834,7 +8780,7 @@
           "application/vnd.api+json" : {
             "example" : "{\"errors\":[{\"code\":\"NOT_FOUND\",\"detail\":\"The requested resource could not be found\",\"meta\":{\"category\":\"INVALID_REQUEST_ERROR\"}}]}",
             "schema" : {
-              "$ref" : "#/components/schemas/Error_Document"
+              "$ref" : "#/components/schemas/Errors_Document"
             }
           }
         },
@@ -7857,7 +8803,7 @@
           "application/vnd.api+json" : {
             "example" : "{\"errors\":[{\"code\":\"UNSUPPORTED_MEDIA_TYPE\",\"detail\":\"Unsupported request media type: application/xml. Expected media type format: application/vnd.api+json\",\"meta\":{\"category\":\"INVALID_REQUEST_ERROR\"}}]}",
             "schema" : {
-              "$ref" : "#/components/schemas/Error_Document"
+              "$ref" : "#/components/schemas/Errors_Document"
             }
           }
         },
@@ -7927,16 +8873,6 @@
           "explicitLyrics" : {
             "type" : "boolean"
           },
-          "genres" : {
-            "maxItems" : 5,
-            "minItems" : 0,
-            "type" : "array",
-            "items" : {
-              "maxLength" : 100,
-              "minLength" : 1,
-              "type" : "string"
-            }
-          },
           "releaseDate" : {
             "type" : "string",
             "format" : "date"
@@ -7979,6 +8915,9 @@
         "properties" : {
           "artists" : {
             "$ref" : "#/components/schemas/AlbumCreateOperation_Payload_Data_Relationships_Artists"
+          },
+          "genres" : {
+            "$ref" : "#/components/schemas/AlbumCreateOperation_Payload_Data_Relationships_Genres"
           }
         }
       },
@@ -8006,6 +8945,137 @@
           "type" : {
             "type" : "string",
             "enum" : [ "artists" ]
+          }
+        }
+      },
+      "AlbumCreateOperation_Payload_Data_Relationships_Genres" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 3,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AlbumCreateOperation_Payload_Data_Relationships_Genres_Data"
+            }
+          }
+        }
+      },
+      "AlbumCreateOperation_Payload_Data_Relationships_Genres_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "genres" ]
+          }
+        }
+      },
+      "AlbumUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/AlbumUpdateOperation_Payload_Data"
+          }
+        }
+      },
+      "AlbumUpdateOperation_Payload_Data" : {
+        "required" : [ "attributes", "id", "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/AlbumUpdateOperation_Payload_Data_Attributes"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/AlbumUpdateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "albums" ]
+          }
+        }
+      },
+      "AlbumUpdateOperation_Payload_Data_Attributes" : {
+        "required" : [ "title" ],
+        "type" : "object",
+        "properties" : {
+          "copyright" : {
+            "$ref" : "#/components/schemas/AlbumUpdateOperation_Payload_Data_Attributes_Copyright"
+          },
+          "explicitLyrics" : {
+            "type" : "boolean"
+          },
+          "releaseDate" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "title" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "version" : {
+            "maxLength" : 300,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        }
+      },
+      "AlbumUpdateOperation_Payload_Data_Attributes_Copyright" : {
+        "required" : [ "text" ],
+        "type" : "object",
+        "properties" : {
+          "text" : {
+            "maxLength" : 300,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "year" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "AlbumUpdateOperation_Payload_Data_Relationships" : {
+        "type" : "object",
+        "properties" : {
+          "genres" : {
+            "$ref" : "#/components/schemas/AlbumUpdateOperation_Payload_Data_Relationships_Genres"
+          }
+        }
+      },
+      "AlbumUpdateOperation_Payload_Data_Relationships_Genres" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 3,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AlbumUpdateOperation_Payload_Data_Relationships_Genres_Data"
+            }
+          }
+        }
+      },
+      "AlbumUpdateOperation_Payload_Data_Relationships_Genres_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "genres" ]
           }
         }
       },
@@ -8092,7 +9162,8 @@
           }
         }
       },
-      "Albums_Items_Multi_Data_Relationship_Document" : {
+      "Albums_Items_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -8112,7 +9183,7 @@
         "properties" : {
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "meta" : {
@@ -8120,11 +9191,10 @@
           },
           "type" : {
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
-        },
-        "description" : "Resource identifier JSON:API object"
+        }
       },
       "Albums_Items_Resource_Identifier_Meta" : {
         "required" : [ "trackNumber", "volumeNumber" ],
@@ -8144,13 +9214,14 @@
           }
         }
       },
-      "Albums_Multi_Data_Document" : {
+      "Albums_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/Albums_Resource"
+              "$ref" : "#/components/schemas/Resource_Identifier"
             }
           },
           "included" : {
@@ -8161,13 +9232,14 @@
           }
         }
       },
-      "Albums_Multi_Data_Relationship_Document" : {
+      "Albums_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/Resource_Identifier"
+              "$ref" : "#/components/schemas/Albums_Resource_Object"
             }
           },
           "included" : {
@@ -8179,29 +9251,32 @@
         }
       },
       "Albums_Relationships" : {
-        "required" : [ "artists", "coverArt", "items", "owners", "providers", "similarAlbums" ],
+        "required" : [ "artists", "coverArt", "genres", "items", "owners", "providers", "similarAlbums" ],
         "properties" : {
           "artists" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "coverArt" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "genres" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "items" : {
-            "$ref" : "#/components/schemas/Albums_Items_Multi_Data_Relationship_Document"
+            "$ref" : "#/components/schemas/Albums_Items_Multi_Relationship_Data_Document"
           },
           "owners" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "providers" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "similarAlbums" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           }
         }
       },
-      "Albums_Resource" : {
+      "Albums_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -8210,24 +9285,26 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "relationships" : {
             "$ref" : "#/components/schemas/Albums_Relationships"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "Albums_Single_Data_Document" : {
+      "Albums_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Albums_Resource"
+            "$ref" : "#/components/schemas/Albums_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -8238,9 +9315,14 @@
         }
       },
       "ArtistBiographies_Attributes" : {
-        "required" : [ "text" ],
+        "required" : [ "editable", "text" ],
         "type" : "object",
         "properties" : {
+          "editable" : {
+            "type" : "boolean",
+            "description" : "Boolean to indicate if the biography is editable (source = tidal or artist)",
+            "example" : true
+          },
           "text" : {
             "type" : "string",
             "description" : "Artist biography",
@@ -8248,13 +9330,14 @@
           }
         }
       },
-      "ArtistBiographies_Multi_Data_Document" : {
+      "ArtistBiographies_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/ArtistBiographies_Resource"
+              "$ref" : "#/components/schemas/Resource_Identifier"
             }
           },
           "included" : {
@@ -8265,13 +9348,14 @@
           }
         }
       },
-      "ArtistBiographies_Multi_Data_Relationship_Document" : {
+      "ArtistBiographies_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/Resource_Identifier"
+              "$ref" : "#/components/schemas/ArtistBiographies_Resource_Object"
             }
           },
           "included" : {
@@ -8286,11 +9370,11 @@
         "required" : [ "owners" ],
         "properties" : {
           "owners" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           }
         }
       },
-      "ArtistBiographies_Resource" : {
+      "ArtistBiographies_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -8299,24 +9383,26 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "relationships" : {
             "$ref" : "#/components/schemas/ArtistBiographies_Relationships"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "ArtistBiographies_Single_Data_Document" : {
+      "ArtistBiographies_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/ArtistBiographies_Resource"
+            "$ref" : "#/components/schemas/ArtistBiographies_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -8439,13 +9525,14 @@
           }
         }
       },
-      "ArtistRoles_Multi_Data_Document" : {
+      "ArtistRoles_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/ArtistRoles_Resource"
+              "$ref" : "#/components/schemas/ArtistRoles_Resource_Object"
             }
           },
           "included" : {
@@ -8456,7 +9543,7 @@
           }
         }
       },
-      "ArtistRoles_Resource" : {
+      "ArtistRoles_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -8465,21 +9552,23 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "ArtistRoles_Single_Data_Document" : {
+      "ArtistRoles_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/ArtistRoles_Resource"
+            "$ref" : "#/components/schemas/ArtistRoles_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -8523,6 +9612,9 @@
           "contributionsEnabled" : {
             "type" : "boolean"
           },
+          "contributionsSalesPitch" : {
+            "type" : "string"
+          },
           "externalLinks" : {
             "type" : "array",
             "items" : {
@@ -8554,6 +9646,11 @@
             "description" : "Is the artist enabled for contributions?",
             "example" : true
           },
+          "contributionsSalesPitch" : {
+            "type" : "string",
+            "description" : "Contributions sales pitch",
+            "example" : "Help me be a full time artist"
+          },
           "externalLinks" : {
             "type" : "array",
             "description" : "Artist links external to TIDAL API",
@@ -8584,24 +9681,8 @@
           }
         }
       },
-      "Artists_Multi_Data_Document" : {
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Artists_Resource"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "Artists_Multi_Data_Relationship_Document" : {
+      "Artists_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -8618,68 +9699,15 @@
           }
         }
       },
-      "Artists_Relationships" : {
-        "required" : [ "albums", "biography", "owners", "profileArt", "radio", "roles", "similarArtists", "trackProviders", "tracks", "videos" ],
-        "properties" : {
-          "albums" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          },
-          "biography" : {
-            "$ref" : "#/components/schemas/Singleton_Data_Relationship_Doc"
-          },
-          "owners" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          },
-          "profileArt" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          },
-          "radio" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          },
-          "roles" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          },
-          "similarArtists" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          },
-          "trackProviders" : {
-            "$ref" : "#/components/schemas/Artists_TrackProviders_Multi_Data_Relationship_Document"
-          },
-          "tracks" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          },
-          "videos" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          }
-        }
-      },
-      "Artists_Resource" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "attributes" : {
-            "$ref" : "#/components/schemas/Artists_Attributes"
-          },
-          "id" : {
-            "type" : "string",
-            "description" : "resource unique identifier",
-            "example" : "12345"
-          },
-          "relationships" : {
-            "$ref" : "#/components/schemas/Artists_Relationships"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "resource unique type",
-            "example" : "tracks"
-          }
-        }
-      },
-      "Artists_Single_Data_Document" : {
+      "Artists_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Artists_Resource"
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Artists_Resource_Object"
+            }
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -8689,7 +9717,66 @@
           }
         }
       },
-      "Artists_Singleton_Data_Relationship_Document" : {
+      "Artists_Relationships" : {
+        "required" : [ "albums", "biography", "owners", "profileArt", "radio", "roles", "similarArtists", "trackProviders", "tracks", "videos" ],
+        "properties" : {
+          "albums" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "biography" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          },
+          "owners" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "profileArt" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "radio" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "roles" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "similarArtists" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "trackProviders" : {
+            "$ref" : "#/components/schemas/Artists_TrackProviders_Multi_Relationship_Data_Document"
+          },
+          "tracks" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "videos" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "Artists_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/Artists_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/Artists_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Artists_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -8703,7 +9790,23 @@
           }
         }
       },
-      "Artists_TrackProviders_Multi_Data_Relationship_Document" : {
+      "Artists_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Artists_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Artists_TrackProviders_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -8723,7 +9826,7 @@
         "properties" : {
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "meta" : {
@@ -8731,11 +9834,10 @@
           },
           "type" : {
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
-        },
-        "description" : "Resource identifier JSON:API object"
+        }
       },
       "Artists_TrackProviders_Resource_Identifier_Meta" : {
         "required" : [ "numberOfTracks" ],
@@ -8864,6 +9966,7 @@
             }
           },
           "mediaType" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Media type of artwork files",
             "enum" : [ "IMAGE", "VIDEO" ]
@@ -8873,24 +9976,8 @@
           }
         }
       },
-      "Artworks_Multi_Data_Document" : {
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Artworks_Resource"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "Artworks_Multi_Data_Relationship_Document" : {
+      "Artworks_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -8907,15 +9994,33 @@
           }
         }
       },
+      "Artworks_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Artworks_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "Artworks_Relationships" : {
         "required" : [ "owners" ],
         "properties" : {
           "owners" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           }
         }
       },
-      "Artworks_Resource" : {
+      "Artworks_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -8924,30 +10029,45 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "relationships" : {
             "$ref" : "#/components/schemas/Artworks_Relationships"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "Artworks_Single_Data_Document" : {
+      "Artworks_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Artworks_Resource"
+            "$ref" : "#/components/schemas/Artworks_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "AttachSourceFileToTrack" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "tracks" ]
           }
         }
       },
@@ -8981,22 +10101,6 @@
         },
         "description" : "DRM data. Absence implies no DRM."
       },
-      "Error_Document" : {
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "description" : "array of error objects",
-            "items" : {
-              "$ref" : "#/components/schemas/Error_Object"
-            }
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        },
-        "description" : "JSON:API error document object"
-      },
       "Error_Object" : {
         "type" : "object",
         "properties" : {
@@ -9019,8 +10123,7 @@
             "type" : "string",
             "description" : "HTTP status code applicable to this problem"
           }
-        },
-        "description" : "JSON:API error object"
+        }
       },
       "Error_Object_Source" : {
         "type" : "object",
@@ -9040,8 +10143,22 @@
             "description" : "a JSON Pointer [RFC6901] to the value in the request document that caused the error",
             "example" : "/data/attributes/title"
           }
-        },
-        "description" : "object containing references to the primary source of the error"
+        }
+      },
+      "Errors_Document" : {
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "description" : "Array of error objects",
+            "items" : {
+              "$ref" : "#/components/schemas/Error_Object"
+            }
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
       },
       "External_Link" : {
         "required" : [ "href", "meta" ],
@@ -9116,71 +10233,144 @@
         },
         "description" : "metadata for upload link"
       },
+      "Genres_Attributes" : {
+        "required" : [ "genreName" ],
+        "type" : "object",
+        "properties" : {
+          "genreName" : {
+            "type" : "string",
+            "description" : "Genre name",
+            "example" : "pop"
+          }
+        }
+      },
+      "Genres_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Genres_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Genres_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/Genres_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Genres_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Genres_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "Included" : {
         "type" : "array",
         "items" : {
           "discriminator" : {
             "mapping" : {
-              "albums" : "#/components/schemas/Albums_Resource",
-              "artistBiographies" : "#/components/schemas/ArtistBiographies_Resource",
-              "artistRoles" : "#/components/schemas/ArtistRoles_Resource",
-              "artists" : "#/components/schemas/Artists_Resource",
-              "artworks" : "#/components/schemas/Artworks_Resource",
-              "playlists" : "#/components/schemas/Playlists_Resource",
-              "providers" : "#/components/schemas/Providers_Resource",
-              "searchResults" : "#/components/schemas/SearchResults_Resource",
-              "searchSuggestions" : "#/components/schemas/SearchSuggestions_Resource",
-              "trackFiles" : "#/components/schemas/TrackFiles_Resource",
-              "trackManifests" : "#/components/schemas/TrackManifests_Resource",
-              "trackStatistics" : "#/components/schemas/TrackStatistics_Resource",
-              "tracks" : "#/components/schemas/Tracks_Resource",
-              "userCollections" : "#/components/schemas/UserCollections_Resource",
-              "userEntitlements" : "#/components/schemas/UserEntitlements_Resource",
-              "userRecommendations" : "#/components/schemas/UserRecommendations_Resource",
-              "userReports" : "#/components/schemas/UserReports_Resource",
-              "users" : "#/components/schemas/Users_Resource",
-              "videos" : "#/components/schemas/Videos_Resource"
+              "albums" : "#/components/schemas/Albums_Resource_Object",
+              "artistBiographies" : "#/components/schemas/ArtistBiographies_Resource_Object",
+              "artistRoles" : "#/components/schemas/ArtistRoles_Resource_Object",
+              "artists" : "#/components/schemas/Artists_Resource_Object",
+              "artworks" : "#/components/schemas/Artworks_Resource_Object",
+              "genres" : "#/components/schemas/Genres_Resource_Object",
+              "lyrics" : "#/components/schemas/Lyrics_Resource_Object",
+              "playlists" : "#/components/schemas/Playlists_Resource_Object",
+              "providers" : "#/components/schemas/Providers_Resource_Object",
+              "searchResults" : "#/components/schemas/SearchResults_Resource_Object",
+              "searchSuggestions" : "#/components/schemas/SearchSuggestions_Resource_Object",
+              "trackFiles" : "#/components/schemas/TrackFiles_Resource_Object",
+              "trackManifests" : "#/components/schemas/TrackManifests_Resource_Object",
+              "trackSourceFiles" : "#/components/schemas/TrackSourceFiles_Resource_Object",
+              "trackStatistics" : "#/components/schemas/TrackStatistics_Resource_Object",
+              "tracks" : "#/components/schemas/Tracks_Resource_Object",
+              "userCollections" : "#/components/schemas/UserCollections_Resource_Object",
+              "userEntitlements" : "#/components/schemas/UserEntitlements_Resource_Object",
+              "userRecommendations" : "#/components/schemas/UserRecommendations_Resource_Object",
+              "userReports" : "#/components/schemas/UserReports_Resource_Object",
+              "users" : "#/components/schemas/Users_Resource_Object",
+              "videos" : "#/components/schemas/Videos_Resource_Object"
             },
             "propertyName" : "type"
           },
           "oneOf" : [ {
-            "$ref" : "#/components/schemas/Albums_Resource"
+            "$ref" : "#/components/schemas/Albums_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/ArtistBiographies_Resource"
+            "$ref" : "#/components/schemas/ArtistBiographies_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/ArtistRoles_Resource"
+            "$ref" : "#/components/schemas/ArtistRoles_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/Artists_Resource"
+            "$ref" : "#/components/schemas/Artists_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/Artworks_Resource"
+            "$ref" : "#/components/schemas/Artworks_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/Playlists_Resource"
+            "$ref" : "#/components/schemas/Genres_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/Providers_Resource"
+            "$ref" : "#/components/schemas/Lyrics_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/SearchResults_Resource"
+            "$ref" : "#/components/schemas/Playlists_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/SearchSuggestions_Resource"
+            "$ref" : "#/components/schemas/Providers_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/TrackFiles_Resource"
+            "$ref" : "#/components/schemas/SearchResults_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/TrackManifests_Resource"
+            "$ref" : "#/components/schemas/SearchSuggestions_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/TrackStatistics_Resource"
+            "$ref" : "#/components/schemas/TrackFiles_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/Tracks_Resource"
+            "$ref" : "#/components/schemas/TrackManifests_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/UserCollections_Resource"
+            "$ref" : "#/components/schemas/TrackSourceFiles_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/UserEntitlements_Resource"
+            "$ref" : "#/components/schemas/TrackStatistics_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/UserRecommendations_Resource"
+            "$ref" : "#/components/schemas/Tracks_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/UserReports_Resource"
+            "$ref" : "#/components/schemas/UserCollections_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/Users_Resource"
+            "$ref" : "#/components/schemas/UserEntitlements_Resource_Object"
           }, {
-            "$ref" : "#/components/schemas/Videos_Resource"
+            "$ref" : "#/components/schemas/UserRecommendations_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/UserReports_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/Users_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/Videos_Resource_Object"
           } ]
         }
       },
@@ -9188,6 +10378,9 @@
         "required" : [ "self" ],
         "type" : "object",
         "properties" : {
+          "meta" : {
+            "$ref" : "#/components/schemas/Links_Meta"
+          },
           "next" : {
             "type" : "string",
             "description" : "Link to next page",
@@ -9198,10 +10391,131 @@
             "description" : "Link to self",
             "example" : "/artists/xyz/relationships/tracks"
           }
-        },
-        "description" : "Links JSON:API object"
+        }
       },
-      "Multi_Data_Relationship_Doc" : {
+      "Links_Meta" : {
+        "required" : [ "nextCursor" ],
+        "type" : "object",
+        "properties" : {
+          "nextCursor" : {
+            "type" : "string",
+            "description" : "Only cursor part of next link",
+            "example" : "zyx"
+          }
+        },
+        "description" : "Non-standard meta information for links"
+      },
+      "Lyrics_Attributes" : {
+        "required" : [ "text" ],
+        "type" : "object",
+        "properties" : {
+          "text" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Lyrics_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Lyrics_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Lyrics_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Lyrics_Relationships" : {
+        "required" : [ "owners", "track" ],
+        "properties" : {
+          "owners" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "track" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "Lyrics_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/Lyrics_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/Lyrics_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Lyrics_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Resource_Identifier"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Lyrics_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Lyrics_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -9493,6 +10807,7 @@
             "format" : "date-time"
           },
           "name" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Playlist name"
           },
@@ -9514,7 +10829,8 @@
           }
         }
       },
-      "Playlists_Items_Multi_Data_Relationship_Document" : {
+      "Playlists_Items_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -9534,7 +10850,7 @@
         "properties" : {
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "meta" : {
@@ -9542,11 +10858,10 @@
           },
           "type" : {
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
-        },
-        "description" : "Resource identifier JSON:API object"
+        }
       },
       "Playlists_Items_Resource_Identifier_Meta" : {
         "type" : "object",
@@ -9560,24 +10875,8 @@
           }
         }
       },
-      "Playlists_Multi_Data_Document" : {
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Playlists_Resource"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "Playlists_Multi_Data_Relationship_Document" : {
+      "Playlists_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -9594,21 +10893,39 @@
           }
         }
       },
+      "Playlists_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Playlists_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "Playlists_Relationships" : {
         "required" : [ "coverArt", "items", "owners" ],
         "properties" : {
           "coverArt" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "items" : {
-            "$ref" : "#/components/schemas/Playlists_Items_Multi_Data_Relationship_Document"
+            "$ref" : "#/components/schemas/Playlists_Items_Multi_Relationship_Data_Document"
           },
           "owners" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           }
         }
       },
-      "Playlists_Resource" : {
+      "Playlists_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -9617,24 +10934,26 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "relationships" : {
             "$ref" : "#/components/schemas/Playlists_Relationships"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "Playlists_Single_Data_Document" : {
+      "Playlists_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Playlists_Resource"
+            "$ref" : "#/components/schemas/Playlists_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -9655,13 +10974,14 @@
           }
         }
       },
-      "Providers_Multi_Data_Document" : {
+      "Providers_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/Providers_Resource"
+              "$ref" : "#/components/schemas/Providers_Resource_Object"
             }
           },
           "included" : {
@@ -9672,7 +10992,7 @@
           }
         }
       },
-      "Providers_Resource" : {
+      "Providers_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -9681,21 +11001,23 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "Providers_Single_Data_Document" : {
+      "Providers_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Providers_Resource"
+            "$ref" : "#/components/schemas/Providers_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -9705,7 +11027,23 @@
           }
         }
       },
-      "ResourceObjectObject" : {
+      "Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Resource_ObjectObjectObject" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -9714,35 +11052,19 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "relationships" : {
             "type" : "object"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
-      },
-      "Resource_Identifier" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "resource unique identifier",
-            "example" : "12345"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "resource unique type",
-            "example" : "tracks"
-          }
-        },
-        "description" : "Resource identifier JSON:API object"
       },
       "SearchResults_Attributes" : {
         "required" : [ "trackingId" ],
@@ -9760,24 +11082,8 @@
           }
         }
       },
-      "SearchResults_Multi_Data_Document" : {
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/SearchResults_Resource"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "SearchResults_Multi_Data_Relationship_Document" : {
+      "SearchResults_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -9794,30 +11100,48 @@
           }
         }
       },
+      "SearchResults_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SearchResults_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "SearchResults_Relationships" : {
         "required" : [ "albums", "artists", "playlists", "topHits", "tracks", "videos" ],
         "properties" : {
           "albums" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "artists" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "playlists" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "topHits" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "tracks" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "videos" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           }
         }
       },
-      "SearchResults_Resource" : {
+      "SearchResults_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -9826,24 +11150,26 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "relationships" : {
             "$ref" : "#/components/schemas/SearchResults_Relationships"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "SearchResults_Single_Data_Document" : {
+      "SearchResults_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/SearchResults_Resource"
+            "$ref" : "#/components/schemas/SearchResults_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -9872,6 +11198,7 @@
             }
           },
           "trackingId" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Unique tracking id"
           }
@@ -9902,29 +11229,14 @@
             }
           },
           "query" : {
+            "minLength" : 1,
             "type" : "string"
           }
         },
         "description" : "Suggestions from search history"
       },
-      "SearchSuggestions_Multi_Data_Document" : {
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/SearchSuggestions_Resource"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "SearchSuggestions_Multi_Data_Relationship_Document" : {
+      "SearchSuggestions_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -9941,15 +11253,33 @@
           }
         }
       },
+      "SearchSuggestions_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SearchSuggestions_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "SearchSuggestions_Relationships" : {
         "required" : [ "directHits" ],
         "properties" : {
           "directHits" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           }
         }
       },
-      "SearchSuggestions_Resource" : {
+      "SearchSuggestions_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -9958,24 +11288,26 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "relationships" : {
             "$ref" : "#/components/schemas/SearchSuggestions_Relationships"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "SearchSuggestions_Single_Data_Document" : {
+      "SearchSuggestions_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/SearchSuggestions_Resource"
+            "$ref" : "#/components/schemas/SearchSuggestions_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -9996,12 +11328,14 @@
             }
           },
           "query" : {
+            "minLength" : 1,
             "type" : "string"
           }
         },
         "description" : "Suggested search queries"
       },
-      "Singleton_Data_Relationship_Doc" : {
+      "Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -10066,6 +11400,9 @@
           },
           "artists" : {
             "$ref" : "#/components/schemas/TrackCreateOperation_Payload_Data_Relationships_Artists"
+          },
+          "genres" : {
+            "$ref" : "#/components/schemas/TrackCreateOperation_Payload_Data_Relationships_Genres"
           }
         }
       },
@@ -10123,6 +11460,33 @@
           }
         }
       },
+      "TrackCreateOperation_Payload_Data_Relationships_Genres" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 3,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TrackCreateOperation_Payload_Data_Relationships_Genres_Data"
+            }
+          }
+        }
+      },
+      "TrackCreateOperation_Payload_Data_Relationships_Genres_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "genres" ]
+          }
+        }
+      },
       "TrackFiles_Attributes" : {
         "type" : "object",
         "properties" : {
@@ -10148,13 +11512,14 @@
           }
         }
       },
-      "TrackFiles_Multi_Data_Document" : {
+      "TrackFiles_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/TrackFiles_Resource"
+              "$ref" : "#/components/schemas/TrackFiles_Resource_Object"
             }
           },
           "included" : {
@@ -10165,7 +11530,7 @@
           }
         }
       },
-      "TrackFiles_Resource" : {
+      "TrackFiles_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -10174,21 +11539,23 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "TrackFiles_Single_Data_Document" : {
+      "TrackFiles_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/TrackFiles_Resource"
+            "$ref" : "#/components/schemas/TrackFiles_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -10234,13 +11601,14 @@
           }
         }
       },
-      "TrackManifests_Multi_Data_Document" : {
+      "TrackManifests_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/TrackManifests_Resource"
+              "$ref" : "#/components/schemas/TrackManifests_Resource_Object"
             }
           },
           "included" : {
@@ -10251,7 +11619,7 @@
           }
         }
       },
-      "TrackManifests_Resource" : {
+      "TrackManifests_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -10260,21 +11628,173 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "TrackManifests_Single_Data_Document" : {
+      "TrackManifests_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/TrackManifests_Resource"
+            "$ref" : "#/components/schemas/TrackManifests_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "TrackSourceFileCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/TrackSourceFileCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "TrackSourceFileCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/TrackSourceFileCreateOperation_Payload_Data_Attributes"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/TrackSourceFileCreateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "trackSourceFiles" ]
+          }
+        }
+      },
+      "TrackSourceFileCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "md5Hash", "size" ],
+        "type" : "object",
+        "properties" : {
+          "md5Hash" : {
+            "type" : "string"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "TrackSourceFileCreateOperation_Payload_Data_Relationships" : {
+        "required" : [ "track" ],
+        "type" : "object",
+        "properties" : {
+          "track" : {
+            "$ref" : "#/components/schemas/AttachSourceFileToTrack"
+          }
+        }
+      },
+      "TrackSourceFiles_Attributes" : {
+        "required" : [ "md5Hash", "size", "status", "uploadLink" ],
+        "type" : "object",
+        "properties" : {
+          "md5Hash" : {
+            "type" : "string",
+            "description" : "MD5 hash of file to be uploaded"
+          },
+          "size" : {
+            "type" : "integer",
+            "description" : "File size of the track in bytes",
+            "format" : "int64"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/File_Status"
+          },
+          "uploadLink" : {
+            "$ref" : "#/components/schemas/File_Upload_Link"
+          }
+        }
+      },
+      "TrackSourceFiles_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "TrackSourceFiles_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TrackSourceFiles_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "TrackSourceFiles_Relationships" : {
+        "required" : [ "owners" ],
+        "properties" : {
+          "owners" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "TrackSourceFiles_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/TrackSourceFiles_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/TrackSourceFiles_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "TrackSourceFiles_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/TrackSourceFiles_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -10300,24 +11820,8 @@
           }
         }
       },
-      "TrackStatistics_Multi_Data_Document" : {
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/TrackStatistics_Resource"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "TrackStatistics_Multi_Data_Relationship_Document" : {
+      "TrackStatistics_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -10334,15 +11838,33 @@
           }
         }
       },
+      "TrackStatistics_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TrackStatistics_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "TrackStatistics_Relationships" : {
         "required" : [ "owners" ],
         "properties" : {
           "owners" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           }
         }
       },
-      "TrackStatistics_Resource" : {
+      "TrackStatistics_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -10351,24 +11873,26 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "relationships" : {
             "$ref" : "#/components/schemas/TrackStatistics_Relationships"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "TrackStatistics_Single_Data_Document" : {
+      "TrackStatistics_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/TrackStatistics_Resource"
+            "$ref" : "#/components/schemas/TrackStatistics_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -10396,6 +11920,9 @@
           },
           "id" : {
             "type" : "string"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/TrackUpdateOperation_Payload_Data_Relationships"
           },
           "type" : {
             "type" : "string",
@@ -10430,12 +11957,12 @@
               "minLength" : 1,
               "type" : "string",
               "description" : "Genre tags",
-              "example" : "rock"
+              "example" : "indie"
             }
           },
           "key" : {
             "type" : "string",
-            "enum" : [ "UNKNOWN", "A", "Ab", "B", "Bb", "C", "CSharp", "D", "E", "Eb", "F", "FSharp", "G" ]
+            "enum" : [ "UNKNOWN", "C", "CSharp", "D", "Eb", "E", "F", "FSharp", "G", "Ab", "A", "Bb", "B" ]
           },
           "keyScale" : {
             "type" : "string",
@@ -10455,6 +11982,41 @@
               "description" : "Tone tags",
               "example" : "happy"
             }
+          }
+        }
+      },
+      "TrackUpdateOperation_Payload_Data_Relationships" : {
+        "type" : "object",
+        "properties" : {
+          "genres" : {
+            "$ref" : "#/components/schemas/TrackUpdateOperation_Payload_Data_Relationships_Genres"
+          }
+        }
+      },
+      "TrackUpdateOperation_Payload_Data_Relationships_Genres" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 3,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TrackUpdateOperation_Payload_Data_Relationships_Genres_Data"
+            }
+          }
+        }
+      },
+      "TrackUpdateOperation_Payload_Data_Relationships_Genres_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "genres" ]
           }
         }
       },
@@ -10525,7 +12087,7 @@
           "key" : {
             "type" : "string",
             "description" : "Key",
-            "enum" : [ "UNKNOWN", "A", "Ab", "B", "Bb", "C", "CSharp", "D", "E", "Eb", "F", "FSharp", "G" ]
+            "enum" : [ "UNKNOWN", "C", "CSharp", "D", "Eb", "E", "F", "FSharp", "G", "Ab", "A", "Bb", "B" ]
           },
           "keyScale" : {
             "type" : "string",
@@ -10571,24 +12133,8 @@
           }
         }
       },
-      "Tracks_Multi_Data_Document" : {
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Tracks_Resource"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "Tracks_Multi_Data_Relationship_Document" : {
+      "Tracks_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -10605,59 +12151,15 @@
           }
         }
       },
-      "Tracks_Relationships" : {
-        "required" : [ "albums", "artists", "owners", "providers", "radio", "similarTracks", "trackStatistics" ],
-        "properties" : {
-          "albums" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          },
-          "artists" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          },
-          "owners" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          },
-          "providers" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          },
-          "radio" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          },
-          "similarTracks" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
-          },
-          "trackStatistics" : {
-            "$ref" : "#/components/schemas/Singleton_Data_Relationship_Doc"
-          }
-        }
-      },
-      "Tracks_Resource" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "attributes" : {
-            "$ref" : "#/components/schemas/Tracks_Attributes"
-          },
-          "id" : {
-            "type" : "string",
-            "description" : "resource unique identifier",
-            "example" : "12345"
-          },
-          "relationships" : {
-            "$ref" : "#/components/schemas/Tracks_Relationships"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "resource unique type",
-            "example" : "tracks"
-          }
-        }
-      },
-      "Tracks_Single_Data_Document" : {
+      "Tracks_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Tracks_Resource"
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Tracks_Resource_Object"
+            }
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -10667,11 +12169,82 @@
           }
         }
       },
-      "Tracks_Singleton_Data_Relationship_Document" : {
+      "Tracks_Relationships" : {
+        "required" : [ "albums", "artists", "genres", "lyrics", "owners", "providers", "radio", "similarTracks", "trackStatistics" ],
+        "properties" : {
+          "albums" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "artists" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "genres" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "lyrics" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "owners" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "providers" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "radio" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "similarTracks" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "trackStatistics" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "Tracks_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/Tracks_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/Tracks_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Tracks_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/Resource_Identifier"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Tracks_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Tracks_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -10849,7 +12422,8 @@
           }
         }
       },
-      "UserCollections_Albums_Multi_Data_Relationship_Document" : {
+      "UserCollections_Albums_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -10869,7 +12443,7 @@
         "properties" : {
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "meta" : {
@@ -10877,11 +12451,10 @@
           },
           "type" : {
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
-        },
-        "description" : "Resource identifier JSON:API object"
+        }
       },
       "UserCollections_Albums_Resource_Identifier_Meta" : {
         "type" : "object",
@@ -10895,7 +12468,8 @@
           }
         }
       },
-      "UserCollections_Artists_Multi_Data_Relationship_Document" : {
+      "UserCollections_Artists_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -10915,7 +12489,7 @@
         "properties" : {
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "meta" : {
@@ -10923,11 +12497,10 @@
           },
           "type" : {
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
-        },
-        "description" : "Resource identifier JSON:API object"
+        }
       },
       "UserCollections_Artists_Resource_Identifier_Meta" : {
         "type" : "object",
@@ -10944,24 +12517,8 @@
       "UserCollections_Attributes" : {
         "type" : "object"
       },
-      "UserCollections_Multi_Data_Document" : {
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollections_Resource"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "UserCollections_Multi_Data_Relationship_Document" : {
+      "UserCollections_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -10978,7 +12535,26 @@
           }
         }
       },
-      "UserCollections_Playlists_Multi_Data_Relationship_Document" : {
+      "UserCollections_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserCollections_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserCollections_Playlists_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -10998,7 +12574,7 @@
         "properties" : {
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "meta" : {
@@ -11006,11 +12582,10 @@
           },
           "type" : {
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
-        },
-        "description" : "Resource identifier JSON:API object"
+        }
       },
       "UserCollections_Playlists_Resource_Identifier_Meta" : {
         "type" : "object",
@@ -11028,20 +12603,20 @@
         "required" : [ "albums", "artists", "owners", "playlists" ],
         "properties" : {
           "albums" : {
-            "$ref" : "#/components/schemas/UserCollections_Albums_Multi_Data_Relationship_Document"
+            "$ref" : "#/components/schemas/UserCollections_Albums_Multi_Relationship_Data_Document"
           },
           "artists" : {
-            "$ref" : "#/components/schemas/UserCollections_Artists_Multi_Data_Relationship_Document"
+            "$ref" : "#/components/schemas/UserCollections_Artists_Multi_Relationship_Data_Document"
           },
           "owners" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "playlists" : {
-            "$ref" : "#/components/schemas/UserCollections_Playlists_Multi_Data_Relationship_Document"
+            "$ref" : "#/components/schemas/UserCollections_Playlists_Multi_Relationship_Data_Document"
           }
         }
       },
-      "UserCollections_Resource" : {
+      "UserCollections_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -11050,24 +12625,26 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "relationships" : {
             "$ref" : "#/components/schemas/UserCollections_Relationships"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "UserCollections_Single_Data_Document" : {
+      "UserCollections_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/UserCollections_Resource"
+            "$ref" : "#/components/schemas/UserCollections_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -11092,13 +12669,14 @@
           }
         }
       },
-      "UserEntitlements_Multi_Data_Document" : {
+      "UserEntitlements_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/UserEntitlements_Resource"
+              "$ref" : "#/components/schemas/UserEntitlements_Resource_Object"
             }
           },
           "included" : {
@@ -11109,7 +12687,7 @@
           }
         }
       },
-      "UserEntitlements_Resource" : {
+      "UserEntitlements_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -11118,21 +12696,23 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "UserEntitlements_Single_Data_Document" : {
+      "UserEntitlements_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/UserEntitlements_Resource"
+            "$ref" : "#/components/schemas/UserEntitlements_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -11145,24 +12725,8 @@
       "UserRecommendations_Attributes" : {
         "type" : "object"
       },
-      "UserRecommendations_Multi_Data_Document" : {
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserRecommendations_Resource"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "UserRecommendations_Multi_Data_Relationship_Document" : {
+      "UserRecommendations_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -11179,21 +12743,39 @@
           }
         }
       },
+      "UserRecommendations_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserRecommendations_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "UserRecommendations_Relationships" : {
         "required" : [ "discoveryMixes", "myMixes", "newArrivalMixes" ],
         "properties" : {
           "discoveryMixes" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "myMixes" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "newArrivalMixes" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           }
         }
       },
-      "UserRecommendations_Resource" : {
+      "UserRecommendations_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -11202,24 +12784,26 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "relationships" : {
             "$ref" : "#/components/schemas/UserRecommendations_Relationships"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "UserRecommendations_Single_Data_Document" : {
+      "UserRecommendations_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/UserRecommendations_Resource"
+            "$ref" : "#/components/schemas/UserRecommendations_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -11318,13 +12902,14 @@
           }
         }
       },
-      "UserReports_Multi_Data_Document" : {
+      "UserReports_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/UserReports_Resource"
+              "$ref" : "#/components/schemas/UserReports_Resource_Object"
             }
           },
           "included" : {
@@ -11335,7 +12920,7 @@
           }
         }
       },
-      "UserReports_Resource" : {
+      "UserReports_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -11344,21 +12929,23 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "UserReports_Single_Data_Document" : {
+      "UserReports_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/UserReports_Resource"
+            "$ref" : "#/components/schemas/UserReports_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -11409,13 +12996,14 @@
           }
         }
       },
-      "Users_Multi_Data_Document" : {
+      "Users_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/Users_Resource"
+              "$ref" : "#/components/schemas/Users_Resource_Object"
             }
           },
           "included" : {
@@ -11426,7 +13014,7 @@
           }
         }
       },
-      "Users_Resource" : {
+      "Users_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -11435,21 +13023,23 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "Users_Single_Data_Document" : {
+      "Users_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Users_Resource"
+            "$ref" : "#/components/schemas/Users_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -11522,24 +13112,8 @@
           }
         }
       },
-      "Videos_Multi_Data_Document" : {
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Videos_Resource"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "Videos_Multi_Data_Relationship_Document" : {
+      "Videos_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -11556,24 +13130,42 @@
           }
         }
       },
+      "Videos_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Videos_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "Videos_Relationships" : {
         "required" : [ "albums", "artists", "providers", "thumbnailArt" ],
         "properties" : {
           "albums" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "artists" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "providers" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "thumbnailArt" : {
-            "$ref" : "#/components/schemas/Multi_Data_Relationship_Doc"
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           }
         }
       },
-      "Videos_Resource" : {
+      "Videos_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -11582,24 +13174,26 @@
           },
           "id" : {
             "type" : "string",
-            "description" : "resource unique identifier",
+            "description" : "Resource id",
             "example" : "12345"
           },
           "relationships" : {
             "$ref" : "#/components/schemas/Videos_Relationships"
           },
           "type" : {
+            "minLength" : 1,
             "type" : "string",
-            "description" : "resource unique type",
+            "description" : "Resource type",
             "example" : "tracks"
           }
         }
       },
-      "Videos_Single_Data_Document" : {
+      "Videos_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Videos_Resource"
+            "$ref" : "#/components/schemas/Videos_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
