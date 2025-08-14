@@ -10,8 +10,4 @@ describe('mapProductTypeToPlayLogProductType', () => {
   it('returns the correct playlog product type for videos', () => {
     expect(mapProductTypeToPlayLogProductType('video')).to.equal('VIDEO');
   });
-
-  it('returns the correct playlog product type for demos', () => {
-    expect(mapProductTypeToPlayLogProductType('demo')).to.equal('UC');
-  });
 });

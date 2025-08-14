@@ -19,7 +19,7 @@ export type PlayerConfig = {
 
 const defaultPlayerConfig: Array<PlayerConfig> = [
   {
-    itemTypes: ['track', 'video', 'demo'],
+    itemTypes: ['track', 'video'],
     player: 'shaka',
     qualities: ['HIGH', 'LOSSLESS', 'LOW', 'HI_RES_LOSSLESS'],
   },
@@ -140,7 +140,7 @@ async function getShakaPlayer() {
 }
 
 export async function getAppropriatePlayer(
-  productType: 'demo' | 'track' | 'video',
+  productType: 'track' | 'video',
   audioQuality: AudioQuality | undefined,
 ) {
   const appropriatePlayers = playerConfig

@@ -257,31 +257,6 @@ async function _fetch(options: Options): Promise<PlaybackInfo> {
   };
 }
 
-export function getDemoPlaybackInfo(options: Options): PlaybackInfo {
-  const { mediaProduct, streamingSessionId } = options;
-
-  return {
-    assetPresentation: 'FULL',
-    audioMode: 'STEREO',
-    audioQuality: 'LOW',
-    // eslint-disable-next-line no-restricted-syntax
-    expires: Date.now() + 3600000,
-    manifest: btoa(
-      JSON.stringify({
-        mimeType: mimeTypes.HLS,
-        urls: [
-          `https://fsu.fa.tidal.com/storage/${mediaProduct.productId}.m3u8`,
-        ],
-      }),
-    ),
-    manifestMimeType: mimeTypes.EMU,
-    prefetched: false,
-    streamType: 'ON_DEMAND',
-    streamingSessionId,
-    trackId: mediaProduct.productId,
-  };
-}
-
 export async function fetchPlaybackInfo(options: Options) {
   const { streamingSessionId } = options;
   const events = [];
@@ -294,11 +269,7 @@ export async function fetchPlaybackInfo(options: Options) {
   try {
     let playbackInfo: PlaybackInfo;
 
-    if (options.mediaProduct.productType === 'demo') {
-      playbackInfo = getDemoPlaybackInfo(options);
-    } else {
-      playbackInfo = await _fetch(options);
-    }
+    playbackInfo = await _fetch(options);
 
     if (playbackInfo === undefined) {
       throw new Error('Playback info was fetched, but undefined.');
