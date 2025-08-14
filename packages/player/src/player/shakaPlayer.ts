@@ -335,35 +335,23 @@ export default class ShakaPlayer extends BasePlayer {
   }
 
   /**
-   * Playback of media product type demo needs to be done with
-   * useNativeHlsForFairPlay and preferNativeHls set to false.
+   * Playback of media product type demo needed to be done with
+   * useNativeHlsForFairPlay and preferNativeHls set to false, but
+   * we don't support `demo` anymore.
    */
-  async #configureHlsForPlayback(
-    instance: shaka.Player | undefined,
-    mediaProduct: MediaProduct,
-  ) {
+  async #configureHlsForPlayback(instance: shaka.Player | undefined) {
     const isFairPlaySupported =
       await shaka.util.FairPlayUtils.isFairPlaySupported();
 
     if (isFairPlaySupported && instance) {
-      if (
-        instance.getConfiguration().streaming.preferNativeHls !==
-        (mediaProduct.productType !== 'demo')
-      ) {
-        instance.configure(
-          'streaming.preferNativeHls',
-          mediaProduct.productType !== 'demo',
-        );
+      if (instance.getConfiguration().streaming.preferNativeHls !== true) {
+        instance.configure('streaming.preferNativeHls', true);
       }
 
       if (
-        instance.getConfiguration().streaming.useNativeHlsForFairPlay !==
-        (mediaProduct.productType !== 'demo')
+        instance.getConfiguration().streaming.useNativeHlsForFairPlay !== true
       ) {
-        instance.configure(
-          'streaming.useNativeHlsForFairPlay',
-          mediaProduct.productType !== 'demo',
-        );
+        instance.configure('streaming.useNativeHlsForFairPlay', true);
       }
 
       // await instance.release();
@@ -841,10 +829,7 @@ export default class ShakaPlayer extends BasePlayer {
     await this.reset();
     this.#isReset = false;
 
-    await this.#configureHlsForPlayback(
-      this.shakaInstance,
-      payload.mediaProduct,
-    );
+    await this.#configureHlsForPlayback(this.shakaInstance);
 
     await ensureVideoElementsMounted();
 

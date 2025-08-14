@@ -14,8 +14,6 @@ export function mapProductTypeToPlayLogProductType(
   productType: MediaProduct['productType'],
 ): PlayLogProductType {
   switch (productType) {
-    case 'demo':
-      return 'UC';
     case 'video':
       return 'VIDEO';
     case 'track':

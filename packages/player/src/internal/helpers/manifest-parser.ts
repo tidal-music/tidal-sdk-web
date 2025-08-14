@@ -83,7 +83,7 @@ export type StreamInfo = {
   streamingSessionId: string;
   trackPeakAmplitude?: number;
   trackReplayGain?: number;
-  type: 'demo' | 'track' | 'video';
+  type: 'track' | 'video';
 };
 
 function streamFormatToCodec(
