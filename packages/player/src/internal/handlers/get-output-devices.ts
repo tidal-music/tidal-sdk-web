@@ -1,9 +1,9 @@
+import type { OutputDevice } from '../../internal/output-devices';
+
 /**
  * Get the available output devices.
- *
- * @returns { Set<OutputDevice>}
  */
-export async function getOutputDevices() {
+export async function getOutputDevices(): Promise<Array<OutputDevice>> {
   const { outputDevices } = await import('../../internal/output-devices');
 
   return [...outputDevices.outputDevices];
