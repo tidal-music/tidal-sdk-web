@@ -5487,71 +5487,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/userRecommendations/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get current user's userRecommendation(s).
-         * @deprecated
-         * @description This operation is deprecated and will be removed shortly. Please switch to the equivalent /userRecommendations/{userId} endpoint. You can find your user id by calling /users/me.
-         *
-         *     Retrieves current user's userRecommendation(s).
-         */
-        get: {
-            parameters: {
-                query: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode: string;
-                    /**
-                     * @description BCP47 locale code
-                     * @example en-US
-                     */
-                    locale: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes
-                     * @example discoveryMixes
-                     */
-                    include?: string[];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserRecommendations_Single_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/userRecommendations/{id}": {
         parameters: {
             query?: never;
@@ -7170,12 +7105,6 @@ export interface components {
              * @enum {string}
              */
             playlistType: "EDITORIAL" | "USER" | "MIX" | "ARTIST";
-            /**
-             * @deprecated
-             * @description Privacy setting of the playlist
-             * @enum {string}
-             */
-            privacy: "PUBLIC" | "PRIVATE";
         };
         Playlists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Playlists_Items_Resource_Identifier"][];
