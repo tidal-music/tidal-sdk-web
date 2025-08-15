@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.52"
+    "version" : "0.1.53"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -7645,85 +7645,6 @@
         }
       }
     },
-    "/userRecommendations/me" : {
-      "get" : {
-        "deprecated" : true,
-        "description" : "This operation is deprecated and will be removed shortly. Please switch to the equivalent /userRecommendations/{userId} endpoint. You can find your user id by calling /users/me.\n\nRetrieves current user's userRecommendation(s).",
-        "parameters" : [ {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "BCP47 locale code",
-          "example" : "en-US",
-          "in" : "query",
-          "name" : "locale",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes",
-          "example" : "discoveryMixes",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "discoveryMixes"
-            }
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/UserRecommendations_Single_Resource_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Bad_Request_Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Not_Found_Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Not_Acceptable_Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Too_Many_Requests_Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Internal_Server_Error_Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "recommendations.read" ]
-        } ],
-        "summary" : "Get current user's userRecommendation(s).",
-        "tags" : [ "userRecommendations" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      }
-    },
     "/userRecommendations/{id}" : {
       "get" : {
         "description" : "Retrieves single userRecommendation by id.",
@@ -10768,7 +10689,7 @@
         }
       },
       "Playlists_Attributes" : {
-        "required" : [ "accessType", "bounded", "createdAt", "externalLinks", "lastModifiedAt", "name", "playlistType", "privacy" ],
+        "required" : [ "accessType", "bounded", "createdAt", "externalLinks", "lastModifiedAt", "name", "playlistType" ],
         "type" : "object",
         "properties" : {
           "accessType" : {
@@ -10820,12 +10741,6 @@
             "type" : "string",
             "description" : "The type of the playlist",
             "enum" : [ "EDITORIAL", "USER", "MIX", "ARTIST" ]
-          },
-          "privacy" : {
-            "type" : "string",
-            "description" : "Privacy setting of the playlist",
-            "deprecated" : true,
-            "enum" : [ "PUBLIC", "PRIVATE" ]
           }
         }
       },
