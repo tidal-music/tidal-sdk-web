@@ -18,7 +18,7 @@ jobs:
       changes_found: ${{ steps.compare.outputs.changes_found }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Check for existing PR
         id: check_pr
