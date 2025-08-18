@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build documentation
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/build-projects
       - name: Typedoc
