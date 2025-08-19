@@ -930,6 +930,350 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/artistClaims": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create single artistClaim.
+         * @description Creates a new artistClaim.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ArtistClaimsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistClaims_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistClaims/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single artistClaim.
+         * @description Retrieves single artistClaim by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists
+                     * @example acceptedArtists
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist claim id
+                     * @example f47ac10b-58cc-4372-a567-0e02b2c3d479
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistClaims_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update single artistClaim.
+         * @description Updates existing artistClaim.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ArtistClaimsUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/artistClaims/{id}/relationships/acceptedArtists": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get acceptedArtists relationship ("to-many").
+         * @description Retrieves acceptedArtists relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists
+                     * @example acceptedArtists
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist claim id
+                     * @example f47ac10b-58cc-4372-a567-0e02b2c3d479
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistClaims_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update acceptedArtists relationship ("to-many").
+         * @description Updates acceptedArtists relationship.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist claim id
+                     * @example f47ac10b-58cc-4372-a567-0e02b2c3d479
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ArtistClaimAcceptedArtistsRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/artistClaims/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist claim id
+                     * @example f47ac10b-58cc-4372-a567-0e02b2c3d479
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistClaims_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistClaims/{id}/relationships/recommendedArtists": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get recommendedArtists relationship ("to-many").
+         * @description Retrieves recommendedArtists relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: recommendedArtists
+                     * @example recommendedArtists
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist claim id
+                     * @example f47ac10b-58cc-4372-a567-0e02b2c3d479
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistClaims_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/artistRoles": {
         parameters: {
             query?: never;
@@ -3994,6 +4338,63 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/trackStatistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple trackStatistics.
+         * @description Retrieves multiple trackStatistics by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /**
+                     * @description A Tidal catalogue ID
+                     * @example 75413016
+                     */
+                    "filter[id]"?: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["TrackStatistics_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/trackStatistics/{id}": {
         parameters: {
             query?: never;
@@ -4134,7 +4535,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, trackStatistics
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, sourceFile, trackStatistics
                      * @example albums
                      */
                     include?: string[];
@@ -4240,7 +4641,7 @@ export interface paths {
                      */
                     countryCode: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, trackStatistics
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, sourceFile, trackStatistics
                      * @example albums
                      */
                     include?: string[];
@@ -4827,6 +5228,64 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tracks/{id}/relationships/sourceFile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get sourceFile relationship ("to-one").
+         * @description Retrieves sourceFile relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: sourceFile
+                     * @example sourceFile
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description A Tidal catalogue ID
+                     * @example 75413016
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Tracks_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Bad_Request_Response"];
@@ -6526,6 +6985,102 @@ export interface components {
         ArtistBiographyUpdateBody_Data_Attributes: {
             text?: string;
         };
+        ArtistClaimAcceptedArtistsRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["ArtistClaimAcceptedArtistsRelationshipUpdateOperation_Payload_Data"][];
+        };
+        ArtistClaimAcceptedArtistsRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artists";
+        };
+        /**
+         * @description Artist claim id
+         * @example f47ac10b-58cc-4372-a567-0e02b2c3d479
+         */
+        ArtistClaimId: {
+            value?: string;
+        };
+        ArtistClaimsCreateOperation_Payload: {
+            data: components["schemas"]["ArtistClaimsCreateOperation_Payload_Data"];
+        };
+        ArtistClaimsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["ArtistClaimsCreateOperation_Payload_Data_Attributes"];
+            /** @enum {string} */
+            type: "artistClaims";
+        };
+        ArtistClaimsCreateOperation_Payload_Data_Attributes: {
+            /** @enum {string} */
+            provider: "DISTROKID" | "CDBABY" | "TUNECORE";
+        };
+        ArtistClaimsUpdateOperation_Payload: {
+            data?: components["schemas"]["ArtistClaimsUpdateOperation_Payload_Data"];
+            meta: components["schemas"]["ArtistClaimsUpdateOperation_Payload_Meta"];
+        };
+        ArtistClaimsUpdateOperation_Payload_Data: {
+            attributes?: components["schemas"]["ArtistClaimsUpdateOperation_Payload_Data_Attributes"];
+            id?: components["schemas"]["ArtistClaimId"];
+            /** @enum {string} */
+            type: "artistClaims";
+        };
+        ArtistClaimsUpdateOperation_Payload_Data_Attributes: Record<string, never>;
+        ArtistClaimsUpdateOperation_Payload_Meta: {
+            authorizationCode: string;
+        };
+        ArtistClaims_Attributes: {
+            /**
+             * @description The DSP used for authentication
+             * @enum {string}
+             */
+            provider: "DISTROKID" | "CDBABY" | "TUNECORE";
+            /**
+             * @description The recommended claim resolution
+             * @enum {string}
+             */
+            recommendation?: "DSP_PROFILE_CLAIMED" | "CONTENT_MIGRATED_TO_UPLOADS" | "NO_CONTENT_MATCHED";
+            /** @description The DSP redirect url used for authentication */
+            redirectUrl?: string;
+            /** @description List of UPCs retrieved from the DSP */
+            retrievedUpcs?: components["schemas"]["BarcodeId"][];
+            /**
+             * @description Current status of this claim
+             * @enum {string}
+             */
+            status?: "AWAITING_OAUTH" | "FETCHING_CONTENT" | "VERIFIED" | "NO_MATCHES" | "AUTHENTICATION_FAILED" | "PROCESSING" | "COMPLETED" | "FAILED" | "CANCELLED";
+        };
+        ArtistClaims_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ArtistClaims_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ArtistClaims_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ArtistClaims_Relationships: {
+            acceptedArtists: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            recommendedArtists: components["schemas"]["Multi_Relationship_Data_Document"];
+        };
+        ArtistClaims_Resource_Object: {
+            attributes?: components["schemas"]["ArtistClaims_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["ArtistClaims_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "artistClaims";
+        };
+        ArtistClaims_Single_Resource_Data_Document: {
+            data: components["schemas"]["ArtistClaims_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         ArtistCreateOperation_Meta: {
             dryRun?: boolean;
         };
@@ -6807,6 +7362,13 @@ export interface components {
             /** Format: float */
             replayGain?: number;
         };
+        /**
+         * @description Barcode Id
+         * @example 196589525444
+         */
+        BarcodeId: {
+            value: string;
+        };
         /** @description DRM data. Absence implies no DRM. */
         DrmData: {
             certificateUrl?: string;
@@ -6854,7 +7416,7 @@ export interface components {
         /** @description metadata about an external link */
         External_Link_Meta: {
             /** @enum {string} */
-            type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "HOMEPAGE" | "CASHAPP_CONTRIBUTIONS";
+            type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "OFFICIAL_HOMEPAGE" | "CASHAPP_CONTRIBUTIONS";
         };
         /** @description File status */
         File_Status: {
@@ -6914,7 +7476,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         Links: {
             meta?: components["schemas"]["Links_Meta"];
             /**
@@ -7700,6 +8262,7 @@ export interface components {
             providers: components["schemas"]["Multi_Relationship_Data_Document"];
             radio: components["schemas"]["Multi_Relationship_Data_Document"];
             similarTracks: components["schemas"]["Multi_Relationship_Data_Document"];
+            sourceFile: components["schemas"]["Single_Relationship_Data_Document"];
             trackStatistics: components["schemas"]["Single_Relationship_Data_Document"];
         };
         Tracks_Resource_Object: {
