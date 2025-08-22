@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.56"
+    "version" : "0.1.58"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -3552,10 +3552,68 @@
         }
       }
     },
+    "/lyrics" : {
+      "post" : {
+        "description" : "Creates a new lyric.",
+        "parameters" : [ ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LyricsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Lyrics_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single lyric.",
+        "tags" : [ "lyrics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/lyrics/{id}" : {
       "get" : {
         "description" : "Retrieves single lyric by id.",
         "parameters" : [ {
+          "description" : "Lyrics Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -3619,12 +3677,67 @@
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
         }
+      },
+      "patch" : {
+        "description" : "Updates existing lyric.",
+        "parameters" : [ {
+          "description" : "Lyrics Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LyricsUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update single lyric.",
+        "tags" : [ "lyrics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
       }
     },
     "/lyrics/{id}/relationships/owners" : {
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
+          "description" : "Lyrics Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -3709,6 +3822,8 @@
       "get" : {
         "description" : "Retrieves track relationship.",
         "parameters" : [ {
+          "description" : "Lyrics Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -9505,7 +9620,7 @@
         }
       },
       "AlbumUpdateOperation_Payload_Data" : {
-        "required" : [ "attributes", "id", "relationships", "type" ],
+        "required" : [ "attributes", "id", "type" ],
         "type" : "object",
         "properties" : {
           "attributes" : {
@@ -10957,7 +11072,7 @@
           "technicalFileStatus" : {
             "type" : "string",
             "description" : "Technical status for file",
-            "enum" : [ "UPLOAD_REQUESTED", "PROCESSING", "FAILED", "OK", "ERROR" ]
+            "enum" : [ "UPLOAD_REQUESTED", "PROCESSING", "OK", "ERROR" ]
           }
         },
         "description" : "File status"
@@ -11170,10 +11285,118 @@
         },
         "description" : "Non-standard meta information for links"
       },
-      "Lyrics_Attributes" : {
+      "LyricsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/LyricsCreateOperation_Payload_Data"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/LyricsCreateOperation_Payload_Meta"
+          }
+        }
+      },
+      "LyricsCreateOperation_Payload_Data" : {
+        "required" : [ "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/LyricsCreateOperation_Payload_Data_Attributes"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/LyricsCreateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "lyrics" ]
+          }
+        }
+      },
+      "LyricsCreateOperation_Payload_Data_Attributes" : {
+        "type" : "object",
+        "properties" : {
+          "text" : {
+            "maxLength" : 10000,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        }
+      },
+      "LyricsCreateOperation_Payload_Data_Relationships" : {
+        "required" : [ "track" ],
+        "type" : "object",
+        "properties" : {
+          "track" : {
+            "$ref" : "#/components/schemas/LyricsCreateOperation_Payload_Data_Relationships_Track"
+          }
+        }
+      },
+      "LyricsCreateOperation_Payload_Data_Relationships_Track" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "tracks" ]
+          }
+        }
+      },
+      "LyricsCreateOperation_Payload_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "generate" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "LyricsUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/LyricsUpdateOperation_Payload_Data"
+          }
+        }
+      },
+      "LyricsUpdateOperation_Payload_Data" : {
+        "required" : [ "attributes", "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/LyricsUpdateOperation_Payload_Data_Attributes"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "lyrics" ]
+          }
+        }
+      },
+      "LyricsUpdateOperation_Payload_Data_Attributes" : {
         "required" : [ "text" ],
         "type" : "object",
         "properties" : {
+          "text" : {
+            "maxLength" : 10000,
+            "minLength" : 0,
+            "type" : "string"
+          }
+        }
+      },
+      "Lyrics_Attributes" : {
+        "required" : [ "technicalStatus" ],
+        "type" : "object",
+        "properties" : {
+          "technicalStatus" : {
+            "type" : "string",
+            "enum" : [ "PENDING", "PROCESSING", "ERROR", "OK" ]
+          },
           "text" : {
             "type" : "string"
           }

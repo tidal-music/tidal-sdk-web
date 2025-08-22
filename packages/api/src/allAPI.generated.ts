@@ -2567,6 +2567,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/lyrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create single lyric.
+         * @description Creates a new lyric.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["LyricsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Lyrics_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/lyrics/{id}": {
         parameters: {
             query?: never;
@@ -2589,6 +2639,10 @@ export interface paths {
                 };
                 header?: never;
                 path: {
+                    /**
+                     * @description Lyrics Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -2618,7 +2672,38 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update single lyric.
+         * @description Updates existing lyric.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Lyrics Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["LyricsUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
         trace?: never;
     };
     "/lyrics/{id}/relationships/owners": {
@@ -2650,6 +2735,10 @@ export interface paths {
                 };
                 header?: never;
                 path: {
+                    /**
+                     * @description Lyrics Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -2709,6 +2798,10 @@ export interface paths {
                 };
                 header?: never;
                 path: {
+                    /**
+                     * @description Lyrics Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -6771,7 +6864,7 @@ export interface components {
         AlbumUpdateOperation_Payload_Data: {
             attributes: components["schemas"]["AlbumUpdateOperation_Payload_Data_Attributes"];
             id: string;
-            relationships: components["schemas"]["AlbumUpdateOperation_Payload_Data_Relationships"];
+            relationships?: components["schemas"]["AlbumUpdateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "albums";
         };
@@ -7429,7 +7522,7 @@ export interface components {
              * @description Technical status for file
              * @enum {string}
              */
-            technicalFileStatus: "UPLOAD_REQUESTED" | "PROCESSING" | "FAILED" | "OK" | "ERROR";
+            technicalFileStatus: "UPLOAD_REQUESTED" | "PROCESSING" | "OK" | "ERROR";
         };
         /** @description Upload link */
         File_Upload_Link: {
@@ -7498,8 +7591,46 @@ export interface components {
              */
             nextCursor: string;
         };
-        Lyrics_Attributes: {
+        LyricsCreateOperation_Payload: {
+            data: components["schemas"]["LyricsCreateOperation_Payload_Data"];
+            meta?: components["schemas"]["LyricsCreateOperation_Payload_Meta"];
+        };
+        LyricsCreateOperation_Payload_Data: {
+            attributes?: components["schemas"]["LyricsCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["LyricsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "lyrics";
+        };
+        LyricsCreateOperation_Payload_Data_Attributes: {
+            text?: string;
+        };
+        LyricsCreateOperation_Payload_Data_Relationships: {
+            track: components["schemas"]["LyricsCreateOperation_Payload_Data_Relationships_Track"];
+        };
+        LyricsCreateOperation_Payload_Data_Relationships_Track: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks";
+        };
+        LyricsCreateOperation_Payload_Meta: {
+            generate?: boolean;
+        };
+        LyricsUpdateOperation_Payload: {
+            data: components["schemas"]["LyricsUpdateOperation_Payload_Data"];
+        };
+        LyricsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["LyricsUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "lyrics";
+        };
+        LyricsUpdateOperation_Payload_Data_Attributes: {
             text: string;
+        };
+        Lyrics_Attributes: {
+            /** @enum {string} */
+            technicalStatus: "PENDING" | "PROCESSING" | "ERROR" | "OK";
+            text?: string;
         };
         Lyrics_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
