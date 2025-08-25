@@ -69,7 +69,7 @@
     "@web/test-runner": "0.20.2",
     "bowser": "2.12.0",
     "chai": "5.2.1",
-    "cypress": "14.5.4",
+    "cypress": "15.0.0",
     "esbuild": "0.25.9",
     "js-levenshtein": "1.1.6",
     "rollup": "4.46.3",
