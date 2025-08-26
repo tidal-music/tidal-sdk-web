@@ -1043,7 +1043,13 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    /**
+                     * @description Artist claim id
+                     * @example f47ac10b-58cc-4372-a567-0e02b2c3d479
+                     */
+                    id: string;
+                };
                 cookie?: never;
             };
             requestBody?: {
@@ -7237,7 +7243,7 @@ export interface components {
         ArtistUpdateBody_Data_Attributes: {
             contributionsEnabled?: boolean;
             contributionsSalesPitch?: string;
-            externalLinks?: components["schemas"]["External_Link"][];
+            externalLinks?: components["schemas"]["External_Link_Payload"][];
             handle?: string;
             name?: string;
         };
@@ -7510,6 +7516,10 @@ export interface components {
         External_Link_Meta: {
             /** @enum {string} */
             type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "OFFICIAL_HOMEPAGE" | "CASHAPP_CONTRIBUTIONS";
+        };
+        External_Link_Payload: {
+            href?: string;
+            meta: components["schemas"]["External_Link_Meta"];
         };
         /** @description File status */
         File_Status: {
