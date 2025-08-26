@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.58"
+    "version" : "0.1.61"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -1493,7 +1493,16 @@
       },
       "patch" : {
         "description" : "Updates existing artistClaim.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "description" : "Artist claim id",
+          "example" : "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -10483,7 +10492,7 @@
           "externalLinks" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/External_Link"
+              "$ref" : "#/components/schemas/External_Link_Payload"
             }
           },
           "handle" : {
@@ -11059,6 +11068,18 @@
           }
         },
         "description" : "metadata about an external link"
+      },
+      "External_Link_Payload" : {
+        "required" : [ "meta" ],
+        "type" : "object",
+        "properties" : {
+          "href" : {
+            "type" : "string"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/External_Link_Meta"
+          }
+        }
       },
       "File_Status" : {
         "required" : [ "moderationFileStatus", "technicalFileStatus" ],
