@@ -8853,7 +8853,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /** @example {"errors":[{"code":"GENERIC_REQUEST_ERROR","detail":"The request contains validation errors","meta":{"category":"INVALID_REQUEST_ERROR"}}]} */
+                /** @example {"errors":[{"code":"GENERIC_REQUEST_ERROR","detail":"The request contains validation errors"}]} */
                 "application/vnd.api+json": components["schemas"]["Errors_Document"];
             };
         };
@@ -8863,7 +8863,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /** @example {"errors":[{"code":"INTERNAL_SERVER_ERROR","detail":"The service encountered an error","meta":{"category":"API_ERROR"}}]} */
+                /** @example {"errors":[{"code":"INTERNAL_SERVER_ERROR","detail":"The service encountered an error"}]} */
                 "application/vnd.api+json": components["schemas"]["Errors_Document"];
             };
         };
@@ -8873,7 +8873,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /** @example {"errors":[{"code":"METHOD_NOT_ALLOWED","detail":"The resource doesnt support the requested HTTP method: POST","meta":{"category":"INVALID_REQUEST_ERROR"}}]} */
+                /** @example {"errors":[{"code":"METHOD_NOT_ALLOWED","detail":"The resource doesnt support the requested HTTP method: POST"}]} */
                 "application/vnd.api+json": components["schemas"]["Errors_Document"];
             };
         };
@@ -8883,7 +8883,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /** @example {"errors":[{"code":"NOT_ACCEPTABLE","detail":"Not acceptable response media type on client. Supported media types on server: application/vnd.api+json, application/json","meta":{"category":"INVALID_REQUEST_ERROR"}}]} */
+                /** @example {"errors":[{"code":"NOT_ACCEPTABLE","detail":"Not acceptable response media type on client. Supported media types on server: application/vnd.api+json, application/json"}]} */
                 "application/vnd.api+json": components["schemas"]["Errors_Document"];
             };
         };
@@ -8893,7 +8893,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /** @example {"errors":[{"code":"NOT_FOUND","detail":"The requested resource could not be found","meta":{"category":"INVALID_REQUEST_ERROR"}}]} */
+                /** @example {"errors":[{"code":"NOT_FOUND","detail":"The requested resource could not be found"}]} */
                 "application/vnd.api+json": components["schemas"]["Errors_Document"];
             };
         };
@@ -8912,7 +8912,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /** @example {"errors":[{"code":"UNSUPPORTED_MEDIA_TYPE","detail":"Unsupported request media type: application/xml. Expected media type format: application/vnd.api+json","meta":{"category":"INVALID_REQUEST_ERROR"}}]} */
+                /** @example {"errors":[{"code":"UNSUPPORTED_MEDIA_TYPE","detail":"Unsupported request media type: application/xml. Expected media type format: application/vnd.api+json"}]} */
                 "application/vnd.api+json": components["schemas"]["Errors_Document"];
             };
         };
