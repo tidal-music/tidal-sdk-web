@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.62"
+    "version" : "0.1.63"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -12951,18 +12951,6 @@
             "description" : "Explicit content",
             "example" : false
           },
-          "genreTags" : {
-            "maxItems" : 5,
-            "minItems" : 0,
-            "type" : "array",
-            "items" : {
-              "maxLength" : 20,
-              "minLength" : 1,
-              "type" : "string",
-              "description" : "Genre tags",
-              "example" : "indie"
-            }
-          },
           "key" : {
             "type" : "string",
             "enum" : [ "UNKNOWN", "C", "CSharp", "D", "Eb", "E", "F", "FSharp", "G", "Ab", "A", "Bb", "B" ]
@@ -13072,14 +13060,6 @@
             "description" : "Track links external to TIDAL API",
             "items" : {
               "$ref" : "#/components/schemas/External_Link"
-            }
-          },
-          "genreTags" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "description" : "Genre tags",
-              "example" : "Pop"
             }
           },
           "isrc" : {
