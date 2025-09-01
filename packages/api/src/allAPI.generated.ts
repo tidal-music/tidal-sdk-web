@@ -8288,7 +8288,6 @@ export interface components {
              * @example false
              */
             explicit?: boolean;
-            genreTags?: string[];
             /** @enum {string} */
             key?: "UNKNOWN" | "C" | "CSharp" | "D" | "Eb" | "E" | "F" | "FSharp" | "G" | "Ab" | "A" | "Bb" | "B";
             /** @enum {string} */
@@ -8344,7 +8343,6 @@ export interface components {
             explicit: boolean;
             /** @description Track links external to TIDAL API */
             externalLinks?: components["schemas"]["External_Link"][];
-            genreTags?: string[];
             /**
              * @description International Standard Recording Code (ISRC)
              * @example QMJMT1701229
