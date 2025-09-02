@@ -455,25 +455,7 @@ export default class ShakaPlayer extends BasePlayer {
           }
         }
 
-        // Manipulate manifest and segment requests that are sent to
-        // fsu.fa.tidal.com or ugcf.fa.tidal.com
-        const isRequestToFsuOrUgcf =
-          Array.isArray(request.uris) &&
-          request.uris.find(
-            (uri: string) =>
-              uri.startsWith('https://fsu.fa.tidal.com') ||
-              uri.startsWith('https://ugcf.fa.tidal.com'),
-          );
-
-        const demoContent =
-          isRequestToFsuOrUgcf &&
-          (type === shaka.net.NetworkingEngine.RequestType.MANIFEST ||
-            type === shaka.net.NetworkingEngine.RequestType.SEGMENT);
-
-        if (
-          demoContent ||
-          type === shaka.net.NetworkingEngine.RequestType.LICENSE
-        ) {
+        if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
           const { token } =
             await credentialsProviderStore.credentialsProvider.getCredentials();
 
