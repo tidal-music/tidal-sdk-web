@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.63"
+    "version" : "0.1.64"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -103,7 +103,7 @@
           "description" : "User id",
           "example" : "123456",
           "in" : "query",
-          "name" : "filter[r.owners.id]",
+          "name" : "filter[owners.id]",
           "required" : false,
           "schema" : {
             "type" : "array",
@@ -3944,7 +3944,7 @@
           "description" : "User id",
           "example" : "123456",
           "in" : "query",
-          "name" : "filter[r.owners.id]",
+          "name" : "filter[owners.id]",
           "required" : false,
           "schema" : {
             "type" : "array",
@@ -6407,7 +6407,7 @@
           "description" : "User id",
           "example" : "123456",
           "in" : "query",
-          "name" : "filter[r.owners.id]",
+          "name" : "filter[owners.id]",
           "required" : false,
           "schema" : {
             "type" : "array",
