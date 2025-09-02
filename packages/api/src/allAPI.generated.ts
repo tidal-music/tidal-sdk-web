@@ -34,7 +34,7 @@ export interface paths {
                      * @description User id
                      * @example 123456
                      */
-                    "filter[r.owners.id]"?: string[];
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description Album id
                      * @example 251380836
@@ -2870,7 +2870,7 @@ export interface paths {
                      * @description User id
                      * @example 123456
                      */
-                    "filter[r.owners.id]"?: string[];
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description Playlist id
                      * @example 550e8400-e29b-41d4-a716-446655440000
@@ -4642,7 +4642,7 @@ export interface paths {
                      * @description User id
                      * @example 123456
                      */
-                    "filter[r.owners.id]"?: string[];
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description International Standard Recording Code (ISRC)
                      * @example QMJMT1701237
