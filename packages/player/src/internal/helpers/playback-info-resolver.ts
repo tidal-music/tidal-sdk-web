@@ -1,6 +1,5 @@
 import type { MediaProduct } from '../../api/interfaces';
 import * as Config from '../../config';
-import { mimeTypes } from '../../internal/constants';
 import type { ErrorCodes, ErrorIds } from '../../internal/index';
 import { PlayerError } from '../../internal/index';
 import type { AudioQuality } from '../../internal/types';
@@ -42,26 +41,12 @@ export type PlaybackInfoVideo = BasePlaybackInfo & {
   videoQuality: VideoQuality;
 };
 
-export type PlaybackInfoDemo = Pick<
-  BasePlaybackInfo,
-  'assetPresentation' | 'manifest' | 'prefetched' | 'streamingSessionId'
-> & {
-  audioMode: AudioMode;
-  audioQuality: AudioQuality;
-  manifestMimeType: typeof mimeTypes.EMU;
-  trackId: string;
-};
-
 type ExtraFields = {
   expires: number;
 };
 
-export type PlaybackInfo = (
-  | PlaybackInfoDemo
-  | PlaybackInfoTrack
-  | PlaybackInfoVideo
-) &
-  ExtraFields;
+export type PlaybackInfo = ExtraFields &
+  (PlaybackInfoTrack | PlaybackInfoVideo);
 
 export type Options = {
   accessToken: string | undefined;
@@ -120,7 +105,7 @@ const fetchWithRetries = async (
   }
 
   if (!res) {
-    throw new Error('Retries exchaused. Cannot fetch playbackinfo.');
+    throw new Error('Retries exhausted. Cannot fetch playbackinfo.');
   }
 
   return res;
