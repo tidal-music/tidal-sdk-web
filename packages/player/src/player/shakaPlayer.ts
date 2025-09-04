@@ -42,8 +42,6 @@ function responseURIToCDMType(uri: string) {
   switch (lastPath) {
     case 'fairplay':
       return 'FAIR_PLAY';
-    case 'playready':
-      return 'PLAY_READY';
     case 'widevine':
       return 'WIDEVINE';
     default:
@@ -291,16 +289,6 @@ export default class ShakaPlayer extends BasePlayer {
           },
           servers: {
             'com.widevine.alpha': `${apiUrl}/drm/licenses/widevine?token=${clientId}`,
-          },
-        },
-      });
-    } else if (supportResult.drm['com.microsoft.playready']) {
-      this.debugLog('Configuring playready DRM.');
-
-      player.configure({
-        drm: {
-          servers: {
-            'com.microsoft.playready': `${apiUrl}/drm/licenses/playready?token=${clientId}`,
           },
         },
       });

@@ -1,14 +1,5 @@
 import shaka from 'shaka-player';
 
-function stringToUint8Array(str: string) {
-  const arr = [];
-  // eslint-disable-next-line @typescript-eslint/prefer-for-of
-  for (let i = 0; i < str.length; i++) {
-    arr.push(str[i]!.charCodeAt(0));
-  }
-  return new Uint8Array(arr);
-}
-
 export function manipulateLicenseResponse(response: shaka.extern.Response) {
   // This is the wrapped license, which is a JSON string.
   const wrappedString = shaka.util.StringUtils.fromUTF8(response.data);
@@ -19,18 +10,8 @@ export function manipulateLicenseResponse(response: shaka.extern.Response) {
   // decode that base64 string into a Uint8Array.
   const rawLicense = shaka.util.Uint8ArrayUtils.fromBase64(wrapped.payload); // base64 string -> Uint8Array
 
-  // Replace the 'response.data'
-  if (/playready/.exec(response.uri)) {
-    // PlayReady uses XML, so we need this dance:
-
-    // @ts-expect-error - Uint8Array can go into number[]
-    const xmlStr = atob(String.fromCharCode.apply(null, rawLicense)); // base64 string -> string with utf-8
-    response.data = stringToUint8Array(xmlStr); // string -> Uint8Array
-  } else {
-    // If Widevine or Fairplay, feed raw license to the CDM.
-
-    response.data = rawLicense;
-  }
+  // Replace the 'response.data', feed raw license to the CDM.
+  response.data = rawLicense;
 }
 
 export function manipulateLicenseRequest(
@@ -66,12 +47,6 @@ export function manipulateLicenseRequest(
     request.headers['Content-Type'] = 'application/json';
     // @ts-expect-error String is assignable to body.
     request.body = JSON.stringify(wrapped);
-
-    const uri = request.uris[0];
-    if (uri && /playready/.exec(uri)) {
-      // Strip unneeded header
-      delete request.headers.SOAPAction;
-    }
   } else {
     console.error('Expected request body to be ArrayBuffer.');
   }
