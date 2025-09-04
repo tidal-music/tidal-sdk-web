@@ -34,7 +34,7 @@ export type BasePayload = {
   actualStartTimestamp: number;
   actualStreamType: 'LIVE' | 'ON_DEMAND';
   adaptations: Array<Adaptation>;
-  cdm: 'FAIR_PLAY' | 'NONE' | 'PLAY_READY' | 'WIDEVINE';
+  cdm: 'FAIR_PLAY' | 'NONE' | 'WIDEVINE';
   cdmVersion: null | string;
   endReason: 'COMPLETE' | 'ERROR' | 'OTHER';
   endTimestamp: number;
