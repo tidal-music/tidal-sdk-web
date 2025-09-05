@@ -144,6 +144,7 @@ jobs:
 
           # Create commit message with changes in both generated file and spec
           commit_body="Changes in generated file:\n${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}\n\nChanges in spec file:\n${{ steps.check_for_changes.outputs.CHANGES_IN_SPEC }}"
+          commit_body=$(echo -e "$commit_body")
 
           git add ${{ env.API_FOLDER }}/${{ env.GENERATED_FILE }} ${{ env.API_FOLDER }}/${{ env.SPEC_FILE }}
 
