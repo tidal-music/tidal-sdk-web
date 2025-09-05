@@ -5487,7 +5487,7 @@ export interface paths {
                      */
                     countryCode: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, owners, playlists
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, owners, playlists, tracks, videos
                      * @example albums
                      */
                     include?: string[];
@@ -5879,12 +5879,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode: string;
+                query?: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -5976,6 +5971,282 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsRelationshipRemoveOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userCollections/{id}/relationships/tracks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get tracks relationship ("to-many").
+         * @description Retrieves tracks relationship.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode: string;
+                    /**
+                     * @description BCP 47 locale
+                     * @example en-US
+                     */
+                    locale: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: tracks
+                     * @example tracks
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User id
+                     * @example 123456
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserCollections_Tracks_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Add to tracks relationship ("to-many").
+         * @description Adds item(s) to tracks relationship.
+         */
+        post: {
+            parameters: {
+                query: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User id
+                     * @example 123456
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserCollectionTracksRelationshipAddOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        /**
+         * Delete from tracks relationship ("to-many").
+         * @description Deletes item(s) from tracks relationship.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description User id
+                     * @example 123456
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserCollectionTracksRelationshipRemoveOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userCollections/{id}/relationships/videos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get videos relationship ("to-many").
+         * @description Retrieves videos relationship.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode: string;
+                    /**
+                     * @description BCP 47 locale
+                     * @example en-US
+                     */
+                    locale: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: videos
+                     * @example videos
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User id
+                     * @example 123456
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserCollections_Videos_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Add to videos relationship ("to-many").
+         * @description Adds item(s) to videos relationship.
+         */
+        post: {
+            parameters: {
+                query: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User id
+                     * @example 123456
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserCollectionVideosRelationshipAddOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        /**
+         * Delete from videos relationship ("to-many").
+         * @description Deletes item(s) from videos relationship.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description User id
+                     * @example 123456
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserCollectionVideosRelationshipRemoveOperation_Payload"];
                 };
             };
             responses: {
@@ -8441,12 +8712,8 @@ export interface components {
         };
         UserCollectionAlbumsRelationshipRemoveOperation_Payload_Data: {
             id: string;
-            meta: components["schemas"]["UserCollectionAlbumsRelationshipRemoveOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "albums";
-        };
-        UserCollectionAlbumsRelationshipRemoveOperation_Payload_Data_Meta: {
-            itemId: string;
         };
         UserCollectionArtistsRelationshipAddOperation_Payload: {
             data: components["schemas"]["UserCollectionArtistsRelationshipAddOperation_Payload_Data"][];
@@ -8461,12 +8728,8 @@ export interface components {
         };
         UserCollectionArtistsRelationshipRemoveOperation_Payload_Data: {
             id: string;
-            meta: components["schemas"]["UserCollectionArtistsRelationshipRemoveOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "artists";
-        };
-        UserCollectionArtistsRelationshipRemoveOperation_Payload_Data_Meta: {
-            itemId: string;
         };
         UserCollectionPlaylistsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionPlaylistsRelationshipRemoveOperation_Payload_Data"][];
@@ -8476,8 +8739,37 @@ export interface components {
             /** @enum {string} */
             type: "playlists";
         };
-        UserCollectionPlaylistsRelationshipRemoveOperation_Payload_Data_Meta: {
-            itemId: string;
+        UserCollectionTracksRelationshipAddOperation_Payload: {
+            data: components["schemas"]["UserCollectionTracksRelationshipAddOperation_Payload_Data"][];
+        };
+        UserCollectionTracksRelationshipAddOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks";
+        };
+        UserCollectionTracksRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["UserCollectionTracksRelationshipRemoveOperation_Payload_Data"][];
+        };
+        UserCollectionTracksRelationshipRemoveOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks";
+        };
+        UserCollectionVideosRelationshipAddOperation_Payload: {
+            data: components["schemas"]["UserCollectionVideosRelationshipAddOperation_Payload_Data"][];
+        };
+        UserCollectionVideosRelationshipAddOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "albums" | "artistClaims" | "artistRoles" | "artists" | "artworks" | "playlists" | "providers" | "searchResults" | "searchSuggestions" | "tracks" | "trackStatistics" | "userCollections" | "userEntitlements" | "userRecommendations" | "userReports" | "users" | "videos";
+        };
+        UserCollectionVideosRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["UserCollectionVideosRelationshipRemoveOperation_Payload_Data"][];
+        };
+        UserCollectionVideosRelationshipRemoveOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "albums" | "artistClaims" | "artistRoles" | "artists" | "artworks" | "playlists" | "providers" | "searchResults" | "searchSuggestions" | "tracks" | "trackStatistics" | "userCollections" | "userEntitlements" | "userRecommendations" | "userReports" | "users" | "videos";
         };
         UserCollections_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Albums_Resource_Identifier"][];
@@ -8498,8 +8790,7 @@ export interface components {
         };
         UserCollections_Albums_Resource_Identifier_Meta: {
             /** Format: date-time */
-            addedAt?: string;
-            itemId?: string;
+            addedAt: string;
         };
         UserCollections_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Artists_Resource_Identifier"][];
@@ -8520,8 +8811,7 @@ export interface components {
         };
         UserCollections_Artists_Resource_Identifier_Meta: {
             /** Format: date-time */
-            addedAt?: string;
-            itemId?: string;
+            addedAt: string;
         };
         UserCollections_Attributes: Record<string, never>;
         UserCollections_Multi_Relationship_Data_Document: {
@@ -8553,14 +8843,15 @@ export interface components {
         };
         UserCollections_Playlists_Resource_Identifier_Meta: {
             /** Format: date-time */
-            addedAt?: string;
-            itemId?: string;
+            addedAt: string;
         };
         UserCollections_Relationships: {
             albums: components["schemas"]["UserCollections_Albums_Multi_Relationship_Data_Document"];
             artists: components["schemas"]["UserCollections_Artists_Multi_Relationship_Data_Document"];
             owners: components["schemas"]["Multi_Relationship_Data_Document"];
             playlists: components["schemas"]["UserCollections_Playlists_Multi_Relationship_Data_Document"];
+            tracks: components["schemas"]["UserCollections_Tracks_Multi_Relationship_Data_Document"];
+            videos: components["schemas"]["UserCollections_Videos_Multi_Relationship_Data_Document"];
         };
         UserCollections_Resource_Object: {
             attributes?: components["schemas"]["UserCollections_Attributes"];
@@ -8580,6 +8871,48 @@ export interface components {
             data: components["schemas"]["UserCollections_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        UserCollections_Tracks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["UserCollections_Tracks_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+        };
+        UserCollections_Tracks_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["UserCollections_Tracks_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        UserCollections_Tracks_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
+        };
+        UserCollections_Videos_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["UserCollections_Videos_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+        };
+        UserCollections_Videos_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["UserCollections_Videos_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        UserCollections_Videos_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserEntitlements_Attributes: {
             /** @description entitlements for user */
