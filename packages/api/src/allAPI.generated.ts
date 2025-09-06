@@ -7102,18 +7102,13 @@ export interface components {
             type: "albums";
         };
         AlbumCreateOperation_Payload_Data_Attributes: {
-            copyright?: components["schemas"]["AlbumCreateOperation_Payload_Data_Attributes_Copyright"];
+            copyright?: components["schemas"]["Album_Copyright"];
             explicitLyrics?: boolean;
             /** Format: date */
             releaseDate?: string;
             title: string;
             upc?: string;
             version?: string;
-        };
-        AlbumCreateOperation_Payload_Data_Attributes_Copyright: {
-            text: string;
-            /** Format: int32 */
-            year?: number;
         };
         AlbumCreateOperation_Payload_Data_Relationships: {
             artists: components["schemas"]["AlbumCreateOperation_Payload_Data_Relationships_Artists"];
@@ -7139,24 +7134,19 @@ export interface components {
             data: components["schemas"]["AlbumUpdateOperation_Payload_Data"];
         };
         AlbumUpdateOperation_Payload_Data: {
-            attributes: components["schemas"]["AlbumUpdateOperation_Payload_Data_Attributes"];
+            attributes?: components["schemas"]["AlbumUpdateOperation_Payload_Data_Attributes"];
             id: string;
             relationships?: components["schemas"]["AlbumUpdateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "albums";
         };
         AlbumUpdateOperation_Payload_Data_Attributes: {
-            copyright?: components["schemas"]["AlbumUpdateOperation_Payload_Data_Attributes_Copyright"];
+            copyright?: components["schemas"]["Album_Copyright"];
             explicitLyrics?: boolean;
             /** Format: date */
             releaseDate?: string;
-            title: string;
+            title?: string;
             version?: string;
-        };
-        AlbumUpdateOperation_Payload_Data_Attributes_Copyright: {
-            text: string;
-            /** Format: int32 */
-            year?: number;
         };
         AlbumUpdateOperation_Payload_Data_Relationships: {
             genres?: components["schemas"]["AlbumUpdateOperation_Payload_Data_Relationships_Genres"];
@@ -7169,6 +7159,13 @@ export interface components {
             /** @enum {string} */
             type: "genres";
         };
+        /**
+         * @description Copyright information
+         * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
+         */
+        Album_Copyright: {
+            text: string;
+        };
         Albums_Attributes: {
             /** @description Available usage for this album */
             availability?: ("STREAM" | "DJ" | "STEM")[];
@@ -7177,11 +7174,7 @@ export interface components {
              * @example 00854242007552
              */
             barcodeId: string;
-            /**
-             * @description Copyright
-             * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
-             */
-            copyright?: string;
+            copyright?: components["schemas"]["Album_Copyright"];
             /**
              * @description Duration (ISO 8601)
              * @example PT46M17S
@@ -7229,6 +7222,11 @@ export interface components {
              * @enum {string}
              */
             type: "ALBUM" | "EP" | "SINGLE";
+            /**
+             * @description Album version
+             * @example remix
+             */
+            version?: string;
         };
         Albums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Albums_Items_Resource_Identifier"][];
@@ -8539,7 +8537,7 @@ export interface components {
             data: components["schemas"]["TrackUpdateOperation_Payload_Data"];
         };
         TrackUpdateOperation_Payload_Data: {
-            attributes: components["schemas"]["TrackUpdateOperation_Payload_Data_Attributes"];
+            attributes?: components["schemas"]["TrackUpdateOperation_Payload_Data_Attributes"];
             id: string;
             relationships?: components["schemas"]["TrackUpdateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
