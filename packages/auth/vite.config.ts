@@ -12,7 +12,7 @@ export default defineConfig(({ command }) => {
               '/api/': {
                 changeOrigin: true,
                 rewrite: path => path.replace(/^\/api/, ''),
-                target: 'https://openapi.tidal.com/',
+                target: 'https://openapi.tidal.com/v2/',
               },
             },
           },

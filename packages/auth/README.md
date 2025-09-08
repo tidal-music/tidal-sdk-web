@@ -63,7 +63,7 @@ If your application was previously authenticated, you can migrate these credenti
 You can find examples in `/examples`, each one is dedicated to one type of receiving credentials.
 Some examples needs a proxy to run, but there is one configured if you use `pnpm dev`.
 
-> Heads up! Redirect login flow requires a secure context and valid https url to work properly.
+> Heads up! Redirect login flow requires a secure context and valid https url to work properly. For running Vite locally with https, check out their documentation for ["Server Options"](https://vite.dev/config/server-options.html#server-https).
 
 For the examples to work you might need to build the library once with `pnpm build`.
 

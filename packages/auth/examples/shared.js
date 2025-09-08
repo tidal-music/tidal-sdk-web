@@ -29,49 +29,61 @@ export const getUserInfo = async apiSubStatus => {
  * @param {string} query
  */
 export const searchForArtist = async query => {
-  const searchResults = document.getElementById('searchResults');
+  const searchResultsTag = document.getElementById('searchResults');
   const credentials = await credentialsProvider.getCredentials();
-  const searchResult = await search(credentials.token, query, 'ARTISTS');
+  const searchResult = await searchArtists(credentials.token, query);
 
-  searchResults.innerHTML = '';
+  searchResultsTag.innerHTML = '';
 
-  searchResult.artists.forEach(artist => {
-    const imageObj = artist.resource.picture.find(p => p.width === 160);
-    const link = `https://listen.tidal.com/artist/${artist.resource.id}`;
-    if (imageObj) {
-      const img = `<img src=${imageObj.url}>`;
-      searchResults.innerHTML += `<li><a href="${link}">${img}<span>${artist.resource.name}<span></a></li>`;
-    }
-  });
+  const imageHrefs = searchResult.included.filter(x => x.type === 'artworks' && x.attributes.mediaType === 'IMAGE').reduce((hrefs, includedArtwork) => {
+    hrefs[includedArtwork.id] = includedArtwork.attributes.files.find(f => f.meta.width === 160)?.href
+    return hrefs;
+  }, {});
+
+  for (const included of searchResult.included.filter(x => x.type === 'artists')) {
+    const imgId = included.relationships.profileArt.data[0]?.id;
+    const imgHref = imageHrefs[imgId];
+    const imgTag = imgHref ? `<img src=${imgHref}>` : '';
+    searchResultsTag.innerHTML += `
+      <li>
+        <a href="${included.attributes.externalLinks[0].href}">
+          ${imgTag}
+          <span>${included.attributes.name}</span>
+        </a>
+      </li>`;
+  }
 };
 
 /**
- * Fetches an artists and adds it name to DOM.
+ * Fetches artists and adds their names and profile art to the DOM.
  *
  * @param {string} token
  * @param {string} query
- * @param {string} type
  */
-export const search = async (token, query, type) => {
+export const searchArtists = async (token, query) => {
   const queryString = new URLSearchParams({
     countryCode: 'NO',
-    limit: 10,
-    query,
-    type,
+    include: 'artists.profileArt',
   }).toString();
 
   const headers = new Headers({
-    Accept: 'application/vnd.tidal.v1+json',
+    Accept: 'application/vnd.api+json',
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/vnd.tidal.v1+json',
   });
   // proxy in vite handling CORS
-  const searchResult = await window.fetch(`/api/search?${queryString}`, {
-    headers,
-  });
-  const response = await searchResult.json();
+  const searchResult = await window.fetch(
+    `/api/searchResults/${query}/relationships/artists?${queryString}`,
+    {
+      headers,
+    },
+  );
 
-  return response;
+  if (!searchResult.ok) {
+    throw new Error(`Search response status is ${searchResult.status}: ${searchResult.statusText}`);
+  }
+
+  return await searchResult.json();
 };
 
 /**
