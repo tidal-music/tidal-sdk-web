@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.66"
+    "version" : "0.1.68"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -9923,7 +9923,7 @@
         "type" : "object",
         "properties" : {
           "copyright" : {
-            "$ref" : "#/components/schemas/AlbumCreateOperation_Payload_Data_Attributes_Copyright"
+            "$ref" : "#/components/schemas/Album_Copyright"
           },
           "explicitLyrics" : {
             "type" : "boolean"
@@ -9933,8 +9933,6 @@
             "format" : "date"
           },
           "title" : {
-            "maxLength" : 300,
-            "minLength" : 1,
             "type" : "string"
           },
           "upc" : {
@@ -9943,24 +9941,7 @@
             "type" : "string"
           },
           "version" : {
-            "maxLength" : 300,
-            "minLength" : 0,
             "type" : "string"
-          }
-        }
-      },
-      "AlbumCreateOperation_Payload_Data_Attributes_Copyright" : {
-        "required" : [ "text" ],
-        "type" : "object",
-        "properties" : {
-          "text" : {
-            "maxLength" : 300,
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "year" : {
-            "type" : "integer",
-            "format" : "int32"
           }
         }
       },
@@ -10040,7 +10021,7 @@
         }
       },
       "AlbumUpdateOperation_Payload_Data" : {
-        "required" : [ "attributes", "id", "type" ],
+        "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
           "attributes" : {
@@ -10059,11 +10040,10 @@
         }
       },
       "AlbumUpdateOperation_Payload_Data_Attributes" : {
-        "required" : [ "title" ],
         "type" : "object",
         "properties" : {
           "copyright" : {
-            "$ref" : "#/components/schemas/AlbumUpdateOperation_Payload_Data_Attributes_Copyright"
+            "$ref" : "#/components/schemas/Album_Copyright"
           },
           "explicitLyrics" : {
             "type" : "boolean"
@@ -10073,29 +10053,10 @@
             "format" : "date"
           },
           "title" : {
-            "maxLength" : 300,
-            "minLength" : 1,
             "type" : "string"
           },
           "version" : {
-            "maxLength" : 300,
-            "minLength" : 0,
             "type" : "string"
-          }
-        }
-      },
-      "AlbumUpdateOperation_Payload_Data_Attributes_Copyright" : {
-        "required" : [ "text" ],
-        "type" : "object",
-        "properties" : {
-          "text" : {
-            "maxLength" : 300,
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "year" : {
-            "type" : "integer",
-            "format" : "int32"
           }
         }
       },
@@ -10134,6 +10095,19 @@
           }
         }
       },
+      "Album_Copyright" : {
+        "required" : [ "text" ],
+        "type" : "object",
+        "properties" : {
+          "text" : {
+            "maxLength" : 1024,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        },
+        "description" : "Copyright information",
+        "example" : "(p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC."
+      },
       "Albums_Attributes" : {
         "required" : [ "barcodeId", "duration", "explicit", "mediaTags", "numberOfItems", "numberOfVolumes", "popularity", "title", "type" ],
         "type" : "object",
@@ -10152,9 +10126,7 @@
             "example" : "00854242007552"
           },
           "copyright" : {
-            "type" : "string",
-            "description" : "Copyright",
-            "example" : "(p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC."
+            "$ref" : "#/components/schemas/Album_Copyright"
           },
           "duration" : {
             "type" : "string",
@@ -10214,6 +10186,11 @@
             "type" : "string",
             "description" : "Album type",
             "enum" : [ "ALBUM", "EP", "SINGLE" ]
+          },
+          "version" : {
+            "type" : "string",
+            "description" : "Album version",
+            "example" : "remix"
           }
         }
       },
@@ -13326,7 +13303,7 @@
         }
       },
       "TrackUpdateOperation_Payload_Data" : {
-        "required" : [ "attributes", "id", "type" ],
+        "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
           "attributes" : {
