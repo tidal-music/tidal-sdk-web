@@ -23,32 +23,43 @@ export const getUserInfo = async apiSubStatus => {
   }
 };
 
+/* eslint-disable */
+
 /**
  * Search for an artist and display the results in the DOM.
  *
  * @param {string} query
  */
 export const searchForArtist = async query => {
+  // This is a minimal implementation to demonstrate CredentialsProvider usage.
+  // To call the API, you would normally use the `api` package.
+
   const searchResultsTag = document.getElementById('searchResults');
   const credentials = await credentialsProvider.getCredentials();
   const searchResult = await searchArtists(credentials.token, query);
 
   searchResultsTag.innerHTML = '';
 
-  const imageHrefs = searchResult.included.filter(x => x.type === 'artworks' && x.attributes.mediaType === 'IMAGE').reduce((hrefs, includedArtwork) => {
-    hrefs[includedArtwork.id] = includedArtwork.attributes.files.find(f => f.meta.width === 160)?.href
-    return hrefs;
-  }, {});
+  const imageHrefs = searchResult.included
+    .filter(x => x.type === 'artworks' && x.attributes.mediaType === 'IMAGE')
+    .reduce((hrefs, includedArtwork) => {
+      hrefs[includedArtwork.id] = includedArtwork.attributes.files.find(
+        f => f.meta.width === 160,
+      )?.href;
+      return hrefs;
+    }, {});
 
-  for (const included of searchResult.included.filter(x => x.type === 'artists')) {
-    const imgId = included.relationships.profileArt.data[0]?.id;
+  for (const includedArtist of searchResult.included.filter(
+    x => x.type === 'artists',
+  )) {
+    const imgId = includedArtist.relationships.profileArt.data[0]?.id;
     const imgHref = imageHrefs[imgId];
     const imgTag = imgHref ? `<img src=${imgHref}>` : '';
     searchResultsTag.innerHTML += `
       <li>
-        <a href="${included.attributes.externalLinks[0].href}">
+        <a href="${includedArtist.attributes.externalLinks[0].href}">
           ${imgTag}
-          <span>${included.attributes.name}</span>
+          <span>${includedArtist.attributes.name}</span>
         </a>
       </li>`;
   }
@@ -69,7 +80,6 @@ export const searchArtists = async (token, query) => {
   const headers = new Headers({
     Accept: 'application/vnd.api+json',
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/vnd.tidal.v1+json',
   });
   // proxy in vite handling CORS
   const searchResult = await window.fetch(
@@ -80,7 +90,9 @@ export const searchArtists = async (token, query) => {
   );
 
   if (!searchResult.ok) {
-    throw new Error(`Search response status is ${searchResult.status}: ${searchResult.statusText}`);
+    throw new Error(
+      `Search response status is ${searchResult.status}: ${searchResult.statusText}`,
+    );
   }
 
   return await searchResult.json();
