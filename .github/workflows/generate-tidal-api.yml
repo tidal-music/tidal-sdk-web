@@ -91,6 +91,13 @@ jobs:
           echo "Changes in ${{ env.SPEC_FILE }}:"
           echo "$changes_in_spec"
 
+          # Extract API spec version
+          SPEC_VERSION=$(jq -r '.info.version // empty' "${{ env.SPEC_FILE }}" 2>/dev/null)
+          if [ -z "$SPEC_VERSION" ]; then
+            SPEC_VERSION="unknown"
+          fi
+          echo "API Spec Version: $SPEC_VERSION"
+
           if [ -n "$changes_in_generated" ] || [ -n "$changes_in_spec" ]; then
             changes_detected="true"
             changed_file_count=0
@@ -120,6 +127,7 @@ jobs:
 
           echo "CHANGES_DETECTED=$changes_detected" >> $GITHUB_OUTPUT
           echo "CHANGED_FILE_COUNT=$changed_file_count" >> $GITHUB_OUTPUT
+          echo "SPEC_VERSION=$SPEC_VERSION" >> $GITHUB_OUTPUT
 
       - name: No Changes Found - Say Goodbye
         if: ${{ steps.check_for_changes.outputs.CHANGES_DETECTED == 'false' }}
@@ -142,8 +150,8 @@ jobs:
         id: commit_changes
         if: ${{ steps.check_for_changes.outputs.CHANGES_DETECTED == 'true' }}
         run: |
-          # Generate commit message with the number of changed files in the title and the list in the body
-          commit_title="Update Tidal API - ${{ steps.check_for_changes.outputs.CHANGED_FILE_COUNT }} files changed"
+          # Generate commit message with the version and number of changed files in the title and the list in the body
+          commit_title="Update Tidal API to v${{ steps.check_for_changes.outputs.SPEC_VERSION }} - ${{ steps.check_for_changes.outputs.CHANGED_FILE_COUNT }} files changed"
 
           # Create commit message with changes in both generated file and spec
           commit_body="Changes in generated file:\n${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}\n\nChanges in spec file:\n${{ steps.check_for_changes.outputs.CHANGES_IN_SPEC }}"
@@ -202,10 +210,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           current_date=$(date)
-          pr_title="Automatic Tidal API module update - ${{ steps.check_for_changes.outputs.CHANGED_FILE_COUNT }} files changed"
+          pr_title="Automatic Tidal API module update to v${{ steps.check_for_changes.outputs.SPEC_VERSION }} - ${{ steps.check_for_changes.outputs.CHANGED_FILE_COUNT }} files changed"
 
-          # Create PR body with current date and note about automatic updates
-          pr_body="**Changes in Generated file:**\n\n${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}\n\n**Changes in Spec file:**\n\n${{ steps.check_for_changes.outputs.CHANGES_IN_SPEC }}\n\nAutomatically generated on $current_date\n\nThis PR is automatically updated when API changes are detected."
+          # Create PR body with API version, current date and note about automatic updates
+          pr_body="Updated Tidal API to version **v${{ steps.check_for_changes.outputs.SPEC_VERSION }}**\n\n**Changes in Generated file:**\n\n${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}\n\n**Changes in Spec file:**\n\n${{ steps.check_for_changes.outputs.CHANGES_IN_SPEC }}\n\nAutomatically generated on $current_date\n\nThis PR is automatically updated when API changes are detected."
           pr_body=$(echo -e "$pr_body")
 
           if [ "${{ steps.check_pr.outputs.existing_pr }}" == "true" ]; then
