@@ -714,6 +714,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/appreciations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create single appreciation.
+         * @description Creates a new appreciation.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["AppreciationsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Appreciations_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/artistBiographies": {
         parameters: {
             query?: never;
@@ -945,7 +995,13 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: never;
+                query: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode: string;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -1404,7 +1460,7 @@ export interface paths {
                      */
                     countryCode: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, biography, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
@@ -1505,7 +1561,7 @@ export interface paths {
                      */
                     countryCode: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, biography, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
@@ -1702,6 +1758,196 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artists/{id}/relationships/followers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get followers relationship ("to-many").
+         * @description Retrieves followers relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    viewerContext?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: followers
+                     * @example followers
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Artists_Followers_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artists/{id}/relationships/following": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get following relationship ("to-many").
+         * @description Retrieves following relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    viewerContext?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: following
+                     * @example following
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Artists_Following_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Add to following relationship ("to-many").
+         * @description Adds item(s) to following relationship.
+         */
+        post: {
+            parameters: {
+                query: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ArtistFollowingRelationshipAddOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        /**
+         * Delete from following relationship ("to-many").
+         * @description Deletes item(s) from following relationship.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ArtistFollowingRelationshipRemoveOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
         options?: never;
         head?: never;
         patch?: never;
@@ -2580,7 +2826,48 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Get multiple lyrics.
+         * @description Retrieves multiple lyrics by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners, track
+                     * @example owners
+                     */
+                    include?: string[];
+                    /**
+                     * @description Lyrics Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
+                    "filter[id]"?: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Lyrics_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
         put?: never;
         /**
          * Create single lyric.
@@ -2861,6 +3148,8 @@ export interface paths {
                     countryCode: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("createdAt" | "-createdAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners
                      * @example coverArt
@@ -4014,7 +4303,7 @@ export interface paths {
                     countryCode: string;
                     /**
                      * @description Explicit filter
-                     * @example include, exclude
+                     * @example INCLUDE/EXCLUDE
                      */
                     explicitFilter?: string;
                     /**
@@ -4078,7 +4367,7 @@ export interface paths {
                     countryCode: string;
                     /**
                      * @description Explicit filter
-                     * @example include, exclude
+                     * @example INCLUDE/EXCLUDE
                      */
                     explicitFilter?: string;
                     /**
@@ -5556,6 +5845,8 @@ export interface paths {
                     locale: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("albums.addedAt" | "-albums.addedAt" | "albums.artists.name" | "-albums.artists.name" | "albums.releaseDate" | "-albums.releaseDate" | "albums.title" | "-albums.title")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums
                      * @example albums
@@ -5694,6 +5985,8 @@ export interface paths {
                     locale: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("artists.addedAt" | "-artists.addedAt" | "artists.name" | "-artists.name")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
                      * @example artists
@@ -5882,6 +6175,8 @@ export interface paths {
                 query?: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("playlists.addedAt" | "-playlists.addedAt" | "playlists.lastUpdatedAt" | "-playlists.lastUpdatedAt" | "playlists.name" | "-playlists.name")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: playlists
                      * @example playlists
@@ -6014,6 +6309,8 @@ export interface paths {
                     locale: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("tracks.addedAt" | "-tracks.addedAt" | "tracks.albums.title" | "-tracks.albums.title" | "tracks.artists.name" | "-tracks.artists.name" | "tracks.duration" | "-tracks.duration" | "tracks.title" | "-tracks.title")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: tracks
                      * @example tracks
@@ -6152,6 +6449,8 @@ export interface paths {
                     locale: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("videos.addedAt" | "-videos.addedAt" | "videos.artists.name" | "-videos.artists.name" | "videos.duration" | "-videos.duration" | "videos.title" | "-videos.title")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: videos
                      * @example videos
@@ -6644,6 +6943,280 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/userShares": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple userShares.
+         * @description Retrieves multiple userShares by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners, sharedResources
+                     * @example owners
+                     */
+                    include?: string[];
+                    /**
+                     * @description Share code
+                     * @example xyz
+                     */
+                    "filter[code]"?: string[];
+                    /**
+                     * @description User share id
+                     * @example a468bee88def
+                     */
+                    "filter[id]"?: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserShares_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single userShare.
+         * @description Creates a new userShare.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserSharesCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserShares_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userShares/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single userShare.
+         * @description Retrieves single userShare by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners, sharedResources
+                     * @example owners
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User share id
+                     * @example a468bee88def
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserShares_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userShares/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User share id
+                     * @example a468bee88def
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserShares_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userShares/{id}/relationships/sharedResources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get sharedResources relationship ("to-many").
+         * @description Retrieves sharedResources relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: sharedResources
+                     * @example sharedResources
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User share id
+                     * @example a468bee88def
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserShares_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/me": {
         parameters: {
             query?: never;
@@ -7102,7 +7675,7 @@ export interface components {
             type: "albums";
         };
         AlbumCreateOperation_Payload_Data_Attributes: {
-            copyright?: components["schemas"]["Album_Copyright"];
+            copyright?: components["schemas"]["Copyright"];
             explicitLyrics?: boolean;
             /** Format: date */
             releaseDate?: string;
@@ -7141,7 +7714,7 @@ export interface components {
             type: "albums";
         };
         AlbumUpdateOperation_Payload_Data_Attributes: {
-            copyright?: components["schemas"]["Album_Copyright"];
+            copyright?: components["schemas"]["Copyright"];
             explicitLyrics?: boolean;
             /** Format: date */
             releaseDate?: string;
@@ -7159,13 +7732,6 @@ export interface components {
             /** @enum {string} */
             type: "genres";
         };
-        /**
-         * @description Copyright information
-         * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
-         */
-        Album_Copyright: {
-            text: string;
-        };
         Albums_Attributes: {
             /** @description Available usage for this album */
             availability?: ("STREAM" | "DJ" | "STEM")[];
@@ -7174,7 +7740,7 @@ export interface components {
              * @example 00854242007552
              */
             barcodeId: string;
-            copyright?: components["schemas"]["Album_Copyright"];
+            copyright?: components["schemas"]["Copyright"];
             /**
              * @description Duration (ISO 8601)
              * @example PT46M17S
@@ -7297,6 +7863,57 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        AppreciationsCreateOperation_Payload: {
+            data: components["schemas"]["AppreciationsCreateOperation_Payload_Data"];
+            meta?: components["schemas"]["ArtistCreateOperation_Meta"];
+        };
+        AppreciationsCreateOperation_Payload_Data: {
+            relationships: components["schemas"]["AppreciationsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "appreciations";
+        };
+        AppreciationsCreateOperation_Payload_Data_Relationships: {
+            appreciatedItems: components["schemas"]["AppreciationsCreateOperation_Payload_Data_Relationships_AppreciatedItem"];
+        };
+        AppreciationsCreateOperation_Payload_Data_Relationships_AppreciatedItem: {
+            data: components["schemas"]["AppreciationsCreateOperation_Payload_Data_Relationships_AppreciatedItem_Data"][];
+        };
+        AppreciationsCreateOperation_Payload_Data_Relationships_AppreciatedItem_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artists";
+        };
+        Appreciations_Attributes: {
+            /**
+             * Format: date-time
+             * @description Time when the appreciation was created
+             * @example 2025-09-09T13:07:35.734Z
+             */
+            createdAt: string;
+        };
+        Appreciations_Multi_Resource_Data_Document: {
+            data: components["schemas"]["Appreciations_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Appreciations_Resource_Object: {
+            attributes?: components["schemas"]["Appreciations_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "appreciations";
+        };
+        Appreciations_Single_Resource_Data_Document: {
+            data: components["schemas"]["Appreciations_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         ArtistBiographies_Attributes: {
             /**
              * @description Boolean to indicate if the biography is editable (source = tidal or artist)
@@ -7361,13 +7978,6 @@ export interface components {
             /** @enum {string} */
             type: "artists";
         };
-        /**
-         * @description Artist claim id
-         * @example f47ac10b-58cc-4372-a567-0e02b2c3d479
-         */
-        ArtistClaimId: {
-            value?: string;
-        };
         ArtistClaimsCreateOperation_Payload: {
             data: components["schemas"]["ArtistClaimsCreateOperation_Payload_Data"];
         };
@@ -7386,7 +7996,7 @@ export interface components {
         };
         ArtistClaimsUpdateOperation_Payload_Data: {
             attributes?: components["schemas"]["ArtistClaimsUpdateOperation_Payload_Data_Attributes"];
-            id?: components["schemas"]["ArtistClaimId"];
+            id?: string;
             /** @enum {string} */
             type: "artistClaims";
         };
@@ -7464,6 +8074,22 @@ export interface components {
         ArtistCreateOperation_Payload_Data_Attributes: {
             handle?: string;
             name: string;
+        };
+        ArtistFollowingRelationshipAddOperation_Payload: {
+            data: components["schemas"]["ArtistFollowingRelationshipAddOperation_Payload_Data"][];
+        };
+        ArtistFollowingRelationshipAddOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artists";
+        };
+        ArtistFollowingRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["ArtistFollowingRelationshipRemoveOperation_Payload_Data"][];
+        };
+        ArtistFollowingRelationshipRemoveOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artists";
         };
         ArtistProfileArtRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["ArtistProfileArtRelationshipUpdateOperation_Payload_Data"][];
@@ -7554,6 +8180,59 @@ export interface components {
              */
             spotlighted?: boolean;
         };
+        Artists_Followers_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Artists_Followers_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+        };
+        Artists_Followers_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Artists_Followers_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Artists_Followers_Resource_Identifier_Meta: {
+            viewer?: components["schemas"]["Artists_Followers_Resource_Meta_ViewerContext"];
+        };
+        /** @description Optional context about the relationship */
+        Artists_Followers_Resource_Meta_ViewerContext: {
+            /**
+             * @description Boolean to indicate if the artist is following my artist
+             * @default false
+             */
+            followsMyArtist: boolean;
+            /**
+             * @description Boolean to indicate if my artist is following the artist
+             * @default false
+             */
+            myArtistFollows: boolean;
+        };
+        Artists_Following_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Artists_Following_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+        };
+        Artists_Following_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Artists_Following_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Artists_Following_Resource_Identifier_Meta: {
+            viewer?: components["schemas"]["Artists_Followers_Resource_Meta_ViewerContext"];
+        };
         Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -7567,6 +8246,8 @@ export interface components {
         Artists_Relationships: {
             albums: components["schemas"]["Multi_Relationship_Data_Document"];
             biography: components["schemas"]["Single_Relationship_Data_Document"];
+            followers: components["schemas"]["Artists_Followers_Multi_Relationship_Data_Document"];
+            following: components["schemas"]["Artists_Following_Multi_Relationship_Data_Document"];
             owners: components["schemas"]["Multi_Relationship_Data_Document"];
             profileArt: components["schemas"]["Multi_Relationship_Data_Document"];
             radio: components["schemas"]["Multi_Relationship_Data_Document"];
@@ -7737,6 +8418,10 @@ export interface components {
         BarcodeId: {
             value: string;
         };
+        /** @description Copyright information */
+        Copyright: {
+            text: string;
+        };
         /** @description DRM data. Absence implies no DRM. */
         DrmData: {
             certificateUrl?: string;
@@ -7784,7 +8469,7 @@ export interface components {
         /** @description metadata about an external link */
         External_Link_Meta: {
             /** @enum {string} */
-            type: "TIDAL_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "OFFICIAL_HOMEPAGE" | "CASHAPP_CONTRIBUTIONS";
+            type: "TIDAL_SHARING" | "TIDAL_USER_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "OFFICIAL_HOMEPAGE" | "CASHAPP_CONTRIBUTIONS";
         };
         External_Link_Payload: {
             href?: string;
@@ -7848,7 +8533,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserShares_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         Links: {
             meta?: components["schemas"]["Links_Meta"];
             /**
@@ -8590,11 +9275,7 @@ export interface components {
              * @example 60
              */
             bpm?: number;
-            /**
-             * @description Copyright
-             * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
-             */
-            copyright?: string;
+            copyright?: components["schemas"]["Copyright"];
             /**
              * Format: date-time
              * @description Datetime of track creation (ISO 8601)
@@ -8759,7 +9440,7 @@ export interface components {
         UserCollectionVideosRelationshipAddOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
-            type: "albums" | "artistClaims" | "artistRoles" | "artists" | "artworks" | "playlists" | "providers" | "searchResults" | "searchSuggestions" | "tracks" | "trackStatistics" | "userCollections" | "userEntitlements" | "userRecommendations" | "userReports" | "users" | "videos";
+            type: "albums" | "appreciations" | "artistClaims" | "artistRoles" | "artists" | "artworks" | "playlists" | "providers" | "searchResults" | "searchSuggestions" | "tracks" | "trackStatistics" | "userCollections" | "userEntitlements" | "userRecommendations" | "userReports" | "users" | "videos";
         };
         UserCollectionVideosRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionVideosRelationshipRemoveOperation_Payload_Data"][];
@@ -8767,7 +9448,7 @@ export interface components {
         UserCollectionVideosRelationshipRemoveOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
-            type: "albums" | "artistClaims" | "artistRoles" | "artists" | "artworks" | "playlists" | "providers" | "searchResults" | "searchSuggestions" | "tracks" | "trackStatistics" | "userCollections" | "userEntitlements" | "userRecommendations" | "userReports" | "users" | "videos";
+            type: "albums" | "appreciations" | "artistClaims" | "artistRoles" | "artists" | "artworks" | "playlists" | "providers" | "searchResults" | "searchSuggestions" | "tracks" | "trackStatistics" | "userCollections" | "userEntitlements" | "userRecommendations" | "userReports" | "users" | "videos";
         };
         UserCollections_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Albums_Resource_Identifier"][];
@@ -9031,6 +9712,69 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        UserSharesCreateOperation_Payload: {
+            data: components["schemas"]["UserSharesCreateOperation_Payload_Data"];
+        };
+        UserSharesCreateOperation_Payload_Data: {
+            relationships: components["schemas"]["UserSharesCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "userShares";
+        };
+        UserSharesCreateOperation_Payload_Data_Relationships: {
+            sharedResources: components["schemas"]["UserSharesCreateOperation_Payload_Data_Relationships_SharedResources"];
+        };
+        UserSharesCreateOperation_Payload_Data_Relationships_SharedResources: {
+            data: components["schemas"]["UserSharesCreateOperation_Payload_Data_Relationships_SharedResources_Data"][];
+        };
+        UserSharesCreateOperation_Payload_Data_Relationships_SharedResources_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks";
+        };
+        UserShares_Attributes: {
+            /** @description Share code */
+            code: string;
+            /**
+             * Format: date-time
+             * @description Datetime of userShare creation (ISO 8601)
+             */
+            createdAt: string;
+            /** @description Links external to TIDAL API */
+            externalLinks?: components["schemas"]["External_Link"][];
+        };
+        UserShares_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserShares_Multi_Resource_Data_Document: {
+            data: components["schemas"]["UserShares_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserShares_Relationships: {
+            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            sharedResources: components["schemas"]["Multi_Relationship_Data_Document"];
+        };
+        UserShares_Resource_Object: {
+            attributes?: components["schemas"]["UserShares_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["UserShares_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "userShares";
+        };
+        UserShares_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserShares_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Users_Attributes: {
             /**
              * @description ISO 3166-1 alpha-2 country code
@@ -9094,11 +9838,7 @@ export interface components {
         Videos_Attributes: {
             /** @description Available usage for this video */
             availability?: ("STREAM" | "DJ" | "STEM")[];
-            /**
-             * @description Copyright
-             * @example (p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC.
-             */
-            copyright?: string;
+            copyright?: components["schemas"]["Copyright"];
             /**
              * @description Duration (ISO 8601)
              * @example PT2M58S
