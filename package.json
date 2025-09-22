@@ -19,7 +19,7 @@
     "eslint": "9.35.0",
     "eslint-config-tidal": "4.0.0",
     "eslint-plugin-disable-autofix": "5.0.1",
-    "eslint-plugin-jsdoc": "54.5.0",
+    "eslint-plugin-jsdoc": "60.1.0",
     "typedoc": "0.28.12",
     "vitest": "3.2.4"
   },
