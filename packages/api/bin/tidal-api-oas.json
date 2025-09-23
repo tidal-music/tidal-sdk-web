@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.68"
+    "version" : "0.1.78"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -20,6 +20,8 @@
   } ],
   "tags" : [ {
     "name" : "albums"
+  }, {
+    "name" : "appreciations"
   }, {
     "name" : "artistBiographies"
   }, {
@@ -42,6 +44,8 @@
     "name" : "searchResults"
   }, {
     "name" : "searchSuggestions"
+  }, {
+    "name" : "shares"
   }, {
     "name" : "trackFiles"
   }, {
@@ -76,7 +80,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -1073,6 +1078,62 @@
         }
       }
     },
+    "/appreciations" : {
+      "post" : {
+        "description" : "Creates a new appreciation.",
+        "parameters" : [ ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AppreciationsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Appreciations_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single appreciation.",
+        "tags" : [ "appreciations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/artistBiographies" : {
       "get" : {
         "description" : "Retrieves multiple artistBiographies by available filters, or without if applicable.",
@@ -1370,7 +1431,17 @@
     "/artistClaims" : {
       "post" : {
         "description" : "Creates a new artistClaim.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "default" : "US"
+          }
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -1962,7 +2033,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, biography, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -2122,7 +2193,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, biography, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -2340,7 +2411,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: biography",
@@ -2398,6 +2470,290 @@
         "tags" : [ "artists" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/artists/{id}/relationships/followers" : {
+      "get" : {
+        "description" : "Retrieves followers relationship.",
+        "parameters" : [ {
+          "description" : "Artist id",
+          "example" : "1566",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "viewerContext",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: followers",
+          "example" : "followers",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "followers"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Artists_Followers_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get followers relationship (\"to-many\").",
+        "tags" : [ "artists" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/artists/{id}/relationships/following" : {
+      "delete" : {
+        "description" : "Deletes item(s) from following relationship.",
+        "parameters" : [ {
+          "description" : "Artist id",
+          "example" : "1566",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ArtistFollowingRelationshipRemoveOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Delete from following relationship (\"to-many\").",
+        "tags" : [ "artists" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "get" : {
+        "description" : "Retrieves following relationship.",
+        "parameters" : [ {
+          "description" : "Artist id",
+          "example" : "1566",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "viewerContext",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: following",
+          "example" : "following",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "following"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Artists_Following_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get following relationship (\"to-many\").",
+        "tags" : [ "artists" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "post" : {
+        "description" : "Adds item(s) to following relationship.",
+        "parameters" : [ {
+          "description" : "Artist id",
+          "example" : "1566",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "default" : "US"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ArtistFollowingRelationshipAddOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Add to following relationship (\"to-many\").",
+        "tags" : [ "artists" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -2497,7 +2853,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: profileArt",
@@ -3562,6 +3919,79 @@
       }
     },
     "/lyrics" : {
+      "get" : {
+        "description" : "Retrieves multiple lyrics by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners, track",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Lyrics Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "in" : "query",
+          "name" : "filter[id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Lyrics_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple lyrics.",
+        "tags" : [ "lyrics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
       "post" : {
         "description" : "Creates a new lyric.",
         "parameters" : [ ],
@@ -3760,7 +4190,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
@@ -3846,7 +4277,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: track",
@@ -3917,7 +4349,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -3926,6 +4359,20 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Values prefixed with \"-\" are sorted descending; values without it are sorted ascending.",
+          "in" : "query",
+          "name" : "sort",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "createdAt",
+              "default" : "-createdAt",
+              "enum" : [ "createdAt", "-createdAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ]
+            }
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners",
@@ -4020,7 +4467,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         } ],
         "requestBody" : {
@@ -4138,7 +4586,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners",
@@ -4216,7 +4665,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         } ],
         "requestBody" : {
@@ -4280,7 +4730,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: coverArt",
@@ -4474,7 +4925,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -4613,7 +5065,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         } ],
         "requestBody" : {
@@ -4677,7 +5130,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
@@ -5552,16 +6006,18 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Explicit filter",
-          "example" : "include, exclude",
+          "example" : "INCLUDE/EXCLUDE",
           "in" : "query",
           "name" : "explicitFilter",
           "required" : false,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: directHits",
@@ -5639,16 +6095,18 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Explicit filter",
-          "example" : "include, exclude",
+          "example" : "INCLUDE/EXCLUDE",
           "in" : "query",
           "name" : "explicitFilter",
           "required" : false,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: directHits",
@@ -5714,6 +6172,375 @@
         "tags" : [ "searchSuggestions" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/shares" : {
+      "get" : {
+        "description" : "Retrieves multiple shares by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners, sharedResources",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Share code",
+          "example" : "xyz",
+          "in" : "query",
+          "name" : "filter[code]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "xyz"
+            }
+          }
+        }, {
+          "description" : "User share id",
+          "example" : "a468bee88def",
+          "in" : "query",
+          "name" : "filter[id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "a468bee88def"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Shares_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple shares.",
+        "tags" : [ "shares" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "post" : {
+        "description" : "Creates a new share.",
+        "parameters" : [ ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SharesCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Shares_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single share.",
+        "tags" : [ "shares" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/shares/{id}" : {
+      "get" : {
+        "description" : "Retrieves single share by id.",
+        "parameters" : [ {
+          "description" : "User share id",
+          "example" : "a468bee88def",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners, sharedResources",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Shares_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get single share.",
+        "tags" : [ "shares" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/shares/{id}/relationships/owners" : {
+      "get" : {
+        "description" : "Retrieves owners relationship.",
+        "parameters" : [ {
+          "description" : "User share id",
+          "example" : "a468bee88def",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Shares_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "shares" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/shares/{id}/relationships/sharedResources" : {
+      "get" : {
+        "description" : "Retrieves sharedResources relationship.",
+        "parameters" : [ {
+          "description" : "User share id",
+          "example" : "a468bee88def",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: sharedResources",
+          "example" : "sharedResources",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "sharedResources"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Shares_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get sharedResources relationship (\"to-many\").",
+        "tags" : [ "shares" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -6380,7 +7207,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -6605,7 +7433,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, similarTracks, sourceFile, trackStatistics",
@@ -7555,7 +8384,8 @@
           "name" : "locale",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "ISO 3166-1 alpha-2 country code",
@@ -7564,7 +8394,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, owners, playlists, tracks, videos",
@@ -7695,7 +8526,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "BCP 47 locale",
@@ -7704,7 +8536,8 @@
           "name" : "locale",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -7713,6 +8546,20 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Values prefixed with \"-\" are sorted descending; values without it are sorted ascending.",
+          "in" : "query",
+          "name" : "sort",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "albums.addedAt",
+              "default" : "-albums.addedAt",
+              "enum" : [ "albums.addedAt", "-albums.addedAt", "albums.artists.name", "-albums.artists.name", "albums.releaseDate", "-albums.releaseDate", "albums.title", "-albums.title" ]
+            }
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: albums",
@@ -7788,7 +8635,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         } ],
         "requestBody" : {
@@ -7905,7 +8753,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "BCP 47 locale",
@@ -7914,7 +8763,8 @@
           "name" : "locale",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -7923,6 +8773,20 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Values prefixed with \"-\" are sorted descending; values without it are sorted ascending.",
+          "in" : "query",
+          "name" : "sort",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "artists.addedAt",
+              "default" : "-artists.addedAt",
+              "enum" : [ "artists.addedAt", "-artists.addedAt", "artists.name", "-artists.name" ]
+            }
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: artists",
@@ -7998,7 +8862,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         } ],
         "requestBody" : {
@@ -8194,6 +9059,20 @@
             "type" : "string"
           }
         }, {
+          "description" : "Values prefixed with \"-\" are sorted descending; values without it are sorted ascending.",
+          "in" : "query",
+          "name" : "sort",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "playlists.addedAt",
+              "default" : "-playlists.addedAt",
+              "enum" : [ "playlists.addedAt", "-playlists.addedAt", "playlists.lastUpdatedAt", "-playlists.lastUpdatedAt", "playlists.name", "-playlists.name" ]
+            }
+          }
+        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: playlists",
           "example" : "playlists",
           "in" : "query",
@@ -8375,7 +9254,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "BCP 47 locale",
@@ -8384,7 +9264,8 @@
           "name" : "locale",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -8393,6 +9274,20 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Values prefixed with \"-\" are sorted descending; values without it are sorted ascending.",
+          "in" : "query",
+          "name" : "sort",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "tracks.addedAt",
+              "default" : "-tracks.addedAt",
+              "enum" : [ "tracks.addedAt", "-tracks.addedAt", "tracks.albums.title", "-tracks.albums.title", "tracks.artists.name", "-tracks.artists.name", "tracks.duration", "-tracks.duration", "tracks.title", "-tracks.title" ]
+            }
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: tracks",
@@ -8468,7 +9363,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         } ],
         "requestBody" : {
@@ -8585,7 +9481,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         }, {
           "description" : "BCP 47 locale",
@@ -8594,7 +9491,8 @@
           "name" : "locale",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -8603,6 +9501,20 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Values prefixed with \"-\" are sorted descending; values without it are sorted ascending.",
+          "in" : "query",
+          "name" : "sort",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "videos.addedAt",
+              "default" : "-videos.addedAt",
+              "enum" : [ "videos.addedAt", "-videos.addedAt", "videos.artists.name", "-videos.artists.name", "videos.duration", "-videos.duration", "videos.title", "-videos.title" ]
+            }
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: videos",
@@ -8678,7 +9590,8 @@
           "name" : "countryCode",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "US"
           }
         } ],
         "requestBody" : {
@@ -9923,7 +10836,7 @@
         "type" : "object",
         "properties" : {
           "copyright" : {
-            "$ref" : "#/components/schemas/Album_Copyright"
+            "$ref" : "#/components/schemas/Copyright"
           },
           "explicitLyrics" : {
             "type" : "boolean"
@@ -10043,7 +10956,7 @@
         "type" : "object",
         "properties" : {
           "copyright" : {
-            "$ref" : "#/components/schemas/Album_Copyright"
+            "$ref" : "#/components/schemas/Copyright"
           },
           "explicitLyrics" : {
             "type" : "boolean"
@@ -10095,19 +11008,6 @@
           }
         }
       },
-      "Album_Copyright" : {
-        "required" : [ "text" ],
-        "type" : "object",
-        "properties" : {
-          "text" : {
-            "maxLength" : 1024,
-            "minLength" : 1,
-            "type" : "string"
-          }
-        },
-        "description" : "Copyright information",
-        "example" : "(p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC."
-      },
       "Albums_Attributes" : {
         "required" : [ "barcodeId", "duration", "explicit", "mediaTags", "numberOfItems", "numberOfVolumes", "popularity", "title", "type" ],
         "type" : "object",
@@ -10126,7 +11026,7 @@
             "example" : "00854242007552"
           },
           "copyright" : {
-            "$ref" : "#/components/schemas/Album_Copyright"
+            "$ref" : "#/components/schemas/Copyright"
           },
           "duration" : {
             "type" : "string",
@@ -10346,6 +11246,140 @@
           }
         }
       },
+      "AppreciationsCreateOperation_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "dryRun" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "AppreciationsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/AppreciationsCreateOperation_Payload_Data"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/AppreciationsCreateOperation_Meta"
+          }
+        }
+      },
+      "AppreciationsCreateOperation_Payload_Data" : {
+        "required" : [ "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "relationships" : {
+            "$ref" : "#/components/schemas/AppreciationsCreateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "appreciations" ]
+          }
+        }
+      },
+      "AppreciationsCreateOperation_Payload_Data_Relationships" : {
+        "required" : [ "appreciatedItems" ],
+        "type" : "object",
+        "properties" : {
+          "appreciatedItems" : {
+            "$ref" : "#/components/schemas/AppreciationsCreateOperation_Payload_Data_Relationships_AppreciatedItem"
+          }
+        }
+      },
+      "AppreciationsCreateOperation_Payload_Data_Relationships_AppreciatedItem" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 1,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AppreciationsCreateOperation_Payload_Data_Relationships_AppreciatedItem_Data"
+            }
+          }
+        }
+      },
+      "AppreciationsCreateOperation_Payload_Data_Relationships_AppreciatedItem_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "artists" ]
+          }
+        }
+      },
+      "Appreciations_Attributes" : {
+        "required" : [ "createdAt" ],
+        "type" : "object",
+        "properties" : {
+          "createdAt" : {
+            "type" : "string",
+            "description" : "Time when the appreciation was created",
+            "format" : "date-time",
+            "example" : "2025-09-09T13:07:35.734Z"
+          }
+        }
+      },
+      "Appreciations_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Appreciations_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Appreciations_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/Appreciations_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Appreciations_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Appreciations_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "ArtistBiographies_Attributes" : {
         "required" : [ "editable", "text" ],
         "type" : "object",
@@ -10504,16 +11538,6 @@
           }
         }
       },
-      "ArtistClaimId" : {
-        "type" : "object",
-        "properties" : {
-          "value" : {
-            "type" : "string"
-          }
-        },
-        "description" : "Artist claim id",
-        "example" : "f47ac10b-58cc-4372-a567-0e02b2c3d479"
-      },
       "ArtistClaimsCreateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -10566,7 +11590,7 @@
             "$ref" : "#/components/schemas/ArtistClaimsUpdateOperation_Payload_Data_Attributes"
           },
           "id" : {
-            "$ref" : "#/components/schemas/ArtistClaimId"
+            "type" : "string"
           },
           "type" : {
             "type" : "string",
@@ -10749,6 +11773,60 @@
           },
           "name" : {
             "type" : "string"
+          }
+        }
+      },
+      "ArtistFollowingRelationshipAddOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 1,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistFollowingRelationshipAddOperation_Payload_Data"
+            }
+          }
+        }
+      },
+      "ArtistFollowingRelationshipAddOperation_Payload_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "artists" ]
+          }
+        }
+      },
+      "ArtistFollowingRelationshipRemoveOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 1,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistFollowingRelationshipRemoveOperation_Payload_Data"
+            }
+          }
+        }
+      },
+      "ArtistFollowingRelationshipRemoveOperation_Payload_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "artists" ]
           }
         }
       },
@@ -10943,6 +12021,106 @@
           }
         }
       },
+      "Artists_Followers_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Artists_Followers_Resource_Identifier"
+            }
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Artists_Followers_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Artists_Followers_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Artists_Followers_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "viewer" : {
+            "$ref" : "#/components/schemas/Artists_Followers_Resource_Meta_ViewerContext"
+          }
+        }
+      },
+      "Artists_Followers_Resource_Meta_ViewerContext" : {
+        "type" : "object",
+        "properties" : {
+          "followsMyArtist" : {
+            "type" : "boolean",
+            "description" : "Boolean to indicate if the artist is following my artist",
+            "default" : false
+          },
+          "myArtistFollows" : {
+            "type" : "boolean",
+            "description" : "Boolean to indicate if my artist is following the artist",
+            "default" : false
+          }
+        },
+        "description" : "Optional context about the relationship"
+      },
+      "Artists_Following_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Artists_Following_Resource_Identifier"
+            }
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Artists_Following_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Artists_Following_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Artists_Following_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "viewer" : {
+            "$ref" : "#/components/schemas/Artists_Followers_Resource_Meta_ViewerContext"
+          }
+        }
+      },
       "Artists_Multi_Relationship_Data_Document" : {
         "required" : [ "links" ],
         "type" : "object",
@@ -10980,13 +12158,19 @@
         }
       },
       "Artists_Relationships" : {
-        "required" : [ "albums", "biography", "owners", "profileArt", "radio", "roles", "similarArtists", "trackProviders", "tracks", "videos" ],
+        "required" : [ "albums", "biography", "followers", "following", "owners", "profileArt", "radio", "roles", "similarArtists", "trackProviders", "tracks", "videos" ],
         "properties" : {
           "albums" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "biography" : {
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          },
+          "followers" : {
+            "$ref" : "#/components/schemas/Artists_Followers_Multi_Relationship_Data_Document"
+          },
+          "following" : {
+            "$ref" : "#/components/schemas/Artists_Following_Multi_Relationship_Data_Document"
           },
           "owners" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -11359,6 +12543,18 @@
         "description" : "Barcode Id",
         "example" : 196589525444
       },
+      "Copyright" : {
+        "required" : [ "text" ],
+        "type" : "object",
+        "properties" : {
+          "text" : {
+            "maxLength" : 1024,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        },
+        "description" : "Copyright information"
+      },
       "DrmData" : {
         "type" : "object",
         "properties" : {
@@ -11452,7 +12648,7 @@
         "properties" : {
           "type" : {
             "type" : "string",
-            "enum" : [ "TIDAL_SHARING", "TIDAL_AUTOPLAY_ANDROID", "TIDAL_AUTOPLAY_IOS", "TIDAL_AUTOPLAY_WEB", "TWITTER", "FACEBOOK", "INSTAGRAM", "TIKTOK", "SNAPCHAT", "OFFICIAL_HOMEPAGE", "CASHAPP_CONTRIBUTIONS" ]
+            "enum" : [ "TIDAL_SHARING", "TIDAL_USER_SHARING", "TIDAL_AUTOPLAY_ANDROID", "TIDAL_AUTOPLAY_IOS", "TIDAL_AUTOPLAY_WEB", "TWITTER", "FACEBOOK", "INSTAGRAM", "TIKTOK", "SNAPCHAT", "OFFICIAL_HOMEPAGE", "CASHAPP_CONTRIBUTIONS" ]
           }
         },
         "description" : "metadata about an external link"
@@ -11589,6 +12785,7 @@
           "discriminator" : {
             "mapping" : {
               "albums" : "#/components/schemas/Albums_Resource_Object",
+              "appreciations" : "#/components/schemas/Appreciations_Resource_Object",
               "artistBiographies" : "#/components/schemas/ArtistBiographies_Resource_Object",
               "artistClaims" : "#/components/schemas/ArtistClaims_Resource_Object",
               "artistRoles" : "#/components/schemas/ArtistRoles_Resource_Object",
@@ -11600,6 +12797,7 @@
               "providers" : "#/components/schemas/Providers_Resource_Object",
               "searchResults" : "#/components/schemas/SearchResults_Resource_Object",
               "searchSuggestions" : "#/components/schemas/SearchSuggestions_Resource_Object",
+              "shares" : "#/components/schemas/Shares_Resource_Object",
               "trackFiles" : "#/components/schemas/TrackFiles_Resource_Object",
               "trackManifests" : "#/components/schemas/TrackManifests_Resource_Object",
               "trackSourceFiles" : "#/components/schemas/TrackSourceFiles_Resource_Object",
@@ -11616,6 +12814,8 @@
           },
           "oneOf" : [ {
             "$ref" : "#/components/schemas/Albums_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/Appreciations_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/ArtistBiographies_Resource_Object"
           }, {
@@ -11638,6 +12838,8 @@
             "$ref" : "#/components/schemas/SearchResults_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/SearchSuggestions_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/Shares_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/TrackFiles_Resource_Object"
           }, {
@@ -12725,6 +13927,171 @@
         },
         "description" : "Suggested search queries"
       },
+      "SharesCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SharesCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "SharesCreateOperation_Payload_Data" : {
+        "required" : [ "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "relationships" : {
+            "$ref" : "#/components/schemas/SharesCreateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "shares" ]
+          }
+        }
+      },
+      "SharesCreateOperation_Payload_Data_Relationships" : {
+        "required" : [ "sharedResources" ],
+        "type" : "object",
+        "properties" : {
+          "sharedResources" : {
+            "$ref" : "#/components/schemas/SharesCreateOperation_Payload_Data_Relationships_SharedResources"
+          }
+        }
+      },
+      "SharesCreateOperation_Payload_Data_Relationships_SharedResources" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 1,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SharesCreateOperation_Payload_Data_Relationships_SharedResources_Data"
+            }
+          }
+        }
+      },
+      "SharesCreateOperation_Payload_Data_Relationships_SharedResources_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "tracks" ]
+          }
+        }
+      },
+      "Shares_Attributes" : {
+        "required" : [ "code", "createdAt" ],
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string",
+            "description" : "Share code"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "description" : "Datetime of share creation (ISO 8601)",
+            "format" : "date-time"
+          },
+          "externalLinks" : {
+            "type" : "array",
+            "description" : "Links external to TIDAL API",
+            "items" : {
+              "$ref" : "#/components/schemas/External_Link"
+            }
+          }
+        }
+      },
+      "Shares_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Shares_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Shares_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Shares_Relationships" : {
+        "required" : [ "owners", "sharedResources" ],
+        "properties" : {
+          "owners" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "sharedResources" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "Shares_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/Shares_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/Shares_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Shares_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Shares_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "Single_Relationship_Data_Document" : {
         "required" : [ "links" ],
         "type" : "object",
@@ -13424,9 +14791,7 @@
             "example" : 60.0
           },
           "copyright" : {
-            "type" : "string",
-            "description" : "Copyright",
-            "example" : "(p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC."
+            "$ref" : "#/components/schemas/Copyright"
           },
           "createdAt" : {
             "type" : "string",
@@ -13840,7 +15205,7 @@
           },
           "type" : {
             "type" : "string",
-            "enum" : [ "albums", "artistClaims", "artistRoles", "artists", "artworks", "playlists", "providers", "searchResults", "searchSuggestions", "tracks", "trackStatistics", "userCollections", "userEntitlements", "userRecommendations", "userReports", "users", "videos" ]
+            "enum" : [ "albums", "appreciations", "artistClaims", "artistRoles", "artists", "artworks", "playlists", "providers", "searchResults", "searchSuggestions", "tracks", "trackStatistics", "userCollections", "userEntitlements", "userRecommendations", "userReports", "users", "videos" ]
           }
         }
       },
@@ -13867,7 +15232,7 @@
           },
           "type" : {
             "type" : "string",
-            "enum" : [ "albums", "artistClaims", "artistRoles", "artists", "artworks", "playlists", "providers", "searchResults", "searchSuggestions", "tracks", "trackStatistics", "userCollections", "userEntitlements", "userRecommendations", "userReports", "users", "videos" ]
+            "enum" : [ "albums", "appreciations", "artistClaims", "artistRoles", "artists", "artworks", "playlists", "providers", "searchResults", "searchSuggestions", "tracks", "trackStatistics", "userCollections", "userEntitlements", "userRecommendations", "userReports", "users", "videos" ]
           }
         }
       },
@@ -14599,9 +15964,7 @@
             }
           },
           "copyright" : {
-            "type" : "string",
-            "description" : "Copyright",
-            "example" : "(p)(c) 2017 S. CARTER ENTERPRISES, LLC. MARKETED BY ROC NATION & DISTRIBUTED BY ROC NATION/UMG RECORDINGS INC."
+            "$ref" : "#/components/schemas/Copyright"
           },
           "duration" : {
             "type" : "string",
