@@ -7796,6 +7796,7 @@ export interface components {
         };
         Albums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Albums_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Albums_Items_Resource_Identifier: {
@@ -8185,6 +8186,7 @@ export interface components {
         };
         Artists_Followers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Followers_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artists_Followers_Resource_Identifier: {
@@ -8218,6 +8220,7 @@ export interface components {
         };
         Artists_Following_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Following_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artists_Following_Resource_Identifier: {
@@ -8286,6 +8289,7 @@ export interface components {
         };
         Artists_TrackProviders_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_TrackProviders_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Artists_TrackProviders_Resource_Identifier: {
@@ -8768,6 +8772,7 @@ export interface components {
         };
         Playlists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Playlists_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Playlists_Items_Resource_Identifier: {
@@ -9518,6 +9523,7 @@ export interface components {
         };
         UserCollections_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Albums_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollections_Albums_Resource_Identifier: {
@@ -9539,6 +9545,7 @@ export interface components {
         };
         UserCollections_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Artists_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollections_Artists_Resource_Identifier: {
@@ -9571,6 +9578,7 @@ export interface components {
         };
         UserCollections_Playlists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Playlists_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollections_Playlists_Resource_Identifier: {
@@ -9619,6 +9627,7 @@ export interface components {
         };
         UserCollections_Tracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Tracks_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollections_Tracks_Resource_Identifier: {
@@ -9640,6 +9649,7 @@ export interface components {
         };
         UserCollections_Videos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Videos_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollections_Videos_Resource_Identifier: {
