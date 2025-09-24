@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.78"
+    "version" : "0.1.79"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -8354,14 +8354,12 @@
           }
         },
         "security" : [ {
-          "Client_Credentials" : [ ]
-        }, {
           "Authorization_Code_PKCE" : [ ]
         } ],
         "summary" : "Get trackStatistics relationship (\"to-one\").",
         "tags" : [ "tracks" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -11104,6 +11102,9 @@
               "$ref" : "#/components/schemas/Albums_Items_Resource_Identifier"
             }
           },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
           "links" : {
             "$ref" : "#/components/schemas/Links"
           }
@@ -12031,6 +12032,9 @@
               "$ref" : "#/components/schemas/Artists_Followers_Resource_Identifier"
             }
           },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
           "links" : {
             "$ref" : "#/components/schemas/Links"
           }
@@ -12088,6 +12092,9 @@
             "items" : {
               "$ref" : "#/components/schemas/Artists_Following_Resource_Identifier"
             }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
@@ -12260,6 +12267,9 @@
             "items" : {
               "$ref" : "#/components/schemas/Artists_TrackProviders_Resource_Identifier"
             }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
@@ -13431,6 +13441,9 @@
             "items" : {
               "$ref" : "#/components/schemas/Playlists_Items_Resource_Identifier"
             }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
@@ -15246,6 +15259,9 @@
               "$ref" : "#/components/schemas/UserCollections_Albums_Resource_Identifier"
             }
           },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
           "links" : {
             "$ref" : "#/components/schemas/Links"
           }
@@ -15289,6 +15305,9 @@
             "items" : {
               "$ref" : "#/components/schemas/UserCollections_Artists_Resource_Identifier"
             }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
@@ -15372,6 +15391,9 @@
             "items" : {
               "$ref" : "#/components/schemas/UserCollections_Playlists_Resource_Identifier"
             }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
@@ -15478,6 +15500,9 @@
               "$ref" : "#/components/schemas/UserCollections_Tracks_Resource_Identifier"
             }
           },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
           "links" : {
             "$ref" : "#/components/schemas/Links"
           }
@@ -15521,6 +15546,9 @@
             "items" : {
               "$ref" : "#/components/schemas/UserCollections_Videos_Resource_Identifier"
             }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
