@@ -7991,6 +7991,7 @@ export interface components {
             type: "artistClaims";
         };
         ArtistClaimsCreateOperation_Payload_Data_Attributes: {
+            artistId: string;
             /** @enum {string} */
             provider: "DISTROKID" | "CDBABY" | "TUNECORE";
         };
@@ -8009,6 +8010,8 @@ export interface components {
             authorizationCode: string;
         };
         ArtistClaims_Attributes: {
+            /** @description The artist id which is being claimed */
+            artistId: string;
             /**
              * @description The DSP used for authentication
              * @enum {string}
@@ -8027,7 +8030,7 @@ export interface components {
              * @description Current status of this claim
              * @enum {string}
              */
-            status?: "AWAITING_OAUTH" | "FETCHING_CONTENT" | "VERIFIED" | "NO_MATCHES" | "AUTHENTICATION_FAILED" | "PROCESSING" | "COMPLETED" | "FAILED" | "CANCELLED";
+            status: "AWAITING_OAUTH" | "FETCHING_CONTENT" | "VERIFIED" | "NO_MATCHES" | "AUTHENTICATION_FAILED" | "PROCESSING" | "COMPLETED" | "FAILED" | "CANCELLED";
         };
         ArtistClaims_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
