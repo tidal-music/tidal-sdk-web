@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.79"
+    "version" : "0.1.81"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -4371,7 +4371,8 @@
               "type" : "string",
               "example" : "createdAt",
               "default" : "-createdAt",
-              "enum" : [ "createdAt", "-createdAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ]
+              "enum" : [ "createdAt", "-createdAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
+              "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "LastModifiedAtAsc", "LastModifiedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
         }, {
@@ -8556,7 +8557,8 @@
               "type" : "string",
               "example" : "albums.addedAt",
               "default" : "-albums.addedAt",
-              "enum" : [ "albums.addedAt", "-albums.addedAt", "albums.artists.name", "-albums.artists.name", "albums.releaseDate", "-albums.releaseDate", "albums.title", "-albums.title" ]
+              "enum" : [ "albums.addedAt", "-albums.addedAt", "albums.artists.name", "-albums.artists.name", "albums.releaseDate", "-albums.releaseDate", "albums.title", "-albums.title" ],
+              "x-enum-varnames" : [ "AlbumsAddedAtAsc", "AlbumsAddedAtDesc", "AlbumsArtistsNameAsc", "AlbumsArtistsNameDesc", "AlbumsReleaseDateAsc", "AlbumsReleaseDateDesc", "AlbumsTitleAsc", "AlbumsTitleDesc" ]
             }
           }
         }, {
@@ -8783,7 +8785,8 @@
               "type" : "string",
               "example" : "artists.addedAt",
               "default" : "-artists.addedAt",
-              "enum" : [ "artists.addedAt", "-artists.addedAt", "artists.name", "-artists.name" ]
+              "enum" : [ "artists.addedAt", "-artists.addedAt", "artists.name", "-artists.name" ],
+              "x-enum-varnames" : [ "ArtistsAddedAtAsc", "ArtistsAddedAtDesc", "ArtistsNameAsc", "ArtistsNameDesc" ]
             }
           }
         }, {
@@ -9067,7 +9070,8 @@
               "type" : "string",
               "example" : "playlists.addedAt",
               "default" : "-playlists.addedAt",
-              "enum" : [ "playlists.addedAt", "-playlists.addedAt", "playlists.lastUpdatedAt", "-playlists.lastUpdatedAt", "playlists.name", "-playlists.name" ]
+              "enum" : [ "playlists.addedAt", "-playlists.addedAt", "playlists.lastUpdatedAt", "-playlists.lastUpdatedAt", "playlists.name", "-playlists.name" ],
+              "x-enum-varnames" : [ "PlaylistsAddedAtAsc", "PlaylistsAddedAtDesc", "PlaylistsLastUpdatedAtAsc", "PlaylistsLastUpdatedAtDesc", "PlaylistsNameAsc", "PlaylistsNameDesc" ]
             }
           }
         }, {
@@ -9284,7 +9288,8 @@
               "type" : "string",
               "example" : "tracks.addedAt",
               "default" : "-tracks.addedAt",
-              "enum" : [ "tracks.addedAt", "-tracks.addedAt", "tracks.albums.title", "-tracks.albums.title", "tracks.artists.name", "-tracks.artists.name", "tracks.duration", "-tracks.duration", "tracks.title", "-tracks.title" ]
+              "enum" : [ "tracks.addedAt", "-tracks.addedAt", "tracks.albums.title", "-tracks.albums.title", "tracks.artists.name", "-tracks.artists.name", "tracks.duration", "-tracks.duration", "tracks.title", "-tracks.title" ],
+              "x-enum-varnames" : [ "TracksAddedAtAsc", "TracksAddedAtDesc", "TracksAlbumsTitleAsc", "TracksAlbumsTitleDesc", "TracksArtistsNameAsc", "TracksArtistsNameDesc", "TracksDurationAsc", "TracksDurationDesc", "TracksTitleAsc", "TracksTitleDesc" ]
             }
           }
         }, {
@@ -9511,7 +9516,8 @@
               "type" : "string",
               "example" : "videos.addedAt",
               "default" : "-videos.addedAt",
-              "enum" : [ "videos.addedAt", "-videos.addedAt", "videos.artists.name", "-videos.artists.name", "videos.duration", "-videos.duration", "videos.title", "-videos.title" ]
+              "enum" : [ "videos.addedAt", "-videos.addedAt", "videos.artists.name", "-videos.artists.name", "videos.duration", "-videos.duration", "videos.title", "-videos.title" ],
+              "x-enum-varnames" : [ "VideosAddedAtAsc", "VideosAddedAtDesc", "VideosArtistsNameAsc", "VideosArtistsNameDesc", "VideosDurationAsc", "VideosDurationDesc", "VideosTitleAsc", "VideosTitleDesc" ]
             }
           }
         }, {
@@ -11562,9 +11568,12 @@
         }
       },
       "ArtistClaimsCreateOperation_Payload_Data_Attributes" : {
-        "required" : [ "provider" ],
+        "required" : [ "artistId", "provider" ],
         "type" : "object",
         "properties" : {
+          "artistId" : {
+            "type" : "string"
+          },
           "provider" : {
             "type" : "string",
             "enum" : [ "DISTROKID", "CDBABY", "TUNECORE" ]
@@ -11612,9 +11621,13 @@
         }
       },
       "ArtistClaims_Attributes" : {
-        "required" : [ "provider" ],
+        "required" : [ "artistId", "provider", "status" ],
         "type" : "object",
         "properties" : {
+          "artistId" : {
+            "type" : "string",
+            "description" : "The artist id which is being claimed"
+          },
           "provider" : {
             "minLength" : 1,
             "type" : "string",
@@ -11638,6 +11651,7 @@
             }
           },
           "status" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Current status of this claim",
             "enum" : [ "AWAITING_OAUTH", "FETCHING_CONTENT", "VERIFIED", "NO_MATCHES", "AUTHENTICATION_FAILED", "PROCESSING", "COMPLETED", "FAILED", "CANCELLED" ]
