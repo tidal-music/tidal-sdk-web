@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.81"
+    "version" : "0.1.82"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -12988,6 +12988,21 @@
           }
         }
       },
+      "LyricsProvider" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "source" : {
+            "type" : "string",
+            "enum" : [ "TIDAL", "THIRD_PARTY" ]
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "source"
+        }
+      },
       "LyricsUpdateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -13028,6 +13043,20 @@
         "required" : [ "technicalStatus" ],
         "type" : "object",
         "properties" : {
+          "direction" : {
+            "type" : "string",
+            "enum" : [ "LEFT_TO_RIGHT", "RIGHT_TO_LEFT" ]
+          },
+          "lrcText" : {
+            "type" : "string"
+          },
+          "provider" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/ThirdParty"
+            }, {
+              "$ref" : "#/components/schemas/Tidal"
+            } ]
+          },
           "technicalStatus" : {
             "type" : "string",
             "enum" : [ "PENDING", "PROCESSING", "ERROR", "OK" ]
@@ -14130,6 +14159,29 @@
             "$ref" : "#/components/schemas/Links"
           }
         }
+      },
+      "ThirdParty" : {
+        "required" : [ "commonTrackId", "lyricsId", "name" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LyricsProvider"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "commonTrackId" : {
+              "type" : "string"
+            },
+            "lyricsId" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "Tidal" : {
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/LyricsProvider"
+        } ]
       },
       "TrackCreateOperation_Payload" : {
         "required" : [ "data" ],
