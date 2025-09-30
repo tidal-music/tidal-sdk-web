@@ -8589,6 +8589,11 @@ export interface components {
         LyricsCreateOperation_Payload_Meta: {
             generate?: boolean;
         };
+        LyricsProvider: {
+            name?: string;
+            /** @enum {string} */
+            source?: "TIDAL" | "THIRD_PARTY";
+        };
         LyricsUpdateOperation_Payload: {
             data: components["schemas"]["LyricsUpdateOperation_Payload_Data"];
         };
@@ -8602,6 +8607,10 @@ export interface components {
             text: string;
         };
         Lyrics_Attributes: {
+            /** @enum {string} */
+            direction?: "LEFT_TO_RIGHT" | "RIGHT_TO_LEFT";
+            lrcText?: string;
+            provider?: components["schemas"]["ThirdParty"] | components["schemas"]["Tidal"];
             /** @enum {string} */
             technicalStatus: "PENDING" | "PROCESSING" | "ERROR" | "OK";
             text?: string;
@@ -9058,6 +9067,15 @@ export interface components {
             data?: components["schemas"]["Resource_Identifier"];
             links: components["schemas"]["Links"];
         };
+        ThirdParty: {
+            source: "ThirdParty";
+        } & (Omit<WithRequired<components["schemas"]["LyricsProvider"], "name">, "source"> & {
+            commonTrackId: string;
+            lyricsId: string;
+        });
+        Tidal: {
+            source: "Tidal";
+        } & Omit<components["schemas"]["LyricsProvider"], "source">;
         TrackCreateOperation_Payload: {
             data: components["schemas"]["TrackCreateOperation_Payload_Data"];
         };
@@ -10008,4 +10026,7 @@ export interface components {
     pathItems: never;
 }
 export type $defs = Record<string, never>;
+type WithRequired<T, K extends keyof T> = T & {
+    [P in K]-?: T[P];
+};
 export type operations = Record<string, never>;
