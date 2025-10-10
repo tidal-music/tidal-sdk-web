@@ -8621,6 +8621,7 @@ export interface components {
         };
         ArtistClaimsCreateOperation_Payload: {
             data: components["schemas"]["ArtistClaimsCreateOperation_Payload_Data"];
+            meta: components["schemas"]["ArtistClaimsCreateOperation_Payload_Meta"];
         };
         ArtistClaimsCreateOperation_Payload_Data: {
             attributes: components["schemas"]["ArtistClaimsCreateOperation_Payload_Data_Attributes"];
@@ -8631,6 +8632,10 @@ export interface components {
             artistId: string;
             /** @enum {string} */
             provider: "DISTROKID" | "CDBABY" | "TUNECORE";
+        };
+        ArtistClaimsCreateOperation_Payload_Meta: {
+            nonce?: string;
+            redirectUrl: string;
         };
         ArtistClaimsUpdateOperation_Payload: {
             data?: components["schemas"]["ArtistClaimsUpdateOperation_Payload_Data"];
