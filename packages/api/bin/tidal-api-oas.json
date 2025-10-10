@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.85"
+    "version" : "0.1.86"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -12448,11 +12448,14 @@
         }
       },
       "ArtistClaimsCreateOperation_Payload" : {
-        "required" : [ "data" ],
+        "required" : [ "data", "meta" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/ArtistClaimsCreateOperation_Payload_Data"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/ArtistClaimsCreateOperation_Payload_Meta"
           }
         }
       },
@@ -12479,6 +12482,18 @@
           "provider" : {
             "type" : "string",
             "enum" : [ "DISTROKID", "CDBABY", "TUNECORE" ]
+          }
+        }
+      },
+      "ArtistClaimsCreateOperation_Payload_Meta" : {
+        "required" : [ "redirectUrl" ],
+        "type" : "object",
+        "properties" : {
+          "nonce" : {
+            "type" : "string"
+          },
+          "redirectUrl" : {
+            "type" : "string"
           }
         }
       },
