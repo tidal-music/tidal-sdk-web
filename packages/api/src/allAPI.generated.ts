@@ -2968,7 +2968,34 @@ export interface paths {
         };
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete single lyric.
+         * @description Deletes existing lyric.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Lyrics Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
         options?: never;
         head?: never;
         /**
@@ -8650,6 +8677,7 @@ export interface components {
         ArtistClaimsUpdateOperation_Payload_Data_Attributes: Record<string, never>;
         ArtistClaimsUpdateOperation_Payload_Meta: {
             authorizationCode: string;
+            redirectUri: string;
         };
         ArtistClaims_Attributes: {
             /** @description The artist id which is being claimed */
@@ -9319,11 +9347,9 @@ export interface components {
             data: components["schemas"]["PlayQueueCreateOperation_Payload_Data"];
         };
         PlayQueueCreateOperation_Payload_Data: {
-            attributes: components["schemas"]["PlayQueueCreateOperation_Payload_Data_Attributes"];
             /** @enum {string} */
             type: "playQueues";
         };
-        PlayQueueCreateOperation_Payload_Data_Attributes: Record<string, never>;
         PlayQueueRemoveFutureOperation_Payload: {
             data: components["schemas"]["PlayQueueRemoveFutureOperation_Payload_Data"][];
         };
@@ -9365,6 +9391,8 @@ export interface components {
             type: "playQueues";
         };
         PlayQueueUpdateOperation_Payload_Data_Attributes: {
+            /** @enum {string} */
+            repeat?: "NONE" | "ONE" | "BATCH";
             shuffled?: boolean;
         };
         PlayQueues_Attributes: {
@@ -9382,7 +9410,7 @@ export interface components {
              * @description Queue's repeat mode
              * @enum {string}
              */
-            repeat: "OFF" | "ONE" | "RANGE";
+            repeat: "NONE" | "ONE" | "BATCH";
             /** @description Queue is shuffled or not */
             shuffled: boolean;
         };
