@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.86"
+    "version" : "0.1.87"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -4060,6 +4060,50 @@
       }
     },
     "/lyrics/{id}" : {
+      "delete" : {
+        "description" : "Deletes existing lyric.",
+        "parameters" : [ {
+          "description" : "Lyrics Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "$ref" : "#/components/responses/Bad_Request_Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Not_Found_Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Method_Not_Allowed_Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Not_Acceptable_Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Unsupported_Media_Type_Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Too_Many_Requests_Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Internal_Server_Error_Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Delete single lyric.",
+        "tags" : [ "lyrics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
       "get" : {
         "description" : "Retrieves single lyric by id.",
         "parameters" : [ {
@@ -5195,8 +5239,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "enum" : [ "createdAt", "-createdAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
               "default" : "-createdAt",
+              "enum" : [ "createdAt", "-createdAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "LastModifiedAtAsc", "LastModifiedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -9458,8 +9502,8 @@
             "items" : {
               "type" : "string",
               "example" : "albums.addedAt",
-              "enum" : [ "albums.addedAt", "-albums.addedAt", "albums.artists.name", "-albums.artists.name", "albums.releaseDate", "-albums.releaseDate", "albums.title", "-albums.title" ],
               "default" : "-albums.addedAt",
+              "enum" : [ "albums.addedAt", "-albums.addedAt", "albums.artists.name", "-albums.artists.name", "albums.releaseDate", "-albums.releaseDate", "albums.title", "-albums.title" ],
               "x-enum-varnames" : [ "AlbumsAddedAtAsc", "AlbumsAddedAtDesc", "AlbumsArtistsNameAsc", "AlbumsArtistsNameDesc", "AlbumsReleaseDateAsc", "AlbumsReleaseDateDesc", "AlbumsTitleAsc", "AlbumsTitleDesc" ]
             }
           }
@@ -9686,8 +9730,8 @@
             "items" : {
               "type" : "string",
               "example" : "artists.addedAt",
-              "enum" : [ "artists.addedAt", "-artists.addedAt", "artists.name", "-artists.name" ],
               "default" : "-artists.addedAt",
+              "enum" : [ "artists.addedAt", "-artists.addedAt", "artists.name", "-artists.name" ],
               "x-enum-varnames" : [ "ArtistsAddedAtAsc", "ArtistsAddedAtDesc", "ArtistsNameAsc", "ArtistsNameDesc" ]
             }
           }
@@ -9971,8 +10015,8 @@
             "items" : {
               "type" : "string",
               "example" : "playlists.addedAt",
-              "enum" : [ "playlists.addedAt", "-playlists.addedAt", "playlists.lastUpdatedAt", "-playlists.lastUpdatedAt", "playlists.name", "-playlists.name" ],
               "default" : "-playlists.addedAt",
+              "enum" : [ "playlists.addedAt", "-playlists.addedAt", "playlists.lastUpdatedAt", "-playlists.lastUpdatedAt", "playlists.name", "-playlists.name" ],
               "x-enum-varnames" : [ "PlaylistsAddedAtAsc", "PlaylistsAddedAtDesc", "PlaylistsLastUpdatedAtAsc", "PlaylistsLastUpdatedAtDesc", "PlaylistsNameAsc", "PlaylistsNameDesc" ]
             }
           }
@@ -10189,8 +10233,8 @@
             "items" : {
               "type" : "string",
               "example" : "tracks.addedAt",
-              "enum" : [ "tracks.addedAt", "-tracks.addedAt", "tracks.albums.title", "-tracks.albums.title", "tracks.artists.name", "-tracks.artists.name", "tracks.duration", "-tracks.duration", "tracks.title", "-tracks.title" ],
               "default" : "-tracks.addedAt",
+              "enum" : [ "tracks.addedAt", "-tracks.addedAt", "tracks.albums.title", "-tracks.albums.title", "tracks.artists.name", "-tracks.artists.name", "tracks.duration", "-tracks.duration", "tracks.title", "-tracks.title" ],
               "x-enum-varnames" : [ "TracksAddedAtAsc", "TracksAddedAtDesc", "TracksAlbumsTitleAsc", "TracksAlbumsTitleDesc", "TracksArtistsNameAsc", "TracksArtistsNameDesc", "TracksDurationAsc", "TracksDurationDesc", "TracksTitleAsc", "TracksTitleDesc" ]
             }
           }
@@ -10417,8 +10461,8 @@
             "items" : {
               "type" : "string",
               "example" : "videos.addedAt",
-              "enum" : [ "videos.addedAt", "-videos.addedAt", "videos.artists.name", "-videos.artists.name", "videos.duration", "-videos.duration", "videos.title", "-videos.title" ],
               "default" : "-videos.addedAt",
+              "enum" : [ "videos.addedAt", "-videos.addedAt", "videos.artists.name", "-videos.artists.name", "videos.duration", "-videos.duration", "videos.title", "-videos.title" ],
               "x-enum-varnames" : [ "VideosAddedAtAsc", "VideosAddedAtDesc", "VideosArtistsNameAsc", "VideosArtistsNameDesc", "VideosDurationAsc", "VideosDurationDesc", "VideosTitleAsc", "VideosTitleDesc" ]
             }
           }
@@ -12529,10 +12573,13 @@
         "type" : "object"
       },
       "ArtistClaimsUpdateOperation_Payload_Meta" : {
-        "required" : [ "authorizationCode" ],
+        "required" : [ "authorizationCode", "redirectUri" ],
         "type" : "object",
         "properties" : {
           "authorizationCode" : {
+            "type" : "string"
+          },
+          "redirectUri" : {
             "type" : "string"
           }
         }
@@ -14161,20 +14208,14 @@
         }
       },
       "PlayQueueCreateOperation_Payload_Data" : {
-        "required" : [ "attributes", "type" ],
+        "required" : [ "type" ],
         "type" : "object",
         "properties" : {
-          "attributes" : {
-            "$ref" : "#/components/schemas/PlayQueueCreateOperation_Payload_Data_Attributes"
-          },
           "type" : {
             "type" : "string",
             "enum" : [ "playQueues" ]
           }
         }
-      },
-      "PlayQueueCreateOperation_Payload_Data_Attributes" : {
-        "type" : "object"
       },
       "PlayQueueRemoveFutureOperation_Payload" : {
         "required" : [ "data" ],
@@ -14301,6 +14342,10 @@
       "PlayQueueUpdateOperation_Payload_Data_Attributes" : {
         "type" : "object",
         "properties" : {
+          "repeat" : {
+            "type" : "string",
+            "enum" : [ "NONE", "ONE", "BATCH" ]
+          },
           "shuffled" : {
             "type" : "boolean"
           }
@@ -14323,7 +14368,7 @@
           "repeat" : {
             "type" : "string",
             "description" : "Queue's repeat mode",
-            "enum" : [ "OFF", "ONE", "RANGE" ]
+            "enum" : [ "NONE", "ONE", "BATCH" ]
           },
           "shuffled" : {
             "type" : "boolean",
