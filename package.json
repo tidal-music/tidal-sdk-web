@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/tidal-sdk-web",
-  "packageManager": "pnpm@10.18.0",
+  "packageManager": "pnpm@10.18.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -19,8 +19,8 @@
     "eslint": "9.37.0",
     "eslint-config-tidal": "4.0.0",
     "eslint-plugin-disable-autofix": "5.0.1",
-    "eslint-plugin-jsdoc": "60.8.2",
-    "typedoc": "0.28.13",
+    "eslint-plugin-jsdoc": "60.8.3",
+    "typedoc": "0.28.14",
     "vitest": "3.2.4"
   },
   "pnpm": {
