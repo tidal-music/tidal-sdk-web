@@ -9214,9 +9214,6 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
-        ItemMeta: {
-            itemId: string;
-        };
         Links: {
             meta?: components["schemas"]["Links_Meta"];
             /**
@@ -9340,6 +9337,8 @@ export interface components {
             type: "tracks" | "videos" | "albums" | "playlists";
         };
         PlayQueueAddFutureOperation_Payload_Meta: {
+            /** Format: uuid */
+            batchId?: string;
             /** @enum {string} */
             mode: "ADD_TO_FRONT" | "ADD_TO_BACK" | "REPLACE_ALL";
         };
@@ -9355,7 +9354,7 @@ export interface components {
         };
         PlayQueueRemoveFutureOperation_Payload_Data: {
             id: string;
-            meta: components["schemas"]["ItemMeta"];
+            meta: components["schemas"]["PlayQueueUpdateRemoveOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "tracks" | "videos";
         };
@@ -9364,19 +9363,25 @@ export interface components {
         };
         PlayQueueUpdateCurrentOperations_Payload_Data: {
             id: string;
-            meta: components["schemas"]["ItemMeta"];
+            meta: components["schemas"]["PlayQueueUpdateCurrentOperations_Payload_Data_Meta"];
             /** @enum {string} */
             type: "tracks" | "videos";
+        };
+        PlayQueueUpdateCurrentOperations_Payload_Data_Meta: {
+            itemId: string;
         };
         PlayQueueUpdateFutureOperation_Payload: {
             data: components["schemas"]["PlayQueueUpdateFutureOperation_Payload_Data"][];
-            meta?: components["schemas"]["PlayQueueUpdateFutureOperation_Payload_Meta"];
+            meta: components["schemas"]["PlayQueueUpdateFutureOperation_Payload_Meta"];
         };
         PlayQueueUpdateFutureOperation_Payload_Data: {
             id: string;
-            meta: components["schemas"]["ItemMeta"];
+            meta: components["schemas"]["PlayQueueUpdateFutureOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "tracks" | "videos";
+        };
+        PlayQueueUpdateFutureOperation_Payload_Data_Meta: {
+            itemId: string;
         };
         PlayQueueUpdateFutureOperation_Payload_Meta: {
             positionBefore: string;
@@ -9394,6 +9399,9 @@ export interface components {
             /** @enum {string} */
             repeat?: "NONE" | "ONE" | "BATCH";
             shuffled?: boolean;
+        };
+        PlayQueueUpdateRemoveOperation_Payload_Data_Meta: {
+            itemId: string;
         };
         PlayQueues_Attributes: {
             /**
@@ -9433,6 +9441,8 @@ export interface components {
             type: string;
         };
         PlayQueues_Future_Resource_Identifier_Meta: {
+            /** Format: uuid */
+            batchId: string;
             itemId: string;
         };
         PlayQueues_Multi_Relationship_Data_Document: {
@@ -9464,6 +9474,8 @@ export interface components {
             type: string;
         };
         PlayQueues_Past_Resource_Identifier_Meta: {
+            /** Format: uuid */
+            batchId: string;
             itemId: string;
         };
         PlayQueues_Relationships: {
@@ -9973,7 +9985,7 @@ export interface components {
              * @description File's audio format
              * @enum {string}
              */
-            format?: "HEAACV1" | "AACLC" | "FLAC" | "FLAC_HIRES";
+            format?: "HEAACV1" | "AACLC" | "FLAC" | "FLAC_HIRES" | "EAC3_JOC";
             trackAudioNormalizationData?: components["schemas"]["AudioNormalizationData"];
             /**
              * @description Track presentation
@@ -10010,7 +10022,7 @@ export interface components {
             albumAudioNormalizationData?: components["schemas"]["AudioNormalizationData"];
             drmData?: components["schemas"]["DrmData"];
             /** @description Formats present in manifest */
-            formats?: ("HEAACV1" | "AACLC" | "FLAC" | "FLAC_HIRES")[];
+            formats?: ("HEAACV1" | "AACLC" | "FLAC" | "FLAC_HIRES" | "EAC3_JOC")[];
             /** @description Unique manifest hash */
             hash?: string;
             trackAudioNormalizationData?: components["schemas"]["AudioNormalizationData"];

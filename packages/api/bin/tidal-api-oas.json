@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.87"
+    "version" : "0.1.89"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -13856,16 +13856,6 @@
           } ]
         }
       },
-      "ItemMeta" : {
-        "required" : [ "itemId" ],
-        "type" : "object",
-        "properties" : {
-          "itemId" : {
-            "minLength" : 1,
-            "type" : "string"
-          }
-        }
-      },
       "Links" : {
         "required" : [ "self" ],
         "type" : "object",
@@ -14164,7 +14154,7 @@
         "properties" : {
           "data" : {
             "maxItems" : 20,
-            "minItems" : 1,
+            "minItems" : 0,
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/PlayQueueAddFutureOperation_Payload_Data"
@@ -14192,6 +14182,10 @@
         "required" : [ "mode" ],
         "type" : "object",
         "properties" : {
+          "batchId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
           "mode" : {
             "type" : "string",
             "enum" : [ "ADD_TO_FRONT", "ADD_TO_BACK", "REPLACE_ALL" ]
@@ -14239,7 +14233,7 @@
             "type" : "string"
           },
           "meta" : {
-            "$ref" : "#/components/schemas/ItemMeta"
+            "$ref" : "#/components/schemas/PlayQueueUpdateRemoveOperation_Payload_Data_Meta"
           },
           "type" : {
             "type" : "string",
@@ -14264,7 +14258,7 @@
             "type" : "string"
           },
           "meta" : {
-            "$ref" : "#/components/schemas/ItemMeta"
+            "$ref" : "#/components/schemas/PlayQueueUpdateCurrentOperations_Payload_Data_Meta"
           },
           "type" : {
             "type" : "string",
@@ -14272,8 +14266,17 @@
           }
         }
       },
+      "PlayQueueUpdateCurrentOperations_Payload_Data_Meta" : {
+        "required" : [ "itemId" ],
+        "type" : "object",
+        "properties" : {
+          "itemId" : {
+            "type" : "string"
+          }
+        }
+      },
       "PlayQueueUpdateFutureOperation_Payload" : {
-        "required" : [ "data" ],
+        "required" : [ "data", "meta" ],
         "type" : "object",
         "properties" : {
           "data" : {
@@ -14297,11 +14300,20 @@
             "type" : "string"
           },
           "meta" : {
-            "$ref" : "#/components/schemas/ItemMeta"
+            "$ref" : "#/components/schemas/PlayQueueUpdateFutureOperation_Payload_Data_Meta"
           },
           "type" : {
             "type" : "string",
             "enum" : [ "tracks", "videos" ]
+          }
+        }
+      },
+      "PlayQueueUpdateFutureOperation_Payload_Data_Meta" : {
+        "required" : [ "itemId" ],
+        "type" : "object",
+        "properties" : {
+          "itemId" : {
+            "type" : "string"
           }
         }
       },
@@ -14348,6 +14360,15 @@
           },
           "shuffled" : {
             "type" : "boolean"
+          }
+        }
+      },
+      "PlayQueueUpdateRemoveOperation_Payload_Data_Meta" : {
+        "required" : [ "itemId" ],
+        "type" : "object",
+        "properties" : {
+          "itemId" : {
+            "type" : "string"
           }
         }
       },
@@ -14414,9 +14435,13 @@
         }
       },
       "PlayQueues_Future_Resource_Identifier_Meta" : {
-        "required" : [ "itemId" ],
+        "required" : [ "batchId", "itemId" ],
         "type" : "object",
         "properties" : {
+          "batchId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
           "itemId" : {
             "minLength" : 1,
             "type" : "string"
@@ -14497,9 +14522,13 @@
         }
       },
       "PlayQueues_Past_Resource_Identifier_Meta" : {
-        "required" : [ "itemId" ],
+        "required" : [ "batchId", "itemId" ],
         "type" : "object",
         "properties" : {
+          "batchId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
           "itemId" : {
             "minLength" : 1,
             "type" : "string"
@@ -15728,7 +15757,7 @@
           "format" : {
             "type" : "string",
             "description" : "File's audio format",
-            "enum" : [ "HEAACV1", "AACLC", "FLAC", "FLAC_HIRES" ]
+            "enum" : [ "HEAACV1", "AACLC", "FLAC", "FLAC_HIRES", "EAC3_JOC" ]
           },
           "trackAudioNormalizationData" : {
             "$ref" : "#/components/schemas/AudioNormalizationData"
@@ -15812,7 +15841,7 @@
             "items" : {
               "type" : "string",
               "description" : "Formats present in manifest",
-              "enum" : [ "HEAACV1", "AACLC", "FLAC", "FLAC_HIRES" ]
+              "enum" : [ "HEAACV1", "AACLC", "FLAC", "FLAC_HIRES", "EAC3_JOC" ]
             }
           },
           "hash" : {
