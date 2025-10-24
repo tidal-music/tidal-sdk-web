@@ -9274,7 +9274,8 @@ export interface components {
             type: "lyrics";
         };
         LyricsUpdateOperation_Payload_Data_Attributes: {
-            text: string;
+            lrcText?: string;
+            text?: string;
         };
         Lyrics_Attributes: {
             /** @enum {string} */
