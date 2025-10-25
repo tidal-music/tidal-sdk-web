@@ -52,7 +52,7 @@ jobs:
 
       - name: Upload API spec as artifact
         if: steps.compare.outputs.changes_found == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: api-spec
           path: /tmp/api-check/latest-api.json
