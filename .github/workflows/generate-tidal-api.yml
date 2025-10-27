@@ -55,7 +55,7 @@ jobs:
 
       - name: Download API spec artifact
         if: ${{ inputs.use_downloaded_spec == 'true' }}
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: api-spec
           path: /tmp/api-check
