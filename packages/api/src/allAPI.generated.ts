@@ -6070,7 +6070,38 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update albums relationship ("to-many").
+         * @description Updates albums relationship.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description A Tidal catalogue ID
+                     * @example 75413016
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["TrackAlbumsRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
         trace?: never;
     };
     "/tracks/{id}/relationships/artists": {
@@ -9928,6 +9959,14 @@ export interface components {
         Tidal: {
             source: "Tidal";
         } & Omit<components["schemas"]["LyricsProvider"], "source">;
+        TrackAlbumsRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["TrackAlbumsRelationshipUpdateOperation_Payload_Data"][];
+        };
+        TrackAlbumsRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "albums";
+        };
         TrackCreateOperation_Payload: {
             data: components["schemas"]["TrackCreateOperation_Payload_Data"];
         };
