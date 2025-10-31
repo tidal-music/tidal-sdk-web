@@ -17,14 +17,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums
                      * @example artists
@@ -247,13 +247,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
                      * @example artists
@@ -312,13 +312,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: coverArt
                      * @example coverArt
@@ -408,13 +408,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: genres
                      * @example genres
@@ -473,13 +473,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
                      * @example items
@@ -663,13 +663,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: similarAlbums
                      * @example similarAlbums
@@ -995,12 +995,12 @@ export interface paths {
          */
         post: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                 };
                 header?: never;
                 path?: never;
@@ -1097,12 +1097,12 @@ export interface paths {
          */
         patch: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                 };
                 header?: never;
                 path: {
@@ -1655,13 +1655,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums
                      * @example albums
@@ -1719,12 +1719,12 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: biography
                      * @example biography
@@ -1890,12 +1890,12 @@ export interface paths {
          */
         post: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                 };
                 header?: never;
                 path: {
@@ -2032,12 +2032,12 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: profileArt
                      * @example profileArt
@@ -2129,13 +2129,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: radio
                      * @example radio
@@ -2254,13 +2254,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: similarArtists
                      * @example similarArtists
@@ -2380,17 +2380,17 @@ export interface paths {
             parameters: {
                 query: {
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode: string;
-                    /**
                      * @description Collapse by options for getting artist tracks. Available options: FINGERPRINT, ID. FINGERPRINT option might collapse similar tracks based entry fingerprints while collapsing by ID always returns all available items.
                      * @example FINGERPRINT
                      */
                     collapseBy: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: tracks
                      * @example tracks
@@ -2449,13 +2449,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: videos
                      * @example videos
@@ -3045,12 +3045,12 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
@@ -3110,12 +3110,12 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: track
                      * @example track
@@ -3744,16 +3744,16 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode: string;
+                query?: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("createdAt" | "-createdAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners
                      * @example coverArt
@@ -3801,12 +3801,12 @@ export interface paths {
          */
         post: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                 };
                 header?: never;
                 path?: never;
@@ -3855,12 +3855,12 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners
                      * @example coverArt
@@ -3935,12 +3935,12 @@ export interface paths {
          */
         patch: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                 };
                 header?: never;
                 path: {
@@ -3982,12 +3982,12 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: coverArt
                      * @example coverArt
@@ -4078,14 +4078,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
                      * @example items
@@ -4129,12 +4129,12 @@ export interface paths {
          */
         post: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                 };
                 header?: never;
                 path: {
@@ -4242,12 +4242,12 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
@@ -4899,17 +4899,17 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode: string;
+                query?: {
                     /**
                      * @description Explicit filter
                      * @example INCLUDE/EXCLUDE
                      */
                     explicitFilter?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: directHits
                      * @example directHits
@@ -4963,17 +4963,17 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode: string;
+                query?: {
                     /**
                      * @description Explicit filter
                      * @example INCLUDE/EXCLUDE
                      */
                     explicitFilter?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: directHits
                      * @example directHits
@@ -5792,14 +5792,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, shares, similarTracks, sourceFile, trackStatistics
                      * @example albums
@@ -5900,12 +5900,12 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, shares, similarTracks, sourceFile, trackStatistics
                      * @example albums
@@ -6118,13 +6118,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
                      * @example artists
@@ -6553,13 +6553,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: similarTracks
                      * @example similarTracks
@@ -7128,7 +7128,7 @@ export interface paths {
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, owners, playlists, tracks, videos
                      * @example albums
@@ -7188,11 +7188,6 @@ export interface paths {
             parameters: {
                 query: {
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode: string;
-                    /**
                      * @description BCP 47 locale
                      * @example en-US
                      */
@@ -7201,6 +7196,11 @@ export interface paths {
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("albums.addedAt" | "-albums.addedAt" | "albums.artists.name" | "-albums.artists.name" | "albums.releaseDate" | "-albums.releaseDate" | "albums.title" | "-albums.title")[];
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums
                      * @example albums
@@ -7244,12 +7244,12 @@ export interface paths {
          */
         post: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7328,11 +7328,6 @@ export interface paths {
             parameters: {
                 query: {
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode: string;
-                    /**
                      * @description BCP 47 locale
                      * @example en-US
                      */
@@ -7341,6 +7336,11 @@ export interface paths {
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("artists.addedAt" | "-artists.addedAt" | "artists.name" | "-artists.name")[];
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
                      * @example artists
@@ -7384,12 +7384,12 @@ export interface paths {
          */
         post: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7653,11 +7653,6 @@ export interface paths {
             parameters: {
                 query: {
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode: string;
-                    /**
                      * @description BCP 47 locale
                      * @example en-US
                      */
@@ -7666,6 +7661,11 @@ export interface paths {
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("tracks.addedAt" | "-tracks.addedAt" | "tracks.albums.title" | "-tracks.albums.title" | "tracks.artists.name" | "-tracks.artists.name" | "tracks.duration" | "-tracks.duration" | "tracks.title" | "-tracks.title")[];
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: tracks
                      * @example tracks
@@ -7709,12 +7709,12 @@ export interface paths {
          */
         post: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7793,11 +7793,6 @@ export interface paths {
             parameters: {
                 query: {
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode: string;
-                    /**
                      * @description BCP 47 locale
                      * @example en-US
                      */
@@ -7806,6 +7801,11 @@ export interface paths {
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("videos.addedAt" | "-videos.addedAt" | "videos.artists.name" | "-videos.artists.name" | "videos.duration" | "-videos.duration" | "videos.title" | "-videos.title")[];
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: videos
                      * @example videos
@@ -7849,12 +7849,12 @@ export interface paths {
          */
         post: {
             parameters: {
-                query: {
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode: string;
+                    countryCode?: string;
                 };
                 header?: never;
                 path: {

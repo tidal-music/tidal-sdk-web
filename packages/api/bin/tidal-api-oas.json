@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.92"
+    "version" : "0.1.93"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -78,19 +78,18 @@
       "get" : {
         "description" : "Retrieves multiple albums by available filters, or without if applicable.",
         "parameters" : [ {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "US"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -437,19 +436,19 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -525,19 +524,19 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -666,19 +665,19 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -754,19 +753,19 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -1007,19 +1006,19 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -1440,10 +1439,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         } ],
         "requestBody" : {
@@ -1582,10 +1580,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         } ],
         "requestBody" : {
@@ -2331,19 +2328,19 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -2423,10 +2420,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: biography",
@@ -2723,10 +2719,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         } ],
         "requestBody" : {
@@ -2865,10 +2860,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: profileArt",
@@ -3003,19 +2997,19 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -3170,19 +3164,19 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -3337,15 +3331,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "Collapse by options for getting artist tracks. Available options: FINGERPRINT, ID. FINGERPRINT option might collapse similar tracks based entry fingerprints while collapsing by ID always returns all available items.",
           "example" : "FINGERPRINT",
           "in" : "query",
@@ -3359,6 +3344,15 @@
           "in" : "query",
           "name" : "page[cursor]",
           "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
@@ -3434,19 +3428,19 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -4246,10 +4240,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
@@ -4333,10 +4326,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: track",
@@ -5214,16 +5206,6 @@
       "get" : {
         "description" : "Retrieves multiple playlists by available filters, or without if applicable.",
         "parameters" : [ {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "US"
-          }
-        }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
           "in" : "query",
           "name" : "page[cursor]",
@@ -5245,6 +5227,15 @@
               "default" : "-createdAt",
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "LastModifiedAtAsc", "LastModifiedAtDesc", "NameAsc", "NameDesc" ]
             }
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners",
@@ -5337,10 +5328,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         } ],
         "requestBody" : {
@@ -5456,10 +5446,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners",
@@ -5535,10 +5524,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         } ],
         "requestBody" : {
@@ -5600,10 +5588,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: coverArt",
@@ -5791,19 +5778,18 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "US"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -5935,10 +5921,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         } ],
         "requestBody" : {
@@ -6000,10 +5985,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
@@ -6872,16 +6856,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "US"
-          }
-        }, {
           "description" : "Explicit filter",
           "example" : "INCLUDE/EXCLUDE",
           "in" : "query",
@@ -6890,6 +6864,15 @@
           "schema" : {
             "type" : "string",
             "default" : "INCLUDE"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: directHits",
@@ -6961,16 +6944,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "US"
-          }
-        }, {
           "description" : "Explicit filter",
           "example" : "INCLUDE/EXCLUDE",
           "in" : "query",
@@ -6979,6 +6952,15 @@
           "schema" : {
             "type" : "string",
             "default" : "INCLUDE"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: directHits",
@@ -8073,19 +8055,18 @@
       "get" : {
         "description" : "Retrieves multiple tracks by available filters, or without if applicable.",
         "parameters" : [ {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "US"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -8303,10 +8284,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, shares, similarTracks, sourceFile, trackStatistics",
@@ -8574,19 +8554,19 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -9150,19 +9130,19 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -9951,10 +9931,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, owners, playlists, tracks, videos",
@@ -10079,16 +10058,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "US"
-          }
-        }, {
           "description" : "BCP 47 locale",
           "example" : "en-US",
           "in" : "query",
@@ -10120,6 +10089,15 @@
               "default" : "-albums.addedAt",
               "x-enum-varnames" : [ "AlbumsAddedAtAsc", "AlbumsAddedAtDesc", "AlbumsArtistsNameAsc", "AlbumsArtistsNameDesc", "AlbumsReleaseDateAsc", "AlbumsReleaseDateDesc", "AlbumsTitleAsc", "AlbumsTitleDesc" ]
             }
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: albums",
@@ -10193,10 +10171,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         } ],
         "requestBody" : {
@@ -10307,16 +10284,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "US"
-          }
-        }, {
           "description" : "BCP 47 locale",
           "example" : "en-US",
           "in" : "query",
@@ -10348,6 +10315,15 @@
               "default" : "-artists.addedAt",
               "x-enum-varnames" : [ "ArtistsAddedAtAsc", "ArtistsAddedAtDesc", "ArtistsNameAsc", "ArtistsNameDesc" ]
             }
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: artists",
@@ -10421,10 +10397,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         } ],
         "requestBody" : {
@@ -10817,16 +10792,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "US"
-          }
-        }, {
           "description" : "BCP 47 locale",
           "example" : "en-US",
           "in" : "query",
@@ -10858,6 +10823,15 @@
               "default" : "-tracks.addedAt",
               "x-enum-varnames" : [ "TracksAddedAtAsc", "TracksAddedAtDesc", "TracksAlbumsTitleAsc", "TracksAlbumsTitleDesc", "TracksArtistsNameAsc", "TracksArtistsNameDesc", "TracksDurationAsc", "TracksDurationDesc", "TracksTitleAsc", "TracksTitleDesc" ]
             }
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: tracks",
@@ -10931,10 +10905,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         } ],
         "requestBody" : {
@@ -11045,16 +11018,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "US"
-          }
-        }, {
           "description" : "BCP 47 locale",
           "example" : "en-US",
           "in" : "query",
@@ -11086,6 +11049,15 @@
               "default" : "-videos.addedAt",
               "x-enum-varnames" : [ "VideosAddedAtAsc", "VideosAddedAtDesc", "VideosArtistsNameAsc", "VideosArtistsNameDesc", "VideosDurationAsc", "VideosDurationDesc", "VideosTitleAsc", "VideosTitleDesc" ]
             }
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: videos",
@@ -11159,10 +11131,9 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string",
-            "default" : "US"
+            "type" : "string"
           }
         } ],
         "requestBody" : {
