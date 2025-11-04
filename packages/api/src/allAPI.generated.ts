@@ -2383,7 +2383,7 @@ export interface paths {
                      * @description Collapse by options for getting artist tracks. Available options: FINGERPRINT, ID. FINGERPRINT option might collapse similar tracks based entry fingerprints while collapsing by ID always returns all available items.
                      * @example FINGERPRINT
                      */
-                    collapseBy: string;
+                    collapseBy: "FINGERPRINT" | "NONE";
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -4904,7 +4904,7 @@ export interface paths {
                      * @description Explicit filter
                      * @example INCLUDE/EXCLUDE
                      */
-                    explicitFilter?: string;
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -4968,7 +4968,7 @@ export interface paths {
                      * @description Explicit filter
                      * @example INCLUDE/EXCLUDE
                      */
-                    explicitFilter?: string;
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -5304,8 +5304,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    formats: string;
-                    usage: string;
+                    formats: ("HEAACV1" | "AACLC" | "FLAC" | "FLAC_HIRES" | "EAC3_JOC")[];
+                    usage: "PLAYBACK" | "DOWNLOAD";
                 };
                 header?: never;
                 path: {
@@ -5355,11 +5355,11 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    manifestType: string;
-                    formats: string;
-                    uriScheme: string;
-                    usage: string;
-                    adaptive: string;
+                    manifestType: "HLS" | "MPEG_DASH";
+                    formats: ("HEAACV1" | "AACLC" | "FLAC" | "FLAC_HIRES" | "EAC3_JOC")[];
+                    uriScheme: "HTTPS" | "DATA";
+                    usage: "PLAYBACK" | "DOWNLOAD";
+                    adaptive: boolean;
                 };
                 header?: never;
                 path: {
@@ -7022,7 +7022,13 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    /**
+                     * @description Folder Id
+                     * @example
+                     */
+                    id: string;
+                };
                 cookie?: never;
             };
             requestBody?: {
@@ -7527,7 +7533,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    collectionView?: string;
+                    collectionView?: "FOLDERS";
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
