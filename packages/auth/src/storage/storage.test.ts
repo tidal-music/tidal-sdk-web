@@ -27,6 +27,9 @@ describe.sequential('storage', () => {
     vi.stubGlobal('crypto', {
       getRandomValues: vi.fn(),
     });
+
+    // Reset all mocks before each test
+    vi.clearAllMocks();
   });
   describe('loadCredentials', () => {
     it('loads credentials from local storage', async () => {
@@ -66,6 +69,9 @@ describe.sequential('storage', () => {
       await expect(async () => await loadCredentials('key')).rejects.toThrow(
         authErrorCodeMap.storageError,
       );
+
+      // Reset the mock implementation for subsequent tests
+      database.setItem.mockReset();
     });
   });
 

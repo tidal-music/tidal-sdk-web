@@ -18,6 +18,11 @@ describe.sequential('submit', () => {
     vi.mocked(queue).getEventBatch.mockReturnValue([]);
   });
 
+  afterEach(() => {
+    vi.clearAllMocks();
+    vi.resetAllMocks();
+  });
+
   it('fails to send if no credentialsProvider is set', async () => {
     vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
 
