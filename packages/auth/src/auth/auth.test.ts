@@ -51,16 +51,22 @@ const prepareFetchMock = {
 
 describe.sequential('auth', () => {
   beforeEach(() => {
-    vi.stubGlobal(
-      'CustomEvent',
-      vi.fn((type: string, options: { detail: { type: string } }) => {
-        return { detail: options.detail, type };
-      }),
-    );
+    // Create a proper CustomEvent constructor mock
+    class MockCustomEvent {
+      detail: { type: string };
+      type: string;
+
+      constructor(type: string, options: { detail: { type: string } }) {
+        this.type = type;
+        this.detail = options.detail;
+      }
+    }
+
+    vi.stubGlobal('CustomEvent', MockCustomEvent);
 
     vi.stubGlobal(
       'dispatchEvent',
-      vi.fn(() => {}),
+      vi.fn(() => true),
     );
 
     vi.stubGlobal(
@@ -69,6 +75,11 @@ describe.sequential('auth', () => {
         callback();
       }),
     );
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   describe('init', () => {

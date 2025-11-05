@@ -19,6 +19,12 @@ describe.sequential('sendEvent', () => {
   beforeEach(async () => {
     await uuid.init();
   });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+    vi.resetAllMocks();
+  });
+
   it('if event consentCategory is not blocked -> adds event to queue', async () => {
     vi.spyOn(uuid, 'uuid').mockReturnValue('fakeUuid');
     const sendEventPayload: SendEventParams = {
