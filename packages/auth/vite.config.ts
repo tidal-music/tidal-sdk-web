@@ -1,5 +1,6 @@
+import { type UserConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import { type UserConfig, defineConfig } from 'vitest/config';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig(({ command }) => {
   // needed for demo cors
