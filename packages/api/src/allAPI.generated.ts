@@ -8823,6 +8823,12 @@ export interface components {
             type: "genres";
         };
         Albums_Attributes: {
+            /**
+             * @description Access type
+             * @example PRIVATE
+             * @enum {string}
+             */
+            accessType?: "PUBLIC" | "UNLISTED" | "PRIVATE";
             /** @description Available usage for this album */
             availability?: ("STREAM" | "DJ" | "STEM")[];
             /**
