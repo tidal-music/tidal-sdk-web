@@ -68,14 +68,14 @@
     "@web/test-runner": "0.20.2",
     "bowser": "2.12.1",
     "chai": "6.2.0",
-    "cypress": "15.5.0",
-    "esbuild": "0.25.12",
+    "cypress": "15.6.0",
+    "esbuild": "0.27.0",
     "js-levenshtein": "1.1.6",
-    "rollup": "4.52.5",
+    "rollup": "4.53.2",
     "shaka-player": "4.16.8",
     "sinon": "21.0.0",
     "typescript": "5.9.3",
-    "vite": "7.1.12",
+    "vite": "7.2.2",
     "vite-plugin-dts": "4.5.4",
     "vite-plugin-package-version": "1.1.0"
   }
