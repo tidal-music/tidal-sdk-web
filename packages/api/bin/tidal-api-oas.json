@@ -8,7 +8,7 @@
     "description" : "TIDAL API is a [JSON:API](https://jsonapi.org/) Web API that gives access to TIDAL functionality and data.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API - Beta",
-    "version" : "0.1.94"
+    "version" : "0.1.97"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -12592,6 +12592,12 @@
         "required" : [ "barcodeId", "duration", "explicit", "mediaTags", "numberOfItems", "numberOfVolumes", "popularity", "title", "type" ],
         "type" : "object",
         "properties" : {
+          "accessType" : {
+            "type" : "string",
+            "description" : "Access type",
+            "example" : "PRIVATE",
+            "enum" : [ "PUBLIC", "UNLISTED", "PRIVATE" ]
+          },
           "availability" : {
             "type" : "array",
             "description" : "Available usage for this album",
