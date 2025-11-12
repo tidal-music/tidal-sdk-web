@@ -521,7 +521,38 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update items relationship ("to-many").
+         * @description Updates items relationship.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Album id
+                     * @example 251380836
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["AlbumItemsRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
         trace?: never;
     };
     "/albums/{id}/relationships/owners": {
@@ -8793,6 +8824,22 @@ export interface components {
             /** @enum {string} */
             type: "genres";
         };
+        AlbumItemsRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["AlbumItemsRelationshipUpdateOperation_Payload_Data"][];
+            meta: components["schemas"]["AlbumItemsRelationshipUpdateOperation_Payload_Meta"];
+        };
+        AlbumItemsRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks" | "videos";
+        };
+        AlbumItemsRelationshipUpdateOperation_Payload_Meta: {
+            /**
+             * Format: int32
+             * @description 1-based index
+             */
+            positionIndex: number;
+        };
         AlbumUpdateOperation_Payload: {
             data: components["schemas"]["AlbumUpdateOperation_Payload_Data"];
         };
@@ -9739,7 +9786,7 @@ export interface components {
             /** @enum {string} */
             direction?: "LEFT_TO_RIGHT" | "RIGHT_TO_LEFT";
             lrcText?: string;
-            provider?: components["schemas"]["ThirdParty"] | components["schemas"]["Tidal"];
+            provider?: components["schemas"]["ThirdPartyLyricsProvider"] | components["schemas"]["TidalLyricsProvider"];
             /** @enum {string} */
             technicalStatus: "PENDING" | "PROCESSING" | "ERROR" | "OK";
             text?: string;
@@ -10380,15 +10427,23 @@ export interface components {
             data?: components["schemas"]["Resource_Identifier"];
             links: components["schemas"]["Links"];
         };
-        ThirdParty: {
-            source: "ThirdParty";
-        } & (Omit<WithRequired<components["schemas"]["LyricsProvider"], "name">, "source"> & {
+        ThirdPartyLyricsProvider: Omit<WithRequired<components["schemas"]["LyricsProvider"], "name">, "source"> & {
             commonTrackId: string;
             lyricsId: string;
-        });
-        Tidal: {
-            source: "Tidal";
-        } & Omit<components["schemas"]["LyricsProvider"], "source">;
+        } & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            source: "THIRD_PARTY";
+        };
+        TidalLyricsProvider: Omit<components["schemas"]["LyricsProvider"], "source"> & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            source: "TIDAL";
+        };
         TrackAlbumsRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["TrackAlbumsRelationshipUpdateOperation_Payload_Data"][];
         };
