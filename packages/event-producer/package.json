@@ -33,14 +33,14 @@
     "typecheck": "tsc"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "4.0.8",
-    "@vitest/ui": "4.0.8",
-    "@vitest/web-worker": "4.0.8",
+    "@vitest/coverage-v8": "4.0.9",
+    "@vitest/ui": "4.0.9",
+    "@vitest/web-worker": "4.0.9",
     "happy-dom": "20.0.10",
     "typescript": "5.9.3",
     "vite": "7.2.2",
     "vite-plugin-dts": "4.5.4",
-    "vitest": "4.0.8",
+    "vitest": "4.0.9",
     "xml-js": "1.6.11"
   },
   "dependencies": {
