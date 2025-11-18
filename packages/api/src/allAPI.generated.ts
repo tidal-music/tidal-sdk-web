@@ -10887,6 +10887,8 @@ export interface components {
             /** Format: date-time */
             lastModifiedAt: string;
             name: string;
+            /** Format: int32 */
+            numberOfItems?: number;
         };
         UserCollectionFolders_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionFolders_Items_Resource_Identifier"][];
