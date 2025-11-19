@@ -26,7 +26,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums
+                     * @description Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums, suggestedCoverArts
                      * @example artists
                      */
                     include?: string[];
@@ -132,7 +132,7 @@ export interface paths {
                      */
                     countryCode: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums
+                     * @description Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums, suggestedCoverArts
                      * @example artists
                      */
                     include?: string[];
@@ -726,6 +726,66 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Bad_Request_Response"];
+                404: components["responses"]["Not_Found_Response"];
+                405: components["responses"]["Method_Not_Allowed_Response"];
+                406: components["responses"]["Not_Acceptable_Response"];
+                415: components["responses"]["Unsupported_Media_Type_Response"];
+                429: components["responses"]["Too_Many_Requests_Response"];
+                500: components["responses"]["Internal_Server_Error_Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/albums/{id}/relationships/suggestedCoverArts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get suggestedCoverArts relationship ("to-many").
+         * @description Retrieves suggestedCoverArts relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: suggestedCoverArts
+                     * @example suggestedCoverArts
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Album id
+                     * @example 251380836
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Bad_Request_Response"];
@@ -8987,6 +9047,7 @@ export interface components {
             owners: components["schemas"]["Multi_Relationship_Data_Document"];
             providers: components["schemas"]["Multi_Relationship_Data_Document"];
             similarAlbums: components["schemas"]["Multi_Relationship_Data_Document"];
+            suggestedCoverArts: components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Data_Document"];
         };
         Albums_Resource_Object: {
             attributes?: components["schemas"]["Albums_Attributes"];
@@ -9006,6 +9067,30 @@ export interface components {
             data: components["schemas"]["Albums_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        Albums_SuggestedCoverArts_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Albums_SuggestedCoverArts_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Albums_SuggestedCoverArts_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Albums_SuggestedCoverArts_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Albums_SuggestedCoverArts_Resource_Identifier_Meta: {
+            /** @description Background color for the suggested artwork */
+            backgroundColor?: string;
+            /** @description Foreground color for the suggested artwork */
+            foregroundColor?: string;
         };
         AppreciationsCreateOperation_Meta: {
             dryRun?: boolean;
