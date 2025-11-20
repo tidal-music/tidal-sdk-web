@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.1"
+    "version" : "1.0.2"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -13461,7 +13461,7 @@
           "recommendation" : {
             "type" : "string",
             "description" : "The recommended claim resolution",
-            "enum" : [ "DSP_PROFILE_CLAIMED", "CONTENT_MIGRATED_TO_UPLOADS", "NO_CONTENT_MATCHED" ]
+            "enum" : [ "CLAIM_PROFILE", "CLAIM_CONTENT" ]
           },
           "redirectUrl" : {
             "type" : "string",

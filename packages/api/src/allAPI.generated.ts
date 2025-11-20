@@ -9255,7 +9255,7 @@ export interface components {
              * @description The recommended claim resolution
              * @enum {string}
              */
-            recommendation?: "DSP_PROFILE_CLAIMED" | "CONTENT_MIGRATED_TO_UPLOADS" | "NO_CONTENT_MATCHED";
+            recommendation?: "CLAIM_PROFILE" | "CLAIM_CONTENT";
             /** @description The DSP redirect url used for authentication */
             redirectUrl?: string;
             /** @description List of UPCs retrieved from the DSP */
