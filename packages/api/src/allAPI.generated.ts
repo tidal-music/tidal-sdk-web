@@ -61,13 +61,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Albums_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -97,13 +98,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Albums_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         delete?: never;
@@ -158,13 +160,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Albums_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -188,13 +191,14 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -222,13 +226,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -281,13 +286,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -346,13 +352,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -383,13 +390,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -442,13 +450,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -507,13 +516,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Albums_Items_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -544,13 +554,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -598,13 +609,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -663,13 +675,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -728,13 +741,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -788,13 +802,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -840,13 +855,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Appreciations_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         delete?: never;
@@ -900,13 +916,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["ArtistBiographies_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -963,13 +980,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["ArtistBiographies_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -1000,13 +1018,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -1054,13 +1073,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["ArtistBiographies_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -1112,13 +1132,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["ArtistClaims_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         delete?: never;
@@ -1168,13 +1189,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["ArtistClaims_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -1211,13 +1233,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -1265,13 +1288,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["ArtistClaims_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -1285,7 +1309,13 @@ export interface paths {
          */
         patch: {
             parameters: {
-                query?: never;
+                query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                };
                 header?: never;
                 path: {
                     /**
@@ -1302,13 +1332,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -1356,13 +1387,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["ArtistClaims_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -1416,13 +1448,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["ArtistClaims_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -1468,13 +1501,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["ArtistRoles_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -1520,13 +1554,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["ArtistRoles_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -1587,13 +1622,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -1623,13 +1659,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         delete?: never;
@@ -1684,13 +1721,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -1721,13 +1759,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -1780,13 +1819,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -1843,13 +1883,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Single_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -1904,13 +1945,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Followers_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -1965,13 +2007,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Following_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2004,13 +2047,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         /**
@@ -2036,13 +2080,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -2093,13 +2138,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2158,13 +2204,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2195,13 +2242,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -2254,13 +2302,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2314,13 +2363,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2379,13 +2429,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2439,13 +2490,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_TrackProviders_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2509,13 +2561,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2574,13 +2627,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2636,13 +2690,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artworks_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2672,13 +2727,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artworks_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         delete?: never;
@@ -2733,13 +2789,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artworks_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2793,13 +2850,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Artworks_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2847,13 +2905,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Genres_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2899,13 +2958,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Genres_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2956,13 +3016,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Lyrics_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -2992,13 +3053,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Lyrics_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         delete?: never;
@@ -3048,13 +3110,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Lyrics_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -3078,13 +3141,14 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -3112,13 +3176,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -3171,13 +3236,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Lyrics_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -3234,13 +3300,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Lyrics_Single_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -3293,13 +3360,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["PlayQueues_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -3329,13 +3397,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["PlayQueues_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         delete?: never;
@@ -3385,13 +3454,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["PlayQueues_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -3415,13 +3485,14 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -3449,13 +3520,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -3501,13 +3573,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["PlayQueues_Single_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -3538,13 +3611,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -3592,13 +3666,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["PlayQueues_Future_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -3625,13 +3700,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         /**
@@ -3657,13 +3733,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -3691,13 +3768,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -3745,13 +3823,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["PlayQueues_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -3805,13 +3884,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["PlayQueues_Past_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -3876,13 +3956,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Playlists_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -3918,13 +3999,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Playlists_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         delete?: never;
@@ -3979,13 +4061,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Playlists_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -4009,13 +4092,14 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -4049,13 +4133,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -4108,13 +4193,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Playlists_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -4145,13 +4231,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -4204,13 +4291,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -4243,13 +4331,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         /**
@@ -4275,13 +4364,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -4309,13 +4399,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -4368,13 +4459,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Playlists_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -4420,13 +4512,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Providers_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -4472,13 +4565,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Providers_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -4540,13 +4634,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["SearchResults_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -4610,13 +4705,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -4680,13 +4776,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -4750,13 +4847,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -4820,13 +4918,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -4890,13 +4989,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -4960,13 +5060,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5024,13 +5125,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["SearchSuggestions_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5090,13 +5192,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["SearchSuggestions_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5152,13 +5255,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Shares_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5188,13 +5292,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Shares_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         delete?: never;
@@ -5244,13 +5349,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Shares_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5304,13 +5410,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Shares_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5364,13 +5471,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Shares_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5415,13 +5523,15 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["TrackFiles_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["TrackFilesReadById403Response"];
+                404: components["responses"]["TrackFilesReadById404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5469,13 +5579,15 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["TrackManifests_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["TrackManifestsReadById403Response"];
+                404: components["responses"]["TrackManifestsReadById404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5526,13 +5638,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5562,13 +5675,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         delete?: never;
@@ -5618,13 +5732,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5678,13 +5793,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5735,13 +5851,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["TrackStatistics_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5793,13 +5910,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["TrackStatistics_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5853,13 +5971,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["TrackStatistics_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5927,13 +6046,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -5963,13 +6083,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         delete?: never;
@@ -6024,13 +6145,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6054,13 +6176,14 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -6088,13 +6211,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -6147,13 +6271,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6184,13 +6309,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -6243,13 +6369,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6308,13 +6435,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6368,13 +6496,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6428,13 +6557,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6493,13 +6623,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6553,13 +6684,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6613,13 +6745,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6678,13 +6811,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6736,13 +6870,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Single_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6794,13 +6929,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Tracks_Single_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6851,13 +6987,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6887,13 +7024,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         delete?: never;
@@ -6943,13 +7081,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -6973,13 +7112,14 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -7007,13 +7147,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         trace?: never;
@@ -7063,13 +7204,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Items_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -7096,13 +7238,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         /**
@@ -7128,13 +7271,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -7185,13 +7329,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -7253,13 +7398,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserCollections_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -7325,13 +7471,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserCollections_Albums_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -7364,13 +7511,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         /**
@@ -7396,13 +7544,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -7465,13 +7614,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserCollections_Artists_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -7504,13 +7654,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         /**
@@ -7536,13 +7687,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -7593,13 +7745,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserCollections_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -7656,13 +7809,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserCollections_Playlists_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -7689,13 +7843,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         /**
@@ -7721,13 +7876,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -7790,13 +7946,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserCollections_Tracks_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -7829,13 +7986,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         /**
@@ -7861,13 +8019,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -7930,13 +8089,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserCollections_Videos_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -7969,13 +8129,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         /**
@@ -8001,13 +8162,14 @@ export interface paths {
                 };
             };
             responses: {
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         options?: never;
@@ -8050,13 +8212,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserEntitlements_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -8118,13 +8281,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserRecommendations_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -8188,13 +8352,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserRecommendations_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -8258,13 +8423,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserRecommendations_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -8328,13 +8494,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserRecommendations_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -8380,13 +8547,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["UserReports_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         delete?: never;
@@ -8424,13 +8592,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Users_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -8491,13 +8660,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Videos_Multi_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -8554,13 +8724,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Videos_Single_Resource_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -8619,13 +8790,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -8684,13 +8856,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -8749,13 +8922,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -8814,13 +8988,14 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["Bad_Request_Response"];
-                404: components["responses"]["Not_Found_Response"];
-                405: components["responses"]["Method_Not_Allowed_Response"];
-                406: components["responses"]["Not_Acceptable_Response"];
-                415: components["responses"]["Unsupported_Media_Type_Response"];
-                429: components["responses"]["Too_Many_Requests_Response"];
-                500: components["responses"]["Internal_Server_Error_Response"];
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
             };
         };
         put?: never;
@@ -9088,9 +9263,9 @@ export interface components {
         };
         Albums_SuggestedCoverArts_Resource_Identifier_Meta: {
             /** @description Background color for the suggested artwork */
-            backgroundColor?: string;
+            backgroundColor: string;
             /** @description Foreground color for the suggested artwork */
-            foregroundColor?: string;
+            foregroundColor: string;
         };
         AppreciationsCreateOperation_Meta: {
             dryRun?: boolean;
@@ -11480,73 +11655,304 @@ export interface components {
         };
     };
     responses: {
-        /** @description Bad request - The request could not be understood by the server due to malformed syntax or invalid parameters */
-        Bad_Request_Response: {
+        /** @description The request is malformed or invalid */
+        Default400Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                /** @example {"errors":[{"code":"GENERIC_REQUEST_ERROR","detail":"The request contains validation errors"}]} */
-                "application/vnd.api+json": components["schemas"]["Errors_Document"];
+                /**
+                 * @example {
+                 *       "errors": [
+                 *         {
+                 *           "detail": "The request is malformed or invalid",
+                 *           "status": "400"
+                 *         }
+                 *       ]
+                 *     }
+                 */
+                "application/vnd.api+json": {
+                    errors: {
+                        detail?: string;
+                        status: string;
+                    }[];
+                };
             };
         };
-        /** @description Internal server error - The server encountered an unexpected condition that prevented it from fulfilling the request */
-        Internal_Server_Error_Response: {
+        /** @description The requested resource was not found */
+        Default404Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                /** @example {"errors":[{"code":"INTERNAL_SERVER_ERROR","detail":"The service encountered an error"}]} */
-                "application/vnd.api+json": components["schemas"]["Errors_Document"];
+                /**
+                 * @example {
+                 *       "errors": [
+                 *         {
+                 *           "detail": "The requested resource was not found",
+                 *           "status": "404"
+                 *         }
+                 *       ]
+                 *     }
+                 */
+                "application/vnd.api+json": {
+                    errors: {
+                        detail?: string;
+                        status: string;
+                    }[];
+                };
             };
         };
-        /** @description Method not allowed - The request method is not allowed for the requested resource */
-        Method_Not_Allowed_Response: {
+        /** @description The HTTP method is not allowed for the requested resource */
+        Default405Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                /** @example {"errors":[{"code":"METHOD_NOT_ALLOWED","detail":"The resource doesnt support the requested HTTP method: POST"}]} */
-                "application/vnd.api+json": components["schemas"]["Errors_Document"];
+                /**
+                 * @example {
+                 *       "errors": [
+                 *         {
+                 *           "detail": "The HTTP method is not allowed for the requested resource",
+                 *           "status": "405"
+                 *         }
+                 *       ]
+                 *     }
+                 */
+                "application/vnd.api+json": {
+                    errors: {
+                        detail?: string;
+                        status: string;
+                    }[];
+                };
             };
         };
-        /** @description Not acceptable - The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request */
-        Not_Acceptable_Response: {
+        /** @description A response that satisfies the content negotiation headers cannot be produced */
+        Default406Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                /** @example {"errors":[{"code":"NOT_ACCEPTABLE","detail":"Not acceptable response media type on client. Supported media types on server: application/vnd.api+json, application/json"}]} */
-                "application/vnd.api+json": components["schemas"]["Errors_Document"];
+                /**
+                 * @example {
+                 *       "errors": [
+                 *         {
+                 *           "detail": "A response that satisfies the content negotiation headers cannot be produced",
+                 *           "status": "406"
+                 *         }
+                 *       ]
+                 *     }
+                 */
+                "application/vnd.api+json": {
+                    errors: {
+                        detail?: string;
+                        status: string;
+                    }[];
+                };
             };
         };
-        /** @description Not found - The requested resource could not be found */
-        Not_Found_Response: {
+        /** @description Unsupported request payload media type or content encoding */
+        Default415Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                /** @example {"errors":[{"code":"NOT_FOUND","detail":"The requested resource could not be found"}]} */
-                "application/vnd.api+json": components["schemas"]["Errors_Document"];
+                /**
+                 * @example {
+                 *       "errors": [
+                 *         {
+                 *           "detail": "Unsupported request payload media type or content encoding",
+                 *           "status": "415"
+                 *         }
+                 *       ]
+                 *     }
+                 */
+                "application/vnd.api+json": {
+                    errors: {
+                        detail?: string;
+                        status: string;
+                    }[];
+                };
             };
         };
-        /** @description Too many requests - The user has sent too many requests in a given amount of time */
-        Too_Many_Requests_Response: {
-            headers: {
-                /** @description Time to wait before making a new request, in seconds. */
-                "Retry-After"?: number;
-                [name: string]: unknown;
-            };
-            content?: never;
-        };
-        /** @description Unsupported media type - The request entity has a media type which the server or resource does not support */
-        Unsupported_Media_Type_Response: {
+        /** @description Rate limit exceeded */
+        Default429Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                /** @example {"errors":[{"code":"UNSUPPORTED_MEDIA_TYPE","detail":"Unsupported request media type: application/xml. Expected media type format: application/vnd.api+json"}]} */
-                "application/vnd.api+json": components["schemas"]["Errors_Document"];
+                /**
+                 * @example {
+                 *       "errors": [
+                 *         {
+                 *           "detail": "Rate limit exceeded",
+                 *           "status": "429"
+                 *         }
+                 *       ]
+                 *     }
+                 */
+                "application/vnd.api+json": {
+                    errors: {
+                        detail?: string;
+                        status: string;
+                    }[];
+                };
+            };
+        };
+        /** @description An unexpected error was encountered */
+        Default500Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                /**
+                 * @example {
+                 *       "errors": [
+                 *         {
+                 *           "detail": "An unexpected error was encountered",
+                 *           "status": "500"
+                 *         }
+                 *       ]
+                 *     }
+                 */
+                "application/vnd.api+json": {
+                    errors: {
+                        detail?: string;
+                        status: string;
+                    }[];
+                };
+            };
+        };
+        /** @description Temporarily unavailable; please try again later */
+        Default503Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                /**
+                 * @example {
+                 *       "errors": [
+                 *         {
+                 *           "detail": "Temporarily unavailable; please try again later",
+                 *           "status": "503"
+                 *         }
+                 *       ]
+                 *     }
+                 */
+                "application/vnd.api+json": {
+                    errors: {
+                        detail?: string;
+                        status: string;
+                    }[];
+                };
+            };
+        };
+        /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
+        TrackFilesReadById403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                /**
+                 * @example {
+                 *       "errors": [
+                 *         {
+                 *           "code": "PREREQUISITE_MISSING",
+                 *           "detail": "Cannot fulfill this request because required prerequisites are missing",
+                 *           "status": "403"
+                 *         }
+                 *       ]
+                 *     }
+                 */
+                "application/vnd.api+json": {
+                    errors: {
+                        /** @enum {string} */
+                        code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
+                        detail?: string;
+                        status: string;
+                    }[];
+                };
+            };
+        };
+        /** @description The requested content does not exist or is no longer available */
+        TrackFilesReadById404Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                /**
+                 * @example {
+                 *       "errors": [
+                 *         {
+                 *           "code": "CONTENT_NOT_FOUND",
+                 *           "detail": "The requested content does not exist or is no longer available",
+                 *           "status": "404"
+                 *         }
+                 *       ]
+                 *     }
+                 */
+                "application/vnd.api+json": {
+                    errors: {
+                        /** @enum {string} */
+                        code: "CONTENT_NOT_FOUND";
+                        detail?: string;
+                        status: string;
+                    }[];
+                };
+            };
+        };
+        /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
+        TrackManifestsReadById403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                /**
+                 * @example {
+                 *       "errors": [
+                 *         {
+                 *           "code": "PREREQUISITE_MISSING",
+                 *           "detail": "Cannot fulfill this request because required prerequisites are missing",
+                 *           "status": "403"
+                 *         }
+                 *       ]
+                 *     }
+                 */
+                "application/vnd.api+json": {
+                    errors: {
+                        /** @enum {string} */
+                        code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
+                        detail?: string;
+                        status: string;
+                    }[];
+                };
+            };
+        };
+        /** @description The requested content does not exist or is no longer available */
+        TrackManifestsReadById404Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                /**
+                 * @example {
+                 *       "errors": [
+                 *         {
+                 *           "code": "CONTENT_NOT_FOUND",
+                 *           "detail": "The requested content does not exist or is no longer available",
+                 *           "status": "404"
+                 *         }
+                 *       ]
+                 *     }
+                 */
+                "application/vnd.api+json": {
+                    errors: {
+                        /** @enum {string} */
+                        code: "CONTENT_NOT_FOUND";
+                        detail?: string;
+                        status: string;
+                    }[];
+                };
             };
         };
     };
