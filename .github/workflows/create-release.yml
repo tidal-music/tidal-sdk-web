@@ -15,7 +15,7 @@ jobs:
       module-tag: ${{ steps.expose-tag.outputs.tag }}
       module-version: ${{ steps.expose-tag.outputs.version }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Expose tag and version
         id: expose-tag
         run: |
@@ -36,7 +36,7 @@ jobs:
       version: ${{ needs.expose-tag.outputs.module-version}}
       tag: ${{ needs.expose-tag.outputs.module-tag}}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: ./.github/actions/setup
     - name: Generate Release Draft
       id: generate-release
