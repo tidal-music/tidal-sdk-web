@@ -9421,6 +9421,8 @@ export interface components {
         ArtistClaims_Attributes: {
             /** @description The artist id which is being claimed */
             artistId: string;
+            /** @description Artist claim links external to TIDAL API */
+            externalLinks?: components["schemas"]["External_Link"][];
             /**
              * @description The DSP used for authentication
              * @enum {string}
@@ -9431,8 +9433,6 @@ export interface components {
              * @enum {string}
              */
             recommendation?: "CLAIM_PROFILE" | "CLAIM_CONTENT";
-            /** @description The DSP redirect url used for authentication */
-            redirectUrl?: string;
             /** @description List of UPCs retrieved from the DSP */
             retrievedUpcs?: components["schemas"]["BarcodeId"][];
             /**
@@ -9897,7 +9897,7 @@ export interface components {
         /** @description metadata about an external link */
         External_Link_Meta: {
             /** @enum {string} */
-            type: "TIDAL_SHARING" | "TIDAL_USER_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "OFFICIAL_HOMEPAGE" | "CASHAPP_CONTRIBUTIONS";
+            type: "TIDAL_SHARING" | "TIDAL_USER_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "OFFICIAL_HOMEPAGE" | "CASHAPP_CONTRIBUTIONS" | "ARTIST_CLAIM_PROVIDER_REDIRECT";
         };
         External_Link_Payload: {
             href?: string;
@@ -10306,8 +10306,13 @@ export interface components {
         };
         PlaylistItemsRelationshipAddOperation_Payload_Data: {
             id: string;
+            meta?: components["schemas"]["PlaylistItemsRelationshipAddOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "tracks" | "videos";
+        };
+        PlaylistItemsRelationshipAddOperation_Payload_Data_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         PlaylistItemsRelationshipAddOperation_Payload_Meta: {
             positionBefore: string;
