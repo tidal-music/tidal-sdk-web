@@ -9,7 +9,7 @@ jobs:
     timeout-minutes: 15
     name: Run Unit Tests
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup
       - name: Prepare test user for player tests
         id: json
