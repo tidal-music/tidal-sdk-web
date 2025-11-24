@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.4"
+    "version" : "1.0.5"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -14319,6 +14319,13 @@
             "type" : "string",
             "description" : "The artist id which is being claimed"
           },
+          "externalLinks" : {
+            "type" : "array",
+            "description" : "Artist claim links external to TIDAL API",
+            "items" : {
+              "$ref" : "#/components/schemas/External_Link"
+            }
+          },
           "provider" : {
             "minLength" : 1,
             "type" : "string",
@@ -14329,10 +14336,6 @@
             "type" : "string",
             "description" : "The recommended claim resolution",
             "enum" : [ "CLAIM_PROFILE", "CLAIM_CONTENT" ]
-          },
-          "redirectUrl" : {
-            "type" : "string",
-            "description" : "The DSP redirect url used for authentication"
           },
           "retrievedUpcs" : {
             "type" : "array",
@@ -15388,7 +15391,7 @@
         "properties" : {
           "type" : {
             "type" : "string",
-            "enum" : [ "TIDAL_SHARING", "TIDAL_USER_SHARING", "TIDAL_AUTOPLAY_ANDROID", "TIDAL_AUTOPLAY_IOS", "TIDAL_AUTOPLAY_WEB", "TWITTER", "FACEBOOK", "INSTAGRAM", "TIKTOK", "SNAPCHAT", "OFFICIAL_HOMEPAGE", "CASHAPP_CONTRIBUTIONS" ]
+            "enum" : [ "TIDAL_SHARING", "TIDAL_USER_SHARING", "TIDAL_AUTOPLAY_ANDROID", "TIDAL_AUTOPLAY_IOS", "TIDAL_AUTOPLAY_WEB", "TWITTER", "FACEBOOK", "INSTAGRAM", "TIKTOK", "SNAPCHAT", "OFFICIAL_HOMEPAGE", "CASHAPP_CONTRIBUTIONS", "ARTIST_CLAIM_PROVIDER_REDIRECT" ]
           }
         },
         "description" : "metadata about an external link"
@@ -16504,9 +16507,22 @@
           "id" : {
             "type" : "string"
           },
+          "meta" : {
+            "$ref" : "#/components/schemas/PlaylistItemsRelationshipAddOperation_Payload_Data_Meta"
+          },
           "type" : {
             "type" : "string",
             "enum" : [ "tracks", "videos" ]
+          }
+        }
+      },
+      "PlaylistItemsRelationshipAddOperation_Payload_Data_Meta" : {
+        "required" : [ "addedAt" ],
+        "type" : "object",
+        "properties" : {
+          "addedAt" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },
