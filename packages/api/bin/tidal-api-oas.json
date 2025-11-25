@@ -5585,8 +5585,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "enum" : [ "createdAt", "-createdAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
               "default" : "-createdAt",
+              "enum" : [ "createdAt", "-createdAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "LastModifiedAtAsc", "LastModifiedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -7288,8 +7288,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "INCLUDE", "EXCLUDE" ],
-            "default" : "INCLUDE"
+            "default" : "INCLUDE",
+            "enum" : [ "INCLUDE", "EXCLUDE" ]
           }
         }, {
           "description" : "ISO 3166-1 alpha-2 country code",
@@ -7380,8 +7380,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "INCLUDE", "EXCLUDE" ],
-            "default" : "INCLUDE"
+            "default" : "INCLUDE",
+            "enum" : [ "INCLUDE", "EXCLUDE" ]
           }
         }, {
           "description" : "ISO 3166-1 alpha-2 country code",
@@ -10283,8 +10283,8 @@
             "items" : {
               "type" : "string",
               "example" : "items.addedAt",
-              "enum" : [ "items.addedAt", "-items.addedAt", "items.lastModifiedAt", "-items.lastModifiedAt", "items.name", "-items.name" ],
               "default" : "items.addedAt",
+              "enum" : [ "items.addedAt", "-items.addedAt", "items.lastModifiedAt", "-items.lastModifiedAt", "items.name", "-items.name" ],
               "x-enum-varnames" : [ "ItemsAddedAtAsc", "ItemsAddedAtDesc", "ItemsLastModifiedAtAsc", "ItemsLastModifiedAtDesc", "ItemsNameAsc", "ItemsNameDesc" ]
             }
           }
@@ -10671,8 +10671,8 @@
             "items" : {
               "type" : "string",
               "example" : "albums.addedAt",
-              "enum" : [ "albums.addedAt", "-albums.addedAt", "albums.artists.name", "-albums.artists.name", "albums.releaseDate", "-albums.releaseDate", "albums.title", "-albums.title" ],
               "default" : "-albums.addedAt",
+              "enum" : [ "albums.addedAt", "-albums.addedAt", "albums.artists.name", "-albums.artists.name", "albums.releaseDate", "-albums.releaseDate", "albums.title", "-albums.title" ],
               "x-enum-varnames" : [ "AlbumsAddedAtAsc", "AlbumsAddedAtDesc", "AlbumsArtistsNameAsc", "AlbumsArtistsNameDesc", "AlbumsReleaseDateAsc", "AlbumsReleaseDateDesc", "AlbumsTitleAsc", "AlbumsTitleDesc" ]
             }
           }
@@ -10906,8 +10906,8 @@
             "items" : {
               "type" : "string",
               "example" : "artists.addedAt",
-              "enum" : [ "artists.addedAt", "-artists.addedAt", "artists.name", "-artists.name" ],
               "default" : "-artists.addedAt",
+              "enum" : [ "artists.addedAt", "-artists.addedAt", "artists.name", "-artists.name" ],
               "x-enum-varnames" : [ "ArtistsAddedAtAsc", "ArtistsAddedAtDesc", "ArtistsNameAsc", "ArtistsNameDesc" ]
             }
           }
@@ -11219,8 +11219,8 @@
             "items" : {
               "type" : "string",
               "example" : "playlists.addedAt",
-              "enum" : [ "playlists.addedAt", "-playlists.addedAt", "playlists.lastUpdatedAt", "-playlists.lastUpdatedAt", "playlists.name", "-playlists.name" ],
               "default" : "-playlists.addedAt",
+              "enum" : [ "playlists.addedAt", "-playlists.addedAt", "playlists.lastUpdatedAt", "-playlists.lastUpdatedAt", "playlists.name", "-playlists.name" ],
               "x-enum-varnames" : [ "PlaylistsAddedAtAsc", "PlaylistsAddedAtDesc", "PlaylistsLastUpdatedAtAsc", "PlaylistsLastUpdatedAtDesc", "PlaylistsNameAsc", "PlaylistsNameDesc" ]
             }
           }
@@ -11436,8 +11436,8 @@
             "items" : {
               "type" : "string",
               "example" : "tracks.addedAt",
-              "enum" : [ "tracks.addedAt", "-tracks.addedAt", "tracks.albums.title", "-tracks.albums.title", "tracks.artists.name", "-tracks.artists.name", "tracks.duration", "-tracks.duration", "tracks.title", "-tracks.title" ],
               "default" : "-tracks.addedAt",
+              "enum" : [ "tracks.addedAt", "-tracks.addedAt", "tracks.albums.title", "-tracks.albums.title", "tracks.artists.name", "-tracks.artists.name", "tracks.duration", "-tracks.duration", "tracks.title", "-tracks.title" ],
               "x-enum-varnames" : [ "TracksAddedAtAsc", "TracksAddedAtDesc", "TracksAlbumsTitleAsc", "TracksAlbumsTitleDesc", "TracksArtistsNameAsc", "TracksArtistsNameDesc", "TracksDurationAsc", "TracksDurationDesc", "TracksTitleAsc", "TracksTitleDesc" ]
             }
           }
@@ -11671,8 +11671,8 @@
             "items" : {
               "type" : "string",
               "example" : "videos.addedAt",
-              "enum" : [ "videos.addedAt", "-videos.addedAt", "videos.artists.name", "-videos.artists.name", "videos.duration", "-videos.duration", "videos.title", "-videos.title" ],
               "default" : "-videos.addedAt",
+              "enum" : [ "videos.addedAt", "-videos.addedAt", "videos.artists.name", "-videos.artists.name", "videos.duration", "-videos.duration", "videos.title", "-videos.title" ],
               "x-enum-varnames" : [ "VideosAddedAtAsc", "VideosAddedAtDesc", "VideosArtistsNameAsc", "VideosArtistsNameDesc", "VideosDurationAsc", "VideosDurationDesc", "VideosTitleAsc", "VideosTitleDesc" ]
             }
           }
@@ -13572,6 +13572,12 @@
       "AlbumUpdateOperation_Payload_Data_Attributes" : {
         "type" : "object",
         "properties" : {
+          "accessType" : {
+            "type" : "string",
+            "description" : "Access type",
+            "example" : "PRIVATE",
+            "enum" : [ "PUBLIC", "UNLISTED", "PRIVATE" ]
+          },
           "copyright" : {
             "$ref" : "#/components/schemas/Copyright"
           },
