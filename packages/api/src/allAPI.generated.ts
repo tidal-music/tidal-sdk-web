@@ -9086,6 +9086,12 @@ export interface components {
             type: "albums";
         };
         AlbumUpdateOperation_Payload_Data_Attributes: {
+            /**
+             * @description Access type
+             * @example PRIVATE
+             * @enum {string}
+             */
+            accessType?: "PUBLIC" | "UNLISTED" | "PRIVATE";
             copyright?: components["schemas"]["Copyright"];
             explicitLyrics?: boolean;
             /** Format: date */
