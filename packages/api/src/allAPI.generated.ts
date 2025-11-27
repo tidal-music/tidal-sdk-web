@@ -9856,6 +9856,70 @@ export interface components {
             id: string;
             resourceType: string;
         };
+        Default400ResponseBody: {
+            errors: {
+                /** @example The request is malformed or invalid */
+                detail?: string;
+                /** @example 400 */
+                status: string;
+            }[];
+        };
+        Default404ResponseBody: {
+            errors: {
+                /** @example The requested resource was not found */
+                detail?: string;
+                /** @example 404 */
+                status: string;
+            }[];
+        };
+        Default405ResponseBody: {
+            errors: {
+                /** @example The HTTP method is not allowed for the requested resource */
+                detail?: string;
+                /** @example 405 */
+                status: string;
+            }[];
+        };
+        Default406ResponseBody: {
+            errors: {
+                /** @example A response that satisfies the content negotiation headers cannot be produced */
+                detail?: string;
+                /** @example 406 */
+                status: string;
+            }[];
+        };
+        Default415ResponseBody: {
+            errors: {
+                /** @example Unsupported request payload media type or content encoding */
+                detail?: string;
+                /** @example 415 */
+                status: string;
+            }[];
+        };
+        Default429ResponseBody: {
+            errors: {
+                /** @example Rate limit exceeded */
+                detail?: string;
+                /** @example 429 */
+                status: string;
+            }[];
+        };
+        Default500ResponseBody: {
+            errors: {
+                /** @example An unexpected error was encountered */
+                detail?: string;
+                /** @example 500 */
+                status: string;
+            }[];
+        };
+        Default503ResponseBody: {
+            errors: {
+                /** @example Temporarily unavailable; please try again later */
+                detail?: string;
+                /** @example 503 */
+                status: string;
+            }[];
+        };
         /** @description DRM data. Absence implies no DRM. */
         DrmData: {
             certificateUrl?: string;
@@ -10648,7 +10712,7 @@ export interface components {
         SharesCreateOperation_Payload_Data_Relationships_SharedResources_Data: {
             id: string;
             /** @enum {string} */
-            type: "tracks";
+            type: "tracks" | "albums";
         };
         Shares_Attributes: {
             /** @description Share code */
@@ -10775,6 +10839,32 @@ export interface components {
             /** @enum {string} */
             type: "genres";
         };
+        TrackFilesReadById403ResponseBody: {
+            errors: {
+                /**
+                 * @example CLIENT_NOT_ENTITLED
+                 * @enum {string}
+                 */
+                code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
+                /** @example Cannot fulfill this request because required prerequisites are missing */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        TrackFilesReadById404ResponseBody: {
+            errors: {
+                /**
+                 * @example CONTENT_NOT_FOUND
+                 * @enum {string}
+                 */
+                code: "CONTENT_NOT_FOUND";
+                /** @example The requested content does not exist or is no longer available */
+                detail?: string;
+                /** @example 404 */
+                status: string;
+            }[];
+        };
         TrackFiles_Attributes: {
             albumAudioNormalizationData?: components["schemas"]["AudioNormalizationData"];
             /**
@@ -10813,6 +10903,32 @@ export interface components {
             data: components["schemas"]["TrackFiles_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        TrackManifestsReadById403ResponseBody: {
+            errors: {
+                /**
+                 * @example CLIENT_NOT_ENTITLED
+                 * @enum {string}
+                 */
+                code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
+                /** @example Cannot fulfill this request because required prerequisites are missing */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        TrackManifestsReadById404ResponseBody: {
+            errors: {
+                /**
+                 * @example CONTENT_NOT_FOUND
+                 * @enum {string}
+                 */
+                code: "CONTENT_NOT_FOUND";
+                /** @example The requested content does not exist or is no longer available */
+                detail?: string;
+                /** @example 404 */
+                status: string;
+            }[];
         };
         TrackManifests_Attributes: {
             albumAudioNormalizationData?: components["schemas"]["AudioNormalizationData"];
@@ -11672,22 +11788,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /**
-                 * @example {
-                 *       "errors": [
-                 *         {
-                 *           "detail": "The request is malformed or invalid",
-                 *           "status": "400"
-                 *         }
-                 *       ]
-                 *     }
-                 */
-                "application/vnd.api+json": {
-                    errors: {
-                        detail?: string;
-                        status: string;
-                    }[];
-                };
+                "application/vnd.api+json": components["schemas"]["Default400ResponseBody"];
             };
         };
         /** @description The requested resource was not found */
@@ -11696,22 +11797,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /**
-                 * @example {
-                 *       "errors": [
-                 *         {
-                 *           "detail": "The requested resource was not found",
-                 *           "status": "404"
-                 *         }
-                 *       ]
-                 *     }
-                 */
-                "application/vnd.api+json": {
-                    errors: {
-                        detail?: string;
-                        status: string;
-                    }[];
-                };
+                "application/vnd.api+json": components["schemas"]["Default404ResponseBody"];
             };
         };
         /** @description The HTTP method is not allowed for the requested resource */
@@ -11720,22 +11806,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /**
-                 * @example {
-                 *       "errors": [
-                 *         {
-                 *           "detail": "The HTTP method is not allowed for the requested resource",
-                 *           "status": "405"
-                 *         }
-                 *       ]
-                 *     }
-                 */
-                "application/vnd.api+json": {
-                    errors: {
-                        detail?: string;
-                        status: string;
-                    }[];
-                };
+                "application/vnd.api+json": components["schemas"]["Default405ResponseBody"];
             };
         };
         /** @description A response that satisfies the content negotiation headers cannot be produced */
@@ -11744,22 +11815,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /**
-                 * @example {
-                 *       "errors": [
-                 *         {
-                 *           "detail": "A response that satisfies the content negotiation headers cannot be produced",
-                 *           "status": "406"
-                 *         }
-                 *       ]
-                 *     }
-                 */
-                "application/vnd.api+json": {
-                    errors: {
-                        detail?: string;
-                        status: string;
-                    }[];
-                };
+                "application/vnd.api+json": components["schemas"]["Default406ResponseBody"];
             };
         };
         /** @description Unsupported request payload media type or content encoding */
@@ -11768,22 +11824,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /**
-                 * @example {
-                 *       "errors": [
-                 *         {
-                 *           "detail": "Unsupported request payload media type or content encoding",
-                 *           "status": "415"
-                 *         }
-                 *       ]
-                 *     }
-                 */
-                "application/vnd.api+json": {
-                    errors: {
-                        detail?: string;
-                        status: string;
-                    }[];
-                };
+                "application/vnd.api+json": components["schemas"]["Default415ResponseBody"];
             };
         };
         /** @description Rate limit exceeded */
@@ -11792,22 +11833,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /**
-                 * @example {
-                 *       "errors": [
-                 *         {
-                 *           "detail": "Rate limit exceeded",
-                 *           "status": "429"
-                 *         }
-                 *       ]
-                 *     }
-                 */
-                "application/vnd.api+json": {
-                    errors: {
-                        detail?: string;
-                        status: string;
-                    }[];
-                };
+                "application/vnd.api+json": components["schemas"]["Default429ResponseBody"];
             };
         };
         /** @description An unexpected error was encountered */
@@ -11816,22 +11842,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /**
-                 * @example {
-                 *       "errors": [
-                 *         {
-                 *           "detail": "An unexpected error was encountered",
-                 *           "status": "500"
-                 *         }
-                 *       ]
-                 *     }
-                 */
-                "application/vnd.api+json": {
-                    errors: {
-                        detail?: string;
-                        status: string;
-                    }[];
-                };
+                "application/vnd.api+json": components["schemas"]["Default500ResponseBody"];
             };
         };
         /** @description Temporarily unavailable; please try again later */
@@ -11840,22 +11851,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /**
-                 * @example {
-                 *       "errors": [
-                 *         {
-                 *           "detail": "Temporarily unavailable; please try again later",
-                 *           "status": "503"
-                 *         }
-                 *       ]
-                 *     }
-                 */
-                "application/vnd.api+json": {
-                    errors: {
-                        detail?: string;
-                        status: string;
-                    }[];
-                };
+                "application/vnd.api+json": components["schemas"]["Default503ResponseBody"];
             };
         };
         /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
@@ -11864,25 +11860,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /**
-                 * @example {
-                 *       "errors": [
-                 *         {
-                 *           "code": "PREREQUISITE_MISSING",
-                 *           "detail": "Cannot fulfill this request because required prerequisites are missing",
-                 *           "status": "403"
-                 *         }
-                 *       ]
-                 *     }
-                 */
-                "application/vnd.api+json": {
-                    errors: {
-                        /** @enum {string} */
-                        code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
-                        detail?: string;
-                        status: string;
-                    }[];
-                };
+                "application/vnd.api+json": components["schemas"]["TrackFilesReadById403ResponseBody"];
             };
         };
         /** @description The requested content does not exist or is no longer available */
@@ -11891,25 +11869,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /**
-                 * @example {
-                 *       "errors": [
-                 *         {
-                 *           "code": "CONTENT_NOT_FOUND",
-                 *           "detail": "The requested content does not exist or is no longer available",
-                 *           "status": "404"
-                 *         }
-                 *       ]
-                 *     }
-                 */
-                "application/vnd.api+json": {
-                    errors: {
-                        /** @enum {string} */
-                        code: "CONTENT_NOT_FOUND";
-                        detail?: string;
-                        status: string;
-                    }[];
-                };
+                "application/vnd.api+json": components["schemas"]["TrackFilesReadById404ResponseBody"];
             };
         };
         /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
@@ -11918,25 +11878,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /**
-                 * @example {
-                 *       "errors": [
-                 *         {
-                 *           "code": "PREREQUISITE_MISSING",
-                 *           "detail": "Cannot fulfill this request because required prerequisites are missing",
-                 *           "status": "403"
-                 *         }
-                 *       ]
-                 *     }
-                 */
-                "application/vnd.api+json": {
-                    errors: {
-                        /** @enum {string} */
-                        code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
-                        detail?: string;
-                        status: string;
-                    }[];
-                };
+                "application/vnd.api+json": components["schemas"]["TrackManifestsReadById403ResponseBody"];
             };
         };
         /** @description The requested content does not exist or is no longer available */
@@ -11945,25 +11887,7 @@ export interface components {
                 [name: string]: unknown;
             };
             content: {
-                /**
-                 * @example {
-                 *       "errors": [
-                 *         {
-                 *           "code": "CONTENT_NOT_FOUND",
-                 *           "detail": "The requested content does not exist or is no longer available",
-                 *           "status": "404"
-                 *         }
-                 *       ]
-                 *     }
-                 */
-                "application/vnd.api+json": {
-                    errors: {
-                        /** @enum {string} */
-                        code: "CONTENT_NOT_FOUND";
-                        detail?: string;
-                        status: string;
-                    }[];
-                };
+                "application/vnd.api+json": components["schemas"]["TrackManifestsReadById404ResponseBody"];
             };
         };
     };
