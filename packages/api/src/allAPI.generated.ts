@@ -10176,7 +10176,8 @@ export interface components {
             /** Format: uuid */
             batchId?: string;
             /** @enum {string} */
-            mode: "ADD_TO_FRONT" | "ADD_TO_BACK" | "REPLACE_ALL";
+            mode: "ADD_TO_FRONT" | "ADD_TO_BACK" | "ADD_BEFORE" | "REPLACE_ALL";
+            positionBefore?: string;
         };
         PlayQueueCreateOperation_Payload: {
             data: components["schemas"]["PlayQueueCreateOperation_Payload_Data"];
