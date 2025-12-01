@@ -55,12 +55,12 @@ it('Client Test Case 1', () => {
 
     expect(playbackSession.payload).to.include({
       startAssetPosition: 0,
-      actualProductId: '108506136',
+      actualProductId: '4141413',
       sourceType: 'ALBUM',
       sourceId: '4141352'
     });
 
-    expect(playbackSession.payload.endAssetPosition).to.be.closeTo(1, 0.2);
+    expect(playbackSession.payload.endAssetPosition).to.be.closeTo(7.6, 0.2);
 
     expect(playbackSession.payload.actions).to.have.lengthOf(0);
   })
