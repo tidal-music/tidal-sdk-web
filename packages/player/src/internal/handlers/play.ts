@@ -11,7 +11,7 @@ import { trueTime } from '../true-time';
  * the load method, this method will do nothing.
  *
  * @returns {Promise<void>}
- * @see {@link import('../../api/event/playback-state-change').PlaybackStateChange}
+ * @see {@link PlaybackStateChange}
  */
 export async function play() {
   await trueTime.synchronize();

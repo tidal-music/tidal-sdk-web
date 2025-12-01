@@ -11,7 +11,7 @@ import ConnectionHandler from '../services/connection-handler';
  * Playback state will immediately change to IDLE.
  *
  * @returns {Promise<void>}
- * @see {@link import('../../api/event/playback-state-change').PlaybackStateChange}
+ * @see {@link PlaybackStateChange}
  */
 export async function reset() {
   cancelQueuedOnendedHandler();
