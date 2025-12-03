@@ -34,6 +34,7 @@ export default defineConfig(({ command }) => {
     test: {
       coverage: {
         exclude: ['examples/**'],
+        provider: 'v8',
         reportOnFailure: true,
         reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
         thresholds: {

@@ -21,6 +21,7 @@ export default defineConfig({
   },
   test: {
     coverage: {
+      provider: 'v8',
       reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
     },
     globals: true,
