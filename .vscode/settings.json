@@ -9,5 +9,15 @@
     "cSpell.words": [
       "Retryable",
       "typecheck"
+    ],
+    "vitest.enable": true,
+    "vitest.maximumConfigs": 20,
+    "vitest.exclude": [
+      "**/dist/**",
+      "**/node_modules/**",
+      "**/cypress/**",
+      "**/docs/**",
+      "**/.git/**",
+      "**/.vscode/**"
     ]
 }

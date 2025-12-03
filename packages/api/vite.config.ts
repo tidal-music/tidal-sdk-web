@@ -12,6 +12,7 @@ export default defineConfig({
   plugins: [dts({ rollupTypes: true, tsconfigPath: 'tsconfig.build.json' })],
   test: {
     coverage: {
+      provider: 'v8',
       reporter: process.env.CI ? ['json', 'json-summary'] : ['html'],
     },
     globals: true,
