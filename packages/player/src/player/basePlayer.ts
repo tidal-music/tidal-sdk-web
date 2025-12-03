@@ -442,7 +442,8 @@ export class BasePlayer {
     const prefetchedOrExpired = this.prefetched || this.expired;
 
     if (this.currentMediaProduct && prefetchedOrExpired) {
-      await this.hardReload(this.currentMediaProduct, 0);
+      // Preserve the current position (e.g., if user seeked before playing)
+      await this.hardReload(this.currentMediaProduct, this.currentTime);
       return true;
     }
 
