@@ -1,4 +1,4 @@
-# TIDAL API v2 Beta
+# TIDAL API
 
 A thin wrapper around the API domains described at: https://tidal-music.github.io/tidal-api-reference/ (which is again built on the JSON API spec: https://jsonapi.org/format/)
 
