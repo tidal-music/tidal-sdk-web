@@ -4424,12 +4424,12 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
-                    countryCode?: string;
+                    countryCode: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
