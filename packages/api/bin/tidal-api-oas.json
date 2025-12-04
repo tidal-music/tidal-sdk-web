@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.7"
+    "version" : "1.0.9"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -53,6 +53,7 @@
   }, {
     "name" : "trackManifests"
   }, {
+    "description" : "A track source file is the media source file of a track, meaning audio content.\nAfter a track source file is uploaded successfully it will be ingested and transcoded into deliverables and\nstored like any other content we receive from labels.\n",
     "name" : "trackSourceFiles"
   }, {
     "name" : "trackStatistics"
@@ -5610,7 +5611,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: coverArt, items, ownerProfiles, owners",
           "example" : "coverArt",
           "in" : "query",
           "name" : "include",
@@ -5832,7 +5833,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: coverArt, items, ownerProfiles, owners",
           "example" : "coverArt",
           "in" : "query",
           "name" : "include",
@@ -6367,6 +6368,97 @@
           "Authorization_Code_PKCE" : [ "playlists.write", "w_usr" ]
         } ],
         "summary" : "Add to items relationship (\"to-many\").",
+        "tags" : [ "playlists" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/playlists/{id}/relationships/ownerProfiles" : {
+      "get" : {
+        "description" : "Retrieves ownerProfiles relationship.",
+        "parameters" : [ {
+          "description" : "Playlist id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: ownerProfiles",
+          "example" : "ownerProfiles",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "ownerProfiles"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Playlists_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get ownerProfiles relationship (\"to-many\").",
         "tags" : [ "playlists" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
@@ -8121,7 +8213,7 @@
         }
       },
       "post" : {
-        "description" : "Creates a new trackSourceFile.",
+        "description" : "Create a track source file. <p/>\nThe response contains a upload link that must be used to upload the actual content.<p/>\nThe headers in the upload link response must be sent doing the actual upload.\n",
         "parameters" : [ ],
         "requestBody" : {
           "content" : {
@@ -16710,13 +16802,16 @@
         }
       },
       "Playlists_Relationships" : {
-        "required" : [ "coverArt", "items", "owners" ],
+        "required" : [ "coverArt", "items", "ownerProfiles", "owners" ],
         "properties" : {
           "coverArt" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "items" : {
             "$ref" : "#/components/schemas/Playlists_Items_Multi_Relationship_Data_Document"
+          },
+          "ownerProfiles" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "owners" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
