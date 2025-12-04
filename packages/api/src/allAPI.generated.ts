@@ -3926,7 +3926,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners
+                     * @description Allows the client to customize which related resources should be returned. Available options: coverArt, items, ownerProfiles, owners
                      * @example coverArt
                      */
                     include?: string[];
@@ -4035,7 +4035,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: coverArt, items, owners
+                     * @description Allows the client to customize which related resources should be returned. Available options: coverArt, items, ownerProfiles, owners
                      * @example coverArt
                      */
                     include?: string[];
@@ -4409,6 +4409,72 @@ export interface paths {
                 503: components["responses"]["Default503Response"];
             };
         };
+        trace?: never;
+    };
+    "/playlists/{id}/relationships/ownerProfiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get ownerProfiles relationship ("to-many").
+         * @description Retrieves ownerProfiles relationship.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles
+                     * @example ownerProfiles
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Playlist id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Playlists_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/playlists/{id}/relationships/owners": {
@@ -5651,7 +5717,9 @@ export interface paths {
         put?: never;
         /**
          * Create single trackSourceFile.
-         * @description Creates a new trackSourceFile.
+         * @description Create a track source file. <p/>
+         *     The response contains a upload link that must be used to upload the actual content.<p/>
+         *     The headers in the upload link response must be sent doing the actual upload.
          */
         post: {
             parameters: {
@@ -10511,6 +10579,7 @@ export interface components {
         Playlists_Relationships: {
             coverArt: components["schemas"]["Multi_Relationship_Data_Document"];
             items: components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
+            ownerProfiles: components["schemas"]["Multi_Relationship_Data_Document"];
             owners: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         Playlists_Resource_Object: {
