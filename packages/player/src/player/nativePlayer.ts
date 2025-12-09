@@ -315,6 +315,7 @@ export default class NativePlayer extends BasePlayer {
         // Once the player becomes active, we need to make sure that
         // the streaming session has not changed, else we will seek the
         // wrong track!
+        // See: https://github.com/tidal-music/tidal-sdk-web/pull/452
         if (this.currentStreamingSessionId === streamInfo.streamingSessionId) {
           await this.seek(assetPosition);
           this.currentTime = assetPosition;
