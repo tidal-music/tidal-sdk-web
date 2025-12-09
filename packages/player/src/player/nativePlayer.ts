@@ -308,11 +308,17 @@ export default class NativePlayer extends BasePlayer {
     this.debugLog('load() duration is', this.#duration);
 
     if (assetPosition !== 0 && assetPosition < this.#duration) {
-      // Native player cannot seek until active
       (async () => {
+        // Native player cannot seek until active.
+        // Wait for player to become active via user interaction.
         await this.mediaStateChange('active');
-        await this.seek(assetPosition);
-        this.currentTime = assetPosition;
+        // Once the player becomes active, we need to make sure that
+        // the streaming session has not changed, else we will seek the
+        // wrong track!
+        if (this.currentStreamingSessionId === streamInfo.streamingSessionId) {
+          await this.seek(assetPosition);
+          this.currentTime = assetPosition;
+        }
       })().catch(console.error);
     } else {
       this.currentTime = 0;
