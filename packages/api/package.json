@@ -39,12 +39,12 @@
   "devDependencies": {
     "@tidal-music/auth": "workspace:^",
     "@tidal-music/common": "workspace:^",
-    "@vitest/coverage-v8": "4.0.14",
-    "@vitest/ui": "4.0.14",
+    "@vitest/coverage-v8": "4.0.15",
+    "@vitest/ui": "4.0.15",
     "openapi-typescript": "7.10.1",
     "typescript": "5.9.3",
-    "vite": "7.2.6",
+    "vite": "7.2.7",
     "vite-plugin-dts": "4.5.4",
-    "vitest": "4.0.14"
+    "vitest": "4.0.15"
   }
 }
