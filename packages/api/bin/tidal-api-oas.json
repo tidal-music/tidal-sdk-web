@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.9"
+    "version" : "1.0.26"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -37,11 +37,15 @@
   }, {
     "name" : "lyrics"
   }, {
+    "name" : "manualArtistClaims"
+  }, {
     "name" : "playQueues"
   }, {
     "name" : "playlists"
   }, {
     "name" : "providers"
+  }, {
+    "name" : "reactions"
   }, {
     "name" : "searchResults"
   }, {
@@ -109,16 +113,16 @@
             }
           }
         }, {
-          "description" : "User id",
-          "example" : "123456",
+          "description" : "Barcode Id",
+          "example" : "196589525444",
           "in" : "query",
-          "name" : "filter[owners.id]",
+          "name" : "filter[barcodeId]",
           "required" : false,
           "schema" : {
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "123456"
+              "example" : "196589525444"
             }
           }
         }, {
@@ -135,16 +139,16 @@
             }
           }
         }, {
-          "description" : "Barcode Id",
-          "example" : "196589525444",
+          "description" : "User id",
+          "example" : "123456",
           "in" : "query",
-          "name" : "filter[barcodeId]",
+          "name" : "filter[owners.id]",
           "required" : false,
           "schema" : {
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "196589525444"
+              "example" : "123456"
             }
           }
         } ],
@@ -1409,8 +1413,8 @@
       "get" : {
         "description" : "Retrieves single artistBiographie by id.",
         "parameters" : [ {
-          "description" : "Artist id",
-          "example" : "1566",
+          "description" : "Artist biography id",
+          "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -1490,8 +1494,8 @@
       "patch" : {
         "description" : "Updates existing artistBiographie.",
         "parameters" : [ {
-          "description" : "Artist id",
-          "example" : "1566",
+          "description" : "Artist biography id",
+          "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -1548,8 +1552,8 @@
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
-          "description" : "Artist id",
-          "example" : "1566",
+          "description" : "Artist biography id",
+          "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -2140,7 +2144,7 @@
       "get" : {
         "description" : "Retrieves multiple artistRoles by available filters, or without if applicable.",
         "parameters" : [ {
-          "description" : "Allows to filter the collection of resources based on id attribute value",
+          "description" : "Artist role id",
           "example" : "1",
           "in" : "query",
           "name" : "filter[id]",
@@ -4115,6 +4119,16 @@
             "type" : "string"
           }
         }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
           "description" : "Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from",
           "example" : "'1,2,3' or 'USER_SELECTABLE'",
           "in" : "query",
@@ -4187,6 +4201,16 @@
           "required" : true,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
           }
         } ],
         "responses" : {
@@ -4723,6 +4747,65 @@
         }
       }
     },
+    "/manualArtistClaims" : {
+      "post" : {
+        "description" : "Creates a new manualArtistClaim.",
+        "parameters" : [ ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ManualArtistClaimsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ManualArtistClaims_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single manualArtistClaim.",
+        "tags" : [ "manualArtistClaims" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/playQueues" : {
       "get" : {
         "description" : "Retrieves multiple playQueues by available filters, or without if applicable.",
@@ -5070,7 +5153,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PlayQueues_Single_Relationship_Data_Document"
+                  "$ref" : "#/components/schemas/PlayQueues_Current_Single_Relationship_Data_Document"
                 }
               }
             },
@@ -5624,19 +5707,6 @@
             }
           }
         }, {
-          "description" : "User id",
-          "example" : "123456",
-          "in" : "query",
-          "name" : "filter[owners.id]",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "123456"
-            }
-          }
-        }, {
           "description" : "Playlist id",
           "example" : "550e8400-e29b-41d4-a716-446655440000",
           "in" : "query",
@@ -5647,6 +5717,19 @@
             "items" : {
               "type" : "string",
               "example" : "550e8400-e29b-41d4-a716-446655440000"
+            }
+          }
+        }, {
+          "description" : "User id",
+          "example" : "123456",
+          "in" : "query",
+          "name" : "filter[owners.id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "123456"
             }
           }
         } ],
@@ -6560,8 +6643,8 @@
       "get" : {
         "description" : "Retrieves multiple providers by available filters, or without if applicable.",
         "parameters" : [ {
-          "description" : "Allows to filter the collection of resources based on id attribute value",
-          "example" : "771",
+          "description" : "Provider ID",
+          "example" : "12345",
           "in" : "query",
           "name" : "filter[id]",
           "required" : false,
@@ -6569,7 +6652,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "771"
+              "example" : "12345"
             }
           }
         } ],
@@ -6625,8 +6708,8 @@
       "get" : {
         "description" : "Retrieves single provider by id.",
         "parameters" : [ {
-          "description" : "Provider id",
-          "example" : "771",
+          "description" : "Provider ID",
+          "example" : "12345",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -6682,12 +6765,256 @@
         }
       }
     },
-    "/searchResults/{id}" : {
+    "/reactions" : {
       "get" : {
-        "description" : "Retrieves single searchResult by id.",
+        "description" : "Retrieves multiple reactions by available filters, or without if applicable.",
         "parameters" : [ {
-          "description" : "Search query",
-          "example" : "moon",
+          "in" : "query",
+          "name" : "stats",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ALL", "COUNTS_BY_TYPE", "TOTAL_COUNT" ]
+          }
+        }, {
+          "in" : "query",
+          "name" : "statsOnly",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: ownerProfiles",
+          "example" : "ownerProfiles",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "ownerProfiles"
+            }
+          }
+        }, {
+          "description" : "Filter by owner id",
+          "example" : "67890",
+          "in" : "query",
+          "name" : "filter[owner.id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "67890"
+            }
+          }
+        }, {
+          "description" : "Filter by resource ID",
+          "example" : "12345",
+          "in" : "query",
+          "name" : "filter[reactedResource.id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "12345"
+            }
+          }
+        }, {
+          "description" : "Filter by resource type",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "filter[reactedResource.type]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "albums"
+            }
+          }
+        }, {
+          "description" : "Filter by reaction type",
+          "example" : "FIRE",
+          "in" : "query",
+          "name" : "filter[reactionType]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "FIRE"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Reactions_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple reactions.",
+        "tags" : [ "reactions" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "post" : {
+        "description" : "Creates a new reaction.",
+        "parameters" : [ ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateReactionPayload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Reactions_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single reaction.",
+        "tags" : [ "reactions" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/reactions/{id}" : {
+      "delete" : {
+        "description" : "Deletes existing reaction.",
+        "parameters" : [ {
+          "description" : "Reaction Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Delete single reaction.",
+        "tags" : [ "reactions" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/reactions/{id}/relationships/ownerProfiles" : {
+      "get" : {
+        "description" : "Retrieves ownerProfiles relationship.",
+        "parameters" : [ {
+          "description" : "Reaction Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -6695,20 +7022,102 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: ownerProfiles",
+          "example" : "ownerProfiles",
           "in" : "query",
-          "name" : "countryCode",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "ownerProfiles"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Reactions_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get ownerProfiles relationship (\"to-many\").",
+        "tags" : [ "reactions" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/searchResults/{id}" : {
+      "get" : {
+        "description" : "Retrieves single searchResult by id.",
+        "parameters" : [ {
+          "description" : "Search query string used as the resource identifier",
+          "example" : "hello",
+          "in" : "path",
+          "name" : "id",
           "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
           "description" : "Explicit filter",
-          "example" : "include, exclude",
+          "example" : "INCLUDE/EXCLUDE",
           "in" : "query",
           "name" : "explicitFilter",
           "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
@@ -6765,7 +7174,7 @@
         "security" : [ {
           "Client_Credentials" : [ ]
         }, {
-          "Authorization_Code_PKCE" : [ "search.read" ]
+          "Authorization_Code_PKCE" : [ "r_usr", "search.read" ]
         } ],
         "summary" : "Get single searchResult.",
         "tags" : [ "searchResults" ],
@@ -6778,11 +7187,30 @@
       "get" : {
         "description" : "Retrieves albums relationship.",
         "parameters" : [ {
-          "description" : "Search query",
-          "example" : "moon",
+          "description" : "Search query string used as the resource identifier",
+          "example" : "hello",
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Explicit filter",
+          "example" : "INCLUDE/EXCLUDE",
+          "in" : "query",
+          "name" : "explicitFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -6792,15 +7220,6 @@
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Explicit filter",
-          "example" : "include, exclude",
-          "in" : "query",
-          "name" : "explicitFilter",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -6817,14 +7236,6 @@
               "example" : "albums"
             }
           }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
         } ],
         "responses" : {
           "200" : {
@@ -6865,7 +7276,7 @@
         "security" : [ {
           "Client_Credentials" : [ ]
         }, {
-          "Authorization_Code_PKCE" : [ "search.read" ]
+          "Authorization_Code_PKCE" : [ "r_usr", "search.read" ]
         } ],
         "summary" : "Get albums relationship (\"to-many\").",
         "tags" : [ "searchResults" ],
@@ -6878,11 +7289,30 @@
       "get" : {
         "description" : "Retrieves artists relationship.",
         "parameters" : [ {
-          "description" : "Search query",
-          "example" : "moon",
+          "description" : "Search query string used as the resource identifier",
+          "example" : "hello",
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Explicit filter",
+          "example" : "INCLUDE/EXCLUDE",
+          "in" : "query",
+          "name" : "explicitFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -6892,15 +7322,6 @@
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Explicit filter",
-          "example" : "include, exclude",
-          "in" : "query",
-          "name" : "explicitFilter",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -6917,14 +7338,6 @@
               "example" : "artists"
             }
           }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
         } ],
         "responses" : {
           "200" : {
@@ -6965,7 +7378,7 @@
         "security" : [ {
           "Client_Credentials" : [ ]
         }, {
-          "Authorization_Code_PKCE" : [ "search.read" ]
+          "Authorization_Code_PKCE" : [ "r_usr", "search.read" ]
         } ],
         "summary" : "Get artists relationship (\"to-many\").",
         "tags" : [ "searchResults" ],
@@ -6978,11 +7391,30 @@
       "get" : {
         "description" : "Retrieves playlists relationship.",
         "parameters" : [ {
-          "description" : "Search query",
-          "example" : "moon",
+          "description" : "Search query string used as the resource identifier",
+          "example" : "hello",
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Explicit filter",
+          "example" : "INCLUDE/EXCLUDE",
+          "in" : "query",
+          "name" : "explicitFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -6992,15 +7424,6 @@
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Explicit filter",
-          "example" : "include, exclude",
-          "in" : "query",
-          "name" : "explicitFilter",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -7017,14 +7440,6 @@
               "example" : "playlists"
             }
           }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
         } ],
         "responses" : {
           "200" : {
@@ -7065,7 +7480,7 @@
         "security" : [ {
           "Client_Credentials" : [ ]
         }, {
-          "Authorization_Code_PKCE" : [ "search.read" ]
+          "Authorization_Code_PKCE" : [ "r_usr", "search.read" ]
         } ],
         "summary" : "Get playlists relationship (\"to-many\").",
         "tags" : [ "searchResults" ],
@@ -7078,11 +7493,30 @@
       "get" : {
         "description" : "Retrieves topHits relationship.",
         "parameters" : [ {
-          "description" : "Search query",
-          "example" : "moon",
+          "description" : "Search query string used as the resource identifier",
+          "example" : "hello",
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Explicit filter",
+          "example" : "INCLUDE/EXCLUDE",
+          "in" : "query",
+          "name" : "explicitFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -7092,15 +7526,6 @@
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Explicit filter",
-          "example" : "include, exclude",
-          "in" : "query",
-          "name" : "explicitFilter",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -7117,14 +7542,6 @@
               "example" : "topHits"
             }
           }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
         } ],
         "responses" : {
           "200" : {
@@ -7165,7 +7582,7 @@
         "security" : [ {
           "Client_Credentials" : [ ]
         }, {
-          "Authorization_Code_PKCE" : [ "search.read" ]
+          "Authorization_Code_PKCE" : [ "r_usr", "search.read" ]
         } ],
         "summary" : "Get topHits relationship (\"to-many\").",
         "tags" : [ "searchResults" ],
@@ -7178,11 +7595,30 @@
       "get" : {
         "description" : "Retrieves tracks relationship.",
         "parameters" : [ {
-          "description" : "Search query",
-          "example" : "moon",
+          "description" : "Search query string used as the resource identifier",
+          "example" : "hello",
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Explicit filter",
+          "example" : "INCLUDE/EXCLUDE",
+          "in" : "query",
+          "name" : "explicitFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -7192,15 +7628,6 @@
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Explicit filter",
-          "example" : "include, exclude",
-          "in" : "query",
-          "name" : "explicitFilter",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -7217,14 +7644,6 @@
               "example" : "tracks"
             }
           }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
         } ],
         "responses" : {
           "200" : {
@@ -7265,7 +7684,7 @@
         "security" : [ {
           "Client_Credentials" : [ ]
         }, {
-          "Authorization_Code_PKCE" : [ "search.read" ]
+          "Authorization_Code_PKCE" : [ "r_usr", "search.read" ]
         } ],
         "summary" : "Get tracks relationship (\"to-many\").",
         "tags" : [ "searchResults" ],
@@ -7278,11 +7697,30 @@
       "get" : {
         "description" : "Retrieves videos relationship.",
         "parameters" : [ {
-          "description" : "Search query",
-          "example" : "moon",
+          "description" : "Search query string used as the resource identifier",
+          "example" : "hello",
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Explicit filter",
+          "example" : "INCLUDE/EXCLUDE",
+          "in" : "query",
+          "name" : "explicitFilter",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -7292,15 +7730,6 @@
           "in" : "query",
           "name" : "countryCode",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Explicit filter",
-          "example" : "include, exclude",
-          "in" : "query",
-          "name" : "explicitFilter",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -7317,14 +7746,6 @@
               "example" : "videos"
             }
           }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
         } ],
         "responses" : {
           "200" : {
@@ -7365,7 +7786,7 @@
         "security" : [ {
           "Client_Credentials" : [ ]
         }, {
-          "Authorization_Code_PKCE" : [ "search.read" ]
+          "Authorization_Code_PKCE" : [ "r_usr", "search.read" ]
         } ],
         "summary" : "Get videos relationship (\"to-many\").",
         "tags" : [ "searchResults" ],
@@ -7378,6 +7799,8 @@
       "get" : {
         "description" : "Retrieves single searchSuggestion by id.",
         "parameters" : [ {
+          "description" : "Search query string used as the resource identifier",
+          "example" : "hello",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -7470,6 +7893,8 @@
       "get" : {
         "description" : "Retrieves directHits relationship.",
         "parameters" : [ {
+          "description" : "Search query string used as the resource identifier",
+          "example" : "hello",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -7956,6 +8381,8 @@
       "get" : {
         "description" : "Retrieves single trackFile by id.",
         "parameters" : [ {
+          "description" : "Track file id",
+          "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -8037,6 +8464,8 @@
       "get" : {
         "description" : "Retrieves single trackManifest by id.",
         "parameters" : [ {
+          "description" : "Track manifest id",
+          "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -8439,7 +8868,7 @@
             }
           }
         }, {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "query",
           "name" : "filter[id]",
@@ -8502,8 +8931,8 @@
       "get" : {
         "description" : "Retrieves single trackStatistic by id.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
-          "example" : "75413016",
+          "description" : "Track statistic id",
+          "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -8574,8 +9003,8 @@
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
-          "example" : "75413016",
+          "description" : "Track statistic id",
+          "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -8684,16 +9113,16 @@
             }
           }
         }, {
-          "description" : "User id",
-          "example" : "123456",
+          "description" : "Track id",
+          "example" : "75413016",
           "in" : "query",
-          "name" : "filter[owners.id]",
+          "name" : "filter[id]",
           "required" : false,
           "schema" : {
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "123456"
+              "example" : "75413016"
             }
           }
         }, {
@@ -8710,16 +9139,16 @@
             }
           }
         }, {
-          "description" : "A Tidal catalogue ID",
-          "example" : "75413016",
+          "description" : "User id",
+          "example" : "123456",
           "in" : "query",
-          "name" : "filter[id]",
+          "name" : "filter[owners.id]",
           "required" : false,
           "schema" : {
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "75413016"
+              "example" : "123456"
             }
           }
         } ],
@@ -8832,7 +9261,7 @@
       "delete" : {
         "description" : "Deletes existing track.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -8879,7 +9308,7 @@
       "get" : {
         "description" : "Retrieves single track by id.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -8960,7 +9389,7 @@
       "patch" : {
         "description" : "Updates existing track.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -9018,7 +9447,7 @@
       "get" : {
         "description" : "Retrieves albums relationship.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -9107,7 +9536,7 @@
       "patch" : {
         "description" : "Updates albums relationship.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -9165,7 +9594,7 @@
       "get" : {
         "description" : "Retrieves artists relationship.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -9256,7 +9685,7 @@
       "get" : {
         "description" : "Retrieves genres relationship.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -9347,7 +9776,7 @@
       "get" : {
         "description" : "Retrieves lyrics relationship.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -9429,7 +9858,7 @@
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -9511,7 +9940,7 @@
       "get" : {
         "description" : "Retrieves providers relationship.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -9602,7 +10031,7 @@
       "get" : {
         "description" : "Retrieves radio relationship.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -9684,7 +10113,7 @@
       "get" : {
         "description" : "Retrieves shares relationship.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -9764,7 +10193,7 @@
       "get" : {
         "description" : "Retrieves similarTracks relationship.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -9855,7 +10284,7 @@
       "get" : {
         "description" : "Retrieves sourceFile relationship.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -9929,7 +10358,7 @@
       "get" : {
         "description" : "Retrieves trackStatistics relationship.",
         "parameters" : [ {
-          "description" : "A Tidal catalogue ID",
+          "description" : "Track id",
           "example" : "75413016",
           "in" : "path",
           "name" : "id",
@@ -10596,23 +11025,13 @@
       "get" : {
         "description" : "Retrieves single userCollection by id.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
           "schema" : {
             "type" : "string"
-          }
-        }, {
-          "description" : "BCP 47 locale",
-          "example" : "en-US",
-          "in" : "query",
-          "name" : "locale",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "en-US"
           }
         }, {
           "description" : "ISO 3166-1 alpha-2 country code",
@@ -10622,6 +11041,16 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, owners, playlists, tracks, videos",
@@ -10687,7 +11116,7 @@
       "delete" : {
         "description" : "Deletes item(s) from albums relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
@@ -10743,23 +11172,13 @@
       "get" : {
         "description" : "Retrieves albums relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
           "schema" : {
             "type" : "string"
-          }
-        }, {
-          "description" : "BCP 47 locale",
-          "example" : "en-US",
-          "in" : "query",
-          "name" : "locale",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "en-US"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -10792,6 +11211,16 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: albums",
@@ -10855,7 +11284,7 @@
       "post" : {
         "description" : "Adds item(s) to albums relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
@@ -10922,7 +11351,7 @@
       "delete" : {
         "description" : "Deletes item(s) from artists relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
@@ -10978,23 +11407,13 @@
       "get" : {
         "description" : "Retrieves artists relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
           "schema" : {
             "type" : "string"
-          }
-        }, {
-          "description" : "BCP 47 locale",
-          "example" : "en-US",
-          "in" : "query",
-          "name" : "locale",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "en-US"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -11027,6 +11446,16 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: artists",
@@ -11090,7 +11519,7 @@
       "post" : {
         "description" : "Adds item(s) to artists relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
@@ -11157,7 +11586,7 @@
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
@@ -11237,7 +11666,7 @@
       "delete" : {
         "description" : "Deletes item(s) from playlists relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
@@ -11293,7 +11722,7 @@
       "get" : {
         "description" : "Retrieves playlists relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
@@ -11394,7 +11823,7 @@
       "post" : {
         "description" : "Adds item(s) to playlists relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
@@ -11452,7 +11881,7 @@
       "delete" : {
         "description" : "Deletes item(s) from tracks relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
@@ -11508,23 +11937,13 @@
       "get" : {
         "description" : "Retrieves tracks relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
           "schema" : {
             "type" : "string"
-          }
-        }, {
-          "description" : "BCP 47 locale",
-          "example" : "en-US",
-          "in" : "query",
-          "name" : "locale",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "en-US"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -11557,6 +11976,16 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: tracks",
@@ -11620,7 +12049,7 @@
       "post" : {
         "description" : "Adds item(s) to tracks relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
@@ -11687,7 +12116,7 @@
       "delete" : {
         "description" : "Deletes item(s) from videos relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
@@ -11743,23 +12172,13 @@
       "get" : {
         "description" : "Retrieves videos relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
           "schema" : {
             "type" : "string"
-          }
-        }, {
-          "description" : "BCP 47 locale",
-          "example" : "en-US",
-          "in" : "query",
-          "name" : "locale",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "default" : "en-US"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -11792,6 +12211,16 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: videos",
@@ -11855,7 +12284,7 @@
       "post" : {
         "description" : "Adds item(s) to videos relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User collection id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
@@ -11930,6 +12359,19 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
         } ],
         "responses" : {
           "200" : {
@@ -11968,9 +12410,89 @@
           }
         },
         "security" : [ {
-          "Authorization_Code_PKCE" : [ "entitlements.read" ]
+          "Authorization_Code_PKCE" : [ "entitlements.read", "r_usr" ]
         } ],
         "summary" : "Get single userEntitlement.",
+        "tags" : [ "userEntitlements" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/userEntitlements/{id}/relationships/owners" : {
+      "get" : {
+        "description" : "Retrieves owners relationship.",
+        "parameters" : [ {
+          "description" : "User id",
+          "example" : "123456",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserEntitlements_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "entitlements.read", "r_usr" ]
+        } ],
+        "summary" : "Get owners relationship (\"to-many\").",
         "tags" : [ "userEntitlements" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
@@ -11981,7 +12503,7 @@
       "get" : {
         "description" : "Retrieves single userRecommendation by id.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User recommendations id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
@@ -11999,13 +12521,14 @@
             "type" : "string"
           }
         }, {
-          "description" : "BCP47 locale code",
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
           "name" : "locale",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes",
@@ -12058,7 +12581,7 @@
           }
         },
         "security" : [ {
-          "Authorization_Code_PKCE" : [ "recommendations.read" ]
+          "Authorization_Code_PKCE" : [ "r_usr", "recommendations.read" ]
         } ],
         "summary" : "Get single userRecommendation.",
         "tags" : [ "userRecommendations" ],
@@ -12071,11 +12594,19 @@
       "get" : {
         "description" : "Retrieves discoveryMixes relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User recommendations id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -12089,13 +12620,14 @@
             "type" : "string"
           }
         }, {
-          "description" : "BCP47 locale code",
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
           "name" : "locale",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: discoveryMixes",
@@ -12110,14 +12642,6 @@
               "example" : "discoveryMixes"
             }
           }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
         } ],
         "responses" : {
           "200" : {
@@ -12156,7 +12680,7 @@
           }
         },
         "security" : [ {
-          "Authorization_Code_PKCE" : [ "recommendations.read" ]
+          "Authorization_Code_PKCE" : [ "r_usr", "recommendations.read" ]
         } ],
         "summary" : "Get discoveryMixes relationship (\"to-many\").",
         "tags" : [ "userRecommendations" ],
@@ -12169,11 +12693,19 @@
       "get" : {
         "description" : "Retrieves myMixes relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User recommendations id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -12187,13 +12719,14 @@
             "type" : "string"
           }
         }, {
-          "description" : "BCP47 locale code",
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
           "name" : "locale",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: myMixes",
@@ -12208,14 +12741,6 @@
               "example" : "myMixes"
             }
           }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
         } ],
         "responses" : {
           "200" : {
@@ -12254,7 +12779,7 @@
           }
         },
         "security" : [ {
-          "Authorization_Code_PKCE" : [ "recommendations.read" ]
+          "Authorization_Code_PKCE" : [ "r_usr", "recommendations.read" ]
         } ],
         "summary" : "Get myMixes relationship (\"to-many\").",
         "tags" : [ "userRecommendations" ],
@@ -12267,11 +12792,19 @@
       "get" : {
         "description" : "Retrieves newArrivalMixes relationship.",
         "parameters" : [ {
-          "description" : "User id",
+          "description" : "User recommendations id",
           "example" : "123456",
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -12285,13 +12818,14 @@
             "type" : "string"
           }
         }, {
-          "description" : "BCP47 locale code",
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
           "name" : "locale",
-          "required" : true,
+          "required" : false,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: newArrivalMixes",
@@ -12306,14 +12840,6 @@
               "example" : "newArrivalMixes"
             }
           }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
         } ],
         "responses" : {
           "200" : {
@@ -12352,7 +12878,7 @@
           }
         },
         "security" : [ {
-          "Authorization_Code_PKCE" : [ "recommendations.read" ]
+          "Authorization_Code_PKCE" : [ "r_usr", "recommendations.read" ]
         } ],
         "summary" : "Get newArrivalMixes relationship (\"to-many\").",
         "tags" : [ "userRecommendations" ],
@@ -12496,20 +13022,7 @@
             }
           }
         }, {
-          "description" : "Allows to filter the collection of resources based on isrc attribute value",
-          "example" : "USSM21600755",
-          "in" : "query",
-          "name" : "filter[isrc]",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "USSM21600755"
-            }
-          }
-        }, {
-          "description" : "Allows to filter the collection of resources based on id attribute value",
+          "description" : "Video id",
           "example" : "75623239",
           "in" : "query",
           "name" : "filter[id]",
@@ -12519,6 +13032,19 @@
             "items" : {
               "type" : "string",
               "example" : "75623239"
+            }
+          }
+        }, {
+          "description" : "International Standard Recording Code (ISRC)",
+          "example" : "QMJMT1701237",
+          "in" : "query",
+          "name" : "filter[isrc]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "QMJMT1701237"
             }
           }
         } ],
@@ -12666,6 +13192,14 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
@@ -12686,14 +13220,6 @@
               "type" : "string",
               "example" : "albums"
             }
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
           }
         } ],
         "responses" : {
@@ -12757,6 +13283,14 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
@@ -12777,14 +13311,6 @@
               "type" : "string",
               "example" : "artists"
             }
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
           }
         } ],
         "responses" : {
@@ -12848,6 +13374,14 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
@@ -12868,14 +13402,6 @@
               "type" : "string",
               "example" : "providers"
             }
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
           }
         } ],
         "responses" : {
@@ -12939,6 +13465,14 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
@@ -12959,14 +13493,6 @@
               "type" : "string",
               "example" : "thumbnailArt"
             }
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
           }
         } ],
         "responses" : {
@@ -13211,6 +13737,10 @@
         "required" : [ "title" ],
         "type" : "object",
         "properties" : {
+          "albumType" : {
+            "type" : "string",
+            "enum" : [ "ALBUM", "EP", "SINGLE" ]
+          },
           "copyright" : {
             "$ref" : "#/components/schemas/Copyright"
           },
@@ -13377,6 +13907,10 @@
             "description" : "Access type",
             "example" : "PRIVATE",
             "enum" : [ "PUBLIC", "UNLISTED", "PRIVATE" ]
+          },
+          "albumType" : {
+            "type" : "string",
+            "enum" : [ "ALBUM", "EP", "SINGLE" ]
           },
           "copyright" : {
             "$ref" : "#/components/schemas/Copyright"
@@ -14373,10 +14907,12 @@
         }
       },
       "ArtistRoles_Attributes" : {
+        "required" : [ "name" ],
         "type" : "object",
         "properties" : {
           "name" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Name of the artist role"
           }
         }
       },
@@ -15092,6 +15628,50 @@
         },
         "description" : "Copyright information"
       },
+      "CreateReactionPayload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/CreateReactionPayload_Data"
+          }
+        }
+      },
+      "CreateReactionPayload_Data" : {
+        "required" : [ "attributes", "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/CreateReactionPayload_Data_Attributes"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/CreateReactionPayload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "reactions" ]
+          }
+        }
+      },
+      "CreateReactionPayload_Data_Attributes" : {
+        "required" : [ "reactionType" ],
+        "type" : "object",
+        "properties" : {
+          "reactionType" : {
+            "type" : "string",
+            "enum" : [ "THUMB_UP", "SMILEY_HEART_EYES", "SMILEY_HOLDING_BACK_TEARS", "FIRE", "SHOCK" ]
+          }
+        }
+      },
+      "CreateReactionPayload_Data_Relationships" : {
+        "required" : [ "reactedResource" ],
+        "type" : "object",
+        "properties" : {
+          "reactedResource" : {
+            "$ref" : "#/components/schemas/ReactedResourceRelationship"
+          }
+        }
+      },
       "Data" : {
         "required" : [ "id", "resourceType" ],
         "type" : "object",
@@ -15573,9 +16153,11 @@
               "artworks" : "#/components/schemas/Artworks_Resource_Object",
               "genres" : "#/components/schemas/Genres_Resource_Object",
               "lyrics" : "#/components/schemas/Lyrics_Resource_Object",
+              "manualArtistClaims" : "#/components/schemas/ManualArtistClaims_Resource_Object",
               "playQueues" : "#/components/schemas/PlayQueues_Resource_Object",
               "playlists" : "#/components/schemas/Playlists_Resource_Object",
               "providers" : "#/components/schemas/Providers_Resource_Object",
+              "reactions" : "#/components/schemas/Reactions_Resource_Object",
               "searchResults" : "#/components/schemas/SearchResults_Resource_Object",
               "searchSuggestions" : "#/components/schemas/SearchSuggestions_Resource_Object",
               "shares" : "#/components/schemas/Shares_Resource_Object",
@@ -15613,11 +16195,15 @@
           }, {
             "$ref" : "#/components/schemas/Lyrics_Resource_Object"
           }, {
+            "$ref" : "#/components/schemas/ManualArtistClaims_Resource_Object"
+          }, {
             "$ref" : "#/components/schemas/PlayQueues_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Playlists_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Providers_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/Reactions_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/SearchResults_Resource_Object"
           }, {
@@ -15649,6 +16235,18 @@
           }, {
             "$ref" : "#/components/schemas/Videos_Resource_Object"
           } ]
+        }
+      },
+      "LegacySource" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          }
         }
       },
       "Links" : {
@@ -15934,6 +16532,223 @@
           }
         }
       },
+      "ManualArtistClaimsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ManualArtistClaimsCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "ManualArtistClaimsCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ManualArtistClaimsCreateOperation_Payload_Data_Attributes"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "manualArtistClaims" ]
+          }
+        }
+      },
+      "ManualArtistClaimsCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "artistId", "legalFirstName", "legalLastName", "websiteOrSocialLink" ],
+        "type" : "object",
+        "properties" : {
+          "acceptedTerms" : {
+            "type" : "boolean"
+          },
+          "artistId" : {
+            "type" : "string"
+          },
+          "distributorName" : {
+            "type" : "string"
+          },
+          "errorReason" : {
+            "type" : "string"
+          },
+          "labelContactEmail" : {
+            "type" : "string"
+          },
+          "labelContactName" : {
+            "type" : "string"
+          },
+          "labelName" : {
+            "type" : "string"
+          },
+          "legalFirstName" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "legalLastName" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "managerEmail" : {
+            "type" : "string"
+          },
+          "managerName" : {
+            "type" : "string"
+          },
+          "role" : {
+            "type" : "string"
+          },
+          "selectedAlbums" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "selectedSingles" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "websiteOrSocialLink" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "ManualArtistClaims_Attributes" : {
+        "required" : [ "artistId", "legalFirstName", "legalLastName", "websiteOrSocialLink" ],
+        "type" : "object",
+        "properties" : {
+          "acceptedTerms" : {
+            "type" : "boolean",
+            "description" : "Accepted terms and conditions"
+          },
+          "artistId" : {
+            "type" : "string",
+            "description" : "Artist ID being claimed"
+          },
+          "distributorName" : {
+            "type" : "string",
+            "description" : "Distributor name"
+          },
+          "errorReason" : {
+            "type" : "string",
+            "description" : "Error reason if claim failed"
+          },
+          "labelContactEmail" : {
+            "type" : "string",
+            "description" : "Label contact email"
+          },
+          "labelContactName" : {
+            "type" : "string",
+            "description" : "Label contact name"
+          },
+          "labelName" : {
+            "type" : "string",
+            "description" : "Label name"
+          },
+          "legalFirstName" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Legal first name"
+          },
+          "legalLastName" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Legal last name"
+          },
+          "managerEmail" : {
+            "type" : "string",
+            "description" : "Manager email"
+          },
+          "managerName" : {
+            "type" : "string",
+            "description" : "Manager name"
+          },
+          "role" : {
+            "type" : "string",
+            "description" : "Role"
+          },
+          "selectedAlbums" : {
+            "type" : "array",
+            "description" : "Album IDs selected by user",
+            "items" : {
+              "type" : "string",
+              "description" : "Album IDs selected by user"
+            }
+          },
+          "selectedSingles" : {
+            "type" : "array",
+            "description" : "Single IDs selected by user",
+            "items" : {
+              "type" : "string",
+              "description" : "Single IDs selected by user"
+            }
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Claim status",
+            "enum" : [ "PENDING", "APPROVED", "REJECTED" ]
+          },
+          "websiteOrSocialLink" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Website or social link"
+          }
+        }
+      },
+      "ManualArtistClaims_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ManualArtistClaims_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ManualArtistClaims_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ManualArtistClaims_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ManualArtistClaims_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ManualArtistClaims_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "Multi_Relationship_Data_Document" : {
         "required" : [ "links" ],
         "type" : "object",
@@ -15986,6 +16801,9 @@
           "batchId" : {
             "type" : "string",
             "format" : "uuid"
+          },
+          "legacySource" : {
+            "$ref" : "#/components/schemas/LegacySource"
           },
           "mode" : {
             "type" : "string",
@@ -16201,6 +17019,57 @@
           }
         }
       },
+      "PlayQueues_Current_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/PlayQueues_Current_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "PlayQueues_Current_Resource_Identifier_Meta" : {
+        "required" : [ "batchId", "itemId" ],
+        "type" : "object",
+        "properties" : {
+          "batchId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "itemId" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "legacySource" : {
+            "$ref" : "#/components/schemas/LegacySource"
+          }
+        }
+      },
+      "PlayQueues_Current_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/PlayQueues_Current_Resource_Identifier"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "PlayQueues_Future_Multi_Relationship_Data_Document" : {
         "required" : [ "links" ],
         "type" : "object",
@@ -16249,6 +17118,9 @@
           "itemId" : {
             "minLength" : 1,
             "type" : "string"
+          },
+          "legacySource" : {
+            "$ref" : "#/components/schemas/LegacySource"
           }
         }
       },
@@ -16336,6 +17208,9 @@
           "itemId" : {
             "minLength" : 1,
             "type" : "string"
+          },
+          "legacySource" : {
+            "$ref" : "#/components/schemas/LegacySource"
           }
         }
       },
@@ -16343,7 +17218,7 @@
         "required" : [ "current", "future", "owners", "past" ],
         "properties" : {
           "current" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/PlayQueues_Current_Single_Relationship_Data_Document"
           },
           "future" : {
             "$ref" : "#/components/schemas/PlayQueues_Future_Multi_Relationship_Data_Document"
@@ -16661,7 +17536,7 @@
         }
       },
       "Playlists_Attributes" : {
-        "required" : [ "accessType", "bounded", "createdAt", "externalLinks", "lastModifiedAt", "name", "playlistType" ],
+        "required" : [ "accessType", "bounded", "createdAt", "externalLinks", "lastModifiedAt", "name", "numberOfFollowers", "playlistType" ],
         "type" : "object",
         "properties" : {
           "accessType" : {
@@ -16703,6 +17578,11 @@
             "minLength" : 1,
             "type" : "string",
             "description" : "Playlist name"
+          },
+          "numberOfFollowers" : {
+            "type" : "integer",
+            "description" : "The amount of followers of the playlist",
+            "format" : "int32"
           },
           "numberOfItems" : {
             "type" : "integer",
@@ -16911,6 +17791,127 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/Providers_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ReactedResourceIdentifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "albums", "tracks", "artists", "videos", "playlists" ]
+          }
+        }
+      },
+      "ReactedResourceRelationship" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ReactedResourceIdentifier"
+          }
+        }
+      },
+      "Reactions_Attributes" : {
+        "required" : [ "createdAt", "reactionType" ],
+        "type" : "object",
+        "properties" : {
+          "createdAt" : {
+            "type" : "string",
+            "description" : "Datetime of the reaction creation (ISO 8601)",
+            "format" : "date-time",
+            "example" : "2025-11-17T12:54:48.60606Z"
+          },
+          "reactionType" : {
+            "type" : "string",
+            "description" : "The type of reaction representing an emoji",
+            "enum" : [ "THUMB_UP", "SMILEY_HEART_EYES", "SMILEY_HOLDING_BACK_TEARS", "FIRE", "SHOCK" ]
+          }
+        }
+      },
+      "Reactions_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Reactions_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Reactions_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Reactions_Relationships" : {
+        "required" : [ "ownerProfiles" ],
+        "properties" : {
+          "ownerProfiles" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "Reactions_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/Reactions_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/Reactions_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Reactions_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Reactions_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -18788,9 +19789,22 @@
           "id" : {
             "type" : "string"
           },
+          "meta" : {
+            "$ref" : "#/components/schemas/UserCollectionTracksRelationshipAddOperation_Payload_Data_Meta"
+          },
           "type" : {
             "type" : "string",
             "enum" : [ "tracks" ]
+          }
+        }
+      },
+      "UserCollectionTracksRelationshipAddOperation_Payload_Data_Meta" : {
+        "required" : [ "addedAt" ],
+        "type" : "object",
+        "properties" : {
+          "addedAt" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },
@@ -18844,7 +19858,7 @@
           },
           "type" : {
             "type" : "string",
-            "enum" : [ "albums", "appreciations", "artistClaims", "artistRoles", "artists", "artworks", "playlists", "providers", "searchResults", "searchSuggestions", "tracks", "trackStatistics", "userCollections", "userEntitlements", "userRecommendations", "userReports", "users", "videos" ]
+            "enum" : [ "videos" ]
           }
         }
       },
@@ -18871,7 +19885,7 @@
           },
           "type" : {
             "type" : "string",
-            "enum" : [ "albums", "appreciations", "artistClaims", "artistRoles", "artists", "artworks", "playlists", "providers", "searchResults", "searchSuggestions", "tracks", "trackStatistics", "userCollections", "userEntitlements", "userRecommendations", "userReports", "users", "videos" ]
+            "enum" : [ "videos" ]
           }
         }
       },
@@ -19216,12 +20230,30 @@
         "properties" : {
           "entitlements" : {
             "type" : "array",
-            "description" : "entitlements for user",
+            "description" : "Entitlements for user",
             "items" : {
               "type" : "string",
-              "description" : "entitlements for user",
+              "description" : "Entitlements for user",
               "enum" : [ "MUSIC", "DJ" ]
             }
+          }
+        }
+      },
+      "UserEntitlements_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         }
       },
@@ -19243,6 +20275,14 @@
           }
         }
       },
+      "UserEntitlements_Relationships" : {
+        "required" : [ "owners" ],
+        "properties" : {
+          "owners" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
       "UserEntitlements_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
@@ -19254,6 +20294,9 @@
             "type" : "string",
             "description" : "Resource id",
             "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/UserEntitlements_Relationships"
           },
           "type" : {
             "minLength" : 1,
