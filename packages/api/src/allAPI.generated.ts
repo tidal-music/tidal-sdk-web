@@ -31,20 +31,20 @@ export interface paths {
                      */
                     include?: string[];
                     /**
-                     * @description User id
-                     * @example 123456
+                     * @description Barcode Id
+                     * @example 196589525444
                      */
-                    "filter[owners.id]"?: string[];
+                    "filter[barcodeId]"?: string[];
                     /**
                      * @description Album id
                      * @example 251380836
                      */
                     "filter[id]"?: string[];
                     /**
-                     * @description Barcode Id
-                     * @example 196589525444
+                     * @description User id
+                     * @example 123456
                      */
-                    "filter[barcodeId]"?: string[];
+                    "filter[owners.id]"?: string[];
                 };
                 header?: never;
                 path?: never;
@@ -962,8 +962,8 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description Artist id
-                     * @example 1566
+                     * @description Artist biography id
+                     * @example 123456
                      */
                     id: string;
                 };
@@ -1005,8 +1005,8 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description Artist id
-                     * @example 1566
+                     * @description Artist biography id
+                     * @example 123456
                      */
                     id: string;
                 };
@@ -1055,8 +1055,8 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description Artist id
-                     * @example 1566
+                     * @description Artist biography id
+                     * @example 123456
                      */
                     id: string;
                 };
@@ -1481,7 +1481,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows to filter the collection of resources based on id attribute value
+                     * @description Artist role id
                      * @example 1
                      */
                     "filter[id]"?: string[];
@@ -2885,6 +2885,11 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /**
                      * @description Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from
                      * @example '1,2,3' or 'USER_SELECTABLE'
                      */
@@ -2936,7 +2941,13 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                };
                 header?: never;
                 path: {
                     /**
@@ -3318,6 +3329,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/manualArtistClaims": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create single manualArtistClaim.
+         * @description Creates a new manualArtistClaim.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ManualArtistClaimsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ManualArtistClaims_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/playQueues": {
         parameters: {
             query?: never;
@@ -3570,7 +3632,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["PlayQueues_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["PlayQueues_Current_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -3931,15 +3993,15 @@ export interface paths {
                      */
                     include?: string[];
                     /**
-                     * @description User id
-                     * @example 123456
-                     */
-                    "filter[owners.id]"?: string[];
-                    /**
                      * @description Playlist id
                      * @example 550e8400-e29b-41d4-a716-446655440000
                      */
                     "filter[id]"?: string[];
+                    /**
+                     * @description User id
+                     * @example 123456
+                     */
+                    "filter[owners.id]"?: string[];
                 };
                 header?: never;
                 path?: never;
@@ -4558,8 +4620,8 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows to filter the collection of resources based on id attribute value
-                     * @example 771
+                     * @description Provider ID
+                     * @example 12345
                      */
                     "filter[id]"?: string[];
                 };
@@ -4613,8 +4675,8 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description Provider id
-                     * @example 771
+                     * @description Provider ID
+                     * @example 12345
                      */
                     id: string;
                 };
@@ -4629,6 +4691,223 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Providers_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple reactions.
+         * @description Retrieves multiple reactions by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
+                    statsOnly?: boolean;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles
+                     * @example ownerProfiles
+                     */
+                    include?: string[];
+                    /**
+                     * @description Filter by owner id
+                     * @example 67890
+                     */
+                    "filter[owner.id]"?: string[];
+                    /**
+                     * @description Filter by resource ID
+                     * @example 12345
+                     */
+                    "filter[reactedResource.id]"?: string[];
+                    /**
+                     * @description Filter by resource type
+                     * @example albums
+                     */
+                    "filter[reactedResource.type]"?: string[];
+                    /**
+                     * @description Filter by reaction type
+                     * @example FIRE
+                     */
+                    "filter[reactionType]"?: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Reactions_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single reaction.
+         * @description Creates a new reaction.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["CreateReactionPayload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Reactions_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reactions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete single reaction.
+         * @description Deletes existing reaction.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Reaction Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reactions/{id}/relationships/ownerProfiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get ownerProfiles relationship ("to-many").
+         * @description Retrieves ownerProfiles relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles
+                     * @example ownerProfiles
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Reaction Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Reactions_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4664,15 +4943,15 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Explicit filter
+                     * @example INCLUDE/EXCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
-                    /**
-                     * @description Explicit filter
-                     * @example include, exclude
-                     */
-                    explicitFilter?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, playlists, topHits, tracks, videos
                      * @example albums
@@ -4682,8 +4961,8 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description Search query
-                     * @example moon
+                     * @description Search query string used as the resource identifier
+                     * @example hello
                      */
                     id: string;
                 };
@@ -4733,28 +5012,28 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Explicit filter
+                     * @example INCLUDE/EXCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
                     /**
-                     * @description Explicit filter
-                     * @example include, exclude
-                     */
-                    explicitFilter?: string;
-                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums
                      * @example albums
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
                     /**
-                     * @description Search query
-                     * @example moon
+                     * @description Search query string used as the resource identifier
+                     * @example hello
                      */
                     id: string;
                 };
@@ -4804,28 +5083,28 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Explicit filter
+                     * @example INCLUDE/EXCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
                     /**
-                     * @description Explicit filter
-                     * @example include, exclude
-                     */
-                    explicitFilter?: string;
-                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
                      * @example artists
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
                     /**
-                     * @description Search query
-                     * @example moon
+                     * @description Search query string used as the resource identifier
+                     * @example hello
                      */
                     id: string;
                 };
@@ -4875,28 +5154,28 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Explicit filter
+                     * @example INCLUDE/EXCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
                     /**
-                     * @description Explicit filter
-                     * @example include, exclude
-                     */
-                    explicitFilter?: string;
-                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: playlists
                      * @example playlists
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
                     /**
-                     * @description Search query
-                     * @example moon
+                     * @description Search query string used as the resource identifier
+                     * @example hello
                      */
                     id: string;
                 };
@@ -4946,28 +5225,28 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Explicit filter
+                     * @example INCLUDE/EXCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
                     /**
-                     * @description Explicit filter
-                     * @example include, exclude
-                     */
-                    explicitFilter?: string;
-                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: topHits
                      * @example topHits
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
                     /**
-                     * @description Search query
-                     * @example moon
+                     * @description Search query string used as the resource identifier
+                     * @example hello
                      */
                     id: string;
                 };
@@ -5017,28 +5296,28 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Explicit filter
+                     * @example INCLUDE/EXCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
                     /**
-                     * @description Explicit filter
-                     * @example include, exclude
-                     */
-                    explicitFilter?: string;
-                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: tracks
                      * @example tracks
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
                     /**
-                     * @description Search query
-                     * @example moon
+                     * @description Search query string used as the resource identifier
+                     * @example hello
                      */
                     id: string;
                 };
@@ -5088,28 +5367,28 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Explicit filter
+                     * @example INCLUDE/EXCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
                     /**
-                     * @description Explicit filter
-                     * @example include, exclude
-                     */
-                    explicitFilter?: string;
-                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: videos
                      * @example videos
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
                     /**
-                     * @description Search query
-                     * @example moon
+                     * @description Search query string used as the resource identifier
+                     * @example hello
                      */
                     id: string;
                 };
@@ -5176,6 +5455,10 @@ export interface paths {
                 };
                 header?: never;
                 path: {
+                    /**
+                     * @description Search query string used as the resource identifier
+                     * @example hello
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -5243,6 +5526,10 @@ export interface paths {
                 };
                 header?: never;
                 path: {
+                    /**
+                     * @description Search query string used as the resource identifier
+                     * @example hello
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -5574,6 +5861,10 @@ export interface paths {
                 };
                 header?: never;
                 path: {
+                    /**
+                     * @description Track file id
+                     * @example 123456
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -5630,6 +5921,10 @@ export interface paths {
                 };
                 header?: never;
                 path: {
+                    /**
+                     * @description Track manifest id
+                     * @example 123456
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -5899,7 +6194,7 @@ export interface paths {
                      */
                     include?: string[];
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     "filter[id]"?: string[];
@@ -5960,8 +6255,8 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
-                     * @example 75413016
+                     * @description Track statistic id
+                     * @example 123456
                      */
                     id: string;
                 };
@@ -6021,8 +6316,8 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
-                     * @example 75413016
+                     * @description Track statistic id
+                     * @example 123456
                      */
                     id: string;
                 };
@@ -6084,20 +6379,20 @@ export interface paths {
                      */
                     include?: string[];
                     /**
-                     * @description User id
-                     * @example 123456
+                     * @description Track id
+                     * @example 75413016
                      */
-                    "filter[owners.id]"?: string[];
+                    "filter[id]"?: string[];
                     /**
                      * @description International Standard Recording Code (ISRC)
                      * @example QMJMT1701237
                      */
                     "filter[isrc]"?: string[];
                     /**
-                     * @description A Tidal catalogue ID
-                     * @example 75413016
+                     * @description User id
+                     * @example 123456
                      */
-                    "filter[id]"?: string[];
+                    "filter[owners.id]"?: string[];
                 };
                 header?: never;
                 path?: never;
@@ -6195,7 +6490,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6235,7 +6530,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6266,7 +6561,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6321,7 +6616,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6364,7 +6659,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6419,7 +6714,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6485,7 +6780,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6546,7 +6841,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6607,7 +6902,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6673,7 +6968,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6734,7 +7029,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6795,7 +7090,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6861,7 +7156,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6920,7 +7215,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -6979,7 +7274,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description A Tidal catalogue ID
+                     * @description Track id
                      * @example 75413016
                      */
                     id: string;
@@ -7428,17 +7723,17 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    /**
-                     * @description BCP 47 locale
-                     * @example en-US
-                     */
-                    locale: string;
+                query?: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, owners, playlists, tracks, videos
                      * @example albums
@@ -7448,7 +7743,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -7497,12 +7792,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    /**
-                     * @description BCP 47 locale
-                     * @example en-US
-                     */
-                    locale: string;
+                query?: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
@@ -7513,6 +7803,11 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums
                      * @example albums
                      */
@@ -7521,7 +7816,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -7566,7 +7861,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -7599,7 +7894,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -7640,12 +7935,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    /**
-                     * @description BCP 47 locale
-                     * @example en-US
-                     */
-                    locale: string;
+                query?: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
@@ -7656,6 +7946,11 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
                      * @example artists
                      */
@@ -7664,7 +7959,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -7709,7 +8004,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -7742,7 +8037,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -7795,7 +8090,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -7859,7 +8154,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -7898,7 +8193,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -7931,7 +8226,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -7972,12 +8267,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    /**
-                     * @description BCP 47 locale
-                     * @example en-US
-                     */
-                    locale: string;
+                query?: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
@@ -7988,6 +8278,11 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: tracks
                      * @example tracks
                      */
@@ -7996,7 +8291,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -8041,7 +8336,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -8074,7 +8369,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -8115,12 +8410,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    /**
-                     * @description BCP 47 locale
-                     * @example en-US
-                     */
-                    locale: string;
+                query?: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
@@ -8131,6 +8421,11 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: videos
                      * @example videos
                      */
@@ -8139,7 +8434,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -8184,7 +8479,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -8217,7 +8512,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User collection id
                      * @example 123456
                      */
                     id: string;
@@ -8258,7 +8553,13 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                };
                 header?: never;
                 path: {
                     /**
@@ -8278,6 +8579,67 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["UserEntitlements_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userEntitlements/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User id
+                     * @example 123456
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserEntitlements_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -8318,10 +8680,10 @@ export interface paths {
                      */
                     countryCode: string;
                     /**
-                     * @description BCP47 locale code
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
-                    locale: string;
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes
                      * @example discoveryMixes
@@ -8331,7 +8693,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User recommendations id
                      * @example 123456
                      */
                     id: string;
@@ -8381,28 +8743,28 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
                     /**
-                     * @description BCP47 locale code
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
-                    locale: string;
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: discoveryMixes
                      * @example discoveryMixes
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User recommendations id
                      * @example 123456
                      */
                     id: string;
@@ -8452,28 +8814,28 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
                     /**
-                     * @description BCP47 locale code
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
-                    locale: string;
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: myMixes
                      * @example myMixes
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User recommendations id
                      * @example 123456
                      */
                     id: string;
@@ -8523,28 +8885,28 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode: string;
                     /**
-                     * @description BCP47 locale code
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
-                    locale: string;
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: newArrivalMixes
                      * @example newArrivalMixes
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
                     /**
-                     * @description User id
+                     * @description User recommendations id
                      * @example 123456
                      */
                     id: string;
@@ -8703,15 +9065,15 @@ export interface paths {
                      */
                     include?: string[];
                     /**
-                     * @description Allows to filter the collection of resources based on isrc attribute value
-                     * @example USSM21600755
-                     */
-                    "filter[isrc]"?: string[];
-                    /**
-                     * @description Allows to filter the collection of resources based on id attribute value
+                     * @description Video id
                      * @example 75623239
                      */
                     "filter[id]"?: string[];
+                    /**
+                     * @description International Standard Recording Code (ISRC)
+                     * @example QMJMT1701237
+                     */
+                    "filter[isrc]"?: string[];
                 };
                 header?: never;
                 path?: never;
@@ -8824,6 +9186,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -8834,8 +9198,6 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
@@ -8890,6 +9252,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -8900,8 +9264,6 @@ export interface paths {
                      * @example artists
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
@@ -8956,6 +9318,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -8966,8 +9330,6 @@ export interface paths {
                      * @example providers
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
@@ -9022,6 +9384,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -9032,8 +9396,6 @@ export interface paths {
                      * @example thumbnailArt
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
@@ -9099,6 +9461,8 @@ export interface components {
             type: "albums";
         };
         AlbumCreateOperation_Payload_Data_Attributes: {
+            /** @enum {string} */
+            albumType?: "ALBUM" | "EP" | "SINGLE";
             copyright?: components["schemas"]["Copyright"];
             explicitLyrics?: boolean;
             /** Format: date */
@@ -9160,6 +9524,8 @@ export interface components {
              * @enum {string}
              */
             accessType?: "PUBLIC" | "UNLISTED" | "PRIVATE";
+            /** @enum {string} */
+            albumType?: "ALBUM" | "EP" | "SINGLE";
             copyright?: components["schemas"]["Copyright"];
             explicitLyrics?: boolean;
             /** Format: date */
@@ -9590,7 +9956,8 @@ export interface components {
             type: "artworks";
         };
         ArtistRoles_Attributes: {
-            name?: string;
+            /** @description Name of the artist role */
+            name: string;
         };
         ArtistRoles_Multi_Resource_Data_Document: {
             data: components["schemas"]["ArtistRoles_Resource_Object"][];
@@ -9920,6 +10287,22 @@ export interface components {
         Copyright: {
             text: string;
         };
+        CreateReactionPayload: {
+            data: components["schemas"]["CreateReactionPayload_Data"];
+        };
+        CreateReactionPayload_Data: {
+            attributes: components["schemas"]["CreateReactionPayload_Data_Attributes"];
+            relationships: components["schemas"]["CreateReactionPayload_Data_Relationships"];
+            /** @enum {string} */
+            type: "reactions";
+        };
+        CreateReactionPayload_Data_Attributes: {
+            /** @enum {string} */
+            reactionType: "THUMB_UP" | "SMILEY_HEART_EYES" | "SMILEY_HOLDING_BACK_TEARS" | "FIRE" | "SHOCK";
+        };
+        CreateReactionPayload_Data_Relationships: {
+            reactedResource: components["schemas"]["ReactedResourceRelationship"];
+        };
         Data: {
             id: string;
             resourceType: string;
@@ -10116,7 +10499,11 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        LegacySource: {
+            id: string;
+            type: string;
+        };
         Links: {
             meta?: components["schemas"]["Links_Meta"];
             /**
@@ -10227,6 +10614,91 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ManualArtistClaimsCreateOperation_Payload: {
+            data: components["schemas"]["ManualArtistClaimsCreateOperation_Payload_Data"];
+        };
+        ManualArtistClaimsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["ManualArtistClaimsCreateOperation_Payload_Data_Attributes"];
+            /** @enum {string} */
+            type: "manualArtistClaims";
+        };
+        ManualArtistClaimsCreateOperation_Payload_Data_Attributes: {
+            acceptedTerms?: boolean;
+            artistId: string;
+            distributorName?: string;
+            errorReason?: string;
+            labelContactEmail?: string;
+            labelContactName?: string;
+            labelName?: string;
+            legalFirstName: string;
+            legalLastName: string;
+            managerEmail?: string;
+            managerName?: string;
+            role?: string;
+            selectedAlbums?: string[];
+            selectedSingles?: string[];
+            websiteOrSocialLink: string;
+        };
+        ManualArtistClaims_Attributes: {
+            /** @description Accepted terms and conditions */
+            acceptedTerms?: boolean;
+            /** @description Artist ID being claimed */
+            artistId: string;
+            /** @description Distributor name */
+            distributorName?: string;
+            /** @description Error reason if claim failed */
+            errorReason?: string;
+            /** @description Label contact email */
+            labelContactEmail?: string;
+            /** @description Label contact name */
+            labelContactName?: string;
+            /** @description Label name */
+            labelName?: string;
+            /** @description Legal first name */
+            legalFirstName: string;
+            /** @description Legal last name */
+            legalLastName: string;
+            /** @description Manager email */
+            managerEmail?: string;
+            /** @description Manager name */
+            managerName?: string;
+            /** @description Role */
+            role?: string;
+            /** @description Album IDs selected by user */
+            selectedAlbums?: string[];
+            /** @description Single IDs selected by user */
+            selectedSingles?: string[];
+            /**
+             * @description Claim status
+             * @enum {string}
+             */
+            status?: "PENDING" | "APPROVED" | "REJECTED";
+            /** @description Website or social link */
+            websiteOrSocialLink: string;
+        };
+        ManualArtistClaims_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ManualArtistClaims_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ManualArtistClaims_Resource_Object: {
+            attributes?: components["schemas"]["ManualArtistClaims_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "manualArtistClaims";
+        };
+        ManualArtistClaims_Single_Resource_Data_Document: {
+            data: components["schemas"]["ManualArtistClaims_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             links: components["schemas"]["Links"];
@@ -10243,6 +10715,7 @@ export interface components {
         PlayQueueAddFutureOperation_Payload_Meta: {
             /** Format: uuid */
             batchId?: string;
+            legacySource?: components["schemas"]["LegacySource"];
             /** @enum {string} */
             mode: "ADD_TO_FRONT" | "ADD_TO_BACK" | "ADD_BEFORE" | "REPLACE_ALL";
             positionBefore?: string;
@@ -10327,6 +10800,30 @@ export interface components {
             /** @description Queue is shuffled or not */
             shuffled: boolean;
         };
+        PlayQueues_Current_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["PlayQueues_Current_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        PlayQueues_Current_Resource_Identifier_Meta: {
+            /** Format: uuid */
+            batchId: string;
+            itemId: string;
+            legacySource?: components["schemas"]["LegacySource"];
+        };
+        PlayQueues_Current_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["PlayQueues_Current_Resource_Identifier"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         PlayQueues_Future_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["PlayQueues_Future_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -10349,6 +10846,7 @@ export interface components {
             /** Format: uuid */
             batchId: string;
             itemId: string;
+            legacySource?: components["schemas"]["LegacySource"];
         };
         PlayQueues_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -10382,9 +10880,10 @@ export interface components {
             /** Format: uuid */
             batchId: string;
             itemId: string;
+            legacySource?: components["schemas"]["LegacySource"];
         };
         PlayQueues_Relationships: {
-            current: components["schemas"]["Single_Relationship_Data_Document"];
+            current: components["schemas"]["PlayQueues_Current_Single_Relationship_Data_Document"];
             future: components["schemas"]["PlayQueues_Future_Multi_Relationship_Data_Document"];
             owners: components["schemas"]["Multi_Relationship_Data_Document"];
             past: components["schemas"]["PlayQueues_Past_Multi_Relationship_Data_Document"];
@@ -10534,6 +11033,11 @@ export interface components {
             name: string;
             /**
              * Format: int32
+             * @description The amount of followers of the playlist
+             */
+            numberOfFollowers: number;
+            /**
+             * Format: int32
              * @description Number of items in the playlist
              */
             numberOfItems?: number;
@@ -10628,6 +11132,59 @@ export interface components {
         };
         Providers_Single_Resource_Data_Document: {
             data: components["schemas"]["Providers_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ReactedResourceIdentifier: {
+            id: string;
+            /** @enum {string} */
+            type: "albums" | "tracks" | "artists" | "videos" | "playlists";
+        };
+        ReactedResourceRelationship: {
+            data: components["schemas"]["ReactedResourceIdentifier"];
+        };
+        Reactions_Attributes: {
+            /**
+             * Format: date-time
+             * @description Datetime of the reaction creation (ISO 8601)
+             * @example 2025-11-17T12:54:48.60606Z
+             */
+            createdAt: string;
+            /**
+             * @description The type of reaction representing an emoji
+             * @enum {string}
+             */
+            reactionType: "THUMB_UP" | "SMILEY_HEART_EYES" | "SMILEY_HOLDING_BACK_TEARS" | "FIRE" | "SHOCK";
+        };
+        Reactions_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Reactions_Multi_Resource_Data_Document: {
+            data: components["schemas"]["Reactions_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Reactions_Relationships: {
+            ownerProfiles: components["schemas"]["Multi_Relationship_Data_Document"];
+        };
+        Reactions_Resource_Object: {
+            attributes?: components["schemas"]["Reactions_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["Reactions_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "reactions";
+        };
+        Reactions_Single_Resource_Data_Document: {
+            data: components["schemas"]["Reactions_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -11417,8 +11974,13 @@ export interface components {
         };
         UserCollectionTracksRelationshipAddOperation_Payload_Data: {
             id: string;
+            meta?: components["schemas"]["UserCollectionTracksRelationshipAddOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "tracks";
+        };
+        UserCollectionTracksRelationshipAddOperation_Payload_Data_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserCollectionTracksRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionTracksRelationshipRemoveOperation_Payload_Data"][];
@@ -11434,7 +11996,7 @@ export interface components {
         UserCollectionVideosRelationshipAddOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
-            type: "albums" | "appreciations" | "artistClaims" | "artistRoles" | "artists" | "artworks" | "playlists" | "providers" | "searchResults" | "searchSuggestions" | "tracks" | "trackStatistics" | "userCollections" | "userEntitlements" | "userRecommendations" | "userReports" | "users" | "videos";
+            type: "videos";
         };
         UserCollectionVideosRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionVideosRelationshipRemoveOperation_Payload_Data"][];
@@ -11442,7 +12004,7 @@ export interface components {
         UserCollectionVideosRelationshipRemoveOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
-            type: "albums" | "appreciations" | "artistClaims" | "artistRoles" | "artists" | "artworks" | "playlists" | "providers" | "searchResults" | "searchSuggestions" | "tracks" | "trackStatistics" | "userCollections" | "userEntitlements" | "userRecommendations" | "userReports" | "users" | "videos";
+            type: "videos";
         };
         UserCollections_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Albums_Resource_Identifier"][];
@@ -11593,13 +12155,21 @@ export interface components {
             addedAt: string;
         };
         UserEntitlements_Attributes: {
-            /** @description entitlements for user */
+            /** @description Entitlements for user */
             entitlements: ("MUSIC" | "DJ")[];
+        };
+        UserEntitlements_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         UserEntitlements_Multi_Resource_Data_Document: {
             data: components["schemas"]["UserEntitlements_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        UserEntitlements_Relationships: {
+            owners: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         UserEntitlements_Resource_Object: {
             attributes?: components["schemas"]["UserEntitlements_Attributes"];
@@ -11608,6 +12178,7 @@ export interface components {
              * @example 12345
              */
             id: string;
+            relationships?: components["schemas"]["UserEntitlements_Relationships"];
             /**
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
