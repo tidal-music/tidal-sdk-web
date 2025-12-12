@@ -5842,6 +5842,166 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/stripeConnections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple stripeConnections.
+         * @description Retrieves multiple stripeConnections by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /**
+                     * @description User id
+                     * @example 123456
+                     */
+                    "filter[owners.id]"?: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StripeConnections_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single stripeConnection.
+         * @description Creates a new stripeConnection.
+         */
+        post: {
+            parameters: {
+                query: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["StripeConnectionsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StripeConnections_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/stripeConnections/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Stripe connection id (same as user id)
+                     * @example 39791222
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StripeConnections_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/trackFiles/{id}": {
         parameters: {
             query?: never;
@@ -10418,7 +10578,7 @@ export interface components {
         /** @description metadata about an external link */
         External_Link_Meta: {
             /** @enum {string} */
-            type: "TIDAL_SHARING" | "TIDAL_USER_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "OFFICIAL_HOMEPAGE" | "CASHAPP_CONTRIBUTIONS" | "ARTIST_CLAIM_PROVIDER_REDIRECT";
+            type: "TIDAL_SHARING" | "TIDAL_USER_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "OFFICIAL_HOMEPAGE" | "CASHAPP_CONTRIBUTIONS" | "ARTIST_CLAIM_PROVIDER_REDIRECT" | "STRIPE_AUTHORIZATION_REDIRECT";
         };
         External_Link_Payload: {
             href?: string;
@@ -10499,7 +10659,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         LegacySource: {
             id: string;
             type: string;
@@ -11387,6 +11547,84 @@ export interface components {
         };
         Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"];
+            links: components["schemas"]["Links"];
+        };
+        StripeConnectionsCreateOperation_Payload: {
+            data: components["schemas"]["StripeConnectionsCreateOperation_Payload_Data"];
+        };
+        StripeConnectionsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["StripeConnectionsCreateOperation_Payload_Data_Attributes"];
+            /** @enum {string} */
+            type: "stripeConnections";
+        };
+        StripeConnectionsCreateOperation_Payload_Data_Attributes: {
+            /**
+             * @description Integration type for Stripe onboarding
+             * @default REDIRECT
+             * @example REDIRECT
+             * @enum {string}
+             */
+            integrationType: "REDIRECT" | "EMBEDDED";
+            /**
+             * @description REDIRECT only: URL to redirect to if seller drops from onboarding
+             * @example https://www.tidal.com/artist/upload/onboarding
+             */
+            refreshUrl?: string;
+            /**
+             * @description REDIRECT only: URL to redirect to after completed onboarding
+             * @example https://www.tidal.com/artist/124
+             */
+            returnUrl?: string;
+        };
+        StripeConnections_Attributes: {
+            /**
+             * Format: date-time
+             * @description Timestamp when the connection was created
+             */
+            createdAt?: string;
+            /** @description External links for Stripe connection */
+            externalLinks?: components["schemas"]["External_Link"][];
+            /**
+             * Format: date-time
+             * @description Timestamp when the connection was last modified
+             */
+            lastModifiedAt?: string;
+            /**
+             * @description Current status of this Stripe connection
+             * @enum {string}
+             */
+            status: "PENDING_REQUIREMENTS" | "UNDER_REVIEW" | "ACCEPTED" | "REJECTED";
+        };
+        StripeConnections_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StripeConnections_Multi_Resource_Data_Document: {
+            data: components["schemas"]["StripeConnections_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StripeConnections_Relationships: {
+            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+        };
+        StripeConnections_Resource_Object: {
+            attributes?: components["schemas"]["StripeConnections_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["StripeConnections_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "stripeConnections";
+        };
+        StripeConnections_Single_Resource_Data_Document: {
+            data: components["schemas"]["StripeConnections_Resource_Object"];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ThirdPartyLyricsProvider: Omit<WithRequired<components["schemas"]["LyricsProvider"], "name">, "source"> & {
