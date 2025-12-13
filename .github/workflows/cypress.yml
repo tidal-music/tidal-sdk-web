@@ -43,7 +43,7 @@ jobs:
         env:
           TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
       - name: Set up Cypress binary cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
