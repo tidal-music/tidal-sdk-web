@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.27"
+    "version" : "1.0.29"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -152,6 +152,15 @@
               "type" : "string",
               "example" : "123456"
             }
+          }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
           }
         } ],
         "responses" : {
@@ -340,6 +349,15 @@
               "example" : "artists"
             }
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -487,6 +505,15 @@
               "example" : "artists"
             }
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -577,6 +604,15 @@
               "type" : "string",
               "example" : "coverArt"
             }
+          }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
           }
         } ],
         "responses" : {
@@ -725,6 +761,15 @@
               "example" : "genres"
             }
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -815,6 +860,15 @@
               "type" : "string",
               "example" : "items"
             }
+          }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
           }
         } ],
         "responses" : {
@@ -954,6 +1008,15 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -1044,6 +1107,15 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
           }
         } ],
         "responses" : {
@@ -1136,6 +1208,15 @@
               "example" : "similarAlbums"
             }
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -1217,6 +1298,15 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
           }
         } ],
         "responses" : {
@@ -9375,6 +9465,15 @@
               "example" : "123456"
             }
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -9562,6 +9661,15 @@
               "example" : "albums"
             }
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -9708,6 +9816,15 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
           }
         } ],
         "responses" : {
@@ -9856,6 +9973,15 @@
               "example" : "artists"
             }
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -9947,6 +10073,15 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -10029,6 +10164,15 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -10110,6 +10254,15 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
           }
         } ],
         "responses" : {
@@ -10202,6 +10355,15 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -10284,6 +10446,15 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -10365,6 +10536,15 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
           }
         } ],
         "responses" : {
@@ -10455,6 +10635,15 @@
               "example" : "similarTracks"
             }
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -10529,6 +10718,15 @@
               "example" : "sourceFile"
             }
           }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -10602,6 +10800,15 @@
               "type" : "string",
               "example" : "trackStatistics"
             }
+          }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
           }
         } ],
         "responses" : {
@@ -20829,7 +21036,7 @@
           },
           "reason" : {
             "type" : "string",
-            "enum" : [ "SEXUAL_CONTENT_OR_NUDITY", "VIOLENT_OR_DANGEROUS_CONTENT", "HATEFUL_OR_ABUSIVE_CONTENT", "HARASSMENT", "PRIVACY_VIOLATION", "SCAMS_OR_FRAUD", "SPAM", "COPYRIGHT_INFRINGEMENT", "UNKNOWN" ]
+            "enum" : [ "SEXUAL_CONTENT_OR_NUDITY", "VIOLENT_OR_DANGEROUS_CONTENT", "HATEFUL_OR_ABUSIVE_CONTENT", "HARASSMENT", "PRIVACY_VIOLATION", "SCAMS_OR_FRAUD", "SPAM", "COPYRIGHT_INFRINGEMENT", "APPEAL", "UNKNOWN" ]
           }
         }
       },
@@ -20880,7 +21087,7 @@
           "reason" : {
             "type" : "string",
             "description" : "Reason",
-            "enum" : [ "SEXUAL_CONTENT_OR_NUDITY", "VIOLENT_OR_DANGEROUS_CONTENT", "HATEFUL_OR_ABUSIVE_CONTENT", "HARASSMENT", "PRIVACY_VIOLATION", "SCAMS_OR_FRAUD", "SPAM", "COPYRIGHT_INFRINGEMENT", "UNKNOWN" ]
+            "enum" : [ "SEXUAL_CONTENT_OR_NUDITY", "VIOLENT_OR_DANGEROUS_CONTENT", "HATEFUL_OR_ABUSIVE_CONTENT", "HARASSMENT", "PRIVACY_VIOLATION", "SCAMS_OR_FRAUD", "SPAM", "COPYRIGHT_INFRINGEMENT", "APPEAL", "UNKNOWN" ]
           }
         }
       },

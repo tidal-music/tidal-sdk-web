@@ -45,6 +45,8 @@ export interface paths {
                      * @example 123456
                      */
                     "filter[owners.id]"?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path?: never;
@@ -138,6 +140,8 @@ export interface paths {
                      * @example artists
                      */
                     include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -264,6 +268,8 @@ export interface paths {
                      * @example artists
                      */
                     include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -330,6 +336,8 @@ export interface paths {
                      * @example coverArt
                      */
                     include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -428,6 +436,8 @@ export interface paths {
                      * @example genres
                      */
                     include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -494,6 +504,8 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -587,6 +599,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -653,6 +667,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -719,6 +735,8 @@ export interface paths {
                      * @example similarAlbums
                      */
                     include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -780,6 +798,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -6553,6 +6573,8 @@ export interface paths {
                      * @example 123456
                      */
                     "filter[owners.id]"?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path?: never;
@@ -6646,6 +6668,8 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -6772,6 +6796,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -6870,6 +6896,8 @@ export interface paths {
                      * @example artists
                      */
                     include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -6936,6 +6964,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -6997,6 +7027,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7058,6 +7090,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7124,6 +7158,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7185,6 +7221,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7246,6 +7284,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7312,6 +7352,8 @@ export interface paths {
                      * @example similarTracks
                      */
                     include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7371,6 +7413,8 @@ export interface paths {
                      * @example sourceFile
                      */
                     include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7430,6 +7474,8 @@ export interface paths {
                      * @example trackStatistics
                      */
                     include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -12475,7 +12521,7 @@ export interface components {
         UserReportCreateOperation_Payload_Data_Attributes: {
             description: string;
             /** @enum {string} */
-            reason: "SEXUAL_CONTENT_OR_NUDITY" | "VIOLENT_OR_DANGEROUS_CONTENT" | "HATEFUL_OR_ABUSIVE_CONTENT" | "HARASSMENT" | "PRIVACY_VIOLATION" | "SCAMS_OR_FRAUD" | "SPAM" | "COPYRIGHT_INFRINGEMENT" | "UNKNOWN";
+            reason: "SEXUAL_CONTENT_OR_NUDITY" | "VIOLENT_OR_DANGEROUS_CONTENT" | "HATEFUL_OR_ABUSIVE_CONTENT" | "HARASSMENT" | "PRIVACY_VIOLATION" | "SCAMS_OR_FRAUD" | "SPAM" | "COPYRIGHT_INFRINGEMENT" | "APPEAL" | "UNKNOWN";
         };
         UserReportsCreateOperation_Payload_Data_Relationships: {
             reportedResources: components["schemas"]["UserReportsCreateOperation_Payload_Data_Relationships_ReportedResources"];
@@ -12495,7 +12541,7 @@ export interface components {
              * @description Reason
              * @enum {string}
              */
-            reason: "SEXUAL_CONTENT_OR_NUDITY" | "VIOLENT_OR_DANGEROUS_CONTENT" | "HATEFUL_OR_ABUSIVE_CONTENT" | "HARASSMENT" | "PRIVACY_VIOLATION" | "SCAMS_OR_FRAUD" | "SPAM" | "COPYRIGHT_INFRINGEMENT" | "UNKNOWN";
+            reason: "SEXUAL_CONTENT_OR_NUDITY" | "VIOLENT_OR_DANGEROUS_CONTENT" | "HATEFUL_OR_ABUSIVE_CONTENT" | "HARASSMENT" | "PRIVACY_VIOLATION" | "SCAMS_OR_FRAUD" | "SPAM" | "COPYRIGHT_INFRINGEMENT" | "APPEAL" | "UNKNOWN";
         };
         UserReports_Multi_Resource_Data_Document: {
             data: components["schemas"]["UserReports_Resource_Object"][];
