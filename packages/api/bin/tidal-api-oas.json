@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.29"
+    "version" : "1.0.30"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -46,6 +46,8 @@
     "name" : "providers"
   }, {
     "name" : "reactions"
+  }, {
+    "name" : "savedShares"
   }, {
     "name" : "searchResults"
   }, {
@@ -7176,6 +7178,65 @@
         } ],
         "summary" : "Get ownerProfiles relationship (\"to-many\").",
         "tags" : [ "reactions" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/savedShares" : {
+      "post" : {
+        "description" : "Creates a new savedShare.",
+        "parameters" : [ ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SavedSharesCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SavedShares_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single savedShare.",
+        "tags" : [ "savedShares" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
         }
@@ -16589,6 +16650,7 @@
               "playlists" : "#/components/schemas/Playlists_Resource_Object",
               "providers" : "#/components/schemas/Providers_Resource_Object",
               "reactions" : "#/components/schemas/Reactions_Resource_Object",
+              "savedShares" : "#/components/schemas/SavedShares_Resource_Object",
               "searchResults" : "#/components/schemas/SearchResults_Resource_Object",
               "searchSuggestions" : "#/components/schemas/SearchSuggestions_Resource_Object",
               "shares" : "#/components/schemas/Shares_Resource_Object",
@@ -16636,6 +16698,8 @@
             "$ref" : "#/components/schemas/Providers_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Reactions_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/SavedShares_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/SearchResults_Resource_Object"
           }, {
@@ -18404,6 +18468,123 @@
             "type" : "string",
             "description" : "Resource type",
             "example" : "tracks"
+          }
+        }
+      },
+      "SavedSharesCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SavedSharesCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "SavedSharesCreateOperation_Payload_Data" : {
+        "required" : [ "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "relationships" : {
+            "$ref" : "#/components/schemas/SavedSharesCreateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "savedShares" ]
+          }
+        }
+      },
+      "SavedSharesCreateOperation_Payload_Data_Relationships" : {
+        "required" : [ "share" ],
+        "type" : "object",
+        "properties" : {
+          "share" : {
+            "$ref" : "#/components/schemas/SavedSharesCreateOperation_Payload_Data_Relationships_Share"
+          }
+        }
+      },
+      "SavedSharesCreateOperation_Payload_Data_Relationships_Share" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SavedSharesCreateOperation_Payload_Data_Relationships_Share_Data"
+          }
+        }
+      },
+      "SavedSharesCreateOperation_Payload_Data_Relationships_Share_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "shares" ]
+          }
+        }
+      },
+      "SavedShares_Attributes" : {
+        "required" : [ "createdAt" ],
+        "type" : "object",
+        "properties" : {
+          "createdAt" : {
+            "type" : "string",
+            "description" : "Datetime of saved share creation (ISO 8601)",
+            "format" : "date-time"
+          }
+        }
+      },
+      "SavedShares_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SavedShares_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SavedShares_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SavedShares_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SavedShares_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SavedShares_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         }
       },
