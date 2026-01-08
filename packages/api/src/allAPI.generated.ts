@@ -10901,8 +10901,15 @@ export interface components {
             acceptedTerms?: boolean;
             /** @description Artist ID being claimed */
             artistId: string;
+            /**
+             * Format: date-time
+             * @description Timestamp when the claim was created
+             */
+            createdAt?: string;
             /** @description Distributor name */
             distributorName?: string;
+            /** @description Enrollment type */
+            enrollmentType?: string;
             /** @description Error reason if claim failed */
             errorReason?: string;
             /** @description Label contact email */
@@ -10911,6 +10918,11 @@ export interface components {
             labelContactName?: string;
             /** @description Label name */
             labelName?: string;
+            /**
+             * Format: date-time
+             * @description Timestamp when the claim was last modified
+             */
+            lastModifiedAt?: string;
             /** @description Legal first name */
             legalFirstName: string;
             /** @description Legal last name */
