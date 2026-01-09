@@ -4,21 +4,21 @@ import { login, print, waitFor } from './helpers.js';
 
 await login();
 
-const TIME_BEFORE_SEEK = 20_000;
+const TIME_BEFORE_SEEK = 5_000;
 
-print('Loading 91298890');
+print('Loading video 159073354');
 await Player.load({
-  productId: '91298890',
-  productType: 'track',
-  sourceId: '4141352',
-  sourceType: 'ALBUM',
+  productId: '159073354',
+  productType: 'video',
+  sourceId: '159073354',
+  sourceType: 'VIDEO',
 });
-print('Playing 91298890');
+print('Playing video 159073354');
 await Player.play();
 
 const playbackContext = Player.getPlaybackContext();
-const trackDuration = playbackContext.actualDuration;
-const SEEK_TO = trackDuration - TIME_BEFORE_SEEK / 1000;
+const videoDuration = playbackContext.actualDuration;
+const SEEK_TO = videoDuration - TIME_BEFORE_SEEK / 1000;
 
 print(`Waiting ${TIME_BEFORE_SEEK}`);
 await waitFor(TIME_BEFORE_SEEK);
