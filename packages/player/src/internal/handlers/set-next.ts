@@ -9,6 +9,7 @@ import {
   cancelQueuedOnendedHandler,
   getAppropriatePlayer,
   maybeSwitchPlayerOnEnd,
+  predictPlayerType,
   unloadPreloadedMediaProduct,
 } from '../../player/index';
 import { playerState } from '../../player/state';
@@ -89,12 +90,18 @@ async function _setNext(
   }
 
   if (playbackInfo === undefined) {
+    const playerType = predictPlayerType(
+      mediaProduct.productType,
+      streamingWifiAudioQuality,
+    );
+
     try {
       playbackInfo = await fetchPlaybackInfo({
         accessToken: token,
         audioQuality: streamingWifiAudioQuality,
         clientId,
         mediaProduct,
+        playerType,
         prefetch: false,
         streamingSessionId,
       });

@@ -3,9 +3,7 @@
  */
 export async function loadServerCertificate() {
   try {
-    const response = await fetch(
-      'https://resources.tidal.com/drm/fairplay/certificate',
-    );
+    const response = await fetch('https://fp.fa.tidal.com/certificate');
     const buffer = await response.arrayBuffer();
     return new Uint8Array(buffer);
   } catch (err) {
