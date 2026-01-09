@@ -11219,7 +11219,7 @@ export interface components {
         };
         PlaylistItemsRelationshipAddOperation_Payload_Data_Meta: {
             /** Format: date-time */
-            addedAt: string;
+            addedAt?: string;
         };
         PlaylistItemsRelationshipAddOperation_Payload_Meta: {
             positionBefore: string;
@@ -12261,9 +12261,16 @@ export interface components {
             data: components["schemas"]["UserCollectionAlbumsRelationshipAddOperation_Payload_Data"][];
         };
         UserCollectionAlbumsRelationshipAddOperation_Payload_Data: {
+            /** Format: date-time */
+            addedAt?: string;
             id: string;
+            meta?: components["schemas"]["UserCollectionAlbumsRelationshipAddOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "albums";
+        };
+        UserCollectionAlbumsRelationshipAddOperation_Payload_Data_Meta: {
+            /** Format: date-time */
+            addedAt?: string;
         };
         UserCollectionAlbumsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionAlbumsRelationshipRemoveOperation_Payload_Data"][];
@@ -12369,6 +12376,8 @@ export interface components {
             data: components["schemas"]["UserCollectionTracksRelationshipAddOperation_Payload_Data"][];
         };
         UserCollectionTracksRelationshipAddOperation_Payload_Data: {
+            /** Format: date-time */
+            addedAt?: string;
             id: string;
             meta?: components["schemas"]["UserCollectionTracksRelationshipAddOperation_Payload_Data_Meta"];
             /** @enum {string} */
@@ -12376,7 +12385,7 @@ export interface components {
         };
         UserCollectionTracksRelationshipAddOperation_Payload_Data_Meta: {
             /** Format: date-time */
-            addedAt: string;
+            addedAt?: string;
         };
         UserCollectionTracksRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionTracksRelationshipRemoveOperation_Payload_Data"][];
