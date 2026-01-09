@@ -332,7 +332,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
         adaptive: false,
         formats: audioQualityToFormats(audioQuality),
         manifestType: isFairPlaySupported ? 'HLS' : 'MPEG_DASH',
-        uriScheme: 'DATA', //or 'HTTPS',
+        uriScheme: 'DATA',
         usage: 'PLAYBACK',
       },
     },
