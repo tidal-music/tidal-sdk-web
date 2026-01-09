@@ -13,7 +13,11 @@ import {
   eventSenderStore,
 } from '../../internal/index';
 import ConnectionHandler from '../../internal/services/connection-handler';
-import { getAppropriatePlayer, setActivePlayer } from '../../player/index';
+import {
+  getAppropriatePlayer,
+  predictPlayerType,
+  setActivePlayer,
+} from '../../player/index';
 import { playerState } from '../../player/state';
 import { Pushkin } from '../services/pushkin';
 import { trueTime } from '../true-time';
@@ -123,12 +127,18 @@ export async function load(
 
   let playbackInfo: PlaybackInfo | null = null;
 
+  const playerType = predictPlayerType(
+    mediaProduct.productType,
+    streamingWifiAudioQuality,
+  );
+
   try {
     playbackInfo = await fetchPlaybackInfo({
       accessToken: token,
       audioQuality: streamingWifiAudioQuality,
       clientId,
       mediaProduct,
+      playerType,
       prefetch,
       streamingSessionId,
     });

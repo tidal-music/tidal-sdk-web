@@ -1,7 +1,10 @@
+import { type components, createAPIClient } from '@tidal-music/api';
+import shaka from 'shaka-player';
+
 import type { MediaProduct } from '../../api/interfaces';
 import * as Config from '../../config';
 import type { ErrorCodes, ErrorIds } from '../../internal/index';
-import { PlayerError } from '../../internal/index';
+import { PlayerError, credentialsProviderStore } from '../../internal/index';
 import type { AudioQuality } from '../../internal/types';
 import * as StreamingMetrics from '../event-tracking/streaming-metrics';
 import { waitFor } from '../helpers/wait-for';
@@ -53,6 +56,7 @@ export type Options = {
   audioQuality: AudioQuality;
   clientId: null | string;
   mediaProduct: MediaProduct;
+  playerType?: 'browser' | 'native' | 'shaka';
   prefetch: boolean;
   streamingSessionId: string;
 };
@@ -160,7 +164,7 @@ async function _fetch(options: Options): Promise<PlaybackInfo> {
 
   const apiUrl = Config.get('apiUrl');
   const url = new URL(
-    `${apiUrl}/${mediaProduct.productType}s/${mediaProduct.productId}/playbackinfo`,
+    `${apiUrl}/v1/${mediaProduct.productType}s/${mediaProduct.productId}/playbackinfo`,
   );
   const searchParams = url.searchParams as URLSearchParamsCustomSetters<
     'assetpresentation' | 'audioquality' | 'playbackmode' | 'videoquality'
@@ -242,6 +246,143 @@ async function _fetch(options: Options): Promise<PlaybackInfo> {
   };
 }
 
+function audioFormatsToQuality(
+  formats: components['schemas']['TrackManifests_Attributes']['formats'],
+): AudioQuality {
+  if (!Array.isArray(formats)) {
+    throw new Error('Invalid formats array');
+  }
+
+  if (formats.length === 0) {
+    throw new Error('Empty formats array');
+  }
+
+  if (formats.includes('FLAC_HIRES')) {
+    return 'HI_RES';
+  } else if (formats.includes('FLAC')) {
+    return 'LOSSLESS';
+  } else if (formats.includes('AACLC')) {
+    return 'HIGH';
+  } /* if (formats.includes('HEAACV1')) */ else {
+    return 'LOW';
+  }
+}
+
+function audioQualityToFormats(
+  quality: AudioQuality,
+): NonNullable<components['schemas']['TrackManifests_Attributes']['formats']> {
+  switch (quality) {
+    case 'HI_RES':
+      return ['HEAACV1', 'AACLC', 'FLAC', 'FLAC_HIRES'];
+    case 'HIGH':
+      return ['HEAACV1', 'AACLC'];
+    case 'LOSSLESS':
+      return ['HEAACV1', 'AACLC', 'FLAC'];
+    case 'LOW':
+    default:
+      return ['HEAACV1'];
+  }
+}
+
+function parseDataUrl(dataUrl: string | undefined):
+  | {
+      manifest: string;
+      manifestMimeType: string;
+    }
+  | undefined {
+  if (!dataUrl) {
+    return;
+  }
+  const regex = /data:([^;]+);base64,(.+)/;
+  const matches = regex.exec(dataUrl);
+
+  if (!matches || matches.length < 3) {
+    return;
+  }
+
+  return {
+    manifest: matches[2]!,
+    manifestMimeType: matches[1]!,
+  };
+}
+
+// eslint-disable-next-line complexity
+async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
+  // TODO: consider saving the API client for reuse
+  const apiClient = createAPIClient(
+    credentialsProviderStore.credentialsProvider,
+  );
+
+  const { audioQuality, mediaProduct, prefetch, streamingSessionId } = options;
+  const trackId = mediaProduct.productId;
+
+  const isFairPlaySupported =
+    await shaka.util.FairPlayUtils.isFairPlaySupported();
+
+  const response = await apiClient.GET('/trackManifests/{id}', {
+    params: {
+      headers: {
+        'x-playback-session-id': streamingSessionId,
+      },
+      path: {
+        id: trackId,
+      },
+      query: {
+        adaptive: false,
+        formats: audioQualityToFormats(audioQuality),
+        manifestType: isFairPlaySupported ? 'HLS' : 'MPEG_DASH',
+        uriScheme: 'DATA', //or 'HTTPS',
+        usage: 'PLAYBACK',
+      },
+    },
+  });
+
+  if (response.error) {
+    // TODO: parse error response
+    throw new PlayerError('PENetwork', 'NPBI0');
+  }
+
+  const parsed = parseDataUrl(response.data?.data.attributes?.uri);
+
+  const manifest = parsed?.manifest;
+  const manifestMimeType = parsed?.manifestMimeType;
+
+  if (!manifest || !manifestMimeType) {
+    throw new PlayerError('EUnexpected', 'B9999');
+  }
+
+  return {
+    albumPeakAmplitude:
+      response.data?.data.attributes?.albumAudioNormalizationData
+        ?.peakAmplitude ?? 0,
+    albumReplayGain:
+      response.data?.data.attributes?.albumAudioNormalizationData?.replayGain ??
+      0,
+    assetPresentation:
+      response.data?.data.attributes?.trackPresentation ?? 'PREVIEW',
+    audioMode: 'STEREO', // TODO: drop field?
+    audioQuality: audioFormatsToQuality(
+      response.data?.data.attributes?.formats,
+    ),
+    bitDepth: 0,
+    // eslint-disable-next-line no-restricted-syntax
+    expires: Date.now() + 3600000,
+    manifest,
+    manifestHash: response.data?.data.attributes?.hash,
+    manifestMimeType,
+    prefetched: prefetch,
+    sampleRate: 0,
+    streamingSessionId,
+    trackId: response.data?.data.id ? Number(response.data.data.id) : 0,
+    trackPeakAmplitude:
+      response.data?.data.attributes?.trackAudioNormalizationData
+        ?.peakAmplitude ?? 0,
+    trackReplayGain:
+      response.data?.data.attributes?.trackAudioNormalizationData?.replayGain ??
+      0,
+  };
+}
+
 export async function fetchPlaybackInfo(options: Options) {
   const { streamingSessionId } = options;
   const events = [];
@@ -254,7 +395,15 @@ export async function fetchPlaybackInfo(options: Options) {
   try {
     let playbackInfo: PlaybackInfo;
 
-    playbackInfo = await _fetch(options);
+    if (
+      options.mediaProduct.productType === 'video' ||
+      options.playerType === 'native'
+    ) {
+      // Use old API for videos and Native Player track playback
+      playbackInfo = await _fetch(options);
+    } else {
+      playbackInfo = await _fetchTrackManifest(options);
+    }
 
     if (playbackInfo === undefined) {
       throw new Error('Playback info was fetched, but undefined.');

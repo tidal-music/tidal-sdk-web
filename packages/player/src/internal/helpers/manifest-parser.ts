@@ -164,6 +164,7 @@ function dashFindDuration(manifest: string): number | undefined {
   return undefined;
 }
 
+// eslint-disable-next-line complexity
 export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
   const { prefetched, streamingSessionId } = playbackInfo;
 
@@ -244,6 +245,32 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
           : undefined,
       codec: dashFindCodec(decodedManifest),
       duration: dashFindDuration(decodedManifest),
+      prefetched,
+      quality,
+      sampleRate:
+        'sampleRate' in playbackInfo
+          ? (playbackInfo.sampleRate ?? undefined) // API sends null, cast to undefined
+          : undefined,
+      securityToken: playbackInfo.licenseSecurityToken,
+      streamUrl,
+      streamingSessionId,
+      ...mediaItem,
+      expires: playbackInfo.expires,
+    };
+  }
+
+  if (playbackInfo.manifestMimeType === mimeTypes.HLS) {
+    const streamUrl = `data:${playbackInfo.manifestMimeType};base64,${playbackInfo.manifest}`;
+    const decodedManifest = atob(playbackInfo.manifest);
+
+    return {
+      ...replayGains,
+      bitDepth:
+        'bitDepth' in playbackInfo
+          ? (playbackInfo.bitDepth ?? undefined) // API sends null, cast to undefined
+          : undefined,
+      codec: dashFindCodec(decodedManifest), // TODO: Implement codec extraction for HLS
+      duration: dashFindDuration(decodedManifest), // TODO: Implement duration extraction for HLS
       prefetched,
       quality,
       sampleRate:
