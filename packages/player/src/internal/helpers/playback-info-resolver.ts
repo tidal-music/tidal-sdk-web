@@ -272,6 +272,7 @@ function audioQualityToFormats(
   quality: AudioQuality,
 ): NonNullable<components['schemas']['TrackManifests_Attributes']['formats']> {
   switch (quality) {
+    case 'HI_RES':
     case 'HI_RES_LOSSLESS':
       return ['HEAACV1', 'AACLC', 'FLAC', 'FLAC_HIRES'];
     case 'HIGH':
