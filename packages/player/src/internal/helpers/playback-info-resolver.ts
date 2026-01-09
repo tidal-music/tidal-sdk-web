@@ -258,7 +258,7 @@ function audioFormatsToQuality(
   }
 
   if (formats.includes('FLAC_HIRES')) {
-    return 'HI_RES';
+    return 'HI_RES_LOSSLESS';
   } else if (formats.includes('FLAC')) {
     return 'LOSSLESS';
   } else if (formats.includes('AACLC')) {
@@ -272,7 +272,7 @@ function audioQualityToFormats(
   quality: AudioQuality,
 ): NonNullable<components['schemas']['TrackManifests_Attributes']['formats']> {
   switch (quality) {
-    case 'HI_RES':
+    case 'HI_RES_LOSSLESS':
       return ['HEAACV1', 'AACLC', 'FLAC', 'FLAC_HIRES'];
     case 'HIGH':
       return ['HEAACV1', 'AACLC'];
