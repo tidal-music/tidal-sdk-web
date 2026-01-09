@@ -152,7 +152,9 @@ interface HeadersCustomSetters<T extends string> extends Headers {
   set: (name: T, value: string) => void;
 }
 
-async function _fetch(options: Options): Promise<PlaybackInfo> {
+async function _fetchLegacyPlaybackInfo(
+  options: Options,
+): Promise<PlaybackInfo> {
   const {
     accessToken,
     audioQuality,
@@ -401,7 +403,7 @@ export async function fetchPlaybackInfo(options: Options) {
       options.playerType === 'native'
     ) {
       // Use old API for videos and Native Player track playback
-      playbackInfo = await _fetch(options);
+      playbackInfo = await _fetchLegacyPlaybackInfo(options);
     } else {
       playbackInfo = await _fetchTrackManifest(options);
     }
