@@ -302,8 +302,7 @@ export default class ShakaPlayer extends BasePlayer {
           advanced: {
             'com.apple.fps.1_0': {
               serverCertificate,
-              serverCertificateUri:
-                'https://fp.fa.tidal.com/certificate',
+              serverCertificateUri: 'https://fp.fa.tidal.com/certificate',
             },
           },
 
@@ -451,7 +450,6 @@ export default class ShakaPlayer extends BasePlayer {
 
         // Track license responses
         if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
-
           if (streamingSessionId) {
             performance.mark(
               'streaming_metrics:drm_license_fetch:endTimestamp',
