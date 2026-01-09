@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.31"
+    "version" : "1.0.32"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -17897,7 +17897,6 @@
         }
       },
       "PlaylistItemsRelationshipAddOperation_Payload_Data_Meta" : {
-        "required" : [ "addedAt" ],
         "type" : "object",
         "properties" : {
           "addedAt" : {
@@ -20275,12 +20274,28 @@
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
+          "addedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
           "id" : {
             "type" : "string"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/UserCollectionAlbumsRelationshipAddOperation_Payload_Data_Meta"
           },
           "type" : {
             "type" : "string",
             "enum" : [ "albums" ]
+          }
+        }
+      },
+      "UserCollectionAlbumsRelationshipAddOperation_Payload_Data_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "addedAt" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },
@@ -20571,6 +20586,10 @@
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
+          "addedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
           "id" : {
             "type" : "string"
           },
@@ -20584,7 +20603,6 @@
         }
       },
       "UserCollectionTracksRelationshipAddOperation_Payload_Data_Meta" : {
-        "required" : [ "addedAt" ],
         "type" : "object",
         "properties" : {
           "addedAt" : {
