@@ -11,7 +11,7 @@ type Config = {
 };
 
 let state = Object.freeze({
-  apiUrl: 'https://api.tidal.com',
+  apiUrl: 'https://api.tidal.com/v1',
   desiredVolumeLevel: 1,
   gatherEvents: true,
   loudnessNormalizationMode: 'ALBUM',

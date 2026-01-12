@@ -166,7 +166,7 @@ async function _fetchLegacyPlaybackInfo(
 
   const apiUrl = Config.get('apiUrl');
   const url = new URL(
-    `${apiUrl}/v1/${mediaProduct.productType}s/${mediaProduct.productId}/playbackinfo`,
+    `${apiUrl}/${mediaProduct.productType}s/${mediaProduct.productId}/playbackinfo`,
   );
   const searchParams = url.searchParams as URLSearchParamsCustomSetters<
     'assetpresentation' | 'audioquality' | 'playbackmode' | 'videoquality'

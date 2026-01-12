@@ -270,8 +270,6 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
-    const apiUrl = Config.get('apiUrl');
-
     const supportResult = await shaka.Player.probeSupport();
 
     if (supportResult.drm['com.widevine.alpha']) {
@@ -287,7 +285,7 @@ export default class ShakaPlayer extends BasePlayer {
             },
           },
           servers: {
-            'com.widevine.alpha': `${apiUrl}/v2/widevine`, // TODO: read from manifest response?
+            'com.widevine.alpha': `https://api.tidal.com/v2/widevine`, // TODO: update DRM URLs from manifest response if changed
           },
         },
       });
@@ -426,6 +424,9 @@ export default class ShakaPlayer extends BasePlayer {
               startTime: trueTime.now(),
             },
           );
+
+          // Ensure header is octet-stream for license requests
+          request.headers['Content-Type'] = 'application/octet-stream';
 
           const { token } =
             await credentialsProviderStore.credentialsProvider.getCredentials();
