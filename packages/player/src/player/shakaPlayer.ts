@@ -411,7 +411,6 @@ export default class ShakaPlayer extends BasePlayer {
     player
       .getNetworkingEngine()
       ?.registerRequestFilter(async (type, request, context) => {
-        // Track license requests
         if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
           const isPreload = context?.isPreload ?? false;
 
@@ -427,9 +426,7 @@ export default class ShakaPlayer extends BasePlayer {
               startTime: trueTime.now(),
             },
           );
-        }
 
-        if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
           const { token } =
             await credentialsProviderStore.credentialsProvider.getCredentials();
 
@@ -448,7 +445,6 @@ export default class ShakaPlayer extends BasePlayer {
           ? (this.preloadedStreamingSessionId ?? this.currentStreamingSessionId)
           : this.currentStreamingSessionId;
 
-        // Track license responses
         if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
           if (streamingSessionId) {
             performance.mark(
