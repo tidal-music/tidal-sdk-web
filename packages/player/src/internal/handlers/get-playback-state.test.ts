@@ -30,8 +30,7 @@ describe('getPlaybackState', () => {
     expect(getPlaybackState()).to.equal('NOT_PLAYING');
   });
 
-  // TODO: Flaky test - media playback timing issues cause intermittent timeouts
-  it.skip('return PLAYING when a media product is playing', async () => {
+  it('return PLAYING when a media product is playing', async () => {
     Player.setStreamingWifiAudioQuality('LOW');
 
     await Player.load(
@@ -50,7 +49,7 @@ describe('getPlaybackState', () => {
 
     await Player.play();
 
-    await waitFor(2000);
+    await waitFor(3000);
 
     expect(getPlaybackState()).to.equal('PLAYING');
   });
