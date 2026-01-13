@@ -269,8 +269,8 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
         'bitDepth' in playbackInfo
           ? (playbackInfo.bitDepth ?? undefined) // API sends null, cast to undefined
           : undefined,
-      codec: dashFindCodec(decodedManifest), // TODO: Implement codec extraction for HLS
-      duration: dashFindDuration(decodedManifest), // TODO: Implement duration extraction for HLS
+      codec: undefined, // TODO: Implement codec extraction for HLS
+      duration: undefined, // TODO: Implement duration extraction for HLS
       prefetched,
       quality,
       sampleRate:
