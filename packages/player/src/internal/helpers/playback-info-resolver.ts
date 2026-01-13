@@ -303,9 +303,16 @@ function parseDataUrl(dataUrl: string | undefined):
     return;
   }
 
+  const manifestMimeType = matches[1]?.trim();
+  const manifest = matches[2]?.trim();
+
+  if (!manifestMimeType || !manifest) {
+    return;
+  }
+
   return {
-    manifest: matches[2]!,
-    manifestMimeType: matches[1]!,
+    manifest,
+    manifestMimeType,
   };
 }
 
