@@ -348,7 +348,6 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
   });
 
   if (response.error) {
-    // TODO: parse error response
     throw new PlayerError('PENetwork', 'NPBI0');
   }
 
