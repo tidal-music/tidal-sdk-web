@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.32"
+    "version" : "1.0.33"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -32,6 +32,8 @@
     "name" : "artists"
   }, {
     "name" : "artworks"
+  }, {
+    "name" : "dynamicPages"
   }, {
     "name" : "genres"
   }, {
@@ -4198,6 +4200,225 @@
         "tags" : [ "artworks" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/dynamicPages" : {
+      "get" : {
+        "description" : "Retrieves multiple dynamicPages by available filters, or without if applicable.",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "clientVersion",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "The type of device making the request",
+          "example" : "PHONE",
+          "in" : "query",
+          "name" : "deviceType",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
+          }
+        }, {
+          "description" : "The platform of the device making the request",
+          "example" : "IOS",
+          "in" : "query",
+          "name" : "platform",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANDROID", "DESKTOP", "TESLA", "IOS", "WEB" ]
+          }
+        }, {
+          "in" : "query",
+          "name" : "refreshId",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject"
+            }
+          }
+        }, {
+          "description" : "Filter by page type",
+          "example" : "ARTIST",
+          "in" : "query",
+          "name" : "filter[pageType]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "ARTIST"
+            }
+          }
+        }, {
+          "description" : "Filter by subject id",
+          "example" : "67890",
+          "in" : "query",
+          "name" : "filter[subject.id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "67890"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DynamicPages_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple dynamicPages.",
+        "tags" : [ "dynamicPages" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/dynamicPages/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "DynamicPages Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DynamicPages_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
+        "tags" : [ "dynamicPages" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -16376,6 +16597,103 @@
         },
         "description" : "DRM data. Absence implies no DRM."
       },
+      "DynamicPages_Attributes" : {
+        "required" : [ "pageType", "reportingId" ],
+        "type" : "object",
+        "properties" : {
+          "pageType" : {
+            "type" : "string",
+            "description" : "Type of the page eg. home, artist",
+            "example" : "HOME_STATIC",
+            "enum" : [ "HOME_STATIC", "HOME_FOR_YOU", "HOME_EDITORIAL", "ARTIST" ]
+          },
+          "reportingId" : {
+            "type" : "string",
+            "description" : "Id used for reporting user events",
+            "format" : "uuid",
+            "example" : "83c92ac0-b8e3-4e28-9e27-07909dcde1e5"
+          }
+        }
+      },
+      "DynamicPages_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DynamicPages_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "DynamicPages_Relationships" : {
+        "required" : [ "subject" ],
+        "properties" : {
+          "subject" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "DynamicPages_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/DynamicPages_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/DynamicPages_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "DynamicPages_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Resource_Identifier"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "DynamicPages_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/DynamicPages_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "Error_Object" : {
         "type" : "object",
         "properties" : {
@@ -16643,6 +16961,7 @@
               "artistRoles" : "#/components/schemas/ArtistRoles_Resource_Object",
               "artists" : "#/components/schemas/Artists_Resource_Object",
               "artworks" : "#/components/schemas/Artworks_Resource_Object",
+              "dynamicPages" : "#/components/schemas/DynamicPages_Resource_Object",
               "genres" : "#/components/schemas/Genres_Resource_Object",
               "lyrics" : "#/components/schemas/Lyrics_Resource_Object",
               "manualArtistClaims" : "#/components/schemas/ManualArtistClaims_Resource_Object",
@@ -16684,6 +17003,8 @@
             "$ref" : "#/components/schemas/Artists_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Artworks_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/DynamicPages_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Genres_Resource_Object"
           }, {
