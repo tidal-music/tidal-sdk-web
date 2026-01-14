@@ -140,7 +140,7 @@ describe('getAppropriatePlayer', () => {
     expect(player.name).to.equal('nativePlayer');
   });
 
-  it('uses native player when mimeType is HLS', async () => {
+  it('uses Shaka player when mimeType is HLS', async () => {
     // Configure player config with native player
     setPlayerConfig([
       {
@@ -154,6 +154,6 @@ describe('getAppropriatePlayer', () => {
     const player = await getAppropriatePlayer('track', 'HIGH', mimeTypes.HLS);
 
     // Should return native player since HLS is supported
-    expect(player.name).to.equal('nativePlayer');
+    expect(player.name).to.equal('shakaPlayer');
   });
 });

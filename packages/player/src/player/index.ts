@@ -164,8 +164,11 @@ export async function getAppropriatePlayer(
 
   let { player } = appropriatePlayers[0]!;
 
-  // ** Native player doesn't support DASH, so override to Shaka player.
-  if (mimeType === mimeTypes.DASH && player === 'native') {
+  // ** Native player doesn't support DASH or HLS, so override to Shaka player.
+  if (
+    (mimeType === mimeTypes.DASH || mimeType === mimeTypes.HLS) &&
+    player === 'native'
+  ) {
     player = 'shaka';
   }
 
