@@ -164,7 +164,85 @@ function dashFindDuration(manifest: string): number | undefined {
   return undefined;
 }
 
-// eslint-disable-next-line complexity
+/**
+ * Find sample rate in a DASH manifest
+ */
+function dashFindSampleRate(manifest: string): number | undefined {
+  // Dash manifest
+  const regex = /<Representation[^>]*audioSamplingRate="(\d+)"/;
+  const match = regex.exec(manifest);
+
+  if (match) {
+    const rate = match[1];
+    if (rate) {
+      return Number(rate);
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Find sample rate in a TIDAL HLS manifest
+ */
+function hlsFindSampleRate(manifest: string): number | undefined {
+  // Look for X-COM-TIDAL-SAMPLE-RATE in EXT-X-DATERANGE or similar tags
+  const regex = /X-COM-TIDAL-SAMPLE-RATE=(\d+)/;
+  const match = regex.exec(manifest);
+  if (match) {
+    return Number(match[1]);
+  }
+  return undefined;
+}
+
+/**
+ * Find bit depth in a TIDAL HLS manifest
+ */
+function hlsFindBitDepth(manifest: string): number | undefined {
+  // Look for X-COM-TIDAL-SAMPLE-DEPTH in EXT-X-DATERANGE or similar tags
+  const regex = /X-COM-TIDAL-SAMPLE-DEPTH=(\d+)/;
+  const match = regex.exec(manifest);
+  if (match) {
+    return Number(match[1]);
+  }
+  return undefined;
+}
+
+/**
+ * Find codec in a TIDAL HLS manifest
+ */
+function hlsFindCodec(manifest: string): string | undefined {
+  // Look for CODECS in EXT-X-STREAM-INF
+  const regex = /#EXT-X-STREAM-INF:[^\n]*CODECS="([^"]+)"/;
+  const match = regex.exec(manifest);
+  if (match) {
+    return match[1];
+  }
+  return undefined;
+}
+
+/**
+ * Find duration in a TIDAL HLS manifest (sum of all EXTINF durations)
+ */
+function hlsFindDuration(manifest: string): number | undefined {
+  // Sum all #EXTINF: durations
+  const regex = /#EXTINF:([\d.]+),/g;
+  let match;
+  let total = 0;
+  let found = false;
+  while ((match = regex.exec(manifest)) !== null) {
+    total += parseFloat(match[1]!);
+    found = true;
+  }
+  return found ? total : undefined;
+}
+
+/**
+ * Parses playback info manifest into a stream info object.
+ *
+ * @param playbackInfo - The playback information containing the manifest.
+ * @returns The parsed stream information.
+ */
 export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
   const { prefetched, streamingSessionId } = playbackInfo;
 
@@ -239,18 +317,12 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
 
     return {
       ...replayGains,
-      bitDepth:
-        'bitDepth' in playbackInfo
-          ? (playbackInfo.bitDepth ?? undefined) // API sends null, cast to undefined
-          : undefined,
+      bitDepth: 0, // TODO when available in DASH manifest
       codec: dashFindCodec(decodedManifest),
       duration: dashFindDuration(decodedManifest),
       prefetched,
       quality,
-      sampleRate:
-        'sampleRate' in playbackInfo
-          ? (playbackInfo.sampleRate ?? undefined) // API sends null, cast to undefined
-          : undefined,
+      sampleRate: dashFindSampleRate(decodedManifest),
       securityToken: playbackInfo.licenseSecurityToken,
       streamUrl,
       streamingSessionId,
@@ -261,22 +333,24 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
 
   if (playbackInfo.manifestMimeType === mimeTypes.HLS) {
     const streamUrl = `data:${playbackInfo.manifestMimeType};base64,${playbackInfo.manifest}`;
+
     const decodedManifest = atob(playbackInfo.manifest);
+    const firstVariantManifest = atob(
+      decodedManifest.split('base64,')[1]!.split('\n')[0]!,
+    );
 
     return {
       ...replayGains,
-      bitDepth:
-        'bitDepth' in playbackInfo
-          ? (playbackInfo.bitDepth ?? undefined) // API sends null, cast to undefined
-          : undefined,
-      codec: undefined, // TODO: Implement codec extraction for HLS
-      duration: undefined, // TODO: Implement duration extraction for HLS
+      bitDepth: hlsFindBitDepth(firstVariantManifest),
+      codec: streamFormatToCodec(
+        hlsFindCodec(
+          decodedManifest,
+        )?.toLowerCase() as NativePlayerStreamFormat,
+      ),
+      duration: hlsFindDuration(firstVariantManifest),
       prefetched,
       quality,
-      sampleRate:
-        'sampleRate' in playbackInfo
-          ? (playbackInfo.sampleRate ?? undefined) // API sends null, cast to undefined
-          : undefined,
+      sampleRate: hlsFindSampleRate(firstVariantManifest),
       securityToken: playbackInfo.licenseSecurityToken,
       streamUrl,
       streamingSessionId,
