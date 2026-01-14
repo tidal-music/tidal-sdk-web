@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.33"
+    "version" : "1.0.34"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -336,7 +336,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -492,7 +492,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -592,7 +592,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -748,7 +748,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -848,7 +848,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -1087,7 +1087,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -1195,7 +1195,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -1426,7 +1426,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -1522,7 +1522,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -2370,7 +2370,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -2536,7 +2536,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -2683,7 +2683,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -3381,7 +3381,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -3554,7 +3554,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -3737,7 +3737,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -3828,7 +3828,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -3902,7 +3902,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -4055,7 +4055,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -6789,7 +6789,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -6880,7 +6880,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -7491,7 +7491,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -7593,7 +7593,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -7695,7 +7695,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -7797,7 +7797,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -7899,7 +7899,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -8001,7 +8001,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -8103,7 +8103,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -8833,7 +8833,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -10074,7 +10074,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -10238,7 +10238,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -10330,7 +10330,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -10612,7 +10612,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -10900,7 +10900,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -13229,7 +13229,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -13328,7 +13328,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -13427,7 +13427,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -13526,7 +13526,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -13717,7 +13717,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -13826,7 +13826,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -13917,7 +13917,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -14008,7 +14008,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -14099,7 +14099,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -14190,7 +14190,7 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
