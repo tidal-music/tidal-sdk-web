@@ -109,9 +109,12 @@ async function _setNext(
     }
   }
 
+  const mimeType = playbackInfo.manifestMimeType;
+
   playerState.preloadPlayer = await getAppropriatePlayer(
     mediaProduct.productType,
     'trackId' in playbackInfo ? playbackInfo.audioQuality : undefined,
+    mimeType,
   );
 
   const streamInfo = parseManifest(playbackInfo);

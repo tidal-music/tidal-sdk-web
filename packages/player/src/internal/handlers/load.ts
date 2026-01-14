@@ -159,9 +159,18 @@ export async function load(
 
   const audioQuality =
     'trackId' in playbackInfo ? playbackInfo.audioQuality : undefined;
+
+  const mimeType = playbackInfo.manifestMimeType;
+
+  /**
+   * At the moment a config is provided by the client to pick the player based on quality.
+   * This is not ideal we need to pick the optimal player based on the current
+   * platform & the mimeType the players support not the quality mapping provided by the client.
+   */
   const player = await getAppropriatePlayer(
     mediaProduct.productType,
     audioQuality,
+    mimeType,
   );
 
   setActivePlayer(player);

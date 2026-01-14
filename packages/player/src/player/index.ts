@@ -1,5 +1,6 @@
 import type { MediaProduct } from '../api/interfaces';
 import { events } from '../event-bus';
+import { mimeTypes } from '../internal/constants';
 import type { AudioQuality } from '../internal/types';
 
 import type { default as BrowserPlayerType } from './browserPlayer';
@@ -142,6 +143,7 @@ async function getShakaPlayer() {
 export async function getAppropriatePlayer(
   productType: 'track' | 'video',
   audioQuality: AudioQuality | undefined,
+  mimeType: string,
 ) {
   const appropriatePlayers = playerConfig
     .filter(pc => pc.itemTypes.includes(productType))
@@ -160,7 +162,15 @@ export async function getAppropriatePlayer(
     );
   }
 
-  const { player } = appropriatePlayers[0]!;
+  let { player } = appropriatePlayers[0]!;
+
+  // ** Native player doesn't support DASH or HLS, so override to Shaka player.
+  if (
+    (mimeType === mimeTypes.DASH || mimeType === mimeTypes.HLS) &&
+    player === 'native'
+  ) {
+    player = 'shaka';
+  }
 
   switch (player) {
     case 'browser':
