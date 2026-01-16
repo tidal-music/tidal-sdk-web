@@ -67,6 +67,8 @@ type PlaybackInfoErrorResponse = {
   userMessage: string;
 };
 
+const MANIFEST_EXPIRATION_MS = 3600000; // 1 hour
+
 const fetchWithRetries = async (
   url: string,
   options = {},
@@ -243,7 +245,7 @@ async function _fetchLegacyPlaybackInfo(
   return {
     ...json,
     // eslint-disable-next-line no-restricted-syntax
-    expires: Date.now() + 3600000,
+    expires: Date.now() + MANIFEST_EXPIRATION_MS,
     prefetched: prefetch,
   };
 }
@@ -378,7 +380,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
     ),
     bitDepth: 0,
     // eslint-disable-next-line no-restricted-syntax
-    expires: Date.now() + 3600000,
+    expires: Date.now() + MANIFEST_EXPIRATION_MS,
     manifest,
     manifestHash: response.data?.data.attributes?.hash,
     manifestMimeType,
