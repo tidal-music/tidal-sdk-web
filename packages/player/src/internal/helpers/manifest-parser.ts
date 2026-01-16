@@ -244,7 +244,7 @@ function dashFindBitDepth(manifest: string): number | undefined {
   const repMatch = /<Representation[^>]*id="([^"]+)"/.exec(manifest);
   if (repMatch) {
     const id = repMatch[1];
-    const numbers = id.match(/\d+/g);
+    const numbers = id?.match(/\d+/g);
     if (numbers && numbers.length > 0) {
       return Number(numbers[numbers.length - 1]);
     }
