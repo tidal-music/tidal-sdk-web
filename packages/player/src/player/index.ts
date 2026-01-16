@@ -140,6 +140,29 @@ async function getShakaPlayer() {
   return players.shaka;
 }
 
+/**
+ * Predicts which player type will be used for a given product type and audio quality.
+ * This is useful for determining the player before fetching playback info.
+ */
+export function predictPlayerType(
+  productType: 'track' | 'video',
+  audioQuality: AudioQuality | undefined,
+): 'browser' | 'native' | 'shaka' {
+  const appropriatePlayers = playerConfig
+    .filter(pc => pc.itemTypes.includes(productType))
+    .filter(pc =>
+      productType === 'track' && pc.qualities && audioQuality
+        ? pc.qualities.includes(audioQuality)
+        : true,
+    );
+
+  if (appropriatePlayers.length === 0) {
+    return 'shaka'; // Default fallback
+  }
+
+  return appropriatePlayers[0]!.player;
+}
+
 export async function getAppropriatePlayer(
   productType: 'track' | 'video',
   audioQuality: AudioQuality | undefined,

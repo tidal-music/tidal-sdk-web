@@ -54,6 +54,7 @@
     "@rollup/plugin-replace": "6.0.3",
     "@rollup/plugin-terser": "0.4.4",
     "@rollup/plugin-typescript": "12.3.0",
+    "@tidal-music/api": "workspace:^",
     "@tidal-music/auth": "workspace:^",
     "@tidal-music/common": "workspace:^",
     "@tidal-music/event-producer": "workspace:^",

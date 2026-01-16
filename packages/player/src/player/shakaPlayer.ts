@@ -30,7 +30,6 @@ import {
 import type { LoadPayload } from './basePlayer';
 import { BasePlayer } from './basePlayer';
 import * as FairplayDRM from './fairplay-drm';
-import { manipulateLicenseRequest, manipulateLicenseResponse } from './filters';
 import { registerStalls } from './stalls';
 import { playerState } from './state';
 
@@ -271,8 +270,6 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
-    const apiUrl = Config.get('apiUrl');
-
     const supportResult = await shaka.Player.probeSupport();
 
     if (supportResult.drm['com.widevine.alpha']) {
@@ -288,7 +285,7 @@ export default class ShakaPlayer extends BasePlayer {
             },
           },
           servers: {
-            'com.widevine.alpha': `${apiUrl}/drm/licenses/widevine?token=${clientId}`,
+            'com.widevine.alpha': `https://api.tidal.com/v2/widevine`, // TODO: update DRM URLs from manifest response if changed
           },
         },
       });
@@ -303,15 +300,14 @@ export default class ShakaPlayer extends BasePlayer {
           advanced: {
             'com.apple.fps.1_0': {
               serverCertificate,
-              serverCertificateUri:
-                'https://resources.tidal.com/drm/fairplay/certificate',
+              serverCertificateUri: 'https://fp.fa.tidal.com/certificate',
             },
           },
 
           initDataTransform:
             shaka.util.FairPlayUtils.verimatrixInitDataTransform,
           servers: {
-            'com.apple.fps.1_0': `${apiUrl}/drm/licenses/fairplay?token=${clientId}`,
+            'com.apple.fps.1_0': `https://fp.fa.tidal.com/license`,
           },
         },
       });
@@ -413,7 +409,6 @@ export default class ShakaPlayer extends BasePlayer {
     player
       .getNetworkingEngine()
       ?.registerRequestFilter(async (type, request, context) => {
-        // Manipulate license requests
         if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
           const isPreload = context?.isPreload ?? false;
 
@@ -430,20 +425,9 @@ export default class ShakaPlayer extends BasePlayer {
             },
           );
 
-          const streamInfo =
-            streamingSessionStore.getStreamInfo(streamingSessionId);
+          // Ensure header is octet-stream for license requests
+          request.headers['Content-Type'] = 'application/octet-stream';
 
-          if (streamingSessionId && streamInfo?.securityToken) {
-            manipulateLicenseRequest(request, {
-              securityToken: streamInfo.securityToken,
-              streamingSessionId,
-            });
-          } else {
-            console.error('Missing data for DRM request filter.');
-          }
-        }
-
-        if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
           const { token } =
             await credentialsProviderStore.credentialsProvider.getCredentials();
 
@@ -462,10 +446,7 @@ export default class ShakaPlayer extends BasePlayer {
           ? (this.preloadedStreamingSessionId ?? this.currentStreamingSessionId)
           : this.currentStreamingSessionId;
 
-        // Manipulate license responses
         if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
-          manipulateLicenseResponse(response);
-
           if (streamingSessionId) {
             performance.mark(
               'streaming_metrics:drm_license_fetch:endTimestamp',
