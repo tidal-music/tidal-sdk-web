@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.34"
+    "version" : "1.0.36"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -106,7 +106,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums, suggestedCoverArts",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, replacement, similarAlbums, suggestedCoverArts",
           "example" : "artists",
           "in" : "query",
           "name" : "include",
@@ -341,7 +341,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums, suggestedCoverArts",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, replacement, similarAlbums, suggestedCoverArts",
           "example" : "artists",
           "in" : "query",
           "name" : "include",
@@ -1167,6 +1167,98 @@
         "tags" : [ "albums" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/albums/{id}/relationships/replacement" : {
+      "get" : {
+        "description" : "Retrieves replacement relationship.",
+        "parameters" : [ {
+          "description" : "Album id",
+          "example" : "251380836",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: replacement",
+          "example" : "replacement",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "replacement"
+            }
+          }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Albums_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get replacement relationship (\"to-one\").",
+        "tags" : [ "albums" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -9696,7 +9788,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, shares, similarTracks, sourceFile, trackStatistics",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, replacement, shares, similarTracks, sourceFile, trackStatistics",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -9931,7 +10023,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, shares, similarTracks, sourceFile, trackStatistics",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, replacement, shares, similarTracks, sourceFile, trackStatistics",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -10783,6 +10875,98 @@
         "tags" : [ "tracks" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/tracks/{id}/relationships/replacement" : {
+      "get" : {
+        "description" : "Retrieves replacement relationship.",
+        "parameters" : [ {
+          "description" : "Track id",
+          "example" : "75413016",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: replacement",
+          "example" : "replacement",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "replacement"
+            }
+          }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Tracks_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get replacement relationship (\"to-one\").",
+        "tags" : [ "tracks" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -13722,7 +13906,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, providers, thumbnailArt",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, providers, replacement, thumbnailArt",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -13831,7 +14015,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, providers, thumbnailArt",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, providers, replacement, thumbnailArt",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -14162,6 +14346,89 @@
         "tags" : [ "videos" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/videos/{id}/relationships/replacement" : {
+      "get" : {
+        "description" : "Retrieves replacement relationship.",
+        "parameters" : [ {
+          "description" : "Video id",
+          "example" : "75623239",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: replacement",
+          "example" : "replacement",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "replacement"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Videos_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get replacement relationship (\"to-one\").",
+        "tags" : [ "videos" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -14862,7 +15129,7 @@
         }
       },
       "Albums_Relationships" : {
-        "required" : [ "artists", "coverArt", "genres", "items", "owners", "providers", "similarAlbums", "suggestedCoverArts" ],
+        "required" : [ "artists", "coverArt", "genres", "items", "owners", "providers", "replacement", "similarAlbums", "suggestedCoverArts" ],
         "properties" : {
           "artists" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -14881,6 +15148,9 @@
           },
           "providers" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
           },
           "similarAlbums" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -14910,6 +15180,21 @@
             "type" : "string",
             "description" : "Resource type",
             "example" : "tracks"
+          }
+        }
+      },
+      "Albums_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Resource_Identifier"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         }
       },
@@ -20487,7 +20772,7 @@
         }
       },
       "Tracks_Relationships" : {
-        "required" : [ "albums", "artists", "genres", "lyrics", "owners", "providers", "radio", "shares", "similarTracks", "sourceFile", "trackStatistics" ],
+        "required" : [ "albums", "artists", "genres", "lyrics", "owners", "providers", "radio", "replacement", "shares", "similarTracks", "sourceFile", "trackStatistics" ],
         "properties" : {
           "albums" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -20509,6 +20794,9 @@
           },
           "radio" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
           },
           "shares" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -20595,10 +20883,6 @@
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
-          "addedAt" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
           "id" : {
             "type" : "string"
           },
@@ -20668,9 +20952,21 @@
           "id" : {
             "type" : "string"
           },
+          "meta" : {
+            "$ref" : "#/components/schemas/UserCollectionArtistsRelationshipAddOperation_Payload_Data_Meta"
+          },
           "type" : {
             "type" : "string",
             "enum" : [ "artists" ]
+          }
+        }
+      },
+      "UserCollectionArtistsRelationshipAddOperation_Payload_Data_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "addedAt" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },
@@ -20907,10 +21203,6 @@
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
-          "addedAt" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
           "id" : {
             "type" : "string"
           },
@@ -21870,7 +22162,7 @@
         }
       },
       "Videos_Relationships" : {
-        "required" : [ "albums", "artists", "providers", "thumbnailArt" ],
+        "required" : [ "albums", "artists", "providers", "replacement", "thumbnailArt" ],
         "properties" : {
           "albums" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -21880,6 +22172,9 @@
           },
           "providers" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
           },
           "thumbnailArt" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -21906,6 +22201,21 @@
             "type" : "string",
             "description" : "Resource type",
             "example" : "tracks"
+          }
+        }
+      },
+      "Videos_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Resource_Identifier"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         }
       },

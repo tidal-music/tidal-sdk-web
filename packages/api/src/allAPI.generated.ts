@@ -26,7 +26,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums, suggestedCoverArts
+                     * @description Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, replacement, similarAlbums, suggestedCoverArts
                      * @example artists
                      */
                     include?: string[];
@@ -136,7 +136,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, similarAlbums, suggestedCoverArts
+                     * @description Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, providers, replacement, similarAlbums, suggestedCoverArts
                      * @example artists
                      */
                     include?: string[];
@@ -689,6 +689,72 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/albums/{id}/relationships/replacement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get replacement relationship ("to-one").
+         * @description Retrieves replacement relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: replacement
+                     * @example replacement
+                     */
+                    include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Album id
+                     * @example 251380836
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Albums_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -6749,7 +6815,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, shares, similarTracks, sourceFile, trackStatistics
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, replacement, shares, similarTracks, sourceFile, trackStatistics
                      * @example albums
                      */
                     include?: string[];
@@ -6859,7 +6925,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, shares, similarTracks, sourceFile, trackStatistics
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, replacement, shares, similarTracks, sourceFile, trackStatistics
                      * @example albums
                      */
                     include?: string[];
@@ -7438,6 +7504,72 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tracks/{id}/relationships/replacement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get replacement relationship ("to-one").
+         * @description Retrieves replacement relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: replacement
+                     * @example replacement
+                     */
+                    include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Track id
+                     * @example 75413016
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Tracks_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9461,7 +9593,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, providers, thumbnailArt
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, providers, replacement, thumbnailArt
                      * @example albums
                      */
                     include?: string[];
@@ -9529,7 +9661,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, providers, thumbnailArt
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, providers, replacement, thumbnailArt
                      * @example albums
                      */
                     include?: string[];
@@ -9751,6 +9883,70 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/videos/{id}/relationships/replacement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get replacement relationship ("to-one").
+         * @description Retrieves replacement relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: replacement
+                     * @example replacement
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Video id
+                     * @example 75623239
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Videos_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -10062,6 +10258,7 @@ export interface components {
             items: components["schemas"]["Albums_Items_Multi_Relationship_Data_Document"];
             owners: components["schemas"]["Multi_Relationship_Data_Document"];
             providers: components["schemas"]["Multi_Relationship_Data_Document"];
+            replacement: components["schemas"]["Single_Relationship_Data_Document"];
             similarAlbums: components["schemas"]["Multi_Relationship_Data_Document"];
             suggestedCoverArts: components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Data_Document"];
         };
@@ -10078,6 +10275,11 @@ export interface components {
              * @enum {string}
              */
             type: "albums";
+        };
+        Albums_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Albums_Single_Resource_Data_Document: {
             data: components["schemas"]["Albums_Resource_Object"];
@@ -12418,6 +12620,7 @@ export interface components {
             owners: components["schemas"]["Multi_Relationship_Data_Document"];
             providers: components["schemas"]["Multi_Relationship_Data_Document"];
             radio: components["schemas"]["Multi_Relationship_Data_Document"];
+            replacement: components["schemas"]["Single_Relationship_Data_Document"];
             shares: components["schemas"]["Multi_Relationship_Data_Document"];
             similarTracks: components["schemas"]["Multi_Relationship_Data_Document"];
             sourceFile: components["schemas"]["Single_Relationship_Data_Document"];
@@ -12451,8 +12654,6 @@ export interface components {
             data: components["schemas"]["UserCollectionAlbumsRelationshipAddOperation_Payload_Data"][];
         };
         UserCollectionAlbumsRelationshipAddOperation_Payload_Data: {
-            /** Format: date-time */
-            addedAt?: string;
             id: string;
             meta?: components["schemas"]["UserCollectionAlbumsRelationshipAddOperation_Payload_Data_Meta"];
             /** @enum {string} */
@@ -12475,8 +12676,13 @@ export interface components {
         };
         UserCollectionArtistsRelationshipAddOperation_Payload_Data: {
             id: string;
+            meta?: components["schemas"]["UserCollectionArtistsRelationshipAddOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "artists";
+        };
+        UserCollectionArtistsRelationshipAddOperation_Payload_Data_Meta: {
+            /** Format: date-time */
+            addedAt?: string;
         };
         UserCollectionArtistsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionArtistsRelationshipRemoveOperation_Payload_Data"][];
@@ -12566,8 +12772,6 @@ export interface components {
             data: components["schemas"]["UserCollectionTracksRelationshipAddOperation_Payload_Data"][];
         };
         UserCollectionTracksRelationshipAddOperation_Payload_Data: {
-            /** Format: date-time */
-            addedAt?: string;
             id: string;
             meta?: components["schemas"]["UserCollectionTracksRelationshipAddOperation_Payload_Data_Meta"];
             /** @enum {string} */
@@ -12995,6 +13199,7 @@ export interface components {
             albums: components["schemas"]["Multi_Relationship_Data_Document"];
             artists: components["schemas"]["Multi_Relationship_Data_Document"];
             providers: components["schemas"]["Multi_Relationship_Data_Document"];
+            replacement: components["schemas"]["Single_Relationship_Data_Document"];
             thumbnailArt: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         Videos_Resource_Object: {
@@ -13010,6 +13215,11 @@ export interface components {
              * @enum {string}
              */
             type: "videos";
+        };
+        Videos_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Videos_Single_Resource_Data_Document: {
             data: components["schemas"]["Videos_Resource_Object"];
