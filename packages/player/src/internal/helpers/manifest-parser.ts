@@ -104,8 +104,25 @@ function streamFormatToCodec(
   }
 }
 
+/**
+ * Find bit depth in a DASH manifest (from last int in id attribute of Representation, e.g. id="FLAC,44100,16")
+ */
+function dashFindBitDepth(manifest: string): number | undefined {
+  const repMatch = /<Representation[^>]*id="([^"]+)"/.exec(manifest);
+  if (repMatch) {
+    const id = repMatch[1];
+    const numbers = id?.match(/\d+/g);
+    if (numbers && numbers.length > 0) {
+      return Number(numbers[numbers.length - 1]);
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Find codec in a DASH manifest
+ */
 function dashFindCodec(manifest: string): Codec | undefined {
-  // Dash manifest
   const search = /codecs=(["'])?((?:.(?!\1|>))*.?)\1?/.exec(manifest);
 
   if (search === null) {
@@ -149,7 +166,6 @@ function parseDuration(duration: string): number {
  * Find duration in a DASH manifest
  */
 function dashFindDuration(manifest: string): number | undefined {
-  // Dash manifest
   const regex = /mediaPresentationDuration="([^"]+)"/;
   const match = regex.exec(manifest);
 
@@ -168,7 +184,6 @@ function dashFindDuration(manifest: string): number | undefined {
  * Find sample rate in a DASH manifest
  */
 function dashFindSampleRate(manifest: string): number | undefined {
-  // Dash manifest
   const regex = /<Representation[^>]*audioSamplingRate="(\d+)"/;
   const match = regex.exec(manifest);
 
@@ -179,19 +194,6 @@ function dashFindSampleRate(manifest: string): number | undefined {
     }
   }
 
-  return undefined;
-}
-
-/**
- * Find sample rate in a TIDAL HLS manifest
- */
-function hlsFindSampleRate(manifest: string): number | undefined {
-  // Look for X-COM-TIDAL-SAMPLE-RATE in EXT-X-DATERANGE or similar tags
-  const regex = /X-COM-TIDAL-SAMPLE-RATE=(\d+)/;
-  const match = regex.exec(manifest);
-  if (match) {
-    return Number(match[1]);
-  }
   return undefined;
 }
 
@@ -238,16 +240,14 @@ function hlsFindDuration(manifest: string): number | undefined {
 }
 
 /**
- * Find bit depth in a DASH manifest (from id attribute of Representation, e.g. id="FLAC,44100,16")
+ * Find sample rate in a TIDAL HLS manifest
  */
-function dashFindBitDepth(manifest: string): number | undefined {
-  const repMatch = /<Representation[^>]*id="([^"]+)"/.exec(manifest);
-  if (repMatch) {
-    const id = repMatch[1];
-    const numbers = id?.match(/\d+/g);
-    if (numbers && numbers.length > 0) {
-      return Number(numbers[numbers.length - 1]);
-    }
+function hlsFindSampleRate(manifest: string): number | undefined {
+  // Look for X-COM-TIDAL-SAMPLE-RATE in EXT-X-DATERANGE or similar tags
+  const regex = /X-COM-TIDAL-SAMPLE-RATE=(\d+)/;
+  const match = regex.exec(manifest);
+  if (match) {
+    return Number(match[1]);
   }
   return undefined;
 }
