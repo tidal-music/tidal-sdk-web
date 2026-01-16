@@ -316,6 +316,9 @@ function parseDataUrl(dataUrl: string | undefined):
   };
 }
 
+/**
+ * Fetches the track manifest for a given media product using the API client.
+ */
 // eslint-disable-next-line complexity
 async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
   // TODO: consider saving the API client for reuse
@@ -369,7 +372,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
       0,
     assetPresentation:
       response.data?.data.attributes?.trackPresentation ?? 'PREVIEW',
-    audioMode: 'STEREO', // TODO: drop field?
+    audioMode: 'STEREO',
     audioQuality: audioFormatsToQuality(
       response.data?.data.attributes?.formats,
     ),
@@ -392,6 +395,12 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
   };
 }
 
+/**
+ * Fetches playback information for a media product.
+ *
+ * @param options - The options for fetching playback info including media product, audio quality, and streaming session ID.
+ * @returns A promise that resolves to the playback information.
+ */
 export async function fetchPlaybackInfo(options: Options) {
   const { streamingSessionId } = options;
   const events = [];
