@@ -354,10 +354,14 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
     const streamUrl = `data:${playbackInfo.manifestMimeType};base64,${playbackInfo.manifest}`;
 
     const decodedManifest = atob(playbackInfo.manifest);
-    const firstVariantManifest = atob(
-      decodedManifest.split('base64,')[1]!.split('\n')[0]!,
-    );
+    const base64Part = decodedManifest.split('base64,')[1];
+    const firstLine = base64Part?.split('\n')[0];
 
+    if (!base64Part || !firstLine) {
+      throw new TypeError('Invalid HLS manifest format: missing base64-encoded variant manifest.');
+    }
+
+    const firstVariantManifest = atob(firstLine);
     return {
       ...replayGains,
       bitDepth: hlsFindBitDepth(firstVariantManifest),
