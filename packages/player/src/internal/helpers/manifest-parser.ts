@@ -238,6 +238,21 @@ function hlsFindDuration(manifest: string): number | undefined {
 }
 
 /**
+ * Find bit depth in a DASH manifest (from id attribute of Representation, e.g. id="FLAC,44100,16")
+ */
+function dashFindBitDepth(manifest: string): number | undefined {
+  const repMatch = /<Representation[^>]*id="([^"]+)"/.exec(manifest);
+  if (repMatch) {
+    const id = repMatch[1];
+    const numbers = id.match(/\d+/g);
+    if (numbers && numbers.length > 0) {
+      return Number(numbers[numbers.length - 1]);
+    }
+  }
+  return undefined;
+}
+
+/**
  * Parses playback info manifest into a stream info object.
  *
  * @param playbackInfo - The playback information containing the manifest.
@@ -317,7 +332,7 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
 
     return {
       ...replayGains,
-      bitDepth: 0, // TODO when available in DASH manifest
+      bitDepth: dashFindBitDepth(decodedManifest),
       codec: dashFindCodec(decodedManifest),
       duration: dashFindDuration(decodedManifest),
       prefetched,
