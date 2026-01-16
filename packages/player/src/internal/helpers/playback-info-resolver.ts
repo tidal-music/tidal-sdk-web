@@ -289,6 +289,10 @@ function audioQualityToFormats(
   }
 }
 
+/**
+ * Splits a data URL into its MIME type and base64-encoded data components.
+ * To match old API and internal structure.
+ */
 function parseDataUrl(dataUrl: string | undefined):
   | {
       manifest: string;
