@@ -233,7 +233,11 @@ function hlsFindDuration(manifest: string): number | undefined {
   let total = 0;
   let found = false;
   while ((match = regex.exec(manifest)) !== null) {
-    total += parseFloat(match[1]!);
+    const duration = match[1];
+    if (!duration) {
+      continue;
+    }
+    total += parseFloat(duration);
     found = true;
   }
   return found ? total : undefined;
