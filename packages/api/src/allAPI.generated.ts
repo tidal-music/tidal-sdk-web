@@ -2954,6 +2954,241 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/credits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple credits.
+         * @description Retrieves multiple credits by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: artist, category
+                     * @example artist
+                     */
+                    include?: string[];
+                    /**
+                     * @description Credit id
+                     * @example 3fG7kLmN2pQrStUv
+                     */
+                    "filter[id]"?: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Credits_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/credits/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single credit.
+         * @description Retrieves single credit by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: artist, category
+                     * @example artist
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Credit id
+                     * @example 3fG7kLmN2pQrStUv
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Credits_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/credits/{id}/relationships/artist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artist relationship ("to-one").
+         * @description Retrieves artist relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: artist
+                     * @example artist
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Credit id
+                     * @example 3fG7kLmN2pQrStUv
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Credits_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/credits/{id}/relationships/category": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get category relationship ("to-one").
+         * @description Retrieves category relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: category
+                     * @example category
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Credit id
+                     * @example 3fG7kLmN2pQrStUv
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Credits_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/dynamicPages": {
         parameters: {
             query?: never;
@@ -6815,7 +7050,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, replacement, shares, similarTracks, sourceFile, trackStatistics
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, genres, lyrics, owners, providers, radio, replacement, shares, similarTracks, sourceFile, trackStatistics
                      * @example albums
                      */
                     include?: string[];
@@ -6925,7 +7160,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, genres, lyrics, owners, providers, radio, replacement, shares, similarTracks, sourceFile, trackStatistics
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, genres, lyrics, owners, providers, radio, replacement, shares, similarTracks, sourceFile, trackStatistics
                      * @example albums
                      */
                     include?: string[];
@@ -7155,6 +7390,69 @@ export interface paths {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
                      * @example artists
+                     */
+                    include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Track id
+                     * @example 75413016
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tracks/{id}/relationships/credits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get credits relationship ("to-many").
+         * @description Retrieves credits relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: credits
+                     * @example credits
                      */
                     include?: string[];
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
@@ -9593,7 +9891,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, providers, replacement, thumbnailArt
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, providers, replacement, thumbnailArt
                      * @example albums
                      */
                     include?: string[];
@@ -9661,7 +9959,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, providers, replacement, thumbnailArt
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, providers, replacement, thumbnailArt
                      * @example albums
                      */
                     include?: string[];
@@ -9795,6 +10093,67 @@ export interface paths {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
                      * @example artists
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Video id
+                     * @example 75623239
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/videos/{id}/relationships/credits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get credits relationship ("to-many").
+         * @description Retrieves credits relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: credits
+                     * @example credits
                      */
                     include?: string[];
                 };
@@ -10906,6 +11265,51 @@ export interface components {
         CreateReactionPayload_Data_Relationships: {
             reactedResource: components["schemas"]["ReactedResourceRelationship"];
         };
+        Credits_Attributes: {
+            /**
+             * @description Credit name
+             * @example John Lennon
+             */
+            name: string;
+            /**
+             * @description Credit role
+             * @example Vocals
+             */
+            role: string;
+        };
+        Credits_Multi_Resource_Data_Document: {
+            data: components["schemas"]["Credits_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Credits_Relationships: {
+            artist: components["schemas"]["Single_Relationship_Data_Document"];
+            category: components["schemas"]["Single_Relationship_Data_Document"];
+        };
+        Credits_Resource_Object: {
+            attributes?: components["schemas"]["Credits_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["Credits_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "credits";
+        };
+        Credits_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Credits_Single_Resource_Data_Document: {
+            data: components["schemas"]["Credits_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Data: {
             id: string;
             resourceType: string;
@@ -11148,7 +11552,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         LegacySource: {
             id: string;
             type: string;
@@ -12615,6 +13019,7 @@ export interface components {
         Tracks_Relationships: {
             albums: components["schemas"]["Multi_Relationship_Data_Document"];
             artists: components["schemas"]["Multi_Relationship_Data_Document"];
+            credits: components["schemas"]["Multi_Relationship_Data_Document"];
             genres: components["schemas"]["Multi_Relationship_Data_Document"];
             lyrics: components["schemas"]["Multi_Relationship_Data_Document"];
             owners: components["schemas"]["Multi_Relationship_Data_Document"];
@@ -13198,6 +13603,7 @@ export interface components {
         Videos_Relationships: {
             albums: components["schemas"]["Multi_Relationship_Data_Document"];
             artists: components["schemas"]["Multi_Relationship_Data_Document"];
+            credits: components["schemas"]["Multi_Relationship_Data_Document"];
             providers: components["schemas"]["Multi_Relationship_Data_Document"];
             replacement: components["schemas"]["Single_Relationship_Data_Document"];
             thumbnailArt: components["schemas"]["Multi_Relationship_Data_Document"];
