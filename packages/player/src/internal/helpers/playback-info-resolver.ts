@@ -267,7 +267,7 @@ function audioFormatsToQuality(
     return 'LOSSLESS';
   } else if (formats.includes('AACLC')) {
     return 'HIGH';
-  } /* if (formats.includes('HEAACV1')) */ else {
+  } else { // Only 'HEAACV1' or something unknown
     return 'LOW';
   }
 }
@@ -378,7 +378,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
       0,
     assetPresentation:
       response.data?.data.attributes?.trackPresentation ?? 'PREVIEW',
-    audioMode: 'STEREO',
+    audioMode: 'STEREO', // Only stereo (and mono) supported for now, TODO: revise or remove if multi-channel is added
     audioQuality: audioFormatsToQuality(
       response.data?.data.attributes?.formats,
     ),
