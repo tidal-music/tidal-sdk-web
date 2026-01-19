@@ -41,11 +41,11 @@
     "@tidal-music/common": "workspace:^",
     "@tidal-music/event-producer": "workspace:^",
     "@tidal-music/player": "workspace:^",
-    "@vitest/coverage-v8": "4.0.16",
-    "@vitest/ui": "4.0.16",
+    "@vitest/coverage-v8": "4.0.17",
+    "@vitest/ui": "4.0.17",
     "typescript": "5.9.3",
     "vite": "7.3.1",
     "vite-plugin-dts": "4.5.4",
-    "vitest": "4.0.16"
+    "vitest": "4.0.17"
   }
 }
