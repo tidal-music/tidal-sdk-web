@@ -267,7 +267,8 @@ function audioFormatsToQuality(
     return 'LOSSLESS';
   } else if (formats.includes('AACLC')) {
     return 'HIGH';
-  } else { // Only 'HEAACV1' or something unknown
+  } else {
+    // Only 'HEAACV1' or something unknown
     return 'LOW';
   }
 }
