@@ -19,9 +19,9 @@
     "eslint": "9.39.2",
     "eslint-config-tidal": "4.0.0",
     "eslint-plugin-disable-autofix": "5.0.1",
-    "eslint-plugin-jsdoc": "62.0.0",
+    "eslint-plugin-jsdoc": "62.1.0",
     "typedoc": "0.28.16",
-    "vitest": "4.0.16"
+    "vitest": "4.0.17"
   },
   "pnpm": {
     "patchedDependencies": {
