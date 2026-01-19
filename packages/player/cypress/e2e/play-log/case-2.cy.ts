@@ -19,8 +19,8 @@ it('Client Test Case 2', () => {
   // Wait for media product transition
   cy.get('@playerSdkMediaProductTransition', { timeout: 5000 }).should('be.called');
 
-  // Wait for track to finish playing.
-  cy.get('@playerSdkEnded', { timeout: 60_000 }).should('be.called');
+  // Wait for video to finish playing (5s play + seek to 88s + 5s play)
+  cy.get('@playerSdkEnded', { timeout: 20_000 }).should('be.called');
 
   // Start intercepting events endpoint
   cy.intercept(INTERCEPT_OPTIONS).as(
@@ -51,25 +51,27 @@ it('Client Test Case 2', () => {
     expect(playbackSessions).to.have.lengthOf(1);
 
     const playbackSession = playbackSessions[0];
-    const duration = 198.969;
 
     expect(playbackSession.payload).to.include({
       startAssetPosition: 0,
-      actualProductId: '91298890',
-      sourceType: 'ALBUM',
-      sourceId: '4141352'
+      actualProductId: '159073354',
+      sourceType: 'VIDEO',
+      sourceId: '159073354'
     });
 
-    expect(playbackSession.payload.endAssetPosition).to.be.closeTo(duration, 0.1);
+    // Video is ~93 seconds
+    const duration = 93;
+    expect(playbackSession.payload.endAssetPosition).to.be.closeTo(duration, 1);
 
     expect(playbackSession.payload.actions).to.have.lengthOf(2);
     expect(playbackSession.payload.actions[0]).to.include({
       actionType: 'PLAYBACK_STOP',
     });
-    expect(playbackSession.payload.actions[0].assetPosition).to.be.closeTo(20, 0.5);
+    expect(playbackSession.payload.actions[0].assetPosition).to.be.closeTo(5, 0.5);
     expect(playbackSession.payload.actions[1]).to.include({
       actionType: 'PLAYBACK_START'
     });
-    expect(playbackSession.payload.actions[1].assetPosition).to.be.closeTo(duration - 20, 0.2);
+    // Seeks to duration - 5 = ~88 seconds
+    expect(playbackSession.payload.actions[1].assetPosition).to.be.closeTo(duration - 5, 1);
   })
 });

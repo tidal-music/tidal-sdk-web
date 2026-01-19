@@ -104,8 +104,25 @@ function streamFormatToCodec(
   }
 }
 
+/**
+ * Find bit depth in a DASH manifest (from last int in id attribute of Representation, e.g. id="FLAC,44100,16")
+ */
+function dashFindBitDepth(manifest: string): number | undefined {
+  const repMatch = /<Representation[^>]*id="([^"]+)"/.exec(manifest);
+  if (repMatch) {
+    const id = repMatch[1];
+    const numbers = id?.match(/\d+/g);
+    if (numbers && numbers.length > 0) {
+      return Number(numbers[numbers.length - 1]);
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Find codec in a DASH manifest
+ */
 function dashFindCodec(manifest: string): Codec | undefined {
-  // Dash manifest
   const search = /codecs=(["'])?((?:.(?!\1|>))*.?)\1?/.exec(manifest);
 
   if (search === null) {
@@ -149,7 +166,6 @@ function parseDuration(duration: string): number {
  * Find duration in a DASH manifest
  */
 function dashFindDuration(manifest: string): number | undefined {
-  // Dash manifest
   const regex = /mediaPresentationDuration="([^"]+)"/;
   const match = regex.exec(manifest);
 
@@ -164,6 +180,88 @@ function dashFindDuration(manifest: string): number | undefined {
   return undefined;
 }
 
+/**
+ * Find sample rate in a DASH manifest
+ */
+function dashFindSampleRate(manifest: string): number | undefined {
+  const regex = /<Representation[^>]*audioSamplingRate="(\d+)"/;
+  const match = regex.exec(manifest);
+
+  if (match) {
+    const rate = match[1];
+    if (rate) {
+      return Number(rate);
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Find bit depth in a TIDAL HLS manifest
+ */
+function hlsFindBitDepth(manifest: string): number | undefined {
+  // Look for X-COM-TIDAL-SAMPLE-DEPTH in EXT-X-DATERANGE or similar tags
+  const regex = /X-COM-TIDAL-SAMPLE-DEPTH=(\d+)/;
+  const match = regex.exec(manifest);
+  if (match) {
+    return Number(match[1]);
+  }
+  return undefined;
+}
+
+/**
+ * Find codec in a TIDAL HLS manifest
+ */
+function hlsFindCodec(manifest: string): string | undefined {
+  // Look for CODECS in EXT-X-STREAM-INF
+  const regex = /#EXT-X-STREAM-INF:[^\n]*CODECS="([^"]+)"/;
+  const match = regex.exec(manifest);
+  if (match) {
+    return match[1];
+  }
+  return undefined;
+}
+
+/**
+ * Find duration in a TIDAL HLS manifest (sum of all EXTINF durations)
+ */
+function hlsFindDuration(manifest: string): number | undefined {
+  // Sum all #EXTINF: durations
+  const regex = /#EXTINF:([\d.]+),/g;
+  let match;
+  let total = 0;
+  let found = false;
+  while ((match = regex.exec(manifest)) !== null) {
+    const duration = match[1];
+    if (!duration) {
+      continue;
+    }
+    total += parseFloat(duration);
+    found = true;
+  }
+  return found ? total : undefined;
+}
+
+/**
+ * Find sample rate in a TIDAL HLS manifest
+ */
+function hlsFindSampleRate(manifest: string): number | undefined {
+  // Look for X-COM-TIDAL-SAMPLE-RATE in EXT-X-DATERANGE or similar tags
+  const regex = /X-COM-TIDAL-SAMPLE-RATE=(\d+)/;
+  const match = regex.exec(manifest);
+  if (match) {
+    return Number(match[1]);
+  }
+  return undefined;
+}
+
+/**
+ * Parses playback info manifest into a stream info object.
+ *
+ * @param playbackInfo - The playback information containing the manifest.
+ * @returns The parsed stream information.
+ */
 export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
   const { prefetched, streamingSessionId } = playbackInfo;
 
@@ -238,18 +336,46 @@ export function parseManifest(playbackInfo: PlaybackInfo): StreamInfo {
 
     return {
       ...replayGains,
-      bitDepth:
-        'bitDepth' in playbackInfo
-          ? (playbackInfo.bitDepth ?? undefined) // API sends null, cast to undefined
-          : undefined,
+      bitDepth: dashFindBitDepth(decodedManifest),
       codec: dashFindCodec(decodedManifest),
       duration: dashFindDuration(decodedManifest),
       prefetched,
       quality,
-      sampleRate:
-        'sampleRate' in playbackInfo
-          ? (playbackInfo.sampleRate ?? undefined) // API sends null, cast to undefined
-          : undefined,
+      sampleRate: dashFindSampleRate(decodedManifest),
+      securityToken: playbackInfo.licenseSecurityToken,
+      streamUrl,
+      streamingSessionId,
+      ...mediaItem,
+      expires: playbackInfo.expires,
+    };
+  }
+
+  if (playbackInfo.manifestMimeType === mimeTypes.HLS) {
+    const streamUrl = `data:${playbackInfo.manifestMimeType};base64,${playbackInfo.manifest}`;
+
+    const decodedManifest = atob(playbackInfo.manifest);
+    const base64Part = decodedManifest.split('base64,')[1];
+    const firstLine = base64Part?.split('\n')[0];
+
+    if (!base64Part || !firstLine) {
+      throw new TypeError(
+        'Invalid HLS manifest format: missing base64-encoded variant manifest.',
+      );
+    }
+
+    const firstVariantManifest = atob(firstLine);
+    return {
+      ...replayGains,
+      bitDepth: hlsFindBitDepth(firstVariantManifest),
+      codec: streamFormatToCodec(
+        hlsFindCodec(
+          decodedManifest,
+        )?.toLowerCase() as NativePlayerStreamFormat,
+      ),
+      duration: hlsFindDuration(firstVariantManifest),
+      prefetched,
+      quality,
+      sampleRate: hlsFindSampleRate(firstVariantManifest),
       securityToken: playbackInfo.licenseSecurityToken,
       streamUrl,
       streamingSessionId,
