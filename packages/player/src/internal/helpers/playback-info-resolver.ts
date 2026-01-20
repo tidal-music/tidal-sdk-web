@@ -53,6 +53,7 @@ export type PlaybackInfo = ExtraFields &
 
 export type Options = {
   accessToken: string | undefined;
+  audioAdaptiveBitrateStreaming: boolean;
   audioQuality: AudioQuality;
   clientId: null | string;
   mediaProduct: MediaProduct;
@@ -333,7 +334,13 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
     credentialsProviderStore.credentialsProvider,
   );
 
-  const { audioQuality, mediaProduct, prefetch, streamingSessionId } = options;
+  const {
+    audioAdaptiveBitrateStreaming,
+    audioQuality,
+    mediaProduct,
+    prefetch,
+    streamingSessionId,
+  } = options;
   const trackId = mediaProduct.productId;
 
   const isFairPlaySupported =
@@ -348,7 +355,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
         id: trackId,
       },
       query: {
-        adaptive: true,
+        adaptive: audioAdaptiveBitrateStreaming,
         formats: audioQualityToFormats(audioQuality),
         manifestType: isFairPlaySupported ? 'HLS' : 'MPEG_DASH',
         uriScheme: 'DATA',
