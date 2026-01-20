@@ -18,6 +18,7 @@ import { composePlaybackContext } from '../internal/helpers/compose-playback-con
 import type { StreamInfo } from '../internal/helpers/manifest-parser';
 import type { PlaybackInfo } from '../internal/helpers/playback-info-resolver';
 import { streamingSessionStore } from '../internal/helpers/streaming-session-store';
+import { updatePlaybackQuality } from '../internal/helpers/update-playback-quality';
 import { waitFor } from '../internal/helpers/wait-for';
 import type { OutputDevices } from '../internal/output-devices';
 import { trueTime } from '../internal/true-time';
@@ -895,6 +896,13 @@ export default class ShakaPlayer extends BasePlayer {
     this.setStateToXIfNotYInZMs(1000, 'PLAYING', 'STALLED');
 
     await this.mediaElement?.play();
+
+    const activeTrack = this.shakaInstance
+      ?.getVariantTracks()
+      ?.find(v => v.active);
+
+    // Ensure playback quality is updated when playback starts (for ABR streaming).
+    updatePlaybackQuality(this.currentStreamingSessionId, activeTrack);
   }
 
   async playbackEngineEndedHandler(e: EndedEvent) {

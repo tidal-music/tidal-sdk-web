@@ -86,7 +86,7 @@ export type StreamInfo = {
   type: 'track' | 'video';
 };
 
-function streamFormatToCodec(
+export function streamFormatToCodec(
   streamFormat: NativePlayerStreamFormat,
 ): Codec | undefined {
   switch (streamFormat) {

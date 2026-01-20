@@ -348,7 +348,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
         id: trackId,
       },
       query: {
-        adaptive: false,
+        adaptive: true,
         formats: audioQualityToFormats(audioQuality),
         manifestType: isFairPlaySupported ? 'HLS' : 'MPEG_DASH',
         uriScheme: 'DATA',
@@ -381,6 +381,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
       response.data?.data.attributes?.trackPresentation ?? 'PREVIEW',
     audioMode: 'STEREO', // Only stereo (and mono) supported for now, TODO: revise or remove if multi-channel is added
     audioQuality: audioFormatsToQuality(
+      // PS: this is the highest quality returned by API, not necessarily the quality requested by the user or the one that is currently playing (when in ABR mode).
       response.data?.data.attributes?.formats,
     ),
     bitDepth: 0,

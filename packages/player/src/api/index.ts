@@ -32,6 +32,13 @@ export type { ActiveDeviceModeChanged } from './event/active-device-mode-changed
 export type { ActiveDevicePassThroughChanged } from './event/active-device-pass-through-changed';
 export type { DeviceChange } from './event/device-change';
 export type { EndedEvent } from './event/ended';
-export type { MediaProductTransition } from './event/media-product-transition';
+export type {
+  MediaProductTransition,
+  MediaProductTransitionPayload,
+} from './event/media-product-transition';
+export type {
+  PlaybackQualityChanged,
+  PlaybackQualityChangedPayload,
+} from './event/playback-quality-changed';
 export type { PlaybackStateChange } from './event/playback-state-change';
 export type { StreamingPrivilegesRevokedEvent } from './event/streaming-privileges-revoked';

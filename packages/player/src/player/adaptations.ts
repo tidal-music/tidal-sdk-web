@@ -4,6 +4,7 @@ import type { MediaProductTransition } from '../api/event/media-product-transiti
 import { events } from '../event-bus';
 import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
 import type { Adaptation } from '../internal/event-tracking/streaming-metrics/playback-statistics';
+import { updatePlaybackQuality } from '../internal/helpers/update-playback-quality';
 import { trueTime } from '../internal/true-time';
 
 export function shakaTrackToAdaptation(
@@ -48,7 +49,7 @@ export async function saveAdaptation(
 export function registerAdaptations(shakaPlayer: shaka.Player) {
   let currentStreamingSessionId: null | string;
 
-  const onAdaptation = () => {
+  const onManualOrAutomaticQualityChange = () => {
     const activeTrack: shaka.extern.Track = shakaPlayer
       .getVariantTracks()
       .find(v => v.active)!;
@@ -64,8 +65,25 @@ export function registerAdaptations(shakaPlayer: shaka.Player) {
     }
   };
 
-  shakaPlayer.addEventListener('adaptation', onAdaptation);
-  shakaPlayer.addEventListener('variantchanged', onAdaptation);
+  const onAutomaticQualityChange = (ev: Event) => {
+    onManualOrAutomaticQualityChange();
+    // Shaka uses FakeEvent which sets properties directly on the event, not in detail
+    const shakaTrack = (ev as Event & { newTrack: shaka.extern.Track })
+      .newTrack;
+
+    if (currentStreamingSessionId) {
+      updatePlaybackQuality(currentStreamingSessionId, shakaTrack);
+    }
+  };
+
+  shakaPlayer.addEventListener('adaptation', onAutomaticQualityChange);
+
+  // TODO: if we allow manual adaptation switches, we should check if `playbackContext`
+  // will be updated correctly, or if we should update it here.
+  shakaPlayer.addEventListener(
+    'variantchanged',
+    onManualOrAutomaticQualityChange,
+  );
 
   const onMediaProductTransition: EventListener = e => {
     if (e instanceof CustomEvent) {
@@ -78,8 +96,11 @@ export function registerAdaptations(shakaPlayer: shaka.Player) {
   events.addEventListener('media-product-transition', onMediaProductTransition);
 
   return function unregister() {
-    shakaPlayer.removeEventListener('adaptation', onAdaptation);
-    shakaPlayer.removeEventListener('variantchanged', onAdaptation);
+    shakaPlayer.removeEventListener('adaptation', onAutomaticQualityChange);
+    shakaPlayer.removeEventListener(
+      'variantchanged',
+      onManualOrAutomaticQualityChange,
+    );
     events.removeEventListener(
       'media-product-transition',
       onMediaProductTransition,
