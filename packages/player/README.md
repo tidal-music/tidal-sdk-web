@@ -1,5 +1,7 @@
 # TIDAL Player
 
+For the full specification, see the [Player specification](https://github.com/tidal-music/tidal-sdk/blob/main/Player.md).
+
 ## Usage
 
 `npm install @tidal-music/player` (or similar for other package managers)

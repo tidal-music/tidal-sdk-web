@@ -3,6 +3,8 @@
 ## Description
 This module is only intended for internal use at TIDAL, but feel free to look at the code.
 
+For the full specification, see the [EventProducer specification](https://github.com/tidal-music/tidal-sdk/blob/main/EventProducer.md).
+
 Transportation layer (TL) - The part of event platform that is responsible for transporting events from
 the app to the backend.
 

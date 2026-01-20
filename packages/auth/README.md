@@ -4,6 +4,8 @@
 Auth module handles Authentication and Authorization when interacting with the TIDAL API or other TIDAL SDKs.
 It provides a simple setup and easy to use SDK to interact with the oAuth2 server endpoints.
 
+For the full specification, see the [Auth specification](https://github.com/tidal-music/tidal-sdk/blob/main/Auth.md).
+
 # Features
 * User Login and Sign up handling (through login.tidal.com)
 * Automatic session refresh (refreshing oAuthTokens)
