@@ -106,12 +106,17 @@ function streamFormatToCodec(
 
 /**
  * Find bit depth in a DASH manifest (from last int in id attribute of Representation, e.g. id="FLAC,44100,16")
+ * Returns undefined for ids without commas like "HEAACV1" or "AACLC".
  */
 function dashFindBitDepth(manifest: string): number | undefined {
   const repMatch = /<Representation[^>]*id="([^"]+)"/.exec(manifest);
   if (repMatch) {
     const id = repMatch[1];
-    const numbers = id?.match(/\d+/g);
+    // Only extract bit depth from comma-separated formats like "FLAC,44100,16"
+    if (!id?.includes(',')) {
+      return undefined;
+    }
+    const numbers = id.match(/\d+/g);
     if (numbers && numbers.length > 0) {
       return Number(numbers[numbers.length - 1]);
     }
