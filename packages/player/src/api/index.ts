@@ -1,4 +1,5 @@
 export { getAssetPosition } from '../internal/handlers/get-asset-position';
+export { getAudioAdaptiveBitrateStreaming } from '../internal/handlers/get-audio-adaptive-bitrate-streaming';
 export { getLoudnessNormalizationMode } from '../internal/handlers/get-loudness-normalization-mode';
 export { getMediaProduct } from '../internal/handlers/get-media-product';
 export { getNextMediaProduct } from '../internal/handlers/get-next-media-product';
@@ -16,6 +17,7 @@ export { reset } from '../internal/handlers/reset';
 export { seek } from '../internal/handlers/seek';
 
 export { setApiUrl } from '../internal/handlers/set-api-url';
+export { setAudioAdaptiveBitrateStreaming } from '../internal/handlers/set-audio-adaptive-bitrate-streaming';
 export { setCredentialsProvider } from '../internal/handlers/set-credentials-provider';
 export { setEventSender } from '../internal/handlers/set-event-sender';
 
