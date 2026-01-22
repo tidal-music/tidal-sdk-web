@@ -52,7 +52,7 @@ function idToBitDepth(id: string): number | undefined {
 }
 
 /**
- * Update the playback quality based on the active Shaka track.
+ * Update the (audio) playback quality based on the active Shaka track.
  *
  * @param currentStreamingSessionId - The current streaming session ID.
  * @param activeShakaTrack - The active Shaka track.
@@ -81,9 +81,9 @@ export function updatePlaybackQuality(
       bitDepth: activeShakaTrack.originalAudioId
         ? (idToBitDepth(activeShakaTrack.originalAudioId) ?? null)
         : null,
-      codec: activeShakaTrack.codecs
+      codec: activeShakaTrack.audioCodec
         ? (streamFormatToCodec(
-            activeShakaTrack.codecs as NativePlayerStreamFormat,
+            activeShakaTrack.audioCodec as NativePlayerStreamFormat,
           ) ?? null)
         : null,
       sampleRate: activeShakaTrack.audioSamplingRate,
