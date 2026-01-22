@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.40"
+    "version" : "1.0.41"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -7517,6 +7517,19 @@
             }
           }
         }, {
+          "description" : "Filter by emoji",
+          "example" : "👍",
+          "in" : "query",
+          "name" : "filter[emoji]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "👍"
+            }
+          }
+        }, {
           "description" : "Filter by owner id",
           "example" : "67890",
           "in" : "query",
@@ -7553,19 +7566,6 @@
             "items" : {
               "type" : "string",
               "example" : "albums"
-            }
-          }
-        }, {
-          "description" : "Filter by reaction type",
-          "example" : "FIRE",
-          "in" : "query",
-          "name" : "filter[reactionType]",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "FIRE"
             }
           }
         } ],
@@ -17355,12 +17355,11 @@
         }
       },
       "CreateReactionPayload_Data_Attributes" : {
-        "required" : [ "reactionType" ],
+        "required" : [ "emoji" ],
         "type" : "object",
         "properties" : {
-          "reactionType" : {
-            "type" : "string",
-            "enum" : [ "THUMB_UP", "SMILEY_HEART_EYES", "SMILEY_HOLDING_BACK_TEARS", "FIRE", "SHOCK" ]
+          "emoji" : {
+            "type" : "string"
           }
         }
       },
@@ -19747,7 +19746,7 @@
         }
       },
       "Reactions_Attributes" : {
-        "required" : [ "createdAt", "reactionType" ],
+        "required" : [ "createdAt", "emoji" ],
         "type" : "object",
         "properties" : {
           "createdAt" : {
@@ -19756,10 +19755,9 @@
             "format" : "date-time",
             "example" : "2025-11-17T12:54:48.60606Z"
           },
-          "reactionType" : {
+          "emoji" : {
             "type" : "string",
-            "description" : "The type of reaction representing an emoji",
-            "enum" : [ "THUMB_UP", "SMILEY_HEART_EYES", "SMILEY_HOLDING_BACK_TEARS", "FIRE", "SHOCK" ]
+            "description" : "The type of reaction representing an emoji"
           }
         }
       },

@@ -5200,6 +5200,11 @@ export interface paths {
                      */
                     include?: string[];
                     /**
+                     * @description Filter by emoji
+                     * @example 👍
+                     */
+                    "filter[emoji]"?: string[];
+                    /**
                      * @description Filter by owner id
                      * @example 67890
                      */
@@ -5214,11 +5219,6 @@ export interface paths {
                      * @example albums
                      */
                     "filter[reactedResource.type]"?: string[];
-                    /**
-                     * @description Filter by reaction type
-                     * @example FIRE
-                     */
-                    "filter[reactionType]"?: string[];
                 };
                 header?: never;
                 path?: never;
@@ -11439,8 +11439,7 @@ export interface components {
             type: "reactions";
         };
         CreateReactionPayload_Data_Attributes: {
-            /** @enum {string} */
-            reactionType: "THUMB_UP" | "SMILEY_HEART_EYES" | "SMILEY_HOLDING_BACK_TEARS" | "FIRE" | "SHOCK";
+            emoji: string;
         };
         CreateReactionPayload_Data_Relationships: {
             reactedResource: components["schemas"]["ReactedResourceRelationship"];
@@ -12395,11 +12394,8 @@ export interface components {
              * @example 2025-11-17T12:54:48.60606Z
              */
             createdAt: string;
-            /**
-             * @description The type of reaction representing an emoji
-             * @enum {string}
-             */
-            reactionType: "THUMB_UP" | "SMILEY_HEART_EYES" | "SMILEY_HOLDING_BACK_TEARS" | "FIRE" | "SHOCK";
+            /** @description The type of reaction representing an emoji */
+            emoji: string;
         };
         Reactions_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
