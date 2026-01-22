@@ -14,7 +14,7 @@ import { streamingSessionStore } from './streaming-session-store';
  * @param shakaTrack - The Shaka track to infer the audio quality from.
  * @returns The audio quality.
  */
-function shakaTrackToAudioQuality(
+export function shakaTrackToAudioQuality(
   shakaTrack: shaka.extern.Track,
 ): AudioQuality {
   const audioCodec = shakaTrack.audioCodec;
@@ -40,7 +40,7 @@ function shakaTrackToAudioQuality(
  * Find bit depth from a id attribute, e.g. id="FLAC,44100,16")
  * Should return `undefined` for cases like: `HEAACV1`.
  */
-function idToBitDepth(id: string): number | undefined {
+export function idToBitDepth(id: string): number | undefined {
   // Only extract bit depth from comma-separated formats like "FLAC,44100,16"
   if (!id?.includes(',')) {
     return undefined;

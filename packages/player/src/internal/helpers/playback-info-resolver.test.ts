@@ -64,7 +64,7 @@ describe('playbackInfoResolver', () => {
     expect(result.manifest).to.not.equal(undefined);
   });
 
-  it('fetches playback info via new trackManifests API for shaka player', async () => {
+  it('fetches playback info via new trackManifests API for shaka player with ABR enabled (multiple qualities)', async () => {
     const { clientId, token } = await credentialsProvider.getCredentials();
 
     if (!token) {
@@ -92,5 +92,65 @@ describe('playbackInfoResolver', () => {
     expect(result.assetPresentation).to.equal('FULL');
     expect(result.manifestMimeType).to.not.equal(undefined);
     expect(result.manifest).to.not.equal(undefined);
+
+    // Decode manifest and verify it contains multiple representations (ABR)
+    const decodedManifest = atob(result.manifest);
+
+    // For DASH manifests, count Representation elements
+    // For HLS manifests, count EXT-X-STREAM-INF entries
+    const isDash = result.manifestMimeType === 'application/dash+xml';
+    const representationCount = isDash
+      ? (decodedManifest.match(/<Representation/g) ?? []).length
+      : (decodedManifest.match(/#EXT-X-STREAM-INF/g) ?? []).length;
+
+    expect(
+      representationCount,
+      'ABR manifest should contain multiple quality representations',
+    ).to.be.greaterThan(1);
+  });
+
+  it('fetches playback info with ABR disabled (single quality)', async () => {
+    const { clientId, token } = await credentialsProvider.getCredentials();
+
+    if (!token) {
+      throw new Error('No access token, cannot fulfill test.');
+    }
+
+    // Test with audioAdaptiveBitrateStreaming: false (fixed quality mode)
+    const result = await fetchPlaybackInfo({
+      accessToken: token,
+      audioAdaptiveBitrateStreaming: false,
+      audioQuality: 'LOSSLESS',
+      clientId,
+      mediaProduct: {
+        productId: '1316405',
+        productType: 'track',
+        sourceId: '',
+        sourceType: '',
+      },
+      playerType: 'shaka',
+      prefetch: false,
+      // eslint-disable-next-line no-restricted-syntax
+      streamingSessionId: 'tidal-player-js-test-' + Date.now(),
+    });
+
+    expect(result.assetPresentation).to.equal('FULL');
+    expect(result.manifestMimeType).to.not.equal(undefined);
+    expect(result.manifest).to.not.equal(undefined);
+
+    // Decode manifest and verify it contains only one representation (fixed quality)
+    const decodedManifest = atob(result.manifest);
+
+    // For DASH manifests, count Representation elements
+    // For HLS manifests, count EXT-X-STREAM-INF entries
+    const isDash = result.manifestMimeType === 'application/dash+xml';
+    const representationCount = isDash
+      ? (decodedManifest.match(/<Representation/g) ?? []).length
+      : (decodedManifest.match(/#EXT-X-STREAM-INF/g) ?? []).length;
+
+    expect(
+      representationCount,
+      'Non-ABR manifest should contain exactly one quality representation',
+    ).to.equal(1);
   });
 });
