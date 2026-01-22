@@ -14,6 +14,7 @@ describe('playbackInfoResolver', () => {
     // which supports preview access without a full access token
     const result = await fetchPlaybackInfo({
       accessToken: undefined,
+      audioAdaptiveBitrateStreaming: true,
       audioQuality: 'LOSSLESS',
       clientId,
       mediaProduct: {
@@ -43,6 +44,7 @@ describe('playbackInfoResolver', () => {
     // Use playerType: 'native' to test the legacy v1 playbackinfo endpoint
     const result = await fetchPlaybackInfo({
       accessToken: token,
+      audioAdaptiveBitrateStreaming: true,
       audioQuality: 'LOSSLESS',
       clientId,
       mediaProduct: {
@@ -72,6 +74,7 @@ describe('playbackInfoResolver', () => {
     // Default behavior (no playerType or playerType: 'shaka') uses new trackManifests API
     const result = await fetchPlaybackInfo({
       accessToken: token,
+      audioAdaptiveBitrateStreaming: true,
       audioQuality: 'LOSSLESS',
       clientId,
       mediaProduct: {
