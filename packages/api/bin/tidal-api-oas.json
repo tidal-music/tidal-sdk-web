@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.41"
+    "version" : "1.0.47"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -32,6 +32,8 @@
     "name" : "artists"
   }, {
     "name" : "artworks"
+  }, {
+    "name" : "contentClaims"
   }, {
     "name" : "credits"
   }, {
@@ -124,7 +126,7 @@
             }
           }
         }, {
-          "description" : "Barcode Id",
+          "description" : "List of barcode IDs (EAN-13 or UPC-A). NOTE: Supplying more than one barcode ID will currently only return one album per barcode ID.",
           "example" : "196589525444",
           "in" : "query",
           "name" : "filter[barcodeId]",
@@ -1892,6 +1894,53 @@
       }
     },
     "/artistClaims/{id}" : {
+      "delete" : {
+        "description" : "Deletes existing artistClaim.",
+        "parameters" : [ {
+          "description" : "Artist claim id",
+          "example" : "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Delete single artistClaim.",
+        "tags" : [ "artistClaims" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
       "get" : {
         "description" : "Retrieves single artistClaim by id.",
         "parameters" : [ {
@@ -4297,6 +4346,435 @@
         "tags" : [ "artworks" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/contentClaims" : {
+      "get" : {
+        "description" : "Retrieves multiple contentClaims by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: claimedResource, claimingArtist, owners",
+          "example" : "claimedResource",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "claimedResource"
+            }
+          }
+        }, {
+          "description" : "User id",
+          "example" : "123456",
+          "in" : "query",
+          "name" : "filter[owners.id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "123456"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContentClaims_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple contentClaims.",
+        "tags" : [ "contentClaims" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "post" : {
+        "description" : "Creates a new contentClaim.",
+        "parameters" : [ ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ContentClaimsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContentClaims_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single contentClaim.",
+        "tags" : [ "contentClaims" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/contentClaims/{id}" : {
+      "get" : {
+        "description" : "Retrieves single contentClaim by id.",
+        "parameters" : [ {
+          "description" : "Content claim id",
+          "example" : "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: claimedResource, claimingArtist, owners",
+          "example" : "claimedResource",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "claimedResource"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContentClaims_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get single contentClaim.",
+        "tags" : [ "contentClaims" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/contentClaims/{id}/relationships/claimedResource" : {
+      "get" : {
+        "description" : "Retrieves claimedResource relationship.",
+        "parameters" : [ {
+          "description" : "Content claim id",
+          "example" : "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: claimedResource",
+          "example" : "claimedResource",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "claimedResource"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContentClaims_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get claimedResource relationship (\"to-one\").",
+        "tags" : [ "contentClaims" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/contentClaims/{id}/relationships/claimingArtist" : {
+      "get" : {
+        "description" : "Retrieves claimingArtist relationship.",
+        "parameters" : [ {
+          "description" : "Content claim id",
+          "example" : "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: claimingArtist",
+          "example" : "claimingArtist",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "claimingArtist"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContentClaims_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get claimingArtist relationship (\"to-one\").",
+        "tags" : [ "contentClaims" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/contentClaims/{id}/relationships/owners" : {
+      "get" : {
+        "description" : "Retrieves owners relationship.",
+        "parameters" : [ {
+          "description" : "Content claim id",
+          "example" : "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContentClaims_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "contentClaims" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -7543,7 +8021,7 @@
             }
           }
         }, {
-          "description" : "Filter by resource ID",
+          "description" : "Filter by reacted resource ID",
           "example" : "12345",
           "in" : "query",
           "name" : "filter[reactedResource.id]",
@@ -7556,7 +8034,7 @@
             }
           }
         }, {
-          "description" : "Filter by resource type",
+          "description" : "Filter by reacted resource type",
           "example" : "albums",
           "in" : "query",
           "name" : "filter[reactedResource.type]",
@@ -7565,7 +8043,8 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "albums"
+              "example" : "albums",
+              "enum" : [ "albums", "tracks", "artists", "videos", "playlists" ]
             }
           }
         } ],
@@ -7621,7 +8100,7 @@
           "content" : {
             "application/vnd.api+json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/CreateReactionPayload"
+                "$ref" : "#/components/schemas/ReactionsCreateOperation_Payload"
               }
             }
           }
@@ -9641,7 +10120,7 @@
           "content" : {
             "application/vnd.api+json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/TrackSourceFileCreateOperation_Payload"
+                "$ref" : "#/components/schemas/TrackSourceFilesCreateOperation_Payload"
               }
             }
           }
@@ -10119,7 +10598,7 @@
             }
           }
         }, {
-          "description" : "International Standard Recording Code (ISRC)",
+          "description" : "List of ISRCs. NOTE: Supplying more than one ISRC will currently only return one track per ISRC.",
           "example" : "QMJMT1701237",
           "in" : "query",
           "name" : "filter[isrc]",
@@ -11940,7 +12419,6 @@
           }
         }, {
           "description" : "Folder Id",
-          "example" : "",
           "in" : "query",
           "name" : "filter[id]",
           "required" : false,
@@ -11948,7 +12426,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : ""
+              "example" : null
             }
           }
         } ],
@@ -12070,7 +12548,7 @@
         } ],
         "responses" : {
           "400" : {
-            "$ref" : "#/components/responses/Default400Response"
+            "$ref" : "#/components/responses/UserCollectionFoldersDeleteResource400Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -12247,7 +12725,7 @@
           "content" : {
             "application/vnd.api+json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/RemovePayload"
+                "$ref" : "#/components/schemas/UserCollectionFoldersItemsRelationshipRemoveOperation_Payload"
               }
             }
           }
@@ -12396,7 +12874,7 @@
           "content" : {
             "application/vnd.api+json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/AddPayload"
+                "$ref" : "#/components/schemas/UserCollectionFoldersItemsRelationshipAddOperation_Payload"
               }
             }
           }
@@ -14505,7 +14983,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, providers, replacement, thumbnailArt",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, providers, replacement, similarVideos, thumbnailArt",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -14614,7 +15092,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, providers, replacement, thumbnailArt",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, providers, replacement, similarVideos, thumbnailArt",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -15113,6 +15591,97 @@
         }
       }
     },
+    "/videos/{id}/relationships/similarVideos" : {
+      "get" : {
+        "description" : "Retrieves similarVideos relationship.",
+        "parameters" : [ {
+          "description" : "Video id",
+          "example" : "75623239",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: similarVideos",
+          "example" : "similarVideos",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "similarVideos"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Videos_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get similarVideos relationship (\"to-many\").",
+        "tags" : [ "videos" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/videos/{id}/relationships/thumbnailArt" : {
       "get" : {
         "description" : "Retrieves thumbnailArt relationship.",
@@ -15326,22 +15895,19 @@
           }
         },
         "description" : "The requested content does not exist or is no longer available"
+      },
+      "UserCollectionFoldersDeleteResource400Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/UserCollectionFoldersDeleteResource400ResponseBody"
+            }
+          }
+        },
+        "description" : "Cannot delete folder: only empty folders owned by you can be deleted."
       }
     },
     "schemas" : {
-      "AddPayload" : {
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "maxItems" : 10,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Data"
-            }
-          }
-        }
-      },
       "AlbumCoverArtRelationshipUpdateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -17265,19 +17831,6 @@
           }
         }
       },
-      "AttachSourceFileToTrack" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "tracks" ]
-          }
-        }
-      },
       "Attributes" : {
         "required" : [ "collectionType", "name" ],
         "type" : "object",
@@ -17317,6 +17870,226 @@
         "description" : "Barcode Id",
         "example" : 196589525444
       },
+      "ContentClaimsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ContentClaimsCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "ContentClaimsCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ContentClaimsCreateOperation_Payload_Data_Attributes"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ContentClaimsCreateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "contentClaims" ]
+          }
+        }
+      },
+      "ContentClaimsCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "assertion" ],
+        "type" : "object",
+        "properties" : {
+          "assertion" : {
+            "type" : "string",
+            "enum" : [ "CLAIM", "DISCLAIM" ]
+          }
+        }
+      },
+      "ContentClaimsCreateOperation_Payload_Data_Relationships" : {
+        "required" : [ "claimedResource", "claimingArtist" ],
+        "type" : "object",
+        "properties" : {
+          "claimedResource" : {
+            "$ref" : "#/components/schemas/ContentClaimsCreateOperation_Payload_Data_Relationships_ClaimedResource"
+          },
+          "claimingArtist" : {
+            "$ref" : "#/components/schemas/ContentClaimsCreateOperation_Payload_Data_Relationships_ClaimingArtist"
+          }
+        }
+      },
+      "ContentClaimsCreateOperation_Payload_Data_Relationships_ClaimedResource" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ContentClaimsCreateOperation_Payload_Data_Relationships_ClaimedResource_Data"
+          }
+        }
+      },
+      "ContentClaimsCreateOperation_Payload_Data_Relationships_ClaimedResource_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "tracks", "albums" ]
+          }
+        }
+      },
+      "ContentClaimsCreateOperation_Payload_Data_Relationships_ClaimingArtist" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ContentClaimsCreateOperation_Payload_Data_Relationships_ClaimingArtist_Data"
+          }
+        }
+      },
+      "ContentClaimsCreateOperation_Payload_Data_Relationships_ClaimingArtist_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "artists" ]
+          }
+        }
+      },
+      "ContentClaims_Attributes" : {
+        "required" : [ "assertion", "createdAt", "lastModifiedAt", "status" ],
+        "type" : "object",
+        "properties" : {
+          "assertion" : {
+            "type" : "string",
+            "description" : "The claim assertion type",
+            "enum" : [ "CLAIM", "DISCLAIM" ]
+          },
+          "createdAt" : {
+            "type" : "string",
+            "description" : "Timestamp when the claim was created",
+            "format" : "date-time"
+          },
+          "lastModifiedAt" : {
+            "type" : "string",
+            "description" : "Timestamp when the claim was last modified",
+            "format" : "date-time"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Current status of this claim",
+            "enum" : [ "OPEN", "IN_PROGRESS", "RESOLVED", "REJECTED" ]
+          }
+        }
+      },
+      "ContentClaims_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ContentClaims_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ContentClaims_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ContentClaims_Relationships" : {
+        "required" : [ "claimedResource", "claimingArtist", "owners" ],
+        "properties" : {
+          "claimedResource" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          },
+          "claimingArtist" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          },
+          "owners" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "ContentClaims_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ContentClaims_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ContentClaims_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ContentClaims_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Resource_Identifier"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ContentClaims_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ContentClaims_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "Copyright" : {
         "required" : [ "text" ],
         "type" : "object",
@@ -17328,49 +18101,6 @@
           }
         },
         "description" : "Copyright information"
-      },
-      "CreateReactionPayload" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "$ref" : "#/components/schemas/CreateReactionPayload_Data"
-          }
-        }
-      },
-      "CreateReactionPayload_Data" : {
-        "required" : [ "attributes", "relationships", "type" ],
-        "type" : "object",
-        "properties" : {
-          "attributes" : {
-            "$ref" : "#/components/schemas/CreateReactionPayload_Data_Attributes"
-          },
-          "relationships" : {
-            "$ref" : "#/components/schemas/CreateReactionPayload_Data_Relationships"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "reactions" ]
-          }
-        }
-      },
-      "CreateReactionPayload_Data_Attributes" : {
-        "required" : [ "emoji" ],
-        "type" : "object",
-        "properties" : {
-          "emoji" : {
-            "type" : "string"
-          }
-        }
-      },
-      "CreateReactionPayload_Data_Relationships" : {
-        "required" : [ "reactedResource" ],
-        "type" : "object",
-        "properties" : {
-          "reactedResource" : {
-            "$ref" : "#/components/schemas/ReactedResourceRelationship"
-          }
-        }
       },
       "Credits_Attributes" : {
         "required" : [ "name", "role" ],
@@ -17467,18 +18197,6 @@
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "Data" : {
-        "required" : [ "id", "resourceType" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string"
-          },
-          "resourceType" : {
-            "type" : "string"
           }
         }
       },
@@ -18046,6 +18764,7 @@
               "artistRoles" : "#/components/schemas/ArtistRoles_Resource_Object",
               "artists" : "#/components/schemas/Artists_Resource_Object",
               "artworks" : "#/components/schemas/Artworks_Resource_Object",
+              "contentClaims" : "#/components/schemas/ContentClaims_Resource_Object",
               "credits" : "#/components/schemas/Credits_Resource_Object",
               "dynamicPages" : "#/components/schemas/DynamicPages_Resource_Object",
               "genres" : "#/components/schemas/Genres_Resource_Object",
@@ -18090,6 +18809,8 @@
             "$ref" : "#/components/schemas/Artists_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Artworks_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/ContentClaims_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Credits_Resource_Object"
           }, {
@@ -18238,6 +18959,23 @@
         }
       },
       "LyricsCreateOperation_Payload_Data_Relationships_Track" : {
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/LyricsCreateOperation_Payload_Data_Relationships_Track_Data"
+          },
+          "id" : {
+            "type" : "string",
+            "deprecated" : true
+          },
+          "type" : {
+            "type" : "string",
+            "deprecated" : true,
+            "enum" : [ "tracks" ]
+          }
+        }
+      },
+      "LyricsCreateOperation_Payload_Data_Relationships_Track_Data" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -19723,7 +20461,59 @@
           }
         }
       },
-      "ReactedResourceIdentifier" : {
+      "ReactionsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ReactionsCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "ReactionsCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ReactionsCreateOperation_Payload_Data_Attributes"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ReactionsCreateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "reactions" ]
+          }
+        }
+      },
+      "ReactionsCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "emoji" ],
+        "type" : "object",
+        "properties" : {
+          "emoji" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ReactionsCreateOperation_Payload_Data_Relationships" : {
+        "required" : [ "reactedResource" ],
+        "type" : "object",
+        "properties" : {
+          "reactedResource" : {
+            "$ref" : "#/components/schemas/ReactionsCreateOperation_Payload_Data_Relationships_ReactedResource"
+          }
+        }
+      },
+      "ReactionsCreateOperation_Payload_Data_Relationships_ReactedResource" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ReactionsCreateOperation_Payload_Data_Relationships_ReactedResource_Data"
+          }
+        }
+      },
+      "ReactionsCreateOperation_Payload_Data_Relationships_ReactedResource_Data" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -19733,15 +20523,6 @@
           "type" : {
             "type" : "string",
             "enum" : [ "albums", "tracks", "artists", "videos", "playlists" ]
-          }
-        }
-      },
-      "ReactedResourceRelationship" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "$ref" : "#/components/schemas/ReactedResourceIdentifier"
           }
         }
       },
@@ -19840,19 +20621,6 @@
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "RemovePayload" : {
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "maxItems" : 10,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Data"
-            }
           }
         }
       },
@@ -21083,24 +21851,24 @@
           }
         }
       },
-      "TrackSourceFileCreateOperation_Payload" : {
+      "TrackSourceFilesCreateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/TrackSourceFileCreateOperation_Payload_Data"
+            "$ref" : "#/components/schemas/TrackSourceFilesCreateOperation_Payload_Data"
           }
         }
       },
-      "TrackSourceFileCreateOperation_Payload_Data" : {
+      "TrackSourceFilesCreateOperation_Payload_Data" : {
         "required" : [ "attributes", "relationships", "type" ],
         "type" : "object",
         "properties" : {
           "attributes" : {
-            "$ref" : "#/components/schemas/TrackSourceFileCreateOperation_Payload_Data_Attributes"
+            "$ref" : "#/components/schemas/TrackSourceFilesCreateOperation_Payload_Data_Attributes"
           },
           "relationships" : {
-            "$ref" : "#/components/schemas/TrackSourceFileCreateOperation_Payload_Data_Relationships"
+            "$ref" : "#/components/schemas/TrackSourceFilesCreateOperation_Payload_Data_Relationships"
           },
           "type" : {
             "type" : "string",
@@ -21108,7 +21876,7 @@
           }
         }
       },
-      "TrackSourceFileCreateOperation_Payload_Data_Attributes" : {
+      "TrackSourceFilesCreateOperation_Payload_Data_Attributes" : {
         "required" : [ "md5Hash", "size" ],
         "type" : "object",
         "properties" : {
@@ -21121,12 +21889,42 @@
           }
         }
       },
-      "TrackSourceFileCreateOperation_Payload_Data_Relationships" : {
+      "TrackSourceFilesCreateOperation_Payload_Data_Relationships" : {
         "required" : [ "track" ],
         "type" : "object",
         "properties" : {
           "track" : {
-            "$ref" : "#/components/schemas/AttachSourceFileToTrack"
+            "$ref" : "#/components/schemas/TrackSourceFilesCreateOperation_Payload_Data_Relationships_Track"
+          }
+        }
+      },
+      "TrackSourceFilesCreateOperation_Payload_Data_Relationships_Track" : {
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/TrackSourceFilesCreateOperation_Payload_Data_Relationships_Track_Data"
+          },
+          "id" : {
+            "type" : "string",
+            "deprecated" : true
+          },
+          "type" : {
+            "type" : "string",
+            "deprecated" : true,
+            "enum" : [ "tracks" ]
+          }
+        }
+      },
+      "TrackSourceFilesCreateOperation_Payload_Data_Relationships_Track_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "tracks" ]
           }
         }
       },
@@ -21869,6 +22667,86 @@
           "type" : {
             "type" : "string",
             "enum" : [ "artists" ]
+          }
+        }
+      },
+      "UserCollectionFoldersDeleteResource400ResponseBody" : {
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "FOLDER_NOT_EMPTY",
+                  "enum" : [ "FOLDER_NOT_EMPTY" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Cannot delete folder: only empty folders owned by you can be deleted."
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "400"
+                }
+              },
+              "required" : [ "code", "status" ]
+            }
+          }
+        },
+        "required" : [ "errors" ]
+      },
+      "UserCollectionFoldersItemsRelationshipAddOperation_Payload" : {
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 10,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserCollectionFoldersItemsRelationshipAddOperation_Payload_Data"
+            }
+          }
+        }
+      },
+      "UserCollectionFoldersItemsRelationshipAddOperation_Payload_Data" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "resourceType" : {
+            "type" : "string",
+            "deprecated" : true
+          }
+        }
+      },
+      "UserCollectionFoldersItemsRelationshipRemoveOperation_Payload" : {
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 10,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserCollectionFoldersItemsRelationshipRemoveOperation_Payload_Data"
+            }
+          }
+        }
+      },
+      "UserCollectionFoldersItemsRelationshipRemoveOperation_Payload_Data" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "resourceType" : {
+            "type" : "string",
+            "deprecated" : true
           }
         }
       },
@@ -23037,7 +23915,7 @@
         }
       },
       "Videos_Relationships" : {
-        "required" : [ "albums", "artists", "credits", "providers", "replacement", "thumbnailArt" ],
+        "required" : [ "albums", "artists", "credits", "providers", "replacement", "similarVideos", "thumbnailArt" ],
         "properties" : {
           "albums" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -23053,6 +23931,9 @@
           },
           "replacement" : {
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          },
+          "similarVideos" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "thumbnailArt" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
