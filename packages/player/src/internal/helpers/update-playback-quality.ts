@@ -61,7 +61,7 @@ export function updatePlaybackQuality(
   currentStreamingSessionId: string | undefined,
   activeShakaTrack: shaka.extern.Track | undefined,
 ) {
-  if (currentStreamingSessionId && activeShakaTrack) {
+  if (currentStreamingSessionId && activeShakaTrack?.audioCodec) {
     const mediaProductTransition =
       streamingSessionStore.getMediaProductTransition(
         currentStreamingSessionId,
