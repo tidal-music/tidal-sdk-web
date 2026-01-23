@@ -40,7 +40,7 @@ export function shakaTrackToAudioQuality(
 }
 
 /**
- * Find bit depth from a id attribute, e.g. id="FLAC,44100,16")
+ * Find bit depth from a id attribute, e.g. id="FLAC,44100,16"
  * Should return `undefined` for cases like: `HEAACV1`.
  */
 export function idToBitDepth(id: string): number | undefined {
@@ -88,7 +88,7 @@ export function updatePlaybackQuality(
             activeShakaTrack.audioCodec as NativePlayerStreamFormat,
           ) ?? null)
         : null,
-      sampleRate: activeShakaTrack.audioSamplingRate,
+      sampleRate: activeShakaTrack.audioSamplingRate ?? null,
     };
 
     streamingSessionStore.saveMediaProductTransition(
