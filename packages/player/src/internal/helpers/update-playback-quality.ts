@@ -20,10 +20,13 @@ export function shakaTrackToAudioQuality(
   const audioCodec = shakaTrack.audioCodec;
 
   if (audioCodec === 'flac') {
+    const bitDepth =
+      shakaTrack.originalAudioId != null
+        ? idToBitDepth(shakaTrack.originalAudioId)
+        : undefined;
     if (
       (shakaTrack.audioSamplingRate && shakaTrack.audioSamplingRate > 44100) ||
-      (shakaTrack.originalAudioId &&
-        idToBitDepth(shakaTrack.originalAudioId)! > 16)
+      (bitDepth != null && bitDepth > 16)
     ) {
       return 'HI_RES_LOSSLESS';
     }
@@ -46,9 +49,8 @@ export function idToBitDepth(id: string): number | undefined {
     return undefined;
   }
   const numbers = id.match(/\d+/g);
-  if (numbers && numbers.length > 0) {
-    return Number(numbers[numbers.length - 1]);
-  }
+  const lastNumber = numbers?.at(-1);
+  return lastNumber != null ? Number(lastNumber) : undefined;
 }
 
 /**
@@ -77,7 +79,7 @@ export function updatePlaybackQuality(
     const updatedPlaybackContext = {
       ...playbackContext,
       actualAudioQuality: shakaTrackToAudioQuality(activeShakaTrack),
-      bandwidth: activeShakaTrack.bandwidth, // TODO: add to spec?
+      bandwidth: activeShakaTrack.bandwidth ?? null,
       bitDepth: activeShakaTrack.originalAudioId
         ? (idToBitDepth(activeShakaTrack.originalAudioId) ?? null)
         : null,

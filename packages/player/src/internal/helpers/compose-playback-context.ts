@@ -29,6 +29,7 @@ export const composePlaybackContext = ({
   actualVideoQuality:
     'videoQuality' in playbackInfo ? playbackInfo.videoQuality : null,
   assetPosition,
+  bandwidth: null,
   bitDepth: streamInfo.bitDepth ?? null,
   codec: streamInfo.codec ?? null,
   playbackSessionId: streamInfo.streamingSessionId,
