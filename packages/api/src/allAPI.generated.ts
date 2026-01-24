@@ -5567,7 +5567,7 @@ export interface paths {
                      * @description Filter by owner id
                      * @example 67890
                      */
-                    "filter[owner.id]"?: string[];
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description Filter by reacted resource ID
                      * @example 12345
