@@ -1,6 +1,6 @@
 #!/usr/bin/env kotlin
 
-@file:DependsOn("com.fasterxml.jackson.module:jackson-module-kotlin:2.20.1")
+@file:DependsOn("com.fasterxml.jackson.module:jackson-module-kotlin:2.21.0")
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
