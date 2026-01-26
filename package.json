@@ -24,9 +24,6 @@
     "vitest": "4.0.18"
   },
   "pnpm": {
-    "patchedDependencies": {
-      "shaka-player": "patches/shaka-player.patch"
-    },
     "ignoredBuiltDependencies": [
       "esbuild"
     ],
