@@ -21,6 +21,7 @@ describe('mediaProductTransition', () => {
       actualStreamType: 'ON_DEMAND',
       actualVideoQuality: null,
       assetPosition: 0,
+      bandwidth: null,
       bitDepth: 16,
       codec: 'flac',
       playbackSessionId: '41386807-aa95-44bc-a992-d1198dcf1ab3',

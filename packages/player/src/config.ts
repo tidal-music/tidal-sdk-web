@@ -3,6 +3,7 @@ import type { AudioQuality } from './internal/types';
 
 type Config = {
   apiUrl: string;
+  audioAdaptiveBitrateStreaming: boolean;
   desiredVolumeLevel: number;
   gatherEvents: boolean;
   loudnessNormalizationMode: LoudnessNormalizationMode;
@@ -12,6 +13,7 @@ type Config = {
 
 let state = Object.freeze({
   apiUrl: 'https://api.tidal.com/v1',
+  audioAdaptiveBitrateStreaming: true,
   desiredVolumeLevel: 1,
   gatherEvents: true,
   loudnessNormalizationMode: 'ALBUM',

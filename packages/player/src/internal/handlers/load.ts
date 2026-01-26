@@ -123,6 +123,9 @@ export async function load(
   const { clientId, token } =
     await credentialsProviderStore.credentialsProvider.getCredentials();
 
+  const audioAdaptiveBitrateStreaming = Config.get(
+    'audioAdaptiveBitrateStreaming',
+  );
   const streamingWifiAudioQuality = Config.get('streamingWifiAudioQuality');
 
   let playbackInfo: PlaybackInfo | null = null;
@@ -135,6 +138,7 @@ export async function load(
   try {
     playbackInfo = await fetchPlaybackInfo({
       accessToken: token,
+      audioAdaptiveBitrateStreaming,
       audioQuality: streamingWifiAudioQuality,
       clientId,
       mediaProduct,

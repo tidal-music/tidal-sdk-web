@@ -19,6 +19,7 @@ export type PlaybackContext = {
   actualStreamType: StreamType | null;
   actualVideoQuality: VideoQuality | null;
   assetPosition: number;
+  bandwidth: null | number; // TODO: add to spec
   bitDepth: null | number;
   codec: Codec | null;
   playbackSessionId: string;
