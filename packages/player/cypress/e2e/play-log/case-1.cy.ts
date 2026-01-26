@@ -10,6 +10,9 @@ it('Client Test Case 1', () => {
   // Load test case that logins in and plays a track
   cy.visit('http://localhost:5173/demo/test-case-1.html', {
     onBeforeLoad (win) {
+      // Clear IndexedDB to prevent cached data from previous tests
+      win.indexedDB.deleteDatabase('EventProducerDB');
+
       // start spying
       win.document.addEventListener('player-sdk:ended', cy.stub().as('playerSdkEnded'));
       win.document.addEventListener('player-sdk:media-product-transition', cy.stub().as('playerSdkMediaProductTransition'));
