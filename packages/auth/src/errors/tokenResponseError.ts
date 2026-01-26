@@ -1,4 +1,8 @@
-import { type ErrorOptions, TidalError } from '@tidal-music/common';
+import {
+  type ErrorOptions,
+  TidalError,
+  captureStackTrace,
+} from '@tidal-music/common';
 
 /**
  * Used to indicate that an access token could not be retrieved.
@@ -13,9 +17,7 @@ export class TokenResponseError extends TidalError {
     Object.setPrototypeOf(this, TokenResponseError.prototype);
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, TokenResponseError);
-    }
+    captureStackTrace(this, TokenResponseError);
 
     this.name = 'TokenResponseError';
   }

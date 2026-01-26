@@ -1,3 +1,4 @@
+export * from './captureStackTrace';
 export * from './credentialsProvider';
 export * from './illegalArgumentError';
 export * from './networkError';

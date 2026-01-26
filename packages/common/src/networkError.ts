@@ -1,3 +1,4 @@
+import { captureStackTrace } from './captureStackTrace';
 import { type ErrorOptions, TidalError } from './tidalError';
 
 /**
@@ -13,9 +14,7 @@ export class NetworkError extends TidalError {
     Object.setPrototypeOf(this, NetworkError.prototype);
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, NetworkError);
-    }
+    captureStackTrace(this, NetworkError);
 
     this.name = 'NetworkError';
   }

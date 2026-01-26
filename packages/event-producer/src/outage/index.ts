@@ -2,6 +2,7 @@ import {
   type ErrorOptions,
   TidalError,
   type TidalMessage,
+  captureStackTrace,
 } from '@tidal-music/common';
 
 import * as bus from '../bus';
@@ -26,9 +27,7 @@ export class OutageStartError extends TidalError {
     Object.setPrototypeOf(this, OutageStartError.prototype);
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, OutageStartError);
-    }
+    captureStackTrace(this, OutageStartError);
 
     this.name = 'OutageStartError';
   }
