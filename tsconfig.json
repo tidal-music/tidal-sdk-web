@@ -25,6 +25,7 @@
     "types": ["vitest/globals"],
     "outDir": "./dist"
   },
+  "include": ["types/**/*.d.ts"],
   "exclude": [
     "node_modules", "dist"
   ]

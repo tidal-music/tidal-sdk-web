@@ -1,5 +1,7 @@
 // Inspired by: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error#custom_error_types
 
+import { captureStackTrace } from './captureStackTrace';
+
 // Inlined definition of DOM interface to avoid bug in type-extraction package
 export type ErrorOptions = {
   cause?: unknown;
@@ -25,9 +27,7 @@ export class TidalError extends Error {
     Object.setPrototypeOf(this, TidalError.prototype);
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, TidalError);
-    }
+    captureStackTrace(this, TidalError);
 
     this.name = 'TidalError';
     this.errorCode = errorCode;

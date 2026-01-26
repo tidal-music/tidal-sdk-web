@@ -1,3 +1,4 @@
+import { captureStackTrace } from './captureStackTrace';
 import { type ErrorOptions, TidalError } from './tidalError';
 
 /**
@@ -16,9 +17,7 @@ export class RetryableError extends TidalError {
     Object.setPrototypeOf(this, RetryableError.prototype);
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, RetryableError);
-    }
+    captureStackTrace(this, RetryableError);
 
     this.name = 'RetryableError';
   }
