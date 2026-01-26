@@ -9,7 +9,7 @@ export default defineConfig({
       formats: ['es'],
     },
   },
-  plugins: [dts({ rollupTypes: true, tsconfigPath: 'tsconfig.build.json' })],
+  plugins: [dts({ rollupTypes: false, tsconfigPath: 'tsconfig.build.json' })],
   test: {
     coverage: {
       provider: 'v8',
