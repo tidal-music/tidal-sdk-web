@@ -1720,6 +1720,11 @@ export interface paths {
                      * @example 1566
                      */
                     "filter[id]"?: string[];
+                    /**
+                     * @description User id
+                     * @example 123456
+                     */
+                    "filter[owners.id]"?: string[];
                 };
                 header?: never;
                 path?: never;
@@ -3548,6 +3553,177 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/dynamicModules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple dynamicModules.
+         * @description Retrieves multiple dynamicModules by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    refreshId?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @example items
+                     */
+                    include?: string[];
+                    /**
+                     * @description DynamicModules Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
+                    "filter[id]"?: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["DynamicModules_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dynamicModules/{id}/relationships/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get items relationship ("to-many").
+         * @description Retrieves items relationship.
+         */
+        get: {
+            parameters: {
+                query: {
+                    refreshId?: number;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @example items
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description DynamicModules Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["DynamicModules_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/dynamicPages": {
         parameters: {
             query?: never;
@@ -3562,17 +3738,6 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    clientVersion: string;
-                    /**
-                     * @description The type of device making the request
-                     * @example PHONE
-                     */
-                    deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
-                    /**
-                     * @description The platform of the device making the request
-                     * @example IOS
-                     */
-                    platform: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                     refreshId?: number;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
@@ -3585,8 +3750,23 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: subject
-                     * @example subject
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: dynamicModules, subject
+                     * @example dynamicModules
                      */
                     include?: string[];
                     /**
@@ -3613,6 +3793,93 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["DynamicPages_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dynamicPages/{id}/relationships/dynamicModules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get dynamicModules relationship ("to-many").
+         * @description Retrieves dynamicModules relationship.
+         */
+        get: {
+            parameters: {
+                query: {
+                    refreshId?: number;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: dynamicModules
+                     * @example dynamicModules
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description DynamicPages Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["DynamicPages_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -3791,6 +4058,356 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Genres_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/installations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple installations.
+         * @description Retrieves multiple installations by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: offlineInventory, owners
+                     * @example offlineInventory
+                     */
+                    include?: string[];
+                    /**
+                     * @description Client provided installation identifier
+                     * @example a468bee88def
+                     */
+                    "filter[clientProvidedInstallationId]"?: string[];
+                    /**
+                     * @description Installation id
+                     * @example a468bee88def
+                     */
+                    "filter[id]"?: string[];
+                    /**
+                     * @description User id
+                     * @example 123456
+                     */
+                    "filter[owners.id]"?: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Installations_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single installation.
+         * @description Creates a new installation.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["InstallationsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Installations_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/installations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single installation.
+         * @description Retrieves single installation by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: offlineInventory, owners
+                     * @example offlineInventory
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Installation id
+                     * @example a468bee88def
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Installations_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/installations/{id}/relationships/offlineInventory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get offlineInventory relationship ("to-many").
+         * @description Retrieves offlineInventory relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: offlineInventory
+                     * @example offlineInventory
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Installation id
+                     * @example a468bee88def
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Installations_OfflineInventory_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Add to offlineInventory relationship ("to-many").
+         * @description Adds item(s) to offlineInventory relationship.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Installation id
+                     * @example a468bee88def
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["InstallationsOfflineInventory_AddPayload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        /**
+         * Delete from offlineInventory relationship ("to-many").
+         * @description Deletes item(s) from offlineInventory relationship.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Installation id
+                     * @example a468bee88def
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["InstallationsOfflineInventory_RemovePayload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/installations/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Installation id
+                     * @example a468bee88def
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Installations_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4198,6 +4815,282 @@ export interface paths {
                 503: components["responses"]["Default503Response"];
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/offlineTasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple offlineTasks.
+         * @description Retrieves multiple offlineTasks by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: item, owners
+                     * @example item
+                     */
+                    include?: string[];
+                    /**
+                     * @description Offline task id
+                     * @example a468bee8-8def-4a1b-8c1e-123456789abc
+                     */
+                    "filter[id]"?: string[];
+                    /**
+                     * @description Installation id
+                     * @example a468bee88def
+                     */
+                    "filter[installation.id]"?: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["OfflineTasks_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/offlineTasks/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single offlineTask.
+         * @description Retrieves single offlineTask by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: item, owners
+                     * @example item
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Offline task id
+                     * @example a468bee8-8def-4a1b-8c1e-123456789abc
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["OfflineTasks_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update single offlineTask.
+         * @description Updates existing offlineTask.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Offline task id
+                     * @example a468bee8-8def-4a1b-8c1e-123456789abc
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["OfflineTasksUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/offlineTasks/{id}/relationships/item": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get item relationship ("to-one").
+         * @description Retrieves item relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: item
+                     * @example item
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Offline task id
+                     * @example a468bee8-8def-4a1b-8c1e-123456789abc
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["OfflineTasks_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/offlineTasks/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Offline task id
+                     * @example a468bee8-8def-4a1b-8c1e-123456789abc
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["OfflineTasks_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -11862,7 +12755,7 @@ export interface components {
         ContentClaimsCreateOperation_Payload_Data_Relationships_ClaimedResource_Data: {
             id: string;
             /** @enum {string} */
-            type: "tracks" | "albums";
+            type: "tracks" | "albums" | "videos";
         };
         ContentClaimsCreateOperation_Payload_Data_Relationships_ClaimingArtist: {
             data: components["schemas"]["ContentClaimsCreateOperation_Payload_Data_Relationships_ClaimingArtist_Data"];
@@ -12053,13 +12946,80 @@ export interface components {
             drmSystem?: "FAIRPLAY" | "WIDEVINE";
             licenseUrl?: string;
         };
+        DynamicModules_Attributes: {
+            /**
+             * @description Type of icons the module should show
+             * @example SPOTLIGHT_ICON
+             */
+            icons: ("SPOTLIGHT_INFO" | "UNKNOWN")[];
+            /**
+             * @description Type of representation of the items in the module view all screen
+             * @example COMPACT
+             * @enum {string}
+             */
+            layoutType: "COMPACT" | "GRID" | "UNKNOWN";
+            /**
+             * @description Type of representation of the module
+             * @example HORIZONTAL_LIST
+             * @enum {string}
+             */
+            moduleType: "ARTIST_LIST" | "COMPACT_GRID_CARD" | "COMPACT_HORIZONTAL_LIST" | "COMPACT_HORIZONTAL_LIST_WITH_CONTEXT" | "FEATURED_CARD" | "GRID_CARD" | "GRID_HIGHLIGHT_CARD" | "HORIZONTAL_LIST" | "HORIZONTAL_LIST_WITH_CONTEXT" | "SHORTCUT_LIST" | "TRACK_LIST" | "VERTICAL_LIST_CARD" | "TEXT_CARD" | "LINKS_LIST" | "PUBLIC_PLAYLIST_LIST" | "UNKNOWN";
+            /**
+             * @description Type of source represented by the module
+             * @example SHORTCUTS
+             * @enum {string}
+             */
+            sourceType: "ALBUM_RECOMMENDATIONS" | "BECAUSE_YOU_LISTENED_TO_ALBUM" | "BECAUSE_YOU_ADDED_ALBUM" | "BECAUSE_YOU_ADDED_ARTIST" | "CONTINUE_LISTEN_TO" | "DAILY_MIXES" | "FORGOTTEN_FAVORITES" | "HISTORY_MIXES" | "LOCAL_PLAYLISTS" | "MY_PLAYLISTS" | "NEW_ALBUM_SUGGESTIONS" | "NEW_TRACK_SUGGESTIONS" | "NEW_ALBUMS" | "NEW_TRACKS" | "POPULAR_PLAYLISTS" | "RECENTLY_UPDATED_FAVORITED_PLAYLIST" | "RECOMMENDED_EDITORIAL_PLAYLISTS" | "RECOMMENDED_USERS_PLAYLISTS" | "SUGGESTED_ESSENTIAL_PLAYLISTS" | "SUGGESTED_RADIOS_MIXES" | "WELCOME_MIX" | "YOUR_FAVORITE_ARTISTS" | "UPLOADS_FOR_YOU" | "LATEST_SPOTLIGHTED_TRACKS" | "SHORTCUTS" | "ARTIST_TOP_TRACKS" | "ARTIST_SPOTLIGHTED_TRACKS" | "ARTIST_ALBUMS" | "ARTIST_TOP_SINGLES" | "ARTIST_COMPILATIONS" | "ARTIST_LIVE_ALBUMS" | "ARTIST_APPEARS_ON" | "ARTIST_PLAYLIST" | "ARTIST_PUBLIC_PLAYLIST" | "ARTIST_SIMILAR_ARTISTS" | "ARTIST_TRACK_UPLOADS" | "ARTIST_ALBUM_UPLOADS" | "ARTIST_LINKS" | "ARTIST_VIDEOS" | "ARTIST_CREDITS" | "ALBUM_ITEMS" | "ALBUM_ANNIVERSARY" | "ARTIST_BIRTHDAY" | "ARTIST_MEMORIAM" | "DJ_TOOLS" | "DJ_ARTIST_CURATED" | "THE_HITS" | "FROM_OUR_EDITORS" | "TOP_PLAYLISTS" | "FEATURED_TOP_TRACKS" | "FEATURED_TOP_ALBUMS" | "TOP_ARTISTS_ESSENTIALS" | "FEATURED_RECOMMENDED_PLAYLISTS" | "HOME_3_FEATURED_PLAYLISTS" | "HOME_3_FEATURED_UPLOAD_TRACKS" | "HOME_3_FEATURED_ALBUMS" | "HOME_3_POPULAR_ALBUMS" | "FEATURED_RECOMMENDED_TRACKS" | "FEATURED_RECOMMENDED_ALBUMS" | "FEATURED_RECOMMENDED_CLASSIC_ALBUMS" | "HOME_3_0_GENERIC_PLAYLISTS_1" | "HOME_3_0_GENERIC_PLAYLISTS_2" | "HOME_3_0_GENERIC_ALBUMS_1" | "HOME_3_0_GENERIC_TRACKS_1" | "HOME_3_0_GENERIC_ARTISTS_1" | "HOME_3_0_GENERIC_VIDEOS_1" | "HOLIDAY_HITS_PLAYLISTS" | "HOLIDAY_DECADES_PLAYLISTS" | "HOLIDAY_MOODS_PLAYLISTS" | "BEST_OF_2025_PLAYLISTS" | "NEW_YEARS_PARTY" | "NEW_YEARS_RESOLUTIONS" | "SONGS_OF_THE_YEAR_2026" | "BACK_TO_SCHOOL_MUSIC_101" | "BACK_TO_SCHOOL_GENRES_FOR_BEGINNERS" | "HEADLINERS_2026" | "UNKNOWN";
+            /**
+             * @description Subtitle of the module
+             * @example Short description of this module
+             */
+            subtitle?: string;
+            /**
+             * @description Title of the module
+             * @example Shortcuts
+             */
+            title?: string;
+        };
+        DynamicModules_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        DynamicModules_Multi_Resource_Data_Document: {
+            data: components["schemas"]["DynamicModules_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        DynamicModules_Relationships: {
+            items: components["schemas"]["Multi_Relationship_Data_Document"];
+        };
+        DynamicModules_Resource_Object: {
+            attributes?: components["schemas"]["DynamicModules_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["DynamicModules_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "dynamicModules";
+        };
+        DynamicModules_Single_Resource_Data_Document: {
+            data: components["schemas"]["DynamicModules_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         DynamicPages_Attributes: {
             /**
              * @description Type of the page eg. home, artist
              * @example HOME_STATIC
              * @enum {string}
              */
-            pageType: "HOME_STATIC" | "HOME_FOR_YOU" | "HOME_EDITORIAL" | "ARTIST";
+            pageType: "HOME_STATIC" | "HOME_FOR_YOU" | "HOME_EDITORIAL" | "HOME_FREE" | "ARTIST";
             /**
              * Format: uuid
              * @description Id used for reporting user events
@@ -12067,12 +13027,18 @@ export interface components {
              */
             reportingId: string;
         };
+        DynamicPages_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         DynamicPages_Multi_Resource_Data_Document: {
             data: components["schemas"]["DynamicPages_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         DynamicPages_Relationships: {
+            dynamicModules: components["schemas"]["Multi_Relationship_Data_Document"];
             subject: components["schemas"]["Single_Relationship_Data_Document"];
         };
         DynamicPages_Resource_Object: {
@@ -12220,7 +13186,99 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        InstallationsCreateOperation_Payload: {
+            data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
+        };
+        InstallationsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["InstallationsCreateOperation_Payload_Data_Attributes"];
+            /** @enum {string} */
+            type: "installations";
+        };
+        InstallationsCreateOperation_Payload_Data_Attributes: {
+            /** @description Client provided installation identifier */
+            clientProvidedInstallationId: string;
+            /**
+             * @description Human-readable name
+             * @example My iPhone
+             */
+            name: string;
+        };
+        InstallationsOfflineInventory_AddPayload: {
+            data: components["schemas"]["InstallationsOfflineInventory_ItemIdentifier"][];
+        };
+        InstallationsOfflineInventory_ItemIdentifier: {
+            id: string;
+            /** @enum {string} */
+            type: "TRACKS" | "VIDEOS" | "ALBUMS" | "PLAYLISTS" | "USER_COLLECTION";
+        };
+        InstallationsOfflineInventory_RemovePayload: {
+            data: components["schemas"]["InstallationsOfflineInventory_ItemIdentifier"][];
+        };
+        Installations_Attributes: {
+            /** @description Client provided installation identifier */
+            clientProvidedInstallationId: string;
+            /**
+             * @description Human-readable name for the installation
+             * @example My iPhone
+             */
+            name: string;
+        };
+        Installations_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Installations_Multi_Resource_Data_Document: {
+            data: components["schemas"]["Installations_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Installations_OfflineInventory_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Installations_OfflineInventory_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Installations_OfflineInventory_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Installations_OfflineInventory_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Installations_OfflineInventory_Resource_Identifier_Meta: {
+            /** @enum {string} */
+            clientStorageState: "PENDING" | "STORED";
+        };
+        Installations_Relationships: {
+            offlineInventory: components["schemas"]["Installations_OfflineInventory_Multi_Relationship_Data_Document"];
+            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+        };
+        Installations_Resource_Object: {
+            attributes?: components["schemas"]["Installations_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["Installations_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "installations";
+        };
+        Installations_Single_Resource_Data_Document: {
+            data: components["schemas"]["Installations_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         LegacySource: {
             id: string;
             type: string;
@@ -12444,6 +13502,82 @@ export interface components {
         };
         Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+        };
+        OfflineTasksUpdateOperation_Payload: {
+            data: components["schemas"]["OfflineTasksUpdateOperation_Payload_Data"];
+        };
+        OfflineTasksUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["OfflineTasksUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "offlineTasks";
+        };
+        OfflineTasksUpdateOperation_Payload_Data_Attributes: {
+            /**
+             * @description New state for the offline task
+             * @enum {string}
+             */
+            state: "IN_PROGRESS" | "FAILED" | "COMPLETED";
+        };
+        OfflineTasks_Attributes: {
+            /**
+             * @description Action to perform
+             * @enum {string}
+             */
+            action: "STORE_ITEM" | "REMOVE_ITEM" | "STORE_COLLECTION" | "REMOVE_COLLECTION";
+            /**
+             * Format: int32
+             * @description Item index in collection (if applicable)
+             */
+            index?: number;
+            /**
+             * @description Task state
+             * @enum {string}
+             */
+            state?: "PENDING" | "IN_PROGRESS" | "FAILED" | "COMPLETED";
+            /**
+             * Format: int32
+             * @description Item volume in collection (if applicable)
+             */
+            volume?: number;
+        };
+        OfflineTasks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        OfflineTasks_Multi_Resource_Data_Document: {
+            data: components["schemas"]["OfflineTasks_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        OfflineTasks_Relationships: {
+            item: components["schemas"]["Single_Relationship_Data_Document"];
+            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+        };
+        OfflineTasks_Resource_Object: {
+            attributes?: components["schemas"]["OfflineTasks_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["OfflineTasks_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "offlineTasks";
+        };
+        OfflineTasks_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        OfflineTasks_Single_Resource_Data_Document: {
+            data: components["schemas"]["OfflineTasks_Resource_Object"];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         PlayQueueAddFutureOperation_Payload: {
