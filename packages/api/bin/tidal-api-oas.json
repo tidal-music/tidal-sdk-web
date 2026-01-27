@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.48"
+    "version" : "1.0.52"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -37,13 +37,19 @@
   }, {
     "name" : "credits"
   }, {
+    "name" : "dynamicModules"
+  }, {
     "name" : "dynamicPages"
   }, {
     "name" : "genres"
   }, {
+    "name" : "installations"
+  }, {
     "name" : "lyrics"
   }, {
     "name" : "manualArtistClaims"
+  }, {
+    "name" : "offlineTasks"
   }, {
     "name" : "playQueues"
   }, {
@@ -2559,6 +2565,19 @@
               "example" : "1566"
             }
           }
+        }, {
+          "description" : "User id",
+          "example" : "123456",
+          "in" : "query",
+          "name" : "filter[owners.id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "123456"
+            }
+          }
         } ],
         "responses" : {
           "200" : {
@@ -2599,7 +2618,7 @@
         "security" : [ {
           "Client_Credentials" : [ ]
         }, {
-          "Authorization_Code_PKCE" : [ ]
+          "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
         "summary" : "Get multiple artists.",
         "tags" : [ "artists" ],
@@ -5078,15 +5097,34 @@
         }
       }
     },
-    "/dynamicPages" : {
+    "/dynamicModules" : {
       "get" : {
-        "description" : "Retrieves multiple dynamicPages by available filters, or without if applicable.",
+        "description" : "Retrieves multiple dynamicModules by available filters, or without if applicable.",
         "parameters" : [ {
           "in" : "query",
-          "name" : "clientVersion",
-          "required" : true,
+          "name" : "refreshId",
+          "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
           }
         }, {
           "description" : "The type of device making the request",
@@ -5099,16 +5137,241 @@
             "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
           }
         }, {
-          "description" : "The platform of the device making the request",
+          "description" : "The system type of the device making the request",
           "example" : "IOS",
           "in" : "query",
-          "name" : "platform",
+          "name" : "systemType",
           "required" : true,
           "schema" : {
             "type" : "string",
             "enum" : [ "ANDROID", "DESKTOP", "TESLA", "IOS", "WEB" ]
           }
         }, {
+          "description" : "Client version number",
+          "example" : "2026.0.1",
+          "in" : "query",
+          "name" : "clientVersion",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "items"
+            }
+          }
+        }, {
+          "description" : "DynamicModules Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "in" : "query",
+          "name" : "filter[id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DynamicModules_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple dynamicModules.",
+        "tags" : [ "dynamicModules" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/dynamicModules/{id}/relationships/items" : {
+      "get" : {
+        "description" : "Retrieves items relationship.",
+        "parameters" : [ {
+          "description" : "DynamicModules Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "refreshId",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
+          "description" : "The type of device making the request",
+          "example" : "PHONE",
+          "in" : "query",
+          "name" : "deviceType",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
+          }
+        }, {
+          "description" : "The system type of the device making the request",
+          "example" : "IOS",
+          "in" : "query",
+          "name" : "systemType",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANDROID", "DESKTOP", "TESLA", "IOS", "WEB" ]
+          }
+        }, {
+          "description" : "Client version number",
+          "example" : "2026.0.1",
+          "in" : "query",
+          "name" : "clientVersion",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "items"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DynamicModules_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get items relationship (\"to-many\").",
+        "tags" : [ "dynamicModules" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/dynamicPages" : {
+      "get" : {
+        "description" : "Retrieves multiple dynamicPages by available filters, or without if applicable.",
+        "parameters" : [ {
           "in" : "query",
           "name" : "refreshId",
           "required" : false,
@@ -5136,8 +5399,37 @@
             "default" : "en-US"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: subject",
-          "example" : "subject",
+          "description" : "The type of device making the request",
+          "example" : "PHONE",
+          "in" : "query",
+          "name" : "deviceType",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
+          }
+        }, {
+          "description" : "The system type of the device making the request",
+          "example" : "IOS",
+          "in" : "query",
+          "name" : "systemType",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANDROID", "DESKTOP", "TESLA", "IOS", "WEB" ]
+          }
+        }, {
+          "description" : "Client version number",
+          "example" : "2026.0.1",
+          "in" : "query",
+          "name" : "clientVersion",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: dynamicModules, subject",
+          "example" : "dynamicModules",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -5145,7 +5437,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "subject"
+              "example" : "dynamicModules"
             }
           }
         }, {
@@ -5217,6 +5509,144 @@
           "Authorization_Code_PKCE" : [ ]
         } ],
         "summary" : "Get multiple dynamicPages.",
+        "tags" : [ "dynamicPages" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/dynamicPages/{id}/relationships/dynamicModules" : {
+      "get" : {
+        "description" : "Retrieves dynamicModules relationship.",
+        "parameters" : [ {
+          "description" : "DynamicPages Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "query",
+          "name" : "refreshId",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
+          "description" : "The type of device making the request",
+          "example" : "PHONE",
+          "in" : "query",
+          "name" : "deviceType",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
+          }
+        }, {
+          "description" : "The system type of the device making the request",
+          "example" : "IOS",
+          "in" : "query",
+          "name" : "systemType",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANDROID", "DESKTOP", "TESLA", "IOS", "WEB" ]
+          }
+        }, {
+          "description" : "Client version number",
+          "example" : "2026.0.1",
+          "in" : "query",
+          "name" : "clientVersion",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: dynamicModules",
+          "example" : "dynamicModules",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "dynamicModules"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DynamicPages_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get dynamicModules relationship (\"to-many\").",
         "tags" : [ "dynamicPages" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -5446,6 +5876,517 @@
         } ],
         "summary" : "Get single genre.",
         "tags" : [ "genres" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/installations" : {
+      "get" : {
+        "description" : "Retrieves multiple installations by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: offlineInventory, owners",
+          "example" : "offlineInventory",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "offlineInventory"
+            }
+          }
+        }, {
+          "description" : "Client provided installation identifier",
+          "example" : "a468bee88def",
+          "in" : "query",
+          "name" : "filter[clientProvidedInstallationId]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "a468bee88def"
+            }
+          }
+        }, {
+          "description" : "Installation id",
+          "example" : "a468bee88def",
+          "in" : "query",
+          "name" : "filter[id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "a468bee88def"
+            }
+          }
+        }, {
+          "description" : "User id",
+          "example" : "123456",
+          "in" : "query",
+          "name" : "filter[owners.id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "123456"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Installations_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple installations.",
+        "tags" : [ "installations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "post" : {
+        "description" : "Creates a new installation.",
+        "parameters" : [ ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InstallationsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Installations_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single installation.",
+        "tags" : [ "installations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/installations/{id}" : {
+      "get" : {
+        "description" : "Retrieves single installation by id.",
+        "parameters" : [ {
+          "description" : "Installation id",
+          "example" : "a468bee88def",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: offlineInventory, owners",
+          "example" : "offlineInventory",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "offlineInventory"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Installations_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get single installation.",
+        "tags" : [ "installations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/installations/{id}/relationships/offlineInventory" : {
+      "delete" : {
+        "description" : "Deletes item(s) from offlineInventory relationship.",
+        "parameters" : [ {
+          "description" : "Installation id",
+          "example" : "a468bee88def",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InstallationsOfflineInventory_RemovePayload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Delete from offlineInventory relationship (\"to-many\").",
+        "tags" : [ "installations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "get" : {
+        "description" : "Retrieves offlineInventory relationship.",
+        "parameters" : [ {
+          "description" : "Installation id",
+          "example" : "a468bee88def",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: offlineInventory",
+          "example" : "offlineInventory",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "offlineInventory"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Installations_OfflineInventory_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get offlineInventory relationship (\"to-many\").",
+        "tags" : [ "installations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "post" : {
+        "description" : "Adds item(s) to offlineInventory relationship.",
+        "parameters" : [ {
+          "description" : "Installation id",
+          "example" : "a468bee88def",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InstallationsOfflineInventory_AddPayload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Add to offlineInventory relationship (\"to-many\").",
+        "tags" : [ "installations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/installations/{id}/relationships/owners" : {
+      "get" : {
+        "description" : "Retrieves owners relationship.",
+        "parameters" : [ {
+          "description" : "Installation id",
+          "example" : "a468bee88def",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Installations_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "installations" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
         }
@@ -5991,6 +6932,383 @@
         } ],
         "summary" : "Create single manualArtistClaim.",
         "tags" : [ "manualArtistClaims" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/offlineTasks" : {
+      "get" : {
+        "description" : "Retrieves multiple offlineTasks by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: item, owners",
+          "example" : "item",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "item"
+            }
+          }
+        }, {
+          "description" : "Offline task id",
+          "example" : "a468bee8-8def-4a1b-8c1e-123456789abc",
+          "in" : "query",
+          "name" : "filter[id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "a468bee8-8def-4a1b-8c1e-123456789abc"
+            }
+          }
+        }, {
+          "description" : "Installation id",
+          "example" : "a468bee88def",
+          "in" : "query",
+          "name" : "filter[installation.id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "a468bee88def"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OfflineTasks_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple offlineTasks.",
+        "tags" : [ "offlineTasks" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/offlineTasks/{id}" : {
+      "get" : {
+        "description" : "Retrieves single offlineTask by id.",
+        "parameters" : [ {
+          "description" : "Offline task id",
+          "example" : "a468bee8-8def-4a1b-8c1e-123456789abc",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: item, owners",
+          "example" : "item",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "item"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OfflineTasks_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get single offlineTask.",
+        "tags" : [ "offlineTasks" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Updates existing offlineTask.",
+        "parameters" : [ {
+          "description" : "Offline task id",
+          "example" : "a468bee8-8def-4a1b-8c1e-123456789abc",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OfflineTasksUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update single offlineTask.",
+        "tags" : [ "offlineTasks" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/offlineTasks/{id}/relationships/item" : {
+      "get" : {
+        "description" : "Retrieves item relationship.",
+        "parameters" : [ {
+          "description" : "Offline task id",
+          "example" : "a468bee8-8def-4a1b-8c1e-123456789abc",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: item",
+          "example" : "item",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "item"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OfflineTasks_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get item relationship (\"to-one\").",
+        "tags" : [ "offlineTasks" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/offlineTasks/{id}/relationships/owners" : {
+      "get" : {
+        "description" : "Retrieves owners relationship.",
+        "parameters" : [ {
+          "description" : "Offline task id",
+          "example" : "a468bee8-8def-4a1b-8c1e-123456789abc",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OfflineTasks_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "offlineTasks" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
         }
@@ -17935,7 +19253,7 @@
           },
           "type" : {
             "type" : "string",
-            "enum" : [ "tracks", "albums" ]
+            "enum" : [ "tracks", "albums", "videos" ]
           }
         }
       },
@@ -18400,6 +19718,133 @@
         },
         "description" : "DRM data. Absence implies no DRM."
       },
+      "DynamicModules_Attributes" : {
+        "required" : [ "icons", "layoutType", "moduleType", "sourceType" ],
+        "type" : "object",
+        "properties" : {
+          "icons" : {
+            "type" : "array",
+            "description" : "Type of icons the module should show",
+            "example" : "SPOTLIGHT_ICON",
+            "items" : {
+              "type" : "string",
+              "description" : "Type of icons the module should show",
+              "example" : "SPOTLIGHT_ICON",
+              "enum" : [ "SPOTLIGHT_INFO", "UNKNOWN" ]
+            }
+          },
+          "layoutType" : {
+            "type" : "string",
+            "description" : "Type of representation of the items in the module view all screen",
+            "example" : "COMPACT",
+            "enum" : [ "COMPACT", "GRID", "UNKNOWN" ]
+          },
+          "moduleType" : {
+            "type" : "string",
+            "description" : "Type of representation of the module",
+            "example" : "HORIZONTAL_LIST",
+            "enum" : [ "ARTIST_LIST", "COMPACT_GRID_CARD", "COMPACT_HORIZONTAL_LIST", "COMPACT_HORIZONTAL_LIST_WITH_CONTEXT", "FEATURED_CARD", "GRID_CARD", "GRID_HIGHLIGHT_CARD", "HORIZONTAL_LIST", "HORIZONTAL_LIST_WITH_CONTEXT", "SHORTCUT_LIST", "TRACK_LIST", "VERTICAL_LIST_CARD", "TEXT_CARD", "LINKS_LIST", "PUBLIC_PLAYLIST_LIST", "UNKNOWN" ]
+          },
+          "sourceType" : {
+            "type" : "string",
+            "description" : "Type of source represented by the module",
+            "example" : "SHORTCUTS",
+            "enum" : [ "ALBUM_RECOMMENDATIONS", "BECAUSE_YOU_LISTENED_TO_ALBUM", "BECAUSE_YOU_ADDED_ALBUM", "BECAUSE_YOU_ADDED_ARTIST", "CONTINUE_LISTEN_TO", "DAILY_MIXES", "FORGOTTEN_FAVORITES", "HISTORY_MIXES", "LOCAL_PLAYLISTS", "MY_PLAYLISTS", "NEW_ALBUM_SUGGESTIONS", "NEW_TRACK_SUGGESTIONS", "NEW_ALBUMS", "NEW_TRACKS", "POPULAR_PLAYLISTS", "RECENTLY_UPDATED_FAVORITED_PLAYLIST", "RECOMMENDED_EDITORIAL_PLAYLISTS", "RECOMMENDED_USERS_PLAYLISTS", "SUGGESTED_ESSENTIAL_PLAYLISTS", "SUGGESTED_RADIOS_MIXES", "WELCOME_MIX", "YOUR_FAVORITE_ARTISTS", "UPLOADS_FOR_YOU", "LATEST_SPOTLIGHTED_TRACKS", "SHORTCUTS", "ARTIST_TOP_TRACKS", "ARTIST_SPOTLIGHTED_TRACKS", "ARTIST_ALBUMS", "ARTIST_TOP_SINGLES", "ARTIST_COMPILATIONS", "ARTIST_LIVE_ALBUMS", "ARTIST_APPEARS_ON", "ARTIST_PLAYLIST", "ARTIST_PUBLIC_PLAYLIST", "ARTIST_SIMILAR_ARTISTS", "ARTIST_TRACK_UPLOADS", "ARTIST_ALBUM_UPLOADS", "ARTIST_LINKS", "ARTIST_VIDEOS", "ARTIST_CREDITS", "ALBUM_ITEMS", "ALBUM_ANNIVERSARY", "ARTIST_BIRTHDAY", "ARTIST_MEMORIAM", "DJ_TOOLS", "DJ_ARTIST_CURATED", "THE_HITS", "FROM_OUR_EDITORS", "TOP_PLAYLISTS", "FEATURED_TOP_TRACKS", "FEATURED_TOP_ALBUMS", "TOP_ARTISTS_ESSENTIALS", "FEATURED_RECOMMENDED_PLAYLISTS", "HOME_3_FEATURED_PLAYLISTS", "HOME_3_FEATURED_UPLOAD_TRACKS", "HOME_3_FEATURED_ALBUMS", "HOME_3_POPULAR_ALBUMS", "FEATURED_RECOMMENDED_TRACKS", "FEATURED_RECOMMENDED_ALBUMS", "FEATURED_RECOMMENDED_CLASSIC_ALBUMS", "HOME_3_0_GENERIC_PLAYLISTS_1", "HOME_3_0_GENERIC_PLAYLISTS_2", "HOME_3_0_GENERIC_ALBUMS_1", "HOME_3_0_GENERIC_TRACKS_1", "HOME_3_0_GENERIC_ARTISTS_1", "HOME_3_0_GENERIC_VIDEOS_1", "HOLIDAY_HITS_PLAYLISTS", "HOLIDAY_DECADES_PLAYLISTS", "HOLIDAY_MOODS_PLAYLISTS", "BEST_OF_2025_PLAYLISTS", "NEW_YEARS_PARTY", "NEW_YEARS_RESOLUTIONS", "SONGS_OF_THE_YEAR_2026", "BACK_TO_SCHOOL_MUSIC_101", "BACK_TO_SCHOOL_GENRES_FOR_BEGINNERS", "HEADLINERS_2026", "UNKNOWN" ]
+          },
+          "subtitle" : {
+            "type" : "string",
+            "description" : "Subtitle of the module",
+            "example" : "Short description of this module"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Title of the module",
+            "example" : "Shortcuts"
+          }
+        }
+      },
+      "DynamicModules_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "DynamicModules_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DynamicModules_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "DynamicModules_Relationships" : {
+        "required" : [ "items" ],
+        "properties" : {
+          "items" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "DynamicModules_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/DynamicModules_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/DynamicModules_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "DynamicModules_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/DynamicModules_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "DynamicPages_Attributes" : {
         "required" : [ "pageType", "reportingId" ],
         "type" : "object",
@@ -18408,13 +19853,31 @@
             "type" : "string",
             "description" : "Type of the page eg. home, artist",
             "example" : "HOME_STATIC",
-            "enum" : [ "HOME_STATIC", "HOME_FOR_YOU", "HOME_EDITORIAL", "ARTIST" ]
+            "enum" : [ "HOME_STATIC", "HOME_FOR_YOU", "HOME_EDITORIAL", "HOME_FREE", "ARTIST" ]
           },
           "reportingId" : {
             "type" : "string",
             "description" : "Id used for reporting user events",
             "format" : "uuid",
             "example" : "83c92ac0-b8e3-4e28-9e27-07909dcde1e5"
+          }
+        }
+      },
+      "DynamicPages_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         }
       },
@@ -18437,8 +19900,11 @@
         }
       },
       "DynamicPages_Relationships" : {
-        "required" : [ "subject" ],
+        "required" : [ "dynamicModules", "subject" ],
         "properties" : {
+          "dynamicModules" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
           "subject" : {
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
           }
@@ -18766,10 +20232,13 @@
               "artworks" : "#/components/schemas/Artworks_Resource_Object",
               "contentClaims" : "#/components/schemas/ContentClaims_Resource_Object",
               "credits" : "#/components/schemas/Credits_Resource_Object",
+              "dynamicModules" : "#/components/schemas/DynamicModules_Resource_Object",
               "dynamicPages" : "#/components/schemas/DynamicPages_Resource_Object",
               "genres" : "#/components/schemas/Genres_Resource_Object",
+              "installations" : "#/components/schemas/Installations_Resource_Object",
               "lyrics" : "#/components/schemas/Lyrics_Resource_Object",
               "manualArtistClaims" : "#/components/schemas/ManualArtistClaims_Resource_Object",
+              "offlineTasks" : "#/components/schemas/OfflineTasks_Resource_Object",
               "playQueues" : "#/components/schemas/PlayQueues_Resource_Object",
               "playlists" : "#/components/schemas/Playlists_Resource_Object",
               "providers" : "#/components/schemas/Providers_Resource_Object",
@@ -18814,13 +20283,19 @@
           }, {
             "$ref" : "#/components/schemas/Credits_Resource_Object"
           }, {
+            "$ref" : "#/components/schemas/DynamicModules_Resource_Object"
+          }, {
             "$ref" : "#/components/schemas/DynamicPages_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Genres_Resource_Object"
           }, {
+            "$ref" : "#/components/schemas/Installations_Resource_Object"
+          }, {
             "$ref" : "#/components/schemas/Lyrics_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/ManualArtistClaims_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/OfflineTasks_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/PlayQueues_Resource_Object"
           }, {
@@ -18866,6 +20341,233 @@
           }, {
             "$ref" : "#/components/schemas/Videos_Resource_Object"
           } ]
+        }
+      },
+      "InstallationsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/InstallationsCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "InstallationsCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/InstallationsCreateOperation_Payload_Data_Attributes"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "installations" ]
+          }
+        }
+      },
+      "InstallationsCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "clientProvidedInstallationId", "name" ],
+        "type" : "object",
+        "properties" : {
+          "clientProvidedInstallationId" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Client provided installation identifier"
+          },
+          "name" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Human-readable name",
+            "example" : "My iPhone"
+          }
+        }
+      },
+      "InstallationsOfflineInventory_AddPayload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 1,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InstallationsOfflineInventory_ItemIdentifier"
+            }
+          }
+        }
+      },
+      "InstallationsOfflineInventory_ItemIdentifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "TRACKS", "VIDEOS", "ALBUMS", "PLAYLISTS", "USER_COLLECTION" ]
+          }
+        }
+      },
+      "InstallationsOfflineInventory_RemovePayload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 1,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InstallationsOfflineInventory_ItemIdentifier"
+            }
+          }
+        }
+      },
+      "Installations_Attributes" : {
+        "required" : [ "clientProvidedInstallationId", "name" ],
+        "type" : "object",
+        "properties" : {
+          "clientProvidedInstallationId" : {
+            "type" : "string",
+            "description" : "Client provided installation identifier"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Human-readable name for the installation",
+            "example" : "My iPhone"
+          }
+        }
+      },
+      "Installations_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Installations_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Installations_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Installations_OfflineInventory_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Installations_OfflineInventory_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Installations_OfflineInventory_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Installations_OfflineInventory_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Installations_OfflineInventory_Resource_Identifier_Meta" : {
+        "required" : [ "clientStorageState" ],
+        "type" : "object",
+        "properties" : {
+          "clientStorageState" : {
+            "type" : "string",
+            "enum" : [ "PENDING", "STORED" ]
+          }
+        }
+      },
+      "Installations_Relationships" : {
+        "required" : [ "offlineInventory", "owners" ],
+        "properties" : {
+          "offlineInventory" : {
+            "$ref" : "#/components/schemas/Installations_OfflineInventory_Multi_Relationship_Data_Document"
+          },
+          "owners" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "Installations_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/Installations_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/Installations_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Installations_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Installations_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
         }
       },
       "LegacySource" : {
@@ -19420,6 +21122,168 @@
             "items" : {
               "$ref" : "#/components/schemas/Resource_Identifier"
             }
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "OfflineTasksUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/OfflineTasksUpdateOperation_Payload_Data"
+          }
+        }
+      },
+      "OfflineTasksUpdateOperation_Payload_Data" : {
+        "required" : [ "attributes", "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/OfflineTasksUpdateOperation_Payload_Data_Attributes"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "offlineTasks" ]
+          }
+        }
+      },
+      "OfflineTasksUpdateOperation_Payload_Data_Attributes" : {
+        "required" : [ "state" ],
+        "type" : "object",
+        "properties" : {
+          "state" : {
+            "type" : "string",
+            "description" : "New state for the offline task",
+            "enum" : [ "IN_PROGRESS", "FAILED", "COMPLETED" ]
+          }
+        }
+      },
+      "OfflineTasks_Attributes" : {
+        "required" : [ "action" ],
+        "type" : "object",
+        "properties" : {
+          "action" : {
+            "type" : "string",
+            "description" : "Action to perform",
+            "enum" : [ "STORE_ITEM", "REMOVE_ITEM", "STORE_COLLECTION", "REMOVE_COLLECTION" ]
+          },
+          "index" : {
+            "type" : "integer",
+            "description" : "Item index in collection (if applicable)",
+            "format" : "int32"
+          },
+          "state" : {
+            "type" : "string",
+            "description" : "Task state",
+            "enum" : [ "PENDING", "IN_PROGRESS", "FAILED", "COMPLETED" ]
+          },
+          "volume" : {
+            "type" : "integer",
+            "description" : "Item volume in collection (if applicable)",
+            "format" : "int32"
+          }
+        }
+      },
+      "OfflineTasks_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "OfflineTasks_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OfflineTasks_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "OfflineTasks_Relationships" : {
+        "required" : [ "item", "owners" ],
+        "properties" : {
+          "item" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          },
+          "owners" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "OfflineTasks_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/OfflineTasks_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/OfflineTasks_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "OfflineTasks_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Resource_Identifier"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "OfflineTasks_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/OfflineTasks_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
