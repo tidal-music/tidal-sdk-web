@@ -46,7 +46,7 @@
     }
   ],
   "devDependencies": {
-    "@babel/preset-env": "7.28.6",
+    "@babel/preset-env": "7.29.0",
     "@babel/preset-typescript": "7.28.5",
     "@rollup/plugin-babel": "6.1.0",
     "@rollup/plugin-commonjs": "29.0.0",
@@ -72,8 +72,8 @@
     "cypress": "15.9.0",
     "esbuild": "0.27.2",
     "js-levenshtein": "1.1.6",
-    "rollup": "4.56.0",
-    "shaka-player": "4.16.14",
+    "rollup": "4.57.1",
+    "shaka-player": "4.16.15",
     "sinon": "21.0.1",
     "typescript": "5.9.3",
     "vite": "7.3.1",
