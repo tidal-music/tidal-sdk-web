@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TIDAL Player SDK - Demo Test Cases</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        background: #f5f5f5;
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 0.5rem;
+      }
+      .subtitle {
+        color: #666;
+        margin-bottom: 2rem;
+      }
+      .test-cases {
+        display: grid;
+        gap: 1rem;
+      }
+      .test-case {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-decoration: none;
+        color: inherit;
+        border: 2px solid transparent;
+        transition: all 0.2s ease;
+      }
+      .test-case:hover {
+        border-color: #0066cc;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .test-case h2 {
+        margin: 0 0 0.5rem 0;
+        color: #0066cc;
+        font-size: 1.25rem;
+      }
+      .test-case p {
+        margin: 0;
+        color: #666;
+        line-height: 1.5;
+      }
+      .note {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 4px;
+        padding: 1rem;
+        margin-top: 2rem;
+      }
+      .note strong {
+        color: #856404;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>TIDAL Player SDK Demo</h1>
+    <p class="subtitle">Interactive test cases for the TIDAL Player SDK</p>
+
+    <div class="test-cases">
+      <a href="test-case-1.html" class="test-case">
+        <h2>Test Case 1</h2>
+        <p>Basic playback test case</p>
+      </a>
+
+      <a href="test-case-2.html" class="test-case">
+        <h2>Test Case 2</h2>
+        <p>Advanced playback test case</p>
+      </a>
+
+      <a href="test-case-gapless.html" class="test-case">
+        <h2>Gapless Playback Test</h2>
+        <p>
+          Tests seamless gapless transition between Pink Floyd - The Wall album tracks.
+          Demonstrates dual audio element crossfade implementation.
+        </p>
+      </a>
+    </div>
+
+    <div class="note">
+      <strong>Note:</strong> These demo pages require a valid <code>.env</code> file with
+      <code>TEST_USER</code> credentials to be present in the packages/player directory.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gapless Playback Test</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      h1 {
+        color: #333;
+      }
+      .status {
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+        background: #f0f0f0;
+      }
+      .status.playing {
+        background: #d4edda;
+        color: #155724;
+      }
+      .track-info {
+        margin: 0.5rem 0;
+      }
+      .track-info strong {
+        display: inline-block;
+        width: 120px;
+      }
+      .gap-measurement {
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+        font-weight: bold;
+        display: none;
+      }
+      .gap-measurement.visible {
+        display: block;
+      }
+      .gap-measurement.perfect {
+        background: #d4edda;
+        border-color: #28a745;
+        color: #155724;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Gapless Playback Test</h1>
+    <p>
+      Testing gapless transition between Pink Floyd - The Wall album tracks:
+    </p>
+    <ul>
+      <li>Track 1: The Thin Ice (55391449)</li>
+      <li>Track 2: Another Brick in the Wall, Pt. 1 (55391450)</li>
+    </ul>
+
+    <div class="status" id="status">Initializing...</div>
+
+    <div class="gap-measurement" id="gapMeasurement"></div>
+
+    <div class="track-info">
+      <strong>Current Track:</strong> <span id="currentTrack">-</span>
+    </div>
+    <div class="track-info">
+      <strong>Position:</strong> <span id="position">-</span>
+    </div>
+    <div class="track-info">
+      <strong>Duration:</strong> <span id="duration">-</span>
+    </div>
+    <div class="track-info">
+      <strong>State:</strong> <span id="state">-</span>
+    </div>
+
+    <script type="module" src="./test-case-gapless.js"></script>
+  </body>
+</html>

@@ -16,7 +16,18 @@ Player.events.addEventListener('media-product-transition', () => {
 export const waitFor = ms => new Promise(r => setTimeout(r, ms));
 
 export async function login() {
-  const testUser = window.Cypress.env('credentials');
+  // Get test user credentials from Cypress (in Cypress tests) or from env (in dev mode)
+  let testUser;
+  if (window.Cypress) {
+    testUser = window.Cypress.env('credentials');
+  } else {
+    // Parse TEST_USER from environment variable (available via vite config)
+    const testUserEnv = import.meta.env.TEST_USER;
+    if (!testUserEnv) {
+      throw new Error('TEST_USER environment variable not set. Make sure .env file exists.');
+    }
+    testUser = JSON.parse(atob(testUserEnv));
+  }
 
   const scopes = ['r_usr', 'w_usr'];
 
