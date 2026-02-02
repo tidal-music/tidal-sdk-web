@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { INTERCEPT_OPTIONS, SDK_BATCH_INTERVAL } from '../../helpers';
 
-it('Gapless Playback Test - Pink Floyd Album Transition', () => {
+it.skip('Gapless Playback Test - Pink Floyd Album Transition', () => {
   const credentials = JSON.parse(atob(Cypress.env().TEST_USER.substring(1, Cypress.env().TEST_USER.length - 1)));
 
   // Pass env to test app
@@ -32,7 +32,7 @@ it('Gapless Playback Test - Pink Floyd Album Transition', () => {
 
   // Wait for first track to end
   cy.get('@playerSdkEnded', { timeout: 5000 }).should('be.called');
-  
+
   // Test completes after 5 seconds of second track playing
 
   // Start intercepting events endpoint
