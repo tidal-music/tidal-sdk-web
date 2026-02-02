@@ -24,7 +24,9 @@ export async function login() {
     // Parse TEST_USER from environment variable (available via vite config)
     const testUserEnv = import.meta.env.TEST_USER;
     if (!testUserEnv) {
-      throw new Error('TEST_USER environment variable not set. Make sure .env file exists.');
+      throw new Error(
+        'TEST_USER environment variable not set. Make sure .env file exists.',
+      );
     }
     testUser = JSON.parse(atob(testUserEnv));
   }

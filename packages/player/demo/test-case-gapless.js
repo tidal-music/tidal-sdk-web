@@ -1,4 +1,5 @@
 import * as Player from '../';
+
 import { login, print, waitFor } from './helpers.js';
 
 const statusEl = document.getElementById('status');
@@ -56,7 +57,7 @@ async function run() {
     let crossfadeDetected = false;
     let gapMeasurement = null;
 
-    Player.events.addEventListener('media-product-transition', (e) => {
+    Player.events.addEventListener('media-product-transition', e => {
       const detail = e.detail;
       const now = performance.now();
 
@@ -72,7 +73,9 @@ async function run() {
 
           if (gap < 0) {
             // Negative gap means crossfade started before track 1 ended (ideal gapless)
-            print(`⏱️ GAP MEASURED: -${Math.abs(gap).toFixed(2)}ms (crossfade overlap - PERFECT gapless!)`);
+            print(
+              `⏱️ GAP MEASURED: -${Math.abs(gap).toFixed(2)}ms (crossfade overlap - PERFECT gapless!)`,
+            );
             gapMeasurementEl.textContent = `⏱️ Gap: -${Math.abs(gap).toFixed(2)}ms (crossfade overlap - TRUE GAPLESS!)`;
             gapMeasurementEl.className = 'gap-measurement visible perfect';
           } else {
@@ -82,7 +85,9 @@ async function run() {
             gapMeasurementEl.className = 'gap-measurement visible';
           }
 
-          print(`✓ Crossfade timing: Track 2 started ${Math.abs(gap).toFixed(2)}ms ${gap < 0 ? 'before' : 'after'} track 1 ended`);
+          print(
+            `✓ Crossfade timing: Track 2 started ${Math.abs(gap).toFixed(2)}ms ${gap < 0 ? 'before' : 'after'} track 1 ended`,
+          );
         } else {
           print(`✓ Gapless crossfade complete! Seamless transition achieved.`);
         }
@@ -97,12 +102,14 @@ async function run() {
       updateTrackInfo();
     });
 
-    Player.events.addEventListener('ended', (e) => {
+    Player.events.addEventListener('ended', e => {
       track1EndTime = performance.now();
       print(`Track ended: ${e.detail.reason} at ${track1EndTime.toFixed(2)}ms`);
 
       if (crossfadeDetected) {
-        print('Note: Crossfade already completed before track ended (this is expected!)');
+        print(
+          'Note: Crossfade already completed before track ended (this is expected!)',
+        );
       } else {
         print('Waiting for crossfade to complete...');
       }
@@ -111,14 +118,20 @@ async function run() {
     });
 
     Player.events.addEventListener('preload-request', () => {
-      print('📡 Preload request received - loading next track into inactive player');
+      print(
+        '📡 Preload request received - loading next track into inactive player',
+      );
       updateStatus('Preloading next track...', true);
 
       // Set the next track when preload is requested
-      Player.setNext(TRACK_2).then(() => {
-        print('✓ Next track loaded and playing silently in background (volume=0)');
-        print('✓ Ready for gapless crossfade at 0.2s before track end');
-      }).catch(console.error);
+      Player.setNext(TRACK_2)
+        .then(() => {
+          print(
+            '✓ Next track loaded and playing silently in background (volume=0)',
+          );
+          print('✓ Ready for gapless crossfade at 0.2s before track end');
+        })
+        .catch(console.error);
     });
 
     // Start playing first track
@@ -151,34 +164,38 @@ async function run() {
     const intervalId = setInterval(updateTrackInfo, 1000);
 
     // Wait for second track to play for 5 seconds, then pause
-    Player.events.addEventListener('media-product-transition', async (e) => {
+    Player.events.addEventListener('media-product-transition', e => {
       const detail = e.detail;
       if (detail.mediaProduct.productId === TRACK_2.productId) {
-        print('🎵 Second track playing - waiting 5 seconds...');
-        await waitFor(5000);
-        print('✅ Test complete! Pausing playback.');
-        print('');
-        print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        print('Summary:');
-        print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        print('- Dual audio element crossfade implemented');
-        print('- Crossfade duration: 25ms (equal-power curve)');
-        print('- Crossfade starts: 0.2s before track end');
-        print('- Second track pre-loaded and playing silently');
-        if (gapMeasurement !== null) {
-          if (gapMeasurement < 0) {
-            print(`- ✓ RESULT: ${Math.abs(gapMeasurement).toFixed(2)}ms crossfade overlap (TRUE GAPLESS)`);
-          } else {
-            print(`- RESULT: ${gapMeasurement.toFixed(2)}ms gap detected`);
+        // Use void operator to explicitly ignore the promise
+        void (async () => {
+          print('🎵 Second track playing - waiting 5 seconds...');
+          await waitFor(5000);
+          print('✅ Test complete! Pausing playback.');
+          print('');
+          print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+          print('Summary:');
+          print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+          print('- Dual audio element crossfade implemented');
+          print('- Crossfade duration: 25ms (equal-power curve)');
+          print('- Crossfade starts: 0.2s before track end');
+          print('- Second track pre-loaded and playing silently');
+          if (gapMeasurement !== null) {
+            if (gapMeasurement < 0) {
+              print(
+                `- ✓ RESULT: ${Math.abs(gapMeasurement).toFixed(2)}ms crossfade overlap (TRUE GAPLESS)`,
+              );
+            } else {
+              print(`- RESULT: ${gapMeasurement.toFixed(2)}ms gap detected`);
+            }
           }
-        }
-        print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        Player.pause();
-        clearInterval(intervalId);
-        updateStatus('Test complete - Gapless crossfade verified! ✓');
+          print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+          Player.pause();
+          clearInterval(intervalId);
+          updateStatus('Test complete - Gapless crossfade verified! ✓');
+        })();
       }
     });
-
   } catch (error) {
     console.error('Test failed:', error);
     updateStatus('Error: ' + error.message);
