@@ -308,16 +308,27 @@ export default class ShakaPlayer extends BasePlayer {
           `Ended event from player ${isPlayerOne ? 1 : 2} (session: ${sessionIdToFinish})`,
         );
 
-        // Temporarily set currentStreamingSessionId to the ending session
-        // so finishCurrentMediaProduct works correctly
-        const savedCurrentSessionId = this.currentStreamingSessionId;
-        this.currentStreamingSessionId = sessionIdToFinish;
+        const isCurrentSession =
+          this.currentStreamingSessionId === sessionIdToFinish;
 
-        this.finishCurrentMediaProduct('completed');
+        if (isCurrentSession) {
+          // Ending the currently active session - finishCurrentMediaProduct
+          // will handle playback state correctly
+          this.finishCurrentMediaProduct('completed');
+        } else {
+          // Gapless case: Track has already been replaced by another track
+          // that's actively playing. Finish the session without mutating
+          // global playback state (which would incorrectly set IDLE).
+          const savedPlaybackState = this.playbackState;
+          const savedCurrentSessionId = this.currentStreamingSessionId;
 
-        // Restore current session if it was different (gapless case)
-        if (savedCurrentSessionId !== sessionIdToFinish) {
+          // Temporarily swap to the ending session for finishCurrentMediaProduct
+          this.currentStreamingSessionId = sessionIdToFinish;
+          this.finishCurrentMediaProduct('completed', true);
+
+          // Restore state - the active track is still playing
           this.currentStreamingSessionId = savedCurrentSessionId;
+          this.playbackState = savedPlaybackState;
 
           // Also restore currentTime to reflect the active player
           const activeMediaElement = this.getActiveMediaElement();

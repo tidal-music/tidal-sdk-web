@@ -92,16 +92,20 @@ export class BasePlayer {
   #mediaProductEnded({
     endAssetPosition,
     endReason,
+    isGaplessTransition = false,
     streamingSessionId,
   }: {
     endAssetPosition: number;
     endReason: EndReason;
+    isGaplessTransition?: boolean;
     streamingSessionId: string;
   }) {
     this.debugLog('mediaProductEnded');
 
-    // If there is a preloaded item if should start right away.
-    if (playerState.preloadedStreamingSessionId) {
+    // Only set idealStartTimestamp if NOT in gapless mode.
+    // In gapless crossfade, the next track already started during crossfade
+    // and the correct timestamp was already set at that time.
+    if (!isGaplessTransition && playerState.preloadedStreamingSessionId) {
       performance.mark(
         'streaming_metrics:playback_statistics:idealStartTimestamp',
         {
@@ -133,7 +137,11 @@ export class BasePlayer {
       this.currentStreamingSessionId = undefined;
     }
 
-    this.updateVolumeLevelForNextProduct();
+    // Only update volume if NOT in gapless mode.
+    // In gapless crossfade, the next track is already playing with managed volume.
+    if (!isGaplessTransition) {
+      this.updateVolumeLevelForNextProduct();
+    }
   }
 
   adjustedVolume(streamInfo: StreamInfo): number {
@@ -375,7 +383,7 @@ export class BasePlayer {
     }).catch(console.error);
   }
 
-  finishCurrentMediaProduct(endReason: EndReason) {
+  finishCurrentMediaProduct(endReason: EndReason, isGaplessTransition = false) {
     // A media product was loaded but never started.
     if (!this.hasStarted()) {
       return;
@@ -395,6 +403,7 @@ export class BasePlayer {
       this.#mediaProductEnded({
         endAssetPosition: this.currentTime,
         endReason,
+        isGaplessTransition,
         streamingSessionId: cssi,
       });
     }
