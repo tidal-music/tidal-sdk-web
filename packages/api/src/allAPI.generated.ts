@@ -87,7 +87,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["AlbumCreateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["AlbumsCreateOperation_Payload"];
                 };
             };
             responses: {
@@ -226,7 +226,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["AlbumUpdateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["AlbumsUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -394,7 +394,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["AlbumCoverArtRelationshipUpdateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["AlbumsCoverArtRelationshipUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -562,7 +562,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["AlbumItemsRelationshipUpdateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["AlbumsItemsRelationshipUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -1100,7 +1100,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["ArtistBiographyUpdateBody"];
+                    "application/vnd.api+json": components["schemas"]["ArtistBiographiesUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -1442,7 +1442,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["ArtistClaimAcceptedArtistsRelationshipUpdateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -1765,7 +1765,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["ArtistCreateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["ArtistsCreateOperation_Payload"];
                 };
             };
             responses: {
@@ -1874,7 +1874,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["ArtistUpdateBody"];
+                    "application/vnd.api+json": components["schemas"]["ArtistsUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -2162,7 +2162,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["ArtistFollowingRelationshipAddOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["ArtistsFollowingRelationshipAddOperation_Payload"];
                 };
             };
             responses: {
@@ -2195,7 +2195,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["ArtistFollowingRelationshipRemoveOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["ArtistsFollowingRelationshipRemoveOperation_Payload"];
                 };
             };
             responses: {
@@ -2357,7 +2357,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["ArtistProfileArtRelationshipUpdateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["ArtistsProfileArtRelationshipUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -2833,7 +2833,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["ArtworkCreateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["ArtworksCreateOperation_Payload"];
                 };
             };
             responses: {
@@ -3533,6 +3533,125 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Credits_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dspSharingLinks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple dspSharingLinks.
+         * @description Retrieves multiple dspSharingLinks by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: subject
+                     * @example subject
+                     */
+                    include?: string[];
+                    /** @description The id of the subject resource */
+                    "filter[subject.id]"?: string[];
+                    /**
+                     * @description The type of the subject resource (e.g., albums, tracks, artists)
+                     * @example tracks
+                     */
+                    "filter[subject.type]"?: ("tracks" | "albums" | "artists")[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["DspSharingLinks_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dspSharingLinks/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: subject
+                     * @example subject
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description DspSharingLinks Id
+                     * @example QUxCVU1TOjEyMzQ1
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["DspSharingLinks_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -5163,7 +5282,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["PlayQueueCreateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["PlayQueuesCreateOperation_Payload"];
                 };
             };
             responses: {
@@ -5295,7 +5414,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["PlayQueueUpdateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["PlayQueuesUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -5386,7 +5505,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["PlayQueueUpdateCurrentOperations_Payload"];
+                    "application/vnd.api+json": components["schemas"]["PlayQueuesCurrentRelationshipUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -5475,7 +5594,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["PlayQueueAddFutureOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["PlayQueuesFutureRelationshipAddOperation_Payload"];
                 };
             };
             responses: {
@@ -5508,7 +5627,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["PlayQueueRemoveFutureOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["PlayQueuesFutureRelationshipRemoveOperation_Payload"];
                 };
             };
             responses: {
@@ -5543,7 +5662,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["PlayQueueUpdateFutureOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["PlayQueuesFutureRelationshipUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -5765,7 +5884,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["PlaylistCreateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["PlaylistsCreateOperation_Payload"];
                 };
             };
             responses: {
@@ -5908,7 +6027,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["PlaylistUpdateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["PlaylistsUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -6006,7 +6125,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["PlaylistCoverArtRelationshipUpdateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["PlaylistsCoverArtRelationshipUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -6106,7 +6225,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["PlaylistItemsRelationshipAddOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["PlaylistsItemsRelationshipAddOperation_Payload"];
                 };
             };
             responses: {
@@ -6139,7 +6258,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["PlaylistItemsRelationshipRemoveOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["PlaylistsItemsRelationshipRemoveOperation_Payload"];
                 };
             };
             responses: {
@@ -6174,7 +6293,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["PlaylistItemsRelationshipReorderOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["PlaylistsItemsRelationshipUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -6711,8 +6830,8 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter
-                     * @example INCLUDE/EXCLUDE
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
                     explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
@@ -6780,8 +6899,8 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter
-                     * @example INCLUDE/EXCLUDE
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
                     explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
@@ -6851,8 +6970,8 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter
-                     * @example INCLUDE/EXCLUDE
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
                     explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
@@ -6922,8 +7041,8 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter
-                     * @example INCLUDE/EXCLUDE
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
                     explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
@@ -6993,8 +7112,8 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter
-                     * @example INCLUDE/EXCLUDE
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
                     explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
@@ -7064,8 +7183,8 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter
-                     * @example INCLUDE/EXCLUDE
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
                     explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
@@ -7135,8 +7254,8 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter
-                     * @example INCLUDE/EXCLUDE
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
                     explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
@@ -7206,8 +7325,8 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter
-                     * @example INCLUDE/EXCLUDE
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
                     explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
@@ -7275,8 +7394,8 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter
-                     * @example INCLUDE/EXCLUDE
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
                     explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
@@ -8363,7 +8482,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["TrackCreateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["TracksCreateOperation_Payload"];
                 };
             };
             responses: {
@@ -8502,7 +8621,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["TrackUpdateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["TracksUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -8602,7 +8721,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["TrackAlbumsRelationshipUpdateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["TracksAlbumsRelationshipUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -9621,7 +9740,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["FolderCreateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["UserCollectionFoldersCreateOperation_Payload"];
                 };
             };
             responses: {
@@ -9753,7 +9872,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["FolderUpdateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["UserCollectionFoldersUpdateOperation_Payload"];
                 };
             };
             responses: {
@@ -10117,7 +10236,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsRelationshipAddOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["UserCollectionsAlbumsRelationshipAddOperation_Payload"];
                 };
             };
             responses: {
@@ -10125,6 +10244,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
+                409: components["responses"]["UserCollectionsAddMultiDataRelationship409Response"];
                 415: components["responses"]["Default415Response"];
                 429: components["responses"]["Default429Response"];
                 500: components["responses"]["Default500Response"];
@@ -10150,7 +10270,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsRelationshipRemoveOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["UserCollectionsAlbumsRelationshipRemoveOperation_Payload"];
                 };
             };
             responses: {
@@ -10260,7 +10380,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionArtistsRelationshipAddOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["UserCollectionsArtistsRelationshipAddOperation_Payload"];
                 };
             };
             responses: {
@@ -10268,6 +10388,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
+                409: components["responses"]["UserCollectionsAddMultiDataRelationship409Response"];
                 415: components["responses"]["Default415Response"];
                 429: components["responses"]["Default429Response"];
                 500: components["responses"]["Default500Response"];
@@ -10293,7 +10414,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionArtistsRelationshipRemoveOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["UserCollectionsArtistsRelationshipRemoveOperation_Payload"];
                 };
             };
             responses: {
@@ -10449,7 +10570,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsRelationshipRemoveOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["UserCollectionsPlaylistsRelationshipAddOperation_Payload"];
                 };
             };
             responses: {
@@ -10457,6 +10578,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
+                409: components["responses"]["UserCollectionsAddMultiDataRelationship409Response"];
                 415: components["responses"]["Default415Response"];
                 429: components["responses"]["Default429Response"];
                 500: components["responses"]["Default500Response"];
@@ -10482,7 +10604,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsRelationshipRemoveOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["UserCollectionsPlaylistsRelationshipRemoveOperation_Payload"];
                 };
             };
             responses: {
@@ -10592,7 +10714,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionTracksRelationshipAddOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["UserCollectionsTracksRelationshipAddOperation_Payload"];
                 };
             };
             responses: {
@@ -10600,6 +10722,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
+                409: components["responses"]["UserCollectionsAddMultiDataRelationship409Response"];
                 415: components["responses"]["Default415Response"];
                 429: components["responses"]["Default429Response"];
                 500: components["responses"]["Default500Response"];
@@ -10625,7 +10748,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionTracksRelationshipRemoveOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["UserCollectionsTracksRelationshipRemoveOperation_Payload"];
                 };
             };
             responses: {
@@ -10735,7 +10858,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionVideosRelationshipAddOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["UserCollectionsVideosRelationshipAddOperation_Payload"];
                 };
             };
             responses: {
@@ -10743,6 +10866,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
+                409: components["responses"]["UserCollectionsAddMultiDataRelationship409Response"];
                 415: components["responses"]["Default415Response"];
                 429: components["responses"]["Default429Response"];
                 500: components["responses"]["Default500Response"];
@@ -10768,7 +10892,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionVideosRelationshipRemoveOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["UserCollectionsVideosRelationshipRemoveOperation_Payload"];
                 };
             };
             responses: {
@@ -11211,7 +11335,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/vnd.api+json": components["schemas"]["UserReportCreateOperation_Payload"];
+                    "application/vnd.api+json": components["schemas"]["UserReportsCreateOperation_Payload"];
                 };
             };
             responses: {
@@ -11878,81 +12002,93 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        AlbumCoverArtRelationshipUpdateOperation_Payload: {
-            data: components["schemas"]["AlbumCoverArtRelationshipUpdateOperation_Payload_Data"][];
+        AlbumsCoverArtRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["AlbumsCoverArtRelationshipUpdateOperation_Payload_Data"][];
         };
-        AlbumCoverArtRelationshipUpdateOperation_Payload_Data: {
+        AlbumsCoverArtRelationshipUpdateOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
             type: "artworks";
         };
-        AlbumCreateOperation_Payload: {
-            data: components["schemas"]["AlbumCreateOperation_Payload_Data"];
+        AlbumsCreateOperation_Payload: {
+            data: components["schemas"]["AlbumsCreateOperation_Payload_Data"];
         };
-        AlbumCreateOperation_Payload_Data: {
-            attributes: components["schemas"]["AlbumCreateOperation_Payload_Data_Attributes"];
-            relationships: components["schemas"]["AlbumCreateOperation_Payload_Data_Relationships"];
+        AlbumsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["AlbumsCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["AlbumsCreateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "albums";
         };
-        AlbumCreateOperation_Payload_Data_Attributes: {
+        AlbumsCreateOperation_Payload_Data_Attributes: {
             /** @enum {string} */
             albumType?: "ALBUM" | "EP" | "SINGLE";
+            /** @description Barcode id (EAN-13 or UPC-A) */
+            barcodeId?: string;
             copyright?: components["schemas"]["Copyright"];
+            /** @description Explicit content */
+            explicit?: boolean;
+            /**
+             * @deprecated
+             * @description Explicit content. Deprecated: use 'explicit' instead. This field will be removed in a future version.
+             */
             explicitLyrics?: boolean;
             /** Format: date */
             releaseDate?: string;
             title: string;
+            /**
+             * @deprecated
+             * @description Barcode id (EAN-13 or UPC-A). Deprecated: use 'barcodeId' instead. This field will be removed in a future version.
+             */
             upc?: string;
             version?: string;
         };
-        AlbumCreateOperation_Payload_Data_Relationships: {
-            artists: components["schemas"]["AlbumCreateOperation_Payload_Data_Relationships_Artists"];
-            genres?: components["schemas"]["AlbumCreateOperation_Payload_Data_Relationships_Genres"];
+        AlbumsCreateOperation_Payload_Data_Relationships: {
+            artists: components["schemas"]["AlbumsCreateOperation_Payload_Data_Relationships_Artists"];
+            genres?: components["schemas"]["AlbumsCreateOperation_Payload_Data_Relationships_Genres"];
         };
-        AlbumCreateOperation_Payload_Data_Relationships_Artists: {
-            data: components["schemas"]["AlbumCreateOperation_Payload_Data_Relationships_Artists_Data"][];
+        AlbumsCreateOperation_Payload_Data_Relationships_Artists: {
+            data: components["schemas"]["AlbumsCreateOperation_Payload_Data_Relationships_Artists_Data"][];
         };
-        AlbumCreateOperation_Payload_Data_Relationships_Artists_Data: {
+        AlbumsCreateOperation_Payload_Data_Relationships_Artists_Data: {
             id: string;
             /** @enum {string} */
             type: "artists";
         };
-        AlbumCreateOperation_Payload_Data_Relationships_Genres: {
-            data: components["schemas"]["AlbumCreateOperation_Payload_Data_Relationships_Genres_Data"][];
+        AlbumsCreateOperation_Payload_Data_Relationships_Genres: {
+            data: components["schemas"]["AlbumsCreateOperation_Payload_Data_Relationships_Genres_Data"][];
         };
-        AlbumCreateOperation_Payload_Data_Relationships_Genres_Data: {
+        AlbumsCreateOperation_Payload_Data_Relationships_Genres_Data: {
             id: string;
             /** @enum {string} */
             type: "genres";
         };
-        AlbumItemsRelationshipUpdateOperation_Payload: {
-            data: components["schemas"]["AlbumItemsRelationshipUpdateOperation_Payload_Data"][];
-            meta: components["schemas"]["AlbumItemsRelationshipUpdateOperation_Payload_Meta"];
+        AlbumsItemsRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["AlbumsItemsRelationshipUpdateOperation_Payload_Data"][];
+            meta: components["schemas"]["AlbumsItemsRelationshipUpdateOperation_Payload_Meta"];
         };
-        AlbumItemsRelationshipUpdateOperation_Payload_Data: {
+        AlbumsItemsRelationshipUpdateOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
             type: "tracks" | "videos";
         };
-        AlbumItemsRelationshipUpdateOperation_Payload_Meta: {
+        AlbumsItemsRelationshipUpdateOperation_Payload_Meta: {
             /**
              * Format: int32
              * @description 1-based index
              */
             positionIndex: number;
         };
-        AlbumUpdateOperation_Payload: {
-            data: components["schemas"]["AlbumUpdateOperation_Payload_Data"];
+        AlbumsUpdateOperation_Payload: {
+            data: components["schemas"]["AlbumsUpdateOperation_Payload_Data"];
         };
-        AlbumUpdateOperation_Payload_Data: {
-            attributes?: components["schemas"]["AlbumUpdateOperation_Payload_Data_Attributes"];
+        AlbumsUpdateOperation_Payload_Data: {
+            attributes?: components["schemas"]["AlbumsUpdateOperation_Payload_Data_Attributes"];
             id: string;
-            relationships?: components["schemas"]["AlbumUpdateOperation_Payload_Data_Relationships"];
+            relationships?: components["schemas"]["AlbumsUpdateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "albums";
         };
-        AlbumUpdateOperation_Payload_Data_Attributes: {
+        AlbumsUpdateOperation_Payload_Data_Attributes: {
             /**
              * @description Access type
              * @example PRIVATE
@@ -11962,19 +12098,25 @@ export interface components {
             /** @enum {string} */
             albumType?: "ALBUM" | "EP" | "SINGLE";
             copyright?: components["schemas"]["Copyright"];
+            /** @description Explicit content */
+            explicit?: boolean;
+            /**
+             * @deprecated
+             * @description Explicit content. Deprecated: use 'explicit' instead. This field will be removed in a future version.
+             */
             explicitLyrics?: boolean;
             /** Format: date */
             releaseDate?: string;
             title?: string;
             version?: string;
         };
-        AlbumUpdateOperation_Payload_Data_Relationships: {
-            genres?: components["schemas"]["AlbumUpdateOperation_Payload_Data_Relationships_Genres"];
+        AlbumsUpdateOperation_Payload_Data_Relationships: {
+            genres?: components["schemas"]["AlbumsUpdateOperation_Payload_Data_Relationships_Genres"];
         };
-        AlbumUpdateOperation_Payload_Data_Relationships_Genres: {
-            data: components["schemas"]["AlbumUpdateOperation_Payload_Data_Relationships_Genres_Data"][];
+        AlbumsUpdateOperation_Payload_Data_Relationships_Genres: {
+            data: components["schemas"]["AlbumsUpdateOperation_Payload_Data_Relationships_Genres_Data"][];
         };
-        AlbumUpdateOperation_Payload_Data_Relationships_Genres_Data: {
+        AlbumsUpdateOperation_Payload_Data_Relationships_Genres_Data: {
             id: string;
             /** @enum {string} */
             type: "genres";
@@ -11986,6 +12128,11 @@ export interface components {
              * @enum {string}
              */
             accessType?: "PUBLIC" | "UNLISTED" | "PRIVATE";
+            /**
+             * @description Album type
+             * @enum {string}
+             */
+            albumType: "ALBUM" | "EP" | "SINGLE";
             /** @description Available usage for this album */
             availability?: ("STREAM" | "DJ" | "STEM")[];
             /**
@@ -12037,10 +12184,11 @@ export interface components {
              */
             title: string;
             /**
-             * @description Album type
+             * @deprecated
+             * @description Album type. Deprecated: use 'albumType' instead. This field will be removed in a future version.
              * @enum {string}
              */
-            type: "ALBUM" | "EP" | "SINGLE";
+            type?: "ALBUM" | "EP" | "SINGLE";
             /**
              * @description Album version
              * @example remix
@@ -12148,12 +12296,9 @@ export interface components {
             /** @description Foreground color for the suggested artwork */
             foregroundColor: string;
         };
-        AppreciationsCreateOperation_Meta: {
-            dryRun?: boolean;
-        };
         AppreciationsCreateOperation_Payload: {
             data: components["schemas"]["AppreciationsCreateOperation_Payload_Data"];
-            meta?: components["schemas"]["AppreciationsCreateOperation_Meta"];
+            meta?: components["schemas"]["AppreciationsCreateOperation_Payload_Meta"];
         };
         AppreciationsCreateOperation_Payload_Data: {
             relationships: components["schemas"]["AppreciationsCreateOperation_Payload_Data_Relationships"];
@@ -12170,6 +12315,9 @@ export interface components {
             id: string;
             /** @enum {string} */
             type: "artists";
+        };
+        AppreciationsCreateOperation_Payload_Meta: {
+            dryRun?: boolean;
         };
         Appreciations_Attributes: {
             /**
@@ -12202,12 +12350,30 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ArtistBiographiesUpdateOperation_Payload: {
+            data: components["schemas"]["ArtistBiographiesUpdateOperation_Payload_Data"];
+        };
+        ArtistBiographiesUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["ArtistBiographiesUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "artistBiographies";
+        };
+        ArtistBiographiesUpdateOperation_Payload_Data_Attributes: {
+            text?: string;
+        };
         ArtistBiographies_Attributes: {
             /**
              * @description Boolean to indicate if the biography is editable (source = tidal or artist)
              * @example true
              */
             editable: boolean;
+            /**
+             * @description Source the biography is coming from
+             * @example ARTIST
+             * @enum {string}
+             */
+            source?: "TIDAL" | "TiVo" | "MusicBrainz" | "Avex" | "Artist" | "UNKNOWN";
             /**
              * @description Artist biography
              * @example Once upon a time an artist is born
@@ -12246,22 +12412,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        ArtistBiographyUpdateBody: {
-            data: components["schemas"]["ArtistBiographyUpdateBody_Data"];
+        ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload_Data"][];
         };
-        ArtistBiographyUpdateBody_Data: {
-            attributes: components["schemas"]["ArtistBiographyUpdateBody_Data_Attributes"];
-            id: string;
-            /** @enum {string} */
-            type: "artistBiographies";
-        };
-        ArtistBiographyUpdateBody_Data_Attributes: {
-            text?: string;
-        };
-        ArtistClaimAcceptedArtistsRelationshipUpdateOperation_Payload: {
-            data: components["schemas"]["ArtistClaimAcceptedArtistsRelationshipUpdateOperation_Payload_Data"][];
-        };
-        ArtistClaimAcceptedArtistsRelationshipUpdateOperation_Payload_Data: {
+        ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
             type: "artists";
@@ -12356,46 +12510,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        ArtistCreateOperation_Meta: {
-            dryRun?: boolean;
-        };
-        ArtistCreateOperation_Payload: {
-            data: components["schemas"]["ArtistCreateOperation_Payload_Data"];
-            meta?: components["schemas"]["ArtistCreateOperation_Meta"];
-        };
-        ArtistCreateOperation_Payload_Data: {
-            attributes: components["schemas"]["ArtistCreateOperation_Payload_Data_Attributes"];
-            /** @enum {string} */
-            type: "artists";
-        };
-        ArtistCreateOperation_Payload_Data_Attributes: {
-            handle?: string;
-            name: string;
-        };
-        ArtistFollowingRelationshipAddOperation_Payload: {
-            data: components["schemas"]["ArtistFollowingRelationshipAddOperation_Payload_Data"][];
-        };
-        ArtistFollowingRelationshipAddOperation_Payload_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "artists";
-        };
-        ArtistFollowingRelationshipRemoveOperation_Payload: {
-            data: components["schemas"]["ArtistFollowingRelationshipRemoveOperation_Payload_Data"][];
-        };
-        ArtistFollowingRelationshipRemoveOperation_Payload_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "artists";
-        };
-        ArtistProfileArtRelationshipUpdateOperation_Payload: {
-            data: components["schemas"]["ArtistProfileArtRelationshipUpdateOperation_Payload_Data"][];
-        };
-        ArtistProfileArtRelationshipUpdateOperation_Payload_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "artworks";
-        };
         ArtistRoles_Attributes: {
             /** @description Name of the artist role */
             name: string;
@@ -12423,24 +12537,64 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        ArtistUpdateBody: {
-            data: components["schemas"]["ArtistUpdateBody_Data"];
-            meta?: components["schemas"]["ArtistUpdateBody_Meta"];
+        ArtistsCreateOperation_Payload: {
+            data: components["schemas"]["ArtistsCreateOperation_Payload_Data"];
+            meta?: components["schemas"]["ArtistsCreateOperation_Payload_Meta"];
         };
-        ArtistUpdateBody_Data: {
-            attributes: components["schemas"]["ArtistUpdateBody_Data_Attributes"];
+        ArtistsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["ArtistsCreateOperation_Payload_Data_Attributes"];
+            /** @enum {string} */
+            type: "artists";
+        };
+        ArtistsCreateOperation_Payload_Data_Attributes: {
+            handle?: string;
+            name: string;
+        };
+        ArtistsCreateOperation_Payload_Meta: {
+            dryRun?: boolean;
+        };
+        ArtistsFollowingRelationshipAddOperation_Payload: {
+            data: components["schemas"]["ArtistsFollowingRelationshipAddOperation_Payload_Data"][];
+        };
+        ArtistsFollowingRelationshipAddOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
             type: "artists";
         };
-        ArtistUpdateBody_Data_Attributes: {
+        ArtistsFollowingRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["ArtistsFollowingRelationshipRemoveOperation_Payload_Data"][];
+        };
+        ArtistsFollowingRelationshipRemoveOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artists";
+        };
+        ArtistsProfileArtRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["ArtistsProfileArtRelationshipUpdateOperation_Payload_Data"][];
+        };
+        ArtistsProfileArtRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artworks";
+        };
+        ArtistsUpdateOperation_Payload: {
+            data: components["schemas"]["ArtistsUpdateOperation_Payload_Data"];
+            meta?: components["schemas"]["ArtistsUpdateOperation_Payload_Meta"];
+        };
+        ArtistsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["ArtistsUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "artists";
+        };
+        ArtistsUpdateOperation_Payload_Data_Attributes: {
             contributionsEnabled?: boolean;
             contributionsSalesPitch?: string;
             externalLinks?: components["schemas"]["External_Link_Payload"][];
             handle?: string;
             name?: string;
         };
-        ArtistUpdateBody_Meta: {
+        ArtistsUpdateOperation_Payload_Meta: {
             dryRun?: boolean;
         };
         Artists_Attributes: {
@@ -12466,6 +12620,11 @@ export interface components {
              * @example JAY Z
              */
             name: string;
+            /**
+             * @description Ownership type of the artist profile. LABEL: label-managed profile, USER: user-created profile, MIXED: claimed profile with both label and user content. May be null during rollout/backfill.
+             * @enum {string}
+             */
+            ownerType?: "LABEL" | "USER" | "MIXED";
             /**
              * Format: double
              * @description Artist popularity (0.0 - 1.0)
@@ -12607,24 +12766,6 @@ export interface components {
              */
             numberOfTracks: number;
         };
-        ArtworkCreateOperation_Payload: {
-            data: components["schemas"]["ArtworkCreateOperation_Payload_Data"];
-        };
-        ArtworkCreateOperation_Payload_Data: {
-            attributes: components["schemas"]["ArtworkCreateOperation_Payload_Data_Attributes"];
-            /** @enum {string} */
-            type: "artworks";
-        };
-        ArtworkCreateOperation_Payload_Data_Attributes: {
-            /** @enum {string} */
-            mediaType: "IMAGE" | "VIDEO";
-            sourceFile: components["schemas"]["ArtworkCreateOperation_Payload_Data_Attributes_SourceFile"];
-        };
-        ArtworkCreateOperation_Payload_Data_Attributes_SourceFile: {
-            md5Hash: string;
-            /** Format: int64 */
-            size: number;
-        };
         /** @description Artwork files */
         Artwork_File: {
             /** @description Artwork file href */
@@ -12670,6 +12811,24 @@ export interface components {
              */
             status?: "NONE" | "PROCESSING" | "OK";
         };
+        ArtworksCreateOperation_Payload: {
+            data: components["schemas"]["ArtworksCreateOperation_Payload_Data"];
+        };
+        ArtworksCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["ArtworksCreateOperation_Payload_Data_Attributes"];
+            /** @enum {string} */
+            type: "artworks";
+        };
+        ArtworksCreateOperation_Payload_Data_Attributes: {
+            /** @enum {string} */
+            mediaType: "IMAGE" | "VIDEO";
+            sourceFile: components["schemas"]["ArtworksCreateOperation_Payload_Data_Attributes_SourceFile"];
+        };
+        ArtworksCreateOperation_Payload_Data_Attributes_SourceFile: {
+            md5Hash: string;
+            /** Format: int64 */
+            size: number;
+        };
         Artworks_Attributes: {
             /** @description Artwork files */
             files: components["schemas"]["Artwork_File"][];
@@ -12712,11 +12871,6 @@ export interface components {
             data: components["schemas"]["Artworks_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
-        };
-        Attributes: {
-            /** @enum {string} */
-            collectionType: "PLAYLISTS";
-            name: string;
         };
         /** @description Track normalization data */
         AudioNormalizationData: {
@@ -12946,6 +13100,44 @@ export interface components {
             drmSystem?: "FAIRPLAY" | "WIDEVINE";
             licenseUrl?: string;
         };
+        DspSharingLinks_Attributes: {
+            amazonMusic?: components["schemas"]["Link_Object"];
+            appleMusic?: components["schemas"]["Link_Object"];
+            spotify?: components["schemas"]["Link_Object"];
+            youTubeMusic?: components["schemas"]["Link_Object"];
+        };
+        DspSharingLinks_Multi_Resource_Data_Document: {
+            data: components["schemas"]["DspSharingLinks_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        DspSharingLinks_Relationships: {
+            subject: components["schemas"]["Single_Relationship_Data_Document"];
+        };
+        DspSharingLinks_Resource_Object: {
+            attributes?: components["schemas"]["DspSharingLinks_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["DspSharingLinks_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "dspSharingLinks";
+        };
+        DspSharingLinks_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        DspSharingLinks_Single_Resource_Data_Document: {
+            data: components["schemas"]["DspSharingLinks_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         DynamicModules_Attributes: {
             /**
              * @description Type of icons the module should show
@@ -13122,7 +13314,7 @@ export interface components {
              * @description Technical status for file
              * @enum {string}
              */
-            technicalFileStatus: "UPLOAD_REQUESTED" | "PROCESSING" | "OK" | "ERROR";
+            technicalFileStatus: "UPLOAD_REQUESTED" | "PROCESSING" | "OK" | "ERROR" | "DELETED";
         };
         /** @description Upload link */
         File_Upload_Link: {
@@ -13138,23 +13330,6 @@ export interface components {
             };
             /** @description HTTP method */
             method: string;
-        };
-        FolderCreateOperation_Payload: {
-            data: components["schemas"]["FolderCreateOperation_Payload_Data"];
-        };
-        FolderCreateOperation_Payload_Data: {
-            attributes: components["schemas"]["Attributes"];
-            /** @enum {string} */
-            type: "userCollectionFolders";
-        };
-        FolderUpdateOperation_Payload: {
-            data: components["schemas"]["FolderUpdateOperation_Payload_Data"];
-        };
-        FolderUpdateOperation_Payload_Data: {
-            attributes: components["schemas"]["Attributes"];
-            id: string;
-            /** @enum {string} */
-            type: "userCollectionFolders";
         };
         Genres_Attributes: {
             /**
@@ -13186,7 +13361,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -13282,6 +13457,10 @@ export interface components {
         LegacySource: {
             id: string;
             type: string;
+        };
+        /** @description A JSON:API link object */
+        Link_Object: {
+            href?: string;
         };
         Links: {
             meta?: components["schemas"]["Links_Meta"];
@@ -13580,16 +13759,35 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        PlayQueueAddFutureOperation_Payload: {
-            data: components["schemas"]["PlayQueueAddFutureOperation_Payload_Data"][];
-            meta?: components["schemas"]["PlayQueueAddFutureOperation_Payload_Meta"];
+        PlayQueuesCreateOperation_Payload: {
+            data: components["schemas"]["PlayQueuesCreateOperation_Payload_Data"];
         };
-        PlayQueueAddFutureOperation_Payload_Data: {
+        PlayQueuesCreateOperation_Payload_Data: {
+            /** @enum {string} */
+            type: "playQueues";
+        };
+        PlayQueuesCurrentRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["PlayQueuesCurrentRelationshipUpdateOperation_Payload_Data"];
+        };
+        PlayQueuesCurrentRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            meta: components["schemas"]["PlayQueuesCurrentRelationshipUpdateOperation_Payload_Data_Meta"];
+            /** @enum {string} */
+            type: "tracks" | "videos";
+        };
+        PlayQueuesCurrentRelationshipUpdateOperation_Payload_Data_Meta: {
+            itemId: string;
+        };
+        PlayQueuesFutureRelationshipAddOperation_Payload: {
+            data: components["schemas"]["PlayQueuesFutureRelationshipAddOperation_Payload_Data"][];
+            meta?: components["schemas"]["PlayQueuesFutureRelationshipAddOperation_Payload_Meta"];
+        };
+        PlayQueuesFutureRelationshipAddOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
             type: "tracks" | "videos" | "albums" | "playlists";
         };
-        PlayQueueAddFutureOperation_Payload_Meta: {
+        PlayQueuesFutureRelationshipAddOperation_Payload_Meta: {
             /** Format: uuid */
             batchId?: string;
             legacySource?: components["schemas"]["LegacySource"];
@@ -13597,66 +13795,47 @@ export interface components {
             mode: "ADD_TO_FRONT" | "ADD_TO_BACK" | "ADD_BEFORE" | "REPLACE_ALL";
             positionBefore?: string;
         };
-        PlayQueueCreateOperation_Payload: {
-            data: components["schemas"]["PlayQueueCreateOperation_Payload_Data"];
+        PlayQueuesFutureRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["PlayQueuesFutureRelationshipRemoveOperation_Payload_Data"][];
         };
-        PlayQueueCreateOperation_Payload_Data: {
-            /** @enum {string} */
-            type: "playQueues";
-        };
-        PlayQueueRemoveFutureOperation_Payload: {
-            data: components["schemas"]["PlayQueueRemoveFutureOperation_Payload_Data"][];
-        };
-        PlayQueueRemoveFutureOperation_Payload_Data: {
+        PlayQueuesFutureRelationshipRemoveOperation_Payload_Data: {
             id: string;
-            meta: components["schemas"]["PlayQueueUpdateRemoveOperation_Payload_Data_Meta"];
+            meta: components["schemas"]["PlayQueuesFutureRelationshipRemoveOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "tracks" | "videos";
         };
-        PlayQueueUpdateCurrentOperations_Payload: {
-            data: components["schemas"]["PlayQueueUpdateCurrentOperations_Payload_Data"];
-        };
-        PlayQueueUpdateCurrentOperations_Payload_Data: {
-            id: string;
-            meta: components["schemas"]["PlayQueueUpdateCurrentOperations_Payload_Data_Meta"];
-            /** @enum {string} */
-            type: "tracks" | "videos";
-        };
-        PlayQueueUpdateCurrentOperations_Payload_Data_Meta: {
+        PlayQueuesFutureRelationshipRemoveOperation_Payload_Data_Meta: {
             itemId: string;
         };
-        PlayQueueUpdateFutureOperation_Payload: {
-            data: components["schemas"]["PlayQueueUpdateFutureOperation_Payload_Data"][];
-            meta: components["schemas"]["PlayQueueUpdateFutureOperation_Payload_Meta"];
+        PlayQueuesFutureRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["PlayQueuesFutureRelationshipUpdateOperation_Payload_Data"][];
+            meta: components["schemas"]["PlayQueuesFutureRelationshipUpdateOperation_Payload_Meta"];
         };
-        PlayQueueUpdateFutureOperation_Payload_Data: {
+        PlayQueuesFutureRelationshipUpdateOperation_Payload_Data: {
             id: string;
-            meta: components["schemas"]["PlayQueueUpdateFutureOperation_Payload_Data_Meta"];
+            meta: components["schemas"]["PlayQueuesFutureRelationshipUpdateOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "tracks" | "videos";
         };
-        PlayQueueUpdateFutureOperation_Payload_Data_Meta: {
+        PlayQueuesFutureRelationshipUpdateOperation_Payload_Data_Meta: {
             itemId: string;
         };
-        PlayQueueUpdateFutureOperation_Payload_Meta: {
+        PlayQueuesFutureRelationshipUpdateOperation_Payload_Meta: {
             positionBefore: string;
         };
-        PlayQueueUpdateOperation_Payload: {
-            data: components["schemas"]["PlayQueueUpdateOperation_Payload_Data"];
+        PlayQueuesUpdateOperation_Payload: {
+            data: components["schemas"]["PlayQueuesUpdateOperation_Payload_Data"];
         };
-        PlayQueueUpdateOperation_Payload_Data: {
-            attributes: components["schemas"]["PlayQueueUpdateOperation_Payload_Data_Attributes"];
+        PlayQueuesUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["PlayQueuesUpdateOperation_Payload_Data_Attributes"];
             id: string;
             /** @enum {string} */
             type: "playQueues";
         };
-        PlayQueueUpdateOperation_Payload_Data_Attributes: {
+        PlayQueuesUpdateOperation_Payload_Data_Attributes: {
             /** @enum {string} */
             repeat?: "NONE" | "ONE" | "BATCH";
             shuffled?: boolean;
-        };
-        PlayQueueUpdateRemoveOperation_Payload_Data_Meta: {
-            itemId: string;
         };
         PlayQueues_Attributes: {
             /**
@@ -13789,23 +13968,23 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        PlaylistCoverArtRelationshipUpdateOperation_Payload: {
-            data: components["schemas"]["PlaylistCoverArtRelationshipUpdateOperation_Payload_Data"][];
+        PlaylistsCoverArtRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["PlaylistsCoverArtRelationshipUpdateOperation_Payload_Data"][];
         };
-        PlaylistCoverArtRelationshipUpdateOperation_Payload_Data: {
+        PlaylistsCoverArtRelationshipUpdateOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
             type: "artworks";
         };
-        PlaylistCreateOperation_Payload: {
-            data: components["schemas"]["PlaylistCreateOperation_Payload_Data"];
+        PlaylistsCreateOperation_Payload: {
+            data: components["schemas"]["PlaylistsCreateOperation_Payload_Data"];
         };
-        PlaylistCreateOperation_Payload_Data: {
-            attributes: components["schemas"]["PlaylistCreateOperation_Payload_Data_Attributes"];
+        PlaylistsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["PlaylistsCreateOperation_Payload_Data_Attributes"];
             /** @enum {string} */
             type: "playlists";
         };
-        PlaylistCreateOperation_Payload_Data_Attributes: {
+        PlaylistsCreateOperation_Payload_Data_Attributes: {
             /**
              * @description Access type
              * @example PUBLIC
@@ -13815,61 +13994,61 @@ export interface components {
             description?: string;
             name: string;
         };
-        PlaylistItemsRelationshipAddOperation_Payload: {
-            data: components["schemas"]["PlaylistItemsRelationshipAddOperation_Payload_Data"][];
-            meta?: components["schemas"]["PlaylistItemsRelationshipAddOperation_Payload_Meta"];
+        PlaylistsItemsRelationshipAddOperation_Payload: {
+            data: components["schemas"]["PlaylistsItemsRelationshipAddOperation_Payload_Data"][];
+            meta?: components["schemas"]["PlaylistsItemsRelationshipAddOperation_Payload_Meta"];
         };
-        PlaylistItemsRelationshipAddOperation_Payload_Data: {
+        PlaylistsItemsRelationshipAddOperation_Payload_Data: {
             id: string;
-            meta?: components["schemas"]["PlaylistItemsRelationshipAddOperation_Payload_Data_Meta"];
+            meta?: components["schemas"]["PlaylistsItemsRelationshipAddOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "tracks" | "videos";
         };
-        PlaylistItemsRelationshipAddOperation_Payload_Data_Meta: {
+        PlaylistsItemsRelationshipAddOperation_Payload_Data_Meta: {
             /** Format: date-time */
             addedAt?: string;
         };
-        PlaylistItemsRelationshipAddOperation_Payload_Meta: {
+        PlaylistsItemsRelationshipAddOperation_Payload_Meta: {
             positionBefore: string;
         };
-        PlaylistItemsRelationshipRemoveOperation_Payload: {
-            data: components["schemas"]["PlaylistItemsRelationshipRemoveOperation_Payload_Data"][];
+        PlaylistsItemsRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["PlaylistsItemsRelationshipRemoveOperation_Payload_Data"][];
         };
-        PlaylistItemsRelationshipRemoveOperation_Payload_Data: {
+        PlaylistsItemsRelationshipRemoveOperation_Payload_Data: {
             id: string;
-            meta: components["schemas"]["PlaylistItemsRelationshipRemoveOperation_Payload_Data_Meta"];
+            meta: components["schemas"]["PlaylistsItemsRelationshipRemoveOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "tracks" | "videos";
         };
-        PlaylistItemsRelationshipRemoveOperation_Payload_Data_Meta: {
+        PlaylistsItemsRelationshipRemoveOperation_Payload_Data_Meta: {
             itemId: string;
         };
-        PlaylistItemsRelationshipReorderOperation_Payload: {
-            data: components["schemas"]["PlaylistItemsRelationshipReorderOperation_Payload_Data"][];
-            meta?: components["schemas"]["PlaylistItemsRelationshipReorderOperation_Payload_Meta"];
+        PlaylistsItemsRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["PlaylistsItemsRelationshipUpdateOperation_Payload_Data"][];
+            meta?: components["schemas"]["PlaylistsItemsRelationshipUpdateOperation_Payload_Meta"];
         };
-        PlaylistItemsRelationshipReorderOperation_Payload_Data: {
+        PlaylistsItemsRelationshipUpdateOperation_Payload_Data: {
             id: string;
-            meta: components["schemas"]["PlaylistItemsRelationshipReorderOperation_Payload_Data_Meta"];
+            meta: components["schemas"]["PlaylistsItemsRelationshipUpdateOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "tracks" | "videos";
         };
-        PlaylistItemsRelationshipReorderOperation_Payload_Data_Meta: {
+        PlaylistsItemsRelationshipUpdateOperation_Payload_Data_Meta: {
             itemId: string;
         };
-        PlaylistItemsRelationshipReorderOperation_Payload_Meta: {
+        PlaylistsItemsRelationshipUpdateOperation_Payload_Meta: {
             positionBefore: string;
         };
-        PlaylistUpdateOperation_Payload: {
-            data: components["schemas"]["PlaylistUpdateOperation_Payload_Data"];
+        PlaylistsUpdateOperation_Payload: {
+            data: components["schemas"]["PlaylistsUpdateOperation_Payload_Data"];
         };
-        PlaylistUpdateOperation_Payload_Data: {
-            attributes: components["schemas"]["PlaylistUpdateOperation_Payload_Data_Attributes"];
+        PlaylistsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["PlaylistsUpdateOperation_Payload_Data_Attributes"];
             id: string;
             /** @enum {string} */
             type: "playlists";
         };
-        PlaylistUpdateOperation_Payload_Data_Attributes: {
+        PlaylistsUpdateOperation_Payload_Data_Attributes: {
             /**
              * @description Access type
              * @example PUBLIC
@@ -14419,66 +14598,6 @@ export interface components {
              */
             source: "TIDAL";
         };
-        TrackAlbumsRelationshipUpdateOperation_Payload: {
-            data: components["schemas"]["TrackAlbumsRelationshipUpdateOperation_Payload_Data"][];
-        };
-        TrackAlbumsRelationshipUpdateOperation_Payload_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "albums";
-        };
-        TrackCreateOperation_Payload: {
-            data: components["schemas"]["TrackCreateOperation_Payload_Data"];
-        };
-        TrackCreateOperation_Payload_Data: {
-            attributes: components["schemas"]["TrackCreateOperation_Payload_Data_Attributes"];
-            relationships: components["schemas"]["TrackCreateOperation_Payload_Data_Relationships"];
-            /** @enum {string} */
-            type: "tracks";
-        };
-        TrackCreateOperation_Payload_Data_Attributes: {
-            /**
-             * @description Access type
-             * @example PRIVATE
-             * @enum {string}
-             */
-            accessType: "PUBLIC" | "UNLISTED" | "PRIVATE";
-            /**
-             * @description Explicit content
-             * @example false
-             */
-            explicit?: boolean;
-            title: string;
-        };
-        TrackCreateOperation_Payload_Data_Relationships: {
-            albums: components["schemas"]["TrackCreateOperation_Payload_Data_Relationships_Albums"];
-            artists: components["schemas"]["TrackCreateOperation_Payload_Data_Relationships_Artists"];
-            genres?: components["schemas"]["TrackCreateOperation_Payload_Data_Relationships_Genres"];
-        };
-        TrackCreateOperation_Payload_Data_Relationships_Albums: {
-            data: components["schemas"]["TrackCreateOperation_Payload_Data_Relationships_Albums_Data"][];
-        };
-        TrackCreateOperation_Payload_Data_Relationships_Albums_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "albums";
-        };
-        TrackCreateOperation_Payload_Data_Relationships_Artists: {
-            data: components["schemas"]["TrackCreateOperation_Payload_Data_Relationships_Artists_Data"][];
-        };
-        TrackCreateOperation_Payload_Data_Relationships_Artists_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "artists";
-        };
-        TrackCreateOperation_Payload_Data_Relationships_Genres: {
-            data: components["schemas"]["TrackCreateOperation_Payload_Data_Relationships_Genres_Data"][];
-        };
-        TrackCreateOperation_Payload_Data_Relationships_Genres_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "genres";
-        };
         TrackFilesReadById403ResponseBody: {
             errors: {
                 /**
@@ -14728,44 +14847,62 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        TrackUpdateOperation_Payload: {
-            data: components["schemas"]["TrackUpdateOperation_Payload_Data"];
+        TracksAlbumsRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["TracksAlbumsRelationshipUpdateOperation_Payload_Data"][];
         };
-        TrackUpdateOperation_Payload_Data: {
-            attributes?: components["schemas"]["TrackUpdateOperation_Payload_Data_Attributes"];
+        TracksAlbumsRelationshipUpdateOperation_Payload_Data: {
             id: string;
-            relationships?: components["schemas"]["TrackUpdateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "albums";
+        };
+        TracksCreateOperation_Payload: {
+            data: components["schemas"]["TracksCreateOperation_Payload_Data"];
+        };
+        TracksCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["TracksCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["TracksCreateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "tracks";
         };
-        TrackUpdateOperation_Payload_Data_Attributes: {
+        TracksCreateOperation_Payload_Data_Attributes: {
             /**
              * @description Access type
              * @example PRIVATE
              * @enum {string}
              */
-            accessType?: "PUBLIC" | "UNLISTED" | "PRIVATE";
-            /** Format: float */
-            bpm?: number;
+            accessType: "PUBLIC" | "UNLISTED" | "PRIVATE";
             /**
              * @description Explicit content
              * @example false
              */
             explicit?: boolean;
+            title: string;
+        };
+        TracksCreateOperation_Payload_Data_Relationships: {
+            albums: components["schemas"]["TracksCreateOperation_Payload_Data_Relationships_Albums"];
+            artists: components["schemas"]["TracksCreateOperation_Payload_Data_Relationships_Artists"];
+            genres?: components["schemas"]["TracksCreateOperation_Payload_Data_Relationships_Genres"];
+        };
+        TracksCreateOperation_Payload_Data_Relationships_Albums: {
+            data: components["schemas"]["TracksCreateOperation_Payload_Data_Relationships_Albums_Data"][];
+        };
+        TracksCreateOperation_Payload_Data_Relationships_Albums_Data: {
+            id: string;
             /** @enum {string} */
-            key?: "UNKNOWN" | "C" | "CSharp" | "D" | "Eb" | "E" | "F" | "FSharp" | "G" | "Ab" | "A" | "Bb" | "B";
+            type: "albums";
+        };
+        TracksCreateOperation_Payload_Data_Relationships_Artists: {
+            data: components["schemas"]["TracksCreateOperation_Payload_Data_Relationships_Artists_Data"][];
+        };
+        TracksCreateOperation_Payload_Data_Relationships_Artists_Data: {
+            id: string;
             /** @enum {string} */
-            keyScale?: "UNKNOWN" | "MAJOR" | "MINOR" | "AEOLIAN" | "BLUES" | "DORIAN" | "HARMONIC_MINOR" | "LOCRIAN" | "LYDIAN" | "MIXOLYDIAN" | "PENTATONIC_MAJOR" | "PHRYGIAN" | "MELODIC_MINOR" | "PENTATONIC_MINOR";
-            title?: string;
-            toneTags?: string[];
+            type: "artists";
         };
-        TrackUpdateOperation_Payload_Data_Relationships: {
-            genres?: components["schemas"]["TrackUpdateOperation_Payload_Data_Relationships_Genres"];
+        TracksCreateOperation_Payload_Data_Relationships_Genres: {
+            data: components["schemas"]["TracksCreateOperation_Payload_Data_Relationships_Genres_Data"][];
         };
-        TrackUpdateOperation_Payload_Data_Relationships_Genres: {
-            data: components["schemas"]["TrackUpdateOperation_Payload_Data_Relationships_Genres_Data"][];
-        };
-        TrackUpdateOperation_Payload_Data_Relationships_Genres_Data: {
+        TracksCreateOperation_Payload_Data_Relationships_Genres_Data: {
             id: string;
             /** @enum {string} */
             type: "genres";
@@ -14799,6 +14936,48 @@ export interface components {
             data: components["schemas"]["TracksMetadataStatus_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        TracksUpdateOperation_Payload: {
+            data: components["schemas"]["TracksUpdateOperation_Payload_Data"];
+        };
+        TracksUpdateOperation_Payload_Data: {
+            attributes?: components["schemas"]["TracksUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            relationships?: components["schemas"]["TracksUpdateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "tracks";
+        };
+        TracksUpdateOperation_Payload_Data_Attributes: {
+            /**
+             * @description Access type
+             * @example PRIVATE
+             * @enum {string}
+             */
+            accessType?: "PUBLIC" | "UNLISTED" | "PRIVATE";
+            /** Format: float */
+            bpm?: number;
+            /**
+             * @description Explicit content
+             * @example false
+             */
+            explicit?: boolean;
+            /** @enum {string} */
+            key?: "UNKNOWN" | "C" | "CSharp" | "D" | "Eb" | "E" | "F" | "FSharp" | "G" | "Ab" | "A" | "Bb" | "B";
+            /** @enum {string} */
+            keyScale?: "UNKNOWN" | "MAJOR" | "MINOR" | "AEOLIAN" | "BLUES" | "DORIAN" | "HARMONIC_MINOR" | "LOCRIAN" | "LYDIAN" | "MIXOLYDIAN" | "PENTATONIC_MAJOR" | "PHRYGIAN" | "MELODIC_MINOR" | "PENTATONIC_MINOR";
+            title?: string;
+            toneTags?: string[];
+        };
+        TracksUpdateOperation_Payload_Data_Relationships: {
+            genres?: components["schemas"]["TracksUpdateOperation_Payload_Data_Relationships_Genres"];
+        };
+        TracksUpdateOperation_Payload_Data_Relationships_Genres: {
+            data: components["schemas"]["TracksUpdateOperation_Payload_Data_Relationships_Genres_Data"][];
+        };
+        TracksUpdateOperation_Payload_Data_Relationships_Genres_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "genres";
         };
         Tracks_Attributes: {
             /**
@@ -14922,47 +15101,18 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionAlbumsRelationshipAddOperation_Payload: {
-            data: components["schemas"]["UserCollectionAlbumsRelationshipAddOperation_Payload_Data"][];
+        UserCollectionFoldersCreateOperation_Payload: {
+            data: components["schemas"]["UserCollectionFoldersCreateOperation_Payload_Data"];
         };
-        UserCollectionAlbumsRelationshipAddOperation_Payload_Data: {
-            id: string;
-            meta?: components["schemas"]["UserCollectionAlbumsRelationshipAddOperation_Payload_Data_Meta"];
+        UserCollectionFoldersCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["UserCollectionFoldersCreateOperation_Payload_Data_Attributes"];
             /** @enum {string} */
-            type: "albums";
+            type: "userCollectionFolders";
         };
-        UserCollectionAlbumsRelationshipAddOperation_Payload_Data_Meta: {
-            /** Format: date-time */
-            addedAt?: string;
-        };
-        UserCollectionAlbumsRelationshipRemoveOperation_Payload: {
-            data: components["schemas"]["UserCollectionAlbumsRelationshipRemoveOperation_Payload_Data"][];
-        };
-        UserCollectionAlbumsRelationshipRemoveOperation_Payload_Data: {
-            id: string;
+        UserCollectionFoldersCreateOperation_Payload_Data_Attributes: {
             /** @enum {string} */
-            type: "albums";
-        };
-        UserCollectionArtistsRelationshipAddOperation_Payload: {
-            data: components["schemas"]["UserCollectionArtistsRelationshipAddOperation_Payload_Data"][];
-        };
-        UserCollectionArtistsRelationshipAddOperation_Payload_Data: {
-            id: string;
-            meta?: components["schemas"]["UserCollectionArtistsRelationshipAddOperation_Payload_Data_Meta"];
-            /** @enum {string} */
-            type: "artists";
-        };
-        UserCollectionArtistsRelationshipAddOperation_Payload_Data_Meta: {
-            /** Format: date-time */
-            addedAt?: string;
-        };
-        UserCollectionArtistsRelationshipRemoveOperation_Payload: {
-            data: components["schemas"]["UserCollectionArtistsRelationshipRemoveOperation_Payload_Data"][];
-        };
-        UserCollectionArtistsRelationshipRemoveOperation_Payload_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "artists";
+            collectionType: "PLAYLISTS";
+            name: string;
         };
         UserCollectionFoldersDeleteResource400ResponseBody: {
             errors: {
@@ -14992,6 +15142,18 @@ export interface components {
             id: string;
             /** @deprecated */
             resourceType?: string;
+        };
+        UserCollectionFoldersUpdateOperation_Payload: {
+            data: components["schemas"]["UserCollectionFoldersUpdateOperation_Payload_Data"];
+        };
+        UserCollectionFoldersUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["UserCollectionFoldersUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "userCollectionFolders";
+        };
+        UserCollectionFoldersUpdateOperation_Payload_Data_Attributes: {
+            name?: string;
         };
         UserCollectionFolders_Attributes: {
             /** @enum {string} */
@@ -15025,8 +15187,6 @@ export interface components {
         UserCollectionFolders_Items_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
-            /** Format: date-time */
-            lastModifiedAt: string;
         };
         UserCollectionFolders_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -15061,47 +15221,110 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionPlaylistsRelationshipRemoveOperation_Payload: {
-            data: components["schemas"]["UserCollectionPlaylistsRelationshipRemoveOperation_Payload_Data"][];
+        UserCollectionsAddMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example DUPLICATE_ITEMS_IN_COLLECTION
+                 * @enum {string}
+                 */
+                code: "DUPLICATE_ITEMS_IN_COLLECTION" | "TOO_MANY_ITEMS_IN_COLLECTION";
+                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
         };
-        UserCollectionPlaylistsRelationshipRemoveOperation_Payload_Data: {
+        UserCollectionsAlbumsRelationshipAddOperation_Payload: {
+            data: components["schemas"]["UserCollectionsAlbumsRelationshipAddOperation_Payload_Data"][];
+        };
+        UserCollectionsAlbumsRelationshipAddOperation_Payload_Data: {
+            id: string;
+            meta?: components["schemas"]["UserCollectionsAlbumsRelationshipAddOperation_Payload_Data_Meta"];
+            /** @enum {string} */
+            type: "albums";
+        };
+        UserCollectionsAlbumsRelationshipAddOperation_Payload_Data_Meta: {
+            /** Format: date-time */
+            addedAt?: string;
+        };
+        UserCollectionsAlbumsRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["UserCollectionsAlbumsRelationshipRemoveOperation_Payload_Data"][];
+        };
+        UserCollectionsAlbumsRelationshipRemoveOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "albums";
+        };
+        UserCollectionsArtistsRelationshipAddOperation_Payload: {
+            data: components["schemas"]["UserCollectionsArtistsRelationshipAddOperation_Payload_Data"][];
+        };
+        UserCollectionsArtistsRelationshipAddOperation_Payload_Data: {
+            id: string;
+            meta?: components["schemas"]["UserCollectionsArtistsRelationshipAddOperation_Payload_Data_Meta"];
+            /** @enum {string} */
+            type: "artists";
+        };
+        UserCollectionsArtistsRelationshipAddOperation_Payload_Data_Meta: {
+            /** Format: date-time */
+            addedAt?: string;
+        };
+        UserCollectionsArtistsRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["UserCollectionsArtistsRelationshipRemoveOperation_Payload_Data"][];
+        };
+        UserCollectionsArtistsRelationshipRemoveOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artists";
+        };
+        UserCollectionsPlaylistsRelationshipAddOperation_Payload: {
+            data: components["schemas"]["UserCollectionsPlaylistsRelationshipAddOperation_Payload_Data"][];
+        };
+        UserCollectionsPlaylistsRelationshipAddOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
             type: "playlists";
         };
-        UserCollectionTracksRelationshipAddOperation_Payload: {
-            data: components["schemas"]["UserCollectionTracksRelationshipAddOperation_Payload_Data"][];
+        UserCollectionsPlaylistsRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["UserCollectionsPlaylistsRelationshipRemoveOperation_Payload_Data"][];
         };
-        UserCollectionTracksRelationshipAddOperation_Payload_Data: {
+        UserCollectionsPlaylistsRelationshipRemoveOperation_Payload_Data: {
             id: string;
-            meta?: components["schemas"]["UserCollectionTracksRelationshipAddOperation_Payload_Data_Meta"];
+            /** @enum {string} */
+            type: "playlists";
+        };
+        UserCollectionsTracksRelationshipAddOperation_Payload: {
+            data: components["schemas"]["UserCollectionsTracksRelationshipAddOperation_Payload_Data"][];
+        };
+        UserCollectionsTracksRelationshipAddOperation_Payload_Data: {
+            id: string;
+            meta?: components["schemas"]["UserCollectionsTracksRelationshipAddOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "tracks";
         };
-        UserCollectionTracksRelationshipAddOperation_Payload_Data_Meta: {
+        UserCollectionsTracksRelationshipAddOperation_Payload_Data_Meta: {
             /** Format: date-time */
             addedAt?: string;
         };
-        UserCollectionTracksRelationshipRemoveOperation_Payload: {
-            data: components["schemas"]["UserCollectionTracksRelationshipRemoveOperation_Payload_Data"][];
+        UserCollectionsTracksRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["UserCollectionsTracksRelationshipRemoveOperation_Payload_Data"][];
         };
-        UserCollectionTracksRelationshipRemoveOperation_Payload_Data: {
+        UserCollectionsTracksRelationshipRemoveOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
             type: "tracks";
         };
-        UserCollectionVideosRelationshipAddOperation_Payload: {
-            data: components["schemas"]["UserCollectionVideosRelationshipAddOperation_Payload_Data"][];
+        UserCollectionsVideosRelationshipAddOperation_Payload: {
+            data: components["schemas"]["UserCollectionsVideosRelationshipAddOperation_Payload_Data"][];
         };
-        UserCollectionVideosRelationshipAddOperation_Payload_Data: {
+        UserCollectionsVideosRelationshipAddOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
             type: "videos";
         };
-        UserCollectionVideosRelationshipRemoveOperation_Payload: {
-            data: components["schemas"]["UserCollectionVideosRelationshipRemoveOperation_Payload_Data"][];
+        UserCollectionsVideosRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["UserCollectionsVideosRelationshipRemoveOperation_Payload_Data"][];
         };
-        UserCollectionVideosRelationshipRemoveOperation_Payload_Data: {
+        UserCollectionsVideosRelationshipRemoveOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
             type: "videos";
@@ -15325,16 +15548,16 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserReportCreateOperation_Payload: {
-            data: components["schemas"]["UserReportCreateOperation_Payload_Data"];
+        UserReportsCreateOperation_Payload: {
+            data: components["schemas"]["UserReportsCreateOperation_Payload_Data"];
         };
-        UserReportCreateOperation_Payload_Data: {
-            attributes: components["schemas"]["UserReportCreateOperation_Payload_Data_Attributes"];
+        UserReportsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["UserReportsCreateOperation_Payload_Data_Attributes"];
             relationships: components["schemas"]["UserReportsCreateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "userReports";
         };
-        UserReportCreateOperation_Payload_Data_Attributes: {
+        UserReportsCreateOperation_Payload_Data_Attributes: {
             description: string;
             /** @enum {string} */
             reason: "SEXUAL_CONTENT_OR_NUDITY" | "VIOLENT_OR_DANGEROUS_CONTENT" | "HATEFUL_OR_ABUSIVE_CONTENT" | "HARASSMENT" | "PRIVACY_VIOLATION" | "SCAMS_OR_FRAUD" | "SPAM" | "COPYRIGHT_INFRINGEMENT" | "APPEAL" | "UNKNOWN";
@@ -15646,6 +15869,15 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["UserCollectionFoldersDeleteResource400ResponseBody"];
+            };
+        };
+        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites. */
+        UserCollectionsAddMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserCollectionsAddMultiDataRelationship409ResponseBody"];
             };
         };
     };
