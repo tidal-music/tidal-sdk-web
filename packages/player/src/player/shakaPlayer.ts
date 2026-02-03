@@ -1205,7 +1205,17 @@ export default class ShakaPlayer extends BasePlayer {
       this.#isReset = false;
     } catch (error) {
       console.error('Failed to load next track:', error);
+
+      // Clear all preload state to maintain consistency
       this.#preloadedPayload = null;
+      this.preloadedStreamingSessionId = undefined;
+
+      // Clear the player session ID that was set for the failed load
+      if (this.#activePlayer === 1) {
+        this.#playerTwoSessionId = undefined;
+      } else {
+        this.#playerOneSessionId = undefined;
+      }
     }
   }
 
