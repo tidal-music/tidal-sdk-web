@@ -10,7 +10,8 @@
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "types": [
-      "mocha"
+      "mocha",
+      "vite/client"
     ],
     "sourceMap": false
   },
