@@ -291,6 +291,12 @@ export default class ShakaPlayer extends BasePlayer {
       const mediaElement = e.target as HTMLMediaElement;
       timeUpdateHandler(e);
 
+      // Ensure currentTime reflects the ended media element, even if it is inactive
+      // after gapless crossfade. This is critical for accurate endAssetPosition reporting.
+      if (mediaElement.readyState > HTMLMediaElement.HAVE_NOTHING) {
+        this.currentTime = mediaElement.currentTime;
+      }
+
       // Determine which player fired the ended event and finish its session
       const isPlayerOne = mediaElement === mediaElementOne;
       const sessionIdToFinish = isPlayerOne
@@ -312,6 +318,15 @@ export default class ShakaPlayer extends BasePlayer {
         // Restore current session if it was different (gapless case)
         if (savedCurrentSessionId !== sessionIdToFinish) {
           this.currentStreamingSessionId = savedCurrentSessionId;
+
+          // Also restore currentTime to reflect the active player
+          const activeMediaElement = this.getActiveMediaElement();
+          if (
+            activeMediaElement &&
+            activeMediaElement.readyState > HTMLMediaElement.HAVE_NOTHING
+          ) {
+            this.currentTime = activeMediaElement.currentTime;
+          }
         }
 
         // Clear the finished session ID from the player
