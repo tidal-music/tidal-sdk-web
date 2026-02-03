@@ -135,6 +135,7 @@ describe('registerAdaptations', () => {
     // Register adaptations
     const unregister = registerAdaptations(
       mockPlayer as unknown as shaka.Player,
+      () => ({ current: undefined, preloaded: undefined }),
     );
 
     // Simulate media-product-transition to set the currentStreamingSessionId
@@ -189,6 +190,7 @@ describe('registerAdaptations', () => {
     // Register adaptations
     const unregister = registerAdaptations(
       mockPlayer as unknown as shaka.Player,
+      () => ({ current: undefined, preloaded: undefined }),
     );
 
     // Simulate media-product-transition to set the currentStreamingSessionId
@@ -230,6 +232,7 @@ describe('registerAdaptations', () => {
 
     const unregister = registerAdaptations(
       mockPlayer as unknown as shaka.Player,
+      () => ({ current: undefined, preloaded: undefined }),
     );
 
     // Unregister should be a function and complete without error

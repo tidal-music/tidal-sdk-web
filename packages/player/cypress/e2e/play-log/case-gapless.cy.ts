@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { INTERCEPT_OPTIONS, SDK_BATCH_INTERVAL } from '../../helpers';
 
-it.skip('Gapless Playback Test - Pink Floyd Album Transition', () => {
+it('Gapless Playback Test - Pink Floyd Album Transition', () => {
   const credentials = JSON.parse(atob(Cypress.env().TEST_USER.substring(1, Cypress.env().TEST_USER.length - 1)));
 
   // Pass env to test app
@@ -23,17 +23,20 @@ it.skip('Gapless Playback Test - Pink Floyd Album Transition', () => {
   // Wait for first media product transition (The Thin Ice)
   cy.get('@playerSdkMediaProductTransition', { timeout: 5000 }).should('be.called');
 
-  // Wait for preload request (should trigger when seeking near the end)
-  cy.get('@playerSdkPreloadRequest', { timeout: 10000 }).should('be.called');
+  // Wait for preload request (should trigger immediately after seeking near the end)
+  cy.get('@playerSdkPreloadRequest', { timeout: 3000 }).should('be.called');
 
   // Wait for second media product transition (Another Brick in the Wall, Pt. 1)
-  // This should happen automatically via gapless playback (~10 seconds after seeking)
-  cy.get('@playerSdkMediaProductTransition', { timeout: 20000 }).should('be.calledTwice');
+  // With gapless crossfade, this happens ~5s after seeking (0.2s before first track ends)
+  cy.get('@playerSdkMediaProductTransition', { timeout: 10000 }).should('be.calledTwice');
 
-  // Wait for first track to end
-  cy.get('@playerSdkEnded', { timeout: 5000 }).should('be.called');
+  // Wait for ended event for the first track
+  // Even with gapless crossfade, we properly dispatch the ended event for reporting/analytics
+  // The crossfade completes seamlessly, then the first track's ended event fires afterward
+  cy.get('@playerSdkEnded', { timeout: 10000 }).should('be.called');
 
-  // Test completes after 5 seconds of second track playing
+  // Wait for second track to play for 5 seconds to ensure playback session is logged
+  cy.wait(5000);
 
   // Start intercepting events endpoint
   cy.intercept(INTERCEPT_OPTIONS).as(
@@ -72,18 +75,30 @@ it.skip('Gapless Playback Test - Pink Floyd Album Transition', () => {
     expect(firstSession.payload).to.include({
       startAssetPosition: 0,
       actualProductId: '55391449',
-      sourceType: 'track',
+      sourceType: 'gapless-test',
     });
+
+    // Verify first track ended at correct position (~147s, the track's full duration)
+    // This validates the fix where endAssetPosition comes from the correct media element
+    expect(firstSession.payload.endAssetPosition).to.be.closeTo(147, 1);
 
     // Second track: Another Brick in the Wall, Pt. 1 (55391450)
     expect(secondSession.payload).to.include({
       startAssetPosition: 0,
       actualProductId: '55391450',
-      sourceType: 'track',
+      sourceType: 'gapless-test',
     });
 
-    // Verify gapless transition - second track should start immediately after first
-    // The idealStartTimestamp should be very close to the first track's end
+    // Verify second track ended at correct position (~5s, where we called reset)
+    // This ensures we're not using the wrong player's currentTime
+    expect(secondSession.payload.endAssetPosition).to.be.closeTo(5, 1);
+
+    // Verify gapless transition - second track should start very close to first track ending
+    // With crossfade starting 200ms before track 1 ends, track 2 actually starts BEFORE track 1 ends
+    // We allow up to 300ms tolerance for event processing and timing variations
+    expect(firstSession.payload.endTimestamp).to.exist;
     expect(secondSession.payload.startTimestamp).to.exist;
+    const gapBetweenTracks = secondSession.payload.startTimestamp - firstSession.payload.endTimestamp;
+    expect(Math.abs(gapBetweenTracks)).to.be.lessThan(300); // Less than 300ms gap/overlap
   });
 });

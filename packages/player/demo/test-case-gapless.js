@@ -171,7 +171,7 @@ async function run() {
         void (async () => {
           print('🎵 Second track playing - waiting 5 seconds...');
           await waitFor(5000);
-          print('✅ Test complete! Pausing playback.');
+          print('✅ Test complete! Resetting player to finalize sessions.');
           print('');
           print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
           print('Summary:');
@@ -190,7 +190,8 @@ async function run() {
             }
           }
           print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-          Player.pause();
+          // Reset player to finalize and commit both playback sessions
+          Player.reset();
           clearInterval(intervalId);
           updateStatus('Test complete - Gapless crossfade verified! ✓');
         })();
