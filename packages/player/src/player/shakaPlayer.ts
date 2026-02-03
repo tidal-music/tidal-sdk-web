@@ -1274,9 +1274,20 @@ export default class ShakaPlayer extends BasePlayer {
 
   async playbackEngineEndedHandler(e: EndedEvent) {
     if (this.isActivePlayer) {
-      const { reason } = e.detail;
+      const { mediaProduct, reason } = e.detail;
 
       if (reason === 'completed') {
+        // In gapless mode, the ended event for the previous track fires AFTER
+        // crossfade has already transitioned to the next track. Guard against
+        // handling stale ended events that don't correspond to the currently
+        // active media product.
+        if (mediaProduct !== this.currentMediaProduct) {
+          this.debugLog(
+            'Ignoring ended event for non-active media product (already handled by crossfade)',
+          );
+          return;
+        }
+
         // With dual player crossfade, the transition should already be complete
         // by the time the 'ended' event fires
         this.debugLog('Track ended - crossfade should have handled transition');
