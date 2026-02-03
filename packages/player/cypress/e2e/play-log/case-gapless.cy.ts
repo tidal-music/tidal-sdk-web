@@ -20,6 +20,11 @@ it('Gapless Playback Test - Pink Floyd Album Transition', () => {
     }
   });
 
+  // Start intercepting events endpoint BEFORE any analytics are sent
+  cy.intercept(INTERCEPT_OPTIONS).as(
+    'playerSdkEventsRequest',
+  );
+
   // Wait for first media product transition (The Thin Ice)
   cy.get('@playerSdkMediaProductTransition', { timeout: 5000 }).should('be.called');
 
@@ -30,18 +35,13 @@ it('Gapless Playback Test - Pink Floyd Album Transition', () => {
   // With gapless crossfade, this happens ~5s after seeking (0.2s before first track ends)
   cy.get('@playerSdkMediaProductTransition', { timeout: 10000 }).should('be.calledTwice');
 
-  // Wait for ended event for the first track
-  // Even with gapless crossfade, we properly dispatch the ended event for reporting/analytics
-  // The crossfade completes seamlessly, then the first track's ended event fires afterward
-  cy.get('@playerSdkEnded', { timeout: 10000 }).should('be.called');
+  // In gapless mode, the 'ended' event is NOT dispatched for the first track
+  // because playback continues seamlessly. Dispatching 'ended' would cause apps
+  // to incorrectly try to advance to the next track (which already started).
+  // Analytics/metrics are still tracked via internal eventTrackingStreamingEnded.
 
   // Wait for second track to play for 5 seconds to ensure playback session is logged
   cy.wait(5000);
-
-  // Start intercepting events endpoint
-  cy.intercept(INTERCEPT_OPTIONS).as(
-    'playerSdkEventsRequest',
-  );
 
   // Wait for next event batch
   cy.wait('@playerSdkEventsRequest', {

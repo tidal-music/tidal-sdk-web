@@ -118,7 +118,10 @@ export class BasePlayer {
     const mediaProductTransition =
       streamingSessionStore.getMediaProductTransition(streamingSessionId);
 
-    if (mediaProductTransition) {
+    // Only dispatch 'ended' event if NOT in gapless mode
+    // In gapless mode, playback continues seamlessly - dispatching 'ended' would cause
+    // the app to incorrectly advance to the next track
+    if (!isGaplessTransition && mediaProductTransition) {
       events.dispatchEvent(
         ended(endReason, mediaProductTransition.mediaProduct),
       );
@@ -395,7 +398,9 @@ export class BasePlayer {
       : false;
 
     // Nothing is preloaded, player is now idle.
-    if (!this.preloadedStreamingSessionId) {
+    // CRITICAL: Skip this in gapless mode - the next track is already playing!
+    // Setting IDLE would dispatch a PlaybackStateChange event and corrupt app state.
+    if (!isGaplessTransition && !this.preloadedStreamingSessionId) {
       this.playbackState = 'IDLE';
     }
 

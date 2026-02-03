@@ -999,7 +999,15 @@ export default class ShakaPlayer extends BasePlayer {
         // Swap active player
         this.#activePlayer = this.#activePlayer === 1 ? 2 : 1;
 
-        // Update streaming session
+        // CRITICAL: Reset currentTime IMMEDIATELY after swapping active player
+        // This must happen before ANY other operations to prevent race conditions where:
+        // 1. this.mediaElement (getter) now returns the NEW media element
+        // 2. But this.currentTime still has the OLD track's position
+        // 3. Events fire (buffering, playing, etc.) → trigger playbackState changes
+        // 4. App receives PlaybackStateChange → calls getAssetPosition() → gets wrong time!
+        this.currentTime = nextMediaElement.currentTime;
+
+        // Update streaming session ID for correct duration lookup
         this.currentStreamingSessionId =
           nextPayload.streamInfo.streamingSessionId;
         this.preloadedStreamingSessionId = undefined;
