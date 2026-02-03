@@ -191,7 +191,7 @@ async function run() {
           }
           print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
           // Reset player to finalize and commit both playback sessions
-          Player.reset();
+          await Player.reset();
           clearInterval(intervalId);
           updateStatus('Test complete - Gapless crossfade verified! ✓');
         })();
