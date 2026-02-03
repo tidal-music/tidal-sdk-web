@@ -958,6 +958,14 @@ export default class ShakaPlayer extends BasePlayer {
     const nextMediaElement = this.getInactiveMediaElement();
     const nextPayload = this.#preloadedPayload;
 
+    // Capture starting volumes (respecting loudness normalization and user settings)
+    const currentTrackVolume = currentMediaElement.volume;
+    const nextTrackTargetVolume = this.adjustedVolume(nextPayload.streamInfo);
+
+    this.debugLog(
+      `Crossfade volumes: current=${currentTrackVolume.toFixed(2)}, next target=${nextTrackTargetVolume.toFixed(2)}`,
+    );
+
     // Ensure next media element is at position 0
     nextMediaElement.currentTime = 0;
 
@@ -971,12 +979,13 @@ export default class ShakaPlayer extends BasePlayer {
       const elapsed = performance.now() - startTime;
       const progress = Math.min(elapsed / this.#CROSSFADE_DURATION_MS, 1.0);
 
-      // Equal-power crossfade for constant loudness
-      const fadeOut = Math.cos((progress * Math.PI) / 2);
-      const fadeIn = Math.sin((progress * Math.PI) / 2);
+      // Equal-power crossfade curve for constant perceived loudness
+      const fadeOutCurve = Math.cos((progress * Math.PI) / 2);
+      const fadeInCurve = Math.sin((progress * Math.PI) / 2);
 
-      currentMediaElement.volume = fadeOut;
-      nextMediaElement.volume = fadeIn;
+      // Scale the curves to actual volume levels (respecting loudness normalization)
+      currentMediaElement.volume = currentTrackVolume * fadeOutCurve;
+      nextMediaElement.volume = nextTrackTargetVolume * fadeInCurve;
 
       if (progress < 1.0) {
         this.#crossfadeAnimationId = requestAnimationFrame(performCrossfade);
