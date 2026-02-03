@@ -169,9 +169,29 @@ export default class ShakaPlayer extends BasePlayer {
       }
     });
 
+    /**
+     * Check if an event should be ignored based on its source.
+     * Returns true if the event is from an inactive source and should be ignored.
+     * For dual-player gapless: only process events from the active media element or Shaka instance.
+     */
+    const shouldIgnoreEvent = (e?: Event): boolean => {
+      if (!e) {
+        return false;
+      }
+
+      const target = e.target;
+      if (target instanceof HTMLMediaElement) {
+        return target !== this.getActiveMediaElement();
+      } else if (target instanceof shaka.Player) {
+        return target !== this.getActiveShakaInstance();
+      } else {
+        // Ignore events from unknown sources.
+        return true;
+      }
+    };
+
     const setPlaying = (e?: Event) => {
-      // Only process events from the active media element
-      if (e && e.target !== this.getActiveMediaElement()) {
+      if (shouldIgnoreEvent(e)) {
         return;
       }
 
@@ -182,8 +202,7 @@ export default class ShakaPlayer extends BasePlayer {
     };
 
     const setStalled = (e: Event) => {
-      // Only process events from the active media element
-      if (e.target !== this.getActiveMediaElement()) {
+      if (shouldIgnoreEvent(e)) {
         return;
       }
 
@@ -201,8 +220,7 @@ export default class ShakaPlayer extends BasePlayer {
     };
 
     const setNotPlaying = (e?: Event) => {
-      // Only process events from the active media element
-      if (e && e.target !== this.getActiveMediaElement()) {
+      if (shouldIgnoreEvent(e)) {
         return;
       }
 
@@ -330,15 +348,15 @@ export default class ShakaPlayer extends BasePlayer {
     };
 
     this.#shakaEventHandlers = {
-      bufferingHandler: event => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore - Custom shaka event
-        if (event.buffering) {
+      bufferingHandler: (event => {
+        // Shaka Player emits buffering events with a custom 'buffering' property
+        const bufferingEvent = event as Event & { buffering: boolean };
+        if (bufferingEvent.buffering) {
           setStalled(event);
         } else if (this.hasStarted()) {
-          setPlaying();
+          setPlaying(event);
         }
-      },
+      }) as EventListener,
       errorHandler: ((e: CustomEvent<shaka.extern.Error>) =>
         this.#handleShakaError(e)) as EventListener,
       loadedHandler: setNotPlaying,
