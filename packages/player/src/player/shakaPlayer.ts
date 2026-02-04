@@ -1152,8 +1152,10 @@ export default class ShakaPlayer extends BasePlayer {
     }
 
     // Cancel any in-progress crossfade
-    if (this.#crossfadeInProgress && this.#crossfadeAnimationId) {
-      cancelAnimationFrame(this.#crossfadeAnimationId);
+    if (this.#crossfadeInProgress) {
+      if (this.#crossfadeAnimationId != null) {
+        cancelAnimationFrame(this.#crossfadeAnimationId);
+      }
       this.#crossfadeInProgress = false;
       this.#crossfadeAnimationId = null;
     }
@@ -1430,8 +1432,10 @@ export default class ShakaPlayer extends BasePlayer {
     }
 
     // Cancel any in-progress crossfade
-    if (this.#crossfadeInProgress && this.#crossfadeAnimationId) {
-      cancelAnimationFrame(this.#crossfadeAnimationId);
+    if (this.#crossfadeInProgress) {
+      if (this.#crossfadeAnimationId != null) {
+        cancelAnimationFrame(this.#crossfadeAnimationId);
+      }
       this.#crossfadeInProgress = false;
       this.#crossfadeAnimationId = null;
     }
