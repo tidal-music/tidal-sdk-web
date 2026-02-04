@@ -958,20 +958,44 @@ export default class ShakaPlayer extends BasePlayer {
     const nextMediaElement = this.getInactiveMediaElement();
     const nextPayload = this.#preloadedPayload;
 
-    // Capture starting volumes (respecting loudness normalization and user settings)
-    const currentTrackVolume = currentMediaElement.volume;
-    const nextTrackTargetVolume = this.adjustedVolume(nextPayload.streamInfo);
+    // Declare volume variables outside try block so they're available in performCrossfade
+    let currentTrackVolume: number;
+    let nextTrackTargetVolume: number;
 
-    this.debugLog(
-      `Crossfade volumes: current=${currentTrackVolume.toFixed(2)}, next target=${nextTrackTargetVolume.toFixed(2)}`,
-    );
+    try {
+      // Capture starting volumes (respecting loudness normalization and user settings)
+      currentTrackVolume = currentMediaElement.volume;
+      nextTrackTargetVolume = this.adjustedVolume(nextPayload.streamInfo);
 
-    // Ensure next media element is at position 0
-    nextMediaElement.currentTime = 0;
+      this.debugLog(
+        `Crossfade volumes: current=${currentTrackVolume.toFixed(2)}, next target=${nextTrackTargetVolume.toFixed(2)}`,
+      );
 
-    // Start playing the second track NOW (at volume 0)
-    await nextMediaElement.play();
-    this.debugLog('Second track started playing for crossfade');
+      // Ensure next media element is at position 0
+      nextMediaElement.currentTime = 0;
+
+      // Start playing the second track NOW (at volume 0)
+      await nextMediaElement.play();
+      this.debugLog('Second track started playing for crossfade');
+    } catch (error) {
+      this.debugLog('Error while starting gapless crossfade', error);
+
+      // Clean up state to allow future crossfade attempts
+      try {
+        nextMediaElement.pause();
+      } catch {
+        // Ignore secondary errors during cleanup
+      }
+
+      if (this.#crossfadeAnimationId != null) {
+        cancelAnimationFrame(this.#crossfadeAnimationId);
+        this.#crossfadeAnimationId = null;
+      }
+
+      this.#crossfadeInProgress = false;
+      // Don't clear #preloadedPayload here - it can be retried or used for explicit skip
+      return;
+    }
 
     const startTime = performance.now();
 
