@@ -1,6 +1,7 @@
 import { waitForPlayers } from '../internal/helpers/wait-for-players';
 
 export const mediaElementOne = document.createElement('video');
+export const mediaElementTwo = document.createElement('video');
 
 const prepareMediaElement = (mediaEl: HTMLMediaElement) => {
   mediaEl.setAttribute('crossorigin', 'anonymous');
@@ -9,6 +10,9 @@ const prepareMediaElement = (mediaEl: HTMLMediaElement) => {
 
 prepareMediaElement(mediaElementOne);
 mediaElementOne.id = 'video-one';
+
+prepareMediaElement(mediaElementTwo);
+mediaElementTwo.id = 'video-two';
 
 const tidalPlayerRootId = 'tidal-player-root';
 
@@ -35,6 +39,9 @@ export function ensureVideoElementsMounted() {
     if (!(mediaElementOne.id in templateEl.children)) {
       templateEl.appendChild(mediaElementOne);
     }
+    if (!(mediaElementTwo.id in templateEl.children)) {
+      templateEl.appendChild(mediaElementTwo);
+    }
   }
 
   return waitForPlayers();
@@ -50,6 +57,13 @@ export function activateVideoElements() {
           !mediaElementOne.src
         ) {
           mediaElementOne.load();
+        }
+
+        if (
+          mediaElementTwo.readyState === HTMLMediaElement.HAVE_NOTHING &&
+          !mediaElementTwo.src
+        ) {
+          mediaElementTwo.load();
         }
 
         resolve();

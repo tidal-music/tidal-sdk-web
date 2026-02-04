@@ -46,7 +46,13 @@ export async function saveAdaptation(
   return adaptation;
 }
 
-export function registerAdaptations(shakaPlayer: shaka.Player) {
+export function registerAdaptations(
+  shakaPlayer: shaka.Player,
+  getSessionIds: () => {
+    current: string | undefined;
+    preloaded: string | undefined;
+  },
+) {
   let currentStreamingSessionId: null | string;
 
   const onManualOrAutomaticQualityChange = () => {
@@ -71,8 +77,13 @@ export function registerAdaptations(shakaPlayer: shaka.Player) {
     const shakaTrack = (ev as Event & { newTrack: shaka.extern.Track })
       .newTrack;
 
-    if (currentStreamingSessionId) {
-      updatePlaybackQuality(currentStreamingSessionId, shakaTrack);
+    // For dual-player gapless: try both current and preloaded session IDs
+    const sessionIds = getSessionIds();
+    const sessionId =
+      currentStreamingSessionId ?? sessionIds.current ?? sessionIds.preloaded;
+
+    if (sessionId) {
+      updatePlaybackQuality(sessionId, shakaTrack);
     }
   };
 
