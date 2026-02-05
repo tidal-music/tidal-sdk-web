@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.0.63"
+    "version" : "1.0.64"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -3086,16 +3086,17 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
           "in" : "query",
-          "name" : "viewerContext",
+          "name" : "page[cursor]",
           "required" : false,
           "schema" : {
             "type" : "string"
           }
         }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "description" : "Member paths to include viewer-specific information on",
           "in" : "query",
-          "name" : "page[cursor]",
+          "name" : "viewerContext",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -3229,16 +3230,17 @@
             "type" : "string"
           }
         }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
           "in" : "query",
-          "name" : "viewerContext",
+          "name" : "page[cursor]",
           "required" : false,
           "schema" : {
             "type" : "string"
           }
         }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "description" : "Member paths to include viewer-specific information on",
           "in" : "query",
-          "name" : "page[cursor]",
+          "name" : "viewerContext",
           "required" : false,
           "schema" : {
             "type" : "string"
