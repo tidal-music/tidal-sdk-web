@@ -1437,35 +1437,48 @@ export default class ShakaPlayer extends BasePlayer {
 
     this.#isReset = true;
 
-    // Reset both players
+    // Reset players: always unload active player, unload inactive only if !keepPreload
     const promises: Array<Promise<void>> = [];
+    const activeShakaInstance = this.getActiveShakaInstance();
+    const activeMediaElement = this.getActiveMediaElement();
+    const inactiveShakaInstance = this.getInactiveShakaInstance();
+    const inactiveMediaElement = this.getInactiveMediaElement();
 
-    if (this.#shakaInstanceOne && mediaElementOne.readyState !== 0) {
+    // Always unload the active player
+    if (activeShakaInstance && activeMediaElement.readyState !== 0) {
       promises.push(
-        this.#shakaInstanceOne.unload(/* initializeMediaSource */ true),
+        activeShakaInstance.unload(/* initializeMediaSource */ true),
       );
     }
 
-    if (this.#shakaInstanceTwo && mediaElementTwo.readyState !== 0) {
+    // Unload inactive player only if we're not keeping preload
+    if (
+      !keepPreload &&
+      inactiveShakaInstance &&
+      inactiveMediaElement.readyState !== 0
+    ) {
       promises.push(
-        this.#shakaInstanceTwo.unload(/* initializeMediaSource */ true),
+        inactiveShakaInstance.unload(/* initializeMediaSource */ true),
       );
     }
 
-    // Reset volumes
-    mediaElementOne.volume = 1.0;
-    mediaElementTwo.volume = 0;
-
-    // Reset active player to 1
-    this.#activePlayer = 1;
-
-    // Clear session tracking
-    this.#playerOneSessionId = undefined;
-    this.#playerTwoSessionId = undefined;
+    // Reset volumes and state only if not keeping preload
+    if (!keepPreload) {
+      mediaElementOne.volume = 1.0;
+      mediaElementTwo.volume = 0;
+      this.#activePlayer = 1;
+      this.#playerOneSessionId = undefined;
+      this.#playerTwoSessionId = undefined;
+    } else {
+      // When keeping preload, clear only the active player's session
+      if (this.#activePlayer === 1) {
+        this.#playerOneSessionId = undefined;
+      } else {
+        this.#playerTwoSessionId = undefined;
+      }
+    }
 
     await Promise.all(promises);
-
-    return;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
