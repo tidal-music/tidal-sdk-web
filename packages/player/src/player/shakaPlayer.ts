@@ -1227,21 +1227,16 @@ export default class ShakaPlayer extends BasePlayer {
     );
 
     try {
-      // Load into inactive player
+      // Load into inactive player - Shaka will start buffering automatically
       await inactiveShakaInstance.load(payload.streamInfo.streamUrl);
       this.debugLog('Next track loaded in inactive player');
 
-      // Set volume to 0 and position to 0, but keep PAUSED
-      // We'll start playing it when crossfade begins
+      // Set volume to 0 and position to 0
+      // Keep the media element PAUSED - we'll play it during crossfade or when user skips
       inactiveMediaElement.volume = 0;
       inactiveMediaElement.currentTime = 0;
 
-      // Preload by briefly playing then pausing to buffer content
-      await inactiveMediaElement.play();
-      inactiveMediaElement.pause();
-      inactiveMediaElement.currentTime = 0;
-
-      this.debugLog('Next track loaded and buffered in inactive player');
+      this.debugLog('Next track loaded and ready in inactive player');
 
       /*
         A play action can only start playback if playback state is not IDLE.
@@ -1480,6 +1475,7 @@ export default class ShakaPlayer extends BasePlayer {
     const { mediaElement } = this;
 
     if (!mediaElement) {
+      this.debugLog('No media element available for seeking');
       return;
     }
 
