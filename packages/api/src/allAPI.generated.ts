@@ -2076,9 +2076,10 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    viewerContext?: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Member paths to include viewer-specific information on */
+                    viewerContext?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: followers
                      * @example followers
@@ -2138,9 +2139,10 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    viewerContext?: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Member paths to include viewer-specific information on */
+                    viewerContext?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: following
                      * @example following
