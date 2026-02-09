@@ -34,14 +34,14 @@
   },
   "dependencies": {
     "@tidal-music/api": "workspace:*",
-    "openapi-fetch": "0.15.0"
+    "openapi-fetch": "0.16.0"
   },
   "devDependencies": {
     "@tidal-music/auth": "workspace:^",
     "@tidal-music/common": "workspace:^",
     "@vitest/coverage-v8": "4.0.18",
     "@vitest/ui": "4.0.18",
-    "openapi-typescript": "7.10.1",
+    "openapi-typescript": "7.12.0",
     "typescript": "5.9.3",
     "vite": "7.3.1",
     "vite-plugin-dts": "4.5.4",
