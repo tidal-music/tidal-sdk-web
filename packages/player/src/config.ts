@@ -6,16 +6,18 @@ type Config = {
   audioAdaptiveBitrateStreaming: boolean;
   desiredVolumeLevel: number;
   gatherEvents: boolean;
+  legacyApiUrl: string;
   loudnessNormalizationMode: LoudnessNormalizationMode;
   outputDevicesEnabled: boolean;
   streamingWifiAudioQuality: AudioQuality;
 };
 
 let state = Object.freeze({
-  apiUrl: 'https://api.tidal.com/v1',
+  apiUrl: 'https://openapi.tidal.com/v2/',
   audioAdaptiveBitrateStreaming: true,
   desiredVolumeLevel: 1,
   gatherEvents: true,
+  legacyApiUrl: 'https://api.tidal.com/v1',
   loudnessNormalizationMode: 'ALBUM',
   outputDevicesEnabled: false,
   streamingWifiAudioQuality: 'LOW',

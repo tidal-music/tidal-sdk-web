@@ -49,8 +49,8 @@ let pushkin: Pushkin | undefined;
 // Only exported for testing.
 // eslint-disable-next-line disable-autofix/jsdoc/require-jsdoc
 export async function fetchWebSocketURL(accessToken: string) {
-  const apiUrl = Config.get('apiUrl');
-  const response = await fetch(apiUrl + '/rt/connect', {
+  const legacyApiUrl = Config.get('legacyApiUrl');
+  const response = await fetch(legacyApiUrl + '/rt/connect', {
     headers: new Headers({
       Authorization: 'Bearer ' + accessToken,
       'Content-Type': 'application/json',
