@@ -161,7 +161,8 @@ async function runExample(clientId, clientSecret, searchTerm, playlistId) {
     console.log('Meta cursor:', firstResponse.data.links?.meta?.nextCursor);
 
     // Get cursor for next page, FIXME:with "fix" for the cursor format
-    currentCursor = firstResponse.data.links?.meta?.nextCursor.replaceAll("=", "");
+    // currentCursor = firstResponse.data.links?.meta?.nextCursor.replaceAll("=", "");
+    currentCursor = firstResponse.data.links?.meta?.nextCursor;
 
     // Fetch remaining pages
     while (currentCursor) {
@@ -192,7 +193,8 @@ async function runExample(clientId, clientSecret, searchTerm, playlistId) {
       results.innerHTML += `<h3>Page ${pageCount} (${nextResponse.data.data.length} items):</h3>`;
 
       // Get next cursor, FIXME: with "fix" for the cursor format
-      currentCursor = nextResponse.data.links?.meta?.nextCursor.replaceAll("=", "");
+      //currentCursor = nextResponse.data.links?.meta?.nextCursor.replaceAll("=", "");
+      currentCursor = nextResponse.data.links?.meta?.nextCursor;
 
       // Safety limit to prevent infinite loops
       if (pageCount >= 10) {
