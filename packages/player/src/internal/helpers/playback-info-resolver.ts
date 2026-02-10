@@ -167,9 +167,9 @@ async function _fetchLegacyPlaybackInfo(
     streamingSessionId,
   } = options;
 
-  const apiUrl = Config.get('apiUrl');
+  const legacyApiUrl = Config.get('legacyApiUrl');
   const url = new URL(
-    `${apiUrl}/${mediaProduct.productType}s/${mediaProduct.productId}/playbackinfo`,
+    `${legacyApiUrl}/${mediaProduct.productType}s/${mediaProduct.productId}/playbackinfo`,
   );
   const searchParams = url.searchParams as URLSearchParamsCustomSetters<
     'assetpresentation' | 'audioquality' | 'playbackmode' | 'videoquality'
@@ -332,6 +332,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
   // TODO: consider saving the API client for reuse
   const apiClient = createAPIClient(
     credentialsProviderStore.credentialsProvider,
+    Config.get('apiUrl'),
   );
 
   const {

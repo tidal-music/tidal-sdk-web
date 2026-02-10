@@ -20,6 +20,7 @@ export { setApiUrl } from '../internal/handlers/set-api-url';
 export { setAudioAdaptiveBitrateStreaming } from '../internal/handlers/set-audio-adaptive-bitrate-streaming';
 export { setCredentialsProvider } from '../internal/handlers/set-credentials-provider';
 export { setEventSender } from '../internal/handlers/set-event-sender';
+export { setLegacyApiUrl } from '../internal/handlers/set-legacy-api-url';
 
 export { setLoudnessNormalizationMode } from '../internal/handlers/set-loudness-normalization-mode';
 export { setNext } from '../internal/handlers/set-next';
