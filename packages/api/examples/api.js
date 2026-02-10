@@ -133,15 +133,18 @@ async function runExample(clientId, clientSecret, searchTerm, playlistId) {
     let pageCount = 0;
 
     // Fetch first page
-    const firstResponse = await apiClient.GET('/playlists/{id}/relationships/items', {
-      params: {
-        path: { id },
-        query: {
-          countryCode: 'NO',
-          include: 'items',
+    const firstResponse = await apiClient.GET(
+      '/playlists/{id}/relationships/items',
+      {
+        params: {
+          path: { id },
+          query: {
+            countryCode: 'NO',
+            include: 'items',
+          },
         },
       },
-    });
+    );
 
     if (firstResponse.error) {
       results.innerHTML += '<h3>Error fetching first page:</h3>';
@@ -168,21 +171,25 @@ async function runExample(clientId, clientSecret, searchTerm, playlistId) {
     while (currentCursor) {
       console.log(`Fetching page ${pageCount + 1} with cursor:`, currentCursor);
 
-      const nextResponse = await apiClient.GET('/playlists/{id}/relationships/items', {
-        params: {
-          path: { id },
-          query: {
-            countryCode: 'NO',
-            include: 'items',
-            'page[cursor]': currentCursor,
+      const nextResponse = await apiClient.GET(
+        '/playlists/{id}/relationships/items',
+        {
+          params: {
+            path: { id },
+            query: {
+              countryCode: 'NO',
+              include: 'items',
+              'page[cursor]': currentCursor,
+            },
           },
         },
-      });
+      );
 
       if (nextResponse.error) {
         results.innerHTML += `<h3>Error fetching page ${pageCount + 1}:</h3>`;
         nextResponse.error.errors.forEach(
-          err => (results.innerHTML += `<li>Status: ${err.status}, Detail: ${err.detail}</li>`),
+          err =>
+            (results.innerHTML += `<li>Status: ${err.status}, Detail: ${err.detail}</li>`),
         );
         console.error('Error response:', nextResponse.error);
         break;
@@ -214,7 +221,9 @@ async function runExample(clientId, clientSecret, searchTerm, playlistId) {
 
   // Example of paginated playlist items request
   // Using the playlist ID from the form (or default)
-  await getPlaylistItemsWithPagination(playlistId || '58d7349f-e79a-4e3e-aaa4-2281556fa565');
+  await getPlaylistItemsWithPagination(
+    playlistId || '58d7349f-e79a-4e3e-aaa4-2281556fa565',
+  );
 
   /**
    * Do a search for a term
@@ -254,12 +263,19 @@ async function runExample(clientId, clientSecret, searchTerm, playlistId) {
     }
 
     // Second page of results using cursor
-    const { data: data2, error: error2 } = await apiClient.GET('/searchResults/{id}/relationships/topHits', {
-      params: {
-        path: { id },
-        query: { countryCode: 'NO', include: 'topHits', 'page[cursor]': cursor },
+    const { data: data2, error: error2 } = await apiClient.GET(
+      '/searchResults/{id}/relationships/topHits',
+      {
+        params: {
+          path: { id },
+          query: {
+            countryCode: 'NO',
+            include: 'topHits',
+            'page[cursor]': cursor,
+          },
+        },
       },
-    });
+    );
 
     if (error2) {
       error2.errors.forEach(
