@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.1.7"
+    "version" : "1.1.12"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -89,18 +89,25 @@
   }, {
     "name" : "usageRules"
   }, {
+    "description" : "A user's collection of favorited albums.",
     "name" : "userCollectionAlbums"
   }, {
+    "description" : "A user's collection of favorited artists.",
     "name" : "userCollectionArtists"
   }, {
+    "description" : "Represents a folder for organizing items in a user's collection.",
     "name" : "userCollectionFolders"
   }, {
+    "description" : "A user's collection of favorited playlists.",
     "name" : "userCollectionPlaylists"
   }, {
+    "description" : "A user's collection of favorited tracks.",
     "name" : "userCollectionTracks"
   }, {
+    "description" : "A user's collection of favorited videos.",
     "name" : "userCollectionVideos"
   }, {
+    "description" : "Deprecated. Use the dedicated collection resources instead: userCollectionAlbums, userCollectionArtists, userCollectionTracks, userCollectionVideos, or userCollectionPlaylists.",
     "name" : "userCollections"
   }, {
     "name" : "userEntitlements"
@@ -9605,7 +9612,7 @@
         "description" : "Retrieves multiple priceConfigurations by available filters, or without if applicable.",
         "parameters" : [ {
           "description" : "Price configuration id",
-          "example" : "price-config-123",
+          "example" : "cHJpY2UtY29uZmlnLTEyMzpVUw",
           "in" : "query",
           "name" : "filter[id]",
           "required" : false,
@@ -9613,7 +9620,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "price-config-123"
+              "example" : "cHJpY2UtY29uZmlnLTEyMzpVUw"
             }
           }
         } ],
@@ -9727,7 +9734,7 @@
         "description" : "Retrieves single priceConfiguration by id.",
         "parameters" : [ {
           "description" : "Price configuration id",
-          "example" : "price-config-123",
+          "example" : "cHJpY2UtY29uZmlnLTEyMzpVUw",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -9928,6 +9935,13 @@
             "type" : "boolean"
           }
         }, {
+          "in" : "query",
+          "name" : "viewerContext",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
           "in" : "query",
           "name" : "page[cursor]",
@@ -9962,23 +9976,10 @@
             }
           }
         }, {
-          "description" : "Filter by owner id",
-          "example" : "67890",
-          "in" : "query",
-          "name" : "filter[owners.id]",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "67890"
-            }
-          }
-        }, {
-          "description" : "Filter by reacted resource ID",
+          "description" : "Filter by subject resource ID",
           "example" : "12345",
           "in" : "query",
-          "name" : "filter[reactedResource.id]",
+          "name" : "filter[subject.id]",
           "required" : false,
           "schema" : {
             "type" : "array",
@@ -9988,10 +9989,10 @@
             }
           }
         }, {
-          "description" : "Filter by reacted resource type",
+          "description" : "Filter by subject resource type",
           "example" : "albums",
           "in" : "query",
-          "name" : "filter[reactedResource.type]",
+          "name" : "filter[subject.type]",
           "required" : false,
           "schema" : {
             "type" : "array",
@@ -14889,7 +14890,7 @@
         "summary" : "Get single userCollectionAlbum.",
         "tags" : [ "userCollectionAlbums" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -14947,7 +14948,7 @@
         "summary" : "Delete from items relationship (\"to-many\").",
         "tags" : [ "userCollectionAlbums" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       },
       "get" : {
@@ -15059,7 +15060,7 @@
         "summary" : "Get items relationship (\"to-many\").",
         "tags" : [ "userCollectionAlbums" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       },
       "post" : {
@@ -15127,7 +15128,7 @@
         "summary" : "Add to items relationship (\"to-many\").",
         "tags" : [ "userCollectionAlbums" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -15207,7 +15208,7 @@
         "summary" : "Get owners relationship (\"to-many\").",
         "tags" : [ "userCollectionAlbums" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -15298,7 +15299,7 @@
         "summary" : "Get single userCollectionArtist.",
         "tags" : [ "userCollectionArtists" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -15356,7 +15357,7 @@
         "summary" : "Delete from items relationship (\"to-many\").",
         "tags" : [ "userCollectionArtists" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       },
       "get" : {
@@ -15468,7 +15469,7 @@
         "summary" : "Get items relationship (\"to-many\").",
         "tags" : [ "userCollectionArtists" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       },
       "post" : {
@@ -15536,7 +15537,7 @@
         "summary" : "Add to items relationship (\"to-many\").",
         "tags" : [ "userCollectionArtists" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -15616,7 +15617,7 @@
         "summary" : "Get owners relationship (\"to-many\").",
         "tags" : [ "userCollectionArtists" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -16301,7 +16302,7 @@
         "summary" : "Get single userCollectionPlaylist.",
         "tags" : [ "userCollectionPlaylists" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -16359,7 +16360,7 @@
         "summary" : "Delete from items relationship (\"to-many\").",
         "tags" : [ "userCollectionPlaylists" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       },
       "get" : {
@@ -16460,7 +16461,7 @@
         "summary" : "Get items relationship (\"to-many\").",
         "tags" : [ "userCollectionPlaylists" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       },
       "post" : {
@@ -16519,7 +16520,7 @@
         "summary" : "Add to items relationship (\"to-many\").",
         "tags" : [ "userCollectionPlaylists" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -16599,7 +16600,7 @@
         "summary" : "Get owners relationship (\"to-many\").",
         "tags" : [ "userCollectionPlaylists" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -16690,7 +16691,7 @@
         "summary" : "Get single userCollectionTrack.",
         "tags" : [ "userCollectionTracks" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -16748,7 +16749,7 @@
         "summary" : "Delete from items relationship (\"to-many\").",
         "tags" : [ "userCollectionTracks" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       },
       "get" : {
@@ -16860,7 +16861,7 @@
         "summary" : "Get items relationship (\"to-many\").",
         "tags" : [ "userCollectionTracks" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       },
       "post" : {
@@ -16928,7 +16929,7 @@
         "summary" : "Add to items relationship (\"to-many\").",
         "tags" : [ "userCollectionTracks" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -17008,7 +17009,7 @@
         "summary" : "Get owners relationship (\"to-many\").",
         "tags" : [ "userCollectionTracks" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -17099,7 +17100,7 @@
         "summary" : "Get single userCollectionVideo.",
         "tags" : [ "userCollectionVideos" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -17157,7 +17158,7 @@
         "summary" : "Delete from items relationship (\"to-many\").",
         "tags" : [ "userCollectionVideos" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       },
       "get" : {
@@ -17269,7 +17270,7 @@
         "summary" : "Get items relationship (\"to-many\").",
         "tags" : [ "userCollectionVideos" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       },
       "post" : {
@@ -17337,7 +17338,7 @@
         "summary" : "Add to items relationship (\"to-many\").",
         "tags" : [ "userCollectionVideos" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -17417,13 +17418,14 @@
         "summary" : "Get owners relationship (\"to-many\").",
         "tags" : [ "userCollectionVideos" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
     "/userCollections/{id}" : {
       "get" : {
-        "description" : "Retrieves single userCollection by id.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the dedicated collection resources instead: userCollectionAlbums, userCollectionArtists, userCollectionTracks, userCollectionVideos, or userCollectionPlaylists.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -17514,7 +17516,8 @@
     },
     "/userCollections/{id}/relationships/albums" : {
       "delete" : {
-        "description" : "Deletes item(s) from albums relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionAlbums resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -17570,7 +17573,8 @@
         }
       },
       "get" : {
-        "description" : "Retrieves albums relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionAlbums resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -17682,7 +17686,8 @@
         }
       },
       "post" : {
-        "description" : "Adds item(s) to albums relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionAlbums resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -17752,7 +17757,8 @@
     },
     "/userCollections/{id}/relationships/artists" : {
       "delete" : {
-        "description" : "Deletes item(s) from artists relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionArtists resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -17808,7 +17814,8 @@
         }
       },
       "get" : {
-        "description" : "Retrieves artists relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionArtists resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -17920,7 +17927,8 @@
         }
       },
       "post" : {
-        "description" : "Adds item(s) to artists relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionArtists resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -18070,7 +18078,8 @@
     },
     "/userCollections/{id}/relationships/playlists" : {
       "delete" : {
-        "description" : "Deletes item(s) from playlists relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionPlaylists resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -18126,7 +18135,8 @@
         }
       },
       "get" : {
-        "description" : "Retrieves playlists relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionPlaylists resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -18227,7 +18237,8 @@
         }
       },
       "post" : {
-        "description" : "Adds item(s) to playlists relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionPlaylists resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -18288,7 +18299,8 @@
     },
     "/userCollections/{id}/relationships/tracks" : {
       "delete" : {
-        "description" : "Deletes item(s) from tracks relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionTracks resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -18344,7 +18356,8 @@
         }
       },
       "get" : {
-        "description" : "Retrieves tracks relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionTracks resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -18456,7 +18469,8 @@
         }
       },
       "post" : {
-        "description" : "Adds item(s) to tracks relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionTracks resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -18526,7 +18540,8 @@
     },
     "/userCollections/{id}/relationships/videos" : {
       "delete" : {
-        "description" : "Deletes item(s) from videos relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionVideos resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -18582,7 +18597,8 @@
         }
       },
       "get" : {
-        "description" : "Retrieves videos relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionVideos resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -18694,7 +18710,8 @@
         }
       },
       "post" : {
-        "description" : "Adds item(s) to videos relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userCollectionVideos resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User collection id",
           "example" : "123456",
@@ -24545,7 +24562,7 @@
         }
       },
       "OfflineTasks_Attributes" : {
-        "required" : [ "action" ],
+        "required" : [ "action", "collection", "member" ],
         "type" : "object",
         "properties" : {
           "action" : {
@@ -24553,9 +24570,17 @@
             "description" : "Action to perform",
             "enum" : [ "STORE_ITEM", "REMOVE_ITEM", "STORE_COLLECTION", "REMOVE_COLLECTION" ]
           },
-          "index" : {
+          "collection" : {
+            "type" : "string",
+            "description" : "Collection reference associated with task"
+          },
+          "member" : {
+            "type" : "string",
+            "description" : "Collection-member reference associated with task"
+          },
+          "position" : {
             "type" : "integer",
-            "description" : "Item index in collection (if applicable)",
+            "description" : "Collection position related to member",
             "format" : "int32"
           },
           "state" : {
@@ -24565,7 +24590,7 @@
           },
           "volume" : {
             "type" : "integer",
-            "description" : "Item volume in collection (if applicable)",
+            "description" : "Collection volume related to member",
             "format" : "int32"
           }
         }
@@ -25685,6 +25710,7 @@
         "type" : "object",
         "properties" : {
           "subjects" : {
+            "maxItems" : 1,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -25872,24 +25898,24 @@
         }
       },
       "ReactionsCreateOperation_Payload_Data_Relationships" : {
-        "required" : [ "reactedResource" ],
+        "required" : [ "subject" ],
         "type" : "object",
         "properties" : {
-          "reactedResource" : {
-            "$ref" : "#/components/schemas/ReactionsCreateOperation_Payload_Data_Relationships_ReactedResource"
+          "subject" : {
+            "$ref" : "#/components/schemas/ReactionsCreateOperation_Payload_Data_Relationships_Subject"
           }
         }
       },
-      "ReactionsCreateOperation_Payload_Data_Relationships_ReactedResource" : {
+      "ReactionsCreateOperation_Payload_Data_Relationships_Subject" : {
         "required" : [ "data" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/ReactionsCreateOperation_Payload_Data_Relationships_ReactedResource_Data"
+            "$ref" : "#/components/schemas/ReactionsCreateOperation_Payload_Data_Relationships_Subject_Data"
           }
         }
       },
-      "ReactionsCreateOperation_Payload_Data_Relationships_ReactedResource_Data" : {
+      "ReactionsCreateOperation_Payload_Data_Relationships_Subject_Data" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -26994,6 +27020,11 @@
           "hash" : {
             "type" : "string",
             "description" : "Unique manifest hash"
+          },
+          "previewReason" : {
+            "type" : "string",
+            "description" : "Why a preview is served instead of the full track",
+            "enum" : [ "FULL_REQUIRES_SUBSCRIPTION", "FULL_REQUIRES_PURCHASE", "FULL_REQUIRES_HIGHER_ACCESS_TIER" ]
           },
           "trackAudioNormalizationData" : {
             "$ref" : "#/components/schemas/AudioNormalizationData"
