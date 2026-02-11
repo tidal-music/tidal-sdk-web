@@ -6636,7 +6636,7 @@ export interface paths {
                 query?: {
                     /**
                      * @description Price configuration id
-                     * @example price-config-123
+                     * @example cHJpY2UtY29uZmlnLTEyMzpVUw
                      */
                     "filter[id]"?: string[];
                 };
@@ -6726,7 +6726,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Price configuration id
-                     * @example price-config-123
+                     * @example cHJpY2UtY29uZmlnLTEyMzpVUw
                      */
                     id: string;
                 };
@@ -6883,6 +6883,7 @@ export interface paths {
                 query?: {
                     stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
                     statsOnly?: boolean;
+                    viewerContext?: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -6896,20 +6897,15 @@ export interface paths {
                      */
                     "filter[emoji]"?: string[];
                     /**
-                     * @description Filter by owner id
-                     * @example 67890
-                     */
-                    "filter[owners.id]"?: string[];
-                    /**
-                     * @description Filter by reacted resource ID
+                     * @description Filter by subject resource ID
                      * @example 12345
                      */
-                    "filter[reactedResource.id]"?: string[];
+                    "filter[subject.id]"?: string[];
                     /**
-                     * @description Filter by reacted resource type
+                     * @description Filter by subject resource type
                      * @example albums
                      */
-                    "filter[reactedResource.type]"?: ("albums" | "tracks" | "artists" | "videos" | "playlists")[];
+                    "filter[subject.type]"?: ("albums" | "tracks" | "artists" | "videos" | "playlists")[];
                 };
                 header?: never;
                 path?: never;
@@ -12094,7 +12090,8 @@ export interface paths {
         };
         /**
          * Get single userCollection.
-         * @description Retrieves single userCollection by id.
+         * @deprecated
+         * @description Deprecated. Use the dedicated collection resources instead: userCollectionAlbums, userCollectionArtists, userCollectionTracks, userCollectionVideos, or userCollectionPlaylists.
          */
         get: {
             parameters: {
@@ -12163,7 +12160,8 @@ export interface paths {
         };
         /**
          * Get albums relationship ("to-many").
-         * @description Retrieves albums relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionAlbums resource and its items relationship instead.
          */
         get: {
             parameters: {
@@ -12222,7 +12220,8 @@ export interface paths {
         put?: never;
         /**
          * Add to albums relationship ("to-many").
-         * @description Adds item(s) to albums relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionAlbums resource and its items relationship instead.
          */
         post: {
             parameters: {
@@ -12262,7 +12261,8 @@ export interface paths {
         };
         /**
          * Delete from albums relationship ("to-many").
-         * @description Deletes item(s) from albums relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionAlbums resource and its items relationship instead.
          */
         delete: {
             parameters: {
@@ -12307,7 +12307,8 @@ export interface paths {
         };
         /**
          * Get artists relationship ("to-many").
-         * @description Retrieves artists relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionArtists resource and its items relationship instead.
          */
         get: {
             parameters: {
@@ -12366,7 +12367,8 @@ export interface paths {
         put?: never;
         /**
          * Add to artists relationship ("to-many").
-         * @description Adds item(s) to artists relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionArtists resource and its items relationship instead.
          */
         post: {
             parameters: {
@@ -12406,7 +12408,8 @@ export interface paths {
         };
         /**
          * Delete from artists relationship ("to-many").
-         * @description Deletes item(s) from artists relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionArtists resource and its items relationship instead.
          */
         delete: {
             parameters: {
@@ -12512,7 +12515,8 @@ export interface paths {
         };
         /**
          * Get playlists relationship ("to-many").
-         * @description Retrieves playlists relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionPlaylists resource and its items relationship instead.
          */
         get: {
             parameters: {
@@ -12562,7 +12566,8 @@ export interface paths {
         put?: never;
         /**
          * Add to playlists relationship ("to-many").
-         * @description Adds item(s) to playlists relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionPlaylists resource and its items relationship instead.
          */
         post: {
             parameters: {
@@ -12596,7 +12601,8 @@ export interface paths {
         };
         /**
          * Delete from playlists relationship ("to-many").
-         * @description Deletes item(s) from playlists relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionPlaylists resource and its items relationship instead.
          */
         delete: {
             parameters: {
@@ -12641,7 +12647,8 @@ export interface paths {
         };
         /**
          * Get tracks relationship ("to-many").
-         * @description Retrieves tracks relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionTracks resource and its items relationship instead.
          */
         get: {
             parameters: {
@@ -12700,7 +12707,8 @@ export interface paths {
         put?: never;
         /**
          * Add to tracks relationship ("to-many").
-         * @description Adds item(s) to tracks relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionTracks resource and its items relationship instead.
          */
         post: {
             parameters: {
@@ -12740,7 +12748,8 @@ export interface paths {
         };
         /**
          * Delete from tracks relationship ("to-many").
-         * @description Deletes item(s) from tracks relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionTracks resource and its items relationship instead.
          */
         delete: {
             parameters: {
@@ -12785,7 +12794,8 @@ export interface paths {
         };
         /**
          * Get videos relationship ("to-many").
-         * @description Retrieves videos relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionVideos resource and its items relationship instead.
          */
         get: {
             parameters: {
@@ -12844,7 +12854,8 @@ export interface paths {
         put?: never;
         /**
          * Add to videos relationship ("to-many").
-         * @description Adds item(s) to videos relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionVideos resource and its items relationship instead.
          */
         post: {
             parameters: {
@@ -12884,7 +12895,8 @@ export interface paths {
         };
         /**
          * Delete from videos relationship ("to-many").
-         * @description Deletes item(s) from videos relationship.
+         * @deprecated
+         * @description Deprecated. Use the userCollectionVideos resource and its items relationship instead.
          */
         delete: {
             parameters: {
@@ -15783,11 +15795,15 @@ export interface components {
              * @enum {string}
              */
             action: "STORE_ITEM" | "REMOVE_ITEM" | "STORE_COLLECTION" | "REMOVE_COLLECTION";
+            /** @description Collection reference associated with task */
+            collection: string;
+            /** @description Collection-member reference associated with task */
+            member: string;
             /**
              * Format: int32
-             * @description Item index in collection (if applicable)
+             * @description Collection position related to member
              */
-            index?: number;
+            position?: number;
             /**
              * @description Task state
              * @enum {string}
@@ -15795,7 +15811,7 @@ export interface components {
             state?: "PENDING" | "IN_PROGRESS" | "FAILED" | "COMPLETED";
             /**
              * Format: int32
-             * @description Item volume in collection (if applicable)
+             * @description Collection volume related to member
              */
             volume?: number;
         };
@@ -16338,12 +16354,12 @@ export interface components {
             emoji: string;
         };
         ReactionsCreateOperation_Payload_Data_Relationships: {
-            reactedResource: components["schemas"]["ReactionsCreateOperation_Payload_Data_Relationships_ReactedResource"];
+            subject: components["schemas"]["ReactionsCreateOperation_Payload_Data_Relationships_Subject"];
         };
-        ReactionsCreateOperation_Payload_Data_Relationships_ReactedResource: {
-            data: components["schemas"]["ReactionsCreateOperation_Payload_Data_Relationships_ReactedResource_Data"];
+        ReactionsCreateOperation_Payload_Data_Relationships_Subject: {
+            data: components["schemas"]["ReactionsCreateOperation_Payload_Data_Relationships_Subject_Data"];
         };
-        ReactionsCreateOperation_Payload_Data_Relationships_ReactedResource_Data: {
+        ReactionsCreateOperation_Payload_Data_Relationships_Subject_Data: {
             id: string;
             /** @enum {string} */
             type: "albums" | "tracks" | "artists" | "videos" | "playlists";
@@ -16831,6 +16847,11 @@ export interface components {
             formats?: ("HEAACV1" | "AACLC" | "FLAC" | "FLAC_HIRES" | "EAC3_JOC")[];
             /** @description Unique manifest hash */
             hash?: string;
+            /**
+             * @description Why a preview is served instead of the full track
+             * @enum {string}
+             */
+            previewReason?: "FULL_REQUIRES_SUBSCRIPTION" | "FULL_REQUIRES_PURCHASE" | "FULL_REQUIRES_HIGHER_ACCESS_TIER";
             trackAudioNormalizationData?: components["schemas"]["AudioNormalizationData"];
             /**
              * @description Track presentation
