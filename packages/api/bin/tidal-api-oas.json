@@ -5,10 +5,10 @@
       "name" : "TIDAL Developer - Discussions",
       "url" : "https://github.com/orgs/tidal-music/discussions"
     },
-    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](developer.tidal.com)",
+    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.1.12"
+    "version" : "1.1.17"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -19,74 +19,106 @@
     "description" : "Production"
   } ],
   "tags" : [ {
+    "description" : "A music album, consisting of one or more tracks.",
     "name" : "albums"
   }, {
+    "description" : "A user's appreciation of a piece of content.",
     "name" : "appreciations"
   }, {
+    "description" : "A biography text for an artist.",
     "name" : "artistBiographies"
   }, {
+    "description" : "A claim by an artist to own an artist profile via DSP authentication.",
     "name" : "artistClaims"
   }, {
+    "description" : "A role describing an artist's contribution, such as performer or producer.",
     "name" : "artistRoles"
   }, {
+    "description" : "A music artist.",
     "name" : "artists"
   }, {
+    "description" : "Artwork images and videos used for albums, artists, tracks, and playlists.",
     "name" : "artworks"
   }, {
+    "description" : "A claim by an artist asserting ownership of a piece of content.",
     "name" : "contentClaims"
   }, {
+    "description" : "A credit entry linking a contributor to a track or album.",
     "name" : "credits"
   }, {
+    "description" : "Links to equivalent content on other streaming platforms.",
     "name" : "dspSharingLinks"
   }, {
+    "description" : "A module within a dynamic page, containing a list of content items.",
     "name" : "dynamicModules"
   }, {
+    "description" : "A dynamically composed page of modules, such as the home screen.",
     "name" : "dynamicPages"
   }, {
+    "description" : "A music genre classification.",
     "name" : "genres"
   }, {
+    "description" : "A registered device installation for a user.",
     "name" : "installations"
   }, {
+    "description" : "Lyrics for a track, including plain text and time-synced LRC formats.",
     "name" : "lyrics"
   }, {
+    "description" : "A manual artist claim submitted with identity verification details.",
     "name" : "manualArtistClaims"
   }, {
+    "description" : "A task describing an offline sync action for a user's device.",
     "name" : "offlineTasks"
   }, {
+    "description" : "A user's current play queue, including past and upcoming items.",
     "name" : "playQueues"
   }, {
+    "description" : "A curated or user-created playlist of tracks and videos.",
     "name" : "playlists"
   }, {
+    "description" : "Pricing configuration for purchasable content.",
     "name" : "priceConfigurations"
   }, {
+    "description" : "A content provider or label that supplies music to TIDAL.",
     "name" : "providers"
   }, {
+    "description" : "An emoji reaction by a user on a piece of content.",
     "name" : "reactions"
   }, {
+    "description" : "A share saved to a user's collection.",
     "name" : "savedShares"
   }, {
+    "description" : "Search results for a query across tracks, albums, artists, and other content.",
     "name" : "searchResults"
   }, {
+    "description" : "Autocomplete suggestions for a search query.",
     "name" : "searchSuggestions"
   }, {
+    "description" : "A shareable link to one or more TIDAL resources.",
     "name" : "shares"
   }, {
+    "description" : "A Stripe Connect account linked to a user for receiving payments.",
     "name" : "stripeConnections"
   }, {
+    "description" : "An individual audio file for a track in a specific format and quality.",
     "name" : "trackFiles"
   }, {
+    "description" : "A playback manifest for a track, containing streaming URIs and format details.",
     "name" : "trackManifests"
   }, {
     "description" : "A track source file is the media source file of a track, meaning audio content.\nAfter a track source file is uploaded successfully it will be ingested and transcoded into deliverables and\nstored like any other content we receive from labels.\n",
     "name" : "trackSourceFiles"
   }, {
+    "description" : "Playback statistics for a track, including total plays and unique listeners.",
     "name" : "trackStatistics"
   }, {
+    "description" : "A music track.",
     "name" : "tracks"
   }, {
     "description" : "Status of metadata detection job for a track.\nTracks the progress of async jobs that detect and pre-fill metadata fields.\n",
     "name" : "tracksMetadataStatus"
   }, {
+    "description" : "Usage rules defining how content may be consumed in a given country.",
     "name" : "usageRules"
   }, {
     "description" : "A user's collection of favorited albums.",
@@ -110,14 +142,19 @@
     "description" : "Deprecated. Use the dedicated collection resources instead: userCollectionAlbums, userCollectionArtists, userCollectionTracks, userCollectionVideos, or userCollectionPlaylists.",
     "name" : "userCollections"
   }, {
+    "description" : "Entitlements granted to a user based on their subscription.",
     "name" : "userEntitlements"
   }, {
+    "description" : "Personalized content recommendations for a user.",
     "name" : "userRecommendations"
   }, {
+    "description" : "A user-submitted report flagging inappropriate or harmful content.",
     "name" : "userReports"
   }, {
+    "description" : "A TIDAL user account.",
     "name" : "users"
   }, {
+    "description" : "A music video.",
     "name" : "videos"
   } ],
   "paths" : {
@@ -6656,7 +6693,7 @@
             }
           }
         }, {
-          "description" : "One of: tracks, videos, albums, playlists, userCollections",
+          "description" : "One of: tracks, videos, albums, playlists",
           "example" : "tracks",
           "in" : "query",
           "name" : "filter[type]",
@@ -6666,7 +6703,7 @@
             "items" : {
               "type" : "string",
               "example" : "tracks",
-              "enum" : [ "tracks", "videos", "albums", "playlists", "userCollections" ]
+              "enum" : [ "tracks", "videos", "albums", "playlists" ]
             }
           }
         } ],
@@ -23807,7 +23844,7 @@
           },
           "type" : {
             "type" : "string",
-            "enum" : [ "tracks", "videos", "albums", "playlists", "userCollections" ]
+            "enum" : [ "tracks", "videos", "albums", "playlists" ]
           }
         }
       },
@@ -25701,7 +25738,9 @@
             "enum" : [ "USD" ]
           },
           "price" : {
-            "type" : "number"
+            "type" : "string",
+            "description" : "Price amount with max 2 decimal places",
+            "example" : "9.99"
           }
         }
       },
@@ -25710,6 +25749,15 @@
         "type" : "object",
         "properties" : {
           "subjects" : {
+            "$ref" : "#/components/schemas/PriceConfigurationsCreateOperation_Payload_Data_Relationships_Subjects"
+          }
+        }
+      },
+      "PriceConfigurationsCreateOperation_Payload_Data_Relationships_Subjects" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
             "maxItems" : 1,
             "minItems" : 1,
             "type" : "array",
@@ -25742,7 +25790,9 @@
             "enum" : [ "USD" ]
           },
           "price" : {
-            "type" : "number"
+            "type" : "string",
+            "description" : "Price amount with max 2 decimal places",
+            "example" : "9.99"
           }
         }
       },
@@ -28015,6 +28065,15 @@
         "type" : "object",
         "properties" : {
           "subject" : {
+            "$ref" : "#/components/schemas/UsageRulesCreateOperation_Payload_Data_Relationships_Subject"
+          }
+        }
+      },
+      "UsageRulesCreateOperation_Payload_Data_Relationships_Subject" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
             "$ref" : "#/components/schemas/UsageRulesCreateOperation_Payload_Subject"
           }
         }
