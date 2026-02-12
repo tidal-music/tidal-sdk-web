@@ -4557,10 +4557,10 @@ export interface paths {
                      */
                     include?: string[];
                     /**
-                     * @description One of: tracks, videos, albums, playlists, userCollections
+                     * @description One of: tracks, videos, albums, playlists
                      * @example tracks
                      */
-                    "filter[type]"?: ("tracks" | "videos" | "albums" | "playlists" | "userCollections")[];
+                    "filter[type]"?: ("tracks" | "videos" | "albums" | "playlists")[];
                 };
                 header?: never;
                 path: {
@@ -15478,7 +15478,7 @@ export interface components {
         InstallationsOfflineInventory_ItemIdentifier: {
             id: string;
             /** @enum {string} */
-            type: "tracks" | "videos" | "albums" | "playlists" | "userCollections";
+            type: "tracks" | "videos" | "albums" | "playlists";
         };
         Installations_Attributes: {
             /** @description Client provided installation identifier */
@@ -16270,10 +16270,17 @@ export interface components {
              * @enum {string}
              */
             currency: "USD";
-            price: number;
+            /**
+             * @description Price amount with max 2 decimal places
+             * @example 9.99
+             */
+            price: string;
         };
         PriceConfigurationsCreateOperation_Payload_Data_Relationships: {
-            subjects: components["schemas"]["PriceConfigurationsCreateOperation_Payload_Subjects"][];
+            subjects: components["schemas"]["PriceConfigurationsCreateOperation_Payload_Data_Relationships_Subjects"];
+        };
+        PriceConfigurationsCreateOperation_Payload_Data_Relationships_Subjects: {
+            data: components["schemas"]["PriceConfigurationsCreateOperation_Payload_Subjects"][];
         };
         PriceConfigurationsCreateOperation_Payload_Subjects: {
             id: string;
@@ -16286,7 +16293,11 @@ export interface components {
              * @enum {string}
              */
             currency: "USD";
-            price: number;
+            /**
+             * @description Price amount with max 2 decimal places
+             * @example 9.99
+             */
+            price: string;
         };
         PriceConfigurations_Multi_Resource_Data_Document: {
             data: components["schemas"]["PriceConfigurations_Resource_Object"][];
@@ -17278,7 +17289,10 @@ export interface components {
             subscription?: ("STREAM" | "DJ" | "STEM" | "DOWNLOAD")[];
         };
         UsageRulesCreateOperation_Payload_Data_Relationships: {
-            subject: components["schemas"]["UsageRulesCreateOperation_Payload_Subject"];
+            subject: components["schemas"]["UsageRulesCreateOperation_Payload_Data_Relationships_Subject"];
+        };
+        UsageRulesCreateOperation_Payload_Data_Relationships_Subject: {
+            data: components["schemas"]["UsageRulesCreateOperation_Payload_Subject"];
         };
         UsageRulesCreateOperation_Payload_Subject: {
             id: string;
