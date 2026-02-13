@@ -407,7 +407,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
     manifestHash: response.data?.data.attributes?.hash,
     manifestMimeType,
     prefetched: prefetch,
-    previewReason: response.data?.data.attributes?.purchaseReason,
+    previewReason: response.data?.data.attributes?.previewReason,
     sampleRate: 0,
     streamingSessionId,
     trackId: response.data?.data.id ? Number(response.data.data.id) : 0,
