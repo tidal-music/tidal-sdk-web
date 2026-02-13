@@ -1,5 +1,9 @@
 export type StreamType = 'LIVE' | 'ON_DEMAND';
 export type AssetPresentation = 'FULL' | 'PREVIEW';
+export type PreviewReason =
+  | 'FULL_REQUIRES_HIGHER_ACCESS_TIER'
+  | 'FULL_REQUIRES_PURCHASE'
+  | 'FULL_REQUIRES_SUBSCRIPTION';
 export type AudioMode = 'DOLBY_ATMOS' | 'SONY_360RA' | 'STEREO';
 
 /**

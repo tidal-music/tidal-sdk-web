@@ -5,24 +5,32 @@ import type { MediaProduct } from '../../api/interfaces';
 import * as Config from '../../config';
 import type { ErrorCodes, ErrorIds } from '../../internal/index';
 import { PlayerError, credentialsProviderStore } from '../../internal/index';
-import type { AudioQuality } from '../../internal/types';
+import type {
+  AssetPresentation,
+  AudioMode,
+  AudioQuality,
+  PreviewReason,
+  StreamType,
+  VideoQuality,
+} from '../../internal/types';
 import * as StreamingMetrics from '../event-tracking/streaming-metrics';
 import { waitFor } from '../helpers/wait-for';
 import { trueTime } from '../true-time';
 
-type VideoQuality = 'AUDIO_ONLY' | 'HIGH' | 'LOW' | 'MEDIUM';
-
-type AudioMode = 'DOLBY_ATMOS' | 'SONY_360RA' | 'STEREO';
-type AssetPresentation = 'FULL' | 'PREVIEW';
-type SteamType = 'LIVE' | 'ON_DEMAND';
-
 type BasePlaybackInfo = {
+  /**
+   * How the asset is presented to the user.
+   */
   assetPresentation: AssetPresentation;
   licenseSecurityToken?: string;
   manifest: string;
   manifestHash?: string;
   manifestMimeType: string;
   prefetched: boolean;
+  /**
+   * The reason why the asset is presented as a preview.
+   */
+  previewReason?: PreviewReason;
   streamingSessionId: string;
 };
 
@@ -39,7 +47,7 @@ export type PlaybackInfoTrack = BasePlaybackInfo & {
 };
 
 export type PlaybackInfoVideo = BasePlaybackInfo & {
-  streamType: SteamType;
+  streamType: StreamType;
   videoId: number;
   videoQuality: VideoQuality;
 };
@@ -399,6 +407,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
     manifestHash: response.data?.data.attributes?.hash,
     manifestMimeType,
     prefetched: prefetch,
+    previewReason: response.data?.data.attributes?.purchaseReason,
     sampleRate: 0,
     streamingSessionId,
     trackId: response.data?.data.id ? Number(response.data.data.id) : 0,
@@ -450,6 +459,7 @@ export async function fetchPlaybackInfo(options: Options) {
 
     const hasAds = 'adInfo' in playbackInfo;
 
+    // TODO: add previewReason to the playback statistics event
     if ('trackId' in playbackInfo) {
       StreamingMetrics.playbackStatistics({
         actualAssetPresentation: playbackInfo.assetPresentation,

@@ -3,6 +3,7 @@ import type {
   AudioMode,
   AudioQuality,
   Codec,
+  PreviewReason,
   StreamType,
   VideoQuality,
 } from '../internal/types';
@@ -23,6 +24,7 @@ export type PlaybackContext = {
   bitDepth: null | number;
   codec: Codec | null;
   playbackSessionId: string;
+  previewReason?: PreviewReason;
   sampleRate: null | number;
 };
 
