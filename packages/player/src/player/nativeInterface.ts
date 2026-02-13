@@ -70,10 +70,6 @@ export type NativePlayerComponentInterface = {
     listener: (...args: Array<any>) => void,
   ): void;
   cancelPreload(): void;
-  removeEventListener(
-    eventName: NativePlayerComponentSupportedEvents,
-    listener: (...args: Array<any>) => void,
-  ): void;
   listDevices(): void;
   load(
     url: string,
@@ -93,6 +89,10 @@ export type NativePlayerComponentInterface = {
   ): void;
   recover(url: string, encryptionKey?: string): void;
   releaseDevice(): void;
+  removeEventListener(
+    eventName: NativePlayerComponentSupportedEvents,
+    listener: (...args: Array<any>) => void,
+  ): void;
   seek(miliseconds: number): void;
   selectDevice(
     device: Partial<NativePlayerComponentDeviceDescription>,
