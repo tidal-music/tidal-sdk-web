@@ -70,6 +70,10 @@ export type NativePlayerComponentInterface = {
     listener: (...args: Array<any>) => void,
   ): void;
   cancelPreload(): void;
+  removeEventListener(
+    eventName: NativePlayerComponentSupportedEvents,
+    listener: (...args: Array<any>) => void,
+  ): void;
   listDevices(): void;
   load(
     url: string,
