@@ -349,22 +349,25 @@ export default class NativePlayer extends BasePlayer {
 
   mediaStateChange(state: string): Promise<string> {
     return new Promise<string>(resolve => {
-      this.#player.addEventListener(
-        'mediastate',
-        (event: Event & { target: string }) => {
-          if (event.target === state) {
-            resolve(event.target);
-          }
-        },
-      );
+      const handler = (event: Event & { target: string }) => {
+        if (event.target === state) {
+          this.#player.removeEventListener('mediastate', handler);
+          resolve(event.target);
+        }
+      };
+
+      this.#player.addEventListener('mediastate', handler);
     });
   }
 
   nativeEvent(eventName: NativePlayerComponentSupportedEvents): Promise<Event> {
     return new Promise(resolve => {
-      this.#player.addEventListener(eventName, (event: Event) =>
-        resolve(event),
-      );
+      const handler = (event: Event) => {
+        this.#player.removeEventListener(eventName, handler);
+        resolve(event);
+      };
+
+      this.#player.addEventListener(eventName, handler);
     });
   }
 
