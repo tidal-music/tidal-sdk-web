@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.1.20"
+    "version" : "1.1.25"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -12641,7 +12641,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, trackStatistics, usageRules",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, suggestedTracks, trackStatistics, usageRules",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -12665,7 +12665,7 @@
             }
           }
         }, {
-          "description" : "List of ISRCs. NOTE: Supplying more than one ISRC will currently only return one track per ISRC. (e.g. `QMJMT1701237`)",
+          "description" : "List of ISRCs. When a single ISRC is provided, pagination is supported and multiple tracks may be returned. When multiple ISRCs are provided, one track per ISRC is returned without pagination. (e.g. `QMJMT1701237`)",
           "in" : "query",
           "name" : "filter[isrc]",
           "required" : false,
@@ -12870,7 +12870,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, trackStatistics, usageRules",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, suggestedTracks, trackStatistics, usageRules",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -14350,6 +14350,104 @@
         "tags" : [ "tracks" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/tracks/{id}/relationships/suggestedTracks" : {
+      "get" : {
+        "description" : "Retrieves suggestedTracks relationship.",
+        "parameters" : [ {
+          "description" : "Track id",
+          "example" : "75413016",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: suggestedTracks",
+          "example" : "suggestedTracks",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "suggestedTracks"
+            }
+          }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Tracks_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get suggestedTracks relationship (\"to-many\").",
+        "tags" : [ "tracks" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -24375,11 +24473,10 @@
             }
           },
           "socialLink" : {
-            "type" : "string"
+            "$ref" : "#/components/schemas/Link_Object"
           },
           "websiteOrSocialLink" : {
-            "minLength" : 1,
-            "type" : "string"
+            "$ref" : "#/components/schemas/Link_Object"
           }
         }
       },
@@ -24468,8 +24565,7 @@
             }
           },
           "socialLink" : {
-            "type" : "string",
-            "description" : "Social link"
+            "$ref" : "#/components/schemas/Link_Object"
           },
           "status" : {
             "type" : "string",
@@ -24477,9 +24573,7 @@
             "enum" : [ "PENDING", "APPROVED", "REJECTED" ]
           },
           "websiteOrSocialLink" : {
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "Website or social link"
+            "$ref" : "#/components/schemas/Link_Object"
           }
         }
       },
@@ -25304,6 +25398,10 @@
             "description" : "Access type",
             "example" : "PUBLIC",
             "enum" : [ "PUBLIC", "UNLISTED" ]
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
           },
           "description" : {
             "type" : "string"
@@ -27895,7 +27993,7 @@
         }
       },
       "Tracks_Relationships" : {
-        "required" : [ "albums", "artists", "credits", "genres", "lyrics", "metadataStatus", "owners", "priceConfig", "providers", "radio", "replacement", "shares", "similarTracks", "sourceFile", "trackStatistics", "usageRules" ],
+        "required" : [ "albums", "artists", "credits", "genres", "lyrics", "metadataStatus", "owners", "priceConfig", "providers", "radio", "replacement", "shares", "similarTracks", "sourceFile", "suggestedTracks", "trackStatistics", "usageRules" ],
         "properties" : {
           "albums" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -27938,6 +28036,9 @@
           },
           "sourceFile" : {
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          },
+          "suggestedTracks" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "trackStatistics" : {
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
