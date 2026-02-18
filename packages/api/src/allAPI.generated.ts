@@ -20,6 +20,8 @@ export interface paths {
                 query?: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("createdAt" | "-createdAt" | "title" | "-title")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -3671,6 +3673,126 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Credits_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/downloads/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single download.
+         * @description Retrieves single download by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Download id
+                     * @example VFJBQ0tTOjEyMzQ1
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Downloads_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/downloads/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Download id
+                     * @example VFJBQ0tTOjEyMzQ1
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Downloads_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -8220,6 +8342,122 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/stripeDashboardLinks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple stripeDashboardLinks.
+         * @description Retrieves multiple stripeDashboardLinks by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description User id (e.g. `123456`) */
+                    "filter[owners.id]"?: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StripeDashboardLinks_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/stripeDashboardLinks/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Stripe dashboard link id (same as user id)
+                     * @example 39791222
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StripeDashboardLinks_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/trackFiles/{id}": {
         parameters: {
             query?: never;
@@ -8740,13 +8978,15 @@ export interface paths {
                 query?: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("createdAt" | "-createdAt" | "title" | "-title")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, suggestedTracks, trackStatistics, usageRules
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, download, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, suggestedTracks, trackStatistics, usageRules
                      * @example albums
                      */
                     include?: string[];
@@ -8847,7 +9087,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, suggestedTracks, trackStatistics, usageRules
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, download, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, suggestedTracks, trackStatistics, usageRules
                      * @example albums
                      */
                     include?: string[];
@@ -9164,6 +9404,67 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tracks/{id}/relationships/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get download relationship ("to-one").
+         * @description Retrieves download relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: download
+                     * @example download
+                     */
+                    include?: string[];
+                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Track id
+                     * @example 75413016
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Tracks_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12170,7 +12471,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "artists.name" | "-artists.name" | "releaseDate" | "-releaseDate" | "title" | "-title")[];
+                    sort?: ("albums.addedAt" | "-albums.addedAt" | "albums.artists.name" | "-albums.artists.name" | "albums.releaseDate" | "-albums.releaseDate" | "albums.title" | "-albums.title")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -12317,7 +12618,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "name" | "-name")[];
+                    sort?: ("artists.addedAt" | "-artists.addedAt" | "artists.name" | "-artists.name")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -12526,7 +12827,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
+                    sort?: ("playlists.addedAt" | "-playlists.addedAt" | "playlists.lastUpdatedAt" | "-playlists.lastUpdatedAt" | "playlists.name" | "-playlists.name")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: playlists
                      * @example playlists
@@ -12657,7 +12958,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "albums.title" | "-albums.title" | "artists.name" | "-artists.name" | "duration" | "-duration" | "title" | "-title")[];
+                    sort?: ("tracks.addedAt" | "-tracks.addedAt" | "tracks.albums.title" | "-tracks.albums.title" | "tracks.artists.name" | "-tracks.artists.name" | "tracks.duration" | "-tracks.duration" | "tracks.title" | "-tracks.title")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -12804,7 +13105,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "artists.name" | "-artists.name" | "duration" | "-duration" | "title" | "-title")[];
+                    sort?: ("videos.addedAt" | "-videos.addedAt" | "videos.artists.name" | "-videos.artists.name" | "videos.duration" | "-videos.duration" | "videos.title" | "-videos.title")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -13453,7 +13754,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, providers, replacement, similarVideos, thumbnailArt, usageRules
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, providers, replacement, similarVideos, suggestedVideos, thumbnailArt, usageRules
                      * @example albums
                      */
                     include?: string[];
@@ -13515,7 +13816,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, providers, replacement, similarVideos, thumbnailArt, usageRules
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, providers, replacement, similarVideos, suggestedVideos, thumbnailArt, usageRules
                      * @example albums
                      */
                     include?: string[];
@@ -13948,6 +14249,72 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/videos/{id}/relationships/suggestedVideos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get suggestedVideos relationship ("to-many").
+         * @description Retrieves suggestedVideos relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: suggestedVideos
+                     * @example suggestedVideos
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Video id
+                     * @example 75623239
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/videos/{id}/relationships/thumbnailArt": {
         parameters: {
             query?: never;
@@ -14225,6 +14592,11 @@ export interface components {
             barcodeId: string;
             copyright?: components["schemas"]["Copyright"];
             /**
+             * Format: date-time
+             * @description Datetime of album creation (ISO 8601)
+             */
+            createdAt?: string;
+            /**
              * @description Duration (ISO 8601)
              * @example PT46M17S
              */
@@ -14321,17 +14693,17 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Albums_Relationships: {
-            artists: components["schemas"]["Multi_Relationship_Data_Document"];
-            coverArt: components["schemas"]["Multi_Relationship_Data_Document"];
-            genres: components["schemas"]["Multi_Relationship_Data_Document"];
-            items: components["schemas"]["Albums_Items_Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
-            priceConfig: components["schemas"]["Single_Relationship_Data_Document"];
-            providers: components["schemas"]["Multi_Relationship_Data_Document"];
-            replacement: components["schemas"]["Single_Relationship_Data_Document"];
-            similarAlbums: components["schemas"]["Multi_Relationship_Data_Document"];
-            suggestedCoverArts: components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Data_Document"];
-            usageRules: components["schemas"]["Single_Relationship_Data_Document"];
+            artists?: components["schemas"]["Multi_Relationship_Data_Document"];
+            coverArt?: components["schemas"]["Multi_Relationship_Data_Document"];
+            genres?: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["Albums_Items_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            priceConfig?: components["schemas"]["Single_Relationship_Data_Document"];
+            providers?: components["schemas"]["Multi_Relationship_Data_Document"];
+            replacement?: components["schemas"]["Single_Relationship_Data_Document"];
+            similarAlbums?: components["schemas"]["Multi_Relationship_Data_Document"];
+            suggestedCoverArts?: components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Data_Document"];
+            usageRules?: components["schemas"]["Single_Relationship_Data_Document"];
         };
         Albums_Resource_Object: {
             attributes?: components["schemas"]["Albums_Attributes"];
@@ -14476,7 +14848,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         ArtistBiographies_Relationships: {
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         ArtistBiographies_Resource_Object: {
             attributes?: components["schemas"]["ArtistBiographies_Attributes"];
@@ -14572,9 +14944,9 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         ArtistClaims_Relationships: {
-            acceptedArtists: components["schemas"]["Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
-            recommendedArtists: components["schemas"]["Multi_Relationship_Data_Document"];
+            acceptedArtists?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            recommendedArtists?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         ArtistClaims_Resource_Object: {
             attributes?: components["schemas"]["ArtistClaims_Attributes"];
@@ -14788,18 +15160,18 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Artists_Relationships: {
-            albums: components["schemas"]["Multi_Relationship_Data_Document"];
-            biography: components["schemas"]["Single_Relationship_Data_Document"];
-            followers: components["schemas"]["Artists_Followers_Multi_Relationship_Data_Document"];
-            following: components["schemas"]["Artists_Following_Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
-            profileArt: components["schemas"]["Multi_Relationship_Data_Document"];
-            radio: components["schemas"]["Multi_Relationship_Data_Document"];
-            roles: components["schemas"]["Multi_Relationship_Data_Document"];
-            similarArtists: components["schemas"]["Multi_Relationship_Data_Document"];
-            trackProviders: components["schemas"]["Artists_TrackProviders_Multi_Relationship_Data_Document"];
-            tracks: components["schemas"]["Multi_Relationship_Data_Document"];
-            videos: components["schemas"]["Multi_Relationship_Data_Document"];
+            albums?: components["schemas"]["Multi_Relationship_Data_Document"];
+            biography?: components["schemas"]["Single_Relationship_Data_Document"];
+            followers?: components["schemas"]["Artists_Followers_Multi_Relationship_Data_Document"];
+            following?: components["schemas"]["Artists_Following_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            profileArt?: components["schemas"]["Multi_Relationship_Data_Document"];
+            radio?: components["schemas"]["Multi_Relationship_Data_Document"];
+            roles?: components["schemas"]["Multi_Relationship_Data_Document"];
+            similarArtists?: components["schemas"]["Multi_Relationship_Data_Document"];
+            trackProviders?: components["schemas"]["Artists_TrackProviders_Multi_Relationship_Data_Document"];
+            tracks?: components["schemas"]["Multi_Relationship_Data_Document"];
+            videos?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         Artists_Resource_Object: {
             attributes?: components["schemas"]["Artists_Attributes"];
@@ -14936,7 +15308,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Artworks_Relationships: {
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         Artworks_Resource_Object: {
             attributes?: components["schemas"]["Artworks_Attributes"];
@@ -15037,9 +15409,9 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         ContentClaims_Relationships: {
-            claimedResource: components["schemas"]["Single_Relationship_Data_Document"];
-            claimingArtist: components["schemas"]["Single_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            claimedResource?: components["schemas"]["Single_Relationship_Data_Document"];
+            claimingArtist?: components["schemas"]["Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         ContentClaims_Resource_Object: {
             attributes?: components["schemas"]["ContentClaims_Attributes"];
@@ -15087,8 +15459,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Credits_Relationships: {
-            artist: components["schemas"]["Single_Relationship_Data_Document"];
-            category: components["schemas"]["Single_Relationship_Data_Document"];
+            artist?: components["schemas"]["Single_Relationship_Data_Document"];
+            category?: components["schemas"]["Single_Relationship_Data_Document"];
         };
         Credits_Resource_Object: {
             attributes?: components["schemas"]["Credits_Attributes"];
@@ -15178,6 +15550,51 @@ export interface components {
                 status: string;
             }[];
         };
+        Download_Link: {
+            /** @description URL to download the content from */
+            href: string;
+            meta: components["schemas"]["Download_Link_Meta"];
+        };
+        /** @description Metadata for download link */
+        Download_Link_Meta: {
+            /** @description HTTP headers required when requesting the download URL */
+            requiredHeaders?: string[];
+        };
+        Downloads_Attributes: {
+            downloadLink?: components["schemas"]["Download_Link"];
+        };
+        Downloads_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Downloads_Multi_Resource_Data_Document: {
+            data: components["schemas"]["Downloads_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Downloads_Relationships: {
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+        };
+        Downloads_Resource_Object: {
+            attributes?: components["schemas"]["Downloads_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["Downloads_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "downloads";
+        };
+        Downloads_Single_Resource_Data_Document: {
+            data: components["schemas"]["Downloads_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         /** @description DRM data. Absence implies no DRM. */
         DrmData: {
             certificateUrl?: string;
@@ -15197,7 +15614,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         DspSharingLinks_Relationships: {
-            subject: components["schemas"]["Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["Single_Relationship_Data_Document"];
         };
         DspSharingLinks_Resource_Object: {
             attributes?: components["schemas"]["DspSharingLinks_Attributes"];
@@ -15240,13 +15657,13 @@ export interface components {
              * @example HORIZONTAL_LIST
              * @enum {string}
              */
-            moduleType: "ARTIST_LIST" | "COMPACT_GRID_CARD" | "COMPACT_HORIZONTAL_LIST" | "COMPACT_HORIZONTAL_LIST_WITH_CONTEXT" | "FEATURED_CARD" | "GRID_CARD" | "GRID_CARD_WITH_CONTEXT" | "GRID_HIGHLIGHT_CARD" | "HORIZONTAL_LIST" | "HORIZONTAL_LIST_WITH_CONTEXT" | "SHORTCUT_LIST" | "TRACK_LIST" | "VERTICAL_LIST_CARD" | "TEXT_CARD" | "LINKS_LIST" | "PUBLIC_PLAYLIST_LIST" | "UNKNOWN";
+            moduleType: "ARTIST_LIST" | "COMPACT_GRID_CARD" | "COMPACT_HORIZONTAL_LIST" | "COMPACT_HORIZONTAL_LIST_WITH_CONTEXT" | "FEATURED_CARD" | "GRID_CARD" | "GRID_CARD_WITH_CONTEXT" | "GRID_HIGHLIGHT_CARD" | "HORIZONTAL_LIST" | "HORIZONTAL_LIST_WITH_CONTEXT" | "SHORTCUT_LIST" | "TRACK_LIST" | "VERTICAL_LIST_CARD" | "TEXT_CARD" | "LINKS_LIST" | "PUBLIC_PLAYLIST_LIST";
             /**
              * @description Type of source represented by the module
              * @example SHORTCUTS
              * @enum {string}
              */
-            sourceType: "ALBUM_RECOMMENDATIONS" | "BECAUSE_YOU_LISTENED_TO_ALBUM" | "BECAUSE_YOU_ADDED_ALBUM" | "BECAUSE_YOU_ADDED_ARTIST" | "CONTINUE_LISTEN_TO" | "DAILY_MIXES" | "FORGOTTEN_FAVORITES" | "GENRE_MIXES" | "HISTORY_MIXES" | "LOCAL_PLAYLISTS" | "MY_PLAYLISTS" | "NEW_ALBUM_SUGGESTIONS" | "NEW_TRACK_SUGGESTIONS" | "NEW_ALBUMS" | "NEW_TRACKS" | "POPULAR_PLAYLISTS" | "RECENTLY_UPDATED_FAVORITED_PLAYLIST" | "RECOMMENDED_EDITORIAL_PLAYLISTS" | "RECOMMENDED_USERS_PLAYLISTS" | "SUGGESTED_ESSENTIAL_PLAYLISTS" | "SUGGESTED_RADIOS_MIXES" | "WELCOME_MIX" | "YOUR_FAVORITE_ARTISTS" | "UPLOADS_FOR_YOU" | "LATEST_SPOTLIGHTED_TRACKS" | "SHORTCUTS" | "ARTIST_TOP_TRACKS" | "ARTIST_SPOTLIGHTED_TRACKS" | "ARTIST_ALBUMS" | "ARTIST_TOP_SINGLES" | "ARTIST_COMPILATIONS" | "ARTIST_LIVE_ALBUMS" | "ARTIST_APPEARS_ON" | "ARTIST_PLAYLIST" | "ARTIST_PUBLIC_PLAYLIST" | "ARTIST_SIMILAR_ARTISTS" | "ARTIST_TRACK_UPLOADS" | "ARTIST_ALBUM_UPLOADS" | "ARTIST_LINKS" | "ARTIST_VIDEOS" | "ARTIST_CREDITS" | "ALBUM_ITEMS" | "ALBUM_ANNIVERSARY" | "ARTIST_BIRTHDAY" | "ARTIST_MEMORIAM" | "DJ_TOOLS" | "DJ_ARTIST_CURATED" | "THE_HITS" | "FROM_OUR_EDITORS" | "TOP_PLAYLISTS" | "FEATURED_TOP_TRACKS" | "FEATURED_TOP_ALBUMS" | "TOP_ARTISTS_ESSENTIALS" | "FEATURED_RECOMMENDED_PLAYLISTS" | "HOME_3_FEATURED_PLAYLISTS" | "HOME_3_FEATURED_UPLOAD_TRACKS" | "HOME_3_FEATURED_ALBUMS" | "POPULAR_ALBUMS" | "POPULAR_ARTISTS" | "POPULAR_MIXES" | "FEATURED_RECOMMENDED_TRACKS" | "FEATURED_RECOMMENDED_ALBUMS" | "FEATURED_RECOMMENDED_CLASSIC_ALBUMS" | "HOME_3_0_GENERIC_PLAYLISTS_1" | "HOME_3_0_GENERIC_PLAYLISTS_2" | "HOME_3_0_GENERIC_ALBUMS_1" | "HOME_3_0_GENERIC_TRACKS_1" | "HOME_3_0_GENERIC_ARTISTS_1" | "HOME_3_0_GENERIC_VIDEOS_1" | "HOLIDAY_HITS_PLAYLISTS" | "HOLIDAY_DECADES_PLAYLISTS" | "HOLIDAY_MOODS_PLAYLISTS" | "BEST_OF_2025_PLAYLISTS" | "NEW_YEARS_PARTY" | "NEW_YEARS_RESOLUTIONS" | "SONGS_OF_THE_YEAR_2026" | "BACK_TO_SCHOOL_MUSIC_101" | "BACK_TO_SCHOOL_GENRES_FOR_BEGINNERS" | "HEADLINERS_2026" | "UNKNOWN";
+            sourceType: "ALBUM_RECOMMENDATIONS" | "BECAUSE_YOU_LISTENED_TO_ALBUM" | "BECAUSE_YOU_ADDED_ALBUM" | "BECAUSE_YOU_ADDED_ARTIST" | "CONTINUE_LISTEN_TO" | "DAILY_MIXES" | "FORGOTTEN_FAVORITES" | "GENRE_MIXES" | "HISTORY_MIXES" | "LOCAL_PLAYLISTS" | "MY_PLAYLISTS" | "NEW_ALBUM_SUGGESTIONS" | "NEW_TRACK_SUGGESTIONS" | "NEW_ALBUMS" | "NEW_TRACKS" | "POPULAR_PLAYLISTS" | "RECENTLY_UPDATED_FAVORITED_PLAYLIST" | "RECOMMENDED_EDITORIAL_PLAYLISTS" | "RECOMMENDED_USERS_PLAYLISTS" | "SUGGESTED_ESSENTIAL_PLAYLISTS" | "SUGGESTED_RADIOS_MIXES" | "WELCOME_MIX" | "YOUR_FAVORITE_ARTISTS" | "UPLOADS_FOR_YOU" | "LATEST_SPOTLIGHTED_TRACKS" | "SHORTCUTS" | "ARTIST_TOP_TRACKS" | "ARTIST_SPOTLIGHTED_TRACKS" | "ARTIST_ALBUMS" | "ARTIST_TOP_SINGLES" | "ARTIST_COMPILATIONS" | "ARTIST_LIVE_ALBUMS" | "ARTIST_APPEARS_ON" | "ARTIST_PLAYLIST" | "ARTIST_PUBLIC_PLAYLIST" | "ARTIST_SIMILAR_ARTISTS" | "ARTIST_TRACK_UPLOADS" | "ARTIST_LINKS" | "ARTIST_VIDEOS" | "ARTIST_CREDITS" | "ALBUM_ITEMS" | "ALBUM_ANNIVERSARY" | "ARTIST_BIRTHDAY" | "ARTIST_MEMORIAM" | "DJ_TOOLS" | "DJ_ARTIST_CURATED" | "THE_HITS" | "FROM_OUR_EDITORS" | "TOP_PLAYLISTS" | "FEATURED_TOP_TRACKS" | "FEATURED_TOP_ALBUMS" | "TOP_ARTISTS_ESSENTIALS" | "FEATURED_RECOMMENDED_PLAYLISTS" | "HOME_3_FEATURED_PLAYLISTS" | "HOME_3_FEATURED_UPLOAD_TRACKS" | "HOME_3_FEATURED_ALBUMS" | "POPULAR_ALBUMS" | "POPULAR_ARTISTS" | "POPULAR_MIXES" | "FEATURED_RECOMMENDED_TRACKS" | "FEATURED_RECOMMENDED_ALBUMS" | "FEATURED_RECOMMENDED_CLASSIC_ALBUMS" | "HOME_3_0_GENERIC_PLAYLISTS_1" | "HOME_3_0_GENERIC_PLAYLISTS_2" | "HOME_3_0_GENERIC_ALBUMS_1" | "HOME_3_0_GENERIC_TRACKS_1" | "HOME_3_0_GENERIC_ARTISTS_1" | "HOME_3_0_GENERIC_VIDEOS_1" | "BASED_ON_YOUR_INTERESTS_1" | "BASED_ON_YOUR_INTERESTS_2" | "UNKNOWN";
             /**
              * @description Subtitle of the module
              * @example Short description of this module
@@ -15269,7 +15686,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         DynamicModules_Relationships: {
-            items: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         DynamicModules_Resource_Object: {
             attributes?: components["schemas"]["DynamicModules_Attributes"];
@@ -15315,8 +15732,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         DynamicPages_Relationships: {
-            dynamicModules: components["schemas"]["Multi_Relationship_Data_Document"];
-            subject: components["schemas"]["Single_Relationship_Data_Document"];
+            dynamicModules?: components["schemas"]["Multi_Relationship_Data_Document"];
+            subject?: components["schemas"]["Single_Relationship_Data_Document"];
         };
         DynamicPages_Resource_Object: {
             attributes?: components["schemas"]["DynamicPages_Attributes"];
@@ -15446,7 +15863,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserEntitlements_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -15517,8 +15934,8 @@ export interface components {
             clientStorageState: "PENDING" | "STORED";
         };
         Installations_Relationships: {
-            offlineInventory: components["schemas"]["Installations_OfflineInventory_Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            offlineInventory?: components["schemas"]["Installations_OfflineInventory_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         Installations_Resource_Object: {
             attributes?: components["schemas"]["Installations_Attributes"];
@@ -15640,8 +16057,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Lyrics_Relationships: {
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
-            track: components["schemas"]["Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            track?: components["schemas"]["Single_Relationship_Data_Document"];
         };
         Lyrics_Resource_Object: {
             attributes?: components["schemas"]["Lyrics_Attributes"];
@@ -15828,9 +16245,9 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         OfflineTasks_Relationships: {
-            collection: components["schemas"]["Single_Relationship_Data_Document"];
-            item: components["schemas"]["Single_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            collection?: components["schemas"]["Single_Relationship_Data_Document"];
+            item?: components["schemas"]["Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         OfflineTasks_Resource_Object: {
             attributes?: components["schemas"]["OfflineTasks_Attributes"];
@@ -16036,10 +16453,10 @@ export interface components {
             legacySource?: components["schemas"]["LegacySource"];
         };
         PlayQueues_Relationships: {
-            current: components["schemas"]["PlayQueues_Current_Single_Relationship_Data_Document"];
-            future: components["schemas"]["PlayQueues_Future_Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
-            past: components["schemas"]["PlayQueues_Past_Multi_Relationship_Data_Document"];
+            current?: components["schemas"]["PlayQueues_Current_Single_Relationship_Data_Document"];
+            future?: components["schemas"]["PlayQueues_Future_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            past?: components["schemas"]["PlayQueues_Past_Multi_Relationship_Data_Document"];
         };
         PlayQueues_Resource_Object: {
             attributes?: components["schemas"]["PlayQueues_Attributes"];
@@ -16236,10 +16653,10 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Playlists_Relationships: {
-            coverArt: components["schemas"]["Multi_Relationship_Data_Document"];
-            items: components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
-            ownerProfiles: components["schemas"]["Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            coverArt?: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
+            ownerProfiles?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         Playlists_Resource_Object: {
             attributes?: components["schemas"]["Playlists_Attributes"];
@@ -16401,8 +16818,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Reactions_Relationships: {
-            ownerProfiles: components["schemas"]["Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            ownerProfiles?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         Reactions_Resource_Object: {
             attributes?: components["schemas"]["Reactions_Attributes"];
@@ -16521,12 +16938,12 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         SearchResults_Relationships: {
-            albums: components["schemas"]["Multi_Relationship_Data_Document"];
-            artists: components["schemas"]["Multi_Relationship_Data_Document"];
-            playlists: components["schemas"]["Multi_Relationship_Data_Document"];
-            topHits: components["schemas"]["Multi_Relationship_Data_Document"];
-            tracks: components["schemas"]["Multi_Relationship_Data_Document"];
-            videos: components["schemas"]["Multi_Relationship_Data_Document"];
+            albums?: components["schemas"]["Multi_Relationship_Data_Document"];
+            artists?: components["schemas"]["Multi_Relationship_Data_Document"];
+            playlists?: components["schemas"]["Multi_Relationship_Data_Document"];
+            topHits?: components["schemas"]["Multi_Relationship_Data_Document"];
+            tracks?: components["schemas"]["Multi_Relationship_Data_Document"];
+            videos?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         SearchResults_Resource_Object: {
             attributes?: components["schemas"]["SearchResults_Attributes"];
@@ -16577,7 +16994,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         SearchSuggestions_Relationships: {
-            directHits: components["schemas"]["Multi_Relationship_Data_Document"];
+            directHits?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         SearchSuggestions_Resource_Object: {
             attributes?: components["schemas"]["SearchSuggestions_Attributes"];
@@ -16644,8 +17061,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Shares_Relationships: {
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
-            sharedResources: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            sharedResources?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         Shares_Resource_Object: {
             attributes?: components["schemas"]["Shares_Attributes"];
@@ -16727,7 +17144,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         StripeConnections_Relationships: {
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         StripeConnections_Resource_Object: {
             attributes?: components["schemas"]["StripeConnections_Attributes"];
@@ -16745,6 +17162,41 @@ export interface components {
         };
         StripeConnections_Single_Resource_Data_Document: {
             data: components["schemas"]["StripeConnections_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StripeDashboardLinks_Attributes: {
+            dashboardLink?: components["schemas"]["Link_Object"];
+        };
+        StripeDashboardLinks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StripeDashboardLinks_Multi_Resource_Data_Document: {
+            data: components["schemas"]["StripeDashboardLinks_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StripeDashboardLinks_Relationships: {
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+        };
+        StripeDashboardLinks_Resource_Object: {
+            attributes?: components["schemas"]["StripeDashboardLinks_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["StripeDashboardLinks_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "stripeDashboardLinks";
+        };
+        StripeDashboardLinks_Single_Resource_Data_Document: {
+            data: components["schemas"]["StripeDashboardLinks_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -16954,7 +17406,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         TrackSourceFiles_Relationships: {
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         TrackSourceFiles_Resource_Object: {
             attributes?: components["schemas"]["TrackSourceFiles_Attributes"];
@@ -16998,7 +17450,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         TrackStatistics_Relationships: {
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         TrackStatistics_Resource_Object: {
             attributes?: components["schemas"]["TrackStatistics_Attributes"];
@@ -17237,23 +17689,24 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Tracks_Relationships: {
-            albums: components["schemas"]["Multi_Relationship_Data_Document"];
-            artists: components["schemas"]["Multi_Relationship_Data_Document"];
-            credits: components["schemas"]["Multi_Relationship_Data_Document"];
-            genres: components["schemas"]["Multi_Relationship_Data_Document"];
-            lyrics: components["schemas"]["Multi_Relationship_Data_Document"];
-            metadataStatus: components["schemas"]["Single_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
-            priceConfig: components["schemas"]["Single_Relationship_Data_Document"];
-            providers: components["schemas"]["Multi_Relationship_Data_Document"];
-            radio: components["schemas"]["Multi_Relationship_Data_Document"];
-            replacement: components["schemas"]["Single_Relationship_Data_Document"];
-            shares: components["schemas"]["Multi_Relationship_Data_Document"];
-            similarTracks: components["schemas"]["Multi_Relationship_Data_Document"];
-            sourceFile: components["schemas"]["Single_Relationship_Data_Document"];
-            suggestedTracks: components["schemas"]["Multi_Relationship_Data_Document"];
-            trackStatistics: components["schemas"]["Single_Relationship_Data_Document"];
-            usageRules: components["schemas"]["Single_Relationship_Data_Document"];
+            albums?: components["schemas"]["Multi_Relationship_Data_Document"];
+            artists?: components["schemas"]["Multi_Relationship_Data_Document"];
+            credits?: components["schemas"]["Multi_Relationship_Data_Document"];
+            download?: components["schemas"]["Single_Relationship_Data_Document"];
+            genres?: components["schemas"]["Multi_Relationship_Data_Document"];
+            lyrics?: components["schemas"]["Multi_Relationship_Data_Document"];
+            metadataStatus?: components["schemas"]["Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            priceConfig?: components["schemas"]["Single_Relationship_Data_Document"];
+            providers?: components["schemas"]["Multi_Relationship_Data_Document"];
+            radio?: components["schemas"]["Multi_Relationship_Data_Document"];
+            replacement?: components["schemas"]["Single_Relationship_Data_Document"];
+            shares?: components["schemas"]["Multi_Relationship_Data_Document"];
+            similarTracks?: components["schemas"]["Multi_Relationship_Data_Document"];
+            sourceFile?: components["schemas"]["Single_Relationship_Data_Document"];
+            suggestedTracks?: components["schemas"]["Multi_Relationship_Data_Document"];
+            trackStatistics?: components["schemas"]["Single_Relationship_Data_Document"];
+            usageRules?: components["schemas"]["Single_Relationship_Data_Document"];
         };
         Tracks_Resource_Object: {
             attributes?: components["schemas"]["Tracks_Attributes"];
@@ -17406,8 +17859,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserCollectionAlbums_Relationships: {
-            items: components["schemas"]["UserCollectionAlbums_Items_Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserCollectionAlbums_Items_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         UserCollectionAlbums_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionAlbums_Attributes"];
@@ -17496,8 +17949,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserCollectionArtists_Relationships: {
-            items: components["schemas"]["UserCollectionArtists_Items_Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserCollectionArtists_Items_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         UserCollectionArtists_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionArtists_Attributes"];
@@ -17616,8 +18069,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserCollectionFolders_Relationships: {
-            items: components["schemas"]["UserCollectionFolders_Items_Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserCollectionFolders_Items_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         UserCollectionFolders_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionFolders_Attributes"];
@@ -17701,8 +18154,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserCollectionPlaylists_Relationships: {
-            items: components["schemas"]["UserCollectionPlaylists_Items_Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserCollectionPlaylists_Items_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         UserCollectionPlaylists_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionPlaylists_Attributes"];
@@ -17791,8 +18244,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserCollectionTracks_Relationships: {
-            items: components["schemas"]["UserCollectionTracks_Items_Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserCollectionTracks_Items_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         UserCollectionTracks_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionTracks_Attributes"];
@@ -17876,8 +18329,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserCollectionVideos_Relationships: {
-            items: components["schemas"]["UserCollectionVideos_Items_Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserCollectionVideos_Items_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         UserCollectionVideos_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionVideos_Attributes"];
@@ -18084,12 +18537,12 @@ export interface components {
             addedAt: string;
         };
         UserCollections_Relationships: {
-            albums: components["schemas"]["UserCollections_Albums_Multi_Relationship_Data_Document"];
-            artists: components["schemas"]["UserCollections_Artists_Multi_Relationship_Data_Document"];
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
-            playlists: components["schemas"]["UserCollections_Playlists_Multi_Relationship_Data_Document"];
-            tracks: components["schemas"]["UserCollections_Tracks_Multi_Relationship_Data_Document"];
-            videos: components["schemas"]["UserCollections_Videos_Multi_Relationship_Data_Document"];
+            albums?: components["schemas"]["UserCollections_Albums_Multi_Relationship_Data_Document"];
+            artists?: components["schemas"]["UserCollections_Artists_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            playlists?: components["schemas"]["UserCollections_Playlists_Multi_Relationship_Data_Document"];
+            tracks?: components["schemas"]["UserCollections_Tracks_Multi_Relationship_Data_Document"];
+            videos?: components["schemas"]["UserCollections_Videos_Multi_Relationship_Data_Document"];
         };
         UserCollections_Resource_Object: {
             attributes?: components["schemas"]["UserCollections_Attributes"];
@@ -18169,7 +18622,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserEntitlements_Relationships: {
-            owners: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         UserEntitlements_Resource_Object: {
             attributes?: components["schemas"]["UserEntitlements_Attributes"];
@@ -18202,9 +18655,9 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserRecommendations_Relationships: {
-            discoveryMixes: components["schemas"]["Multi_Relationship_Data_Document"];
-            myMixes: components["schemas"]["Multi_Relationship_Data_Document"];
-            newArrivalMixes: components["schemas"]["Multi_Relationship_Data_Document"];
+            discoveryMixes?: components["schemas"]["Multi_Relationship_Data_Document"];
+            myMixes?: components["schemas"]["Multi_Relationship_Data_Document"];
+            newArrivalMixes?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         UserRecommendations_Resource_Object: {
             attributes?: components["schemas"]["UserRecommendations_Attributes"];
@@ -18400,14 +18853,15 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Videos_Relationships: {
-            albums: components["schemas"]["Multi_Relationship_Data_Document"];
-            artists: components["schemas"]["Multi_Relationship_Data_Document"];
-            credits: components["schemas"]["Multi_Relationship_Data_Document"];
-            providers: components["schemas"]["Multi_Relationship_Data_Document"];
-            replacement: components["schemas"]["Single_Relationship_Data_Document"];
-            similarVideos: components["schemas"]["Multi_Relationship_Data_Document"];
-            thumbnailArt: components["schemas"]["Multi_Relationship_Data_Document"];
-            usageRules: components["schemas"]["Single_Relationship_Data_Document"];
+            albums?: components["schemas"]["Multi_Relationship_Data_Document"];
+            artists?: components["schemas"]["Multi_Relationship_Data_Document"];
+            credits?: components["schemas"]["Multi_Relationship_Data_Document"];
+            providers?: components["schemas"]["Multi_Relationship_Data_Document"];
+            replacement?: components["schemas"]["Single_Relationship_Data_Document"];
+            similarVideos?: components["schemas"]["Multi_Relationship_Data_Document"];
+            suggestedVideos?: components["schemas"]["Multi_Relationship_Data_Document"];
+            thumbnailArt?: components["schemas"]["Multi_Relationship_Data_Document"];
+            usageRules?: components["schemas"]["Single_Relationship_Data_Document"];
         };
         Videos_Resource_Object: {
             attributes?: components["schemas"]["Videos_Attributes"];
