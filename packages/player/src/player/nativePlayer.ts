@@ -6,9 +6,14 @@ import { mediaProductTransition as mediaProductTransitionEvent } from '../api/ev
 import * as Config from '../config';
 import { events } from '../event-bus';
 import type { ErrorCodes } from '../internal';
-import { PlayerError } from '../internal';
+import { PlayerError, credentialsProviderStore } from '../internal';
 import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
 import { composePlaybackContext } from '../internal/helpers/compose-playback-context';
+import { parseManifest } from '../internal/helpers/manifest-parser';
+import {
+  type PlaybackInfo,
+  fetchPlaybackInfo,
+} from '../internal/helpers/playback-info-resolver';
 import { streamingSessionStore } from '../internal/helpers/streaming-session-store';
 import type { OutputDevices } from '../internal/output-devices';
 import { trueTime } from '../internal/true-time';
@@ -158,8 +163,15 @@ export default class NativePlayer extends BasePlayer {
     }
   }
 
-  async #handleNetworkError() {
-    this.debugLog('handleNetworkError');
+  async #handleNetworkError(statusCode?: number) {
+    this.debugLog('handleNetworkError', 'statusCode:', statusCode);
+
+    // On 403 (expired CDN token), fetch fresh playback info and recover
+    // without restarting the decoder pipeline.
+    if (statusCode === 403) {
+      await this.#recoverWithFreshUrl();
+      return;
+    }
 
     const actualStartTimestamp = trueTime.timestamp(
       'streaming_metrics:playback_statistics:actualStartTimestamp',
@@ -198,6 +210,69 @@ export default class NativePlayer extends BasePlayer {
     ]);
 
     if (raceResult === 'idle') {
+      events.dispatchError(new PlayerError('PENetwork', 'NPN01'));
+    }
+  }
+
+  /**
+   * Re-fetches playback info to get a fresh streaming URL (with a new CDN token)
+   * and sends it to the native player via recover(), which updates the URL
+   * without restarting the decoder pipeline.
+   */
+  async #recoverWithFreshUrl() {
+    const mediaProduct = this.currentMediaProduct;
+    const sessionId = this.currentStreamingSessionId;
+
+    if (!mediaProduct || !sessionId) {
+      this.debugLog('recoverWithFreshUrl: no current media product or session');
+      return;
+    }
+
+    this.debugLog('recoverWithFreshUrl: fetching fresh playback info');
+
+    try {
+      const { clientId, token } =
+        await credentialsProviderStore.credentialsProvider.getCredentials();
+
+      const streamingWifiAudioQuality = Config.get('streamingWifiAudioQuality');
+      const audioAdaptiveBitrateStreaming = Config.get(
+        'audioAdaptiveBitrateStreaming',
+      );
+
+      const playbackInfo: PlaybackInfo | null = await fetchPlaybackInfo({
+        accessToken: token,
+        audioAdaptiveBitrateStreaming,
+        audioQuality: streamingWifiAudioQuality,
+        clientId,
+        mediaProduct,
+        playerType: 'native',
+        prefetch: false,
+        streamingSessionId: sessionId,
+      });
+
+      // Bail out if the session changed while we were fetching.
+      if (this.currentStreamingSessionId !== sessionId) {
+        this.debugLog(
+          'recoverWithFreshUrl: session changed during fetch, aborting',
+        );
+        return;
+      }
+
+      if (!playbackInfo) {
+        this.debugLog('recoverWithFreshUrl: failed to fetch playback info');
+        events.dispatchError(new PlayerError('PENetwork', 'NPN01'));
+        return;
+      }
+
+      const streamInfo = parseManifest(playbackInfo);
+
+      // Update stored stream info with fresh data.
+      streamingSessionStore.saveStreamInfo(sessionId, streamInfo);
+
+      this.debugLog('recoverWithFreshUrl: sending fresh URL to native player');
+      this.#player.recover(streamInfo.streamUrl, streamInfo.securityToken);
+    } catch (e) {
+      console.error('Failed to recover with fresh URL:', e);
       events.dispatchError(new PlayerError('PENetwork', 'NPN01'));
     }
   }
@@ -526,9 +601,16 @@ export default class NativePlayer extends BasePlayer {
       'mediaerror',
       (e: { target: MediaErrorMessage }) => this.#handleMediaError(e),
     );
-    this.#player.addEventListener('mediamaxconnectionsreached', () => {
-      this.#handleNetworkError().catch(console.error);
-    });
+    // Misnomer: this event fires on any non-retryable HTTP error (403, 4xx,
+    // 5xx after retries), not just max connections. Name kept for compatibility
+    // with the native player bridge.
+    this.#player.addEventListener(
+      'mediamaxconnectionsreached',
+      (e: Event & { target: { statusCode?: number } }) => {
+        const statusCode = e.target?.statusCode;
+        this.#handleNetworkError(statusCode).catch(console.error);
+      },
+    );
     // this.#player.addEventListener('version', e => console.log('version', e));
     // this.#player.listDevices();
   }
