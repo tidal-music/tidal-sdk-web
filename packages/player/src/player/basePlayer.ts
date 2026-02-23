@@ -185,6 +185,31 @@ export class BasePlayer {
     }
   }
 
+  get currentMediaProduct() {
+    return (
+      streamingSessionStore.getMediaProductTransition(
+        this.currentStreamingSessionId,
+      )?.mediaProduct ?? null
+    );
+  }
+
+  set currentStreamingSessionId(ssi: string | undefined) {
+    this.#currentStreamingSessionId = ssi;
+  }
+
+  get currentStreamingSessionId() {
+    return this.#currentStreamingSessionId;
+  }
+
+  set currentTime(seconds: number) {
+    this.#currentTime = seconds;
+    this.#maybeDispatchPreloadRequest();
+  }
+
+  get currentTime() {
+    return this.#currentTime;
+  }
+
   // Implements
   debugLog(...args: Array<unknown>) {
     if (
@@ -231,6 +256,18 @@ export class BasePlayer {
       );
       this.#endedHandler = undefined;
     }
+  }
+
+  get duration() {
+    const mtp = streamingSessionStore.getMediaProductTransition(
+      this.currentStreamingSessionId,
+    );
+
+    if (mtp) {
+      return mtp.playbackContext.actualDuration;
+    }
+
+    return null;
   }
 
   /**
@@ -375,6 +412,19 @@ export class BasePlayer {
     }).catch(console.error);
   }
 
+  get expired() {
+    const streamInfo = streamingSessionStore.getStreamInfo(
+      this.currentStreamingSessionId,
+    );
+
+    if (!streamInfo) {
+      return false;
+    }
+
+    // eslint-disable-next-line no-restricted-syntax
+    return streamInfo.expires <= Date.now();
+  }
+
   finishCurrentMediaProduct(endReason: EndReason) {
     // A media product was loaded but never started.
     if (!this.hasStarted()) {
@@ -423,6 +473,12 @@ export class BasePlayer {
     return (
       this.currentStreamingSessionId &&
       streamingSessionStore.hasStartedStreamInfo(this.currentStreamingSessionId)
+    );
+  }
+
+  get isActivePlayer() {
+    return (
+      playerState.activePlayer && this.name === playerState.activePlayer.name
     );
   }
 
@@ -483,6 +539,20 @@ export class BasePlayer {
     return Promise.resolve();
   }
 
+  get nextItem() {
+    if (this.preloadedStreamingSessionId) {
+      return streamingSessionStore.getMediaProductTransition(
+        this.preloadedStreamingSessionId,
+      );
+    }
+
+    return undefined;
+  }
+
+  set outputDeviceType(ot: OutputType | undefined) {
+    this.#outputDeviceType = ot ? transformOutputType(ot) : undefined;
+  }
+
   /**
    * When re-using a nexted item for a load, overwrite the nexted MediaProduct with the provided one.
    * To ensure sourceId, sourceType and referenceId from the load call is correct for the playback -
@@ -527,189 +597,6 @@ export class BasePlayer {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   playbackEngineEndedHandler(_e: EndedEvent) {
     return Promise.resolve();
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  reset(_options: { keepPreload: boolean }) {
-    return Promise.resolve();
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  seek(_number: number) {}
-
-  /**
-   * Handle play log reporting for seeking.
-   * Seek start should log a PLAYBACK_START action if playing post seek.
-   */
-  seekEnd(assetPosition: number) {
-    const streamingSessionId = this.currentStreamingSessionId;
-
-    if (streamingSessionId) {
-      const logEvent = () =>
-        PlayLog.playbackSessionAction(streamingSessionId, {
-          actionType: 'PLAYBACK_START',
-          assetPosition,
-          timestamp: trueTime.now(),
-        });
-
-      if (this.playbackState === 'PLAYING') {
-        logEvent().catch(console.error);
-      } else {
-        const handlePlaybackStateChange = () => {
-          if (this.playbackState === 'PLAYING') {
-            logEvent().catch(console.error);
-
-            events.removeEventListener(
-              'playback-state-change',
-              handlePlaybackStateChange,
-            );
-          }
-        };
-        events.addEventListener(
-          'playback-state-change',
-          handlePlaybackStateChange,
-        );
-      }
-    }
-  }
-
-  /**
-   * Handle play log reporting for seeking.
-   * Seek start should log a PLAYBACK_STOP action.
-   */
-  seekStart(assetPosition: number) {
-    if (this.currentStreamingSessionId) {
-      PlayLog.playbackSessionAction(this.currentStreamingSessionId, {
-        actionType: 'PLAYBACK_STOP',
-        assetPosition,
-        timestamp: trueTime.now(),
-      }).catch(console.error);
-    }
-  }
-
-  async setStateToXIfNotYInZMs(
-    ms: number,
-    ifNotState: PlaybackState,
-    setToState: PlaybackState,
-  ) {
-    await waitFor(ms);
-
-    if (this.playbackState !== ifNotState) {
-      this.playbackState = setToState;
-    }
-  }
-
-  skipToPreloadedMediaProduct() {
-    return Promise.resolve();
-  }
-
-  unloadPreloadedMediaProduct() {
-    return Promise.resolve();
-  }
-
-  updateOutputDevice() {
-    return Promise.resolve();
-  }
-
-  /**
-   * Hydrates the volume level from config, and adjusts
-   * it before setting, if loudness normalization is
-   * enabled.
-   */
-  updateVolumeLevel() {
-    const streamInfo = streamingSessionStore.getStreamInfo(
-      this.currentStreamingSessionId,
-    );
-
-    if (!streamInfo) {
-      return;
-    }
-
-    this.volume = this.adjustedVolume(streamInfo);
-  }
-
-  /**
-   * Adjusts the volume for the next track.
-   * Can be called on product ended to have the level ready.
-   */
-  updateVolumeLevelForNextProduct() {
-    const streamInfo = streamingSessionStore.getStreamInfo(
-      this.preloadedStreamingSessionId,
-    );
-
-    if (streamInfo) {
-      this.volume = this.adjustedVolume(streamInfo);
-    } // else: Will be adjusted on start instead.
-  }
-
-  get currentMediaProduct() {
-    return (
-      streamingSessionStore.getMediaProductTransition(
-        this.currentStreamingSessionId,
-      )?.mediaProduct ?? null
-    );
-  }
-
-  set currentStreamingSessionId(ssi: string | undefined) {
-    this.#currentStreamingSessionId = ssi;
-  }
-
-  get currentStreamingSessionId() {
-    return this.#currentStreamingSessionId;
-  }
-
-  set currentTime(seconds: number) {
-    this.#currentTime = seconds;
-    this.#maybeDispatchPreloadRequest();
-  }
-
-  get currentTime() {
-    return this.#currentTime;
-  }
-
-  get duration() {
-    const mtp = streamingSessionStore.getMediaProductTransition(
-      this.currentStreamingSessionId,
-    );
-
-    if (mtp) {
-      return mtp.playbackContext.actualDuration;
-    }
-
-    return null;
-  }
-
-  get expired() {
-    const streamInfo = streamingSessionStore.getStreamInfo(
-      this.currentStreamingSessionId,
-    );
-
-    if (!streamInfo) {
-      return false;
-    }
-
-    // eslint-disable-next-line no-restricted-syntax
-    return streamInfo.expires <= Date.now();
-  }
-
-  get isActivePlayer() {
-    return (
-      playerState.activePlayer && this.name === playerState.activePlayer.name
-    );
-  }
-
-  get nextItem() {
-    if (this.preloadedStreamingSessionId) {
-      return streamingSessionStore.getMediaProductTransition(
-        this.preloadedStreamingSessionId,
-      );
-    }
-
-    return undefined;
-  }
-
-  set outputDeviceType(ot: OutputType | undefined) {
-    this.#outputDeviceType = ot ? transformOutputType(ot) : undefined;
   }
 
   set playbackState(newPlaybackState: PlaybackState) {
@@ -786,12 +673,125 @@ export class BasePlayer {
     return this.#preloadedStreamingSessionId;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  reset(_options: { keepPreload: boolean }) {
+    return Promise.resolve();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  seek(_number: number) {}
+
+  /**
+   * Handle play log reporting for seeking.
+   * Seek start should log a PLAYBACK_START action if playing post seek.
+   */
+  seekEnd(assetPosition: number) {
+    const streamingSessionId = this.currentStreamingSessionId;
+
+    if (streamingSessionId) {
+      const logEvent = () =>
+        PlayLog.playbackSessionAction(streamingSessionId, {
+          actionType: 'PLAYBACK_START',
+          assetPosition,
+          timestamp: trueTime.now(),
+        });
+
+      if (this.playbackState === 'PLAYING') {
+        logEvent().catch(console.error);
+      } else {
+        const handlePlaybackStateChange = () => {
+          if (this.playbackState === 'PLAYING') {
+            logEvent().catch(console.error);
+
+            events.removeEventListener(
+              'playback-state-change',
+              handlePlaybackStateChange,
+            );
+          }
+        };
+        events.addEventListener(
+          'playback-state-change',
+          handlePlaybackStateChange,
+        );
+      }
+    }
+  }
+
+  /**
+   * Handle play log reporting for seeking.
+   * Seek start should log a PLAYBACK_STOP action.
+   */
+  seekStart(assetPosition: number) {
+    if (this.currentStreamingSessionId) {
+      PlayLog.playbackSessionAction(this.currentStreamingSessionId, {
+        actionType: 'PLAYBACK_STOP',
+        assetPosition,
+        timestamp: trueTime.now(),
+      }).catch(console.error);
+    }
+  }
+
+  async setStateToXIfNotYInZMs(
+    ms: number,
+    ifNotState: PlaybackState,
+    setToState: PlaybackState,
+  ) {
+    await waitFor(ms);
+
+    if (this.playbackState !== ifNotState) {
+      this.playbackState = setToState;
+    }
+  }
+
+  skipToPreloadedMediaProduct() {
+    return Promise.resolve();
+  }
+
   get startAssetPosition() {
     return this.#startAssetPosition;
   }
 
   set startAssetPosition(assetPosition: number) {
     this.#startAssetPosition = assetPosition;
+  }
+
+  unloadPreloadedMediaProduct() {
+    return Promise.resolve();
+  }
+
+  updateOutputDevice() {
+    return Promise.resolve();
+  }
+
+  /**
+   * Hydrates the volume level from config, and adjusts
+   * it before setting, if loudness normalization is
+   * enabled.
+   */
+  updateVolumeLevel() {
+    const streamInfo = streamingSessionStore.getStreamInfo(
+      this.currentStreamingSessionId,
+    );
+
+    if (!streamInfo) {
+      return;
+    }
+
+    this.volume = this.adjustedVolume(streamInfo);
+  }
+
+  /**
+   * Adjusts the volume for the next track.
+   * Can be called on product ended to have the level ready.
+   */
+  updateVolumeLevelForNextProduct() {
+    const streamInfo = streamingSessionStore.getStreamInfo(
+      this.preloadedStreamingSessionId,
+    );
+
+    if (streamInfo) {
+      this.volume = this.adjustedVolume(streamInfo);
+    } // else: Will be adjusted on start instead.
   }
 
   get volume() {

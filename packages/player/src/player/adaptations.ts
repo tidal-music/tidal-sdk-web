@@ -47,7 +47,7 @@ export async function saveAdaptation(
 }
 
 export function registerAdaptations(shakaPlayer: shaka.Player) {
-  let currentStreamingSessionId: null | string;
+  let currentStreamingSessionId: string | null;
 
   const onManualOrAutomaticQualityChange = () => {
     const activeTrack: shaka.extern.Track = shakaPlayer

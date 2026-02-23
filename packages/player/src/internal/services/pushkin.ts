@@ -27,7 +27,7 @@ type TimeInformation = Readonly<{
 
 // Named OutgoingPrivilegedSessionNotification in back-end.
 type PrivilegedSessionNotificationEventPayload = Readonly<{
-  clientDisplayName: null | string | undefined;
+  clientDisplayName: string | null | undefined;
   endsAt: TimeInformation;
   sessionId: string;
   updatedAt: TimeInformation;
@@ -203,6 +203,10 @@ export class Pushkin {
     }
   }
 
+  get connected() {
+    return this.#socket && this.#socket.readyState === WebSocket.OPEN;
+  }
+
   reconnect(): Promise<void> {
     if (this.#socket) {
       if (this.#messageHandler) {
@@ -241,9 +245,5 @@ export class Pushkin {
     } catch (e) {
       console.error(e);
     }
-  }
-
-  get connected() {
-    return this.#socket && this.#socket.readyState === WebSocket.OPEN;
   }
 }

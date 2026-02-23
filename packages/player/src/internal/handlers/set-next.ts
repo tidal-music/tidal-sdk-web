@@ -50,8 +50,7 @@ async function _setNext(
   // For repeat playbacks, we clone the streaming session to a new streaming session id.
   if (
     playerState.preloadedStreamingSessionId &&
-    playerState.preloadedMediaProduct &&
-    playerState.preloadedMediaProduct.productId === mediaProduct.productId &&
+    playerState.preloadedMediaProduct?.productId === mediaProduct.productId &&
     streamingSessionStore.hasStartedStreamInfo(
       playerState.preloadedStreamingSessionId,
     )
@@ -166,10 +165,7 @@ async function _setNext(
   ]).catch(console.error);
 
   const { activePlayer } = playerState;
-  const samePlayer =
-    activePlayer &&
-    playerState.preloadPlayer &&
-    activePlayer.name === playerState.preloadPlayer.name;
+  const samePlayer = activePlayer?.name === playerState.preloadPlayer?.name;
 
   if (samePlayer) {
     await activePlayer.next({

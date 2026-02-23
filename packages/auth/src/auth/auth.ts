@@ -538,8 +538,8 @@ const getCredentialsInternal = async (apiErrorSubStatus?: string) => {
         state.credentials.clientId !== accessToken?.clientId ||
         Boolean(
           state.credentials.previousClientSecret &&
-            state.credentials.previousClientSecret !==
-              state.credentials.clientSecret,
+          state.credentials.previousClientSecret !==
+            state.credentials.clientSecret,
         );
 
       if (shouldUpgradeToken) {

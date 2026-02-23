@@ -3,8 +3,8 @@ import { createReducer } from '../../helpers/reducer';
 export type Payload = {
   endReason: 'COMPLETE' | 'ERROR' | 'OTHER';
   endTimestamp: number;
-  errorCode: null | string;
-  errorMessage: null | string;
+  errorCode: string | null;
+  errorMessage: string | null;
   startTimestamp: number;
   streamingSessionId: string;
 };

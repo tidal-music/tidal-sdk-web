@@ -128,8 +128,8 @@ async function runExample(clientId, clientSecret, searchTerm, playlistId) {
   async function getPlaylistItemsWithPagination(id) {
     results.innerHTML += '<h2>Playlist Items (with pagination):</h2>';
 
-    let allItems = [];
-    let currentCursor = undefined;
+    let allItems;
+    let currentCursor;
     let pageCount = 0;
 
     // Fetch first page

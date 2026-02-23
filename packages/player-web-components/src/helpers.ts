@@ -15,7 +15,7 @@ export function asTime(t?: number | string) {
   const minutes = Math.floor((numSecs - hours * 3600) / 60);
   const seconds = numSecs - hours * 3600 - minutes * 60;
 
-  let time = '';
+  let time: string;
 
   if (hours !== 0) {
     const mins = minutes < 10 ? `0${minutes}` : String(minutes);

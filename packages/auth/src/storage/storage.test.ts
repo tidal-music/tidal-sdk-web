@@ -47,7 +47,7 @@ describe.sequential('storage', () => {
       database.getItem.mockReturnValue(new Uint8Array(16));
       storageUtils.decodeCredentials.mockReturnValueOnce('{{{');
 
-      await expect(async () => await loadCredentials('key')).rejects.toThrow(
+      await expect(loadCredentials('key')).rejects.toThrow(
         authErrorCodeMap.storageError,
       );
     });
@@ -66,7 +66,7 @@ describe.sequential('storage', () => {
         throw new Error('Storage is not available');
       });
 
-      await expect(async () => await loadCredentials('key')).rejects.toThrow(
+      await expect(loadCredentials('key')).rejects.toThrow(
         authErrorCodeMap.storageError,
       );
 
@@ -131,11 +131,10 @@ describe.sequential('storage', () => {
       });
 
       await expect(
-        async () =>
-          await saveCredentialsToStorage({
-            clientId: 'foobar',
-            credentialsStorageKey: 'key',
-          }),
+        saveCredentialsToStorage({
+          clientId: 'foobar',
+          credentialsStorageKey: 'key',
+        }),
       ).rejects.toThrowError(authErrorCodeMap.storageError);
     });
 
@@ -143,11 +142,10 @@ describe.sequential('storage', () => {
       database.getItem.mockReturnValue(undefined);
 
       await expect(
-        async () =>
-          await saveCredentialsToStorage({
-            clientId: 'foobar',
-            credentialsStorageKey: 'key',
-          }),
+        saveCredentialsToStorage({
+          clientId: 'foobar',
+          credentialsStorageKey: 'key',
+        }),
       ).rejects.toThrowError(authErrorCodeMap.storageError);
     });
   });
