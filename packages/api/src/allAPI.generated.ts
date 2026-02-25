@@ -1755,7 +1755,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Artist role id (e.g. `1`) */
+                    /** @description List of artist role IDs (e.g. `1`) */
                     "filter[id]"?: string[];
                 };
                 header?: never;
@@ -3480,7 +3480,7 @@ export interface paths {
                      * @example artist
                      */
                     include?: string[];
-                    /** @description Credit id (e.g. `3fG7kLmN2pQrStUv`) */
+                    /** @description List of credit IDs (e.g. `3fG7kLmN2pQrStUv`) */
                     "filter[id]"?: string[];
                 };
                 header?: never;
@@ -3673,6 +3673,61 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Credits_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/downloads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple downloads.
+         * @description Retrieves multiple downloads by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Download id (e.g. `VFJBQ0tTOjEyMzQ1`) */
+                    "filter[id]"?: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Downloads_Multi_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4142,9 +4197,9 @@ export interface paths {
                      * @example dynamicModules
                      */
                     include?: string[];
-                    /** @description Filter by page type (e.g. `ARTIST`) */
+                    /** @description type of the page (e.g. `ARTIST`) */
                     "filter[pageType]"?: string[];
-                    /** @description Filter by subject id (e.g. `67890`) */
+                    /** @description the subject id, eg. artistId (e.g. `67890`) */
                     "filter[subject.id]"?: string[];
                 };
                 header?: never;
@@ -4463,11 +4518,11 @@ export interface paths {
                      * @example offlineInventory
                      */
                     include?: string[];
-                    /** @description Client provided installation identifier (e.g. `a468bee88def`) */
+                    /** @description Client-provided installation identifier to filter by (e.g. `a468bee88def`) */
                     "filter[clientProvidedInstallationId]"?: string[];
-                    /** @description Installation id (e.g. `a468bee88def`) */
+                    /** @description List of installation IDs (e.g. `a468bee88def`) */
                     "filter[id]"?: string[];
-                    /** @description User id (e.g. `123456`) */
+                    /** @description User ID to filter by (e.g. `123456`) */
                     "filter[owners.id]"?: string[];
                 };
                 header?: never;
@@ -5196,9 +5251,9 @@ export interface paths {
                      * @example collection
                      */
                     include?: string[];
-                    /** @description Offline task id (e.g. `a468bee8-8def-4a1b-8c1e-123456789abc`) */
+                    /** @description List of offline task IDs (e.g. `a468bee8-8def-4a1b-8c1e-123456789abc`) */
                     "filter[id]"?: string[];
-                    /** @description Installation id (e.g. `a468bee88def`) */
+                    /** @description List of offline task IDs (e.g. `a468bee88def`) */
                     "filter[installation.id]"?: string[];
                 };
                 header?: never;
@@ -6734,7 +6789,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Price configuration id (e.g. `cHJpY2UtY29uZmlnLTEyMzpVUw`) */
+                    /** @description List of price configurations IDs (e.g. `cHJpY2UtY29uZmlnLTEyMzpVUw`) */
                     "filter[id]"?: string[];
                 };
                 header?: never;
@@ -6872,7 +6927,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Provider ID (e.g. `12345`) */
+                    /** @description List of provider IDs (e.g. `12345`) */
                     "filter[id]"?: string[];
                 };
                 header?: never;
@@ -7931,9 +7986,9 @@ export interface paths {
                      * @example owners
                      */
                     include?: string[];
-                    /** @description Share code (e.g. `xyz`) */
+                    /** @description A share code (e.g. `xyz`) */
                     "filter[code]"?: string[];
-                    /** @description User share id (e.g. `a468bee88def`) */
+                    /** @description List of shares IDs (e.g. `a468bee88def`) */
                     "filter[id]"?: string[];
                 };
                 header?: never;
@@ -8806,7 +8861,7 @@ export interface paths {
                      * @example owners
                      */
                     include?: string[];
-                    /** @description Track id (e.g. `75413016`) */
+                    /** @description List of track IDs (e.g. `75413016`) */
                     "filter[id]"?: string[];
                 };
                 header?: never;
@@ -8990,7 +9045,7 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
-                    /** @description Track id (e.g. `75413016`) */
+                    /** @description List of track IDs (e.g. `75413016`) */
                     "filter[id]"?: string[];
                     /** @description List of ISRCs. When a single ISRC is provided, pagination is supported and multiple tracks may be returned. When multiple ISRCs are provided, one track per ISRC is returned without pagination. (e.g. `QMJMT1701237`) */
                     "filter[isrc]"?: string[];
@@ -10404,7 +10459,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Track id (e.g. `75413016`) */
+                    /** @description List of track IDs (e.g. `75413016`) */
                     "filter[id]"?: string[];
                 };
                 header?: never;
@@ -10507,7 +10562,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Usage rules id (e.g. `VFJBQ0tTOjEyMzpOTw`) */
+                    /** @description List of usage rules IDs (e.g. `VFJBQ0tTOjEyMzpOTw`) */
                     "filter[id]"?: string[];
                 };
                 header?: never;
@@ -11198,7 +11253,7 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
-                    /** @description Folder Id */
+                    /** @description Folder Id (e.g. `CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX`) */
                     "filter[id]"?: string[];
                 };
                 header?: never;
@@ -11293,7 +11348,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Folder Id
-                     * @example
+                     * @example CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX
                      */
                     id: string;
                 };
@@ -11333,7 +11388,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Folder Id
-                     * @example
+                     * @example CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX
                      */
                     id: string;
                 };
@@ -11364,7 +11419,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Folder Id
-                     * @example
+                     * @example CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX
                      */
                     id: string;
                 };
@@ -11416,7 +11471,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Folder Id
-                     * @example
+                     * @example CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX
                      */
                     id: string;
                 };
@@ -11455,7 +11510,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Folder Id
-                     * @example
+                     * @example CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX
                      */
                     id: string;
                 };
@@ -11488,7 +11543,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Folder Id
-                     * @example
+                     * @example CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX
                      */
                     id: string;
                 };
@@ -11541,7 +11596,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Folder Id
-                     * @example
+                     * @example CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX
                      */
                     id: string;
                 };
@@ -13758,9 +13813,9 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
-                    /** @description Video id (e.g. `75623239`) */
+                    /** @description List of video IDs (e.g. `75623239`) */
                     "filter[id]"?: string[];
-                    /** @description International Standard Recording Code (ISRC) (e.g. `QMJMT1701237`) */
+                    /** @description List of ISRCs (e.g. `QMJMT1701237`) */
                     "filter[isrc]"?: string[];
                 };
                 header?: never;
