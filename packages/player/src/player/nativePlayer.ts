@@ -206,7 +206,7 @@ export default class NativePlayer extends BasePlayer {
    * Clean up native player before leaving for another player.
    */
   abandon() {
-    if (outputDevices && outputDevices.deviceMode === 'exclusive') {
+    if (outputDevices?.deviceMode === 'exclusive') {
       /*
         Remove lock on audio device so shaka can use it. Otherwise throws error later when shaka is
         active player and a preload is done in native player (which triggers a device lock).
@@ -462,6 +462,10 @@ export default class NativePlayer extends BasePlayer {
     }
   }
 
+  get ready() {
+    return Promise.resolve();
+  }
+
   registerEventListeners() {
     this.debugLog('registerEventListeners');
 
@@ -683,10 +687,6 @@ export default class NativePlayer extends BasePlayer {
       throw new Error(`Device with sinkId ${sinkId} not found.`);
     }
 
-    return Promise.resolve();
-  }
-
-  get ready() {
     return Promise.resolve();
   }
 

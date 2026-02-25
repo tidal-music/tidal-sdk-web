@@ -18,6 +18,10 @@ class TidalPlayTrigger extends HTMLElement {
     this.#registerEventListeners();
   }
 
+  static get observedAttributes() {
+    return ['product-id', 'product-type'];
+  }
+
   async #loadAndPlay() {
     await this.#loadIfNotLoaded();
 
@@ -92,10 +96,6 @@ class TidalPlayTrigger extends HTMLElement {
       sourceId: '',
       sourceType: '',
     };
-  }
-
-  static get observedAttributes() {
-    return ['product-id', 'product-type'];
   }
 }
 

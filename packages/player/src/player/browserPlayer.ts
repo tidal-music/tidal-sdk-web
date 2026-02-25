@@ -199,6 +199,24 @@ export default class BrowserPlayer extends BasePlayer {
     );
   }
 
+  get currentPlayer() {
+    return this.#currentPlayer;
+  }
+
+  set currentPlayer(newCurrentPlayer: HTMLVideoElement | undefined) {
+    this.debugLog('set currentPlayer', newCurrentPlayer);
+
+    if (this.#currentPlayer) {
+      this.#mediaElementEvents(this.#currentPlayer, false);
+      this.#currentPlayer.load();
+    }
+
+    if (newCurrentPlayer) {
+      this.#currentPlayer = newCurrentPlayer;
+      this.#mediaElementEvents(newCurrentPlayer, true);
+    }
+  }
+
   getPosition() {
     this.debugLog('getPosition');
 
@@ -293,6 +311,10 @@ export default class BrowserPlayer extends BasePlayer {
     }
 
     return Promise.resolve();
+  }
+
+  get mediaElement(): HTMLMediaElement | null {
+    return this.currentPlayer ?? null;
   }
 
   async next(payload: LoadPayload) {
@@ -399,6 +421,10 @@ export default class BrowserPlayer extends BasePlayer {
         }
       }
     }
+  }
+
+  get ready() {
+    return this.#librariesLoad;
   }
 
   async reset(
@@ -527,32 +553,6 @@ export default class BrowserPlayer extends BasePlayer {
       preloadPlayer.src = '';
       preloadPlayer.load();
     }
-  }
-
-  get currentPlayer() {
-    return this.#currentPlayer;
-  }
-
-  set currentPlayer(newCurrentPlayer: HTMLVideoElement | undefined) {
-    this.debugLog('set currentPlayer', newCurrentPlayer);
-
-    if (this.#currentPlayer) {
-      this.#mediaElementEvents(this.#currentPlayer, false);
-      this.#currentPlayer.load();
-    }
-
-    if (newCurrentPlayer) {
-      this.#currentPlayer = newCurrentPlayer;
-      this.#mediaElementEvents(newCurrentPlayer, true);
-    }
-  }
-
-  get mediaElement(): HTMLMediaElement | null {
-    return this.currentPlayer ?? null;
-  }
-
-  get ready() {
-    return this.#librariesLoad;
   }
 
   get volume() {

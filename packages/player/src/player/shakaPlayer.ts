@@ -113,7 +113,7 @@ export default class ShakaPlayer extends BasePlayer {
     waitingHandler: EventListener;
   };
 
-  #preloadManager: null | shaka.media.PreloadManager = null;
+  #preloadManager: shaka.media.PreloadManager | null = null;
   #preloadedPayload: LoadPayload | null = null;
 
   #shakaEventHandlers: {
@@ -162,8 +162,7 @@ export default class ShakaPlayer extends BasePlayer {
       // "The waiting event is fired when playback has stopped because of a temporary lack of data."
       const shakaWaiting =
         e.type === 'buffering' &&
-        this.mediaElement &&
-        this.mediaElement.networkState === HTMLMediaElement.NETWORK_LOADING;
+        this.mediaElement?.networkState === HTMLMediaElement.NETWORK_LOADING;
 
       // Safari tend to send events wrongly. Verify the media event is actually paused before sending setting state.
       if (this.mediaElement?.paused || shakaWaiting) {
@@ -808,6 +807,10 @@ export default class ShakaPlayer extends BasePlayer {
     });
   }
 
+  get mediaElement(): HTMLMediaElement | null {
+    return mediaElementOne;
+  }
+
   async next(payload: LoadPayload) {
     this.debugLog('next', payload);
 
@@ -926,6 +929,10 @@ export default class ShakaPlayer extends BasePlayer {
         }
       }
     }
+  }
+
+  get ready() {
+    return this.#librariesLoad;
   }
 
   async reset(
@@ -1089,14 +1096,6 @@ export default class ShakaPlayer extends BasePlayer {
     } catch (e) {
       console.error(e);
     }
-  }
-
-  get mediaElement(): HTMLMediaElement | null {
-    return mediaElementOne;
-  }
-
-  get ready() {
-    return this.#librariesLoad;
   }
 
   get volume() {

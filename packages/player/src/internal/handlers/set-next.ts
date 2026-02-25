@@ -50,8 +50,7 @@ async function _setNext(
   // For repeat playbacks, we clone the streaming session to a new streaming session id.
   if (
     playerState.preloadedStreamingSessionId &&
-    playerState.preloadedMediaProduct &&
-    playerState.preloadedMediaProduct.productId === mediaProduct.productId &&
+    playerState.preloadedMediaProduct?.productId === mediaProduct.productId &&
     streamingSessionStore.hasStartedStreamInfo(
       playerState.preloadedStreamingSessionId,
     )
@@ -166,10 +165,12 @@ async function _setNext(
   ]).catch(console.error);
 
   const { activePlayer } = playerState;
+  /* eslint-disable @typescript-eslint/prefer-optional-chain -- optional chain would make `undefined === undefined` true when both are nullish */
   const samePlayer =
     activePlayer &&
     playerState.preloadPlayer &&
     activePlayer.name === playerState.preloadPlayer.name;
+  /* eslint-enable @typescript-eslint/prefer-optional-chain */
 
   if (samePlayer) {
     await activePlayer.next({

@@ -68,9 +68,8 @@ export async function load(
    * playbackinfo and player instead of loading it again.
    */
   if (
-    playerState.activePlayer?.nextItem &&
-    playerState.activePlayer.nextItem.mediaProduct.productId ===
-      mediaProduct.productId
+    playerState.activePlayer?.nextItem?.mediaProduct.productId ===
+    mediaProduct.productId
   ) {
     const player = playerState.activePlayer;
 

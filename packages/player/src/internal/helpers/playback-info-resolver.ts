@@ -39,8 +39,8 @@ export type PlaybackInfoTrack = BasePlaybackInfo & {
   albumReplayGain: number;
   audioMode: AudioMode;
   audioQuality: AudioQuality;
-  bitDepth: null | number; // API sends null
-  sampleRate: null | number; // API sends null
+  bitDepth: number | null; // API sends null
+  sampleRate: number | null; // API sends null
   trackId: number;
   trackPeakAmplitude: number;
   trackReplayGain: number;
@@ -63,7 +63,7 @@ export type Options = {
   accessToken: string | undefined;
   audioAdaptiveBitrateStreaming: boolean;
   audioQuality: AudioQuality;
-  clientId: null | string;
+  clientId: string | null;
   mediaProduct: MediaProduct;
   playerType?: 'browser' | 'native' | 'shaka';
   prefetch: boolean;
@@ -85,7 +85,7 @@ const fetchWithRetries = async (
 ): Promise<Response> => {
   const MAX_RETRY_COUNT = 4;
   let res: Response | undefined;
-  let status: null | number | undefined;
+  let status: number | null | undefined;
 
   try {
     res = await fetch(url, options);
@@ -152,8 +152,9 @@ function getErrorId(status: number, subStatus: number): ErrorIds {
 
 // type def with "& URLSearchParams" is not the same as "interface extends".
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-interface URLSearchParamsCustomSetters<T extends string>
-  extends URLSearchParams {
+interface URLSearchParamsCustomSetters<
+  T extends string,
+> extends URLSearchParams {
   set: (name: T, value: string) => void;
 }
 

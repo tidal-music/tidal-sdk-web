@@ -184,8 +184,7 @@ describe.sequential('auth', () => {
       logout();
 
       await expect(
-        async () =>
-          await initializeLogin({ redirectUri: 'https://foo.com/auth' }),
+        initializeLogin({ redirectUri: 'https://foo.com/auth' }),
       ).rejects.toThrow(authErrorCodeMap.initError);
     });
 
@@ -250,7 +249,7 @@ describe.sequential('auth', () => {
 
       await init(initConfig);
 
-      await expect(async () => await initializeDeviceLogin()).rejects.toThrow(
+      await expect(initializeDeviceLogin()).rejects.toThrow(
         authErrorCodeMap.unexpectedError,
       );
       expect(fetchHandling.exponentialBackoff).toHaveBeenCalled();
@@ -260,7 +259,7 @@ describe.sequential('auth', () => {
       // clear local state
       logout();
 
-      await expect(async () => await initializeDeviceLogin()).rejects.toThrow(
+      await expect(initializeDeviceLogin()).rejects.toThrow(
         authErrorCodeMap.initError,
       );
     });
@@ -271,9 +270,9 @@ describe.sequential('auth', () => {
       // clear local state
       logout();
 
-      await expect(
-        async () => await finalizeLogin('loginQueryResponse'),
-      ).rejects.toThrow(authErrorCodeMap.initError);
+      await expect(finalizeLogin('loginQueryResponse')).rejects.toThrow(
+        authErrorCodeMap.initError,
+      );
     });
 
     it('exits early when no `code` is found in the responseQuery', async () => {
@@ -287,9 +286,9 @@ describe.sequential('auth', () => {
         scopes: ['READ', 'WRITE'],
       });
 
-      await expect(
-        async () => await finalizeLogin('loginQueryResponse'),
-      ).rejects.toThrow(authErrorCodeMap.authenticationError);
+      await expect(finalizeLogin('loginQueryResponse')).rejects.toThrow(
+        authErrorCodeMap.authenticationError,
+      );
     });
 
     it('requests an auth token and persists it', async () => {
@@ -342,9 +341,9 @@ describe.sequential('auth', () => {
 
       await init(initConfig);
 
-      await expect(
-        async () => await finalizeLogin('code=foobar'),
-      ).rejects.toThrow(authErrorCodeMap.retryableError);
+      await expect(finalizeLogin('code=foobar')).rejects.toThrow(
+        authErrorCodeMap.retryableError,
+      );
       expect(fetchHandling.handleTokenFetch).toHaveBeenCalled();
     });
 
@@ -357,9 +356,9 @@ describe.sequential('auth', () => {
 
       await init(initConfig);
 
-      await expect(
-        async () => await finalizeLogin('code=foobar'),
-      ).rejects.toThrow(authErrorCodeMap.unexpectedError);
+      await expect(finalizeLogin('code=foobar')).rejects.toThrow(
+        authErrorCodeMap.unexpectedError,
+      );
       expect(fetchHandling.handleTokenFetch).toHaveBeenCalled();
     });
   });
@@ -467,7 +466,7 @@ describe.sequential('auth', () => {
       });
       await initializeDeviceLogin();
 
-      await expect(async () => await finalizeDeviceLogin()).rejects.toThrow(
+      await expect(finalizeDeviceLogin()).rejects.toThrow(
         authErrorCodeMap.retryableError,
       );
       expect(fetchSpy).toHaveBeenCalledTimes(2);
@@ -502,7 +501,7 @@ describe.sequential('auth', () => {
       await init(initConfig);
       await initializeDeviceLogin();
 
-      await expect(async () => await finalizeDeviceLogin()).rejects.toThrow(
+      await expect(finalizeDeviceLogin()).rejects.toThrow(
         authErrorCodeMap.tokenResponseError,
       );
       expect(fetchSpy).toHaveBeenCalledTimes(1);
@@ -513,7 +512,7 @@ describe.sequential('auth', () => {
 
       await init(initConfig);
 
-      await expect(async () => await finalizeDeviceLogin()).rejects.toThrow(
+      await expect(finalizeDeviceLogin()).rejects.toThrow(
         authErrorCodeMap.initError,
       );
     });
@@ -530,9 +529,9 @@ describe.sequential('auth', () => {
       expect(storage.deleteCredentials).toHaveBeenCalledWith(
         'CREDENTIALS_STORAGE_KEY',
       );
-      await expect(
-        async () => await initializeLogin({ redirectUri: 'test' }),
-      ).rejects.toThrow(authErrorCodeMap.initError);
+      await expect(initializeLogin({ redirectUri: 'test' })).rejects.toThrow(
+        authErrorCodeMap.initError,
+      );
     });
   });
 
@@ -548,7 +547,7 @@ describe.sequential('auth', () => {
       expect(storage.deleteCredentials).toHaveBeenCalledWith(
         'CREDENTIALS_STORAGE_KEY',
       );
-      await expect(async () => await getCredentials()).rejects.toThrow(
+      await expect(getCredentials()).rejects.toThrow(
         authErrorCodeMap.initError,
       );
     });
@@ -698,7 +697,7 @@ describe.sequential('auth', () => {
 
       await init(initConfig);
 
-      await expect(async () => await getCredentials()).rejects.toThrow(
+      await expect(getCredentials()).rejects.toThrow(
         authErrorCodeMap.unexpectedError,
       );
       expect(fetchHandling.handleTokenFetch).toHaveBeenCalled();
@@ -719,7 +718,7 @@ describe.sequential('auth', () => {
 
       await init(initConfig);
 
-      await expect(async () => await getCredentials()).rejects.toThrow(
+      await expect(getCredentials()).rejects.toThrow(
         authErrorCodeMap.retryableError,
       );
       expect(fetchHandling.handleTokenFetch).toHaveBeenCalled();
@@ -791,7 +790,7 @@ describe.sequential('auth', () => {
         clientId: 'NON_UPGRADABLE_CLIENT_ID',
       });
 
-      await expect(async () => await getCredentials()).rejects.toEqual(
+      await expect(getCredentials()).rejects.toEqual(
         new RetryableError(authErrorCodeMap.retryableError),
       );
       expect(fetchHandling.exponentialBackoff).toHaveBeenCalled();
@@ -807,7 +806,7 @@ describe.sequential('auth', () => {
         scopes: ['READ', 'WRITE', 'DELETE'],
       });
 
-      await expect(async () => await getCredentials()).rejects.toEqual(
+      await expect(getCredentials()).rejects.toEqual(
         new IllegalArgumentError(authErrorCodeMap.illegalArgumentError),
       );
       expect(storage.deleteCredentials).toHaveBeenCalled();
@@ -829,7 +828,7 @@ describe.sequential('auth', () => {
         credentialsStorageKey: 'CREDENTIALS_STORAGE_KEY',
       });
 
-      await expect(async () => await getCredentials()).rejects.toEqual(
+      await expect(getCredentials()).rejects.toEqual(
         new RetryableError(authErrorCodeMap.retryableError),
       );
       expect(fetchHandling.handleTokenFetch).toHaveBeenCalled();
@@ -901,7 +900,7 @@ describe.sequential('auth', () => {
         clientSecret: 'SECRET',
       });
 
-      await expect(async () => await getCredentials()).rejects.toEqual(
+      await expect(getCredentials()).rejects.toEqual(
         new RetryableError(authErrorCodeMap.retryableError),
       );
       expect(fetchHandling.handleTokenFetch).toHaveBeenCalled();
@@ -948,8 +947,7 @@ describe.sequential('auth', () => {
       });
 
       await expect(
-        async () =>
-          await setCredentials({ accessToken: fixtures.storage.accessToken }),
+        setCredentials({ accessToken: fixtures.storage.accessToken }),
       ).rejects.toEqual(
         new IllegalArgumentError(authErrorCodeMap.illegalArgumentError),
       );
@@ -961,13 +959,12 @@ describe.sequential('auth', () => {
       });
 
       await expect(
-        async () =>
-          await setCredentials({
-            accessToken: {
-              ...fixtures.storage.accessToken,
-              token: undefined,
-            },
-          }),
+        setCredentials({
+          accessToken: {
+            ...fixtures.storage.accessToken,
+            token: undefined,
+          },
+        }),
       ).rejects.toEqual(
         new IllegalArgumentError(authErrorCodeMap.illegalArgumentError),
       );
@@ -978,8 +975,7 @@ describe.sequential('auth', () => {
       logout();
 
       await expect(
-        async () =>
-          await setCredentials({ accessToken: fixtures.storage.accessToken }),
+        setCredentials({ accessToken: fixtures.storage.accessToken }),
       ).rejects.toEqual(new TidalError(authErrorCodeMap.initError));
     });
   });

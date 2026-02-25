@@ -226,6 +226,18 @@ export class OutputDevices {
     }) as EventListener);
   }
 
+  set activeDevice(device: OutputDevice) {
+    this.#activeDevice = device;
+
+    this.#deviceMode = 'shared';
+
+    playerState.activePlayer?.updateOutputDevice()?.catch(console.error);
+  }
+
+  get activeDevice() {
+    return this.#activeDevice;
+  }
+
   addNativeDevices(devices: Array<NativePlayerComponentDeviceDescription>) {
     this.#events.dispatchEvent(
       new CustomEvent('native-devices', {
@@ -243,6 +255,27 @@ export class OutputDevices {
         detail: devices,
       }),
     );
+  }
+
+  /**
+   * Set the current device mode for the output device.
+   */
+  set deviceMode(deviceMode: NativePlayerDeviceMode) {
+    const { activeDevice } = this;
+    const { activePlayer } = playerState;
+
+    if (
+      activeDevice &&
+      activePlayer?.name === 'nativePlayer' &&
+      this.deviceMode !== deviceMode
+    ) {
+      this.#deviceMode = deviceMode;
+      (activePlayer as NativePlayer).updateDeviceMode();
+    }
+  }
+
+  get deviceMode() {
+    return this.#deviceMode;
   }
 
   emitDeviceChange() {
@@ -353,40 +386,6 @@ export class OutputDevices {
 
     this.mergeDevices();
     this.emitDeviceChange();
-  }
-
-  set activeDevice(device: OutputDevice) {
-    this.#activeDevice = device;
-
-    this.#deviceMode = 'shared';
-
-    playerState.activePlayer?.updateOutputDevice()?.catch(console.error);
-  }
-
-  get activeDevice() {
-    return this.#activeDevice;
-  }
-
-  /**
-   * Set the current device mode for the output device.
-   */
-  set deviceMode(deviceMode: NativePlayerDeviceMode) {
-    const { activeDevice } = this;
-    const { activePlayer } = playerState;
-
-    if (
-      activeDevice &&
-      activePlayer &&
-      activePlayer.name === 'nativePlayer' &&
-      this.deviceMode !== deviceMode
-    ) {
-      this.#deviceMode = deviceMode;
-      (activePlayer as NativePlayer).updateDeviceMode();
-    }
-  }
-
-  get deviceMode() {
-    return this.#deviceMode;
   }
 }
 
