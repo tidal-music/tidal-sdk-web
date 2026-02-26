@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.1.34"
+    "version" : "1.1.49"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -19,6 +19,9 @@
     "description" : "Production"
   } ],
   "tags" : [ {
+    "description" : "Playback statistics for an album, including total plays, unique listeners, and sales.",
+    "name" : "albumStatistics"
+  }, {
     "description" : "A music album, consisting of one or more tracks.",
     "name" : "albums"
   }, {
@@ -40,13 +43,15 @@
     "description" : "Artwork images and videos used for albums, artists, tracks, and playlists.",
     "name" : "artworks"
   }, {
+    "name" : "comments"
+  }, {
     "description" : "A claim by an artist asserting ownership of a piece of content.",
     "name" : "contentClaims"
   }, {
     "description" : "A credit entry linking a contributor to a track or album.",
     "name" : "credits"
   }, {
-    "description" : "A downloadable content file with its download link.",
+    "description" : "A downloadable content file with its download links.",
     "name" : "downloads"
   }, {
     "description" : "Links to equivalent content on other streaming platforms.",
@@ -164,6 +169,232 @@
     "name" : "videos"
   } ],
   "paths" : {
+    "/albumStatistics" : {
+      "get" : {
+        "description" : "Retrieves multiple albumStatistics by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "List of album IDs (e.g. `251380836`)",
+          "in" : "query",
+          "name" : "filter[id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AlbumStatistics_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple albumStatistics.",
+        "tags" : [ "albumStatistics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/albumStatistics/{id}" : {
+      "get" : {
+        "description" : "Retrieves single albumStatistic by id.",
+        "parameters" : [ {
+          "description" : "Album statistic id",
+          "example" : "123456",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AlbumStatistics_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get single albumStatistic.",
+        "tags" : [ "albumStatistics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/albumStatistics/{id}/relationships/owners" : {
+      "get" : {
+        "description" : "Retrieves owners relationship.",
+        "parameters" : [ {
+          "description" : "Album statistic id",
+          "example" : "123456",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AlbumStatistics_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "albumStatistics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/albums" : {
       "get" : {
         "description" : "Retrieves multiple albums by available filters, or without if applicable.",
@@ -200,8 +431,8 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, priceConfig, providers, replacement, similarAlbums, suggestedCoverArts, usageRules",
-          "example" : "artists",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, similarAlbums, suggestedCoverArts, usageRules",
+          "example" : "albumStatistics",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -209,7 +440,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "artists"
+              "example" : "albumStatistics"
             }
           }
         }, {
@@ -235,7 +466,7 @@
             }
           }
         }, {
-          "description" : "User id (e.g. `123456`)",
+          "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
           "required" : false,
@@ -304,7 +535,9 @@
       },
       "post" : {
         "description" : "Creates a new album.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -337,8 +570,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -372,6 +611,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "responses" : {
           "400" : {
@@ -386,8 +627,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -429,8 +676,8 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: artists, coverArt, genres, items, owners, priceConfig, providers, replacement, similarAlbums, suggestedCoverArts, usageRules",
-          "example" : "artists",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, similarAlbums, suggestedCoverArts, usageRules",
+          "example" : "albumStatistics",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -438,7 +685,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "artists"
+              "example" : "albumStatistics"
             }
           }
         }, {
@@ -509,6 +756,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -520,6 +769,93 @@
           }
         },
         "responses" : {
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update single album.",
+        "tags" : [ "albums" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/albums/{id}/relationships/albumStatistics" : {
+      "get" : {
+        "description" : "Retrieves albumStatistics relationship.",
+        "parameters" : [ {
+          "description" : "Album id",
+          "example" : "251380836",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albumStatistics",
+          "example" : "albumStatistics",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "albumStatistics"
+            }
+          }
+        }, {
+          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Albums_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
           "400" : {
             "$ref" : "#/components/responses/Default400Response"
           },
@@ -546,9 +882,9 @@
           }
         },
         "security" : [ {
-          "Authorization_Code_PKCE" : [ "w_usr" ]
+          "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
-        "summary" : "Update single album.",
+        "summary" : "Get albumStatistics relationship (\"to-one\").",
         "tags" : [ "albums" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -765,6 +1101,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -788,8 +1126,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -1021,6 +1365,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -1044,8 +1390,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -1350,98 +1702,6 @@
         }
       }
     },
-    "/albums/{id}/relationships/replacement" : {
-      "get" : {
-        "description" : "Retrieves replacement relationship.",
-        "parameters" : [ {
-          "description" : "Album id",
-          "example" : "251380836",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: replacement",
-          "example" : "replacement",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "replacement"
-            }
-          }
-        }, {
-          "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
-          "in" : "query",
-          "name" : "shareCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "xyz"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Albums_Single_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Client_Credentials" : [ ]
-        }, {
-          "Authorization_Code_PKCE" : [ ]
-        } ],
-        "summary" : "Get replacement relationship (\"to-one\").",
-        "tags" : [ "albums" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
-        }
-      }
-    },
     "/albums/{id}/relationships/similarAlbums" : {
       "get" : {
         "description" : "Retrieves similarAlbums relationship.",
@@ -1726,7 +1986,9 @@
     "/appreciations" : {
       "post" : {
         "description" : "Creates a new appreciation.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -1759,8 +2021,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -1960,6 +2228,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -1983,8 +2253,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -2105,7 +2381,7 @@
             }
           }
         }, {
-          "description" : "User id (e.g. `123456`)",
+          "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
           "required" : false,
@@ -2172,6 +2448,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -2205,8 +2483,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -2240,6 +2524,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "responses" : {
           "400" : {
@@ -2254,8 +2540,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -2366,6 +2658,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -2389,8 +2683,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -2511,6 +2811,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -2534,8 +2836,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -2889,7 +3197,7 @@
             }
           }
         }, {
-          "description" : "User id (e.g. `123456`)",
+          "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
           "required" : false,
@@ -2949,7 +3257,9 @@
       },
       "post" : {
         "description" : "Creates a new artist.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -2982,8 +3292,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -3098,6 +3414,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -3121,8 +3439,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -3417,6 +3741,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -3440,8 +3766,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -3567,6 +3899,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -3590,8 +3924,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -3796,6 +4136,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -3819,8 +4161,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -4466,7 +4814,9 @@
       },
       "post" : {
         "description" : "Creates a new artwork.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -4499,8 +4849,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -4687,6 +5043,614 @@
         }
       }
     },
+    "/comments" : {
+      "get" : {
+        "description" : "Retrieves multiple comments by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Values prefixed with \"-\" are sorted descending; values without it are sorted ascending.",
+          "in" : "query",
+          "name" : "sort",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "createdAt",
+              "enum" : [ "createdAt", "-createdAt", "likeCount", "-likeCount", "replyCount", "-replyCount", "startTime", "-startTime" ],
+              "default" : "-createdAt",
+              "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "LikeCountAsc", "LikeCountDesc", "ReplyCountAsc", "ReplyCountDesc", "StartTimeAsc", "StartTimeDesc" ]
+            }
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: ownerProfiles, owners, parentComment",
+          "example" : "ownerProfiles",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "ownerProfiles"
+            }
+          }
+        }, {
+          "description" : "Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`)",
+          "in" : "query",
+          "name" : "filter[parentComment.id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "Filter by subject resource ID (e.g. `12345`)",
+          "in" : "query",
+          "name" : "filter[subject.id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "Filter by subject resource type (e.g. `albums`)",
+          "in" : "query",
+          "name" : "filter[subject.type]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "albums", "tracks" ]
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Comments_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple comments.",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "post" : {
+        "description" : "Creates a new comment.",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CommentsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Comments_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single comment.",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/comments/{id}" : {
+      "delete" : {
+        "description" : "Deletes existing comment.",
+        "parameters" : [ {
+          "description" : "Comment Id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "responses" : {
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Delete single comment.",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "get" : {
+        "description" : "Retrieves single comment by id.",
+        "parameters" : [ {
+          "description" : "Comment Id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: ownerProfiles, owners, parentComment",
+          "example" : "ownerProfiles",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "ownerProfiles"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Comments_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get single comment.",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Updates existing comment.",
+        "parameters" : [ {
+          "description" : "Comment Id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CommentsUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update single comment.",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/comments/{id}/relationships/ownerProfiles" : {
+      "get" : {
+        "description" : "Retrieves ownerProfiles relationship.",
+        "parameters" : [ {
+          "description" : "Comment Id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: ownerProfiles",
+          "example" : "ownerProfiles",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "ownerProfiles"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Comments_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get ownerProfiles relationship (\"to-many\").",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/comments/{id}/relationships/owners" : {
+      "get" : {
+        "description" : "Retrieves owners relationship.",
+        "parameters" : [ {
+          "description" : "Comment Id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Comments_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/comments/{id}/relationships/parentComment" : {
+      "get" : {
+        "description" : "Retrieves parentComment relationship.",
+        "parameters" : [ {
+          "description" : "Comment Id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: parentComment",
+          "example" : "parentComment",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "parentComment"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Comments_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get parentComment relationship (\"to-one\").",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/contentClaims" : {
       "get" : {
         "description" : "Retrieves multiple contentClaims by available filters, or without if applicable.",
@@ -4704,7 +5668,7 @@
             }
           }
         }, {
-          "description" : "User id (e.g. `123456`)",
+          "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
           "required" : false,
@@ -4762,7 +5726,9 @@
       },
       "post" : {
         "description" : "Creates a new contentClaim.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -4795,8 +5761,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -5948,8 +6920,7 @@
           "name" : "refreshId",
           "required" : false,
           "schema" : {
-            "type" : "integer",
-            "format" : "int64"
+            "type" : "string"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -6077,8 +7048,7 @@
           "name" : "refreshId",
           "required" : false,
           "schema" : {
-            "type" : "integer",
-            "format" : "int64"
+            "type" : "string"
           }
         }, {
           "description" : "ISO 3166-1 alpha-2 country code",
@@ -6229,8 +7199,7 @@
           "name" : "refreshId",
           "required" : false,
           "schema" : {
-            "type" : "integer",
-            "format" : "int64"
+            "type" : "string"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -6623,7 +7592,7 @@
             }
           }
         }, {
-          "description" : "User ID to filter by (e.g. `123456`)",
+          "description" : "User ID to filter by. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
           "required" : false,
@@ -6681,7 +7650,9 @@
       },
       "post" : {
         "description" : "Creates a new installation.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -6714,8 +7685,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -6821,6 +7798,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -6844,8 +7823,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -6967,6 +7952,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -6990,8 +7977,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -7170,7 +8163,9 @@
       },
       "post" : {
         "description" : "Creates a new lyric.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -7203,8 +8198,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -7238,6 +8239,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "responses" : {
           "400" : {
@@ -7252,8 +8255,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -7357,6 +8366,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -7380,8 +8391,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -7580,7 +8597,9 @@
     "/manualArtistClaims" : {
       "post" : {
         "description" : "Creates a new manualArtistClaim.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -7613,8 +8632,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -7811,6 +8836,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -7834,8 +8861,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -8106,7 +9139,7 @@
             }
           }
         }, {
-          "description" : "User id (e.g. `123456`)",
+          "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
           "required" : false,
@@ -8164,7 +9197,9 @@
       },
       "post" : {
         "description" : "Creates a new playQueue.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -8197,8 +9232,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -8232,6 +9273,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "responses" : {
           "400" : {
@@ -8246,8 +9289,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -8349,6 +9398,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -8372,8 +9423,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -8477,6 +9534,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -8500,8 +9559,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -8535,6 +9600,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -8558,8 +9625,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -8669,6 +9742,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -8692,8 +9767,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -8725,6 +9806,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -8748,8 +9831,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -8991,7 +10080,7 @@
             }
           }
         }, {
-          "description" : "User id (e.g. `123456`)",
+          "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
           "required" : false,
@@ -9060,6 +10149,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -9093,8 +10184,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -9128,6 +10225,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "responses" : {
           "400" : {
@@ -9142,8 +10241,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -9265,6 +10370,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -9288,8 +10395,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -9412,6 +10525,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -9435,8 +10550,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -9470,6 +10591,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -9493,8 +10616,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -9615,6 +10744,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -9638,8 +10769,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -9680,6 +10817,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -9703,8 +10842,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -9972,7 +11117,9 @@
       },
       "post" : {
         "description" : "Creates a new priceConfiguration.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -10005,8 +11152,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -10290,7 +11443,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "albums", "tracks", "artists", "videos", "playlists" ]
+              "enum" : [ "albums", "tracks", "artists", "videos", "playlists", "comments" ]
             }
           }
         } ],
@@ -10341,7 +11494,9 @@
       },
       "post" : {
         "description" : "Creates a new reaction.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -10374,8 +11529,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -10409,6 +11570,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "responses" : {
           "400" : {
@@ -10423,8 +11586,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -10609,7 +11778,9 @@
     "/savedShares" : {
       "post" : {
         "description" : "Creates a new savedShare.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -10642,8 +11813,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -11655,7 +12832,9 @@
       },
       "post" : {
         "description" : "Creates a new share.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -11688,8 +12867,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -11966,7 +13151,7 @@
             }
           }
         }, {
-          "description" : "User id (e.g. `123456`)",
+          "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
           "required" : false,
@@ -12033,6 +13218,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -12066,8 +13253,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -12093,8 +13286,8 @@
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
-          "description" : "Stripe connection id (same as user id)",
-          "example" : "39791222",
+          "description" : "Stripe connection id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -12186,7 +13379,7 @@
             }
           }
         }, {
-          "description" : "User id (e.g. `123456`)",
+          "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
           "required" : false,
@@ -12247,8 +13440,8 @@
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
-          "description" : "Stripe dashboard link id (same as user id)",
-          "example" : "39791222",
+          "description" : "Stripe dashboard link id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -12587,7 +13780,9 @@
       },
       "post" : {
         "description" : "Create a track source file. <p/>\nThe response contains a upload link that must be used to upload the actual content.<p/>\nThe headers in the upload link response must be sent doing the actual upload.\n",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -12620,8 +13815,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -13092,7 +14293,7 @@
             }
           }
         }, {
-          "description" : "User id (e.g. `123456`)",
+          "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
           "required" : false,
@@ -13161,7 +14362,9 @@
       },
       "post" : {
         "description" : "Creates a new track.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -13194,8 +14397,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -13229,6 +14438,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "responses" : {
           "400" : {
@@ -13243,8 +14454,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -13366,6 +14583,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -13389,8 +14608,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -13522,6 +14747,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -13545,8 +14772,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -15305,7 +16538,9 @@
       },
       "post" : {
         "description" : "Creates a new usageRule.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -15338,8 +16573,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -15426,8 +16667,8 @@
       "get" : {
         "description" : "Retrieves single userCollectionAlbum by id.",
         "parameters" : [ {
-          "description" : "User collection albums id",
-          "example" : "123456",
+          "description" : "User collection albums id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -15517,14 +16758,16 @@
       "delete" : {
         "description" : "Deletes item(s) from items relationship.",
         "parameters" : [ {
-          "description" : "User collection albums id",
-          "example" : "123456",
+          "description" : "User collection albums id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -15548,8 +16791,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -15573,8 +16822,8 @@
       "get" : {
         "description" : "Retrieves items relationship.",
         "parameters" : [ {
-          "description" : "User collection albums id",
-          "example" : "123456",
+          "description" : "User collection albums id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -15685,8 +16934,8 @@
       "post" : {
         "description" : "Adds item(s) to items relationship.",
         "parameters" : [ {
-          "description" : "User collection albums id",
-          "example" : "123456",
+          "description" : "User collection albums id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -15702,6 +16951,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -15731,6 +16982,9 @@
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
           },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
           },
@@ -15755,8 +17009,8 @@
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
-          "description" : "User collection albums id",
-          "example" : "123456",
+          "description" : "User collection albums id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -15835,8 +17089,8 @@
       "get" : {
         "description" : "Retrieves single userCollectionArtist by id.",
         "parameters" : [ {
-          "description" : "User collection artists id",
-          "example" : "123456",
+          "description" : "User collection artists id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -15926,14 +17180,16 @@
       "delete" : {
         "description" : "Deletes item(s) from items relationship.",
         "parameters" : [ {
-          "description" : "User collection artists id",
-          "example" : "123456",
+          "description" : "User collection artists id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -15957,8 +17213,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -15982,8 +17244,8 @@
       "get" : {
         "description" : "Retrieves items relationship.",
         "parameters" : [ {
-          "description" : "User collection artists id",
-          "example" : "123456",
+          "description" : "User collection artists id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -16094,8 +17356,8 @@
       "post" : {
         "description" : "Adds item(s) to items relationship.",
         "parameters" : [ {
-          "description" : "User collection artists id",
-          "example" : "123456",
+          "description" : "User collection artists id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -16111,6 +17373,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -16140,6 +17404,9 @@
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
           },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
           },
@@ -16164,8 +17431,8 @@
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
-          "description" : "User collection artists id",
-          "example" : "123456",
+          "description" : "User collection artists id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -16315,7 +17582,9 @@
       },
       "post" : {
         "description" : "Creates a new userCollectionFolder.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -16348,8 +17617,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -16383,6 +17658,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "responses" : {
           "400" : {
@@ -16397,8 +17674,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -16500,6 +17783,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -16523,8 +17808,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -16558,6 +17849,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -16581,8 +17874,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -16707,6 +18006,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -16730,8 +18031,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -16837,8 +18144,8 @@
       "get" : {
         "description" : "Retrieves single userCollectionPlaylist by id.",
         "parameters" : [ {
-          "description" : "User collection playlists id",
-          "example" : "123456",
+          "description" : "User collection playlists id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -16928,14 +18235,16 @@
       "delete" : {
         "description" : "Deletes item(s) from items relationship.",
         "parameters" : [ {
-          "description" : "User collection playlists id",
-          "example" : "123456",
+          "description" : "User collection playlists id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -16959,8 +18268,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -16984,8 +18299,8 @@
       "get" : {
         "description" : "Retrieves items relationship.",
         "parameters" : [ {
-          "description" : "User collection playlists id",
-          "example" : "123456",
+          "description" : "User collection playlists id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -17085,14 +18400,16 @@
       "post" : {
         "description" : "Adds item(s) to items relationship.",
         "parameters" : [ {
-          "description" : "User collection playlists id",
-          "example" : "123456",
+          "description" : "User collection playlists id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -17122,6 +18439,9 @@
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
           },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
           },
@@ -17146,8 +18466,8 @@
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
-          "description" : "User collection playlists id",
-          "example" : "123456",
+          "description" : "User collection playlists id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -17226,8 +18546,8 @@
       "get" : {
         "description" : "Retrieves single userCollectionTrack by id.",
         "parameters" : [ {
-          "description" : "User collection tracks id",
-          "example" : "123456",
+          "description" : "User collection tracks id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -17317,14 +18637,16 @@
       "delete" : {
         "description" : "Deletes item(s) from items relationship.",
         "parameters" : [ {
-          "description" : "User collection tracks id",
-          "example" : "123456",
+          "description" : "User collection tracks id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -17348,8 +18670,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -17373,8 +18701,8 @@
       "get" : {
         "description" : "Retrieves items relationship.",
         "parameters" : [ {
-          "description" : "User collection tracks id",
-          "example" : "123456",
+          "description" : "User collection tracks id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -17485,8 +18813,8 @@
       "post" : {
         "description" : "Adds item(s) to items relationship.",
         "parameters" : [ {
-          "description" : "User collection tracks id",
-          "example" : "123456",
+          "description" : "User collection tracks id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -17502,6 +18830,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -17531,6 +18861,9 @@
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
           },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
           },
@@ -17555,8 +18888,8 @@
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
-          "description" : "User collection tracks id",
-          "example" : "123456",
+          "description" : "User collection tracks id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -17635,8 +18968,8 @@
       "get" : {
         "description" : "Retrieves single userCollectionVideo by id.",
         "parameters" : [ {
-          "description" : "User collection videos id",
-          "example" : "123456",
+          "description" : "User collection videos id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -17726,14 +19059,16 @@
       "delete" : {
         "description" : "Deletes item(s) from items relationship.",
         "parameters" : [ {
-          "description" : "User collection videos id",
-          "example" : "123456",
+          "description" : "User collection videos id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -17757,8 +19092,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -17782,8 +19123,8 @@
       "get" : {
         "description" : "Retrieves items relationship.",
         "parameters" : [ {
-          "description" : "User collection videos id",
-          "example" : "123456",
+          "description" : "User collection videos id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -17894,8 +19235,8 @@
       "post" : {
         "description" : "Adds item(s) to items relationship.",
         "parameters" : [ {
-          "description" : "User collection videos id",
-          "example" : "123456",
+          "description" : "User collection videos id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -17911,6 +19252,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -17940,6 +19283,9 @@
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
           },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
           },
@@ -17964,8 +19310,8 @@
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
-          "description" : "User collection videos id",
-          "example" : "123456",
+          "description" : "User collection videos id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -18145,6 +19491,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -18168,8 +19516,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -18324,6 +19678,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -18352,6 +19708,9 @@
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -18386,6 +19745,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -18409,8 +19770,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -18565,6 +19932,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -18593,6 +19962,9 @@
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -18707,6 +20079,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -18730,8 +20104,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -18866,6 +20246,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -18894,6 +20276,9 @@
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -18928,6 +20313,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -18951,8 +20338,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -19107,6 +20500,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -19135,6 +20530,9 @@
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -19169,6 +20567,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -19192,8 +20592,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -19348,6 +20754,8 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
           "content" : {
@@ -19377,6 +20785,9 @@
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
           },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
           },
@@ -19401,8 +20812,8 @@
       "get" : {
         "description" : "Retrieves single userEntitlement by id.",
         "parameters" : [ {
-          "description" : "User id",
-          "example" : "123456",
+          "description" : "User entitlements id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -19473,8 +20884,8 @@
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
-          "description" : "User id",
-          "example" : "123456",
+          "description" : "User entitlements id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -19553,8 +20964,8 @@
       "get" : {
         "description" : "Retrieves single userRecommendation by id.",
         "parameters" : [ {
-          "description" : "User recommendations id",
-          "example" : "123456",
+          "description" : "User recommendations id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -19644,8 +21055,8 @@
       "get" : {
         "description" : "Retrieves discoveryMixes relationship.",
         "parameters" : [ {
-          "description" : "User recommendations id",
-          "example" : "123456",
+          "description" : "User recommendations id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -19743,8 +21154,8 @@
       "get" : {
         "description" : "Retrieves myMixes relationship.",
         "parameters" : [ {
-          "description" : "User recommendations id",
-          "example" : "123456",
+          "description" : "User recommendations id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -19842,8 +21253,8 @@
       "get" : {
         "description" : "Retrieves newArrivalMixes relationship.",
         "parameters" : [ {
-          "description" : "User recommendations id",
-          "example" : "123456",
+          "description" : "User recommendations id. Use `me` for the authenticated user's resource",
+          "example" : "me",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -19940,7 +21351,9 @@
     "/userReports" : {
       "post" : {
         "description" : "Creates a new userReport.",
-        "parameters" : [ ],
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
         "requestBody" : {
           "content" : {
             "application/vnd.api+json" : {
@@ -19973,8 +21386,14 @@
           "406" : {
             "$ref" : "#/components/responses/Default406Response"
           },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
             "$ref" : "#/components/responses/Default429Response"
@@ -19996,10 +21415,19 @@
         }
       }
     },
-    "/users/me" : {
+    "/users/{id}" : {
       "get" : {
-        "description" : "Retrieves current user's user.",
-        "parameters" : [ ],
+        "description" : "Retrieves single user by id.",
+        "parameters" : [ {
+          "description" : "User id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
         "responses" : {
           "200" : {
             "content" : {
@@ -20039,7 +21467,7 @@
         "security" : [ {
           "Authorization_Code_PKCE" : [ "r_usr", "user.read" ]
         } ],
-        "summary" : "Get current user's user.",
+        "summary" : "Get single user.",
         "tags" : [ "users" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
@@ -21019,6 +22447,19 @@
     }
   },
   "components" : {
+    "parameters" : {
+      "IdempotencyKey" : {
+        "description" : "Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned.",
+        "in" : "header",
+        "name" : "Idempotency-Key",
+        "required" : false,
+        "schema" : {
+          "maxLength" : 128,
+          "type" : "string",
+          "example" : "79e1f37e-3e84-4c51-b5e2-7d9e1a2b3c4d"
+        }
+      }
+    },
     "responses" : {
       "Default400Response" : {
         "content" : {
@@ -21100,6 +22541,26 @@
         },
         "description" : "Temporarily unavailable; please try again later"
       },
+      "Idempotency409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/Idempotency409ResponseBody"
+            }
+          }
+        },
+        "description" : "A request with this idempotency key is currently being processed"
+      },
+      "Idempotency422Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/Idempotency422ResponseBody"
+            }
+          }
+        },
+        "description" : "Idempotency key was already used with a different request payload"
+      },
       "TrackFilesReadById403Response" : {
         "content" : {
           "application/vnd.api+json" : {
@@ -21148,7 +22609,7 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites."
+        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
       },
       "UserCollectionArtistsAddMultiDataRelationship409Response" : {
         "content" : {
@@ -21158,7 +22619,7 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites."
+        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
       },
       "UserCollectionFoldersDeleteResource400Response" : {
         "content" : {
@@ -21178,7 +22639,7 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites."
+        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
       },
       "UserCollectionTracksAddMultiDataRelationship409Response" : {
         "content" : {
@@ -21188,7 +22649,7 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites."
+        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
       },
       "UserCollectionVideosAddMultiDataRelationship409Response" : {
         "content" : {
@@ -21198,7 +22659,7 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites."
+        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
       },
       "UserCollectionsAddMultiDataRelationship409Response" : {
         "content" : {
@@ -21208,10 +22669,112 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites."
+        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
       }
     },
     "schemas" : {
+      "AlbumStatistics_Attributes" : {
+        "required" : [ "totalPlaybacks", "uniqueListeners" ],
+        "type" : "object",
+        "properties" : {
+          "numSales" : {
+            "type" : "integer",
+            "description" : "Number of sales",
+            "format" : "int32"
+          },
+          "totalPlaybacks" : {
+            "type" : "integer",
+            "description" : "Total playbacks",
+            "format" : "int32"
+          },
+          "uniqueListeners" : {
+            "type" : "integer",
+            "description" : "Unique listeners",
+            "format" : "int32"
+          }
+        }
+      },
+      "AlbumStatistics_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "AlbumStatistics_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AlbumStatistics_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "AlbumStatistics_Relationships" : {
+        "properties" : {
+          "owners" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "AlbumStatistics_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/AlbumStatistics_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/AlbumStatistics_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "AlbumStatistics_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/AlbumStatistics_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "AlbumsCoverArtRelationshipUpdateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -21714,6 +23277,9 @@
       },
       "Albums_Relationships" : {
         "properties" : {
+          "albumStatistics" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          },
           "artists" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
@@ -21734,9 +23300,6 @@
           },
           "providers" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
-          },
-          "replacement" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
           },
           "similarAlbums" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -21817,6 +23380,18 @@
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Albums_SuggestedCoverArts_Multi_Relationship_Data_Document_Meta"
+          }
+        }
+      },
+      "Albums_SuggestedCoverArts_Multi_Relationship_Data_Document_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "enum" : [ "PENDING", "PROCESSING", "ERROR", "OK" ]
           }
         }
       },
@@ -23206,6 +24781,295 @@
         "description" : "Barcode Id",
         "example" : 196589525444
       },
+      "CommentsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "CommentsCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Attributes"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "comments" ]
+          }
+        }
+      },
+      "CommentsCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "message" ],
+        "type" : "object",
+        "properties" : {
+          "endTime" : {
+            "type" : "string"
+          },
+          "message" : {
+            "maxLength" : 2000,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "startTime" : {
+            "type" : "string"
+          }
+        }
+      },
+      "CommentsCreateOperation_Payload_Data_Relationships" : {
+        "required" : [ "subject" ],
+        "type" : "object",
+        "properties" : {
+          "parentComment" : {
+            "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Relationships_ParentComment"
+          },
+          "subject" : {
+            "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Relationships_Subject"
+          }
+        }
+      },
+      "CommentsCreateOperation_Payload_Data_Relationships_ParentComment" : {
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data"
+          }
+        }
+      },
+      "CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "comments" ]
+          }
+        }
+      },
+      "CommentsCreateOperation_Payload_Data_Relationships_Subject" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Relationships_Subject_Data"
+          }
+        }
+      },
+      "CommentsCreateOperation_Payload_Data_Relationships_Subject_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "albums", "tracks" ]
+          }
+        }
+      },
+      "CommentsUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/CommentsUpdateOperation_Payload_Data"
+          }
+        }
+      },
+      "CommentsUpdateOperation_Payload_Data" : {
+        "required" : [ "attributes", "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/CommentsUpdateOperation_Payload_Data_Attributes"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "comments" ]
+          }
+        }
+      },
+      "CommentsUpdateOperation_Payload_Data_Attributes" : {
+        "type" : "object",
+        "properties" : {
+          "endTime" : {
+            "type" : "string"
+          },
+          "message" : {
+            "maxLength" : 2000,
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "startTime" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Comments_Attributes" : {
+        "required" : [ "createdAt", "lastModifiedAt", "likeCount", "message", "moderationStatus", "replyCount" ],
+        "type" : "object",
+        "properties" : {
+          "createdAt" : {
+            "type" : "string",
+            "description" : "Datetime when the comment was created (ISO 8601)",
+            "format" : "date-time",
+            "example" : "2025-11-17T12:54:48.606Z"
+          },
+          "endTime" : {
+            "type" : "string",
+            "description" : "End time offset for timestamped comments (ISO 8601 duration)",
+            "example" : "PT2M"
+          },
+          "lastModifiedAt" : {
+            "type" : "string",
+            "description" : "Datetime when the comment was last modified (ISO 8601)",
+            "format" : "date-time",
+            "example" : "2025-11-17T12:54:48.606Z"
+          },
+          "likeCount" : {
+            "type" : "integer",
+            "description" : "Number of likes on this comment",
+            "format" : "int32"
+          },
+          "message" : {
+            "maxLength" : 2000,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The comment message content"
+          },
+          "moderationStatus" : {
+            "type" : "string",
+            "description" : "Moderation status of the comment",
+            "enum" : [ "NOT_MODERATED", "FLAGGED", "TAKEN_DOWN", "OK", "ERROR" ]
+          },
+          "replyCount" : {
+            "type" : "integer",
+            "description" : "Number of replies to this comment",
+            "format" : "int32"
+          },
+          "startTime" : {
+            "type" : "string",
+            "description" : "Start time offset for timestamped comments (ISO 8601 duration)",
+            "example" : "PT1M30S"
+          }
+        }
+      },
+      "Comments_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Comments_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Comments_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Comments_Relationships" : {
+        "properties" : {
+          "ownerProfiles" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "owners" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "parentComment" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "Comments_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/Comments_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/Comments_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Comments_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Resource_Identifier"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Comments_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Comments_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "ContentClaimsCreateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -23534,6 +25398,25 @@
           }
         }
       },
+      "CurrentUserReaction" : {
+        "type" : "object",
+        "properties" : {
+          "createdAt" : {
+            "type" : "string",
+            "description" : "When the reaction was created",
+            "format" : "date-time"
+          },
+          "emoji" : {
+            "type" : "string",
+            "description" : "User's emoji reaction"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Reaction ID"
+          }
+        },
+        "description" : "Current user's reaction"
+      },
       "Default400ResponseBody" : {
         "type" : "object",
         "properties" : {
@@ -23748,8 +25631,11 @@
       "Downloads_Attributes" : {
         "type" : "object",
         "properties" : {
-          "downloadLink" : {
-            "$ref" : "#/components/schemas/Download_Link"
+          "downloadLinks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Download_Link"
+            }
           }
         }
       },
@@ -23976,7 +25862,7 @@
             "type" : "string",
             "description" : "Type of source represented by the module",
             "example" : "SHORTCUTS",
-            "enum" : [ "ALBUM_RECOMMENDATIONS", "BECAUSE_YOU_LISTENED_TO_ALBUM", "BECAUSE_YOU_ADDED_ALBUM", "BECAUSE_YOU_ADDED_ARTIST", "CONTINUE_LISTEN_TO", "DAILY_MIXES", "FORGOTTEN_FAVORITES", "GENRE_MIXES", "HISTORY_MIXES", "LOCAL_PLAYLISTS", "MY_PLAYLISTS", "NEW_ALBUM_SUGGESTIONS", "NEW_TRACK_SUGGESTIONS", "NEW_ALBUMS", "NEW_TRACKS", "POPULAR_PLAYLISTS", "RECENTLY_UPDATED_FAVORITED_PLAYLIST", "RECOMMENDED_EDITORIAL_PLAYLISTS", "RECOMMENDED_USERS_PLAYLISTS", "SUGGESTED_ESSENTIAL_PLAYLISTS", "SUGGESTED_RADIOS_MIXES", "WELCOME_MIX", "YOUR_FAVORITE_ARTISTS", "UPLOADS_FOR_YOU", "LATEST_SPOTLIGHTED_TRACKS", "SHORTCUTS", "ARTIST_TOP_TRACKS", "ARTIST_SPOTLIGHTED_TRACKS", "ARTIST_ALBUMS", "ARTIST_TOP_SINGLES", "ARTIST_COMPILATIONS", "ARTIST_LIVE_ALBUMS", "ARTIST_APPEARS_ON", "ARTIST_PLAYLIST", "ARTIST_PUBLIC_PLAYLIST", "ARTIST_SIMILAR_ARTISTS", "ARTIST_TRACK_UPLOADS", "ARTIST_LINKS", "ARTIST_VIDEOS", "ARTIST_CREDITS", "ALBUM_ITEMS", "ALBUM_ANNIVERSARY", "ARTIST_BIRTHDAY", "ARTIST_MEMORIAM", "DJ_TOOLS", "DJ_ARTIST_CURATED", "THE_HITS", "FROM_OUR_EDITORS", "TOP_PLAYLISTS", "FEATURED_TOP_TRACKS", "FEATURED_TOP_ALBUMS", "TOP_ARTISTS_ESSENTIALS", "FEATURED_RECOMMENDED_PLAYLISTS", "HOME_3_FEATURED_PLAYLISTS", "HOME_3_FEATURED_UPLOAD_TRACKS", "HOME_3_FEATURED_ALBUMS", "POPULAR_ALBUMS", "POPULAR_ARTISTS", "POPULAR_MIXES", "FEATURED_RECOMMENDED_TRACKS", "FEATURED_RECOMMENDED_ALBUMS", "FEATURED_RECOMMENDED_CLASSIC_ALBUMS", "HOME_3_0_GENERIC_PLAYLISTS_1", "HOME_3_0_GENERIC_PLAYLISTS_2", "HOME_3_0_GENERIC_ALBUMS_1", "HOME_3_0_GENERIC_TRACKS_1", "HOME_3_0_GENERIC_ARTISTS_1", "HOME_3_0_GENERIC_VIDEOS_1", "BASED_ON_YOUR_INTERESTS_1", "BASED_ON_YOUR_INTERESTS_2", "UNKNOWN" ]
+            "enum" : [ "ALBUM_RECOMMENDATIONS", "BECAUSE_YOU_LISTENED_TO_ALBUM", "BECAUSE_YOU_ADDED_ALBUM", "BECAUSE_YOU_ADDED_ARTIST", "CONTINUE_LISTEN_TO", "DAILY_MIXES", "FORGOTTEN_FAVORITES", "GENRE_MIXES", "HISTORY_MIXES", "LOCAL_PLAYLISTS", "MY_PLAYLISTS", "NEW_ALBUM_SUGGESTIONS", "NEW_TRACK_SUGGESTIONS", "NEW_ALBUMS", "NEW_TRACKS", "POPULAR_PLAYLISTS", "RECENTLY_UPDATED_FAVORITED_PLAYLIST", "RECOMMENDED_USERS_PLAYLISTS", "SUGGESTED_ESSENTIAL_PLAYLISTS", "SUGGESTED_RADIOS_MIXES", "WELCOME_MIX", "YOUR_FAVORITE_ARTISTS", "UPLOADS_FOR_YOU", "LATEST_SPOTLIGHTED_TRACKS", "SHORTCUTS", "ARTIST_TOP_TRACKS", "ARTIST_SPOTLIGHTED_TRACKS", "ARTIST_ALBUMS", "ARTIST_TOP_SINGLES", "ARTIST_COMPILATIONS", "ARTIST_LIVE_ALBUMS", "ARTIST_APPEARS_ON", "ARTIST_PLAYLIST", "ARTIST_PUBLIC_PLAYLIST", "ARTIST_SIMILAR_ARTISTS", "ARTIST_TRACK_UPLOADS", "ARTIST_LINKS", "ARTIST_VIDEOS", "ARTIST_CREDITS", "ALBUM_ITEMS", "ALBUM_ANNIVERSARY", "ARTIST_BIRTHDAY", "ARTIST_MEMORIAM", "DJ_TOOLS", "DJ_ARTIST_CURATED", "THE_HITS", "FROM_OUR_EDITORS", "TOP_PLAYLISTS", "FEATURED_TOP_TRACKS", "FEATURED_TOP_ALBUMS", "TOP_ARTISTS_ESSENTIALS", "FEATURED_RECOMMENDED_PLAYLISTS", "HOME_3_FEATURED_PLAYLISTS", "HOME_3_FEATURED_UPLOAD_TRACKS", "HOME_3_FEATURED_ALBUMS", "POPULAR_ALBUMS", "POPULAR_ARTISTS", "POPULAR_MIXES", "FEATURED_RECOMMENDED_TRACKS", "FEATURED_RECOMMENDED_ALBUMS", "FEATURED_RECOMMENDED_CLASSIC_ALBUMS", "BACK_TO_SCHOOL_MUSIC_101", "BACK_TO_SCHOOL_GENRES_FOR_BEGINNERS", "HEADLINERS_2026", "HOME_3_0_GENERIC_PLAYLISTS_1", "HOME_3_0_GENERIC_PLAYLISTS_2", "HOME_3_0_GENERIC_ALBUMS_1", "HOME_3_0_GENERIC_TRACKS_1", "HOME_3_0_GENERIC_ARTISTS_1", "HOME_3_0_GENERIC_VIDEOS_1", "BASED_ON_YOUR_INTERESTS_1", "BASED_ON_YOUR_INTERESTS_2", "UPLOAD_PAGE_SPOTLIGHTED_PLAYLISTS", "UPLOAD_PAGE_PAYGATED_ALBUMS", "UPLOAD_PAGE_ALBUMS", "UNKNOWN" ]
           },
           "subtitle" : {
             "type" : "string",
@@ -24079,7 +25965,7 @@
             "type" : "string",
             "description" : "Type of the page eg. home, artist",
             "example" : "HOME_STATIC",
-            "enum" : [ "HOME_STATIC", "HOME_FOR_YOU", "HOME_EDITORIAL", "HOME_FREE", "ARTIST" ]
+            "enum" : [ "HOME_STATIC", "HOME_UPLOADS", "HOME_EDITORIAL", "HOME_FREE", "ARTIST" ]
           },
           "reportingId" : {
             "type" : "string",
@@ -24396,11 +26282,68 @@
           }
         }
       },
+      "Idempotency409ResponseBody" : {
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "IDEMPOTENT_REQUEST_IN_PROGRESS",
+                  "enum" : [ "IDEMPOTENT_REQUEST_IN_PROGRESS" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "A request with this idempotency key is currently being processed"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              },
+              "required" : [ "code", "status" ]
+            }
+          }
+        },
+        "required" : [ "errors" ]
+      },
+      "Idempotency422ResponseBody" : {
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "IDEMPOTENT_REQUEST_PAYLOAD_MISMATCH",
+                  "enum" : [ "IDEMPOTENT_REQUEST_PAYLOAD_MISMATCH" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Idempotency key was already used with a different request payload"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "422"
+                }
+              },
+              "required" : [ "code", "status" ]
+            }
+          }
+        },
+        "required" : [ "errors" ]
+      },
       "Included" : {
         "type" : "array",
         "items" : {
           "discriminator" : {
             "mapping" : {
+              "albumStatistics" : "#/components/schemas/AlbumStatistics_Resource_Object",
               "albums" : "#/components/schemas/Albums_Resource_Object",
               "appreciations" : "#/components/schemas/Appreciations_Resource_Object",
               "artistBiographies" : "#/components/schemas/ArtistBiographies_Resource_Object",
@@ -24408,6 +26351,7 @@
               "artistRoles" : "#/components/schemas/ArtistRoles_Resource_Object",
               "artists" : "#/components/schemas/Artists_Resource_Object",
               "artworks" : "#/components/schemas/Artworks_Resource_Object",
+              "comments" : "#/components/schemas/Comments_Resource_Object",
               "contentClaims" : "#/components/schemas/ContentClaims_Resource_Object",
               "credits" : "#/components/schemas/Credits_Resource_Object",
               "downloads" : "#/components/schemas/Downloads_Resource_Object",
@@ -24453,6 +26397,8 @@
             "propertyName" : "type"
           },
           "oneOf" : [ {
+            "$ref" : "#/components/schemas/AlbumStatistics_Resource_Object"
+          }, {
             "$ref" : "#/components/schemas/Albums_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Appreciations_Resource_Object"
@@ -24466,6 +26412,8 @@
             "$ref" : "#/components/schemas/Artists_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Artworks_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/Comments_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/ContentClaims_Resource_Object"
           }, {
@@ -25383,23 +27331,13 @@
         }
       },
       "OfflineTasks_Attributes" : {
-        "required" : [ "action", "collectionReference", "memberReference" ],
+        "required" : [ "action", "position", "state", "volume" ],
         "type" : "object",
         "properties" : {
           "action" : {
             "type" : "string",
             "description" : "Action to perform",
-            "enum" : [ "STORE_ITEM", "REMOVE_ITEM", "STORE_COLLECTION", "REMOVE_COLLECTION" ]
-          },
-          "collectionReference" : {
-            "type" : "string",
-            "description" : "Collection reference associated with task",
-            "deprecated" : true
-          },
-          "memberReference" : {
-            "type" : "string",
-            "description" : "Collection-member reference associated with task",
-            "deprecated" : true
+            "enum" : [ "STORE", "REMOVE" ]
           },
           "position" : {
             "type" : "integer",
@@ -26703,6 +28641,26 @@
           }
         }
       },
+      "ReactionStats" : {
+        "type" : "object",
+        "properties" : {
+          "countsByType" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "integer",
+              "description" : "Count of reactions by type",
+              "format" : "int32"
+            },
+            "description" : "Count of reactions by type"
+          },
+          "totalCount" : {
+            "type" : "integer",
+            "description" : "Total number of reactions",
+            "format" : "int32"
+          }
+        },
+        "description" : "Reaction statistics"
+      },
       "ReactionsCreateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -26764,7 +28722,7 @@
           },
           "type" : {
             "type" : "string",
-            "enum" : [ "albums", "tracks", "artists", "videos", "playlists" ]
+            "enum" : [ "albums", "tracks", "artists", "videos", "playlists", "comments" ]
           }
         }
       },
@@ -26817,8 +28775,23 @@
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Reactions_Multi_Resource_Data_Document_Meta"
           }
         }
+      },
+      "Reactions_Multi_Resource_Data_Document_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "currentUserReaction" : {
+            "$ref" : "#/components/schemas/CurrentUserReaction"
+          },
+          "stats" : {
+            "$ref" : "#/components/schemas/ReactionStats"
+          }
+        },
+        "description" : "Reaction response metadata with stats and current user reaction"
       },
       "Reactions_Relationships" : {
         "properties" : {
@@ -27472,11 +29445,14 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/StripeConnectionsCreateOperation_Payload_Data"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/StripeConnectionsCreateOperation_Payload_Meta"
           }
         }
       },
       "StripeConnectionsCreateOperation_Payload_Data" : {
-        "required" : [ "attributes", "type" ],
+        "required" : [ "type" ],
         "type" : "object",
         "properties" : {
           "attributes" : {
@@ -27489,6 +29465,31 @@
         }
       },
       "StripeConnectionsCreateOperation_Payload_Data_Attributes" : {
+        "type" : "object",
+        "properties" : {
+          "integrationType" : {
+            "type" : "string",
+            "description" : "Deprecated: use meta.integrationType instead.",
+            "example" : "REDIRECT",
+            "deprecated" : true,
+            "enum" : [ "REDIRECT", "EMBEDDED" ],
+            "default" : "REDIRECT"
+          },
+          "refreshUrl" : {
+            "type" : "string",
+            "description" : "Deprecated: use meta.refreshUrl instead.",
+            "example" : "https://www.tidal.com/artist/upload/onboarding",
+            "deprecated" : true
+          },
+          "returnUrl" : {
+            "type" : "string",
+            "description" : "Deprecated: use meta.returnUrl instead.",
+            "example" : "https://www.tidal.com/artist/124",
+            "deprecated" : true
+          }
+        }
+      },
+      "StripeConnectionsCreateOperation_Payload_Meta" : {
         "required" : [ "integrationType" ],
         "type" : "object",
         "properties" : {
@@ -29069,7 +31070,7 @@
                 "code" : {
                   "type" : "string",
                   "example" : "DUPLICATE_ITEMS_IN_COLLECTION",
-                  "enum" : [ "DUPLICATE_ITEMS_IN_COLLECTION", "TOO_MANY_ITEMS_IN_COLLECTION" ]
+                  "enum" : [ "DUPLICATE_ITEMS_IN_COLLECTION", "IDEMPOTENT_REQUEST_IN_PROGRESS", "TOO_MANY_ITEMS_IN_COLLECTION" ]
                 },
                 "detail" : {
                   "type" : "string",
@@ -29297,7 +31298,7 @@
                 "code" : {
                   "type" : "string",
                   "example" : "DUPLICATE_ITEMS_IN_COLLECTION",
-                  "enum" : [ "DUPLICATE_ITEMS_IN_COLLECTION", "TOO_MANY_ITEMS_IN_COLLECTION" ]
+                  "enum" : [ "DUPLICATE_ITEMS_IN_COLLECTION", "IDEMPOTENT_REQUEST_IN_PROGRESS", "TOO_MANY_ITEMS_IN_COLLECTION" ]
                 },
                 "detail" : {
                   "type" : "string",
@@ -29829,7 +31830,7 @@
                 "code" : {
                   "type" : "string",
                   "example" : "DUPLICATE_ITEMS_IN_COLLECTION",
-                  "enum" : [ "DUPLICATE_ITEMS_IN_COLLECTION", "TOO_MANY_ITEMS_IN_COLLECTION" ]
+                  "enum" : [ "DUPLICATE_ITEMS_IN_COLLECTION", "IDEMPOTENT_REQUEST_IN_PROGRESS", "TOO_MANY_ITEMS_IN_COLLECTION" ]
                 },
                 "detail" : {
                   "type" : "string",
@@ -30045,7 +32046,7 @@
                 "code" : {
                   "type" : "string",
                   "example" : "DUPLICATE_ITEMS_IN_COLLECTION",
-                  "enum" : [ "DUPLICATE_ITEMS_IN_COLLECTION", "TOO_MANY_ITEMS_IN_COLLECTION" ]
+                  "enum" : [ "DUPLICATE_ITEMS_IN_COLLECTION", "IDEMPOTENT_REQUEST_IN_PROGRESS", "TOO_MANY_ITEMS_IN_COLLECTION" ]
                 },
                 "detail" : {
                   "type" : "string",
@@ -30273,7 +32274,7 @@
                 "code" : {
                   "type" : "string",
                   "example" : "DUPLICATE_ITEMS_IN_COLLECTION",
-                  "enum" : [ "DUPLICATE_ITEMS_IN_COLLECTION", "TOO_MANY_ITEMS_IN_COLLECTION" ]
+                  "enum" : [ "DUPLICATE_ITEMS_IN_COLLECTION", "IDEMPOTENT_REQUEST_IN_PROGRESS", "TOO_MANY_ITEMS_IN_COLLECTION" ]
                 },
                 "detail" : {
                   "type" : "string",
@@ -30489,7 +32490,7 @@
                 "code" : {
                   "type" : "string",
                   "example" : "DUPLICATE_ITEMS_IN_COLLECTION",
-                  "enum" : [ "DUPLICATE_ITEMS_IN_COLLECTION", "TOO_MANY_ITEMS_IN_COLLECTION" ]
+                  "enum" : [ "DUPLICATE_ITEMS_IN_COLLECTION", "IDEMPOTENT_REQUEST_IN_PROGRESS", "TOO_MANY_ITEMS_IN_COLLECTION" ]
                 },
                 "detail" : {
                   "type" : "string",
