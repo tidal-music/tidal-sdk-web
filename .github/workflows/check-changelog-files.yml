@@ -14,23 +14,25 @@ jobs:
         uses: tj-actions/changed-files@7dee1b0c1557f278e5c7dc244927139d78c0e22a # v47.0.4
         with:
           files: packages/**/package.json
+          separator: "\n"
       - name: Build matrix input
         id: build-matrix
-        if: ${{ steps.changed-files.outputs.all_changed_files != '[]' }}
+        if: ${{ steps.changed-files.outputs.all_changed_files != '' }}
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
           set +e
           modules_list=()
-          for file in $ALL_CHANGED_FILES; do
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
             ./bin/check-version-bump.sh ./"$file"
 
             # check-version-bump exits with 0 if it detects a bump, otherwise with 1
             if [ $? != "1" ] && [[ ! " ${modules_list[*]} " =~ " ${file} " ]]; then
-              version="$(cat $file | jq -r '.version')"
+              version="$(jq -r '.version' "$file")"
               modules_list+=("{\"name\": \"${file%"/package.json"}\", \"version\": \"$version\"}")
             fi
-          done
+          done <<< "$ALL_CHANGED_FILES"
 
           jsonString="$(jq --compact-output --null-input '$ARGS.positional' --args -- "${modules_list[@]}")"
           echo $jsonString
