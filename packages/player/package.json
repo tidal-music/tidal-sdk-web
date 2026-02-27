@@ -72,7 +72,7 @@
     "cypress": "15.11.0",
     "esbuild": "0.27.3",
     "js-levenshtein": "1.1.6",
-    "rollup": "4.57.1",
+    "rollup": "4.59.0",
     "shaka-player": "4.16.19",
     "sinon": "21.0.1",
     "typescript": "5.9.3",
