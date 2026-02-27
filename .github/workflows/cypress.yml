@@ -47,6 +47,7 @@ jobs:
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
+          save-always: true
       - name: Cypress run
         uses: cypress-io/github-action@v6
         env:
