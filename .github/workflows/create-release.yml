@@ -18,9 +18,11 @@ jobs:
       - uses: actions/checkout@v6
       - name: Expose tag and version
         id: expose-tag
+        env:
+          MODULE: ${{ inputs.module }}
         run: |
-          version="$(cat ${{ inputs.module }}/package.json | jq -r '.version')"
-          tag="${{ inputs.module }}-$version"
+          version="$(cat "$MODULE/package.json" | jq -r '.version')"
+          tag="$MODULE-$version"
           tag="${tag##*/}"
           echo "version=$version" >> $GITHUB_OUTPUT
           echo "tag=$tag" >> $GITHUB_OUTPUT
@@ -40,7 +42,7 @@ jobs:
     - uses: ./.github/actions/setup
     - name: Generate Release Draft
       id: generate-release
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@b7eabc95ff50cbeeedec83973935c8f306dfcd0b # v1
       with:
         tag: ${{ env.tag }}  
         allowUpdates: true

@@ -18,11 +18,13 @@ jobs:
           files: packages/**/package.json
       - name: Build matrix input
         id: build-matrix
-        if: ${{ steps.changed-files.outputs.all_changed_files }} != '[]'
+        if: ${{ steps.changed-files.outputs.all_changed_files != '[]' }}
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
           set +e
           modules_list=()
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+          for file in $ALL_CHANGED_FILES; do
             ./bin/check-version-bump.sh ./"$file"
 
             # check-version-bump exits with 0 if it detects a bump, otherwise with 1

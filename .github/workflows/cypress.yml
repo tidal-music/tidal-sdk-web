@@ -49,7 +49,7 @@ jobs:
           key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
           save-always: true
       - name: Cypress run
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@f790eee7a50d9505912f50c2095510be7de06aa7 # v6.10.9
         env:
           CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
         with:

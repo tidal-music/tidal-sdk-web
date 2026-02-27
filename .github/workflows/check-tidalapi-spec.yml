@@ -26,10 +26,12 @@ jobs:
 
       - name: Checkout PR branch if exists
         if: steps.check_pr.outputs.existing_pr == 'true'
+        env:
+          PR_BRANCH: ${{ steps.check_pr.outputs.pr_branch }}
         run: |
-          git fetch origin ${{ steps.check_pr.outputs.pr_branch }}
-          git checkout ${{ steps.check_pr.outputs.pr_branch }}
-          echo "Using API spec from PR branch: ${{ steps.check_pr.outputs.pr_branch }}"
+          git fetch origin "$PR_BRANCH"
+          git checkout "$PR_BRANCH"
+          echo "Using API spec from PR branch: $PR_BRANCH"
 
       - name: Download latest API spec
         run: |
@@ -59,10 +61,13 @@ jobs:
           retention-days: 1
 
       - name: Output result
+        env:
+          CHANGES_FOUND: ${{ steps.compare.outputs.changes_found }}
+          EXISTING_PR: ${{ steps.check_pr.outputs.existing_pr }}
         run: |
-          if [ "${{ steps.compare.outputs.changes_found }}" == "true" ]; then
+          if [ "$CHANGES_FOUND" == "true" ]; then
             echo "Changes found - see diff above"
-            if [ "${{ steps.check_pr.outputs.existing_pr }}" == "true" ]; then
+            if [ "$EXISTING_PR" == "true" ]; then
                 echo "Updating the existing PR..."
             else
               echo "Creating a new PR..."
