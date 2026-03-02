@@ -21,7 +21,7 @@ jobs:
         env:
           MODULE: ${{ inputs.module }}
         run: |
-          version="$(cat "$MODULE/package.json" | jq -r '.version')"
+          version="$(jq -r '.version' "$MODULE/package.json")"
           tag="$MODULE-$version"
           tag="${tag##*/}"
           echo "version=$version" >> $GITHUB_OUTPUT
