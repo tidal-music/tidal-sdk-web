@@ -32,7 +32,7 @@ jobs:
       SPEC_FILE: bin/tidal-api-oas.json
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4
         with:
           run_install: false
       - uses: actions/setup-node@v6
@@ -48,10 +48,12 @@ jobs:
 
       - name: Checkout PR branch if exists
         if: steps.check_pr.outputs.existing_pr == 'true'
+        env:
+          PR_BRANCH: ${{ steps.check_pr.outputs.pr_branch }}
         run: |
-          git fetch origin ${{ steps.check_pr.outputs.pr_branch }}
-          git checkout ${{ steps.check_pr.outputs.pr_branch }}
-          echo "Using existing PR branch: ${{ steps.check_pr.outputs.pr_branch }}"
+          git fetch origin "$PR_BRANCH"
+          git checkout "$PR_BRANCH"
+          echo "Using existing PR branch: $PR_BRANCH"
 
       - name: Download API spec artifact
         if: ${{ inputs.use_downloaded_spec == 'true' }}
@@ -60,36 +62,35 @@ jobs:
           name: api-spec
           path: /tmp/api-check
       - name: Generate API types
+        env:
+          USE_DOWNLOADED_SPEC: ${{ inputs.use_downloaded_spec }}
         run: |
-          cd ${{ env.API_FOLDER }}
+          cd "$API_FOLDER"
           mkdir -p bin
 
-          if [ "${{ inputs.use_downloaded_spec }}" == "true" ] && [ -f "/tmp/api-check/latest-api.json" ]; then
+          if [ "$USE_DOWNLOADED_SPEC" == "true" ] && [ -f "/tmp/api-check/latest-api.json" ]; then
             echo "Using downloaded API spec"
-            # Copy the downloaded spec to the committed location
-            cp /tmp/api-check/latest-api.json ${{ env.SPEC_FILE }}
+            cp /tmp/api-check/latest-api.json "$SPEC_FILE"
           else
             echo "Downloading API spec as part of generation"
-            # Download the spec and save it to the committed location
-            curl -s https://tidal-music.github.io/tidal-api-reference/tidal-api-oas.json -o ${{ env.SPEC_FILE }}
+            curl -s https://tidal-music.github.io/tidal-api-reference/tidal-api-oas.json -o "$SPEC_FILE"
           fi
-          pnpm run generateTypes ${{ env.SPEC_FILE }} --output-file ${{ env.GENERATED_FILE }}
+          pnpm run generateTypes "$SPEC_FILE" --output-file "$GENERATED_FILE"
 
       - name: Check for changes
         id: check_for_changes
         run: |
-          cd ${{ env.API_FOLDER }}
-          git add ${{ env.GENERATED_FILE }} ${{ env.SPEC_FILE }}
-          changes_in_generated=$(git status -s ${{ env.GENERATED_FILE }} | sed 's/"//g')
-          changes_in_spec=$(git status -s ${{ env.SPEC_FILE }} | sed 's/"//g')
+          cd "$API_FOLDER"
+          git add "$GENERATED_FILE" "$SPEC_FILE"
+          changes_in_generated=$(git status -s "$GENERATED_FILE" | sed 's/"//g')
+          changes_in_spec=$(git status -s "$SPEC_FILE" | sed 's/"//g')
 
-          echo "Changes in ${{ env.GENERATED_FILE }}:"
+          echo "Changes in $GENERATED_FILE:"
           echo "$changes_in_generated"
-          echo "Changes in ${{ env.SPEC_FILE }}:"
+          echo "Changes in $SPEC_FILE:"
           echo "$changes_in_spec"
 
-          # Extract API spec version
-          SPEC_VERSION=$(jq -r '.info.version // empty' "${{ env.SPEC_FILE }}" 2>/dev/null)
+          SPEC_VERSION=$(jq -r '.info.version // empty' "$SPEC_FILE" 2>/dev/null)
           if [ -z "$SPEC_VERSION" ]; then
             SPEC_VERSION="unknown"
           fi
@@ -146,28 +147,29 @@ jobs:
       - name: Commit changes
         id: commit_changes
         if: ${{ steps.check_for_changes.outputs.CHANGES_DETECTED == 'true' }}
+        env:
+          SPEC_VERSION: ${{ steps.check_for_changes.outputs.SPEC_VERSION }}
+          CHANGED_FILE_COUNT: ${{ steps.check_for_changes.outputs.CHANGED_FILE_COUNT }}
+          CHANGES_IN_GENERATED: ${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}
+          CHANGES_IN_SPEC: ${{ steps.check_for_changes.outputs.CHANGES_IN_SPEC }}
+          EXISTING_PR: ${{ steps.check_pr.outputs.existing_pr }}
+          PR_BRANCH: ${{ steps.check_pr.outputs.pr_branch }}
         run: |
-          # Generate commit message with the version and number of changed files in the title and the list in the body
-          commit_title="Update Tidal API to v${{ steps.check_for_changes.outputs.SPEC_VERSION }} - ${{ steps.check_for_changes.outputs.CHANGED_FILE_COUNT }} files changed"
+          commit_title="Update Tidal API to v${SPEC_VERSION} - ${CHANGED_FILE_COUNT} files changed"
 
-          # Create commit message with changes in both generated file and spec
-          commit_body="Changes in generated file:\n${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}\n\nChanges in spec file:\n${{ steps.check_for_changes.outputs.CHANGES_IN_SPEC }}"
+          commit_body="Changes in generated file:\n${CHANGES_IN_GENERATED}\n\nChanges in spec file:\n${CHANGES_IN_SPEC}"
           commit_body=$(echo -e "$commit_body")
 
-          git add ${{ env.API_FOLDER }}/${{ env.GENERATED_FILE }} ${{ env.API_FOLDER }}/${{ env.SPEC_FILE }}
+          git add "$API_FOLDER/$GENERATED_FILE" "$API_FOLDER/$SPEC_FILE"
 
-          # Use a consistent branch name for API updates, so we can edit the PR later
           standard_branch_name="tidal-music-tools/auto-update-tidal-api"
 
-          if [ "${{ steps.check_pr.outputs.existing_pr }}" == "true" ]; then
-            # Use the branch name from the existing PR
-            branch_name="${{ steps.check_pr.outputs.pr_branch }}"
+          if [ "$EXISTING_PR" == "true" ]; then
+            branch_name="$PR_BRANCH"
 
-            # Fetch the existing PR branch to compare against
             git fetch origin "$branch_name" || true
 
-            # Check if current changes are different from existing PR branch
-            if git diff --quiet "origin/$branch_name" HEAD -- ${{ env.API_FOLDER }}/${{ env.GENERATED_FILE }} ${{ env.API_FOLDER }}/${{ env.SPEC_FILE }}; then
+            if git diff --quiet "origin/$branch_name" HEAD -- "$API_FOLDER/$GENERATED_FILE" "$API_FOLDER/$SPEC_FILE"; then
               echo "No new changes compared to existing PR branch - skipping update"
               echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
               echo "commit_made=false" >> $GITHUB_OUTPUT
@@ -178,7 +180,6 @@ jobs:
               echo "commit_made=true" >> $GITHUB_OUTPUT
             fi
           else
-            # Create new branch for new PR
             git checkout -b "$standard_branch_name"
             git commit -m "$commit_title"$'\n\n'"$commit_body"
             branch_name="$standard_branch_name"
@@ -192,29 +193,34 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH_NAME: ${{ steps.commit_changes.outputs.branch_name }}
         run: |
-          # Check if remote branch exists, regardless of PR status
-          if git ls-remote --exit-code origin "${{env.BRANCH_NAME}}" >/dev/null 2>&1; then
-            echo "Remote branch exists - force pushing changes to: ${{env.BRANCH_NAME}}"
-            git push origin HEAD:"${{env.BRANCH_NAME}}" --force
+          if git ls-remote --exit-code origin "$BRANCH_NAME" >/dev/null 2>&1; then
+            echo "Remote branch exists - force pushing changes to: $BRANCH_NAME"
+            git push origin HEAD:"$BRANCH_NAME" --force
           else
-            echo "Creating new branch: ${{env.BRANCH_NAME}}"
-            git push --set-upstream origin "${{env.BRANCH_NAME}}"
+            echo "Creating new branch: $BRANCH_NAME"
+            git push --set-upstream origin "$BRANCH_NAME"
           fi
 
       - name: Create or Update Pull Request
         if: ${{ steps.check_for_changes.outputs.CHANGES_DETECTED == 'true' && steps.commit_changes.outputs.commit_made == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SPEC_VERSION: ${{ steps.check_for_changes.outputs.SPEC_VERSION }}
+          CHANGED_FILE_COUNT: ${{ steps.check_for_changes.outputs.CHANGED_FILE_COUNT }}
+          CHANGES_IN_GENERATED: ${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}
+          CHANGES_IN_SPEC: ${{ steps.check_for_changes.outputs.CHANGES_IN_SPEC }}
+          EXISTING_PR: ${{ steps.check_pr.outputs.existing_pr }}
+          PR_NUMBER: ${{ steps.check_pr.outputs.pr_number }}
+          PR_HEAD_BRANCH: ${{ steps.prepare_git_and_define_branch_name.outputs.BRANCH_NAME }}
+          REPO: ${{ github.repository }}
         run: |
           current_date=$(date)
-          pr_title="Automatic Tidal API module update to v${{ steps.check_for_changes.outputs.SPEC_VERSION }} - ${{ steps.check_for_changes.outputs.CHANGED_FILE_COUNT }} files changed"
+          pr_title="Automatic Tidal API module update to v${SPEC_VERSION} - ${CHANGED_FILE_COUNT} files changed"
 
-          # Create PR body with API version, current date and note about automatic updates
-          pr_body="Updated Tidal API to version **v${{ steps.check_for_changes.outputs.SPEC_VERSION }}**\n\n**Changes in Generated file:**\n\n${{ steps.check_for_changes.outputs.CHANGES_IN_GENERATED }}\n\n**Changes in Spec file:**\n\n${{ steps.check_for_changes.outputs.CHANGES_IN_SPEC }}\n\nAutomatically generated on $current_date\n\nThis PR is automatically updated when API changes are detected."
+          pr_body="Updated Tidal API to version **v${SPEC_VERSION}**\n\n**Changes in Generated file:**\n\n${CHANGES_IN_GENERATED}\n\n**Changes in Spec file:**\n\n${CHANGES_IN_SPEC}\n\nAutomatically generated on $current_date\n\nThis PR is automatically updated when API changes are detected."
           pr_body=$(echo -e "$pr_body")
 
-          if [ "${{ steps.check_pr.outputs.existing_pr }}" == "true" ]; then
-            # Update existing PR
+          if [ "$EXISTING_PR" == "true" ]; then
             pr_data=$(jq -n --arg title "$pr_title" \
                               --arg body "$pr_body" \
                               '{title: $title, body: $body}')
@@ -223,13 +229,12 @@ jobs:
               -H "Authorization: token $GITHUB_TOKEN" \
               -H "Accept: application/vnd.github.v3+json" \
               -d "$pr_data" \
-              "https://api.github.com/repos/${{ github.repository }}/pulls/${{ steps.check_pr.outputs.pr_number }}"
+              "https://api.github.com/repos/${REPO}/pulls/${PR_NUMBER}"
 
-            echo "Updated existing PR #${{ steps.check_pr.outputs.pr_number }}"
+            echo "Updated existing PR #${PR_NUMBER}"
           else
-            # Create new PR
             pr_data=$(jq -n --arg title "$pr_title" \
-                              --arg head "${{steps.prepare_git_and_define_branch_name.outputs.BRANCH_NAME }}" \
+                              --arg head "$PR_HEAD_BRANCH" \
                               --arg base "main" \
                               --arg body "$pr_body" \
                               '{title: $title, head: $head, base: $base, body: $body}')
@@ -238,7 +243,7 @@ jobs:
               -H "Authorization: token $GITHUB_TOKEN" \
               -H "Accept: application/vnd.github.v3+json" \
               -d "$pr_data" \
-              "https://api.github.com/repos/${{ github.repository }}/pulls"
+              "https://api.github.com/repos/${REPO}/pulls"
 
             echo "Created new PR"
           fi

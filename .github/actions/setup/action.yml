@@ -5,7 +5,7 @@ runs:
   steps:
     # https://pnpm.io/continuous-integration
     - name: Install package manager
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4
     - name: Set up Node.js w/ version from .nvmrc
       uses: actions/setup-node@v6
       with:
