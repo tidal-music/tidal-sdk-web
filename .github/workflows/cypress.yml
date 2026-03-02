@@ -37,10 +37,10 @@ jobs:
           TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
           PLAYER_REFRESH_TOKEN: ${{ secrets.PLAYER_REFRESH_TOKEN }}
         run: |
-          echo "$TEST_USER" | base64 -d > test-user.json
+          printf '%s' "$TEST_USER" | base64 -d > test-user.json
           json=$(cat test-user.json)
-          fixed_json="$(echo "${json/\[TOKEN\]/$PLAYER_REFRESH_TOKEN}")"
-          encoded_json=$(echo "$fixed_json" | base64 | tr -d '\n')
+          fixed_json="${json/\[TOKEN\]/$PLAYER_REFRESH_TOKEN}"
+          encoded_json=$(printf '%s' "$fixed_json" | base64 | tr -d '\n')
           echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
       - name: Set up Cypress binary cache
         uses: actions/cache@v5
