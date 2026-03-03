@@ -30,7 +30,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Restore Cypress binary cache
+        uses: actions/cache/restore@v5
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
       - uses: ./.github/actions/setup
+      - name: Ensure Cypress binary is installed
+        working-directory: packages/player
+        run: pnpm exec cypress install
       - name: Prepare test user for player tests
         id: json
         env:
@@ -42,12 +50,6 @@ jobs:
           fixed_json="${json/\[TOKEN\]/$PLAYER_REFRESH_TOKEN}"
           encoded_json=$(printf '%s' "$fixed_json" | base64 | tr -d '\n')
           echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
-      - name: Set up Cypress binary cache
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/Cypress
-          key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
-          save-always: true
       - name: Cypress run
         uses: cypress-io/github-action@f790eee7a50d9505912f50c2095510be7de06aa7 # v6.10.9
         env:
@@ -58,3 +60,9 @@ jobs:
           start: pnpm --dir packages/player/ dev
           wait-on: 'http://localhost:5173/demo/test-case-1.html'
           command: pnpm --dir packages/player/ internal:cypress:run
+      - name: Save Cypress binary cache
+        if: always()
+        uses: actions/cache/save@v5
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
