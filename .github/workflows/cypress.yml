@@ -38,7 +38,8 @@ jobs:
           save-always: true
       - uses: ./.github/actions/setup
       - name: Ensure Cypress binary is installed
-        run: pnpm --dir packages/player/ cypress install
+        working-directory: packages/player
+        run: pnpm exec cypress install
       - name: Prepare test user for player tests
         id: json
         env:
