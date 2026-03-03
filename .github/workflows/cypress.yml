@@ -31,11 +31,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Restore Cypress binary cache
-        uses: actions/cache@v5
+        uses: actions/cache/restore@v5
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
-          save-always: true
       - uses: ./.github/actions/setup
       - name: Ensure Cypress binary is installed
         working-directory: packages/player
@@ -61,3 +60,9 @@ jobs:
           start: pnpm --dir packages/player/ dev
           wait-on: 'http://localhost:5173/demo/test-case-1.html'
           command: pnpm --dir packages/player/ internal:cypress:run
+      - name: Save Cypress binary cache
+        if: always()
+        uses: actions/cache/save@v5
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
