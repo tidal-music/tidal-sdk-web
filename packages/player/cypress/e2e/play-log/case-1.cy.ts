@@ -22,8 +22,10 @@ it('Client Test Case 1', () => {
   // Wait for media product transition
   cy.get('@playerSdkMediaProductTransition', { timeout: 5000 }).should('be.called');
 
-  // Wait for video to finish playing (seeking to 88s, so only ~5s of playback)
-  cy.get('@playerSdkEnded', { timeout: 15000 }).should('be.called');
+  // Wait for video to finish playing (seeking to 88s, so only ~5s of playback).
+  // Shaka v5 relies on timeupdate events for position tracking, so seeking
+  // before play may delay rebuffering at the new position in CI environments.
+  cy.get('@playerSdkEnded', { timeout: 30_000 }).should('be.called');
 
   // Start intercepting events endpoint
   cy.intercept(INTERCEPT_OPTIONS).as(
