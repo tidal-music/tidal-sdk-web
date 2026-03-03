@@ -14,6 +14,7 @@ import type {
   VideoQuality,
 } from '../../internal/types';
 import * as StreamingMetrics from '../event-tracking/streaming-metrics';
+import { withRetries } from '../helpers/retry';
 import { waitFor } from '../helpers/wait-for';
 import { trueTime } from '../true-time';
 
@@ -333,8 +334,16 @@ function parseDataUrl(dataUrl: string | undefined):
   };
 }
 
+const TRACK_MANIFEST_MAX_RETRIES = 3;
+const TRACK_MANIFEST_BASE_DELAY_MS = 500;
+
+function isRetryableStatus(status: number): boolean {
+  return (status >= 500 && status < 600) || status === 429;
+}
+
 /**
  * Fetches the track manifest for a given media product using the API client.
+ * Retries on 5xx and 429 errors with exponential backoff.
  */
 // eslint-disable-next-line complexity
 async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
@@ -356,26 +365,40 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
   const isFairPlaySupported =
     await shaka.util.FairPlayUtils.isFairPlaySupported();
 
-  const response = await apiClient.GET('/trackManifests/{id}', {
-    params: {
-      headers: {
-        'x-playback-session-id': streamingSessionId,
+  let response;
+  try {
+    response = await withRetries(
+      () =>
+        apiClient.GET('/trackManifests/{id}', {
+          params: {
+            headers: {
+              'x-playback-session-id': streamingSessionId,
+            },
+            path: {
+              id: trackId,
+            },
+            query: {
+              adaptive: audioAdaptiveBitrateStreaming,
+              formats: audioQualityToFormats(audioQuality),
+              manifestType: isFairPlaySupported ? 'HLS' : 'MPEG_DASH',
+              uriScheme: 'DATA',
+              usage: 'PLAYBACK',
+            },
+          },
+        }),
+      {
+        baseDelayMs: TRACK_MANIFEST_BASE_DELAY_MS,
+        maxRetries: TRACK_MANIFEST_MAX_RETRIES,
+        shouldRetry: res =>
+          Boolean(res.error) && isRetryableStatus(res.response.status),
       },
-      path: {
-        id: trackId,
-      },
-      query: {
-        adaptive: audioAdaptiveBitrateStreaming,
-        formats: audioQualityToFormats(audioQuality),
-        manifestType: isFairPlaySupported ? 'HLS' : 'MPEG_DASH',
-        uriScheme: 'DATA',
-        usage: 'PLAYBACK',
-      },
-    },
-  });
+    );
+  } catch {
+    throw new PlayerError('PENetwork', 'NPBI0');
+  }
 
   if (response.error) {
-    throw new PlayerError('PENetwork', 'NPBI0');
+    throw new PlayerError(getErrorId(response.response.status, 0), 'NPBI0');
   }
 
   const parsed = parseDataUrl(response.data?.data.attributes?.uri);
