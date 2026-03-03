@@ -1,14 +1,6 @@
 name: FOSSA Scans
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    paths:
-      - '**/package.json'
-      - 'pnpm-lock.yaml'
-      - 'pnpm-workspace.yaml'
   workflow_call:
 
 jobs:
