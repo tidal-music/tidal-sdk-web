@@ -12,8 +12,10 @@ await Player.load({
   sourceType: 'VIDEO',
 });
 
-// Seek near the end to make test faster (video is ~93 seconds)
-await Player.seek(88);
-
 print('Playing video 159073354');
 await Player.play();
+
+// Seek near the end to make test faster (video is ~93 seconds).
+// Must happen after play() — Shaka v5 relies on timeupdate events to track
+// position changes, which only fire during active playback.
+await Player.seek(88);

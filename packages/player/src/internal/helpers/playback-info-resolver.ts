@@ -362,8 +362,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
   } = options;
   const trackId = mediaProduct.productId;
 
-  const isFairPlaySupported =
-    await shaka.util.FairPlayUtils.isFairPlaySupported();
+  const isFairPlaySupported = await shaka.drm.FairPlay.isFairPlaySupported();
 
   let response;
   try {
