@@ -34,7 +34,7 @@ jobs:
             fi
           done <<< "$ALL_CHANGED_FILES"
 
-          jsonString="$(jq --compact-output --null-input '$ARGS.positional' --args -- "${modules_list[@]}")"
+          jsonString="$(jq --compact-output --null-input '$ARGS.positional' --jsonargs -- "${modules_list[@]}")"
           echo $jsonString
           echo "modules=$jsonString" >> $GITHUB_OUTPUT
 
