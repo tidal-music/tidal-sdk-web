@@ -304,8 +304,7 @@ export default class ShakaPlayer extends BasePlayer {
             },
           },
 
-          initDataTransform:
-            shaka.util.FairPlayUtils.verimatrixInitDataTransform,
+          initDataTransform: shaka.drm.FairPlay.verimatrixInitDataTransform,
           servers: {
             'com.apple.fps.1_0': `https://fp.fa.tidal.com/license`,
           },
@@ -324,8 +323,7 @@ export default class ShakaPlayer extends BasePlayer {
    * we don't support `demo` anymore.
    */
   async #configureHlsForPlayback(instance: shaka.Player | undefined) {
-    const isFairPlaySupported =
-      await shaka.util.FairPlayUtils.isFairPlaySupported();
+    const isFairPlaySupported = await shaka.drm.FairPlay.isFairPlaySupported();
 
     if (isFairPlaySupported && instance) {
       if (instance.getConfiguration().streaming.preferNativeHls !== true) {
@@ -353,8 +351,7 @@ export default class ShakaPlayer extends BasePlayer {
     registerStalls(mediaEl);
     registerAdaptations(player);
 
-    const isFairPlaySupported =
-      await shaka.util.FairPlayUtils.isFairPlaySupported();
+    const isFairPlaySupported = await shaka.drm.FairPlay.isFairPlaySupported();
 
     // Re-used between streaming, drm and manifest configs below.
     const retryParameters = {
