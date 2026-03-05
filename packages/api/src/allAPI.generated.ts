@@ -6912,8 +6912,8 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: coverArt, items, ownerProfiles, owners
-                     * @example coverArt
+                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners
+                     * @example collaboratorProfiles
                      */
                     include?: string[];
                     /** @description Playlist id (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
@@ -7020,8 +7020,8 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: coverArt, items, ownerProfiles, owners
-                     * @example coverArt
+                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners
+                     * @example collaboratorProfiles
                      */
                     include?: string[];
                 };
@@ -7138,6 +7138,212 @@ export interface paths {
                 503: components["responses"]["Default503Response"];
             };
         };
+        trace?: never;
+    };
+    "/playlists/{id}/relationships/collaboratorProfiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get collaboratorProfiles relationship ("to-many").
+         * @description Retrieves collaboratorProfiles relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles
+                     * @example collaboratorProfiles
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Playlist id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Playlists_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Add to collaboratorProfiles relationship ("to-many").
+         * @description Adds item(s) to collaboratorProfiles relationship.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Playlist id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["PlaylistsCollaboratorProfilesRelationshipAddOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        /**
+         * Delete from collaboratorProfiles relationship ("to-many").
+         * @description Deletes item(s) from collaboratorProfiles relationship.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Playlist id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["PlaylistsCollaboratorProfilesRelationshipRemoveOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/playlists/{id}/relationships/collaborators": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get collaborators relationship ("to-many").
+         * @description Retrieves collaborators relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: collaborators
+                     * @example collaborators
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Playlist id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Playlists_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/playlists/{id}/relationships/coverArt": {
@@ -17337,7 +17543,7 @@ export interface components {
              * @description Claim status
              * @enum {string}
              */
-            status?: "PENDING" | "APPROVED" | "REJECTED";
+            status?: "SUBMITTED" | "PENDING" | "APPROVED" | "REJECTED";
             websiteOrSocialLink: components["schemas"]["Link_Object"];
         };
         ManualArtistClaims_Multi_Resource_Data_Document: {
@@ -17653,6 +17859,22 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        PlaylistsCollaboratorProfilesRelationshipAddOperation_Payload: {
+            data: components["schemas"]["PlaylistsCollaboratorProfilesRelationshipAddOperation_Payload_Data"][];
+        };
+        PlaylistsCollaboratorProfilesRelationshipAddOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artists";
+        };
+        PlaylistsCollaboratorProfilesRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["PlaylistsCollaboratorProfilesRelationshipRemoveOperation_Payload_Data"][];
+        };
+        PlaylistsCollaboratorProfilesRelationshipRemoveOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artists";
+        };
         PlaylistsCoverArtRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["PlaylistsCoverArtRelationshipUpdateOperation_Payload_Data"][];
         };
@@ -17824,6 +18046,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Playlists_Relationships: {
+            collaboratorProfiles?: components["schemas"]["Multi_Relationship_Data_Document"];
+            collaborators?: components["schemas"]["Multi_Relationship_Data_Document"];
             coverArt?: components["schemas"]["Multi_Relationship_Data_Document"];
             items?: components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
             ownerProfiles?: components["schemas"]["Multi_Relationship_Data_Document"];
