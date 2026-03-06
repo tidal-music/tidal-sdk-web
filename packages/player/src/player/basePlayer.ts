@@ -142,12 +142,22 @@ export class BasePlayer {
 
     let adjustedVolume = level;
 
-    if (loudnessNormalizationMode === 'ALBUM' && streamInfo.albumReplayGain) {
-      adjustedVolume *= normalizeVolume(streamInfo.albumReplayGain);
-    }
-
-    if (loudnessNormalizationMode === 'TRACK' && streamInfo.trackReplayGain) {
-      adjustedVolume *= normalizeVolume(streamInfo.trackReplayGain);
+    if (
+      loudnessNormalizationMode === 'ALBUM' &&
+      streamInfo.albumReplayGain !== undefined
+    ) {
+      adjustedVolume *= normalizeVolume(
+        streamInfo.albumReplayGain,
+        streamInfo.albumPeakAmplitude,
+      );
+    } else if (
+      loudnessNormalizationMode === 'TRACK' &&
+      streamInfo.trackReplayGain !== undefined
+    ) {
+      adjustedVolume *= normalizeVolume(
+        streamInfo.trackReplayGain,
+        streamInfo.trackPeakAmplitude,
+      );
     }
 
     this.debugLog(
