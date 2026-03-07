@@ -39,8 +39,8 @@ importers:
         specifier: 5.0.0
         version: 5.0.0(@types/eslint@9.6.1)(@types/node@24.11.0)(@vitest/ui@4.0.18)(happy-dom@20.7.0)(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.31.0)(yaml@2.8.1)
       eslint-plugin-disable-autofix:
-        specifier: 5.0.1
-        version: 5.0.1(eslint@10.0.2)
+        specifier: 6.1.0
+        version: 6.1.0(eslint@10.0.2)
       eslint-plugin-jsdoc:
         specifier: 62.7.1
         version: 62.7.1(eslint@10.0.2)
@@ -2346,10 +2346,6 @@ packages:
     resolution: {integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==}
     engines: {node: '>= 8'}
 
-  app-root-path@3.1.0:
-    resolution: {integrity: sha512-biN3PwB2gUtjaYy/isrU3aNWI5w+fAfvHkSvCKeQGxhmYpwKFUxudR3Yya+KqVRHBmEDYh+/lTozYCFbmzX4nA==}
-    engines: {node: '>= 6.0.0'}
-
   arch@2.2.0:
     resolution: {integrity: sha512-Of/R0wqp83cgHozfIYLbBMnej79U/SVGOOyuB3VVFv1NRM/PSFMK12x9KVtiYzJqmnU5WR2qp0Z5rHb7sWGnFQ==}
 
@@ -3142,10 +3138,10 @@ packages:
     peerDependencies:
       eslint: '>=9'
 
-  eslint-plugin-disable-autofix@5.0.1:
-    resolution: {integrity: sha512-uT2xNjHgnZezw9GlLkoxUyGwHL9NObrhR+rcRI0XzJkCUQDVLh+fV+wFD4th8O8LQp+CWH+k6gMXgJ1eMC9PCQ==}
+  eslint-plugin-disable-autofix@6.1.0:
+    resolution: {integrity: sha512-QV6jfE691UoK9+vrvWP9AQ9dZG1ssMiLhnTjfpsKubX0mF/WeXqfBeuIHYSApyjxubEw1cmNTD8d86bj74558A==}
     peerDependencies:
-      eslint: '>= 7'
+      eslint: '>=9.0.0'
 
   eslint-plugin-import@2.32.0:
     resolution: {integrity: sha512-whOE1HFo/qJDyX4SnXzP4N6zOWn79WhnCUY/iDR0mPfQZO8wcYE4JClzI2oZrhBnnMUCBCHZhO6VQyoBU95mZA==}
@@ -3210,10 +3206,6 @@ packages:
     peerDependencies:
       eslint: '>=8'
       storybook: ^10.2.10
-
-  eslint-rule-composer@0.3.0:
-    resolution: {integrity: sha512-bt+Sh8CtDmn2OajxvNO+BX7Wn4CIWMpTRm3MaiKPCQcnnlm0CS2mhui6QaoeQugs+3Kj2ESKEEGJUdVafwhiCg==}
-    engines: {node: '>=4.0.0'}
 
   eslint-scope@9.1.1:
     resolution: {integrity: sha512-GaUN0sWim5qc8KVErfPBWmc31LEsOkrUJbvJZV+xuL3u2phMUK4HIvXlWAakfC8W4nzlK+chPEAkYOYb5ZScIw==}
@@ -7657,8 +7649,6 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  app-root-path@3.1.0: {}
-
   arch@2.2.0: {}
 
   are-docs-informative@0.0.2: {}
@@ -8551,7 +8541,7 @@ snapshots:
       eslint-plugin-jsx-a11y: 6.10.2(eslint@10.0.1)
       eslint-plugin-no-only-tests: 3.3.0
       eslint-plugin-perfectionist: 5.6.0(eslint@10.0.1)(typescript@5.9.3)
-      eslint-plugin-prettier: 5.5.5(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@10.0.1))(eslint@10.0.1)(prettier@3.8.1)
+      eslint-plugin-prettier: 5.5.5(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@10.0.2))(eslint@10.0.1)(prettier@3.8.1)
       eslint-plugin-react: 7.37.5(eslint@10.0.1)
       eslint-plugin-react-hooks: 7.0.1(eslint@10.0.1)
       eslint-plugin-storybook: 10.2.10(eslint@10.0.1)(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
@@ -8634,12 +8624,9 @@ snapshots:
       eslint: 10.0.1
       globals: 17.3.0
 
-  eslint-plugin-disable-autofix@5.0.1(eslint@10.0.2):
+  eslint-plugin-disable-autofix@6.1.0(eslint@10.0.2):
     dependencies:
-      app-root-path: 3.1.0
       eslint: 10.0.2
-      eslint-rule-composer: 0.3.0
-      lodash: 4.17.23
 
   eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.56.0(eslint@10.0.2)(typescript@5.9.3))(eslint@10.0.2):
     dependencies:
@@ -8720,7 +8707,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-prettier@5.5.5(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@10.0.1))(eslint@10.0.1)(prettier@3.8.1):
+  eslint-plugin-prettier@5.5.5(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@10.0.2))(eslint@10.0.1)(prettier@3.8.1):
     dependencies:
       eslint: 10.0.1
       prettier: 3.8.1
@@ -8771,8 +8758,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
-
-  eslint-rule-composer@0.3.0: {}
 
   eslint-scope@9.1.1:
     dependencies:
