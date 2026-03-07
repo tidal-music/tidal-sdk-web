@@ -16,8 +16,8 @@
     "generateTypes": "pnpm -r generateTypes"
   },
   "devDependencies": {
-    "@eslint/compat": "2.0.2",
-    "eslint": "10.0.2",
+    "@eslint/compat": "2.0.3",
+    "eslint": "10.0.3",
     "eslint-config-tidal": "5.0.0",
     "eslint-plugin-disable-autofix": "5.0.1",
     "eslint-plugin-jsdoc": "62.7.1",
@@ -32,25 +32,25 @@
       "cypress"
     ],
     "overrides": {
-      "serialize-javascript": "7.0.3",
+      "serialize-javascript": "7.0.4",
       "koa": "2.16.4",
       "basic-ftp": "5.2.0",
       "rollup@>=4": "4.59.0",
       "ajv@>=8": "8.18.0",
       "lodash": "4.17.23",
-      "minimatch@<4": "3.1.4",
-      "minimatch@>=5 <6": "5.1.8",
-      "minimatch@>=9 <10": "9.0.7",
-      "minimatch@>=10": "10.2.3",
+      "minimatch@<4": "3.1.5",
+      "minimatch@>=5 <6": "5.1.9",
+      "minimatch@>=9 <10": "9.0.9",
+      "minimatch@>=10": "10.2.4",
       "diff@>=5 <6": "5.2.2",
       "diff@>=8": "8.0.3",
       "markdown-it@>=14": "14.1.1",
       "js-yaml@>=4": "4.1.1",
-      "qs@>=6.7": "6.14.2",
-      "tar-fs@>=3": "3.1.1",
+      "qs@>=6.7": "6.15.0",
+      "tar-fs@>=3": "3.1.2",
       "brace-expansion@>=2 <3": "2.0.2",
       "micromatch": "4.0.8",
-      "@75lb/deep-merge": "1.1.2"
+      "@75lb/deep-merge": "1.1.3"
     }
   }
 }
