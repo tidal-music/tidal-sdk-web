@@ -12,7 +12,7 @@ overrides:
   ajv@>=8: 8.18.0
   lodash: 4.17.23
   minimatch@<4: 3.1.5
-  minimatch@>=5 <6: 5.1.9
+  minimatch@>=5 <6: 10.2.4
   minimatch@>=9 <10: 9.0.9
   minimatch@>=10: 10.2.4
   diff@>=5 <6: 8.0.3
@@ -4088,10 +4088,6 @@ packages:
   minimatch@3.1.5:
     resolution: {integrity: sha512-VgjWUsnnT6n+NUk6eZq77zeFdpW2LWDzP6zFGrCbHXiYNul5Dzqk2HHQ5uFH2DNW5Xbp8+jVzaeNt94ssEEl4w==}
 
-  minimatch@5.1.9:
-    resolution: {integrity: sha512-7o1wEA2RyMP7Iu7GNba9vc0RWWGACJOCZBJX2GJWip0ikV+wcOsgVuY9uE8CPiyQhkGFSlhuSkZPavN7u1c2Fw==}
-    engines: {node: '>=10'}
-
   minimatch@9.0.9:
     resolution: {integrity: sha512-OBwBN9AL4dqmETlpS2zasx+vTeWclWzkblfZk7KTA5j3jeOONz/tRCnZomUyvNg83wL5Zv9Ss6HMJXAgL8R2Yg==}
     engines: {node: '>=16 || 14 >=14.17'}
@@ -6576,7 +6572,7 @@ snapshots:
       https-proxy-agent: 7.0.6(supports-color@10.2.2)
       js-levenshtein: 1.1.6
       js-yaml: 4.1.1
-      minimatch: 5.1.9
+      minimatch: 10.2.4
       pluralize: 8.0.0
       yaml-ast-parser: 0.0.43
     transitivePeerDependencies:
@@ -7432,7 +7428,6 @@ snapshots:
       open: 8.4.2
       portfinder: 1.0.32
     transitivePeerDependencies:
-      - '@75lb/nature'
       - bufferutil
       - supports-color
       - utf-8-validate
@@ -8485,7 +8480,7 @@ snapshots:
       eslint-plugin-jsx-a11y: 6.10.2(eslint@10.0.1)
       eslint-plugin-no-only-tests: 3.3.0
       eslint-plugin-perfectionist: 5.6.0(eslint@10.0.1)(typescript@5.9.3)
-      eslint-plugin-prettier: 5.5.5(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@10.0.3))(eslint@10.0.1)(prettier@3.8.1)
+      eslint-plugin-prettier: 5.5.5(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@10.0.1))(eslint@10.0.1)(prettier@3.8.1)
       eslint-plugin-react: 7.37.5(eslint@10.0.1)
       eslint-plugin-react-hooks: 7.0.1(eslint@10.0.1)
       eslint-plugin-storybook: 10.2.10(eslint@10.0.1)(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.3)
@@ -8651,7 +8646,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-prettier@5.5.5(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@10.0.3))(eslint@10.0.1)(prettier@3.8.1):
+  eslint-plugin-prettier@5.5.5(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@10.0.1))(eslint@10.0.1)(prettier@3.8.1):
     dependencies:
       eslint: 10.0.1
       prettier: 3.8.1
@@ -9681,10 +9676,6 @@ snapshots:
   minimatch@3.1.5:
     dependencies:
       brace-expansion: 1.1.12
-
-  minimatch@5.1.9:
-    dependencies:
-      brace-expansion: 5.0.4
 
   minimatch@9.0.9:
     dependencies:
