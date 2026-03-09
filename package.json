@@ -48,7 +48,7 @@
       "js-yaml@>=4": "4.1.1",
       "qs@>=6.7": "6.15.0",
       "tar-fs@>=3": "3.1.2",
-      "brace-expansion@>=2 <3": "2.0.2",
+      "brace-expansion@>=2 <3": "5.0.4",
       "micromatch": "4.0.8",
       "@75lb/deep-merge": "1.1.3"
     }
