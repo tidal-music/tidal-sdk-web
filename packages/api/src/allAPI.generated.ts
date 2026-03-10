@@ -5351,8 +5351,8 @@ export interface paths {
                      * @example offlineInventory
                      */
                     include?: string[];
-                    /** @description One of: tracks, videos, albums, playlists (e.g. `tracks`) */
-                    "filter[type]"?: ("tracks" | "videos" | "albums" | "playlists")[];
+                    /** @description One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`) */
+                    "filter[type]"?: ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
                 };
                 header?: never;
                 path: {
@@ -12991,6 +12991,61 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/userCollectionTracks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple userCollectionTracks.
+         * @description Retrieves multiple userCollectionTracks by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                     * @example items
+                     */
+                    include?: string[];
+                    /** @description User collection tracks id (e.g. `FMJUCzH4`) */
+                    "filter[id]"?: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserCollectionTracks_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/userCollectionTracks/{id}": {
         parameters: {
             query?: never;
@@ -17277,7 +17332,7 @@ export interface components {
         InstallationsOfflineInventory_ItemIdentifier: {
             id: string;
             /** @enum {string} */
-            type: "tracks" | "videos" | "albums" | "playlists";
+            type: "tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks";
         };
         Installations_Attributes: {
             /** @description Client provided installation identifier */
