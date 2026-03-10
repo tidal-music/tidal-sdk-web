@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.2.1"
+    "version" : "1.2.3"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -7884,7 +7884,7 @@
             }
           }
         }, {
-          "description" : "One of: tracks, videos, albums, playlists (e.g. `tracks`)",
+          "description" : "One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`)",
           "in" : "query",
           "name" : "filter[type]",
           "required" : false,
@@ -7892,7 +7892,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "tracks", "videos", "albums", "playlists" ]
+              "enum" : [ "tracks", "videos", "albums", "playlists", "userCollectionTracks" ]
             }
           }
         } ],
@@ -18848,6 +18848,80 @@
         }
       }
     },
+    "/userCollectionTracks" : {
+      "get" : {
+        "description" : "Retrieves multiple userCollectionTracks by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: items, owners",
+          "example" : "items",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "items"
+            }
+          }
+        }, {
+          "description" : "User collection tracks id (e.g. `FMJUCzH4`)",
+          "in" : "query",
+          "name" : "filter[id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserCollectionTracks_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
+        } ],
+        "summary" : "Get multiple userCollectionTracks.",
+        "tags" : [ "userCollectionTracks" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
     "/userCollectionTracks/{id}" : {
       "get" : {
         "description" : "Retrieves single userCollectionTrack by id.",
@@ -26829,7 +26903,7 @@
           },
           "type" : {
             "type" : "string",
-            "enum" : [ "tracks", "videos", "albums", "playlists" ]
+            "enum" : [ "tracks", "videos", "albums", "playlists", "userCollectionTracks" ]
           }
         }
       },
