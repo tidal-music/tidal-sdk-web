@@ -39,16 +39,13 @@
       "ajv@>=8": "8.18.0",
       "lodash": "4.17.23",
       "minimatch@<4": "3.1.5",
-      "minimatch@>=5 <6": "10.2.4",
-      "minimatch@>=9 <10": "9.0.9",
-      "minimatch@>=10": "10.2.4",
+      "minimatch@>=5": "10.2.4",
       "diff@>=5 <6": "8.0.3",
       "diff@>=8": "8.0.3",
       "markdown-it@>=14": "14.1.1",
       "js-yaml@>=4": "4.1.1",
       "qs@>=6.7": "6.15.0",
       "tar-fs@>=3": "3.1.2",
-      "brace-expansion@>=2 <3": "5.0.4",
       "micromatch": "4.0.8",
       "@75lb/deep-merge": "1.1.3"
     }
