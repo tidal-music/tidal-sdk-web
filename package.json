@@ -22,6 +22,9 @@
     "eslint-plugin-disable-autofix": "6.1.1",
     "eslint-plugin-jsdoc": "62.7.1",
     "typedoc": "0.28.17",
+    "vite": "7.3.1",
+    "vite-plugin-dts": "4.5.4",
+    "vite-plugin-package-version": "1.1.0",
     "vitest": "4.0.18"
   },
   "pnpm": {
