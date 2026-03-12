@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/tidal-sdk-web",
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.31.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -16,11 +16,15 @@
     "generateTypes": "pnpm -r generateTypes"
   },
   "devDependencies": {
-    "eslint": "9.39.2",
-    "eslint-config-tidal": "4.0.0",
-    "eslint-plugin-disable-autofix": "5.0.1",
-    "eslint-plugin-jsdoc": "62.5.0",
-    "typedoc": "0.28.16",
+    "@eslint/compat": "2.0.3",
+    "eslint": "10.0.3",
+    "eslint-config-tidal": "5.0.0",
+    "eslint-plugin-disable-autofix": "6.1.1",
+    "eslint-plugin-jsdoc": "62.7.1",
+    "typedoc": "0.28.17",
+    "vite": "7.3.1",
+    "vite-plugin-dts": "4.5.4",
+    "vite-plugin-package-version": "1.1.0",
     "vitest": "4.0.18"
   },
   "pnpm": {
@@ -29,6 +33,24 @@
     ],
     "onlyBuiltDependencies": [
       "cypress"
-    ]
+    ],
+    "overrides": {
+      "serialize-javascript": "7.0.4",
+      "koa": "3.1.2",
+      "basic-ftp": "5.2.0",
+      "rollup@>=4": "4.59.0",
+      "ajv@>=8": "8.18.0",
+      "lodash": "4.17.23",
+      "minimatch@<4": "3.1.5",
+      "minimatch@>=5": "10.2.4",
+      "diff@>=5 <6": "8.0.3",
+      "diff@>=8": "8.0.3",
+      "markdown-it@>=14": "14.1.1",
+      "js-yaml@>=4": "4.1.1",
+      "qs@>=6.7": "6.15.0",
+      "tar-fs@>=3": "3.1.2",
+      "micromatch": "4.0.8",
+      "@75lb/deep-merge": "1.1.3"
+    }
   }
 }

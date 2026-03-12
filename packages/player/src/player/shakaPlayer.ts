@@ -104,7 +104,7 @@ export default class ShakaPlayer extends BasePlayer {
 
   #activePlayer: 1 | 2 = 1;
 
-  #crossfadeAnimationId: null | number = null;
+  #crossfadeAnimationId: number | null = null;
   #crossfadeInProgress = false;
 
   #isReset = true;
@@ -210,8 +210,7 @@ export default class ShakaPlayer extends BasePlayer {
       // "The waiting event is fired when playback has stopped because of a temporary lack of data."
       const shakaWaiting =
         e.type === 'buffering' &&
-        this.mediaElement &&
-        this.mediaElement.networkState === HTMLMediaElement.NETWORK_LOADING;
+        this.mediaElement?.networkState === HTMLMediaElement.NETWORK_LOADING;
 
       // Safari tend to send events wrongly. Verify the media event is actually paused before sending setting state.
       if (this.mediaElement?.paused || shakaWaiting) {
@@ -436,8 +435,7 @@ export default class ShakaPlayer extends BasePlayer {
             },
           },
 
-          initDataTransform:
-            shaka.util.FairPlayUtils.verimatrixInitDataTransform,
+          initDataTransform: shaka.drm.FairPlay.verimatrixInitDataTransform,
           servers: {
             'com.apple.fps.1_0': `https://fp.fa.tidal.com/license`,
           },
@@ -456,8 +454,7 @@ export default class ShakaPlayer extends BasePlayer {
    * we don't support `demo` anymore.
    */
   async #configureHlsForPlayback(instance: shaka.Player | undefined) {
-    const isFairPlaySupported =
-      await shaka.util.FairPlayUtils.isFairPlaySupported();
+    const isFairPlaySupported = await shaka.drm.FairPlay.isFairPlaySupported();
 
     if (isFairPlaySupported && instance) {
       if (instance.getConfiguration().streaming.preferNativeHls !== true) {
@@ -488,8 +485,7 @@ export default class ShakaPlayer extends BasePlayer {
       preloaded: this.preloadedStreamingSessionId,
     }));
 
-    const isFairPlaySupported =
-      await shaka.util.FairPlayUtils.isFairPlaySupported();
+    const isFairPlaySupported = await shaka.drm.FairPlay.isFairPlaySupported();
 
     // Re-used between streaming, drm and manifest configs below.
     const retryParameters = {
@@ -1178,6 +1174,10 @@ export default class ShakaPlayer extends BasePlayer {
     });
   }
 
+  get mediaElement(): HTMLMediaElement | null {
+    return this.getActiveMediaElement();
+  }
+
   async next(payload: LoadPayload) {
     this.debugLog('next', payload);
 
@@ -1396,6 +1396,10 @@ export default class ShakaPlayer extends BasePlayer {
         }
       }
     }
+  }
+
+  get ready() {
+    return this.#librariesLoad;
   }
 
   async reset(
@@ -1641,14 +1645,6 @@ export default class ShakaPlayer extends BasePlayer {
     } catch (e) {
       console.error(e);
     }
-  }
-
-  get mediaElement(): HTMLMediaElement | null {
-    return this.getActiveMediaElement();
-  }
-
-  get ready() {
-    return this.#librariesLoad;
   }
 
   get volume() {

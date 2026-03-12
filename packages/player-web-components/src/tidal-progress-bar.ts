@@ -136,6 +136,17 @@ class TidalProgressBar extends HTMLElement {
     this.#registerEventListeners();
   }
 
+  /**
+   * Set current time with milliseconds.
+   *
+   * @memberof ProgressBar
+   */
+  set currentTime(milliseconds: number) {
+    if (this.#animation) {
+      this.#animation.currentTime = milliseconds;
+    }
+  }
+
   disconnectedCallback() {
     Player.events.removeEventListener(
       'media-product-transition',
@@ -151,6 +162,30 @@ class TidalProgressBar extends HTMLElement {
     this.#wrapper?.addEventListener('click', this.#wrapperClickHandler, false);
 
     this.#registeredEventListeners.clear();
+  }
+
+  /**
+   * Setting this recrates the animation with the new duraton and pauses the animation.
+   */
+  set duration(milliseconds: number) {
+    this.#animationDuration = milliseconds * 1000;
+
+    /** @type {Keyframe[]} */
+    const keyframes = [
+      {
+        transform: 'translateX(-100%)',
+      },
+      {
+        transform: 'translateX(0%)',
+      },
+    ];
+
+    this.#animation = this.#indicator?.animate(keyframes, {
+      duration: this.#animationDuration,
+      iterations: 1,
+    });
+
+    this.#animation?.pause();
   }
 
   /**
@@ -190,6 +225,19 @@ class TidalProgressBar extends HTMLElement {
   }
 
   /**
+   * Setting this stops the animations, updates the playback rate and plays it again.
+   */
+  set playbackRate(playbackRate: number) {
+    this.stop();
+
+    if (this.#animation) {
+      this.#animation.playbackRate = playbackRate;
+    }
+
+    this.start();
+  }
+
+  /**
    * Starts the animation if duration is defined.
    *
    * @throws Will throw an error if duration is not set.
@@ -213,54 +261,6 @@ class TidalProgressBar extends HTMLElement {
     }
 
     this.#animation.pause();
-  }
-
-  /**
-   * Set current time with milliseconds.
-   *
-   * @memberof ProgressBar
-   */
-  set currentTime(milliseconds: number) {
-    if (this.#animation) {
-      this.#animation.currentTime = milliseconds;
-    }
-  }
-
-  /**
-   * Setting this recrates the animation with the new duraton and pauses the animation.
-   */
-  set duration(milliseconds: number) {
-    this.#animationDuration = milliseconds * 1000;
-
-    /** @type {Keyframe[]} */
-    const keyframes = [
-      {
-        transform: 'translateX(-100%)',
-      },
-      {
-        transform: 'translateX(0%)',
-      },
-    ];
-
-    this.#animation = this.#indicator?.animate(keyframes, {
-      duration: this.#animationDuration,
-      iterations: 1,
-    });
-
-    this.#animation?.pause();
-  }
-
-  /**
-   * Setting this stops the animations, updates the playback rate and plays it again.
-   */
-  set playbackRate(playbackRate: number) {
-    this.stop();
-
-    if (this.#animation) {
-      this.#animation.playbackRate = playbackRate;
-    }
-
-    this.start();
   }
 }
 

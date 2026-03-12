@@ -5,16 +5,16 @@ import { createReducer } from '../../helpers/reducer';
 const platform = Bowser.parse(navigator.userAgent);
 
 export type Payload = {
-  abTestGroup: null | string;
-  abTestName: null | string;
-  browser: null | string;
-  browserVersion: null | string;
+  abTestGroup: string | null;
+  abTestName: string | null;
+  browser: string | null;
+  browserVersion: string | null;
   hardwarePlatform: 'DESKTOP' | 'WEB';
   isOfflineModeStart: boolean;
   mobileNetworkType: '3G' | '4G' | 'HSPA' | null;
   networkType: 'ETHERNET' | 'MOBILE' | 'NONE' | 'OTHER' | 'WIFI';
-  operatingSystem: null | string;
-  operatingSystemVersion: null | string;
+  operatingSystem: string | null;
+  operatingSystemVersion: string | null;
   screenHeight: number;
   screenWidth: number;
   sessionProductId: string;

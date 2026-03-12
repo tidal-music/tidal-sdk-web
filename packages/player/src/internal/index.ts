@@ -12,10 +12,6 @@ class EventSenderStore extends EventTarget {
   // @ts-ignore - Setter
   #eventSender: EventSender;
 
-  hasEventSender() {
-    return Boolean(this.#eventSender);
-  }
-
   set eventSender(newEventSender: EventSender) {
     this.#eventSender = newEventSender;
   }
@@ -23,30 +19,16 @@ class EventSenderStore extends EventTarget {
   get eventSender() {
     return this.#eventSender;
   }
+
+  hasEventSender() {
+    return Boolean(this.#eventSender);
+  }
 }
 
 class CredentialsProviderStore extends EventTarget {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore - Setter
   #credentialsProvider: CredentialsProvider;
-
-  async dispatchAuthorized() {
-    const credentials = await this.#credentialsProvider.getCredentials();
-
-    if (credentials?.token) {
-      this.dispatchEvent(
-        new CustomEvent('authorized', {
-          detail: {
-            credentials,
-          },
-        }),
-      );
-    } else {
-      this.dispatchEvent(
-        new CustomEvent('unauthenticated', { detail: { credentials } }),
-      );
-    }
-  }
 
   set credentialsProvider(newCredentialsProvider: CredentialsProvider) {
     this.#credentialsProvider = newCredentialsProvider;
@@ -66,6 +48,24 @@ class CredentialsProviderStore extends EventTarget {
 
   get credentialsProvider() {
     return this.#credentialsProvider;
+  }
+
+  async dispatchAuthorized() {
+    const credentials = await this.#credentialsProvider.getCredentials();
+
+    if (credentials?.token) {
+      this.dispatchEvent(
+        new CustomEvent('authorized', {
+          detail: {
+            credentials,
+          },
+        }),
+      );
+    } else {
+      this.dispatchEvent(
+        new CustomEvent('unauthenticated', { detail: { credentials } }),
+      );
+    }
   }
 }
 

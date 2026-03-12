@@ -16,6 +16,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Maintained backward compatibility with existing public API (setNext, load, etc.)
   - Internal refactoring of ShakaPlayer to manage dual playback instances
 
+## [0.15.0] - 2026-03-03
+
+### Changed
+
+- Better error handling for new `trackManifests` API (#536)
+- Fixed event listener leak in NativePlayer (#510)
+- Shaka player updated to: 4.16.19
+
+## [0.14.0] - 2026-02-13
+
+### Changed
+
+- Pipes through the preview reason on the track manifest
+- Removes duplicate types and points to single source for these things
+
+## [0.13.0] - 2026-02-10
+
+### Changed
+
+- Expose `setLegacyApiUrl` so both legacy and current API can be overridden
+
 ## [0.12.0] - 2026-01-26
 
 ### Changed

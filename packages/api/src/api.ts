@@ -4,11 +4,16 @@ import createClient, { type Middleware } from 'openapi-fetch';
 import type { paths } from './allAPI.generated';
 
 /**
- * Create a Catalogue API client with the provided credentials.
+ * Create a Tidal API client with the provided credentials.
  *
  * @param credentialsProvider The credentials provider, from Auth module.
+ * @param baseUrl Override the base URL to use for the API client.
+ * @returns A Tidal API client.
  */
-export function createAPIClient(credentialsProvider: CredentialsProvider) {
+export function createAPIClient(
+  credentialsProvider: CredentialsProvider,
+  baseUrl = 'https://openapi.tidal.com/v2/',
+) {
   const authMiddleware: Middleware = {
     async onRequest({ request }) {
       const credentials = await credentialsProvider.getCredentials();
@@ -30,7 +35,7 @@ export function createAPIClient(credentialsProvider: CredentialsProvider) {
   };
 
   const apiClient = createClient<paths>({
-    baseUrl: 'https://openapi.tidal.com/v2/',
+    baseUrl,
   });
   apiClient.use(authMiddleware);
 

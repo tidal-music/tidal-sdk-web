@@ -1,3 +1,4 @@
+import { fixupPluginRules } from '@eslint/compat';
 import tidal from 'eslint-config-tidal';
 import disableAutofix from 'eslint-plugin-disable-autofix';
 import jsdoc from 'eslint-plugin-jsdoc';
@@ -18,7 +19,13 @@ export default [
     languageOptions: {
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['*.js', 'demo/*.js', 'examples/*.js'],
+          allowDefaultProject: [
+            '*.js',
+            'demo/*.js',
+            'examples/*.js',
+            'packages/*/demo/*.js',
+            'packages/*/examples/*.js',
+          ],
           defaultProject: 'tsconfig.json',
         },
       },
@@ -36,7 +43,7 @@ export default [
   },
   {
     plugins: {
-      'disable-autofix': disableAutofix,
+      'disable-autofix': fixupPluginRules(disableAutofix),
       jsdoc,
     },
     rules: {

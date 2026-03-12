@@ -5,24 +5,33 @@ import type { MediaProduct } from '../../api/interfaces';
 import * as Config from '../../config';
 import type { ErrorCodes, ErrorIds } from '../../internal/index';
 import { PlayerError, credentialsProviderStore } from '../../internal/index';
-import type { AudioQuality } from '../../internal/types';
+import type {
+  AssetPresentation,
+  AudioMode,
+  AudioQuality,
+  PreviewReason,
+  StreamType,
+  VideoQuality,
+} from '../../internal/types';
 import * as StreamingMetrics from '../event-tracking/streaming-metrics';
+import { withRetries } from '../helpers/retry';
 import { waitFor } from '../helpers/wait-for';
 import { trueTime } from '../true-time';
 
-type VideoQuality = 'AUDIO_ONLY' | 'HIGH' | 'LOW' | 'MEDIUM';
-
-type AudioMode = 'DOLBY_ATMOS' | 'SONY_360RA' | 'STEREO';
-type AssetPresentation = 'FULL' | 'PREVIEW';
-type SteamType = 'LIVE' | 'ON_DEMAND';
-
 type BasePlaybackInfo = {
+  /**
+   * How the asset is presented to the user.
+   */
   assetPresentation: AssetPresentation;
   licenseSecurityToken?: string;
   manifest: string;
   manifestHash?: string;
   manifestMimeType: string;
   prefetched: boolean;
+  /**
+   * The reason why the asset is presented as a preview.
+   */
+  previewReason?: PreviewReason;
   streamingSessionId: string;
 };
 
@@ -31,15 +40,15 @@ export type PlaybackInfoTrack = BasePlaybackInfo & {
   albumReplayGain: number;
   audioMode: AudioMode;
   audioQuality: AudioQuality;
-  bitDepth: null | number; // API sends null
-  sampleRate: null | number; // API sends null
+  bitDepth: number | null; // API sends null
+  sampleRate: number | null; // API sends null
   trackId: number;
   trackPeakAmplitude: number;
   trackReplayGain: number;
 };
 
 export type PlaybackInfoVideo = BasePlaybackInfo & {
-  streamType: SteamType;
+  streamType: StreamType;
   videoId: number;
   videoQuality: VideoQuality;
 };
@@ -55,7 +64,7 @@ export type Options = {
   accessToken: string | undefined;
   audioAdaptiveBitrateStreaming: boolean;
   audioQuality: AudioQuality;
-  clientId: null | string;
+  clientId: string | null;
   mediaProduct: MediaProduct;
   playerType?: 'browser' | 'native' | 'shaka';
   prefetch: boolean;
@@ -77,7 +86,7 @@ const fetchWithRetries = async (
 ): Promise<Response> => {
   const MAX_RETRY_COUNT = 4;
   let res: Response | undefined;
-  let status: null | number | undefined;
+  let status: number | null | undefined;
 
   try {
     res = await fetch(url, options);
@@ -144,8 +153,9 @@ function getErrorId(status: number, subStatus: number): ErrorIds {
 
 // type def with "& URLSearchParams" is not the same as "interface extends".
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-interface URLSearchParamsCustomSetters<T extends string>
-  extends URLSearchParams {
+interface URLSearchParamsCustomSetters<
+  T extends string,
+> extends URLSearchParams {
   set: (name: T, value: string) => void;
 }
 
@@ -167,9 +177,9 @@ async function _fetchLegacyPlaybackInfo(
     streamingSessionId,
   } = options;
 
-  const apiUrl = Config.get('apiUrl');
+  const legacyApiUrl = Config.get('legacyApiUrl');
   const url = new URL(
-    `${apiUrl}/${mediaProduct.productType}s/${mediaProduct.productId}/playbackinfo`,
+    `${legacyApiUrl}/${mediaProduct.productType}s/${mediaProduct.productId}/playbackinfo`,
   );
   const searchParams = url.searchParams as URLSearchParamsCustomSetters<
     'assetpresentation' | 'audioquality' | 'playbackmode' | 'videoquality'
@@ -324,14 +334,23 @@ function parseDataUrl(dataUrl: string | undefined):
   };
 }
 
+const TRACK_MANIFEST_MAX_RETRIES = 3;
+const TRACK_MANIFEST_BASE_DELAY_MS = 500;
+
+function isRetryableStatus(status: number): boolean {
+  return (status >= 500 && status < 600) || status === 429;
+}
+
 /**
  * Fetches the track manifest for a given media product using the API client.
+ * Retries on 5xx and 429 errors with exponential backoff.
  */
 // eslint-disable-next-line complexity
 async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
   // TODO: consider saving the API client for reuse
   const apiClient = createAPIClient(
     credentialsProviderStore.credentialsProvider,
+    Config.get('apiUrl'),
   );
 
   const {
@@ -343,29 +362,42 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
   } = options;
   const trackId = mediaProduct.productId;
 
-  const isFairPlaySupported =
-    await shaka.util.FairPlayUtils.isFairPlaySupported();
+  const isFairPlaySupported = await shaka.drm.FairPlay.isFairPlaySupported();
 
-  const response = await apiClient.GET('/trackManifests/{id}', {
-    params: {
-      headers: {
-        'x-playback-session-id': streamingSessionId,
+  let response;
+  try {
+    response = await withRetries(
+      () =>
+        apiClient.GET('/trackManifests/{id}', {
+          params: {
+            headers: {
+              'x-playback-session-id': streamingSessionId,
+            },
+            path: {
+              id: trackId,
+            },
+            query: {
+              adaptive: audioAdaptiveBitrateStreaming,
+              formats: audioQualityToFormats(audioQuality),
+              manifestType: isFairPlaySupported ? 'HLS' : 'MPEG_DASH',
+              uriScheme: 'DATA',
+              usage: 'PLAYBACK',
+            },
+          },
+        }),
+      {
+        baseDelayMs: TRACK_MANIFEST_BASE_DELAY_MS,
+        maxRetries: TRACK_MANIFEST_MAX_RETRIES,
+        shouldRetry: res =>
+          Boolean(res.error) && isRetryableStatus(res.response.status),
       },
-      path: {
-        id: trackId,
-      },
-      query: {
-        adaptive: audioAdaptiveBitrateStreaming,
-        formats: audioQualityToFormats(audioQuality),
-        manifestType: isFairPlaySupported ? 'HLS' : 'MPEG_DASH',
-        uriScheme: 'DATA',
-        usage: 'PLAYBACK',
-      },
-    },
-  });
+    );
+  } catch {
+    throw new PlayerError('PENetwork', 'NPBI0');
+  }
 
   if (response.error) {
-    throw new PlayerError('PENetwork', 'NPBI0');
+    throw new PlayerError(getErrorId(response.response.status, 0), 'NPBI0');
   }
 
   const parsed = parseDataUrl(response.data?.data.attributes?.uri);
@@ -398,6 +430,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
     manifestHash: response.data?.data.attributes?.hash,
     manifestMimeType,
     prefetched: prefetch,
+    previewReason: response.data?.data.attributes?.previewReason,
     sampleRate: 0,
     streamingSessionId,
     trackId: response.data?.data.id ? Number(response.data.data.id) : 0,
@@ -449,6 +482,7 @@ export async function fetchPlaybackInfo(options: Options) {
 
     const hasAds = 'adInfo' in playbackInfo;
 
+    // TODO: add previewReason to the playback statistics event
     if ('trackId' in playbackInfo) {
       StreamingMetrics.playbackStatistics({
         actualAssetPresentation: playbackInfo.assetPresentation,

@@ -20,26 +20,26 @@ export type Stall = Readonly<{
 export type Adaptation = Readonly<{
   assetPosition: number;
   bandwidth: number;
-  codecs: null | string | undefined;
-  mimeType: null | string | undefined;
+  codecs: string | null | undefined;
+  mimeType: string | null | undefined;
   timestamp: number;
-  videoHeight: null | number | undefined;
-  videoWidth: null | number | undefined;
+  videoHeight: number | null | undefined;
+  videoWidth: number | null | undefined;
 }>;
 
 export type BasePayload = {
   actualAssetPresentation: 'FULL' | 'PREVIEW';
   actualAudioMode: 'DOLBY_ATMOS' | 'SONY_360RA' | 'STEREO';
-  actualProductId: null | string;
+  actualProductId: string | null;
   actualStartTimestamp: number;
   actualStreamType: 'LIVE' | 'ON_DEMAND';
   adaptations: Array<Adaptation>;
   cdm: 'FAIR_PLAY' | 'NONE' | 'WIDEVINE';
-  cdmVersion: null | string;
+  cdmVersion: string | null;
   endReason: 'COMPLETE' | 'ERROR' | 'OTHER';
   endTimestamp: number;
-  errorCode: null | string;
-  errorMessage: null | string;
+  errorCode: string | null;
+  errorMessage: string | null;
   hasAds: boolean;
   idealStartTimestamp: number;
   outputDevice: StatisticsOutputType | null;

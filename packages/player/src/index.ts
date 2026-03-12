@@ -80,8 +80,8 @@ export type * from './api/interfaces';
 
 export { events } from './event-bus';
 export type {
-  ErrorCodes,
   PlayerErrorInterface as Error,
+  ErrorCodes,
 } from './internal/index';
 
 export type { OutputDevice } from './internal/output-devices';

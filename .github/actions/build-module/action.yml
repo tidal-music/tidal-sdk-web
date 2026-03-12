@@ -19,10 +19,14 @@ runs:
     - name: Verify Inputs
       id: verify-input
       shell: bash
+      env:
+        INPUT_MODULE_PATH: ${{ inputs.module-path }}
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_TAG: ${{ inputs.tag }}
       run: |
         output="true"
         echo "Checking if module exists..."
-        if [[ ! -d ${{ inputs.module-path }} ]]; then
+        if [[ ! -d "$INPUT_MODULE_PATH" ]]; then
           output="false"
           echo "Module does not exist!"
         fi
@@ -31,14 +35,14 @@ runs:
 
         echo "Checking if version is valid..."
 
-        if [ "$(echo ${{ inputs.version }} | grep -Eo "$semver_regex")" = "" ]; then
+        if [ "$(echo "$INPUT_VERSION" | grep -Eo "$semver_regex")" = "" ]; then
           output="false"
           echo "Invalid version string submitted"
         fi
 
         echo "Checking if tag is valid"
-        name="${{ inputs.module-path }}"
-        if [ "${name#*/}-${{ inputs.version}}" != "${{ inputs.tag }}" ]; then
+        name="$INPUT_MODULE_PATH"
+        if [ "${name#*/}-$INPUT_VERSION" != "$INPUT_TAG" ]; then
           output="false"
           echo "Invalid tag submitted!"
         fi
@@ -48,19 +52,24 @@ runs:
       shell: bash
       id: build-module
       if: steps.verify-input.outputs.verified == 'true'
+      env:
+        INPUT_MODULE_PATH: ${{ inputs.module-path }}
+        INPUT_VERSION: ${{ inputs.version }}
       run: |
-        path="${{ inputs.module-path }}"
+        path="$INPUT_MODULE_PATH"
         name="${path#*/}"
-        archive_name="tidal-music-${name}-${{ inputs.version }}.tgz"
+        archive_name="tidal-music-${name}-${INPUT_VERSION}.tgz"
 
-        cd $path
+        cd "$path"
         pnpm typecheck
         pnpm pack
 
         echo "release_file=$path/$archive_name" >> $GITHUB_OUTPUT
     - name: Upload Files To Release Draft
       shell: bash
-      run: |
-        gh release upload ${{ inputs.tag }} ${{ steps.build-module.outputs.release_file }} --clobber
       env:
+        INPUT_TAG: ${{ inputs.tag }}
+        RELEASE_FILE: ${{ steps.build-module.outputs.release_file }}
         GH_TOKEN: ${{ inputs.token }}
+      run: |
+        gh release upload "$INPUT_TAG" "$RELEASE_FILE" --clobber

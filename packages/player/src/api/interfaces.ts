@@ -3,6 +3,7 @@ import type {
   AudioMode,
   AudioQuality,
   Codec,
+  PreviewReason,
   StreamType,
   VideoQuality,
 } from '../internal/types';
@@ -19,11 +20,12 @@ export type PlaybackContext = {
   actualStreamType: StreamType | null;
   actualVideoQuality: VideoQuality | null;
   assetPosition: number;
-  bandwidth: null | number; // TODO: add to spec
-  bitDepth: null | number;
+  bandwidth: number | null; // TODO: add to spec
+  bitDepth: number | null;
   codec: Codec | null;
   playbackSessionId: string;
-  sampleRate: null | number;
+  previewReason?: PreviewReason;
+  sampleRate: number | null;
 };
 
 /**

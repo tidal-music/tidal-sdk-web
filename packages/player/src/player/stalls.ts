@@ -66,7 +66,7 @@ async function handlePlayingEvent(
 }
 
 export function registerStalls(mediaEl: HTMLMediaElement) {
-  let currentStreamingSessionId: null | string;
+  let currentStreamingSessionId: string | null;
 
   events.addEventListener('media-product-transition', e => {
     if (e instanceof CustomEvent) {

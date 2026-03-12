@@ -33,5 +33,6 @@ export const composePlaybackContext = ({
   bitDepth: streamInfo.bitDepth ?? null,
   codec: streamInfo.codec ?? null,
   playbackSessionId: streamInfo.streamingSessionId,
+  previewReason: playbackInfo.previewReason ?? undefined,
   sampleRate: streamInfo.sampleRate ?? null,
 });

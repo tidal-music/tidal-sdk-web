@@ -17,14 +17,13 @@ mediaElementTwo.id = 'video-two';
 const tidalPlayerRootId = 'tidal-player-root';
 
 export function mountVideoElements() {
-  let templateEl = document.getElementById(tidalPlayerRootId);
+  const templateEl = document.getElementById(tidalPlayerRootId);
 
   if (!templateEl) {
     const template = document.createElement('template');
 
     template.id = tidalPlayerRootId;
     document.body.appendChild(template);
-    templateEl = document.getElementById(tidalPlayerRootId);
   }
 
   return ensureVideoElementsMounted();

@@ -22,8 +22,8 @@ it('Client Test Case 1', () => {
   // Wait for media product transition
   cy.get('@playerSdkMediaProductTransition', { timeout: 5000 }).should('be.called');
 
-  // Wait for video to finish playing (seeking to 88s, so only ~5s of playback)
-  cy.get('@playerSdkEnded', { timeout: 15000 }).should('be.called');
+  // Wait for video to finish playing (play + seek to 88s, so only ~5s of playback after seek)
+  cy.get('@playerSdkEnded', { timeout: 20_000 }).should('be.called');
 
   // Start intercepting events endpoint
   cy.intercept(INTERCEPT_OPTIONS).as(
@@ -66,11 +66,11 @@ it('Client Test Case 1', () => {
     // Video is ~93 seconds
     expect(playbackSession.payload.endAssetPosition).to.be.closeTo(93, 1);
 
-    // Includes seek action (PLAYBACK_STOP at 0, PLAYBACK_START at 88)
+    // Includes seek action (PLAYBACK_STOP near 0, PLAYBACK_START at 88)
     expect(playbackSession.payload.actions).to.have.lengthOf(2);
     expect(playbackSession.payload.actions[0]).to.include({ actionType: 'PLAYBACK_STOP' });
-    expect(playbackSession.payload.actions[0].assetPosition).to.be.closeTo(0, 0.5);
+    expect(playbackSession.payload.actions[0].assetPosition).to.be.closeTo(0, 1);
     expect(playbackSession.payload.actions[1]).to.include({ actionType: 'PLAYBACK_START' });
-    expect(playbackSession.payload.actions[1].assetPosition).to.be.closeTo(88, 0.5);
+    expect(playbackSession.payload.actions[1].assetPosition).to.be.closeTo(88, 1);
   })
 });

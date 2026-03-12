@@ -1,12 +1,12 @@
 export type NativeMediaItem = {
-  album: null | string | undefined;
+  album: string | null | undefined;
   artist: string;
   duration: number;
   id: number | string;
-  imageUrl: null | string | undefined;
+  imageUrl: string | null | undefined;
   title: string;
   type: 'track' | 'video';
-  url: null | string | undefined;
+  url: string | null | undefined;
 };
 
 export type NativePlaybackInterfaceDelegate = {
@@ -89,6 +89,10 @@ export type NativePlayerComponentInterface = {
   ): void;
   recover(url: string, encryptionKey?: string): void;
   releaseDevice(): void;
+  removeEventListener(
+    eventName: NativePlayerComponentSupportedEvents,
+    listener: (...args: Array<any>) => void,
+  ): void;
   seek(miliseconds: number): void;
   selectDevice(
     device: Partial<NativePlayerComponentDeviceDescription>,

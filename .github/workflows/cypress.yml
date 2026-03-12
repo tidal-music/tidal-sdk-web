@@ -30,25 +30,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - uses: ./.github/actions/setup
-      - name: Prepare test user for player tests
-        id: json
-        run: |
-          echo ${{ env.TEST_USER }} | base64 -d > test-user.json
-          json=$(cat test-user.json)
-          replacement=${{ secrets.PLAYER_REFRESH_TOKEN }}
-          fixed_json="$(echo ${json/\[TOKEN\]/$replacement})"
-          encoded_json=$(echo "$fixed_json" | base64 | tr -d '\n')
-          echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
-        env:
-          TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
-      - name: Set up Cypress binary cache
-        uses: actions/cache@v5
+      - name: Restore Cypress binary cache
+        uses: actions/cache/restore@v5
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
+      - uses: ./.github/actions/setup
+      - name: Ensure Cypress binary is installed
+        working-directory: packages/player
+        run: pnpm exec cypress install
+      - name: Prepare test user for player tests
+        id: json
+        env:
+          TEST_USER: ${{ secrets.PLAYER_TEST_USER }}
+          PLAYER_REFRESH_TOKEN: ${{ secrets.PLAYER_REFRESH_TOKEN }}
+        run: |
+          printf '%s' "$TEST_USER" | base64 -d > test-user.json
+          json=$(cat test-user.json)
+          fixed_json="${json/\[TOKEN\]/$PLAYER_REFRESH_TOKEN}"
+          encoded_json=$(printf '%s' "$fixed_json" | base64 | tr -d '\n')
+          echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
       - name: Cypress run
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@bc22e01685c56e89e7813fd8e26f33dc47f87e15 # v7.1.5
         env:
           CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
         with:
@@ -57,3 +60,9 @@ jobs:
           start: pnpm --dir packages/player/ dev
           wait-on: 'http://localhost:5173/demo/test-case-1.html'
           command: pnpm --dir packages/player/ internal:cypress:run
+      - name: Save Cypress binary cache
+        if: always()
+        uses: actions/cache/save@v5
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}

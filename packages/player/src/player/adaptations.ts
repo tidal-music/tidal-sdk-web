@@ -53,7 +53,7 @@ export function registerAdaptations(
     preloaded: string | undefined;
   },
 ) {
-  let currentStreamingSessionId: null | string;
+  let currentStreamingSessionId: string | null;
 
   const onManualOrAutomaticQualityChange = () => {
     const activeTrack: shaka.extern.Track = shakaPlayer

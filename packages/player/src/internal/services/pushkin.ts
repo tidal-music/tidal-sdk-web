@@ -27,7 +27,7 @@ type TimeInformation = Readonly<{
 
 // Named OutgoingPrivilegedSessionNotification in back-end.
 type PrivilegedSessionNotificationEventPayload = Readonly<{
-  clientDisplayName: null | string | undefined;
+  clientDisplayName: string | null | undefined;
   endsAt: TimeInformation;
   sessionId: string;
   updatedAt: TimeInformation;
@@ -49,8 +49,8 @@ let pushkin: Pushkin | undefined;
 // Only exported for testing.
 // eslint-disable-next-line disable-autofix/jsdoc/require-jsdoc
 export async function fetchWebSocketURL(accessToken: string) {
-  const apiUrl = Config.get('apiUrl');
-  const response = await fetch(apiUrl + '/rt/connect', {
+  const legacyApiUrl = Config.get('legacyApiUrl');
+  const response = await fetch(legacyApiUrl + '/rt/connect', {
     headers: new Headers({
       Authorization: 'Bearer ' + accessToken,
       'Content-Type': 'application/json',
@@ -203,6 +203,10 @@ export class Pushkin {
     }
   }
 
+  get connected() {
+    return this.#socket && this.#socket.readyState === WebSocket.OPEN;
+  }
+
   reconnect(): Promise<void> {
     if (this.#socket) {
       if (this.#messageHandler) {
@@ -241,9 +245,5 @@ export class Pushkin {
     } catch (e) {
       console.error(e);
     }
-  }
-
-  get connected() {
-    return this.#socket && this.#socket.readyState === WebSocket.OPEN;
   }
 }
