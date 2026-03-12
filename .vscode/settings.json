@@ -18,6 +18,7 @@
       "**/cypress/**",
       "**/docs/**",
       "**/.git/**",
-      "**/.vscode/**"
+      "**/.vscode/**",
+      "**/packages/player/**"
     ]
 }
