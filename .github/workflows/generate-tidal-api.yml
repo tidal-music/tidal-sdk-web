@@ -132,6 +132,55 @@ jobs:
         run: |
             echo "No changes found after generation. Good bye"
 
+      - name: Bump version and update changelog
+        id: bump_version
+        if: ${{ steps.check_for_changes.outputs.CHANGES_DETECTED == 'true' }}
+        env:
+          SPEC_VERSION: ${{ steps.check_for_changes.outputs.SPEC_VERSION }}
+        run: |
+          cd "$API_FOLDER"
+
+          MAIN_VERSION=$(git show main:$API_FOLDER/package.json 2>/dev/null | jq -r '.version' 2>/dev/null || echo "")
+          CURRENT_VERSION=$(jq -r '.version' package.json)
+
+          if [ -n "$MAIN_VERSION" ] && [ "$MAIN_VERSION" == "$CURRENT_VERSION" ]; then
+            IFS='.' read -r major minor patch <<< "$CURRENT_VERSION"
+            NEW_VERSION="$major.$((minor + 1)).0"
+            echo "Bumping version: $CURRENT_VERSION -> $NEW_VERSION"
+          else
+            NEW_VERSION="$CURRENT_VERSION"
+            echo "Version already bumped: $NEW_VERSION (main: $MAIN_VERSION)"
+          fi
+
+          tmp=$(mktemp)
+          jq --arg v "$NEW_VERSION" '.version = $v' package.json > "$tmp" && mv "$tmp" package.json
+
+          export NEW_VERSION SPEC_VERSION
+          python3 << 'PYEOF'
+          import os, re
+          from datetime import date
+
+          version = os.environ['NEW_VERSION']
+          spec_version = os.environ['SPEC_VERSION']
+          today = date.today().isoformat()
+
+          with open('CHANGELOG.md', 'r') as f:
+              content = f.read()
+
+          entry = f"## [{version}] - {today}\n\n### Changed\n\n- Sync to new API definitions (version: {spec_version})"
+
+          pattern = re.compile(rf'## \[{re.escape(version)}\][\s\S]*?(?=\n## \[|$)')
+          if pattern.search(content):
+              content = pattern.sub(entry, content)
+          else:
+              content = re.sub(r'(## \[)', entry + '\n\n\\1', content, count=1)
+
+          with open('CHANGELOG.md', 'w') as f:
+              f.write(content)
+          PYEOF
+
+          echo "Updated to version $NEW_VERSION with API spec $SPEC_VERSION"
+
       - name: Prepare git and define a branch name
         id: prepare_git_and_define_branch_name
         if: ${{ steps.check_for_changes.outputs.CHANGES_DETECTED == 'true' }}
@@ -160,16 +209,14 @@ jobs:
           commit_body="Changes in generated file:\n${CHANGES_IN_GENERATED}\n\nChanges in spec file:\n${CHANGES_IN_SPEC}"
           commit_body=$(echo -e "$commit_body")
 
-          git add "$API_FOLDER/$GENERATED_FILE" "$API_FOLDER/$SPEC_FILE"
+          git add "$API_FOLDER/$GENERATED_FILE" "$API_FOLDER/$SPEC_FILE" "$API_FOLDER/package.json" "$API_FOLDER/CHANGELOG.md"
 
           standard_branch_name="tidal-music-tools/auto-update-tidal-api"
 
           if [ "$EXISTING_PR" == "true" ]; then
             branch_name="$PR_BRANCH"
 
-            git fetch origin "$branch_name" || true
-
-            if git diff --quiet "origin/$branch_name" HEAD -- "$API_FOLDER/$GENERATED_FILE" "$API_FOLDER/$SPEC_FILE"; then
+            if git diff --cached --quiet; then
               echo "No new changes compared to existing PR branch - skipping update"
               echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
               echo "commit_made=false" >> $GITHUB_OUTPUT
