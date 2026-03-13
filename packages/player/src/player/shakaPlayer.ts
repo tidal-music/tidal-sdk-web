@@ -97,15 +97,16 @@ const serverCertificateWidevine = new Uint8Array([
 
 // eslint-disable-next-line import/no-default-export
 export default class ShakaPlayer extends BasePlayer {
-  // Gapless crossfade settings (optimized values)
-  readonly #CROSSFADE_DURATION_MS = 25;
-
-  readonly #START_CROSSFADE_AT_SECONDS = 0.2;
+  // Gapless micro-crossfade defaults (used when crossfadeInMs === 0)
+  static readonly #GAPLESS_CROSSFADE_MS = 25;
+  static readonly #GAPLESS_START_BEFORE_END_S = 0.2;
 
   #activePlayer: 1 | 2 = 1;
 
   #crossfadeAnimationId: number | null = null;
   #crossfadeInProgress = false;
+  #gapResolve: (() => void) | undefined = undefined;
+  #gapTimeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
 
   #isReset = true;
 
@@ -258,16 +259,17 @@ export default class ShakaPlayer extends BasePlayer {
         this.currentTime = mediaElement.currentTime;
       }
 
-      // Gapless crossfade logic
+      // Track transition logic (crossfade / gapless / gap)
       if (isActiveElement && this.#preloadedPayload) {
         const timeRemaining = mediaElement.duration - mediaElement.currentTime;
+        const { startBeforeEndS } = this.#getTransitionConfig();
 
         if (
           !this.#crossfadeInProgress &&
-          timeRemaining <= this.#START_CROSSFADE_AT_SECONDS &&
+          timeRemaining <= startBeforeEndS &&
           timeRemaining > 0
         ) {
-          this.#startCrossfade().catch(console.error);
+          this.#startTransition().catch(console.error);
         }
       }
     };
@@ -387,6 +389,63 @@ export default class ShakaPlayer extends BasePlayer {
       loadedHandler: setNotPlaying,
       stallDetectedHandler: setStalled,
     };
+  }
+
+  #completeTransition(
+    nextMediaElement: HTMLMediaElement,
+    nextPayload: LoadPayload,
+  ) {
+    this.#activePlayer = this.#activePlayer === 1 ? 2 : 1;
+
+    // CRITICAL: Reset currentTime IMMEDIATELY after swapping active player
+    // to prevent race conditions with event handlers reading stale position.
+    this.currentTime = nextMediaElement.currentTime;
+
+    this.currentStreamingSessionId = nextPayload.streamInfo.streamingSessionId;
+    this.preloadedStreamingSessionId = undefined;
+    this.startAssetPosition = 0;
+
+    const duration =
+      nextMediaElement.duration ?? nextPayload.streamInfo.duration ?? 0;
+
+    const playbackContext = composePlaybackContext({
+      assetPosition: 0,
+      duration,
+      playbackInfo: nextPayload.playbackInfo,
+      streamInfo: nextPayload.streamInfo,
+    });
+
+    streamingSessionStore.saveMediaProductTransition(
+      nextPayload.streamInfo.streamingSessionId,
+      { mediaProduct: nextPayload.mediaProduct, playbackContext },
+    );
+
+    this.debugLog('Media product transition saved for track');
+
+    events.dispatchEvent(
+      mediaProductTransitionEvent(nextPayload.mediaProduct, playbackContext),
+    );
+
+    performance.mark(
+      'streaming_metrics:playback_statistics:idealStartTimestamp',
+      {
+        detail: nextPayload.streamInfo.streamingSessionId,
+        startTime: trueTime.now(),
+      },
+    );
+
+    this.mediaProductStarted(nextPayload.streamInfo.streamingSessionId);
+
+    this.debugLog(
+      'Transition complete! Active player is now:',
+      this.#activePlayer,
+    );
+
+    this.#preloadedPayload = null;
+    this.#crossfadeInProgress = false;
+    this.#crossfadeAnimationId = null;
+    this.#gapResolve = undefined;
+    this.#gapTimeoutId = undefined;
   }
 
   async #configureDRM(player: shaka.Player) {
@@ -629,6 +688,32 @@ export default class ShakaPlayer extends BasePlayer {
     this.#mediaElementEvents(mediaEl, true);
 
     return player;
+  }
+
+  #getTransitionConfig() {
+    const crossfadeInMs = Config.get('crossfadeInMs');
+
+    if (crossfadeInMs > 0) {
+      return {
+        crossfadeDurationMs: crossfadeInMs,
+        mode: 'crossfade' as const,
+        startBeforeEndS: crossfadeInMs / 1000,
+      };
+    }
+
+    if (crossfadeInMs < 0) {
+      return {
+        gapDurationMs: Math.abs(crossfadeInMs),
+        mode: 'gap' as const,
+        startBeforeEndS: 0.1,
+      };
+    }
+
+    return {
+      crossfadeDurationMs: ShakaPlayer.#GAPLESS_CROSSFADE_MS,
+      mode: 'gapless' as const,
+      startBeforeEndS: ShakaPlayer.#GAPLESS_START_BEFORE_END_S,
+    };
   }
 
   #handleShakaError(e: CustomEvent<shaka.extern.Error>) {
@@ -946,24 +1031,17 @@ export default class ShakaPlayer extends BasePlayer {
     );
   }
 
-  async #startCrossfade() {
-    if (this.#crossfadeInProgress || !this.#preloadedPayload) {
-      return;
-    }
-
-    this.#crossfadeInProgress = true;
-    this.debugLog('Starting gapless crossfade');
+  async #startCrossfadeTransition(durationMs: number) {
+    this.debugLog(`Starting crossfade transition (${durationMs}ms)`);
 
     const currentMediaElement = this.getActiveMediaElement();
     const nextMediaElement = this.getInactiveMediaElement();
-    const nextPayload = this.#preloadedPayload;
+    const nextPayload = this.#preloadedPayload!;
 
-    // Declare volume variables outside try block so they're available in performCrossfade
     let currentTrackVolume: number;
     let nextTrackTargetVolume: number;
 
     try {
-      // Capture starting volumes (respecting loudness normalization and user settings)
       currentTrackVolume = currentMediaElement.volume;
       nextTrackTargetVolume = this.adjustedVolume(nextPayload.streamInfo);
 
@@ -971,29 +1049,22 @@ export default class ShakaPlayer extends BasePlayer {
         `Crossfade volumes: current=${currentTrackVolume.toFixed(2)}, next target=${nextTrackTargetVolume.toFixed(2)}`,
       );
 
-      // Ensure next media element is at position 0
       nextMediaElement.currentTime = 0;
-
-      // Start playing the second track NOW (at volume 0)
+      nextMediaElement.volume = 0;
       await nextMediaElement.play();
-      this.debugLog('Second track started playing for crossfade');
+      this.debugLog('Next track started playing for crossfade');
     } catch (error) {
-      this.debugLog('Error while starting gapless crossfade', error);
-
-      // Clean up state to allow future crossfade attempts
+      this.debugLog('Error while starting crossfade', error);
       try {
         nextMediaElement.pause();
       } catch {
         // Ignore secondary errors during cleanup
       }
-
       if (this.#crossfadeAnimationId != null) {
         cancelAnimationFrame(this.#crossfadeAnimationId);
         this.#crossfadeAnimationId = null;
       }
-
       this.#crossfadeInProgress = false;
-      // Don't clear #preloadedPayload here - it can be retried or used for explicit skip
       return;
     }
 
@@ -1001,100 +1072,74 @@ export default class ShakaPlayer extends BasePlayer {
 
     const performCrossfade = () => {
       const elapsed = performance.now() - startTime;
-      const progress = Math.min(elapsed / this.#CROSSFADE_DURATION_MS, 1.0);
+      const progress = Math.min(elapsed / durationMs, 1.0);
 
       // Equal-power crossfade curve for constant perceived loudness
       const fadeOutCurve = Math.cos((progress * Math.PI) / 2);
       const fadeInCurve = Math.sin((progress * Math.PI) / 2);
 
-      // Scale the curves to actual volume levels (respecting loudness normalization)
       currentMediaElement.volume = currentTrackVolume * fadeOutCurve;
       nextMediaElement.volume = nextTrackTargetVolume * fadeInCurve;
 
       if (progress < 1.0) {
         this.#crossfadeAnimationId = requestAnimationFrame(performCrossfade);
       } else {
-        // Crossfade complete
         this.debugLog('Crossfade complete - swapping active player');
-
-        // Don't pause old player - let it naturally reach the end and fire 'ended' event
-        // Keep volume at 0 to avoid distortion (volume will be reset when this player is reused)
-
-        // Swap active player
-        this.#activePlayer = this.#activePlayer === 1 ? 2 : 1;
-
-        // CRITICAL: Reset currentTime IMMEDIATELY after swapping active player
-        // This must happen before ANY other operations to prevent race conditions where:
-        // 1. this.mediaElement (getter) now returns the NEW media element
-        // 2. But this.currentTime still has the OLD track's position
-        // 3. Events fire (buffering, playing, etc.) → trigger playbackState changes
-        // 4. App receives PlaybackStateChange → calls getAssetPosition() → gets wrong time!
-        this.currentTime = nextMediaElement.currentTime;
-
-        // Update streaming session ID for correct duration lookup
-        this.currentStreamingSessionId =
-          nextPayload.streamInfo.streamingSessionId;
-        this.preloadedStreamingSessionId = undefined;
-        this.startAssetPosition = 0;
-
-        // Get duration from the now-active media element
-        const duration =
-          nextMediaElement.duration || nextPayload.streamInfo.duration || 0;
-
-        // Compose playback context for the new track
-        const playbackContext = composePlaybackContext({
-          assetPosition: 0,
-          duration,
-          playbackInfo: nextPayload.playbackInfo,
-          streamInfo: nextPayload.streamInfo,
-        });
-
-        // Save media product transition
-        streamingSessionStore.saveMediaProductTransition(
-          nextPayload.streamInfo.streamingSessionId,
-          {
-            mediaProduct: nextPayload.mediaProduct,
-            playbackContext,
-          },
-        );
-
-        this.debugLog('Media product transition saved for gapless track');
-
-        // Dispatch media product transition event
-        events.dispatchEvent(
-          mediaProductTransitionEvent(
-            nextPayload.mediaProduct,
-            playbackContext,
-          ),
-        );
-
-        // For gapless: Set the ideal start timestamp mark before calling mediaProductStarted
-        // Normally this would be set by #mediaProductEnded, but with gapless the crossfade
-        // happens before the first track ends
-        performance.mark(
-          'streaming_metrics:playback_statistics:idealStartTimestamp',
-          {
-            detail: nextPayload.streamInfo.streamingSessionId,
-            startTime: trueTime.now(),
-          },
-        );
-
-        // Mark the new track as started for analytics/reporting
-        this.mediaProductStarted(nextPayload.streamInfo.streamingSessionId);
-
-        this.debugLog(
-          'Gapless transition complete! Active player is now:',
-          this.#activePlayer,
-        );
-
-        // Clear preloaded payload
-        this.#preloadedPayload = null;
-        this.#crossfadeInProgress = false;
-        this.#crossfadeAnimationId = null;
+        this.#completeTransition(nextMediaElement, nextPayload);
       }
     };
 
     this.#crossfadeAnimationId = requestAnimationFrame(performCrossfade);
+  }
+
+  async #startGapTransition(gapDurationMs: number) {
+    this.debugLog(`Starting gap transition (${gapDurationMs}ms silence)`);
+
+    const currentMediaElement = this.getActiveMediaElement();
+    const nextMediaElement = this.getInactiveMediaElement();
+    const nextPayload = this.#preloadedPayload!;
+    const nextTrackTargetVolume = this.adjustedVolume(nextPayload.streamInfo);
+
+    currentMediaElement.pause();
+    currentMediaElement.volume = 0;
+
+    await new Promise<void>(resolve => {
+      this.#gapResolve = resolve;
+      this.#gapTimeoutId = setTimeout(resolve, gapDurationMs);
+    });
+    this.#gapResolve = undefined;
+
+    if (!this.#crossfadeInProgress) {
+      return;
+    }
+
+    try {
+      nextMediaElement.currentTime = 0;
+      nextMediaElement.volume = nextTrackTargetVolume;
+      await nextMediaElement.play();
+    } catch (error) {
+      this.debugLog('Error starting next track in gap mode', error);
+      this.#crossfadeInProgress = false;
+      return;
+    }
+
+    this.debugLog('Gap complete - swapping active player');
+    this.#completeTransition(nextMediaElement, nextPayload);
+  }
+
+  async #startTransition() {
+    if (this.#crossfadeInProgress || !this.#preloadedPayload) {
+      return;
+    }
+
+    const config = this.#getTransitionConfig();
+    this.#crossfadeInProgress = true;
+
+    if (config.mode === 'gap') {
+      await this.#startGapTransition(config.gapDurationMs);
+    } else {
+      await this.#startCrossfadeTransition(config.crossfadeDurationMs);
+    }
   }
 
   // Dual player helper methods
@@ -1152,13 +1197,19 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
-    // Cancel any in-progress crossfade
+    // Cancel any in-progress transition
     if (this.#crossfadeInProgress) {
       if (this.#crossfadeAnimationId != null) {
         cancelAnimationFrame(this.#crossfadeAnimationId);
       }
+      if (this.#gapTimeoutId != null) {
+        clearTimeout(this.#gapTimeoutId);
+        this.#gapResolve?.();
+      }
       this.#crossfadeInProgress = false;
       this.#crossfadeAnimationId = null;
+      this.#gapTimeoutId = undefined;
+      this.#gapResolve = undefined;
     }
 
     // Clear preloaded payload if loading a new track
@@ -1361,29 +1412,20 @@ export default class ShakaPlayer extends BasePlayer {
 
   async playbackEngineEndedHandler(e: EndedEvent) {
     if (this.isActivePlayer) {
-      const { mediaProduct, reason } = e.detail;
+      const { reason } = e.detail;
 
       if (reason === 'completed') {
-        // In gapless mode, the ended event for the previous track fires AFTER
-        // crossfade has already transitioned to the next track. Guard against
-        // handling stale ended events that don't correspond to the currently
-        // active media product.
-        if (mediaProduct !== this.currentMediaProduct) {
-          this.debugLog(
-            'Ignoring ended event for non-active media product (already handled by crossfade)',
-          );
-          return;
-        }
-
         // With dual player crossfade, the transition should already be complete
-        // by the time the 'ended' event fires
-        this.debugLog('Track ended - crossfade should have handled transition');
+        // by the time the 'ended' event fires. Note: in gapless mode, the
+        // 'ended' custom event is suppressed entirely (isGaplessTransition=true
+        // in #mediaProductEnded), so this handler only runs for non-gapless endings.
+        this.debugLog('Track ended - checking for next item');
 
         // Check if we have next track loaded but crossfade didn't trigger
         // (edge case: very short track, or seeking to end)
         if (this.#preloadedPayload && !this.#crossfadeInProgress) {
-          this.debugLog('Crossfade missed - triggering now');
-          await this.#startCrossfade();
+          this.debugLog('Transition missed - triggering now');
+          await this.#startTransition();
         } else if (this.hasNextItem()) {
           // Fallback for non-gapless next item
           await this.skipToPreloadedMediaProduct();
@@ -1435,13 +1477,19 @@ export default class ShakaPlayer extends BasePlayer {
       this.#preloadedPayload = null;
     }
 
-    // Cancel any in-progress crossfade
+    // Cancel any in-progress transition
     if (this.#crossfadeInProgress) {
       if (this.#crossfadeAnimationId != null) {
         cancelAnimationFrame(this.#crossfadeAnimationId);
       }
+      if (this.#gapTimeoutId != null) {
+        clearTimeout(this.#gapTimeoutId);
+        this.#gapResolve?.();
+      }
       this.#crossfadeInProgress = false;
       this.#crossfadeAnimationId = null;
+      this.#gapTimeoutId = undefined;
+      this.#gapResolve = undefined;
     }
 
     this.#isReset = true;

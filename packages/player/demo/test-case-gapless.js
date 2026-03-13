@@ -49,6 +49,24 @@ async function run() {
     updateStatus('Logging in...');
     await login();
 
+    // Apply transition mode from URL param (for Cypress) or dropdown
+    const transitionSelect = document.getElementById('transitionMode');
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlMode = urlParams.get('crossfadeInMs');
+    if (urlMode !== null) {
+      transitionSelect.value = urlMode;
+    }
+    const crossfadeInMs = Number(transitionSelect.value);
+    Player.setTransitionMode(crossfadeInMs);
+
+    const modeLabel =
+      crossfadeInMs > 0
+        ? `Crossfade ${crossfadeInMs}ms`
+        : crossfadeInMs < 0
+          ? `Gap ${Math.abs(crossfadeInMs)}ms`
+          : 'Gapless';
+    print(`Transition mode: ${modeLabel} (crossfadeInMs=${crossfadeInMs})`);
+
     updateStatus('Setting up player events...');
 
     // Listen to player events
@@ -126,10 +144,8 @@ async function run() {
       // Set the next track when preload is requested
       Player.setNext(TRACK_2)
         .then(() => {
-          print(
-            '✓ Next track loaded and playing silently in background (volume=0)',
-          );
-          print('✓ Ready for gapless crossfade at 0.2s before track end');
+          print('✓ Next track loaded into inactive player');
+          print(`✓ Ready for transition (mode: ${modeLabel})`);
         })
         .catch(console.error);
     });
@@ -176,10 +192,9 @@ async function run() {
           print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
           print('Summary:');
           print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-          print('- Dual audio element crossfade implemented');
-          print('- Crossfade duration: 25ms (equal-power curve)');
-          print('- Crossfade starts: 0.2s before track end');
-          print('- Second track pre-loaded and playing silently');
+          print(`- Mode: ${modeLabel}`);
+          print('- Dual audio element transition');
+          print('- Second track pre-loaded into inactive player');
           if (gapMeasurement !== null) {
             if (gapMeasurement < 0) {
               print(
@@ -194,13 +209,32 @@ async function run() {
           await Player.reset();
           clearInterval(intervalId);
           updateStatus('Test complete - Gapless crossfade verified! ✓');
+          reenableStartBtn();
         })();
       }
     });
   } catch (error) {
     console.error('Test failed:', error);
     updateStatus('Error: ' + error.message);
+    reenableStartBtn();
   }
 }
 
-run();
+function reenableStartBtn() {
+  const btn = document.getElementById('startBtn');
+  if (btn) {
+    btn.disabled = false;
+  }
+}
+
+// Auto-run when URL param is set (Cypress tests), otherwise wait for Play button
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.has('crossfadeInMs')) {
+  run();
+} else {
+  const startBtn = document.getElementById('startBtn');
+  startBtn.addEventListener('click', () => {
+    startBtn.disabled = true;
+    run();
+  });
+}
