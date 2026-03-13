@@ -13,6 +13,10 @@ Player.events.addEventListener('media-product-transition', () => {
   );
 });
 
+Player.events.addEventListener('preload-request', () => {
+  document.dispatchEvent(new CustomEvent('player-sdk:preload-request'));
+});
+
 export const waitFor = ms => new Promise(r => setTimeout(r, ms));
 
 export async function login() {
