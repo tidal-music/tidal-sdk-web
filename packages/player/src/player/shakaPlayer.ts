@@ -312,10 +312,25 @@ export default class ShakaPlayer extends BasePlayer {
         const isCurrentSession =
           this.currentStreamingSessionId === sessionIdToFinish;
 
-        if (isCurrentSession) {
-          // Ending the currently active session - finishCurrentMediaProduct
-          // will handle playback state correctly
+        // If a crossfade/gap transition is in progress, the track ending is expected
+        // and the transition will complete on its own. Treat as gapless to prevent
+        // the custom 'ended' event from triggering playbackEngineEndedHandler's
+        // fallback path (skipToPreloadedMediaProduct), which would race with the
+        // in-flight transition and cause a duplicate media-product-transition.
+        const treatAsGapless = !isCurrentSession || this.#crossfadeInProgress;
+
+        if (!treatAsGapless) {
           this.finishCurrentMediaProduct('completed');
+        } else if (isCurrentSession) {
+          // Crossfade in progress: the track ended before crossfade completed.
+          // Use the gapless path to avoid dispatching the custom 'ended' event.
+          const savedPlaybackState = this.playbackState;
+          const savedCurrentSessionId = this.currentStreamingSessionId;
+
+          this.finishCurrentMediaProduct('completed', true);
+
+          this.currentStreamingSessionId = savedCurrentSessionId;
+          this.playbackState = savedPlaybackState;
         } else {
           // Gapless case: Track has already been replaced by another track
           // that's actively playing. Finish the session without mutating
