@@ -103,8 +103,8 @@ export default class ShakaPlayer extends BasePlayer {
 
   #activePlayer: 1 | 2 = 1;
 
-  #crossfadeAnimationId: number | null = null;
   #crossfadeInProgress = false;
+  #crossfadeTimerId: ReturnType<typeof setTimeout> | null = null;
   #gapResolve: (() => void) | undefined = undefined;
   #gapTimeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
 
@@ -130,6 +130,7 @@ export default class ShakaPlayer extends BasePlayer {
 
   #playerTwoSessionId: string | undefined;
 
+  #preloadReady = false;
   #preloadedPayload: LoadPayload | null = null;
   #shakaEventHandlers: {
     bufferingHandler: EventListener;
@@ -260,7 +261,7 @@ export default class ShakaPlayer extends BasePlayer {
       }
 
       // Track transition logic (crossfade / gapless / gap)
-      if (isActiveElement && this.#preloadedPayload) {
+      if (isActiveElement && this.#preloadedPayload && this.#preloadReady) {
         const timeRemaining = mediaElement.duration - mediaElement.currentTime;
         const { startBeforeEndS } = this.#getTransitionConfig();
 
@@ -456,9 +457,10 @@ export default class ShakaPlayer extends BasePlayer {
       this.#activePlayer,
     );
 
+    this.#preloadReady = false;
     this.#preloadedPayload = null;
     this.#crossfadeInProgress = false;
-    this.#crossfadeAnimationId = null;
+    this.#crossfadeTimerId = null;
     this.#gapResolve = undefined;
     this.#gapTimeoutId = undefined;
   }
@@ -1075,15 +1077,16 @@ export default class ShakaPlayer extends BasePlayer {
       } catch {
         // Ignore secondary errors during cleanup
       }
-      if (this.#crossfadeAnimationId != null) {
-        cancelAnimationFrame(this.#crossfadeAnimationId);
-        this.#crossfadeAnimationId = null;
+      if (this.#crossfadeTimerId != null) {
+        clearTimeout(this.#crossfadeTimerId);
+        this.#crossfadeTimerId = null;
       }
       this.#crossfadeInProgress = false;
       return;
     }
 
     const startTime = performance.now();
+    const stepMs = Math.min(durationMs, 16);
 
     const performCrossfade = () => {
       const elapsed = performance.now() - startTime;
@@ -1097,14 +1100,14 @@ export default class ShakaPlayer extends BasePlayer {
       nextMediaElement.volume = nextTrackTargetVolume * fadeInCurve;
 
       if (progress < 1.0) {
-        this.#crossfadeAnimationId = requestAnimationFrame(performCrossfade);
+        this.#crossfadeTimerId = setTimeout(performCrossfade, stepMs);
       } else {
         this.debugLog('Crossfade complete - swapping active player');
         this.#completeTransition(nextMediaElement, nextPayload);
       }
     };
 
-    this.#crossfadeAnimationId = requestAnimationFrame(performCrossfade);
+    this.#crossfadeTimerId = setTimeout(performCrossfade, stepMs);
   }
 
   async #startGapTransition(gapDurationMs: number) {
@@ -1143,7 +1146,11 @@ export default class ShakaPlayer extends BasePlayer {
   }
 
   async #startTransition() {
-    if (this.#crossfadeInProgress || !this.#preloadedPayload) {
+    if (
+      this.#crossfadeInProgress ||
+      !this.#preloadedPayload ||
+      !this.#preloadReady
+    ) {
       return;
     }
 
@@ -1214,20 +1221,21 @@ export default class ShakaPlayer extends BasePlayer {
 
     // Cancel any in-progress transition
     if (this.#crossfadeInProgress) {
-      if (this.#crossfadeAnimationId != null) {
-        cancelAnimationFrame(this.#crossfadeAnimationId);
+      if (this.#crossfadeTimerId != null) {
+        clearTimeout(this.#crossfadeTimerId);
       }
       if (this.#gapTimeoutId != null) {
         clearTimeout(this.#gapTimeoutId);
         this.#gapResolve?.();
       }
       this.#crossfadeInProgress = false;
-      this.#crossfadeAnimationId = null;
+      this.#crossfadeTimerId = null;
       this.#gapTimeoutId = undefined;
       this.#gapResolve = undefined;
     }
 
     // Clear preloaded payload if loading a new track
+    this.#preloadReady = false;
     this.#preloadedPayload = null;
 
     // Pause and reset inactive player
@@ -1260,7 +1268,8 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
-    // Store preloaded payload for crossfade
+    // Store preloaded payload for crossfade (but not yet ready for transition)
+    this.#preloadReady = false;
     this.#preloadedPayload = payload;
 
     // Set preloaded session ID BEFORE loading to handle adaptation events
@@ -1355,11 +1364,13 @@ export default class ShakaPlayer extends BasePlayer {
 
       this.debugLog('Media product transition saved for next track');
 
+      this.#preloadReady = true;
       this.#isReset = false;
     } catch (error) {
       console.error('Failed to load next track:', error);
 
       // Clear all preload state to maintain consistency
+      this.#preloadReady = false;
       this.#preloadedPayload = null;
       this.preloadedStreamingSessionId = undefined;
 
@@ -1438,7 +1449,11 @@ export default class ShakaPlayer extends BasePlayer {
 
         // Check if we have next track loaded but crossfade didn't trigger
         // (edge case: very short track, or seeking to end)
-        if (this.#preloadedPayload && !this.#crossfadeInProgress) {
+        if (
+          this.#preloadedPayload &&
+          this.#preloadReady &&
+          !this.#crossfadeInProgress
+        ) {
           this.debugLog('Transition missed - triggering now');
           await this.#startTransition();
         } else if (this.hasNextItem()) {
@@ -1489,20 +1504,21 @@ export default class ShakaPlayer extends BasePlayer {
 
     if (!keepPreload) {
       this.preloadedStreamingSessionId = undefined;
+      this.#preloadReady = false;
       this.#preloadedPayload = null;
     }
 
     // Cancel any in-progress transition
     if (this.#crossfadeInProgress) {
-      if (this.#crossfadeAnimationId != null) {
-        cancelAnimationFrame(this.#crossfadeAnimationId);
+      if (this.#crossfadeTimerId != null) {
+        clearTimeout(this.#crossfadeTimerId);
       }
       if (this.#gapTimeoutId != null) {
         clearTimeout(this.#gapTimeoutId);
         this.#gapResolve?.();
       }
       this.#crossfadeInProgress = false;
-      this.#crossfadeAnimationId = null;
+      this.#crossfadeTimerId = null;
       this.#gapTimeoutId = undefined;
       this.#gapResolve = undefined;
     }
