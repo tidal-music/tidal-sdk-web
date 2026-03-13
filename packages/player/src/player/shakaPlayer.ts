@@ -1035,6 +1035,7 @@ export default class ShakaPlayer extends BasePlayer {
         this.currentStreamingSessionId =
           nextPayload.streamInfo.streamingSessionId;
         this.preloadedStreamingSessionId = undefined;
+        this.startAssetPosition = 0;
 
         // Get duration from the now-active media element
         const duration =
