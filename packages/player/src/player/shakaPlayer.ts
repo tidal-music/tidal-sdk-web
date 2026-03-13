@@ -787,21 +787,10 @@ export default class ShakaPlayer extends BasePlayer {
       );
     }
 
-    shakaInstance
-      .load(assetUriOrPreloader, assetPosition)
-      .then(() => {
-        this.debugLog('Load completed successfully');
-      })
-      .catch((e: shaka.extern.Error) => {
-        console.error('Load failed:', e);
-        this.#handleShakaError(
-          new CustomEvent<shaka.extern.Error>('shaka-error', { detail: e }),
-        );
-      });
-
-    // If we didn't have a saved transition, wait for actual duration and update
+    // Set up durationchange listener BEFORE load() to avoid missing the event
+    let durationChangePromise: Promise<number> | undefined;
     if (!hasSavedTransition) {
-      const duration = await new Promise<number>(resolve =>
+      durationChangePromise = new Promise<number>(resolve =>
         mediaElement.addEventListener(
           'durationchange',
           e => {
@@ -812,8 +801,23 @@ export default class ShakaPlayer extends BasePlayer {
           { once: true },
         ),
       );
+    }
 
-      // Update with actual duration
+    try {
+      await shakaInstance.load(assetUriOrPreloader, assetPosition);
+      this.debugLog('Load completed successfully');
+    } catch (e) {
+      const error = e as shaka.extern.Error;
+      console.error('Load failed:', error);
+      this.#handleShakaError(
+        new CustomEvent<shaka.extern.Error>('shaka-error', { detail: error }),
+      );
+      return;
+    }
+
+    if (durationChangePromise) {
+      const duration = await durationChangePromise;
+
       playbackContext = composePlaybackContext({
         assetPosition,
         duration,
