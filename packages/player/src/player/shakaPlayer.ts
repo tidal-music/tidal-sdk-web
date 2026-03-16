@@ -1067,7 +1067,11 @@ export default class ShakaPlayer extends BasePlayer {
       );
 
       nextMediaElement.currentTime = 0;
-      nextMediaElement.volume = 0;
+      // Use a tiny non-zero volume so Chrome allows background playback.
+      // Chrome suspends background media elements with volume=0 ("video-only
+      // background media was paused to save power"). The crossfade animation
+      // takes over on the first tick.
+      nextMediaElement.volume = 0.001;
       await nextMediaElement.play();
       this.debugLog('Next track started playing for crossfade');
     } catch (error) {
