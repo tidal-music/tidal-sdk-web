@@ -424,8 +424,10 @@ export default class ShakaPlayer extends BasePlayer {
     const duration =
       nextMediaElement.duration ?? nextPayload.streamInfo.duration ?? 0;
 
+    const assetPosition = nextMediaElement.currentTime;
+
     const playbackContext = composePlaybackContext({
-      assetPosition: 0,
+      assetPosition,
       duration,
       playbackInfo: nextPayload.playbackInfo,
       streamInfo: nextPayload.streamInfo,
