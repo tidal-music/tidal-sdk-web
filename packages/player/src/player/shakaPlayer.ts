@@ -550,7 +550,7 @@ export default class ShakaPlayer extends BasePlayer {
     }
   }
 
-  async #createShakaPlayer(mediaEl: HTMLMediaElement) {
+  async #createShakaPlayer(mediaEl: HTMLMediaElement, playerNumber: 1 | 2) {
     this.debugLog('createShakaPlayer', mediaEl);
 
     const player = new shaka.Player();
@@ -558,10 +558,14 @@ export default class ShakaPlayer extends BasePlayer {
     await player.attach(mediaEl);
 
     registerStalls(mediaEl);
-    registerAdaptations(player, () => ({
-      current: this.currentStreamingSessionId,
-      preloaded: this.preloadedStreamingSessionId,
-    }));
+    registerAdaptations(
+      player,
+      () =>
+        playerNumber === 1
+          ? this.#playerOneSessionId
+          : this.#playerTwoSessionId,
+      () => this.#activePlayer === playerNumber,
+    );
 
     const isFairPlaySupported = await shaka.drm.FairPlay.isFairPlaySupported();
 
@@ -957,8 +961,8 @@ export default class ShakaPlayer extends BasePlayer {
 
     // Initialize both Shaka players for gapless playback
     // DRM and all events are configured automatically inside #createShakaPlayer()
-    this.#shakaInstanceOne = await this.#createShakaPlayer(mediaElementOne);
-    this.#shakaInstanceTwo = await this.#createShakaPlayer(mediaElementTwo);
+    this.#shakaInstanceOne = await this.#createShakaPlayer(mediaElementOne, 1);
+    this.#shakaInstanceTwo = await this.#createShakaPlayer(mediaElementTwo, 2);
 
     // Set volume to 0 for inactive player
     mediaElementTwo.volume = 0;

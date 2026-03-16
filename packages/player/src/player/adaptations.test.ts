@@ -108,7 +108,6 @@ describe('registerAdaptations', () => {
           listeners[event] = listeners[event].filter(h => h !== handler);
         }
       },
-      // Helper to trigger events for testing
       triggerEvent: (eventName: string, eventData?: Partial<Event>) => {
         const event = new Event(eventName);
         if (eventData) {
@@ -123,32 +122,20 @@ describe('registerAdaptations', () => {
     streamingSessionStore.deleteSession(testSessionId);
   });
 
-  it('dispatches playback-quality-changed event on adaptation event', done => {
+  it('dispatches playback-quality-changed event when player is active', done => {
     const mockPlayer = createMockShakaPlayer();
 
-    // Setup: save a media product transition
     streamingSessionStore.saveMediaProductTransition(testSessionId, {
       mediaProduct: testMediaProduct,
       playbackContext: testPlaybackContext,
     });
 
-    // Register adaptations
     const unregister = registerAdaptations(
       mockPlayer as unknown as shaka.Player,
-      () => ({ current: undefined, preloaded: undefined }),
+      () => testSessionId,
+      () => true,
     );
 
-    // Simulate media-product-transition to set the currentStreamingSessionId
-    events.dispatchEvent(
-      new CustomEvent('media-product-transition', {
-        detail: {
-          mediaProduct: testMediaProduct,
-          playbackContext: testPlaybackContext,
-        },
-      }),
-    );
-
-    // Listen for the playback-quality-changed event
     const handler = (e: Event) => {
       events.removeEventListener('playback-quality-changed', handler);
       const customEvent = e as CustomEvent<PlaybackQualityChangedPayload>;
@@ -165,9 +152,8 @@ describe('registerAdaptations', () => {
 
     events.addEventListener('playback-quality-changed', handler);
 
-    // Trigger adaptation event with only allowed properties (conform to type Partial<Event>)
     mockPlayer.triggerEvent('adaptation', {
-      // @ts-expect-error: newTrack is not actually part of shaka.util.FakeEvent but we need to simulate it for testing purposes
+      // @ts-expect-error: newTrack is not part of shaka.util.FakeEvent
       newTrack: {
         active: true,
         audioCodec: 'flac',
@@ -178,34 +164,29 @@ describe('registerAdaptations', () => {
     });
   });
 
-  it('updates streaming session store on adaptation event', () => {
+  it('does NOT dispatch playback-quality-changed when player is inactive (preloading)', () => {
     const mockPlayer = createMockShakaPlayer();
+    let qualityChangeFired = false;
 
-    // Setup: save a media product transition
     streamingSessionStore.saveMediaProductTransition(testSessionId, {
       mediaProduct: testMediaProduct,
       playbackContext: testPlaybackContext,
     });
 
-    // Register adaptations
     const unregister = registerAdaptations(
       mockPlayer as unknown as shaka.Player,
-      () => ({ current: undefined, preloaded: undefined }),
+      () => testSessionId,
+      () => false,
     );
 
-    // Simulate media-product-transition to set the currentStreamingSessionId
-    events.dispatchEvent(
-      new CustomEvent('media-product-transition', {
-        detail: {
-          mediaProduct: testMediaProduct,
-          playbackContext: testPlaybackContext,
-        },
-      }),
-    );
+    const handler = () => {
+      qualityChangeFired = true;
+    };
 
-    // Trigger adaptation event with only allowed properties (conform to type Partial<Event>)
+    events.addEventListener('playback-quality-changed', handler);
+
     mockPlayer.triggerEvent('adaptation', {
-      // @ts-expect-error: newTrack is not actually part of shaka.util.FakeEvent but we need to simulate it for testing purposes
+      // @ts-expect-error: newTrack is not part of shaka.util.FakeEvent
       newTrack: {
         active: true,
         audioCodec: 'flac',
@@ -215,7 +196,37 @@ describe('registerAdaptations', () => {
       } as shaka.extern.Track,
     });
 
-    // Verify store was updated
+    events.removeEventListener('playback-quality-changed', handler);
+    expect(qualityChangeFired).to.equal(false);
+
+    unregister();
+  });
+
+  it('updates streaming session store on adaptation event for active player', () => {
+    const mockPlayer = createMockShakaPlayer();
+
+    streamingSessionStore.saveMediaProductTransition(testSessionId, {
+      mediaProduct: testMediaProduct,
+      playbackContext: testPlaybackContext,
+    });
+
+    const unregister = registerAdaptations(
+      mockPlayer as unknown as shaka.Player,
+      () => testSessionId,
+      () => true,
+    );
+
+    mockPlayer.triggerEvent('adaptation', {
+      // @ts-expect-error: newTrack is not part of shaka.util.FakeEvent
+      newTrack: {
+        active: true,
+        audioCodec: 'flac',
+        audioSamplingRate: 96000,
+        bandwidth: 2000000,
+        originalAudioId: 'FLAC,96000,24',
+      } as shaka.extern.Track,
+    });
+
     const updated =
       streamingSessionStore.getMediaProductTransition(testSessionId);
     expect(updated).to.not.equal(undefined);
@@ -232,10 +243,10 @@ describe('registerAdaptations', () => {
 
     const unregister = registerAdaptations(
       mockPlayer as unknown as shaka.Player,
-      () => ({ current: undefined, preloaded: undefined }),
+      () => undefined,
+      () => true,
     );
 
-    // Unregister should be a function and complete without error
     expect(unregister).to.be.a('function');
     unregister();
   });

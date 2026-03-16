@@ -1,7 +1,5 @@
 import type shaka from 'shaka-player';
 
-import type { MediaProductTransition } from '../api/event/media-product-transition';
-import { events } from '../event-bus';
 import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
 import type { Adaptation } from '../internal/event-tracking/streaming-metrics/playback-statistics';
 import { updatePlaybackQuality } from '../internal/helpers/update-playback-quality';
@@ -48,39 +46,38 @@ export async function saveAdaptation(
 
 export function registerAdaptations(
   shakaPlayer: shaka.Player,
-  getSessionIds: () => {
-    current: string | undefined;
-    preloaded: string | undefined;
-  },
+  getOwnSessionId: () => string | undefined,
+  isActivePlayer: () => boolean,
 ) {
-  let currentStreamingSessionId: string | null;
-
   const onManualOrAutomaticQualityChange = () => {
+    if (!isActivePlayer()) {
+      return;
+    }
+
     const activeTrack: shaka.extern.Track = shakaPlayer
       .getVariantTracks()
       .find(v => v.active)!;
 
     const mediaElement = shakaPlayer.getMediaElement();
+    const sessionId = getOwnSessionId();
 
-    if (currentStreamingSessionId && mediaElement) {
-      saveAdaptation(
-        currentStreamingSessionId,
-        activeTrack,
-        mediaElement.currentTime,
-      ).catch(console.error);
+    if (sessionId && mediaElement) {
+      saveAdaptation(sessionId, activeTrack, mediaElement.currentTime).catch(
+        console.error,
+      );
     }
   };
 
   const onAutomaticQualityChange = (ev: Event) => {
     onManualOrAutomaticQualityChange();
-    // Shaka uses FakeEvent which sets properties directly on the event, not in detail
+
+    if (!isActivePlayer()) {
+      return;
+    }
+
     const shakaTrack = (ev as Event & { newTrack: shaka.extern.Track })
       .newTrack;
-
-    // For dual-player gapless: try both current and preloaded session IDs
-    const sessionIds = getSessionIds();
-    const sessionId =
-      currentStreamingSessionId ?? sessionIds.current ?? sessionIds.preloaded;
+    const sessionId = getOwnSessionId();
 
     if (sessionId) {
       updatePlaybackQuality(sessionId, shakaTrack);
@@ -96,25 +93,11 @@ export function registerAdaptations(
     onManualOrAutomaticQualityChange,
   );
 
-  const onMediaProductTransition: EventListener = e => {
-    if (e instanceof CustomEvent) {
-      const data = (e as MediaProductTransition).detail;
-
-      currentStreamingSessionId = data.playbackContext.playbackSessionId;
-    }
-  };
-
-  events.addEventListener('media-product-transition', onMediaProductTransition);
-
   return function unregister() {
     shakaPlayer.removeEventListener('adaptation', onAutomaticQualityChange);
     shakaPlayer.removeEventListener(
       'variantchanged',
       onManualOrAutomaticQualityChange,
-    );
-    events.removeEventListener(
-      'media-product-transition',
-      onMediaProductTransition,
     );
   };
 }
