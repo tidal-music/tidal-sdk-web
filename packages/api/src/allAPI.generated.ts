@@ -14508,6 +14508,62 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/userDataExportRequests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create single userDataExportRequest.
+         * @description Creates a new userDataExportRequest.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserDataExportRequestsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserDataExportRequests_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/userRecommendations/{id}": {
         parameters: {
             query?: never;
@@ -17305,7 +17361,7 @@ export interface components {
                 status: string;
             }[];
         };
-        Included: (components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -20097,6 +20153,48 @@ export interface components {
         UserCollections_Videos_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+        };
+        UserDataExportRequestsCreateOperation_Payload: {
+            data: components["schemas"]["UserDataExportRequestsCreateOperation_Payload_Data"];
+        };
+        UserDataExportRequestsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["UserDataExportRequestsCreateOperation_Payload_Data_Attributes"];
+            /** @enum {string} */
+            type: "userDataExportRequests";
+        };
+        UserDataExportRequestsCreateOperation_Payload_Data_Attributes: {
+            /** @enum {string} */
+            flowType: "GDPR" | "CCPA" | "COPPA" | "ANZ_PA" | "US_PRIVACY_REGULATION" | "APPI" | "RETENTION_POLICY";
+        };
+        UserDataExportRequests_Attributes: {
+            /**
+             * @description The type of data export flow
+             * @enum {string}
+             */
+            flowType: "GDPR" | "CCPA" | "COPPA" | "ANZ_PA" | "US_PRIVACY_REGULATION" | "APPI" | "RETENTION_POLICY";
+        };
+        UserDataExportRequests_Multi_Resource_Data_Document: {
+            data: components["schemas"]["UserDataExportRequests_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserDataExportRequests_Resource_Object: {
+            attributes?: components["schemas"]["UserDataExportRequests_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "userDataExportRequests";
+        };
+        UserDataExportRequests_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserDataExportRequests_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         UserRecommendations_Attributes: Record<string, never>;
         UserRecommendations_Multi_Relationship_Data_Document: {

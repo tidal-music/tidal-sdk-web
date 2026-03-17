@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.2.3"
+    "version" : "1.3.0"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -152,6 +152,9 @@
   }, {
     "description" : "Deprecated. Use the dedicated collection resources instead: userCollectionAlbums, userCollectionArtists, userCollectionTracks, userCollectionVideos, or userCollectionPlaylists.",
     "name" : "userCollections"
+  }, {
+    "description" : "A request to export a user's personal data collected by Tidal.",
+    "name" : "userDataExportRequests"
   }, {
     "description" : "Personalized content recommendations for a user.",
     "name" : "userRecommendations"
@@ -21188,6 +21191,73 @@
         }
       }
     },
+    "/userDataExportRequests" : {
+      "post" : {
+        "description" : "Creates a new userDataExportRequest.",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UserDataExportRequestsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDataExportRequests_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single userDataExportRequest.",
+        "tags" : [ "userDataExportRequests" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/userRecommendations/{id}" : {
       "get" : {
         "description" : "Retrieves single userRecommendation by id.",
@@ -26716,6 +26786,7 @@
               "userCollectionTracks" : "#/components/schemas/UserCollectionTracks_Resource_Object",
               "userCollectionVideos" : "#/components/schemas/UserCollectionVideos_Resource_Object",
               "userCollections" : "#/components/schemas/UserCollections_Resource_Object",
+              "userDataExportRequests" : "#/components/schemas/UserDataExportRequests_Resource_Object",
               "userRecommendations" : "#/components/schemas/UserRecommendations_Resource_Object",
               "userReports" : "#/components/schemas/UserReports_Resource_Object",
               "users" : "#/components/schemas/Users_Resource_Object",
@@ -26814,6 +26885,8 @@
             "$ref" : "#/components/schemas/UserCollectionVideos_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/UserCollections_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/UserDataExportRequests_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/UserRecommendations_Resource_Object"
           }, {
@@ -33532,6 +33605,102 @@
           "addedAt" : {
             "type" : "string",
             "format" : "date-time"
+          }
+        }
+      },
+      "UserDataExportRequestsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/UserDataExportRequestsCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "UserDataExportRequestsCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/UserDataExportRequestsCreateOperation_Payload_Data_Attributes"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "userDataExportRequests" ]
+          }
+        }
+      },
+      "UserDataExportRequestsCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "flowType" ],
+        "type" : "object",
+        "properties" : {
+          "flowType" : {
+            "type" : "string",
+            "enum" : [ "GDPR", "CCPA", "COPPA", "ANZ_PA", "US_PRIVACY_REGULATION", "APPI", "RETENTION_POLICY" ]
+          }
+        }
+      },
+      "UserDataExportRequests_Attributes" : {
+        "required" : [ "flowType" ],
+        "type" : "object",
+        "properties" : {
+          "flowType" : {
+            "type" : "string",
+            "description" : "The type of data export flow",
+            "enum" : [ "GDPR", "CCPA", "COPPA", "ANZ_PA", "US_PRIVACY_REGULATION", "APPI", "RETENTION_POLICY" ]
+          }
+        }
+      },
+      "UserDataExportRequests_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserDataExportRequests_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserDataExportRequests_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/UserDataExportRequests_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "UserDataExportRequests_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/UserDataExportRequests_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         }
       },
