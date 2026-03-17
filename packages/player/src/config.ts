@@ -8,7 +8,7 @@ type Config = {
    * Controls track transition behavior:
    *  - Positive: crossfade overlap in ms (max 15000)
    *  - Zero: gapless (default)
-   *  - Negative: silence gap in ms (min -3000)
+   *  - Negative: silence gap in ms (min -5000)
    */
   crossfadeInMs: number;
   desiredVolumeLevel: number;

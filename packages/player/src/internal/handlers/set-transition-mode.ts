@@ -1,6 +1,6 @@
 import * as Config from '../../config';
 
-const MIN_CROSSFADE_MS = -3000;
+const MIN_CROSSFADE_MS = -5000;
 const MAX_CROSSFADE_MS = 15000;
 
 /**
@@ -9,7 +9,7 @@ const MAX_CROSSFADE_MS = 15000;
  *  - Zero: gapless (default)
  *  - Negative: silence gap in ms (e.g. -2000 = 2s gap between tracks)
  *
- * Clamped to the range -3000..15000.
+ * Clamped to the range -5000..15000.
  *
  * @param {number} crossfadeInMs
  */
