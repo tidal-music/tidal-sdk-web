@@ -1624,7 +1624,6 @@ export default class ShakaPlayer extends BasePlayer {
       return Promise.reject('Nothing preloaded.');
     }
 
-    // Get the preloaded payload (loaded in inactive player for gapless)
     const payload = this.#preloadedPayload;
 
     if (!payload) {
@@ -1632,40 +1631,30 @@ export default class ShakaPlayer extends BasePlayer {
       return Promise.reject('Preloaded payload not found.');
     }
 
-    const {
-      mediaProduct: mediaProductFromLoadPayload,
-      playbackInfo,
-      streamInfo,
-    } = payload;
-
+    // Pick up any overwriteMediaProduct updates (e.g. new referenceId from
+    // an explicit load that matched the preloaded item).
     const mediaProductTransition =
       streamingSessionStore.getMediaProductTransition(
-        streamInfo.streamingSessionId,
+        this.preloadedStreamingSessionId,
       );
 
-    const mediaProduct =
-      mediaProductTransition?.mediaProduct ?? mediaProductFromLoadPayload;
-
-    this.debugLog(
-      'skipToPreloadedMediaProduct - fallback for non-gapless transition',
-    );
-
-    // Note: With dual player approach, gapless is handled by crossfade
-    // This is a fallback for edge cases
-    {
-      console.warn(
-        'Using fallback skipToPreloadedMediaProduct - crossfade should have handled this',
-      );
-
-      // Fall back to URL load if no PreloadManager
-      return this.#loadAndDispatchMediaProductTransition({
-        assetPosition: 0,
-        assetUriOrPreloader: streamInfo.streamUrl,
-        mediaProduct,
-        playbackInfo,
-        streamInfo,
-      });
+    if (mediaProductTransition) {
+      payload.mediaProduct = mediaProductTransition.mediaProduct;
     }
+
+    const inactiveMediaElement = this.getInactiveMediaElement();
+
+    // Pause the current (active) track and set its volume to 0.
+    const activeMediaElement = this.getActiveMediaElement();
+    activeMediaElement.pause();
+    activeMediaElement.volume = 0;
+
+    // Ensure state allows a subsequent play() call (reset sets IDLE which
+    // causes play() to return early).
+    this.playbackState = 'NOT_PLAYING';
+
+    // Swap to the inactive player which already has the preloaded content.
+    this.#completeTransition(inactiveMediaElement, payload);
   }
 
   togglePlayback() {
