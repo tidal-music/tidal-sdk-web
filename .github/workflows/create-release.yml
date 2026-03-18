@@ -40,6 +40,17 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - uses: ./.github/actions/setup
+    - name: Extract changelog entry
+      run: |
+        if [ -f "${{ env.path }}/CHANGELOG.md" ]; then
+          awk -v ver="${{ env.version }}" '
+            /^## \[/ { if (found) exit; if (index($0, "[" ver "]")) { found=1; getline; next } }
+            found { print }
+          ' "${{ env.path }}/CHANGELOG.md" > release-notes.md
+        fi
+        if [ ! -s release-notes.md ]; then
+          echo "Release ${{ env.tag }}" > release-notes.md
+        fi
     - name: Generate Release Draft
       id: generate-release
       uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1
@@ -47,7 +58,7 @@ jobs:
         tag: ${{ env.tag }}  
         allowUpdates: true
         draft: true
-        body: "This is a release draft for ${{ env.tag }}"
+        bodyFile: release-notes.md
 
     - name: Build And Upload Artifacts To Release
       uses: ./.github/actions/build-module
