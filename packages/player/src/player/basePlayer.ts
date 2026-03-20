@@ -73,12 +73,25 @@ export class BasePlayer {
 
   // Implements
   #maybeDispatchPreloadRequest() {
+    const crossfadeInS = Config.get('crossfadeInMs') / 1000;
+
     if (
       this.duration &&
-      Math.abs(this.#currentTime - this.duration) <= 30 &&
-      // A false check, rather than undefined, ensures a media product transition hs been made.
+      // Check if the current time is within 15 seconds of when next item should start.
+      // (reduced from 30s to 15s to reduce risk of Safari background tab throttling)
+      Math.abs(this.#currentTime - this.duration + crossfadeInS) <= 15 &&
+      // A false check, rather than undefined, ensures a media product transition has been made.
       this.#hasEmittedPreloadRequest === false
     ) {
+      this.debugLog(
+        'maybeDispatchPreloadRequest',
+        {
+          crossfadeInS,
+          currentTime: this.#currentTime,
+          duration: this.duration,
+        },
+        Math.abs(this.#currentTime - this.duration + crossfadeInS),
+      );
       this.#hasEmittedPreloadRequest = true;
       events.dispatchEvent(preloadRequest());
     }
