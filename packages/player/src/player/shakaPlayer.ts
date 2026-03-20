@@ -744,6 +744,10 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
+    const isFromInactivePlayer =
+      e.target instanceof shaka.Player &&
+      e.target !== this.getActiveShakaInstance();
+
     const error = e.detail;
     const errorCode = `S${error.code}` as ErrorCodes;
 
@@ -782,6 +786,23 @@ export default class ShakaPlayer extends BasePlayer {
     const isNetworkError = error.category === shaka.util.Error.Category.NETWORK;
 
     if (error.severity === shaka.util.Error.Severity.CRITICAL) {
+      if (isFromInactivePlayer) {
+        this.debugLog(
+          'Critical error from inactive player, clearing preload:',
+          errorCode,
+        );
+        this.#preloadedPayload = null;
+        this.#preloadReady = false;
+
+        events.dispatchError(
+          new PlayerError(
+            isNetworkError ? 'PENetwork' : 'EUnexpected',
+            errorCode,
+          ),
+        );
+        return;
+      }
+
       this.playbackState = 'STALLED';
 
       if (this.mediaElement) {
