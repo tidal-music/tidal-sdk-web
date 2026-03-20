@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.4.4"
+    "version" : "1.4.5"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -14654,7 +14654,7 @@
       "get" : {
         "description" : "Retrieves multiple terms by available filters, or without if applicable.",
         "parameters" : [ {
-          "description" : "Terms id (e.g. `4gfFC5kRVs84pMJpMq3Y8K`)",
+          "description" : "Terms id (e.g. `a468bee88def`)",
           "in" : "query",
           "name" : "filter[id]",
           "required" : false,
@@ -14741,7 +14741,7 @@
         "description" : "Retrieves single term by id.",
         "parameters" : [ {
           "description" : "Terms id",
-          "example" : "4gfFC5kRVs84pMJpMq3Y8K",
+          "example" : "a468bee88def",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -31553,18 +31553,19 @@
         }
       },
       "Terms_Attributes" : {
-        "required" : [ "contentMarkdown", "termsType", "termsVersion" ],
+        "required" : [ "contentLink", "effectiveAt", "termsType" ],
         "type" : "object",
         "properties" : {
-          "contentMarkdown" : {
-            "type" : "string"
+          "contentLink" : {
+            "$ref" : "#/components/schemas/Link_Object"
+          },
+          "effectiveAt" : {
+            "type" : "string",
+            "format" : "date-time"
           },
           "termsType" : {
             "type" : "string",
             "enum" : [ "DEVELOPER" ]
-          },
-          "termsVersion" : {
-            "type" : "string"
           }
         }
       },

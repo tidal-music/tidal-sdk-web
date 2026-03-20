@@ -10116,7 +10116,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Terms id (e.g. `4gfFC5kRVs84pMJpMq3Y8K`) */
+                    /** @description Terms id (e.g. `a468bee88def`) */
                     "filter[id]"?: string[];
                     /** @description Filter by isLatestVersion */
                     "filter[isLatestVersion]"?: string[];
@@ -10174,7 +10174,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Terms id
-                     * @example 4gfFC5kRVs84pMJpMq3Y8K
+                     * @example a468bee88def
                      */
                     id: string;
                 };
@@ -19567,10 +19567,11 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Terms_Attributes: {
-            contentMarkdown: string;
+            contentLink: components["schemas"]["Link_Object"];
+            /** Format: date-time */
+            effectiveAt: string;
             /** @enum {string} */
             termsType: "DEVELOPER";
-            termsVersion: string;
         };
         Terms_Multi_Resource_Data_Document: {
             data: components["schemas"]["Terms_Resource_Object"][];
