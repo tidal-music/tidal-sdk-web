@@ -221,8 +221,9 @@ describe.sequential('storage', () => {
         'key',
         JSON.stringify({
           clientId: 'new',
-          credentialsStorageKey: 'key',
           scopes: ['READ'],
+          // eslint-disable-next-line perfectionist/sort-objects
+          credentialsStorageKey: 'key',
         }),
       );
     });
