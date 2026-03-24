@@ -1,7 +1,7 @@
 import { TidalError } from '@tidal-music/common';
 
 import { authErrorCodeMap } from '../errors';
-import type { UserCredentials } from '../types';
+import type { StorageAdapter, UserCredentials } from '../types';
 
 import { database } from './database';
 import {
@@ -13,6 +13,14 @@ import {
   unwrapCryptoKey,
   wrapCryptoKey,
 } from './storageUtils';
+
+let customStorage: StorageAdapter | undefined;
+
+export const setStorageAdapter = (adapter: StorageAdapter) => {
+  customStorage = adapter;
+};
+
+// ── Encrypted-localStorage path (default, web) ──
 
 const handleNewCryptoKey = async ({
   password,
@@ -48,7 +56,7 @@ const getStorageItems = (credentialsStorageKey: string) => {
   };
 };
 
-export const loadCredentials = async (credentialsStorageKey: string) => {
+const loadCredentialsEncrypted = async (credentialsStorageKey: string) => {
   const { counter, encryptedCredentials, salt, wrappedKey } = getStorageItems(
     credentialsStorageKey,
   );
@@ -77,10 +85,10 @@ export const loadCredentials = async (credentialsStorageKey: string) => {
   }
 };
 
-export const saveCredentialsToStorage = async (
+const saveCredentialsEncrypted = async (
   credentials: Partial<UserCredentials> & { credentialsStorageKey: string },
 ) => {
-  const currentCredentials = await loadCredentials(
+  const currentCredentials = await loadCredentialsEncrypted(
     credentials.credentialsStorageKey,
   );
   const mergedCredentials = { ...currentCredentials, ...credentials };
@@ -116,9 +124,44 @@ export const saveCredentialsToStorage = async (
   }
 };
 
-export const deleteCredentials = (credentialsStorageKey: string) => {
+const deleteCredentialsEncrypted = (credentialsStorageKey: string) => {
   database.removeItem(`${credentialsStorageKey}Data`);
   database.removeItem(`${credentialsStorageKey}Counter`);
   database.removeItem(`${credentialsStorageKey}Salt`);
   database.removeItem(`${credentialsStorageKey}Key`);
+};
+
+// ── Public API (delegates to custom adapter or encrypted-localStorage) ──
+
+export const loadCredentials = async (
+  credentialsStorageKey: string,
+): Promise<UserCredentials | undefined> => {
+  if (customStorage) {
+    const json = await customStorage.load(credentialsStorageKey);
+    return json ? (JSON.parse(json) as UserCredentials) : undefined;
+  }
+  return (await loadCredentialsEncrypted(credentialsStorageKey)) ?? undefined;
+};
+
+export const saveCredentialsToStorage = async (
+  credentials: Partial<UserCredentials> & { credentialsStorageKey: string },
+) => {
+  if (customStorage) {
+    const current = await loadCredentials(credentials.credentialsStorageKey);
+    const merged = { ...current, ...credentials };
+    await customStorage.save(
+      credentials.credentialsStorageKey,
+      JSON.stringify(merged),
+    );
+    return;
+  }
+  return saveCredentialsEncrypted(credentials);
+};
+
+export const deleteCredentials = (credentialsStorageKey: string) => {
+  if (customStorage) {
+    void customStorage.remove(credentialsStorageKey);
+    return;
+  }
+  deleteCredentialsEncrypted(credentialsStorageKey);
 };

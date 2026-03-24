@@ -1,12 +1,19 @@
 /* c8 ignore start types file */
 import type { Credentials } from '@tidal-music/common';
 
+export type StorageAdapter = {
+  load(key: string): Promise<string | null>;
+  remove(key: string): Promise<void>;
+  save(key: string, value: string): Promise<void>;
+};
+
 export type InitArgs = {
   clientId: string;
   clientSecret?: string;
   clientUniqueKey?: string;
   credentialsStorageKey: string;
   scopes?: Array<string>;
+  storage?: StorageAdapter;
   tidalAuthServiceBaseUri?: string;
   tidalLoginServiceBaseUri?: string;
 };
