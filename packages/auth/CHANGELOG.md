@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-03-24
+
+### Added
+
+- Optional `StorageAdapter` interface, enabling custom credential storage (e.g. for Node.js / non-browser environments)
+- `storage` option in `init()` to inject a custom storage adapter
+
+### Changed
+
+- Replace DOM-based event bus (`CustomEvent` / `addEventListener`) with a plain callback array, removing the dependency on `globalThis` event APIs
+
 ## [1.4.0] - 2025-08-13
 
 ### Changed

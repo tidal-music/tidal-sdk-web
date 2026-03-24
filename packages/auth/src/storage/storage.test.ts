@@ -6,6 +6,7 @@ import {
   deleteCredentials,
   loadCredentials,
   saveCredentialsToStorage,
+  setStorageAdapter,
 } from './storage';
 import * as _storageUtils from './storageUtils';
 
@@ -159,6 +160,78 @@ describe.sequential('storage', () => {
       expect(database.removeItem).toBeCalledWith('myKeyData');
       expect(database.removeItem).toBeCalledWith('myKeyKey');
       expect(database.removeItem).toBeCalledWith('myKeyCounter');
+    });
+  });
+
+  describe('custom StorageAdapter', () => {
+    const mockAdapter = {
+      load: vi.fn(),
+      remove: vi.fn(),
+      save: vi.fn(),
+    };
+
+    beforeAll(() => {
+      setStorageAdapter(mockAdapter);
+    });
+
+    it('loads credentials via the custom adapter', async () => {
+      mockAdapter.load.mockResolvedValue(JSON.stringify(fixtures.storage));
+
+      const result = await loadCredentials('key');
+
+      expect(mockAdapter.load).toHaveBeenCalledWith('key');
+      expect(result).toEqual(fixtures.storage);
+      expect(database.getItem).not.toHaveBeenCalled();
+    });
+
+    it('returns undefined when custom adapter has no data', async () => {
+      mockAdapter.load.mockResolvedValue(null);
+
+      const result = await loadCredentials('key');
+
+      expect(result).toBeUndefined();
+    });
+
+    it('saves credentials via the custom adapter', async () => {
+      mockAdapter.load.mockResolvedValue(null);
+
+      await saveCredentialsToStorage({
+        clientId: 'foobar',
+        credentialsStorageKey: 'key',
+      });
+
+      expect(mockAdapter.save).toHaveBeenCalledWith(
+        'key',
+        JSON.stringify({ clientId: 'foobar', credentialsStorageKey: 'key' }),
+      );
+      expect(database.setItem).not.toHaveBeenCalled();
+    });
+
+    it('merges with existing credentials when saving', async () => {
+      mockAdapter.load.mockResolvedValue(
+        JSON.stringify({ clientId: 'old', scopes: ['READ'] }),
+      );
+
+      await saveCredentialsToStorage({
+        clientId: 'new',
+        credentialsStorageKey: 'key',
+      });
+
+      expect(mockAdapter.save).toHaveBeenCalledWith(
+        'key',
+        JSON.stringify({
+          clientId: 'new',
+          credentialsStorageKey: 'key',
+          scopes: ['READ'],
+        }),
+      );
+    });
+
+    it('deletes credentials via the custom adapter', () => {
+      deleteCredentials('key');
+
+      expect(mockAdapter.remove).toHaveBeenCalledWith('key');
+      expect(database.removeItem).not.toHaveBeenCalled();
     });
   });
 });

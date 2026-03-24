@@ -23,6 +23,7 @@ import {
   deleteCredentials,
   loadCredentials,
   saveCredentialsToStorage,
+  setStorageAdapter,
 } from '../storage/storage';
 import type {
   DeviceAuthorizationResponse,
@@ -57,22 +58,21 @@ const TIDAL_LOGIN_SERVICE_BASE_URI = 'https://login.tidal.com/';
 const TIDAL_AUTH_SERVICE_BASE_URI = 'https://auth.tidal.com/v1/';
 const knownSubStatus = ['11003', '6001', '11001', '11002', '11101'];
 
+const listeners: Array<(e: BusEvent) => void> = [];
+
 /**
  * Use this function to e.g. get notified when the credentials have been updated.
  *
  */
 export const bus: Bus = callbackFn => {
-  return globalThis.addEventListener(
-    'authEventBus',
-    callbackFn as EventListener,
-  );
+  listeners.push(callbackFn);
 };
 
 const dispatchEvent = (detail: BusEvent['detail']) => {
-  const event = new CustomEvent('authEventBus', {
-    detail,
-  });
-  globalThis.dispatchEvent(event);
+  const event = { detail } as BusEvent;
+  for (const fn of listeners) {
+    fn(event);
+  }
 };
 
 const dispatchCredentialsUpdated = (credentials: Credentials) => {
@@ -93,9 +93,14 @@ export const init = async ({
   clientUniqueKey,
   credentialsStorageKey,
   scopes,
+  storage,
   tidalAuthServiceBaseUri,
   tidalLoginServiceBaseUri,
 }: InitArgs) => {
+  if (storage) {
+    setStorageAdapter(storage);
+  }
+
   const persistedCredentials = await loadCredentials(credentialsStorageKey);
 
   const credentials = {
