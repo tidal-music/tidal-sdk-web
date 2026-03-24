@@ -3,8 +3,8 @@ import type { Credentials } from '@tidal-music/common';
 
 export type StorageAdapter = {
   load(key: string): Promise<string | null>;
-  save(key: string, value: string): Promise<void>;
   remove(key: string): Promise<void>;
+  save(key: string, value: string): Promise<void>;
 };
 
 export type InitArgs = {
