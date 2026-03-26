@@ -41,6 +41,7 @@ import {
 import {
   base64URLEncode,
   generateOAuthCodeChallenge,
+  setCryptoAdapter,
   sha256,
 } from '../utils/utils';
 
@@ -92,11 +93,15 @@ export const init = async ({
   clientSecret,
   clientUniqueKey,
   credentialsStorageKey,
+  crypto,
   scopes,
   storage,
   tidalAuthServiceBaseUri,
   tidalLoginServiceBaseUri,
 }: InitArgs) => {
+  if (crypto) {
+    setCryptoAdapter(crypto);
+  }
   if (storage) {
     setStorageAdapter(storage);
   }

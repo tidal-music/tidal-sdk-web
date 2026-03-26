@@ -7,11 +7,17 @@ export type StorageAdapter = {
   save(key: string, value: string): Promise<void>;
 };
 
+export type CryptoAdapter = {
+  digest(algorithm: string, data: BufferSource): Promise<ArrayBuffer>;
+  getRandomValues(array: Uint8Array): Uint8Array;
+};
+
 export type InitArgs = {
   clientId: string;
   clientSecret?: string;
   clientUniqueKey?: string;
   credentialsStorageKey: string;
+  crypto?: CryptoAdapter;
   scopes?: Array<string>;
   storage?: StorageAdapter;
   tidalAuthServiceBaseUri?: string;
@@ -20,7 +26,11 @@ export type InitArgs = {
 
 export type UserCredentials = Omit<
   InitArgs,
-  'scopes' | 'tidalAuthServiceBaseUri' | 'tidalLoginServiceBaseUri'
+  | 'crypto'
+  | 'scopes'
+  | 'storage'
+  | 'tidalAuthServiceBaseUri'
+  | 'tidalLoginServiceBaseUri'
 > & {
   accessToken?: Credentials;
   codeChallenge?: string;

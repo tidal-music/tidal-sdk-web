@@ -1,9 +1,34 @@
+import type { CryptoAdapter } from '../types';
+
+let cryptoAdapter: CryptoAdapter | undefined;
+
+export const setCryptoAdapter = (adapter: CryptoAdapter) => {
+  cryptoAdapter = adapter;
+};
+
+const getRandomValues = (array: Uint8Array): Uint8Array => {
+  if (cryptoAdapter) {
+    return cryptoAdapter.getRandomValues(array);
+  }
+  return globalThis.crypto.getRandomValues(array);
+};
+
+const digest = (
+  algorithm: string,
+  data: BufferSource,
+): Promise<ArrayBuffer> => {
+  if (cryptoAdapter) {
+    return cryptoAdapter.digest(algorithm, data);
+  }
+  return globalThis.crypto.subtle.digest(algorithm, data);
+};
+
 /**
  * Generates a SHA256 hash of the content.
  */
 export const sha256 = async (message: string) => {
-  const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
-  const hashBuffer = await globalThis.crypto.subtle.digest('SHA-256', msgUint8); // hash the message
+  const msgUint8 = new TextEncoder().encode(message);
+  const hashBuffer = await digest('SHA-256', msgUint8);
   const bytes = new Uint8Array(hashBuffer);
   const len = bytes.byteLength;
   let binary = '';
@@ -28,9 +53,7 @@ export const base64URLEncode = (value: string) =>
  */
 export const generateOAuthCodeChallenge = () => {
   const array = new Uint8Array(100);
-  const string = base64URLEncode(
-    btoa(globalThis.crypto.getRandomValues(array).toString()),
-  );
+  const string = base64URLEncode(btoa(getRandomValues(array).toString()));
 
   return string.slice(0, 128);
 };
