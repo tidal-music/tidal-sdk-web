@@ -126,6 +126,19 @@ describe.sequential('auth', () => {
       });
     });
 
+    it('inits with a custom crypto adapter', async () => {
+      vi.mocked(storage.loadCredentials).mockResolvedValue(undefined);
+
+      const cryptoAdapter = {
+        digest: vi.fn(),
+        getRandomValues: vi.fn(),
+      };
+
+      await init({ ...initConfig, crypto: cryptoAdapter });
+
+      expect(utils.setCryptoAdapter).toHaveBeenCalledWith(cryptoAdapter);
+    });
+
     it('inits the auth module with empty scopes', async () => {
       const trueTimeSpy = vi.spyOn(trueTime, 'synchronize').mockResolvedValue();
       vi.mocked(storage.loadCredentials).mockResolvedValue(undefined);
