@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.4.8"
+    "version" : "1.4.11"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -92,6 +92,9 @@
   }, {
     "description" : "Pricing configuration for purchasable content.",
     "name" : "priceConfigurations"
+  }, {
+    "description" : "Product information for a content provider's catalogue.",
+    "name" : "providerProductInfos"
   }, {
     "description" : "A content provider or label that supplies music to TIDAL.",
     "name" : "providers"
@@ -12468,6 +12471,233 @@
         }
       }
     },
+    "/providerProductInfos" : {
+      "get" : {
+        "description" : "Retrieves multiple providerProductInfos by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: provider, subject",
+          "example" : "provider",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "provider"
+            }
+          }
+        }, {
+          "description" : "List of barcode IDs (EAN-13 or UPC-A) (e.g. `00602527336510`)",
+          "in" : "query",
+          "name" : "filter[barcodeId]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "Content provider ID (e.g. `50`)",
+          "in" : "query",
+          "name" : "filter[provider.id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProviderProductInfos_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple providerProductInfos.",
+        "tags" : [ "providerProductInfos" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/providerProductInfos/{id}/relationships/provider" : {
+      "get" : {
+        "description" : "Retrieves provider relationship.",
+        "parameters" : [ {
+          "description" : "Provider product info id",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: provider",
+          "example" : "provider",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "provider"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProviderProductInfos_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get provider relationship (\"to-one\").",
+        "tags" : [ "providerProductInfos" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/providerProductInfos/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "Provider product info id",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProviderProductInfos_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
+        "tags" : [ "providerProductInfos" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/providers" : {
       "get" : {
         "description" : "Retrieves multiple providers by available filters, or without if applicable.",
@@ -17554,6 +17784,8 @@
           }
         },
         "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
           "Authorization_Code_PKCE" : [ ]
         } ],
         "summary" : "Get suggestedTracks relationship (\"to-many\").",
@@ -24073,6 +24305,8 @@
           }
         },
         "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
           "Authorization_Code_PKCE" : [ ]
         } ],
         "summary" : "Get suggestedVideos relationship (\"to-many\").",
@@ -25108,9 +25342,7 @@
             }
           },
           "barcodeId" : {
-            "type" : "string",
-            "description" : "Barcode id (EAN-13 or UPC-A)",
-            "example" : "00854242007552"
+            "type" : "string"
           },
           "copyright" : {
             "$ref" : "#/components/schemas/Copyright"
@@ -25857,7 +26089,7 @@
             "type" : "array",
             "description" : "List of UPCs retrieved from the DSP",
             "items" : {
-              "$ref" : "#/components/schemas/BarcodeId"
+              "$ref" : "#/components/schemas/LegacyBarcodeId"
             }
           },
           "status" : {
@@ -26777,18 +27009,6 @@
           }
         },
         "description" : "Track normalization data"
-      },
-      "BarcodeId" : {
-        "required" : [ "value" ],
-        "type" : "object",
-        "properties" : {
-          "value" : {
-            "minLength" : 1,
-            "type" : "string"
-          }
-        },
-        "description" : "Barcode Id",
-        "example" : 196589525444
       },
       "ClientsCreateOperation_Payload" : {
         "required" : [ "data" ],
@@ -28597,6 +28817,7 @@
               "playQueues" : "#/components/schemas/PlayQueues_Resource_Object",
               "playlists" : "#/components/schemas/Playlists_Resource_Object",
               "priceConfigurations" : "#/components/schemas/PriceConfigurations_Resource_Object",
+              "providerProductInfos" : "#/components/schemas/ProviderProductInfos_Resource_Object",
               "providers" : "#/components/schemas/Providers_Resource_Object",
               "reactions" : "#/components/schemas/Reactions_Resource_Object",
               "savedShares" : "#/components/schemas/SavedShares_Resource_Object",
@@ -28680,6 +28901,8 @@
             "$ref" : "#/components/schemas/Playlists_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/PriceConfigurations_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/ProviderProductInfos_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Providers_Resource_Object"
           }, {
@@ -28968,6 +29191,15 @@
             "$ref" : "#/components/schemas/Links"
           }
         }
+      },
+      "LegacyBarcodeId" : {
+        "type" : "object",
+        "properties" : {
+          "value" : {
+            "type" : "string"
+          }
+        },
+        "description" : "List of UPCs retrieved from the DSP"
       },
       "LegacySource" : {
         "required" : [ "id", "type" ],
@@ -30886,6 +31118,96 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/PriceConfigurations_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ProviderProductInfos_Attributes" : {
+        "required" : [ "barcodeId" ],
+        "type" : "object",
+        "properties" : {
+          "barcodeId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ProviderProductInfos_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProviderProductInfos_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ProviderProductInfos_Relationships" : {
+        "properties" : {
+          "provider" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          },
+          "subject" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "ProviderProductInfos_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ProviderProductInfos_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ProviderProductInfos_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ProviderProductInfos_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Resource_Identifier"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ProviderProductInfos_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ProviderProductInfos_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
