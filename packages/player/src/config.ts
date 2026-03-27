@@ -4,6 +4,13 @@ import type { AudioQuality } from './internal/types';
 type Config = {
   apiUrl: string;
   audioAdaptiveBitrateStreaming: boolean;
+  /**
+   * Controls track transition behavior:
+   *  - Positive: crossfade overlap in ms (max 15000)
+   *  - Zero: gapless (default)
+   *  - Negative: silence gap in ms (min -5000)
+   */
+  crossfadeInMs: number;
   desiredVolumeLevel: number;
   gatherEvents: boolean;
   legacyApiUrl: string;
@@ -15,6 +22,7 @@ type Config = {
 let state = Object.freeze({
   apiUrl: 'https://openapi.tidal.com/v2/',
   audioAdaptiveBitrateStreaming: true,
+  crossfadeInMs: 0,
   desiredVolumeLevel: 1,
   gatherEvents: true,
   legacyApiUrl: 'https://api.tidal.com/v1',

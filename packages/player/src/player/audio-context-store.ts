@@ -1,6 +1,7 @@
 import { waitForPlayers } from '../internal/helpers/wait-for-players';
 
 export const mediaElementOne = document.createElement('video');
+export const mediaElementTwo = document.createElement('video');
 
 const prepareMediaElement = (mediaEl: HTMLMediaElement) => {
   mediaEl.setAttribute('crossorigin', 'anonymous');
@@ -10,29 +11,36 @@ const prepareMediaElement = (mediaEl: HTMLMediaElement) => {
 prepareMediaElement(mediaElementOne);
 mediaElementOne.id = 'video-one';
 
+prepareMediaElement(mediaElementTwo);
+mediaElementTwo.id = 'video-two';
+
 const tidalPlayerRootId = 'tidal-player-root';
 
 export function mountVideoElements() {
-  const templateEl = document.getElementById(tidalPlayerRootId);
+  let containerEl = document.getElementById(tidalPlayerRootId);
 
-  if (!templateEl) {
-    const template = document.createElement('template');
-
-    template.id = tidalPlayerRootId;
-    document.body.appendChild(template);
+  if (!containerEl) {
+    containerEl = document.createElement('div');
+    containerEl.id = tidalPlayerRootId;
+    containerEl.style.position = 'absolute';
+    containerEl.style.width = '0';
+    containerEl.style.height = '0';
+    containerEl.style.overflow = 'hidden';
+    document.body.appendChild(containerEl);
   }
 
   return ensureVideoElementsMounted();
 }
 
 export function ensureVideoElementsMounted() {
-  const templateEl = document.getElementById(
-    tidalPlayerRootId,
-  ) as HTMLTemplateElement | null;
+  const containerEl = document.getElementById(tidalPlayerRootId);
 
-  if (templateEl) {
-    if (!(mediaElementOne.id in templateEl.children)) {
-      templateEl.appendChild(mediaElementOne);
+  if (containerEl) {
+    if (!(mediaElementOne.id in containerEl.children)) {
+      containerEl.appendChild(mediaElementOne);
+    }
+    if (!(mediaElementTwo.id in containerEl.children)) {
+      containerEl.appendChild(mediaElementTwo);
     }
   }
 
@@ -49,6 +57,13 @@ export function activateVideoElements() {
           !mediaElementOne.src
         ) {
           mediaElementOne.load();
+        }
+
+        if (
+          mediaElementTwo.readyState === HTMLMediaElement.HAVE_NOTHING &&
+          !mediaElementTwo.src
+        ) {
+          mediaElementTwo.load();
         }
 
         resolve();
