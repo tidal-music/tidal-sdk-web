@@ -10348,6 +10348,8 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    /** @description Filter by countryCode */
+                    "filter[countryCode]"?: string[];
                     /** @description Terms id (e.g. `a468bee88def`) */
                     "filter[id]"?: string[];
                     /** @description Filter by isLatestVersion */
@@ -20087,6 +20089,7 @@ export interface components {
         };
         Terms_Attributes: {
             contentLink: components["schemas"]["Link_Object"];
+            countryCode: string;
             /** Format: date-time */
             effectiveAt: string;
             /** @enum {string} */
