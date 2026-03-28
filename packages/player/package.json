@@ -75,7 +75,7 @@
     "rollup": "4.60.0",
     "shaka-player": "5.0.7",
     "sinon": "21.0.3",
-    "typescript": "5.9.3",
+    "typescript": "6.0.2",
     "vite": "8.0.1",
     "vite-plugin-dts": "4.5.4",
     "vite-plugin-package-version": "1.1.0"
