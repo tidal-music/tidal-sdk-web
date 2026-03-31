@@ -24,6 +24,10 @@ export const submitEvents = async ({
   if (eventsBatch.length === 0) {
     return Promise.resolve();
   }
+
+  if (config.disableTlConsumer) {
+    return Promise.resolve();
+  }
   const headers = new Headers({
     'Content-Type': 'application/x-www-form-urlencoded',
   });

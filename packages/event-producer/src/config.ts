@@ -16,6 +16,8 @@ export type Config = {
   blockedConsentCategories: BlockedConsentCategories;
   // An access token provider, used by the EventProducer to get access token.
   credentialsProvider?: CredentialsProvider;
+  // When true, events are not sent to the transport layer consumer backend.
+  disableTlConsumer?: boolean;
   // frequency of sending events to TL Consumer
   eventBatchInterval?: number;
   // event types to exclude from persisted memory, ie a malformed event from a previous release

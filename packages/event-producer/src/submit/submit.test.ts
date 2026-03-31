@@ -190,6 +190,15 @@ describe.sequential('submit', () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
+  it('does not send batches when disableTlConsumer is enabled', async () => {
+    vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
+    vi.spyOn(globalThis, 'fetch');
+    await submitEvents({ config: { ...config, disableTlConsumer: true } });
+
+    expect(fetch).not.toHaveBeenCalled();
+    expect(queue.removeEvents).not.toHaveBeenCalled();
+  });
+
   it('sets outage flag to false if isOutage events are sendt successfully', async () => {
     vi.spyOn(outage, 'setOutage');
     vi.spyOn(outage, 'isOutage').mockReturnValue(true);
