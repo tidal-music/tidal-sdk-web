@@ -15926,7 +15926,7 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes
+                     * @description Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes, offlineMixes
                      * @example discoveryMixes
                      */
                     include?: string[];
@@ -16141,6 +16141,72 @@ export interface paths {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: newArrivalMixes
                      * @example newArrivalMixes
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User recommendations id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserRecommendations_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userRecommendations/{id}/relationships/offlineMixes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get offlineMixes relationship ("to-many").
+         * @description Retrieves offlineMixes relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: offlineMixes
+                     * @example offlineMixes
                      */
                     include?: string[];
                 };
@@ -21878,6 +21944,7 @@ export interface components {
             discoveryMixes?: components["schemas"]["Multi_Relationship_Data_Document"];
             myMixes?: components["schemas"]["Multi_Relationship_Data_Document"];
             newArrivalMixes?: components["schemas"]["Multi_Relationship_Data_Document"];
+            offlineMixes?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         UserRecommendations_Resource_Object: {
             attributes?: components["schemas"]["UserRecommendations_Attributes"];
