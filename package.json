@@ -16,11 +16,11 @@
     "generateTypes": "pnpm -r generateTypes"
   },
   "devDependencies": {
-    "@eslint/compat": "2.0.3",
-    "eslint": "10.1.0",
+    "@eslint/compat": "2.0.4",
+    "eslint": "10.2.0",
     "eslint-config-tidal": "5.0.0",
     "eslint-plugin-disable-autofix": "6.1.1",
-    "eslint-plugin-jsdoc": "62.8.1",
+    "eslint-plugin-jsdoc": "62.9.0",
     "typedoc": "0.28.18",
     "vite": "8.0.5",
     "vite-plugin-dts": "4.5.4",
