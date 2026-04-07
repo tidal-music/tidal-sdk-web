@@ -51,7 +51,7 @@ jobs:
           encoded_json=$(printf '%s' "$fixed_json" | base64 | tr -d '\n')
           echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
       - name: Cypress run
-        uses: cypress-io/github-action@4c06c48f3ffea349b7189aa06dfcda47a9fa7b92 # v7.1.8
+        uses: cypress-io/github-action@783cb3f07983868532cabaedaa1e6c00ff4786a8 # v7.1.9
         env:
           CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
         with:
