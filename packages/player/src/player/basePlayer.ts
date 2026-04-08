@@ -73,12 +73,25 @@ export class BasePlayer {
 
   // Implements
   #maybeDispatchPreloadRequest() {
+    const crossfadeInS = Config.get('crossfadeInMs') / 1000;
+
     if (
       this.duration &&
-      Math.abs(this.#currentTime - this.duration) <= 30 &&
-      // A false check, rather than undefined, ensures a media product transition hs been made.
+      // Check if the current time is within 15 seconds of when next item should start.
+      // (reduced from 30s to 15s to reduce risk of Safari background tab throttling)
+      Math.abs(this.#currentTime - this.duration + crossfadeInS) <= 15 &&
+      // A false check, rather than undefined, ensures a media product transition has been made.
       this.#hasEmittedPreloadRequest === false
     ) {
+      this.debugLog(
+        'maybeDispatchPreloadRequest',
+        {
+          crossfadeInS,
+          currentTime: this.#currentTime,
+          duration: this.duration,
+        },
+        Math.abs(this.#currentTime - this.duration + crossfadeInS),
+      );
       this.#hasEmittedPreloadRequest = true;
       events.dispatchEvent(preloadRequest());
     }
@@ -92,16 +105,20 @@ export class BasePlayer {
   #mediaProductEnded({
     endAssetPosition,
     endReason,
+    isGaplessTransition = false,
     streamingSessionId,
   }: {
     endAssetPosition: number;
     endReason: EndReason;
+    isGaplessTransition?: boolean;
     streamingSessionId: string;
   }) {
     this.debugLog('mediaProductEnded');
 
-    // If there is a preloaded item if should start right away.
-    if (playerState.preloadedStreamingSessionId) {
+    // Only set idealStartTimestamp if NOT in gapless mode.
+    // In gapless crossfade, the next track already started during crossfade
+    // and the correct timestamp was already set at that time.
+    if (!isGaplessTransition && playerState.preloadedStreamingSessionId) {
       performance.mark(
         'streaming_metrics:playback_statistics:idealStartTimestamp',
         {
@@ -114,7 +131,10 @@ export class BasePlayer {
     const mediaProductTransition =
       streamingSessionStore.getMediaProductTransition(streamingSessionId);
 
-    if (mediaProductTransition) {
+    // Only dispatch 'ended' event if NOT in gapless mode
+    // In gapless mode, playback continues seamlessly - dispatching 'ended' would cause
+    // the app to incorrectly advance to the next track
+    if (!isGaplessTransition && mediaProductTransition) {
       events.dispatchEvent(
         ended(endReason, mediaProductTransition.mediaProduct),
       );
@@ -133,7 +153,11 @@ export class BasePlayer {
       this.currentStreamingSessionId = undefined;
     }
 
-    this.updateVolumeLevelForNextProduct();
+    // Only update volume if NOT in gapless mode.
+    // In gapless crossfade, the next track is already playing with managed volume.
+    if (!isGaplessTransition) {
+      this.updateVolumeLevelForNextProduct();
+    }
   }
 
   adjustedVolume(streamInfo: StreamInfo): number {
@@ -425,7 +449,7 @@ export class BasePlayer {
     return streamInfo.expires <= Date.now();
   }
 
-  finishCurrentMediaProduct(endReason: EndReason) {
+  finishCurrentMediaProduct(endReason: EndReason, isGaplessTransition = false) {
     // A media product was loaded but never started.
     if (!this.hasStarted()) {
       return;
@@ -437,7 +461,9 @@ export class BasePlayer {
       : false;
 
     // Nothing is preloaded, player is now idle.
-    if (!this.preloadedStreamingSessionId) {
+    // CRITICAL: Skip this in gapless mode - the next track is already playing!
+    // Setting IDLE would dispatch a PlaybackStateChange event and corrupt app state.
+    if (!isGaplessTransition && !this.preloadedStreamingSessionId) {
       this.playbackState = 'IDLE';
     }
 
@@ -445,6 +471,7 @@ export class BasePlayer {
       this.#mediaProductEnded({
         endAssetPosition: this.currentTime,
         endReason,
+        isGaplessTransition,
         streamingSessionId: cssi,
       });
     }

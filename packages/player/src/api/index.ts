@@ -8,6 +8,7 @@ export { getPlaybackContext } from '../internal/handlers/get-playback-context';
 export { getPlaybackState } from '../internal/handlers/get-playback-state';
 export { getPlayerVersion } from '../internal/handlers/get-player-version';
 export { getStreamingWifiAudioQuality } from '../internal/handlers/get-streaming-wifi-audio-quality';
+export { getTransitionMode } from '../internal/handlers/get-transition-mode';
 export { getVolumeLevel } from '../internal/handlers/get-volume-level';
 
 export { load } from '../internal/handlers/load';
@@ -27,6 +28,7 @@ export { setNext } from '../internal/handlers/set-next';
 export { setOutputDevice } from '../internal/handlers/set-output-device';
 export { setOutputDeviceMode } from '../internal/handlers/set-output-device-mode';
 export { setStreamingWifiAudioQuality } from '../internal/handlers/set-streaming-wifi-audio-quality';
+export { setTransitionMode } from '../internal/handlers/set-transition-mode';
 export { setVolumeLevel } from '../internal/handlers/set-volume-level';
 
 export { startNativePlayer } from '../internal/handlers/start-native-player';
