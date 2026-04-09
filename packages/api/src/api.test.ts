@@ -92,4 +92,23 @@ describe('createAPIClient', () => {
       'application/vnd.api+json',
     );
   });
+
+  it('serializes query params with allowReserved (commas in include, page[cursor])', async () => {
+    const provider = mockCredentialsProvider();
+    const client = createAPIClient(provider);
+    await client.GET('/albums', {
+      params: {
+        query: {
+          include: ['artists,coverArt'],
+          'page[cursor]': 'next-page-token',
+        },
+      },
+    });
+
+    const request = getLastFetchRequest();
+    const { search } = new URL(request.url);
+    expect(search).toContain('include=artists,coverArt');
+    expect(search).toContain('page[cursor]=next-page-token');
+    expect(search).not.toContain('%2C');
+  });
 });
