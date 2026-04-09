@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.19.0] - 2026-04-09
+
+### Fixed
+
+- Set openapi-fetch `querySerializer.allowReserved` so JSON:API query parameters (comma-separated `include` paths, `page[cursor]`, etc.) are not over-encoded.
+
 ## [0.18.0] - 2026-04-01
 
 ### Changed
