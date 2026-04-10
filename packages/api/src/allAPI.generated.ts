@@ -8173,6 +8173,15 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
+                    };
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -21197,16 +21206,14 @@ export interface components {
         };
         UserCollectionFoldersItemsRelationshipAddOperation_Payload_Data: {
             id: string;
-            /** @deprecated */
-            resourceType?: string;
+            type: string;
         };
         UserCollectionFoldersItemsRelationshipRemoveOperation_Payload: {
             data?: components["schemas"]["UserCollectionFoldersItemsRelationshipRemoveOperation_Payload_Data"][];
         };
         UserCollectionFoldersItemsRelationshipRemoveOperation_Payload_Data: {
             id: string;
-            /** @deprecated */
-            resourceType?: string;
+            type: string;
         };
         UserCollectionFoldersUpdateOperation_Payload: {
             data: components["schemas"]["UserCollectionFoldersUpdateOperation_Payload_Data"];

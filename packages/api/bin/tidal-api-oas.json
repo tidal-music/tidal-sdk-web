@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.4.15"
+    "version" : "1.4.17"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -12062,6 +12062,16 @@
           }
         },
         "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Playlists_Items_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
           "400" : {
             "$ref" : "#/components/responses/Default400Response"
           },
@@ -34745,15 +34755,14 @@
         }
       },
       "UserCollectionFoldersItemsRelationshipAddOperation_Payload_Data" : {
-        "required" : [ "id" ],
+        "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
           "id" : {
             "type" : "string"
           },
-          "resourceType" : {
-            "type" : "string",
-            "deprecated" : true
+          "type" : {
+            "type" : "string"
           }
         }
       },
@@ -34771,15 +34780,14 @@
         }
       },
       "UserCollectionFoldersItemsRelationshipRemoveOperation_Payload_Data" : {
-        "required" : [ "id" ],
+        "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
           "id" : {
             "type" : "string"
           },
-          "resourceType" : {
-            "type" : "string",
-            "deprecated" : true
+          "type" : {
+            "type" : "string"
           }
         }
       },
