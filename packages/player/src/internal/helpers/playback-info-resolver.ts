@@ -444,6 +444,77 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
 }
 
 /**
+ * Fetches the video manifest for a given media product using the API client.
+ * Retries on 5xx and 429 errors with exponential backoff.
+ */
+async function _fetchVideoManifest(options: Options): Promise<PlaybackInfo> {
+  const apiClient = createAPIClient(
+    credentialsProviderStore.credentialsProvider,
+    Config.get('apiUrl'),
+  );
+
+  const { mediaProduct, prefetch, streamingSessionId } = options;
+  const videoId = mediaProduct.productId;
+
+  let response;
+  try {
+    response = await withRetries(
+      () =>
+        apiClient.GET('/videoManifests/{id}', {
+          params: {
+            headers: {
+              'x-playback-session-id': streamingSessionId,
+            },
+            path: {
+              id: videoId,
+            },
+            query: {
+              uriScheme: 'DATA',
+              usage: 'PLAYBACK',
+            },
+          },
+        }),
+      {
+        baseDelayMs: TRACK_MANIFEST_BASE_DELAY_MS,
+        maxRetries: TRACK_MANIFEST_MAX_RETRIES,
+        shouldRetry: res =>
+          Boolean(res.error) && isRetryableStatus(res.response.status),
+      },
+    );
+  } catch {
+    throw new PlayerError('PENetwork', 'NPBI0');
+  }
+
+  if (response.error) {
+    throw new PlayerError(getErrorId(response.response.status, 0), 'NPBI0');
+  }
+
+  const parsed = parseDataUrl(response.data?.data.attributes?.link?.href);
+
+  const manifest = parsed?.manifest;
+  const manifestMimeType = parsed?.manifestMimeType;
+
+  if (!manifest || !manifestMimeType) {
+    throw new PlayerError('EUnexpected', 'B9999');
+  }
+
+  return {
+    assetPresentation:
+      response.data?.data.attributes?.videoPresentation ?? 'PREVIEW',
+    // eslint-disable-next-line no-restricted-syntax
+    expires: Date.now() + MANIFEST_EXPIRATION_MS,
+    manifest,
+    manifestMimeType,
+    prefetched: prefetch,
+    previewReason: response.data?.data.attributes?.previewReason,
+    streamType: 'ON_DEMAND',
+    streamingSessionId,
+    videoId: response.data?.data.id ? Number(response.data.data.id) : 0,
+    videoQuality: 'HIGH',
+  };
+}
+
+/**
  * Fetches playback information for a media product.
  *
  * @param options - The options for fetching playback info including media product, audio quality, and streaming session ID.
@@ -461,12 +532,10 @@ export async function fetchPlaybackInfo(options: Options) {
   try {
     let playbackInfo: PlaybackInfo;
 
-    if (
-      options.mediaProduct.productType === 'video' ||
-      options.playerType === 'native'
-    ) {
-      // Use old API for videos and Native Player track playback
+    if (options.playerType === 'native') {
       playbackInfo = await _fetchLegacyPlaybackInfo(options);
+    } else if (options.mediaProduct.productType === 'video') {
+      playbackInfo = await _fetchVideoManifest(options);
     } else {
       playbackInfo = await _fetchTrackManifest(options);
     }
