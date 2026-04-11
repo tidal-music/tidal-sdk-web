@@ -7,7 +7,7 @@ settings:
 overrides:
   serialize-javascript: 7.0.5
   koa: 3.2.0
-  basic-ftp: 5.2.1
+  basic-ftp: 5.2.2
   rollup@>=4: 4.60.1
   ajv@>=8: 8.18.0
   lodash: 4.18.1
@@ -2652,8 +2652,8 @@ packages:
     resolution: {integrity: sha512-ipDqC8FrAl/76p2SSWKSI+H9tFwm7vYqXQrItCuiVPt26Km0jS+NzSsBWAaBusvSbQcfJG+JitdMm+wZAgTYqg==}
     hasBin: true
 
-  basic-ftp@5.2.1:
-    resolution: {integrity: sha512-0yaL8JdxTknKDILitVpfYfV2Ob6yb3udX/hK97M7I3jOeznBNxQPtVvTUtnhUkyHlxFWyr5Lvknmgzoc7jf+1Q==}
+  basic-ftp@5.2.2:
+    resolution: {integrity: sha512-1tDrzKsdCg70WGvbFss/ulVAxupNauGnOlgpyjKzeQxzyllBLS0CGLV7tjIXTK3ZQA9/FBEm9qyFFN1bciA6pw==}
     engines: {node: '>=10.0.0'}
 
   bcrypt-pbkdf@1.0.2:
@@ -8135,7 +8135,7 @@ snapshots:
 
   baseline-browser-mapping@2.9.19: {}
 
-  basic-ftp@5.2.1: {}
+  basic-ftp@5.2.2: {}
 
   bcrypt-pbkdf@1.0.2:
     dependencies:
@@ -9322,7 +9322,7 @@ snapshots:
 
   get-uri@6.0.3:
     dependencies:
-      basic-ftp: 5.2.1
+      basic-ftp: 5.2.2
       data-uri-to-buffer: 6.0.2
       debug: 4.4.3(supports-color@8.1.1)
       fs-extra: 11.3.0
