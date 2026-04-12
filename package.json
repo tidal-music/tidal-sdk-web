@@ -16,16 +16,16 @@
     "generateTypes": "pnpm -r generateTypes"
   },
   "devDependencies": {
-    "@eslint/compat": "2.0.4",
+    "@eslint/compat": "2.0.5",
     "eslint": "10.2.0",
     "eslint-config-tidal": "5.0.0",
     "eslint-plugin-disable-autofix": "6.1.1",
     "eslint-plugin-jsdoc": "62.9.0",
-    "typedoc": "0.28.18",
-    "vite": "8.0.5",
+    "typedoc": "0.28.19",
+    "vite": "8.0.8",
     "vite-plugin-dts": "4.5.4",
     "vite-plugin-package-version": "1.1.0",
-    "vitest": "4.1.2"
+    "vitest": "4.1.4"
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
@@ -48,7 +48,7 @@
       "diff@>=8": "8.0.4",
       "markdown-it@>=14": "14.1.1",
       "js-yaml@>=4": "4.1.1",
-      "qs@>=6.7": "6.15.0",
+      "qs@>=6.7": "6.15.1",
       "tar-fs@>=3": "3.1.2",
       "micromatch": "4.0.8",
       "@75lb/deep-merge": "1.1.3"
