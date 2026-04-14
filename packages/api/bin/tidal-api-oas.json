@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.4.17"
+    "version" : "1.5.0"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -123,6 +123,9 @@
     "description" : "A short-lived login link for the Stripe Express dashboard.",
     "name" : "stripeDashboardLinks"
   }, {
+    "description" : "A short-lived temporary token used to transfer user information from an authenticatedsession to another; initially for links between TIDAL web/desktop app and TIDAL'saccount pages",
+    "name" : "temporaryUserTokens"
+  }, {
     "description" : "A terms and conditions document.",
     "name" : "terms"
   }, {
@@ -229,7 +232,7 @@
             }
           }
         }, {
-          "description" : "One of: DEVELOPER (e.g. `DEVELOPER`)",
+          "description" : "One of: DEVELOPER, UPLOAD_MARKETPLACE (e.g. `DEVELOPER`)",
           "in" : "query",
           "name" : "filter[terms.termsType]",
           "required" : false,
@@ -237,7 +240,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "DEVELOPER" ]
+              "enum" : [ "DEVELOPER", "UPLOAD_MARKETPLACE" ]
             }
           }
         } ],
@@ -15209,6 +15212,225 @@
         }
       }
     },
+    "/temporaryUserTokens" : {
+      "post" : {
+        "description" : "Creates a new temporaryUserToken.",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TemporaryUserTokensCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TemporaryUserTokens_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single temporaryUserToken.",
+        "tags" : [ "temporaryUserTokens" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/temporaryUserTokens/{id}" : {
+      "get" : {
+        "description" : "Retrieves single temporaryUserToken by id.",
+        "parameters" : [ {
+          "description" : "Temporary user token id",
+          "example" : "abc123",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TemporaryUserTokens_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get single temporaryUserToken.",
+        "tags" : [ "temporaryUserTokens" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/temporaryUserTokens/{id}/relationships/owners" : {
+      "get" : {
+        "description" : "Retrieves owners relationship.",
+        "parameters" : [ {
+          "description" : "Temporary user token id",
+          "example" : "abc123",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TemporaryUserTokens_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "temporaryUserTokens" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/terms" : {
       "get" : {
         "description" : "Retrieves multiple terms by available filters, or without if applicable.",
@@ -15246,7 +15468,7 @@
             }
           }
         }, {
-          "description" : "One of: DEVELOPER (e.g. `DEVELOPER`)",
+          "description" : "One of: DEVELOPER, UPLOAD_MARKETPLACE (e.g. `DEVELOPER`)",
           "in" : "query",
           "name" : "filter[termsType]",
           "required" : false,
@@ -15254,7 +15476,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "DEVELOPER" ]
+              "enum" : [ "DEVELOPER", "UPLOAD_MARKETPLACE" ]
             }
           }
         } ],
@@ -29165,6 +29387,7 @@
               "shares" : "#/components/schemas/Shares_Resource_Object",
               "stripeConnections" : "#/components/schemas/StripeConnections_Resource_Object",
               "stripeDashboardLinks" : "#/components/schemas/StripeDashboardLinks_Resource_Object",
+              "temporaryUserTokens" : "#/components/schemas/TemporaryUserTokens_Resource_Object",
               "terms" : "#/components/schemas/Terms_Resource_Object",
               "trackFiles" : "#/components/schemas/TrackFiles_Resource_Object",
               "trackManifests" : "#/components/schemas/TrackManifests_Resource_Object",
@@ -29260,6 +29483,8 @@
             "$ref" : "#/components/schemas/StripeConnections_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/StripeDashboardLinks_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/TemporaryUserTokens_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Terms_Resource_Object"
           }, {
@@ -32801,6 +33026,109 @@
           }
         }
       },
+      "TemporaryUserTokensCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/TemporaryUserTokensCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "TemporaryUserTokensCreateOperation_Payload_Data" : {
+        "required" : [ "type" ],
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "enum" : [ "temporaryUserTokens" ]
+          }
+        }
+      },
+      "TemporaryUserTokens_Attributes" : {
+        "type" : "object"
+      },
+      "TemporaryUserTokens_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "TemporaryUserTokens_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TemporaryUserTokens_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "TemporaryUserTokens_Relationships" : {
+        "properties" : {
+          "owners" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "TemporaryUserTokens_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/TemporaryUserTokens_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/TemporaryUserTokens_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "TemporaryUserTokens_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/TemporaryUserTokens_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "Terms_Attributes" : {
         "required" : [ "contentLink", "countryCode", "effectiveAt", "termsType" ],
         "type" : "object",
@@ -32817,7 +33145,7 @@
           },
           "termsType" : {
             "type" : "string",
-            "enum" : [ "DEVELOPER" ]
+            "enum" : [ "DEVELOPER", "UPLOAD_MARKETPLACE" ]
           }
         }
       },
