@@ -19103,6 +19103,7 @@ export interface components {
             data: components["schemas"]["InstallationsOfflineInventory_ItemIdentifier"][];
         };
         InstallationsOfflineInventory_ItemIdentifier: {
+            /** @description The item id. Use "me" when the type is userCollectionTracks to resolve to the authenticated user's collection. */
             id: string;
             /** @enum {string} */
             type: "tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks";
