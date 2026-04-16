@@ -8733,6 +8733,11 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: provider, subject
                      * @example provider
                      */
@@ -8845,6 +8850,11 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: subject
                      * @example subject

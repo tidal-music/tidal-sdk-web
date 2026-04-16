@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.5.1"
+    "version" : "1.5.2"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -12715,6 +12715,15 @@
       "get" : {
         "description" : "Retrieves multiple providerProductInfos by available filters, or without if applicable.",
         "parameters" : [ {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: provider, subject",
           "example" : "provider",
           "in" : "query",
@@ -12875,6 +12884,15 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
