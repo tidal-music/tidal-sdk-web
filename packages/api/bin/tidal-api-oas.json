@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.5.2"
+    "version" : "1.6.0"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -174,10 +174,22 @@
     "description" : "Deprecated. Use the dedicated collection resources instead: userCollectionAlbums, userCollectionArtists, userCollectionTracks, userCollectionVideos, or userCollectionPlaylists.",
     "name" : "userCollections"
   }, {
+    "description" : "A user's daily mixes.",
+    "name" : "userDailyMixes"
+  }, {
     "description" : "A request to export a user's personal data collected by Tidal.",
     "name" : "userDataExportRequests"
   }, {
-    "description" : "Personalized content recommendations for a user.",
+    "description" : "A user's discovery mixes.",
+    "name" : "userDiscoveryMixes"
+  }, {
+    "description" : "A user's new release mixes.",
+    "name" : "userNewReleaseMixes"
+  }, {
+    "description" : "A user's offline mixes.",
+    "name" : "userOfflineMixes"
+  }, {
+    "description" : "Deprecated. Use the dedicated mix resources instead: userDiscoveryMixes, userDailyMixes, userNewReleaseMixes, or userOfflineMixes.",
     "name" : "userRecommendations"
   }, {
     "description" : "A user-submitted report flagging inappropriate or harmful content.",
@@ -23344,6 +23356,187 @@
         }
       }
     },
+    "/userDailyMixes/{id}" : {
+      "get" : {
+        "description" : "Retrieves single userDailyMixe by id.",
+        "parameters" : [ {
+          "description" : "User daily mixes id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "items"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDailyMixes_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr", "recommendations.read" ]
+        } ],
+        "summary" : "Get single userDailyMixe.",
+        "tags" : [ "userDailyMixes" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/userDailyMixes/{id}/relationships/items" : {
+      "get" : {
+        "description" : "Retrieves items relationship.",
+        "parameters" : [ {
+          "description" : "User daily mixes id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "items"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDailyMixes_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr", "recommendations.read" ]
+        } ],
+        "summary" : "Get items relationship (\"to-many\").",
+        "tags" : [ "userDailyMixes" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
     "/userDataExportRequests" : {
       "post" : {
         "description" : "Creates a new userDataExportRequest.",
@@ -23411,9 +23604,571 @@
         }
       }
     },
+    "/userDiscoveryMixes/{id}" : {
+      "get" : {
+        "description" : "Retrieves single userDiscoveryMixe by id.",
+        "parameters" : [ {
+          "description" : "User discovery mixes id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "items"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDiscoveryMixes_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr", "recommendations.read" ]
+        } ],
+        "summary" : "Get single userDiscoveryMixe.",
+        "tags" : [ "userDiscoveryMixes" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/userDiscoveryMixes/{id}/relationships/items" : {
+      "get" : {
+        "description" : "Retrieves items relationship.",
+        "parameters" : [ {
+          "description" : "User discovery mixes id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "items"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserDiscoveryMixes_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr", "recommendations.read" ]
+        } ],
+        "summary" : "Get items relationship (\"to-many\").",
+        "tags" : [ "userDiscoveryMixes" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/userNewReleaseMixes/{id}" : {
+      "get" : {
+        "description" : "Retrieves single userNewReleaseMixe by id.",
+        "parameters" : [ {
+          "description" : "User new release mixes id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "items"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserNewReleaseMixes_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr", "recommendations.read" ]
+        } ],
+        "summary" : "Get single userNewReleaseMixe.",
+        "tags" : [ "userNewReleaseMixes" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/userNewReleaseMixes/{id}/relationships/items" : {
+      "get" : {
+        "description" : "Retrieves items relationship.",
+        "parameters" : [ {
+          "description" : "User new release mixes id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "items"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserNewReleaseMixes_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr", "recommendations.read" ]
+        } ],
+        "summary" : "Get items relationship (\"to-many\").",
+        "tags" : [ "userNewReleaseMixes" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/userOfflineMixes/{id}" : {
+      "get" : {
+        "description" : "Retrieves single userOfflineMixe by id.",
+        "parameters" : [ {
+          "description" : "User offline mixes id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "items"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserOfflineMixes_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr", "recommendations.read" ]
+        } ],
+        "summary" : "Get single userOfflineMixe.",
+        "tags" : [ "userOfflineMixes" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/userOfflineMixes/{id}/relationships/items" : {
+      "get" : {
+        "description" : "Retrieves items relationship.",
+        "parameters" : [ {
+          "description" : "User offline mixes id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "items"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserOfflineMixes_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr", "recommendations.read" ]
+        } ],
+        "summary" : "Get items relationship (\"to-many\").",
+        "tags" : [ "userOfflineMixes" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/userRecommendations/{id}" : {
       "get" : {
-        "description" : "Retrieves single userRecommendation by id.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the dedicated mix resources instead: userDiscoveryMixes, userDailyMixes, userNewReleaseMixes, or userOfflineMixes.",
         "parameters" : [ {
           "description" : "User recommendations id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -23504,7 +24259,8 @@
     },
     "/userRecommendations/{id}/relationships/discoveryMixes" : {
       "get" : {
-        "description" : "Retrieves discoveryMixes relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userDiscoveryMixes resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User recommendations id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -23603,7 +24359,8 @@
     },
     "/userRecommendations/{id}/relationships/myMixes" : {
       "get" : {
-        "description" : "Retrieves myMixes relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userDailyMixes resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User recommendations id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -23702,7 +24459,8 @@
     },
     "/userRecommendations/{id}/relationships/newArrivalMixes" : {
       "get" : {
-        "description" : "Retrieves newArrivalMixes relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userNewReleaseMixes resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User recommendations id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -23801,7 +24559,8 @@
     },
     "/userRecommendations/{id}/relationships/offlineMixes" : {
       "get" : {
-        "description" : "Retrieves offlineMixes relationship.",
+        "deprecated" : true,
+        "description" : "Deprecated. Use the userOfflineMixes resource and its items relationship instead.",
         "parameters" : [ {
           "description" : "User recommendations id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -29422,7 +30181,11 @@
               "userCollectionTracks" : "#/components/schemas/UserCollectionTracks_Resource_Object",
               "userCollectionVideos" : "#/components/schemas/UserCollectionVideos_Resource_Object",
               "userCollections" : "#/components/schemas/UserCollections_Resource_Object",
+              "userDailyMixes" : "#/components/schemas/UserDailyMixes_Resource_Object",
               "userDataExportRequests" : "#/components/schemas/UserDataExportRequests_Resource_Object",
+              "userDiscoveryMixes" : "#/components/schemas/UserDiscoveryMixes_Resource_Object",
+              "userNewReleaseMixes" : "#/components/schemas/UserNewReleaseMixes_Resource_Object",
+              "userOfflineMixes" : "#/components/schemas/UserOfflineMixes_Resource_Object",
               "userRecommendations" : "#/components/schemas/UserRecommendations_Resource_Object",
               "userReports" : "#/components/schemas/UserReports_Resource_Object",
               "users" : "#/components/schemas/Users_Resource_Object",
@@ -29536,7 +30299,15 @@
           }, {
             "$ref" : "#/components/schemas/UserCollections_Resource_Object"
           }, {
+            "$ref" : "#/components/schemas/UserDailyMixes_Resource_Object"
+          }, {
             "$ref" : "#/components/schemas/UserDataExportRequests_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/UserDiscoveryMixes_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/UserNewReleaseMixes_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/UserOfflineMixes_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/UserRecommendations_Resource_Object"
           }, {
@@ -36871,6 +37642,90 @@
           }
         }
       },
+      "UserDailyMixes_Attributes" : {
+        "type" : "object"
+      },
+      "UserDailyMixes_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserDailyMixes_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserDailyMixes_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserDailyMixes_Relationships" : {
+        "properties" : {
+          "items" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "UserDailyMixes_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/UserDailyMixes_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/UserDailyMixes_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "UserDailyMixes_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/UserDailyMixes_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "UserDataExportRequestsCreateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -36958,6 +37813,258 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/UserDataExportRequests_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserDiscoveryMixes_Attributes" : {
+        "type" : "object"
+      },
+      "UserDiscoveryMixes_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserDiscoveryMixes_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserDiscoveryMixes_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserDiscoveryMixes_Relationships" : {
+        "properties" : {
+          "items" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "UserDiscoveryMixes_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/UserDiscoveryMixes_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/UserDiscoveryMixes_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "UserDiscoveryMixes_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/UserDiscoveryMixes_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserNewReleaseMixes_Attributes" : {
+        "type" : "object"
+      },
+      "UserNewReleaseMixes_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserNewReleaseMixes_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserNewReleaseMixes_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserNewReleaseMixes_Relationships" : {
+        "properties" : {
+          "items" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "UserNewReleaseMixes_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/UserNewReleaseMixes_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/UserNewReleaseMixes_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "UserNewReleaseMixes_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/UserNewReleaseMixes_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserOfflineMixes_Attributes" : {
+        "type" : "object"
+      },
+      "UserOfflineMixes_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserOfflineMixes_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserOfflineMixes_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserOfflineMixes_Relationships" : {
+        "properties" : {
+          "items" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "UserOfflineMixes_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/UserOfflineMixes_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/UserOfflineMixes_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "UserOfflineMixes_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/UserOfflineMixes_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
