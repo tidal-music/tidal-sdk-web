@@ -14,7 +14,7 @@ overrides:
   minimatch@<4: 3.1.5
   minimatch@>=5: 10.2.5
   flatted: 3.4.2
-  diff@>=5 <6: 8.0.4
+  diff@>=5 <6: 9.0.0
   diff@>=8: 8.0.4
   markdown-it@>=14: 14.1.1
   js-yaml@>=4: 4.1.1
@@ -3041,6 +3041,10 @@ packages:
 
   diff@8.0.4:
     resolution: {integrity: sha512-DPi0FmjiSU5EvQV0++GFDOJ9ASQUVFh5kD+OzOnYdi7n3Wpm9hWWGfB/O2blfHcMVTL5WkQXSnRiK9makhrcnw==}
+    engines: {node: '>=0.3.1'}
+
+  diff@9.0.0:
+    resolution: {integrity: sha512-svtcdpS8CgJyqAjEQIXdb3OjhFVVYjzGAPO8WGCmRbrml64SPw/jJD4GoE98aR7r25A0XcgrK3F02yw9R/vhQw==}
     engines: {node: '>=0.3.1'}
 
   dir-glob@3.0.1:
@@ -7760,7 +7764,6 @@ snapshots:
       open: 8.4.2
       portfinder: 1.0.32
     transitivePeerDependencies:
-      - '@75lb/nature'
       - bufferutil
       - supports-color
       - utf-8-validate
@@ -7857,7 +7860,7 @@ snapshots:
       command-line-args: 5.2.1
       command-line-usage: 7.0.1
       convert-source-map: 2.0.0
-      diff: 8.0.4
+      diff: 9.0.0
       globby: 11.1.0
       nanocolors: 0.2.13
       portfinder: 1.0.32
@@ -8543,6 +8546,8 @@ snapshots:
   devtools-protocol@0.0.1413902: {}
 
   diff@8.0.4: {}
+
+  diff@9.0.0: {}
 
   dir-glob@3.0.1:
     dependencies:
