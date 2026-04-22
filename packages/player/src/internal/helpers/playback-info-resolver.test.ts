@@ -158,9 +158,9 @@ describe('playbackInfoResolver', () => {
       audioQuality: 'LOSSLESS',
       clientId,
       mediaProduct: {
-        productId: '1316405',
+        productId: '518309787',
         productType: 'track',
-        shareCode: 'abc123',
+        shareCode: '36d1002d-e674-48f6-bd57-626b4eb453b6',
         sourceId: '',
         sourceType: '',
       },
