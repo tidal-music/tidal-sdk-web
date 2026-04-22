@@ -25,6 +25,7 @@ describe('playbackInfoResolver', () => {
       },
       playerType: 'native',
       prefetch: false,
+      // eslint-disable-next-line no-restricted-syntax
       streamingSessionId: `tidal-player-js-test-${Date.now()}`,
     });
 
@@ -54,6 +55,7 @@ describe('playbackInfoResolver', () => {
       },
       playerType: 'native',
       prefetch: false,
+      // eslint-disable-next-line no-restricted-syntax
       streamingSessionId: `tidal-player-js-test-${Date.now()}`,
     });
 
@@ -83,6 +85,7 @@ describe('playbackInfoResolver', () => {
       },
       playerType: 'shaka',
       prefetch: false,
+      // eslint-disable-next-line no-restricted-syntax
       streamingSessionId: `tidal-player-js-test-${Date.now()}`,
     });
 
@@ -126,6 +129,7 @@ describe('playbackInfoResolver', () => {
       },
       playerType: 'shaka',
       prefetch: false,
+      // eslint-disable-next-line no-restricted-syntax
       streamingSessionId: `tidal-player-js-test-${Date.now()}`,
     });
 
@@ -162,6 +166,7 @@ describe('playbackInfoResolver', () => {
       },
       playerType: 'shaka',
       prefetch: false,
+      // eslint-disable-next-line no-restricted-syntax
       streamingSessionId: `tidal-player-js-test-${Date.now()}`,
     });
 
@@ -191,6 +196,7 @@ describe('playbackInfoResolver', () => {
       },
       playerType: 'shaka',
       prefetch: false,
+      // eslint-disable-next-line no-restricted-syntax
       streamingSessionId: `tidal-player-js-test-${Date.now()}`,
     });
 
