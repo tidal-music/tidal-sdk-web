@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Support share code for track manifests (#610)
+- Shaka player updated to: 5.1.1
 
 ## [0.16.0] - 2026-04-10
 
