@@ -14,7 +14,7 @@ overrides:
   minimatch@<4: 3.1.5
   minimatch@>=5: 10.2.5
   flatted: 3.4.2
-  diff@>=5 <6: 8.0.4
+  diff@>=5 <6: 9.0.0
   diff@>=8: 9.0.0
   markdown-it@>=14: 14.1.1
   js-yaml@>=4: 4.1.1
@@ -3038,10 +3038,6 @@ packages:
 
   devtools-protocol@0.0.1413902:
     resolution: {integrity: sha512-yRtvFD8Oyk7C9Os3GmnFZLu53yAfsnyw1s+mLmHHUK0GQEc9zthHWvS1r67Zqzm5t7v56PILHIVZ7kmFMaL2yQ==}
-
-  diff@8.0.4:
-    resolution: {integrity: sha512-DPi0FmjiSU5EvQV0++GFDOJ9ASQUVFh5kD+OzOnYdi7n3Wpm9hWWGfB/O2blfHcMVTL5WkQXSnRiK9makhrcnw==}
-    engines: {node: '>=0.3.1'}
 
   diff@9.0.0:
     resolution: {integrity: sha512-svtcdpS8CgJyqAjEQIXdb3OjhFVVYjzGAPO8WGCmRbrml64SPw/jJD4GoE98aR7r25A0XcgrK3F02yw9R/vhQw==}
@@ -7861,7 +7857,7 @@ snapshots:
       command-line-args: 5.2.1
       command-line-usage: 7.0.1
       convert-source-map: 2.0.0
-      diff: 8.0.4
+      diff: 9.0.0
       globby: 11.1.0
       nanocolors: 0.2.13
       portfinder: 1.0.32
@@ -8545,8 +8541,6 @@ snapshots:
   detect-libc@2.1.2: {}
 
   devtools-protocol@0.0.1413902: {}
-
-  diff@8.0.4: {}
 
   diff@9.0.0: {}
 
