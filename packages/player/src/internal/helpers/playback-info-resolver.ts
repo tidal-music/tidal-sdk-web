@@ -360,7 +360,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
     prefetch,
     streamingSessionId,
   } = options;
-  const trackId = mediaProduct.productId;
+  const { productId: trackId, shareCode } = mediaProduct;
 
   const isFairPlaySupported = await shaka.drm.FairPlay.isFairPlaySupported();
 
@@ -380,6 +380,7 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
               adaptive: audioAdaptiveBitrateStreaming,
               formats: audioQualityToFormats(audioQuality),
               manifestType: isFairPlaySupported ? 'HLS' : 'MPEG_DASH',
+              shareCode,
               uriScheme: 'DATA',
               usage: 'PLAYBACK',
             },

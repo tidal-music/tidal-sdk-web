@@ -64,6 +64,8 @@ export type MediaProduct = {
   productType: 'track' | 'video';
   /** Optional client-set reference id to handle duplicated in a play queue implementation */
   referenceId?: string;
+  /** Share code that grants access to UNLISTED resources */
+  shareCode?: string;
   /** The id of the source to play, passed along for event tracking */
   sourceId: string;
   /** The type of the source to play, passed along for event tracking */
