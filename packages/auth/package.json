@@ -13,9 +13,10 @@
   "module": "dist/index.js",
   "exports": {
     "import": "./dist/index.js",
+    "types": "./dist/src/index.d.ts",
     "default": "./dist/index.js"
   },
-  "types": "./dist/index.d.ts",
+  "types": "./dist/src/index.d.ts",
   "scripts": {
     "build": "vite build",
     "build:dev": "vite build -m development",

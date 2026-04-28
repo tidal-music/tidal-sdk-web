@@ -12,6 +12,8 @@ export type ErrorOptions = {
  * @extends Error
  */
 export class TidalError extends Error {
+  override name = 'TidalError';
+
   errorCode: string;
 
   /**
@@ -29,7 +31,6 @@ export class TidalError extends Error {
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     captureStackTrace(this, TidalError);
 
-    this.name = 'TidalError';
     this.errorCode = errorCode;
   }
 }

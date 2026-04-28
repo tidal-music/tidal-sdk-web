@@ -10,6 +10,8 @@ import { type ErrorOptions, TidalError } from './tidalError';
  * @extends TidalError
  */
 export class RetryableError extends TidalError {
+  override name = 'RetryableError';
+
   constructor(errorCode: string, options?: ErrorOptions) {
     super(errorCode, options);
 
@@ -18,7 +20,5 @@ export class RetryableError extends TidalError {
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     captureStackTrace(this, RetryableError);
-
-    this.name = 'RetryableError';
   }
 }

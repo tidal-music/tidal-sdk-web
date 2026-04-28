@@ -10,6 +10,8 @@ import {
  * @extends TidalError
  */
 export class TokenResponseError extends TidalError {
+  override name = 'TokenResponseError';
+
   constructor(errorCode: string, options?: ErrorOptions) {
     super(errorCode, options);
 
@@ -18,7 +20,5 @@ export class TokenResponseError extends TidalError {
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     captureStackTrace(this, TokenResponseError);
-
-    this.name = 'TokenResponseError';
   }
 }

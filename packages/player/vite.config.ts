@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
         : {},
     plugins: [
       version(),
-      dts({ rollupTypes: true, tsconfigPath: 'tsconfig.build.json' }),
+      dts({ rollupTypes: false, tsconfigPath: 'tsconfig.build.json' }),
     ],
     server: {
       open: '/demo/index.html',

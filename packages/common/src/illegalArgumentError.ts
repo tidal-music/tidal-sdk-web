@@ -7,6 +7,8 @@ import { type ErrorOptions, TidalError } from './tidalError';
  * @extends TidalError
  */
 export class IllegalArgumentError extends TidalError {
+  override name = 'IllegalArgumentError';
+
   constructor(errorCode: string, options?: ErrorOptions) {
     super(errorCode, options);
 
@@ -15,7 +17,5 @@ export class IllegalArgumentError extends TidalError {
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     captureStackTrace(this, IllegalArgumentError);
-
-    this.name = 'IllegalArgumentError';
   }
 }
