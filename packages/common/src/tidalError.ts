@@ -12,9 +12,9 @@ export type ErrorOptions = {
  * @extends Error
  */
 export class TidalError extends Error {
-  override name = 'TidalError';
-
   errorCode: string;
+
+  override name = 'TidalError';
 
   /**
    * Constructor.
