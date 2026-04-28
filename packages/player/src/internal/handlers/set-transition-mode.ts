@@ -14,10 +14,12 @@ const MAX_CROSSFADE_MS = 15000;
  * @param {number} crossfadeInMs
  */
 export function setTransitionMode(crossfadeInMs: number) {
+  const sanitized = Number.isFinite(crossfadeInMs) ? crossfadeInMs : 0;
+
   Config.update({
     crossfadeInMs: Math.max(
       MIN_CROSSFADE_MS,
-      Math.min(MAX_CROSSFADE_MS, Math.round(crossfadeInMs)),
+      Math.min(MAX_CROSSFADE_MS, Math.round(sanitized)),
     ),
   });
 }

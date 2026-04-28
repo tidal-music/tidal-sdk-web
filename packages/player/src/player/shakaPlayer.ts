@@ -372,7 +372,10 @@ export default class ShakaPlayer extends BasePlayer {
         (e.target as HTMLMediaElement).error,
       );
 
-    const seekedHandler = () => {
+    const seekedHandler = (e: Event) => {
+      if (shouldIgnoreEvent(e)) {
+        return;
+      }
       this.currentTime = this.mediaElement ? this.mediaElement.currentTime : 0;
       this.seekEnd(this.currentTime);
     };
@@ -1149,6 +1152,22 @@ export default class ShakaPlayer extends BasePlayer {
     const nextPayload = this.#preloadedPayload!;
     const nextTrackTargetVolume = this.adjustedVolume(nextPayload.streamInfo);
 
+    // Finish the current session before pausing -- pause() prevents the element
+    // from reaching 'ended', so endedHandler would never finalize this session.
+    this.currentTime = currentMediaElement.currentTime;
+    const savedPlaybackState = this.playbackState;
+    const savedCurrentSessionId = this.currentStreamingSessionId;
+    this.finishCurrentMediaProduct('completed', true);
+    this.currentStreamingSessionId = savedCurrentSessionId;
+    this.playbackState = savedPlaybackState;
+
+    const isPlayerOne = this.#activePlayer === 1;
+    if (isPlayerOne) {
+      this.#playerOneSessionId = undefined;
+    } else {
+      this.#playerTwoSessionId = undefined;
+    }
+
     currentMediaElement.pause();
     currentMediaElement.volume = 0;
 
@@ -1345,7 +1364,9 @@ export default class ShakaPlayer extends BasePlayer {
       // Set volume to 0 and position to 0
       // Keep the media element PAUSED - we'll play it during crossfade or when user skips
       inactiveMediaElement.volume = 0;
-      inactiveMediaElement.currentTime = 0;
+      if (inactiveMediaElement.currentTime !== 0) {
+        inactiveMediaElement.currentTime = 0;
+      }
 
       this.debugLog('Next track loaded and ready in inactive player');
 
