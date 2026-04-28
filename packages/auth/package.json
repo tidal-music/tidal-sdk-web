@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/auth",
-  "version": "1.4.0",
+  "version": "1.6.0",
   "type": "module",
   "files": [
     "dist"
@@ -13,9 +13,10 @@
   "module": "dist/index.js",
   "exports": {
     "import": "./dist/index.js",
+    "types": "./dist/src/index.d.ts",
     "default": "./dist/index.js"
   },
-  "types": "./dist/index.d.ts",
+  "types": "./dist/src/index.d.ts",
   "scripts": {
     "build": "vite build",
     "build:dev": "vite build -m development",
@@ -37,11 +38,11 @@
     "@tidal-music/true-time": "workspace:^"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "4.0.18",
-    "@vitest/ui": "4.0.18",
-    "typescript": "5.9.3",
-    "vite": "7.3.1",
+    "@vitest/coverage-v8": "4.1.5",
+    "@vitest/ui": "4.1.5",
+    "typescript": "6.0.3",
+    "vite": "8.0.10",
     "vite-plugin-dts": "4.5.4",
-    "vitest": "4.0.18"
+    "vitest": "4.1.5"
   }
 }

@@ -50,33 +50,6 @@ const prepareFetchMock = {
 };
 
 describe.sequential('auth', () => {
-  beforeEach(() => {
-    // Create a proper CustomEvent constructor mock
-    class MockCustomEvent {
-      detail: { type: string };
-      type: string;
-
-      constructor(type: string, options: { detail: { type: string } }) {
-        this.type = type;
-        this.detail = options.detail;
-      }
-    }
-
-    vi.stubGlobal('CustomEvent', MockCustomEvent);
-
-    vi.stubGlobal(
-      'dispatchEvent',
-      vi.fn(() => true),
-    );
-
-    vi.stubGlobal(
-      'addEventListener',
-      vi.fn((_name, callback: () => void) => {
-        callback();
-      }),
-    );
-  });
-
   afterEach(() => {
     vi.clearAllMocks();
     vi.resetAllMocks();
@@ -151,6 +124,19 @@ describe.sequential('auth', () => {
         tidalAuthServiceBaseUri: 'https://foo.baz',
         tidalLoginServiceBaseUri: 'https://baz.bar',
       });
+    });
+
+    it('inits with a custom crypto adapter', async () => {
+      vi.mocked(storage.loadCredentials).mockResolvedValue(undefined);
+
+      const cryptoAdapter = {
+        digest: vi.fn(),
+        getRandomValues: vi.fn(),
+      };
+
+      await init({ ...initConfig, crypto: cryptoAdapter });
+
+      expect(utils.setCryptoAdapter).toHaveBeenCalledWith(cryptoAdapter);
     });
 
     it('inits the auth module with empty scopes', async () => {
@@ -594,7 +580,9 @@ describe.sequential('auth', () => {
       vi.mocked(storage.loadCredentials).mockResolvedValue(fixtures.storage);
       vi.spyOn(trueTime, 'now').mockReturnValue(0); // make sure token isn't expired
       vi.mocked(fetchHandling.prepareFetch).mockReturnValue(prepareFetchMock);
-      const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
+
+      const busListener = vi.fn();
+      bus(busListener);
 
       await init(initConfig);
 
@@ -603,13 +591,11 @@ describe.sequential('auth', () => {
       expect(accessToken).toEqual(fixtures.storage.accessToken);
       expect(fetchHandling.handleTokenFetch).not.toHaveBeenCalled();
 
-      // make sure bus contains the token
-      expect(dispatchSpy).toHaveBeenCalledWith({
+      expect(busListener).toHaveBeenCalledWith({
         detail: {
           payload: fixtures.storage.accessToken,
           type: 'CredentialsUpdatedMessage',
         },
-        type: 'authEventBus',
       });
     });
 
@@ -909,22 +895,17 @@ describe.sequential('auth', () => {
   });
   describe('event bus', () => {
     it('calls the event bus on logout', async () => {
-      const dispatchSpy = vi.spyOn(globalThis, 'dispatchEvent');
-      const listenerSpy = vi.spyOn(globalThis, 'addEventListener');
       const consoleSpy = vi.spyOn(console, 'log');
 
       // eslint-disable-next-line no-console
-      const logger = (e: Event) => console.log(e);
+      const logger = (e: { detail: unknown }) => console.log(e);
       bus(logger);
 
       logout();
 
-      expect(dispatchSpy).toHaveBeenCalledWith({
+      expect(consoleSpy).toHaveBeenCalledWith({
         detail: { type: 'CredentialsUpdatedMessage' },
-        type: 'authEventBus',
       });
-      expect(listenerSpy).toHaveBeenCalledWith('authEventBus', logger);
-      expect(consoleSpy).toHaveBeenCalled();
     });
   });
 

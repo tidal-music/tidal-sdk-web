@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
-    "baseUrl": "./src",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "target": "es2022",

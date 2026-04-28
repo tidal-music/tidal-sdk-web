@@ -1,19 +1,36 @@
 /* c8 ignore start types file */
 import type { Credentials } from '@tidal-music/common';
 
+export type StorageAdapter = {
+  load(key: string): Promise<string | null>;
+  remove(key: string): Promise<void>;
+  save(key: string, value: string): Promise<void>;
+};
+
+export type CryptoAdapter = {
+  digest(algorithm: string, data: BufferSource): Promise<ArrayBuffer>;
+  getRandomValues(array: Uint8Array): Uint8Array;
+};
+
 export type InitArgs = {
   clientId: string;
   clientSecret?: string;
   clientUniqueKey?: string;
   credentialsStorageKey: string;
+  crypto?: CryptoAdapter;
   scopes?: Array<string>;
+  storage?: StorageAdapter;
   tidalAuthServiceBaseUri?: string;
   tidalLoginServiceBaseUri?: string;
 };
 
 export type UserCredentials = Omit<
   InitArgs,
-  'scopes' | 'tidalAuthServiceBaseUri' | 'tidalLoginServiceBaseUri'
+  | 'crypto'
+  | 'scopes'
+  | 'storage'
+  | 'tidalAuthServiceBaseUri'
+  | 'tidalLoginServiceBaseUri'
 > & {
   accessToken?: Credentials;
   codeChallenge?: string;

@@ -10,6 +10,8 @@ import {
  * @extends TidalError
  */
 export class UnexpectedError extends TidalError {
+  override name = 'UnexpectedError';
+
   constructor(errorCode: string, options?: ErrorOptions) {
     super(errorCode, options);
 
@@ -18,7 +20,5 @@ export class UnexpectedError extends TidalError {
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     captureStackTrace(this, UnexpectedError);
-
-    this.name = 'UnexpectedError';
   }
 }

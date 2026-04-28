@@ -20,6 +20,8 @@ let _isOutage = false;
  * @extends TidalError
  */
 export class OutageStartError extends TidalError {
+  override name = 'OutageStartError';
+
   constructor(errorCode: string, options?: ErrorOptions) {
     super(errorCode, options);
 
@@ -28,8 +30,6 @@ export class OutageStartError extends TidalError {
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     captureStackTrace(this, OutageStartError);
-
-    this.name = 'OutageStartError';
   }
 }
 

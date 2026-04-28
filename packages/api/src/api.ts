@@ -36,6 +36,9 @@ export function createAPIClient(
 
   const apiClient = createClient<paths>({
     baseUrl,
+    // Preserve commas and reserved characters in query values (e.g. JSON:API
+    // `include` lists and `page[cursor]`) so gateways parse them as intended.
+    querySerializer: { allowReserved: true },
   });
   apiClient.use(authMiddleware);
 
