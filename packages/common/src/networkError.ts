@@ -7,6 +7,8 @@ import { type ErrorOptions, TidalError } from './tidalError';
  * @extends TidalError
  */
 export class NetworkError extends TidalError {
+  override name = 'NetworkError';
+
   constructor(errorCode: string, options?: ErrorOptions) {
     super(errorCode, options);
 
@@ -15,7 +17,5 @@ export class NetworkError extends TidalError {
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     captureStackTrace(this, NetworkError);
-
-    this.name = 'NetworkError';
   }
 }

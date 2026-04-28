@@ -10,7 +10,9 @@ const getRandomValues = (array: Uint8Array): Uint8Array => {
   if (cryptoAdapter) {
     return cryptoAdapter.getRandomValues(array);
   }
-  return globalThis.crypto.getRandomValues(array);
+  return globalThis.crypto.getRandomValues(
+    array as Parameters<Crypto['getRandomValues']>[0],
+  ) as Uint8Array;
 };
 
 const digest = (
