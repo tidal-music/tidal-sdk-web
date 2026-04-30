@@ -39,6 +39,9 @@ jobs:
       - name: Ensure Cypress binary is installed
         working-directory: packages/player
         run: pnpm exec cypress install
+      - name: Map dev.tidal.com to localhost
+        # Player dev server runs at https://dev.tidal.com:5173; see README.
+        run: echo "127.0.0.1 dev.tidal.com" | sudo tee -a /etc/hosts
       - name: Prepare test user for player tests
         id: json
         env:
@@ -58,7 +61,9 @@ jobs:
           install: false
           browser: chrome
           start: pnpm --dir packages/player/ dev
-          wait-on: 'http://localhost:5173/demo/test-case-1.html'
+          # tcp: avoids strict-SSL validation against the locally-generated
+          # cert; Chromium ignores cert errors via cypress.config.js.
+          wait-on: 'tcp:dev.tidal.com:5173'
           command: pnpm --dir packages/player/ internal:cypress:run
       - name: Save Cypress binary cache
         if: always()
