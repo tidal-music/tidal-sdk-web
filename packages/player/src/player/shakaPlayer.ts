@@ -27,6 +27,7 @@ import { registerAdaptations } from './adaptations';
 import {
   ensureVideoElementsMounted,
   mediaElementOne,
+  mediaElementTwo,
 } from './audio-context-store';
 import type { LoadPayload } from './basePlayer';
 import { BasePlayer } from './basePlayer';
@@ -96,6 +97,15 @@ const serverCertificateWidevine = new Uint8Array([
 
 // eslint-disable-next-line import/no-default-export
 export default class ShakaPlayer extends BasePlayer {
+  // Gapless micro-crossfade defaults (used when crossfadeInMs === 0)
+  static readonly #GAPLESS_CROSSFADE_MS = 25;
+  static readonly #GAPLESS_START_BEFORE_END_S = 0.2;
+
+  #activePlayer: 1 | 2 = 1;
+
+  #crossfadeInProgress = false;
+  #crossfadeTimerId: ReturnType<typeof setTimeout> | null = null;
+
   #isReset = true;
 
   #librariesLoad: Promise<void>;
@@ -113,9 +123,13 @@ export default class ShakaPlayer extends BasePlayer {
     waitingHandler: EventListener;
   };
 
-  #preloadManager: shaka.media.PreloadManager | null = null;
-  #preloadedPayload: LoadPayload | null = null;
+  // Track which session is on which player for proper ended event handling
+  #playerOneSessionId: string | undefined;
 
+  #playerTwoSessionId: string | undefined;
+
+  #preloadReady = false;
+  #preloadedPayload: LoadPayload | null = null;
   #shakaEventHandlers: {
     bufferingHandler: EventListener;
     errorHandler: EventListener;
@@ -123,11 +137,13 @@ export default class ShakaPlayer extends BasePlayer {
     stallDetectedHandler: EventListener;
   };
 
+  // Dual player setup for gapless playback
+  #shakaInstanceOne: shaka.Player | undefined;
+  #shakaInstanceTwo: shaka.Player | undefined;
+
   #shouldRetryStreaming = false;
 
   name = 'shakaPlayer';
-
-  shakaInstance: shaka.Player | undefined;
 
   constructor() {
     super();
@@ -145,12 +161,40 @@ export default class ShakaPlayer extends BasePlayer {
     }
 
     credentialsProviderStore.addEventListener('authorized', () => {
-      if (this.shakaInstance) {
-        this.#configureDRM(this.shakaInstance).catch(console.error);
+      if (this.#shakaInstanceOne) {
+        this.#configureDRM(this.#shakaInstanceOne).catch(console.error);
+      }
+      if (this.#shakaInstanceTwo) {
+        this.#configureDRM(this.#shakaInstanceTwo).catch(console.error);
       }
     });
 
-    const setPlaying = () => {
+    /**
+     * Check if an event should be ignored based on its source.
+     * Returns true if the event is from an inactive source and should be ignored.
+     * For dual-player gapless: only process events from the active media element or Shaka instance.
+     */
+    const shouldIgnoreEvent = (e?: Event): boolean => {
+      if (!e) {
+        return false;
+      }
+
+      const target = e.target;
+      if (target instanceof HTMLMediaElement) {
+        return target !== this.getActiveMediaElement();
+      } else if (target instanceof shaka.Player) {
+        return target !== this.getActiveShakaInstance();
+      } else {
+        // Ignore events from unknown sources.
+        return true;
+      }
+    };
+
+    const setPlaying = (e?: Event) => {
+      if (shouldIgnoreEvent(e)) {
+        return;
+      }
+
       // Safari tend to send events wrongly. Verify the media event is actually playing before sending setting state.
       if (this.mediaElement && !this.mediaElement.paused) {
         this.playbackState = 'PLAYING';
@@ -158,6 +202,10 @@ export default class ShakaPlayer extends BasePlayer {
     };
 
     const setStalled = (e: Event) => {
+      if (shouldIgnoreEvent(e)) {
+        return;
+      }
+
       // Buffering event from shaka with this networkState is the real "waiting" event: https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/waiting_event
       // "The waiting event is fired when playback has stopped because of a temporary lack of data."
       const shakaWaiting =
@@ -170,7 +218,11 @@ export default class ShakaPlayer extends BasePlayer {
       }
     };
 
-    const setNotPlaying = () => {
+    const setNotPlaying = (e?: Event) => {
+      if (shouldIgnoreEvent(e)) {
+        return;
+      }
+
       (async () => {
         const mostLikelyWillPlayPreloadASAP =
           this.mediaElement &&
@@ -195,15 +247,38 @@ export default class ShakaPlayer extends BasePlayer {
 
     const timeUpdateHandler = (e: Event) => {
       const mediaElement = e.target as HTMLMediaElement;
+      const activeMediaElement = this.getActiveMediaElement();
+      const isActiveElement = mediaElement === activeMediaElement;
 
-      if (mediaElement.readyState > HTMLMediaElement.HAVE_NOTHING) {
+      // Only update currentTime from active media element
+      if (
+        isActiveElement &&
+        mediaElement.readyState > HTMLMediaElement.HAVE_NOTHING
+      ) {
         this.currentTime = mediaElement.currentTime;
+      }
+
+      // Track transition logic (crossfade / gapless)
+      if (isActiveElement && this.#preloadedPayload && this.#preloadReady) {
+        const timeRemaining = mediaElement.duration - mediaElement.currentTime;
+        const { startBeforeEndS } = this.#getTransitionConfig();
+
+        if (
+          !this.#crossfadeInProgress &&
+          timeRemaining <= startBeforeEndS &&
+          timeRemaining > 0
+        ) {
+          this.#startTransition().catch(console.error);
+        }
       }
     };
 
     const durationChangeHandler = (e: Event) => {
       if (this.currentStreamingSessionId) {
-        if (e.target instanceof HTMLMediaElement) {
+        if (
+          e.target instanceof HTMLMediaElement &&
+          e.target === this.getActiveMediaElement()
+        ) {
           streamingSessionStore.overwriteDuration(
             this.currentStreamingSessionId,
             e.target.duration,
@@ -213,8 +288,80 @@ export default class ShakaPlayer extends BasePlayer {
     };
 
     const endedHandler = (e: Event) => {
+      const mediaElement = e.target as HTMLMediaElement;
       timeUpdateHandler(e);
-      this.finishCurrentMediaProduct('completed');
+
+      // Ensure currentTime reflects the ended media element, even if it is inactive
+      // after gapless crossfade. This is critical for accurate endAssetPosition reporting.
+      if (mediaElement.readyState > HTMLMediaElement.HAVE_NOTHING) {
+        this.currentTime = mediaElement.currentTime;
+      }
+
+      // Determine which player fired the ended event and finish its session
+      const isPlayerOne = mediaElement === mediaElementOne;
+      const sessionIdToFinish = isPlayerOne
+        ? this.#playerOneSessionId
+        : this.#playerTwoSessionId;
+
+      if (sessionIdToFinish) {
+        this.debugLog(
+          `Ended event from player ${isPlayerOne ? 1 : 2} (session: ${sessionIdToFinish})`,
+        );
+
+        const isCurrentSession =
+          this.currentStreamingSessionId === sessionIdToFinish;
+
+        // If a crossfade transition is in progress, the track ending is expected
+        // and the transition will complete on its own. Treat as gapless to prevent
+        // the custom 'ended' event from triggering playbackEngineEndedHandler's
+        // fallback path (skipToPreloadedMediaProduct), which would race with the
+        // in-flight transition and cause a duplicate media-product-transition.
+        const treatAsGapless = !isCurrentSession || this.#crossfadeInProgress;
+
+        if (!treatAsGapless) {
+          this.finishCurrentMediaProduct('completed');
+        } else if (isCurrentSession) {
+          // Crossfade in progress: the track ended before crossfade completed.
+          // Use the gapless path to avoid dispatching the custom 'ended' event.
+          const savedPlaybackState = this.playbackState;
+          const savedCurrentSessionId = this.currentStreamingSessionId;
+
+          this.finishCurrentMediaProduct('completed', true);
+
+          this.currentStreamingSessionId = savedCurrentSessionId;
+          this.playbackState = savedPlaybackState;
+        } else {
+          // Gapless case: Track has already been replaced by another track
+          // that's actively playing. Finish the session without mutating
+          // global playback state (which would incorrectly set IDLE).
+          const savedPlaybackState = this.playbackState;
+          const savedCurrentSessionId = this.currentStreamingSessionId;
+
+          // Temporarily swap to the ending session for finishCurrentMediaProduct
+          this.currentStreamingSessionId = sessionIdToFinish;
+          this.finishCurrentMediaProduct('completed', true);
+
+          // Restore state - the active track is still playing
+          this.currentStreamingSessionId = savedCurrentSessionId;
+          this.playbackState = savedPlaybackState;
+
+          // Also restore currentTime to reflect the active player
+          const activeMediaElement = this.getActiveMediaElement();
+          if (
+            activeMediaElement &&
+            activeMediaElement.readyState > HTMLMediaElement.HAVE_NOTHING
+          ) {
+            this.currentTime = activeMediaElement.currentTime;
+          }
+        }
+
+        // Clear the finished session ID from the player
+        if (isPlayerOne) {
+          this.#playerOneSessionId = undefined;
+        } else {
+          this.#playerTwoSessionId = undefined;
+        }
+      }
     };
 
     const errorHandler = (e: Event) =>
@@ -223,7 +370,10 @@ export default class ShakaPlayer extends BasePlayer {
         (e.target as HTMLMediaElement).error,
       );
 
-    const seekedHandler = () => {
+    const seekedHandler = (e: Event) => {
+      if (shouldIgnoreEvent(e)) {
+        return;
+      }
       this.currentTime = this.mediaElement ? this.mediaElement.currentTime : 0;
       this.seekEnd(this.currentTime);
     };
@@ -242,20 +392,78 @@ export default class ShakaPlayer extends BasePlayer {
     };
 
     this.#shakaEventHandlers = {
-      bufferingHandler: event => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore - Custom shaka event
-        if (event.buffering) {
+      bufferingHandler: (event => {
+        // Shaka Player emits buffering events with a custom 'buffering' property
+        const bufferingEvent = event as Event & { buffering: boolean };
+        if (bufferingEvent.buffering) {
           setStalled(event);
         } else if (this.hasStarted()) {
-          setPlaying();
+          setPlaying(event);
         }
-      },
+      }) as EventListener,
       errorHandler: ((e: CustomEvent<shaka.extern.Error>) =>
         this.#handleShakaError(e)) as EventListener,
       loadedHandler: setNotPlaying,
       stallDetectedHandler: setStalled,
     };
+  }
+
+  #completeTransition(
+    nextMediaElement: HTMLMediaElement,
+    nextPayload: LoadPayload,
+  ) {
+    this.#activePlayer = this.#activePlayer === 1 ? 2 : 1;
+
+    // CRITICAL: Reset currentTime IMMEDIATELY after swapping active player
+    // to prevent race conditions with event handlers reading stale position.
+    this.currentTime = nextMediaElement.currentTime;
+
+    this.currentStreamingSessionId = nextPayload.streamInfo.streamingSessionId;
+    this.preloadedStreamingSessionId = undefined;
+    this.startAssetPosition = 0;
+
+    const duration =
+      nextMediaElement.duration ?? nextPayload.streamInfo.duration ?? 0;
+
+    const assetPosition = nextMediaElement.currentTime;
+
+    const playbackContext = composePlaybackContext({
+      assetPosition,
+      duration,
+      playbackInfo: nextPayload.playbackInfo,
+      streamInfo: nextPayload.streamInfo,
+    });
+
+    streamingSessionStore.saveMediaProductTransition(
+      nextPayload.streamInfo.streamingSessionId,
+      { mediaProduct: nextPayload.mediaProduct, playbackContext },
+    );
+
+    this.debugLog('Media product transition saved for track');
+
+    events.dispatchEvent(
+      mediaProductTransitionEvent(nextPayload.mediaProduct, playbackContext),
+    );
+
+    performance.mark(
+      'streaming_metrics:playback_statistics:idealStartTimestamp',
+      {
+        detail: nextPayload.streamInfo.streamingSessionId,
+        startTime: trueTime.now(),
+      },
+    );
+
+    this.mediaProductStarted(nextPayload.streamInfo.streamingSessionId);
+
+    this.debugLog(
+      'Transition complete! Active player is now:',
+      this.#activePlayer,
+    );
+
+    this.#preloadReady = false;
+    this.#preloadedPayload = null;
+    this.#crossfadeInProgress = false;
+    this.#crossfadeTimerId = null;
   }
 
   async #configureDRM(player: shaka.Player) {
@@ -341,7 +549,7 @@ export default class ShakaPlayer extends BasePlayer {
     }
   }
 
-  async #createShakaPlayer(mediaEl: HTMLMediaElement) {
+  async #createShakaPlayer(mediaEl: HTMLMediaElement, playerNumber: 1 | 2) {
     this.debugLog('createShakaPlayer', mediaEl);
 
     const player = new shaka.Player();
@@ -349,7 +557,14 @@ export default class ShakaPlayer extends BasePlayer {
     await player.attach(mediaEl);
 
     registerStalls(mediaEl);
-    registerAdaptations(player);
+    registerAdaptations(
+      player,
+      () =>
+        playerNumber === 1
+          ? this.#playerOneSessionId
+          : this.#playerTwoSessionId,
+      () => this.#activePlayer === playerNumber,
+    );
 
     const isFairPlaySupported = await shaka.drm.FairPlay.isFairPlaySupported();
 
@@ -490,16 +705,37 @@ export default class ShakaPlayer extends BasePlayer {
         }
       });
 
+    // Set up both Shaka player events and media element events
     this.#shakaEvents(player, true);
-    this.#mediaElementEvents(mediaElementOne, true);
+    this.#mediaElementEvents(mediaEl, true);
 
     return player;
+  }
+
+  #getTransitionConfig() {
+    const crossfadeInMs = Config.get('crossfadeInMs');
+
+    if (crossfadeInMs > 0) {
+      return {
+        crossfadeDurationMs: crossfadeInMs,
+        startBeforeEndS: crossfadeInMs / 1000,
+      };
+    }
+
+    return {
+      crossfadeDurationMs: ShakaPlayer.#GAPLESS_CROSSFADE_MS,
+      startBeforeEndS: ShakaPlayer.#GAPLESS_START_BEFORE_END_S,
+    };
   }
 
   #handleShakaError(e: CustomEvent<shaka.extern.Error>) {
     if (this.#isReset) {
       return;
     }
+
+    const isFromInactivePlayer =
+      e.target instanceof shaka.Player &&
+      e.target !== this.getActiveShakaInstance();
 
     const error = e.detail;
     const errorCode = `S${error.code}` as ErrorCodes;
@@ -539,6 +775,23 @@ export default class ShakaPlayer extends BasePlayer {
     const isNetworkError = error.category === shaka.util.Error.Category.NETWORK;
 
     if (error.severity === shaka.util.Error.Severity.CRITICAL) {
+      if (isFromInactivePlayer) {
+        this.debugLog(
+          'Critical error from inactive player, clearing preload:',
+          errorCode,
+        );
+        this.#preloadedPayload = null;
+        this.#preloadReady = false;
+
+        events.dispatchError(
+          new PlayerError(
+            isNetworkError ? 'PENetwork' : 'EUnexpected',
+            errorCode,
+          ),
+        );
+        return;
+      }
+
       this.playbackState = 'STALLED';
 
       if (this.mediaElement) {
@@ -587,9 +840,10 @@ export default class ShakaPlayer extends BasePlayer {
     this.debugLog('loadAndDispatchMediaProductTransition');
     this.currentTime = assetPosition;
 
-    const { shakaInstance } = this;
+    const shakaInstance = this.getActiveShakaInstance();
+    const mediaElement = this.getActiveMediaElement();
 
-    if (!shakaInstance) {
+    if (!shakaInstance || !mediaElement) {
       return;
     }
 
@@ -603,26 +857,32 @@ export default class ShakaPlayer extends BasePlayer {
       );
     });
 
-    shakaInstance
-      .load(assetUriOrPreloader, assetPosition)
-      .catch((e: shaka.extern.Error) =>
-        this.#handleShakaError(
-          new CustomEvent<shaka.extern.Error>('shaka-error', { detail: e }),
-        ),
-      );
+    this.debugLog(
+      'Loading with',
+      typeof assetUriOrPreloader === 'string' ? 'URL' : 'PreloadManager',
+      'at position',
+      assetPosition,
+    );
 
     this.currentStreamingSessionId = playbackInfo.streamingSessionId;
     this.preloadedStreamingSessionId = undefined;
 
+    // Track which session is on which player
+    if (this.#activePlayer === 1) {
+      this.#playerOneSessionId = playbackInfo.streamingSessionId;
+    } else {
+      this.#playerTwoSessionId = playbackInfo.streamingSessionId;
+    }
+
     let playbackContext: PlaybackContext;
 
-    // If there is a saved mediaProductTransition, use it instead of created a new one.
+    // If there is a saved mediaProductTransition, use it instead of creating a new one.
     // This is the case when using setNext+load.
-    if (
-      streamingSessionStore.hasMediaProductTransition(
-        playbackInfo.streamingSessionId,
-      )
-    ) {
+    const hasSavedTransition = streamingSessionStore.hasMediaProductTransition(
+      playbackInfo.streamingSessionId,
+    );
+
+    if (hasSavedTransition) {
       const mediaProductTransition =
         streamingSessionStore.getMediaProductTransition(
           playbackInfo.streamingSessionId,
@@ -630,8 +890,26 @@ export default class ShakaPlayer extends BasePlayer {
 
       playbackContext = mediaProductTransition.playbackContext;
     } else {
-      const duration = await new Promise<number>(resolve =>
-        mediaElementOne.addEventListener(
+      // Save a placeholder transition BEFORE load() to handle adaptation events
+      const estimatedDuration = streamInfo.duration ?? 0;
+      playbackContext = composePlaybackContext({
+        assetPosition,
+        duration: estimatedDuration,
+        playbackInfo,
+        streamInfo,
+      });
+
+      streamingSessionStore.saveMediaProductTransition(
+        streamInfo.streamingSessionId,
+        { mediaProduct, playbackContext },
+      );
+    }
+
+    // Set up durationchange listener BEFORE load() to avoid missing the event
+    let durationChangePromise: Promise<number> | undefined;
+    if (!hasSavedTransition) {
+      durationChangePromise = new Promise<number>(resolve =>
+        mediaElement.addEventListener(
           'durationchange',
           e => {
             if (e.target instanceof HTMLMediaElement) {
@@ -641,6 +919,22 @@ export default class ShakaPlayer extends BasePlayer {
           { once: true },
         ),
       );
+    }
+
+    try {
+      await shakaInstance.load(assetUriOrPreloader, assetPosition);
+      this.debugLog('Load completed successfully');
+    } catch (e) {
+      const error = e as shaka.extern.Error;
+      console.error('Load failed:', error);
+      this.#handleShakaError(
+        new CustomEvent<shaka.extern.Error>('shaka-error', { detail: error }),
+      );
+      return;
+    }
+
+    if (durationChangePromise) {
+      const duration = await durationChangePromise;
 
       playbackContext = composePlaybackContext({
         assetPosition,
@@ -675,7 +969,15 @@ export default class ShakaPlayer extends BasePlayer {
 
     await ensureVideoElementsMounted();
 
-    this.shakaInstance = await this.#createShakaPlayer(mediaElementOne);
+    // Initialize both Shaka players for gapless playback
+    // DRM and all events are configured automatically inside #createShakaPlayer()
+    this.#shakaInstanceOne = await this.#createShakaPlayer(mediaElementOne, 1);
+    this.#shakaInstanceTwo = await this.#createShakaPlayer(mediaElementTwo, 2);
+
+    // Set volume to 0 for inactive player
+    mediaElementTwo.volume = 0;
+
+    this.debugLog('Both Shaka players initialized for gapless playback');
   }
 
   #mediaElementEvents(mediaElement: HTMLMediaElement, eventsEnabled: boolean) {
@@ -762,6 +1064,108 @@ export default class ShakaPlayer extends BasePlayer {
     );
   }
 
+  async #startCrossfadeTransition(durationMs: number) {
+    this.debugLog(`Starting crossfade transition (${durationMs}ms)`);
+
+    const currentMediaElement = this.getActiveMediaElement();
+    const nextMediaElement = this.getInactiveMediaElement();
+    const nextPayload = this.#preloadedPayload!;
+
+    let currentTrackVolume: number;
+    let nextTrackTargetVolume: number;
+
+    try {
+      currentTrackVolume = currentMediaElement.volume;
+      nextTrackTargetVolume = this.adjustedVolume(nextPayload.streamInfo);
+
+      this.debugLog(
+        `Crossfade volumes: current=${currentTrackVolume.toFixed(2)}, next target=${nextTrackTargetVolume.toFixed(2)}`,
+      );
+
+      nextMediaElement.currentTime = 0;
+      // Use a tiny non-zero volume so Chrome allows background playback.
+      // Chrome suspends background media elements with volume=0 ("video-only
+      // background media was paused to save power"). The crossfade animation
+      // takes over on the first tick.
+      nextMediaElement.volume = 0.001;
+      await nextMediaElement.play();
+      this.debugLog('Next track started playing for crossfade');
+    } catch (error) {
+      this.debugLog('Error while starting crossfade', error);
+      try {
+        nextMediaElement.pause();
+      } catch {
+        // Ignore secondary errors during cleanup
+      }
+      if (this.#crossfadeTimerId != null) {
+        clearTimeout(this.#crossfadeTimerId);
+        this.#crossfadeTimerId = null;
+      }
+      this.#crossfadeInProgress = false;
+      return;
+    }
+
+    const startTime = performance.now();
+    const stepMs = Math.min(durationMs, 16);
+
+    const performCrossfade = () => {
+      const elapsed = performance.now() - startTime;
+      const progress = Math.min(elapsed / durationMs, 1.0);
+
+      // Equal-power crossfade curve for constant perceived loudness
+      const fadeOutCurve = Math.cos((progress * Math.PI) / 2);
+      const fadeInCurve = Math.sin((progress * Math.PI) / 2);
+
+      currentMediaElement.volume = currentTrackVolume * fadeOutCurve;
+      nextMediaElement.volume = nextTrackTargetVolume * fadeInCurve;
+
+      if (progress < 1.0) {
+        this.#crossfadeTimerId = setTimeout(performCrossfade, stepMs);
+      } else {
+        this.debugLog('Crossfade complete - swapping active player');
+        this.#completeTransition(nextMediaElement, nextPayload);
+      }
+    };
+
+    this.#crossfadeTimerId = setTimeout(performCrossfade, stepMs);
+  }
+
+  async #startTransition() {
+    if (
+      this.#crossfadeInProgress ||
+      !this.#preloadedPayload ||
+      !this.#preloadReady
+    ) {
+      return;
+    }
+
+    const { crossfadeDurationMs } = this.#getTransitionConfig();
+    this.#crossfadeInProgress = true;
+
+    await this.#startCrossfadeTransition(crossfadeDurationMs);
+  }
+
+  // Dual player helper methods
+  getActiveMediaElement(): HTMLMediaElement {
+    return this.#activePlayer === 1 ? mediaElementOne : mediaElementTwo;
+  }
+
+  getActiveShakaInstance(): shaka.Player | undefined {
+    return this.#activePlayer === 1
+      ? this.#shakaInstanceOne
+      : this.#shakaInstanceTwo;
+  }
+
+  getInactiveMediaElement(): HTMLMediaElement {
+    return this.#activePlayer === 1 ? mediaElementTwo : mediaElementOne;
+  }
+
+  getInactiveShakaInstance(): shaka.Player | undefined {
+    return this.#activePlayer === 1
+      ? this.#shakaInstanceTwo
+      : this.#shakaInstanceOne;
+  }
+
   getPosition() {
     return this.currentTime;
   }
@@ -777,7 +1181,7 @@ export default class ShakaPlayer extends BasePlayer {
     await this.reset();
     this.#isReset = false;
 
-    await this.#configureHlsForPlayback(this.shakaInstance);
+    await this.#configureHlsForPlayback(this.getActiveShakaInstance());
 
     await ensureVideoElementsMounted();
 
@@ -789,12 +1193,32 @@ export default class ShakaPlayer extends BasePlayer {
       this.playbackState = 'NOT_PLAYING';
     }
 
-    const { mediaElement, shakaInstance } = this;
+    const mediaElement = this.getActiveMediaElement();
+    const shakaInstance = this.getActiveShakaInstance();
 
     if (!shakaInstance || !mediaElement) {
       return;
     }
 
+    // Cancel any in-progress transition
+    if (this.#crossfadeInProgress) {
+      if (this.#crossfadeTimerId != null) {
+        clearTimeout(this.#crossfadeTimerId);
+      }
+      this.#crossfadeInProgress = false;
+      this.#crossfadeTimerId = null;
+    }
+
+    // Clear preloaded payload if loading a new track
+    this.#preloadReady = false;
+    this.#preloadedPayload = null;
+
+    // Pause and reset inactive player
+    const inactiveElement = this.getInactiveMediaElement();
+    inactiveElement.pause();
+    inactiveElement.volume = 0;
+
+    // Load the current track in the active player
     return this.#loadAndDispatchMediaProductTransition({
       assetPosition,
       assetUriOrPreloader: streamInfo.streamUrl,
@@ -805,38 +1229,132 @@ export default class ShakaPlayer extends BasePlayer {
   }
 
   get mediaElement(): HTMLMediaElement | null {
-    return mediaElementOne;
+    return this.getActiveMediaElement();
   }
 
   async next(payload: LoadPayload) {
     this.debugLog('next', payload);
 
-    if (!this.shakaInstance) {
-      console.warn('Shaka not initialized.');
+    const inactiveShakaInstance = this.getInactiveShakaInstance();
+    const inactiveMediaElement = this.getInactiveMediaElement();
+
+    if (!inactiveShakaInstance || !inactiveMediaElement) {
+      console.warn('Inactive Shaka instance or media element not initialized.');
       return;
     }
 
-    this.#preloadManager = await this.shakaInstance.preload(
+    // Store preloaded payload for crossfade (but not yet ready for transition)
+    this.#preloadReady = false;
+    this.#preloadedPayload = payload;
+
+    // Set preloaded session ID BEFORE loading to handle adaptation events
+    this.preloadedStreamingSessionId = payload.streamInfo.streamingSessionId;
+
+    // If the inactive player still holds a pending session (from a previous
+    // track whose 'ended' event hasn't fired yet after a crossfade swap),
+    // finalize it now before overwriting -- otherwise the ended event would
+    // later finish the new (wrong) session id.
+    const inactivePendingSessionId =
+      this.#activePlayer === 1
+        ? this.#playerTwoSessionId
+        : this.#playerOneSessionId;
+
+    if (inactivePendingSessionId) {
+      this.debugLog(
+        `Finalizing pending session ${inactivePendingSessionId} on inactive player before preload`,
+      );
+      const savedPlaybackState = this.playbackState;
+      const savedCurrentSessionId = this.currentStreamingSessionId;
+      const savedCurrentTime = this.currentTime;
+
+      if (inactiveMediaElement.readyState > HTMLMediaElement.HAVE_NOTHING) {
+        this.currentTime = inactiveMediaElement.currentTime;
+      }
+      this.currentStreamingSessionId = inactivePendingSessionId;
+      this.finishCurrentMediaProduct('completed', true);
+
+      this.currentStreamingSessionId = savedCurrentSessionId;
+      this.playbackState = savedPlaybackState;
+      this.currentTime = savedCurrentTime;
+    }
+
+    // Track which session is on which player
+    if (this.#activePlayer === 1) {
+      this.#playerTwoSessionId = payload.streamInfo.streamingSessionId;
+    } else {
+      this.#playerOneSessionId = payload.streamInfo.streamingSessionId;
+    }
+
+    // Save a placeholder media product transition BEFORE load()
+    // This ensures it exists when Shaka fires adaptation events during load
+    const estimatedDuration = payload.streamInfo.duration || 0;
+    const initialPlaybackContext = composePlaybackContext({
+      assetPosition: 0,
+      duration: estimatedDuration,
+      playbackInfo: payload.playbackInfo,
+      streamInfo: payload.streamInfo,
+    });
+
+    streamingSessionStore.saveMediaProductTransition(
+      payload.streamInfo.streamingSessionId,
+      {
+        mediaProduct: payload.mediaProduct,
+        playbackContext: initialPlaybackContext,
+      },
+    );
+
+    // Load next track in inactive player
+    this.debugLog(
+      'Loading next track in inactive player:',
       payload.streamInfo.streamUrl,
     );
 
-    /*
-      A play action can only start playback if playback state is not IDLE.
-      If shaka is currently not playing anything and we preload to play something soon,
-      we need to set playback state to NOT_PLAYING so we can start later.
-    */
-    if (this.playbackState === 'IDLE') {
-      this.playbackState = 'NOT_PLAYING';
-    }
+    try {
+      // Load into inactive player - Shaka will start buffering automatically
+      await inactiveShakaInstance.load(payload.streamInfo.streamUrl);
+      this.debugLog('Next track loaded in inactive player');
 
-    this.preloadedStreamingSessionId = payload.streamInfo.streamingSessionId;
+      // Set volume to 0 and position to 0
+      // Keep the media element PAUSED - we'll play it during crossfade or when user skips
+      inactiveMediaElement.volume = 0;
+      if (inactiveMediaElement.currentTime !== 0) {
+        inactiveMediaElement.currentTime = 0;
+      }
 
-    // If we could parse duration from manifest, we can save the media product transition
-    // and support "touch n go" playback. (re-using a preloaded item for a load)
-    if (payload.streamInfo.duration) {
-      const playbackContext = composePlaybackContext({
+      this.debugLog('Next track loaded and ready in inactive player');
+
+      /*
+        A play action can only start playback if playback state is not IDLE.
+        If shaka is currently not playing anything and we preload to play something soon,
+        we need to set playback state to NOT_PLAYING so we can start later.
+      */
+      if (this.playbackState === 'IDLE') {
+        this.playbackState = 'NOT_PLAYING';
+      }
+
+      // Wait for duration to be available and update the saved transition
+      if (
+        !inactiveMediaElement.duration ||
+        isNaN(inactiveMediaElement.duration)
+      ) {
+        await new Promise<void>(resolve => {
+          inactiveMediaElement.addEventListener(
+            'durationchange',
+            () => resolve(),
+            {
+              once: true,
+            },
+          );
+        });
+      }
+
+      // Update media product transition with actual duration
+      const actualDuration =
+        inactiveMediaElement.duration || payload.streamInfo.duration || 0;
+
+      const finalPlaybackContext = composePlaybackContext({
         assetPosition: 0,
-        duration: payload.streamInfo.duration,
+        duration: actualDuration,
         playbackInfo: payload.playbackInfo,
         streamInfo: payload.streamInfo,
       });
@@ -845,13 +1363,29 @@ export default class ShakaPlayer extends BasePlayer {
         payload.streamInfo.streamingSessionId,
         {
           mediaProduct: payload.mediaProduct,
-          playbackContext,
+          playbackContext: finalPlaybackContext,
         },
       );
-    }
 
-    this.#preloadedPayload = payload;
-    this.#isReset = false;
+      this.debugLog('Media product transition saved for next track');
+
+      this.#preloadReady = true;
+      this.#isReset = false;
+    } catch (error) {
+      console.error('Failed to load next track:', error);
+
+      // Clear all preload state to maintain consistency
+      this.#preloadReady = false;
+      this.#preloadedPayload = null;
+      this.preloadedStreamingSessionId = undefined;
+
+      // Clear the player session ID that was set for the failed load
+      if (this.#activePlayer === 1) {
+        this.#playerTwoSessionId = undefined;
+      } else {
+        this.#playerOneSessionId = undefined;
+      }
+    }
   }
 
   pause() {
@@ -869,7 +1403,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     // Handle 100 % data loss w NLC
     if (this.#shouldRetryStreaming) {
-      const retrySuccessful = this.shakaInstance?.retryStreaming();
+      const retrySuccessful = this.getActiveShakaInstance()?.retryStreaming();
 
       this.#shouldRetryStreaming = !retrySuccessful;
 
@@ -887,7 +1421,9 @@ export default class ShakaPlayer extends BasePlayer {
       return Promise.resolve();
     }
 
-    if ('setSinkId' in mediaElementOne) {
+    // Check if setSinkId is supported (both elements are created the same way, so checking one is sufficient)
+    const activeElement = this.getActiveMediaElement();
+    if (activeElement && 'setSinkId' in activeElement) {
       await this.updateOutputDevice();
     }
 
@@ -897,9 +1433,9 @@ export default class ShakaPlayer extends BasePlayer {
 
     await this.mediaElement?.play();
 
-    const activeTrack = this.shakaInstance
+    const activeTrack = this.getActiveShakaInstance()
       ?.getVariantTracks()
-      ?.find(v => v.active);
+      ?.find((v: shaka.extern.Track) => v.active);
 
     // Ensure playback quality is updated when playback starts (for ABR streaming).
     updatePlaybackQuality(this.currentStreamingSessionId, activeTrack);
@@ -910,7 +1446,23 @@ export default class ShakaPlayer extends BasePlayer {
       const { reason } = e.detail;
 
       if (reason === 'completed') {
-        if (this.hasNextItem()) {
+        // With dual player crossfade, the transition should already be complete
+        // by the time the 'ended' event fires. Note: in gapless mode, the
+        // 'ended' custom event is suppressed entirely (isGaplessTransition=true
+        // in #mediaProductEnded), so this handler only runs for non-gapless endings.
+        this.debugLog('Track ended - checking for next item');
+
+        // Check if we have next track loaded but crossfade didn't trigger
+        // (edge case: very short track, or seeking to end)
+        if (
+          this.#preloadedPayload &&
+          this.#preloadReady &&
+          !this.#crossfadeInProgress
+        ) {
+          this.debugLog('Transition missed - triggering now');
+          await this.#startTransition();
+        } else if (this.hasNextItem()) {
+          // Fallback for non-gapless next item
           await this.skipToPreloadedMediaProduct();
           await this.play();
         } else {
@@ -957,17 +1509,63 @@ export default class ShakaPlayer extends BasePlayer {
 
     if (!keepPreload) {
       this.preloadedStreamingSessionId = undefined;
+      this.#preloadReady = false;
+      this.#preloadedPayload = null;
+    }
+
+    // Cancel any in-progress transition
+    if (this.#crossfadeInProgress) {
+      if (this.#crossfadeTimerId != null) {
+        clearTimeout(this.#crossfadeTimerId);
+      }
+      this.#crossfadeInProgress = false;
+      this.#crossfadeTimerId = null;
     }
 
     this.#isReset = true;
 
-    const { mediaElement, shakaInstance: currentPlayer } = this;
+    // Reset players: always unload active player, unload inactive only if !keepPreload
+    const promises: Array<Promise<void>> = [];
+    const activeShakaInstance = this.getActiveShakaInstance();
+    const activeMediaElement = this.getActiveMediaElement();
+    const inactiveShakaInstance = this.getInactiveShakaInstance();
+    const inactiveMediaElement = this.getInactiveMediaElement();
 
-    if (currentPlayer && mediaElement && mediaElement.readyState !== 0) {
-      return currentPlayer.unload(/* initializeMediaSource */ true);
+    // Always unload the active player
+    if (activeShakaInstance && activeMediaElement.readyState !== 0) {
+      promises.push(
+        activeShakaInstance.unload(/* initializeMediaSource */ true),
+      );
     }
 
-    return;
+    // Unload inactive player only if we're not keeping preload
+    if (
+      !keepPreload &&
+      inactiveShakaInstance &&
+      inactiveMediaElement.readyState !== 0
+    ) {
+      promises.push(
+        inactiveShakaInstance.unload(/* initializeMediaSource */ true),
+      );
+    }
+
+    // Reset volumes and state only if not keeping preload
+    if (!keepPreload) {
+      mediaElementOne.volume = 1.0;
+      mediaElementTwo.volume = 0;
+      this.#activePlayer = 1;
+      this.#playerOneSessionId = undefined;
+      this.#playerTwoSessionId = undefined;
+    } else {
+      // When keeping preload, clear only the active player's session
+      if (this.#activePlayer === 1) {
+        this.#playerOneSessionId = undefined;
+      } else {
+        this.#playerTwoSessionId = undefined;
+      }
+    }
+
+    await Promise.all(promises);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -977,6 +1575,7 @@ export default class ShakaPlayer extends BasePlayer {
     const { mediaElement } = this;
 
     if (!mediaElement) {
+      this.debugLog('No media element available for seeking');
       return;
     }
 
@@ -1009,32 +1608,42 @@ export default class ShakaPlayer extends BasePlayer {
       this.preloadedStreamingSessionId,
     );
 
-    if (this.#preloadedPayload) {
-      const {
-        mediaProduct: mediaProductFromLoadPayload,
-        playbackInfo,
-        streamInfo,
-      } = this.#preloadedPayload;
-
-      const mediaProductTransition =
-        streamingSessionStore.getMediaProductTransition(
-          streamInfo.streamingSessionId,
-        );
-
-      const mediaProduct =
-        mediaProductTransition?.mediaProduct ?? mediaProductFromLoadPayload;
-
-      return this.#loadAndDispatchMediaProductTransition({
-        assetPosition: 0,
-        assetUriOrPreloader: this.#preloadManager ?? streamInfo.streamUrl,
-        mediaProduct,
-        playbackInfo,
-        streamInfo,
-      });
+    if (!this.preloadedStreamingSessionId) {
+      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+      return Promise.reject('Nothing preloaded.');
     }
 
-    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-    return Promise.reject('Nothing preloaded.');
+    const payload = this.#preloadedPayload;
+
+    if (!payload) {
+      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+      return Promise.reject('Preloaded payload not found.');
+    }
+
+    // Pick up any overwriteMediaProduct updates (e.g. new referenceId from
+    // an explicit load that matched the preloaded item).
+    const mediaProductTransition =
+      streamingSessionStore.getMediaProductTransition(
+        this.preloadedStreamingSessionId,
+      );
+
+    if (mediaProductTransition) {
+      payload.mediaProduct = mediaProductTransition.mediaProduct;
+    }
+
+    const inactiveMediaElement = this.getInactiveMediaElement();
+
+    // Pause the current (active) track and set its volume to 0.
+    const activeMediaElement = this.getActiveMediaElement();
+    activeMediaElement.pause();
+    activeMediaElement.volume = 0;
+
+    // Ensure state allows a subsequent play() call (reset sets IDLE which
+    // causes play() to return early).
+    this.playbackState = 'NOT_PLAYING';
+
+    // Swap to the inactive player which already has the preloaded content.
+    this.#completeTransition(inactiveMediaElement, payload);
   }
 
   togglePlayback() {
@@ -1062,7 +1671,17 @@ export default class ShakaPlayer extends BasePlayer {
 
     this.cleanUpStoredPreloadInfo();
 
-    await this.#preloadManager?.destroy();
+    // Clear preloaded payload
+    this.#preloadedPayload = null;
+
+    // Unload inactive player if it has content
+    const inactivePlayer = this.getInactiveShakaInstance();
+    const inactiveElement = this.getInactiveMediaElement();
+
+    if (inactivePlayer && inactiveElement.readyState !== 0) {
+      await inactivePlayer.unload(/* initializeMediaSource */ false);
+      inactiveElement.volume = 0;
+    }
   }
 
   async updateOutputDevice() {
@@ -1079,13 +1698,18 @@ export default class ShakaPlayer extends BasePlayer {
 
     const sinkId = outputDevices.activeDevice.webDeviceId;
 
+    if (!sinkId) {
+      return;
+    }
+
     this.outputDeviceType = outputDevices.activeDevice.type;
 
     try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore - setSinkId exists
-
-      await mediaElementOne.setSinkId(sinkId);
+      // Set sink ID on both media elements to ensure consistency across gapless transitions
+      await Promise.all([
+        mediaElementOne.setSinkId(sinkId),
+        mediaElementTwo.setSinkId(sinkId),
+      ]);
 
       events.dispatchEvent(
         activeDeviceChangedEvent(outputDevices.activeDevice.id),
