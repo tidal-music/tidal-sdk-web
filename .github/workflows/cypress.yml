@@ -57,13 +57,15 @@ jobs:
         uses: cypress-io/github-action@783cb3f07983868532cabaedaa1e6c00ff4786a8 # v7.1.9
         env:
           CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
+          # wait-on uses Node's https stack and would otherwise reject the
+          # locally-generated cert; Chromium itself ignores cert errors via
+          # cypress.config.js.
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'
         with:
           install: false
           browser: chrome
           start: pnpm --dir packages/player/ dev
-          # tcp: avoids strict-SSL validation against the locally-generated
-          # cert; Chromium ignores cert errors via cypress.config.js.
-          wait-on: 'tcp:dev.tidal.com:5173'
+          wait-on: 'https://dev.tidal.com:5173/demo/test-case-1.html'
           command: pnpm --dir packages/player/ internal:cypress:run
       - name: Save Cypress binary cache
         if: always()
