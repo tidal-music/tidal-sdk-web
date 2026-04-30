@@ -68,9 +68,9 @@ export async function login() {
       osName: 'Some OS',
     },
     // URI identifying the TL Consumer ingest endpoint.
-    tlConsumerUri: 'http://localhost:5173/fakeeventurl',
+    tlConsumerUri: `${window.location.origin}/fakeeventurl`,
     // URI for unauthorized event batches.
-    tlPublicConsumerUri: 'http://localhost:5173/fakeeventurl',
+    tlPublicConsumerUri: `${window.location.origin}/fakeeventurl`,
   });
 
   Player.setCredentialsProvider(auth.credentialsProvider);

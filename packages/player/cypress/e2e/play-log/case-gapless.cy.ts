@@ -8,7 +8,7 @@ it.skip('Gapless Playback Test - Pink Floyd Album Transition', () => {
   Cypress.env('credentials', credentials);
 
   // Load test case that tests gapless transition between two consecutive album tracks
-  cy.visit('http://localhost:5173/demo/test-case-gapless.html', {
+  cy.visit('/demo/test-case-gapless.html', {
     onBeforeLoad (win) {
       // Clear IndexedDB to prevent cached data from previous tests
       win.indexedDB.deleteDatabase('EventProducerDB');
