@@ -7,14 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
+### Added
 
-- Implemented gapless playback using dual media elements with crossfade
-  - ShakaPlayer now uses two media elements for seamless track transitions
-  - Next track preloads and buffers in background at volume 0
-  - Equal-power crossfade (25ms duration, starting 0.2s before track end) provides smooth transitions
-  - Maintained backward compatibility with existing public API (setNext, load, etc.)
-  - Internal refactoring of ShakaPlayer to manage dual playback instances
+- Implemented crossfade in Shaka
+- Implemented (almost) gapless playback using dual media elements with short crossfade in Shaka
 
 ## [0.17.0] - 2026-04-22
 
