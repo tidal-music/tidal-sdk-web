@@ -1325,6 +1325,34 @@ export default class ShakaPlayer extends BasePlayer {
     // Set preloaded session ID BEFORE loading to handle adaptation events
     this.preloadedStreamingSessionId = payload.streamInfo.streamingSessionId;
 
+    // If the inactive player still holds a pending session (from a previous
+    // track whose 'ended' event hasn't fired yet after a crossfade swap),
+    // finalize it now before overwriting -- otherwise the ended event would
+    // later finish the new (wrong) session id.
+    const inactivePendingSessionId =
+      this.#activePlayer === 1
+        ? this.#playerTwoSessionId
+        : this.#playerOneSessionId;
+
+    if (inactivePendingSessionId) {
+      this.debugLog(
+        `Finalizing pending session ${inactivePendingSessionId} on inactive player before preload`,
+      );
+      const savedPlaybackState = this.playbackState;
+      const savedCurrentSessionId = this.currentStreamingSessionId;
+      const savedCurrentTime = this.currentTime;
+
+      if (inactiveMediaElement.readyState > HTMLMediaElement.HAVE_NOTHING) {
+        this.currentTime = inactiveMediaElement.currentTime;
+      }
+      this.currentStreamingSessionId = inactivePendingSessionId;
+      this.finishCurrentMediaProduct('completed', true);
+
+      this.currentStreamingSessionId = savedCurrentSessionId;
+      this.playbackState = savedPlaybackState;
+      this.currentTime = savedCurrentTime;
+    }
+
     // Track which session is on which player
     if (this.#activePlayer === 1) {
       this.#playerTwoSessionId = payload.streamInfo.streamingSessionId;
