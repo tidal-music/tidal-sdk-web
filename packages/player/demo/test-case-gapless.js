@@ -60,11 +60,7 @@ async function run() {
     Player.setTransitionMode(crossfadeInMs);
 
     const modeLabel =
-      crossfadeInMs > 0
-        ? `Crossfade ${crossfadeInMs}ms`
-        : crossfadeInMs < 0
-          ? `Gap ${Math.abs(crossfadeInMs)}ms`
-          : 'Gapless';
+      crossfadeInMs > 0 ? `Crossfade ${crossfadeInMs}ms` : 'Gapless';
     print(`Transition mode: ${modeLabel} (crossfadeInMs=${crossfadeInMs})`);
 
     updateStatus('Setting up player events...');
