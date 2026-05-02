@@ -47,7 +47,7 @@
     }
   ],
   "devDependencies": {
-    "@babel/preset-env": "7.29.2",
+    "@babel/preset-env": "7.29.3",
     "@babel/preset-typescript": "7.28.5",
     "@rollup/plugin-babel": "7.0.0",
     "@rollup/plugin-commonjs": "29.0.2",
@@ -70,7 +70,7 @@
     "@web/test-runner": "0.20.2",
     "bowser": "2.14.1",
     "chai": "6.2.2",
-    "cypress": "15.14.1",
+    "cypress": "15.14.2",
     "esbuild": "0.28.0",
     "js-levenshtein": "1.1.6",
     "rollup": "4.60.2",

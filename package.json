@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@eslint/compat": "2.0.5",
-    "eslint": "10.2.1",
+    "eslint": "10.3.0",
     "eslint-config-tidal": "5.0.0",
     "eslint-plugin-disable-autofix": "6.1.1",
     "eslint-plugin-jsdoc": "62.9.0",
