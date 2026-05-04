@@ -213,7 +213,8 @@ export class BasePlayer {
   // Implements
   debugLog(...args: Array<unknown>) {
     if (
-      document.location.href.includes('localhost') &&
+      (document.location.hostname === 'localhost' ||
+        document.location.hostname === 'dev.tidal.com') &&
       document.location.hash.includes('debug')
     ) {
       console.debug(

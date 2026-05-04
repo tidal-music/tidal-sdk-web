@@ -79,6 +79,7 @@
     "typescript": "6.0.3",
     "vite": "8.0.10",
     "vite-plugin-dts": "4.5.4",
+    "vite-plugin-mkcert": "2.0.0",
     "vite-plugin-package-version": "1.1.0"
   }
 }
