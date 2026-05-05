@@ -3,6 +3,7 @@ import { mediaProductTransition as mediaProductTransitionEvent } from '../api/ev
 import * as Config from '../config';
 import { events } from '../event-bus';
 import { composePlaybackContext } from '../internal/helpers/compose-playback-context';
+import { createMediaElementErrorCircuitBreaker } from '../internal/helpers/media-element-error-circuit-breaker';
 import { streamingSessionStore } from '../internal/helpers/streaming-session-store';
 import { waitFor } from '../internal/helpers/wait-for';
 
@@ -21,6 +22,8 @@ export default class BrowserPlayer extends BasePlayer {
   #isReset = true;
 
   #librariesLoad: Promise<void> | undefined;
+
+  #mediaElementErrorCircuitBreaker = createMediaElementErrorCircuitBreaker();
 
   #mediaElementEventHandlers: {
     durationChangeHandler: EventListener;
@@ -109,7 +112,7 @@ export default class BrowserPlayer extends BasePlayer {
     };
 
     const errorHandler = (e: Event) =>
-      console.error('HTMLMediaElement errored', e);
+      this.#mediaElementErrorCircuitBreaker.handleError(e);
 
     const seekedHandler = () => {
       if (this.mediaElement) {
@@ -430,6 +433,13 @@ export default class BrowserPlayer extends BasePlayer {
   async reset(
     { keepPreload }: { keepPreload: boolean } = { keepPreload: false },
   ) {
+    // Always re-arm the media element error circuit breaker, even if the
+    // player is already in the reset state. Media element listeners stay
+    // attached across resets, so the breaker can trip while idle; without
+    // this, a subsequent load() (which calls reset()) would inherit the
+    // tripped breaker and silently suppress real errors on fresh content.
+    this.#mediaElementErrorCircuitBreaker.reset();
+
     if (this.#isReset) {
       return Promise.resolve();
     }

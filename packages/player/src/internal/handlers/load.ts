@@ -150,7 +150,10 @@ export async function load(
       events.dispatchError(e);
     }
 
-    if (document.location.href.includes('localhost')) {
+    if (
+      document.location.hostname === 'localhost' ||
+      document.location.hostname === 'dev.tidal.com'
+    ) {
       console.error(e);
     }
   }

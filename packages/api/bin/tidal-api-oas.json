@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.7.0"
+    "version" : "1.7.1"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -21870,6 +21870,16 @@
           }
         },
         "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserCollectionTracks_Items_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
           "400" : {
             "$ref" : "#/components/responses/Default400Response"
           },
@@ -21883,7 +21893,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/UserCollectionTracksAddMultiDataRelationship409Response"
+            "$ref" : "#/components/responses/UserCollectionTracksAddMultiDataRelationshipWithResponse409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -26512,11 +26522,11 @@
         },
         "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
       },
-      "UserCollectionTracksAddMultiDataRelationship409Response" : {
+      "UserCollectionTracksAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/UserCollectionTracksAddMultiDataRelationship409ResponseBody"
+              "$ref" : "#/components/schemas/UserCollectionTracksAddMultiDataRelationshipWithResponse409ResponseBody"
             }
           }
         },
@@ -37245,7 +37255,7 @@
           }
         }
       },
-      "UserCollectionTracksAddMultiDataRelationship409ResponseBody" : {
+      "UserCollectionTracksAddMultiDataRelationshipWithResponse409ResponseBody" : {
         "type" : "object",
         "properties" : {
           "errors" : {

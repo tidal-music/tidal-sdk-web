@@ -36,7 +36,7 @@ export default defineConfig(({ command, mode }) => {
       },
       minify: mode === 'development' ? false : 'esbuild',
     },
-    plugins: [dts({ rollupTypes: false, tsconfigPath: 'tsconfig.build.json' })],
+    plugins: [dts({ bundleTypes: false, tsconfigPath: 'tsconfig.build.json' })],
     test: {
       coverage: {
         provider: 'v8',
@@ -58,7 +58,7 @@ export default defineConfig(({ command, mode }) => {
       format: 'es',
       plugins: () => [
         dts({
-          rollupTypes: false,
+          bundleTypes: false,
           tsconfigPath: 'tsconfig.build.json',
         }) as PluginOption,
       ],

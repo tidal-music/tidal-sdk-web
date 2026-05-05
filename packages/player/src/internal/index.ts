@@ -200,7 +200,9 @@ type ShakaDrmErrorCodes =
   | 'S6016'
   | 'S6017';
 type ShakaPlayerErrorCodes = 'S7000' | 'S7001' | 'S7002' | 'S7003' | 'S7004';
+type MediaElementErrorCodes = 'ME01';
 export type ErrorCodes =
+  | MediaElementErrorCodes
   | NativePlayerDeviceErrorCodes
   | NativePlayerNetworkErrorCodes
   | NativePlayerOfflineErrorCodes
