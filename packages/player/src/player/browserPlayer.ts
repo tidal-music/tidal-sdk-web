@@ -3,6 +3,7 @@ import { mediaProductTransition as mediaProductTransitionEvent } from '../api/ev
 import * as Config from '../config';
 import { events } from '../event-bus';
 import { composePlaybackContext } from '../internal/helpers/compose-playback-context';
+import { createMediaElementErrorCircuitBreaker } from '../internal/helpers/media-element-error-circuit-breaker';
 import { streamingSessionStore } from '../internal/helpers/streaming-session-store';
 import { waitFor } from '../internal/helpers/wait-for';
 
@@ -12,7 +13,6 @@ import {
 } from './audio-context-store';
 import type { LoadPayload } from './basePlayer';
 import { BasePlayer } from './basePlayer';
-import { createMediaElementErrorCircuitBreaker } from './media-element-error-circuit-breaker';
 
 // eslint-disable-next-line import/no-default-export
 export default class BrowserPlayer extends BasePlayer {

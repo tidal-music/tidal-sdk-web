@@ -16,6 +16,7 @@ import {
 import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
 import { composePlaybackContext } from '../internal/helpers/compose-playback-context';
 import type { StreamInfo } from '../internal/helpers/manifest-parser';
+import { createMediaElementErrorCircuitBreaker } from '../internal/helpers/media-element-error-circuit-breaker';
 import type { PlaybackInfo } from '../internal/helpers/playback-info-resolver';
 import { streamingSessionStore } from '../internal/helpers/streaming-session-store';
 import { updatePlaybackQuality } from '../internal/helpers/update-playback-quality';
@@ -31,7 +32,6 @@ import {
 import type { LoadPayload } from './basePlayer';
 import { BasePlayer } from './basePlayer';
 import * as FairplayDRM from './fairplay-drm';
-import { createMediaElementErrorCircuitBreaker } from './media-element-error-circuit-breaker';
 import { registerStalls } from './stalls';
 import { playerState } from './state';
 
