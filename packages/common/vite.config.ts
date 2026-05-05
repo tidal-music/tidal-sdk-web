@@ -9,7 +9,7 @@ export default defineConfig({
       formats: ['es'],
     },
   },
-  plugins: [dts({ rollupTypes: false, tsconfigPath: 'tsconfig.build.json' })],
+  plugins: [dts({ bundleTypes: false, tsconfigPath: 'tsconfig.build.json' })],
   test: {
     coverage: {
       exclude: ['./src/index.ts'].concat(configDefaults.coverage.exclude ?? []), // ignore barrel file

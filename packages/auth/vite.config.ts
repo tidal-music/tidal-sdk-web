@@ -30,7 +30,7 @@ export default defineConfig(({ command }) => {
       minify: false,
       sourcemap: true,
     },
-    plugins: [dts({ rollupTypes: false, tsconfigPath: 'tsconfig.build.json' })],
+    plugins: [dts({ bundleTypes: false, tsconfigPath: 'tsconfig.build.json' })],
     test: {
       coverage: {
         exclude: ['examples/**'],
