@@ -6,7 +6,7 @@ it('Crossfade Playback Test - 5s crossfade between tracks', () => {
 
   Cypress.env('credentials', credentials);
 
-  cy.visit('http://localhost:5173/demo/test-case-gapless.html?crossfadeInMs=5000', {
+  cy.visit('/demo/test-case-gapless.html?crossfadeInMs=5000', {
     onBeforeLoad (win) {
       win.indexedDB.deleteDatabase('EventProducerDB');
 
