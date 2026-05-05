@@ -12,6 +12,7 @@ import {
 } from './audio-context-store';
 import type { LoadPayload } from './basePlayer';
 import { BasePlayer } from './basePlayer';
+import { createMediaElementErrorCircuitBreaker } from './media-element-error-circuit-breaker';
 
 // eslint-disable-next-line import/no-default-export
 export default class BrowserPlayer extends BasePlayer {
@@ -21,6 +22,8 @@ export default class BrowserPlayer extends BasePlayer {
   #isReset = true;
 
   #librariesLoad: Promise<void> | undefined;
+
+  #mediaElementErrorCircuitBreaker = createMediaElementErrorCircuitBreaker();
 
   #mediaElementEventHandlers: {
     durationChangeHandler: EventListener;
@@ -109,7 +112,7 @@ export default class BrowserPlayer extends BasePlayer {
     };
 
     const errorHandler = (e: Event) =>
-      console.error('HTMLMediaElement errored', e);
+      this.#mediaElementErrorCircuitBreaker.handleError(e);
 
     const seekedHandler = () => {
       if (this.mediaElement) {
@@ -460,6 +463,7 @@ export default class BrowserPlayer extends BasePlayer {
     }
 
     this.#isReset = true;
+    this.#mediaElementErrorCircuitBreaker.reset();
 
     return Promise.resolve();
   }

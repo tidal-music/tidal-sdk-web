@@ -31,6 +31,7 @@ import {
 import type { LoadPayload } from './basePlayer';
 import { BasePlayer } from './basePlayer';
 import * as FairplayDRM from './fairplay-drm';
+import { createMediaElementErrorCircuitBreaker } from './media-element-error-circuit-breaker';
 import { registerStalls } from './stalls';
 import { playerState } from './state';
 
@@ -99,6 +100,8 @@ export default class ShakaPlayer extends BasePlayer {
   #isReset = true;
 
   #librariesLoad: Promise<void>;
+
+  #mediaElementErrorCircuitBreaker = createMediaElementErrorCircuitBreaker();
 
   #mediaElementEventHandlers: {
     durationChangeHandler: EventListener;
@@ -218,10 +221,7 @@ export default class ShakaPlayer extends BasePlayer {
     };
 
     const errorHandler = (e: Event) =>
-      console.error(
-        'HTMLMediaElement errored',
-        (e.target as HTMLMediaElement).error,
-      );
+      this.#mediaElementErrorCircuitBreaker.handleError(e);
 
     const seekedHandler = () => {
       this.currentTime = this.mediaElement ? this.mediaElement.currentTime : 0;
@@ -960,6 +960,7 @@ export default class ShakaPlayer extends BasePlayer {
     }
 
     this.#isReset = true;
+    this.#mediaElementErrorCircuitBreaker.reset();
 
     const { mediaElement, shakaInstance: currentPlayer } = this;
 
