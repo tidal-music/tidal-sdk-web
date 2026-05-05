@@ -937,6 +937,13 @@ export default class ShakaPlayer extends BasePlayer {
   ) {
     this.debugLog('reset');
 
+    // Always re-arm the media element error circuit breaker, even if the
+    // player is already in the reset state. Media element listeners stay
+    // attached across resets, so the breaker can trip while idle; without
+    // this, a subsequent load() (which calls reset()) would inherit the
+    // tripped breaker and silently suppress real errors on fresh content.
+    this.#mediaElementErrorCircuitBreaker.reset();
+
     if (this.#isReset) {
       return;
     }
@@ -960,7 +967,6 @@ export default class ShakaPlayer extends BasePlayer {
     }
 
     this.#isReset = true;
-    this.#mediaElementErrorCircuitBreaker.reset();
 
     const { mediaElement, shakaInstance: currentPlayer } = this;
 

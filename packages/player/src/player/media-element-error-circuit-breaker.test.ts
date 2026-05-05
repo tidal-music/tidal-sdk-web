@@ -71,24 +71,24 @@ describe('createMediaElementErrorCircuitBreaker', () => {
     expect(t.logged.length).to.equal(10);
   });
 
-  it('resets the counter when the rolling window elapses without errors', () => {
+  it('resets the counter after errorWindowMs of inactivity', () => {
     const t = setup({ errorWindowMs: 60_000, maxErrors: 10 });
 
     t.fire(5);
     expect(t.logged.length).to.equal(5);
 
-    t.advance(60_001);
+    t.advance(60_000);
     t.fire(5);
 
     expect(t.logged.length).to.equal(10);
     expect(t.limitReachedCount).to.equal(0);
   });
 
-  it('does not reset within the rolling window', () => {
+  it('does not reset for gaps shorter than errorWindowMs', () => {
     const t = setup({ errorWindowMs: 60_000, maxErrors: 10 });
 
     t.fire(9);
-    t.advance(59_000);
+    t.advance(59_999);
     t.fire(2);
 
     expect(t.logged.length).to.equal(10);

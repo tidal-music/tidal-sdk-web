@@ -4,15 +4,20 @@ import { trueTime } from '../internal/true-time';
 
 /**
  * Default ceiling for raw HTMLMediaElement `error` events the player will
- * forward to `console.error` (and therefore RUM) within the rolling window
- * before the circuit breaker trips.
+ * forward to `console.error` (and therefore RUM) before the circuit breaker
+ * trips. Counted across consecutive errors that arrive less than
+ * `DEFAULT_MEDIA_ELEMENT_ERROR_WINDOW_MS` ms apart.
  */
 export const DEFAULT_MAX_MEDIA_ELEMENT_ERRORS = 10;
 
 /**
- * Rolling window length used by the circuit breaker. If no error occurs for
- * this many ms the counter is reset, so transient spikes don't permanently
- * silence later errors.
+ * Inactivity window used by the circuit breaker. If no error has been
+ * observed for at least this many ms the counter resets, so transient
+ * spikes don't permanently silence later errors. Note: this is _not_ a
+ * sliding window of "max N errors per window"; a continuous trickle of
+ * errors with gaps shorter than this value will still eventually trip
+ * the breaker, which is the intended behaviour for the stuck-loop case
+ * this guards against.
  */
 export const DEFAULT_MEDIA_ELEMENT_ERROR_WINDOW_MS = 60_000;
 
@@ -50,14 +55,16 @@ const defaultOnLimitReached = () => {
  * handful of stuck sessions.
  *
  * The breaker:
- * - Logs up to `maxErrors` events normally inside a rolling
- *   `errorWindowMs` window.
- * - On the Nth error, dispatches a `PlayerError('EUnexpected', 'ME01')` so
- *   the host app can react (stop playback, show UI, etc.) and logs a
- *   "limit reached" message.
- * - Suppresses further `console.error` output until either the window
- *   elapses with no errors or `reset()` is called explicitly (typically
- *   from the player's `reset()` / `load()`).
+ * - Logs the first `maxErrors` errors of a burst normally. A "burst" is
+ *   any sequence of errors where consecutive events are less than
+ *   `errorWindowMs` apart; a gap of `errorWindowMs` or more starts a
+ *   new burst with a fresh budget.
+ * - On the Nth error of a burst, dispatches a
+ *   `PlayerError('EUnexpected', 'ME01')` so the host app can react
+ *   (stop playback, show UI, etc.) and logs a "limit reached" message.
+ * - Suppresses further `console.error` output until either the inactivity
+ *   gap elapses or `reset()` is called explicitly (typically from the
+ *   player's `reset()` / `load()`).
  */
 export function createMediaElementErrorCircuitBreaker(
   options: MediaElementErrorCircuitBreakerOptions = {},
@@ -77,7 +84,7 @@ export function createMediaElementErrorCircuitBreaker(
     handleError(event: Event) {
       const t = now();
 
-      if (t - lastErrorAt > errorWindowMs) {
+      if (t - lastErrorAt >= errorWindowMs) {
         count = 0;
       }
 
