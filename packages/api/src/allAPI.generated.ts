@@ -15099,11 +15099,20 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserCollectionTracks_Items_Multi_Relationship_Data_Document"];
+                    };
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionTracksAddMultiDataRelationship409Response"];
+                409: components["responses"]["UserCollectionTracksAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -22696,7 +22705,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionTracksAddMultiDataRelationship409ResponseBody: {
+        UserCollectionTracksAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example DUPLICATE_ITEMS_IN_COLLECTION
@@ -23783,12 +23792,12 @@ export interface components {
             };
         };
         /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
-        UserCollectionTracksAddMultiDataRelationship409Response: {
+        UserCollectionTracksAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionTracksAddMultiDataRelationship409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionTracksAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
