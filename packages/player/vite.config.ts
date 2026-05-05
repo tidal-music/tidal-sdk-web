@@ -33,7 +33,7 @@ export default defineConfig(({ mode }) => {
         : {},
     plugins: [
       version(),
-      dts({ rollupTypes: false, tsconfigPath: 'tsconfig.build.json' }),
+      dts({ bundleTypes: false, tsconfigPath: 'tsconfig.build.json' }),
       mkcert({ hosts: [DEV_HOST] }),
     ],
     server: {

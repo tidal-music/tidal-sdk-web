@@ -10,7 +10,7 @@ export default defineConfig({
     },
     target: 'es2022',
   },
-  plugins: [dts({ rollupTypes: false, tsconfigPath: 'tsconfig.build.json' })],
+  plugins: [dts({ bundleTypes: false, tsconfigPath: 'tsconfig.build.json' })],
   server: {
     open: '/demo/index.html',
   },
