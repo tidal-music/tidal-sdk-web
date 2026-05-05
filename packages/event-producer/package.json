@@ -49,6 +49,6 @@
     "@tidal-music/event-producer": "workspace:*",
     "@tidal-music/true-time": "workspace:^",
     "localforage": "1.10.0",
-    "nanoid": "5.1.9"
+    "nanoid": "5.1.11"
   }
 }
