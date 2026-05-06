@@ -13533,11 +13533,20 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserCollectionAlbums_Items_Multi_Relationship_Data_Document"];
+                    };
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionAlbumsAddMultiDataRelationship409Response"];
+                409: components["responses"]["UserCollectionAlbumsAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -13816,11 +13825,20 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserCollectionArtists_Items_Multi_Relationship_Data_Document"];
+                    };
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionArtistsAddMultiDataRelationship409Response"];
+                409: components["responses"]["UserCollectionArtistsAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -14506,11 +14524,20 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserCollectionPlaylists_Items_Multi_Relationship_Data_Document"];
+                    };
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionPlaylistsAddMultiDataRelationship409Response"];
+                409: components["responses"]["UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -14761,11 +14788,20 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document"];
+                    };
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionSaveForLatersAddMultiDataRelationship409Response"];
+                409: components["responses"]["UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -15391,11 +15427,20 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserCollectionVideos_Items_Multi_Relationship_Data_Document"];
+                    };
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionVideosAddMultiDataRelationship409Response"];
+                409: components["responses"]["UserCollectionVideosAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -22237,7 +22282,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionAlbumsAddMultiDataRelationship409ResponseBody: {
+        UserCollectionAlbumsAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example DUPLICATE_ITEMS_IN_COLLECTION
@@ -22327,7 +22372,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionArtistsAddMultiDataRelationship409ResponseBody: {
+        UserCollectionArtistsAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example DUPLICATE_ITEMS_IN_COLLECTION
@@ -22535,7 +22580,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionPlaylistsAddMultiDataRelationship409ResponseBody: {
+        UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example DUPLICATE_ITEMS_IN_COLLECTION
@@ -22620,7 +22665,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionSaveForLatersAddMultiDataRelationship409ResponseBody: {
+        UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example DUPLICATE_ITEMS_IN_COLLECTION
@@ -22795,7 +22840,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionVideosAddMultiDataRelationship409ResponseBody: {
+        UserCollectionVideosAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example DUPLICATE_ITEMS_IN_COLLECTION
@@ -23747,21 +23792,21 @@ export interface components {
             };
         };
         /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
-        UserCollectionAlbumsAddMultiDataRelationship409Response: {
+        UserCollectionAlbumsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsAddMultiDataRelationship409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
-        UserCollectionArtistsAddMultiDataRelationship409Response: {
+        UserCollectionArtistsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionArtistsAddMultiDataRelationship409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionArtistsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description Cannot delete folder: only empty folders owned by you can be deleted. */
@@ -23774,21 +23819,21 @@ export interface components {
             };
         };
         /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
-        UserCollectionPlaylistsAddMultiDataRelationship409Response: {
+        UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsAddMultiDataRelationship409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
-        UserCollectionSaveForLatersAddMultiDataRelationship409Response: {
+        UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLatersAddMultiDataRelationship409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
@@ -23801,12 +23846,12 @@ export interface components {
             };
         };
         /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
-        UserCollectionVideosAddMultiDataRelationship409Response: {
+        UserCollectionVideosAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionVideosAddMultiDataRelationship409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionVideosAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
