@@ -22,8 +22,9 @@ it('Crossfade Playback Test - 5s crossfade between tracks', () => {
 
   cy.get('@playerSdkPreloadRequest', { timeout: 3000 }).should('be.called');
 
-  // With 5s crossfade, the transition event fires ~5s before track 1 ends
-  cy.get('@playerSdkMediaProductTransition', { timeout: 15000 }).should('be.calledTwice');
+  // The demo seeks 12s before the end; with 5s crossfade, the transition
+  // event fires near the end of track 1 after preload has completed.
+  cy.get('@playerSdkMediaProductTransition', { timeout: 20000 }).should('be.calledTwice');
 
   cy.wait(5000);
 

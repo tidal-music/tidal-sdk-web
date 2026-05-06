@@ -29,12 +29,23 @@ class CredentialsProviderStore extends EventTarget {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore - Setter
   #credentialsProvider: CredentialsProvider;
+  #credentialsProviderSubscriptionId = 0;
 
   set credentialsProvider(newCredentialsProvider: CredentialsProvider) {
+    if (this.#credentialsProvider === newCredentialsProvider) {
+      return;
+    }
+
     this.#credentialsProvider = newCredentialsProvider;
+    this.#credentialsProviderSubscriptionId += 1;
+    const subscriptionId = this.#credentialsProviderSubscriptionId;
     this.dispatchAuthorized().catch(console.error);
 
     this.#credentialsProvider.bus(event => {
+      if (subscriptionId !== this.#credentialsProviderSubscriptionId) {
+        return;
+      }
+
       switch (event.detail.type) {
         case 'CredentialsUpdatedMessage':
           this.dispatchAuthorized().catch(console.error);

@@ -32,8 +32,8 @@ it('Gapless Playback Test - Pink Floyd Album Transition', () => {
   cy.get('@playerSdkPreloadRequest', { timeout: 3000 }).should('be.called');
 
   // Wait for second media product transition (Another Brick in the Wall, Pt. 1)
-  // With gapless crossfade, this happens ~5s after seeking (0.2s before first track ends)
-  cy.get('@playerSdkMediaProductTransition', { timeout: 10000 }).should('be.calledTwice');
+  // The demo seeks 12s before the end so preload has enough time to complete.
+  cy.get('@playerSdkMediaProductTransition', { timeout: 20000 }).should('be.calledTwice');
 
   // In gapless mode, the 'ended' event is NOT dispatched for the first track
   // because playback continues seamlessly. Dispatching 'ended' would cause apps

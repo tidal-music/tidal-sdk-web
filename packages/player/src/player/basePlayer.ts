@@ -31,6 +31,59 @@ export type LoadPayload = {
   streamInfo: StreamInfo;
 };
 
+const MAX_DEBUG_STRING_LENGTH = 500;
+
+function sanitizeDebugValue(value: unknown): unknown {
+  if (typeof value === 'string') {
+    if (value.startsWith('data:')) {
+      return `[redacted data URL, ${value.length} chars]`;
+    }
+
+    if (value.length > MAX_DEBUG_STRING_LENGTH) {
+      return `${value.slice(0, MAX_DEBUG_STRING_LENGTH)}...[truncated ${value.length} chars]`;
+    }
+
+    return value;
+  }
+
+  if (!value || typeof value !== 'object') {
+    return value;
+  }
+
+  if (value instanceof Error) {
+    return {
+      message: value.message,
+      name: value.name,
+      stack: value.stack,
+    };
+  }
+
+  if (value instanceof Event || value instanceof Element) {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(sanitizeDebugValue);
+  }
+
+  const sanitized: Record<string, unknown> = {};
+  for (const [key, nestedValue] of Object.entries(
+    value as Record<string, unknown>,
+  )) {
+    if (key === 'manifest' || key === 'securityToken' || key === 'streamUrl') {
+      sanitized[key] =
+        typeof nestedValue === 'string'
+          ? `[redacted ${key}, ${nestedValue.length} chars]`
+          : `[redacted ${key}]`;
+      continue;
+    }
+
+    sanitized[key] = sanitizeDebugValue(nestedValue);
+  }
+
+  return sanitized;
+}
+
 function playbackStatisticsEndReason(
   endReason: EndReason,
 ): PlaybackStatisticsPayload['endReason'] {
@@ -267,7 +320,7 @@ export class BasePlayer {
             ]
           : []),
         'color:inherit',
-        ...args,
+        ...args.map(sanitizeDebugValue),
       );
     }
   }

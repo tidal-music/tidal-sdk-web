@@ -98,14 +98,36 @@ const serverCertificateWidevine = new Uint8Array([
 
 // eslint-disable-next-line import/no-default-export
 export default class ShakaPlayer extends BasePlayer {
-  // Gapless micro-crossfade defaults (used when crossfadeInMs === 0)
-  static readonly #GAPLESS_CROSSFADE_MS = 25;
-  static readonly #GAPLESS_START_BEFORE_END_S = 0.2;
+  // Gapless micro-crossfade defaults (used when crossfadeInMs === 0).
+  // The crossfade ramp itself is short (~250ms over ~16 setTimeout ticks);
+  // long enough to mask buffer boundaries but short enough that listeners
+  // perceive the transition as truly gapless.
+  static readonly #GAPLESS_CROSSFADE_MS = 250;
+  // The trigger window matches the crossfade duration, so the swap completes
+  // approximately when the outgoing track reaches its natural end. (Going
+  // wider would chop audible audio off the end of the outgoing track AND
+  // skip extra intro from the new one, since the new track plays for the
+  // entire trigger window before the swap.) The "transition missed"
+  // fallback in playbackEngineEndedHandler covers cases where the ~4Hz
+  // timeupdate cadence skips past this window entirely.
+  static readonly #GAPLESS_START_BEFORE_END_S = 0.25;
+  static readonly #MIN_SCHEDULED_CROSSFADE_TRIGGER_DELAY_MS = 1000;
 
   #activePlayer: 1 | 2 = 1;
 
+  #crossfadeDeadlineTimerId: ReturnType<typeof setTimeout> | null = null;
   #crossfadeInProgress = false;
-  #crossfadeTimerId: ReturnType<typeof setTimeout> | null = null;
+  #crossfadeStepTimerId: ReturnType<typeof setTimeout> | null = null;
+  // Scheduled trigger for starting the crossfade based on the active track's
+  // duration. This is the primary trigger -- timeupdate is only a fallback
+  // (timeupdate fires at ~4Hz which can skip past the 250ms trigger window).
+  #crossfadeTriggerTimerId: ReturnType<typeof setTimeout> | null = null;
+  // Token identifying the in-flight transition. Step/deadline timers capture
+  // this in their closures so a stale callback (e.g. one that fired after a
+  // reset() or after the user skipped) becomes a safe no-op.
+  #currentTransitionToken: object | undefined = undefined;
+  #drmConfigurationPromises = new WeakMap<shaka.Player, Promise<boolean>>();
+  #drmConfiguredPlayers = new WeakSet<shaka.Player>();
 
   #isReset = true;
 
@@ -408,10 +430,77 @@ export default class ShakaPlayer extends BasePlayer {
     };
   }
 
+  #clearCrossfadeTimers() {
+    if (this.#crossfadeStepTimerId != null) {
+      clearTimeout(this.#crossfadeStepTimerId);
+      this.#crossfadeStepTimerId = null;
+    }
+    if (this.#crossfadeDeadlineTimerId != null) {
+      clearTimeout(this.#crossfadeDeadlineTimerId);
+      this.#crossfadeDeadlineTimerId = null;
+    }
+    if (this.#crossfadeTriggerTimerId != null) {
+      clearTimeout(this.#crossfadeTriggerTimerId);
+      this.#crossfadeTriggerTimerId = null;
+    }
+  }
+
   #completeTransition(
     nextMediaElement: HTMLMediaElement,
     nextPayload: LoadPayload,
+    transitionToken?: object,
   ) {
+    // Token guard: if a token was supplied, the caller is a step / deadline
+    // timer; ignore the call if the active transition has changed (cancelled,
+    // restarted, or already completed by the racing timer).
+    if (
+      transitionToken !== undefined &&
+      transitionToken !== this.#currentTransitionToken
+    ) {
+      return;
+    }
+    // Mark the transition as consumed so any later stale callback no-ops.
+    this.#currentTransitionToken = undefined;
+    this.#clearCrossfadeTimers();
+    this.debugLog('Crossfade complete - swapping active player');
+
+    // Finalize the OUTGOING (soon-to-be-inactive) session and stop its
+    // background playback. Without this, the old media element keeps
+    // decoding silently until its natural 'ended' event fires, which
+    // accumulates across repeated transitions and can push CPU usage up
+    // (and eventually crash the page) over many replays.
+    const outgoingMediaElement = this.getActiveMediaElement();
+    const outgoingSessionId =
+      this.#activePlayer === 1
+        ? this.#playerOneSessionId
+        : this.#playerTwoSessionId;
+
+    if (outgoingSessionId) {
+      const savedPlaybackState = this.playbackState;
+      const savedCurrentSessionId = this.currentStreamingSessionId;
+      this.currentTime = outgoingMediaElement.currentTime;
+      this.currentStreamingSessionId = outgoingSessionId;
+      this.finishCurrentMediaProduct('completed', true);
+      this.currentStreamingSessionId = savedCurrentSessionId;
+      this.playbackState = savedPlaybackState;
+
+      if (this.#activePlayer === 1) {
+        this.#playerOneSessionId = undefined;
+      } else {
+        this.#playerTwoSessionId = undefined;
+      }
+    }
+
+    // Set volume to 0 BEFORE pausing so any residual buffered audio that
+    // would otherwise be flushed out by pause() is silenced first. This
+    // avoids a perceptible click at the end of the crossfade.
+    outgoingMediaElement.volume = 0;
+    try {
+      outgoingMediaElement.pause();
+    } catch {
+      // Ignore pause errors -- best-effort cleanup
+    }
+
     this.#activePlayer = this.#activePlayer === 1 ? 2 : 1;
 
     // CRITICAL: Reset currentTime IMMEDIATELY after swapping active player
@@ -460,22 +549,44 @@ export default class ShakaPlayer extends BasePlayer {
       this.#activePlayer,
     );
 
-    this.#preloadReady = false;
-    this.#preloadedPayload = null;
+    // #preloadReady / #preloadedPayload were already cleared at crossfade
+    // start to short-circuit the "transition missed" fallback.
     this.#crossfadeInProgress = false;
-    this.#crossfadeTimerId = null;
   }
 
   async #configureDRM(player: shaka.Player) {
+    if (this.#drmConfiguredPlayers.has(player)) {
+      return;
+    }
+
+    const pendingConfiguration = this.#drmConfigurationPromises.get(player);
+    if (pendingConfiguration) {
+      await pendingConfiguration;
+      return;
+    }
+
+    const configuration = this.#configureDRMOnce(player);
+    this.#drmConfigurationPromises.set(player, configuration);
+
+    try {
+      if (await configuration) {
+        this.#drmConfiguredPlayers.add(player);
+      }
+    } finally {
+      this.#drmConfigurationPromises.delete(player);
+    }
+  }
+
+  async #configureDRMOnce(player: shaka.Player) {
     const { clientId } =
       await credentialsProviderStore.credentialsProvider.getCredentials();
 
     if (!clientId) {
-      return;
+      return false;
     }
 
     if ('Cypress' in window) {
-      return;
+      return true;
     }
 
     const supportResult = await shaka.Player.probeSupport();
@@ -497,6 +608,7 @@ export default class ShakaPlayer extends BasePlayer {
           },
         },
       });
+      return true;
     } else if (supportResult.drm['com.apple.fps.1_0']) {
       this.debugLog('Configuring fairplay DRM.');
 
@@ -518,11 +630,14 @@ export default class ShakaPlayer extends BasePlayer {
           },
         },
       });
+      return true;
     } /* else {
       console.warn('No supported DRM system.');
       // eslint-disable-next-line no-console
       console.log(supportResult.drm);
     } */
+
+    return true;
   }
 
   /**
@@ -1041,6 +1156,48 @@ export default class ShakaPlayer extends BasePlayer {
     );
   }
 
+  #scheduleCrossfadeTrigger() {
+    if (this.#crossfadeTriggerTimerId != null) {
+      clearTimeout(this.#crossfadeTriggerTimerId);
+      this.#crossfadeTriggerTimerId = null;
+    }
+
+    const activeMediaElement = this.getActiveMediaElement();
+    const duration = activeMediaElement.duration;
+
+    if (!Number.isFinite(duration) || duration <= 0) {
+      this.debugLog('scheduleCrossfadeTrigger: invalid duration, skipping');
+      return;
+    }
+
+    const playbackRate = activeMediaElement.playbackRate || 1;
+    const remainingS = duration - activeMediaElement.currentTime;
+    const { startBeforeEndS } = this.#getTransitionConfig();
+    const delayMs = ((remainingS - startBeforeEndS) * 1000) / playbackRate;
+
+    if (delayMs <= ShakaPlayer.#MIN_SCHEDULED_CROSSFADE_TRIGGER_DELAY_MS) {
+      this.debugLog('scheduleCrossfadeTrigger: too close to end -- firing now');
+      this.#startTransition().catch(console.error);
+      return;
+    }
+
+    this.#crossfadeTriggerTimerId = setTimeout(() => {
+      this.#crossfadeTriggerTimerId = null;
+      // Re-validate state: preload could have been cleared, user might have
+      // paused/seeked, or a manual skip already swapped active player.
+      if (
+        this.#preloadReady &&
+        this.#preloadedPayload &&
+        !this.#crossfadeInProgress &&
+        !activeMediaElement.paused
+      ) {
+        this.#startTransition().catch(console.error);
+      } else {
+        this.debugLog('scheduleCrossfadeTrigger: guards failed, NOT starting');
+      }
+    }, delayMs);
+  }
+
   #shakaEvents(shakaPlayer: shaka.Player, eventsEnabled: boolean) {
     this.debugLog('shakaEvents');
 
@@ -1071,6 +1228,17 @@ export default class ShakaPlayer extends BasePlayer {
     const nextMediaElement = this.getInactiveMediaElement();
     const nextPayload = this.#preloadedPayload!;
 
+    // Mark "no longer preloaded" up-front so that if anything (e.g. the SDK
+    // 'ended' fallback in playbackEngineEndedHandler) fires while we're in
+    // the middle of the crossfade, it cannot decide that "the transition was
+    // missed" and trigger a SECOND crossfade in parallel with this one.
+    // The original payload is captured in `nextPayload` above and used by
+    // #completeTransition; clearing the fields here is purely defensive.
+    this.#preloadReady = false;
+    this.#preloadedPayload = null;
+    const transitionToken = {};
+    this.#currentTransitionToken = transitionToken;
+
     let currentTrackVolume: number;
     let nextTrackTargetVolume: number;
 
@@ -1078,18 +1246,13 @@ export default class ShakaPlayer extends BasePlayer {
       currentTrackVolume = currentMediaElement.volume;
       nextTrackTargetVolume = this.adjustedVolume(nextPayload.streamInfo);
 
-      this.debugLog(
-        `Crossfade volumes: current=${currentTrackVolume.toFixed(2)}, next target=${nextTrackTargetVolume.toFixed(2)}`,
-      );
-
       nextMediaElement.currentTime = 0;
-      // Use a tiny non-zero volume so Chrome allows background playback.
-      // Chrome suspends background media elements with volume=0 ("video-only
-      // background media was paused to save power"). The crossfade animation
-      // takes over on the first tick.
+      // Start from a tiny non-zero volume. Chrome can delay starting a second
+      // video element that is exactly silent; the first fade step below will
+      // immediately set the calculated curve volume.
       nextMediaElement.volume = 0.001;
       await nextMediaElement.play();
-      this.debugLog('Next track started playing for crossfade');
+      nextMediaElement.volume = 0;
     } catch (error) {
       this.debugLog('Error while starting crossfade', error);
       try {
@@ -1097,40 +1260,100 @@ export default class ShakaPlayer extends BasePlayer {
       } catch {
         // Ignore secondary errors during cleanup
       }
-      if (this.#crossfadeTimerId != null) {
-        clearTimeout(this.#crossfadeTimerId);
-        this.#crossfadeTimerId = null;
-      }
+      this.#clearCrossfadeTimers();
       this.#crossfadeInProgress = false;
       return;
     }
 
     const startTime = performance.now();
-    const stepMs = Math.min(durationMs, 16);
+    // Step every ~16ms (≈60Hz). setTimeout in foreground tabs goes down to
+    // ~4ms but ~16ms is plenty smooth for a volume ramp and conserves CPU.
+    const stepMs = 16;
 
-    const performCrossfade = () => {
+    // CRITICAL: drive this on setTimeout, NOT requestAnimationFrame.
+    // requestAnimationFrame is aggressively throttled (down to ~0.25Hz) when
+    // the tab loses focus or the page is partially obscured -- which made a
+    // 250ms crossfade stretch to 4+ seconds in practice and corrupted state
+    // (track ended naturally during the stall, fallback paths fired, page
+    // eventually crashed). setTimeout is throttled less aggressively (1Hz
+    // when tab is backgrounded) and -- combined with the deadline below --
+    // guarantees the swap completes in bounded time.
+    const performCrossfadeStep = () => {
+      if (this.#currentTransitionToken !== transitionToken) {
+        return;
+      }
       const elapsed = performance.now() - startTime;
       const progress = Math.min(elapsed / durationMs, 1.0);
 
-      // Equal-power crossfade curve for constant perceived loudness
+      // Equal-power crossfade curve for constant perceived loudness.
       const fadeOutCurve = Math.cos((progress * Math.PI) / 2);
       const fadeInCurve = Math.sin((progress * Math.PI) / 2);
 
-      currentMediaElement.volume = currentTrackVolume * fadeOutCurve;
-      nextMediaElement.volume = nextTrackTargetVolume * fadeInCurve;
+      currentMediaElement.volume = Math.max(
+        0,
+        Math.min(1, currentTrackVolume * fadeOutCurve),
+      );
+      nextMediaElement.volume = Math.max(
+        0,
+        Math.min(1, nextTrackTargetVolume * fadeInCurve),
+      );
 
       if (progress < 1.0) {
-        this.#crossfadeTimerId = setTimeout(performCrossfade, stepMs);
+        this.#crossfadeStepTimerId = setTimeout(performCrossfadeStep, stepMs);
       } else {
-        this.debugLog('Crossfade complete - swapping active player');
-        this.#completeTransition(nextMediaElement, nextPayload);
+        this.#completeTransition(
+          nextMediaElement,
+          nextPayload,
+          transitionToken,
+        );
       }
     };
 
-    this.#crossfadeTimerId = setTimeout(performCrossfade, stepMs);
+    // Hard deadline: even if step callbacks are throttled, swap no later
+    // than `durationMs + 200ms` past start. #completeTransition is guarded
+    // by the transition token so it's safe to race the step timer.
+    this.#crossfadeDeadlineTimerId = setTimeout(() => {
+      if (this.#currentTransitionToken !== transitionToken) {
+        return;
+      }
+      this.debugLog('Crossfade hit hard deadline -- forcing completion');
+      currentMediaElement.volume = 0;
+      nextMediaElement.volume = nextTrackTargetVolume;
+      this.#completeTransition(nextMediaElement, nextPayload, transitionToken);
+    }, durationMs + 200);
+
+    performCrossfadeStep();
   }
 
-  async #startTransition() {
+  async #startInstantTransition() {
+    this.debugLog('Starting instant transition (no fade)');
+    const nextMediaElement = this.getInactiveMediaElement();
+    const nextPayload = this.#preloadedPayload!;
+
+    this.#preloadReady = false;
+    this.#preloadedPayload = null;
+    const transitionToken = {};
+    this.#currentTransitionToken = transitionToken;
+
+    const nextTrackTargetVolume = this.adjustedVolume(nextPayload.streamInfo);
+
+    try {
+      nextMediaElement.currentTime = 0;
+      nextMediaElement.volume = nextTrackTargetVolume;
+      await nextMediaElement.play();
+    } catch (error) {
+      this.debugLog('Error while starting instant transition', error);
+      this.#crossfadeInProgress = false;
+      this.#currentTransitionToken = undefined;
+      return;
+    }
+
+    if (this.#currentTransitionToken === transitionToken) {
+      this.#completeTransition(nextMediaElement, nextPayload, transitionToken);
+    }
+  }
+
+  async #startTransition({ instant = false }: { instant?: boolean } = {}) {
     if (
       this.#crossfadeInProgress ||
       !this.#preloadedPayload ||
@@ -1139,10 +1362,50 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
-    const { crossfadeDurationMs } = this.#getTransitionConfig();
     this.#crossfadeInProgress = true;
 
+    if (instant) {
+      // Old track already silent (e.g. natural end fired before our timeupdate
+      // trigger window). Skip the volume ramp -- it would just add a quiet
+      // intro to the new track on top of the already-elapsed silence.
+      await this.#startInstantTransition();
+      return;
+    }
+
+    const { crossfadeDurationMs } = this.#getTransitionConfig();
     await this.#startCrossfadeTransition(crossfadeDurationMs);
+  }
+
+  async #waitForPreloadedMediaElementReady(mediaElement: HTMLMediaElement) {
+    if (mediaElement.readyState > HTMLMediaElement.HAVE_NOTHING) {
+      return true;
+    }
+
+    return new Promise<boolean>(resolve => {
+      let resolved = false;
+      const cleanup = () => {
+        mediaElement.removeEventListener('loadedmetadata', resolveReady);
+        mediaElement.removeEventListener('loadeddata', resolveReady);
+        mediaElement.removeEventListener('canplay', resolveReady);
+        clearTimeout(timeoutId);
+      };
+      const done = (isReady: boolean) => {
+        if (resolved) {
+          return;
+        }
+        resolved = true;
+        cleanup();
+        resolve(isReady);
+      };
+      const resolveReady = () => done(true);
+      const timeoutId = setTimeout(() => done(false), 1000);
+
+      mediaElement.addEventListener('loadedmetadata', resolveReady, {
+        once: true,
+      });
+      mediaElement.addEventListener('loadeddata', resolveReady, { once: true });
+      mediaElement.addEventListener('canplay', resolveReady, { once: true });
+    });
   }
 
   // Dual player helper methods
@@ -1202,11 +1465,9 @@ export default class ShakaPlayer extends BasePlayer {
 
     // Cancel any in-progress transition
     if (this.#crossfadeInProgress) {
-      if (this.#crossfadeTimerId != null) {
-        clearTimeout(this.#crossfadeTimerId);
-      }
+      this.#clearCrossfadeTimers();
       this.#crossfadeInProgress = false;
-      this.#crossfadeTimerId = null;
+      this.#currentTransitionToken = undefined;
     }
 
     // Clear preloaded payload if loading a new track
@@ -1304,10 +1565,7 @@ export default class ShakaPlayer extends BasePlayer {
     );
 
     // Load next track in inactive player
-    this.debugLog(
-      'Loading next track in inactive player:',
-      payload.streamInfo.streamUrl,
-    );
+    this.debugLog('Loading next track in inactive player');
 
     try {
       // Load into inactive player - Shaka will start buffering automatically
@@ -1319,6 +1577,15 @@ export default class ShakaPlayer extends BasePlayer {
       inactiveMediaElement.volume = 0;
       if (inactiveMediaElement.currentTime !== 0) {
         inactiveMediaElement.currentTime = 0;
+      }
+
+      const isMediaElementReady =
+        await this.#waitForPreloadedMediaElementReady(inactiveMediaElement);
+
+      if (!isMediaElementReady) {
+        throw new Error(
+          `Preloaded media element did not become ready after Shaka load (readyState=${inactiveMediaElement.readyState})`,
+        );
       }
 
       this.debugLog('Next track loaded and ready in inactive player');
@@ -1371,8 +1638,21 @@ export default class ShakaPlayer extends BasePlayer {
 
       this.#preloadReady = true;
       this.#isReset = false;
+
+      // Schedule the crossfade trigger explicitly based on the active
+      // track's remaining duration, instead of relying solely on timeupdate.
+      // timeupdate fires at ~4Hz so a 250ms trigger window can be missed
+      // entirely (especially when the main thread is busy from preload work
+      // or buffering). A precise setTimeout makes the trigger reliable.
+      this.#scheduleCrossfadeTrigger();
     } catch (error) {
       console.error('Failed to load next track:', error);
+
+      try {
+        await inactiveShakaInstance.unload(/* initializeMediaSource */ true);
+      } catch {
+        // Best-effort cleanup after failed preload
+      }
 
       // Clear all preload state to maintain consistency
       this.#preloadReady = false;
@@ -1459,9 +1739,9 @@ export default class ShakaPlayer extends BasePlayer {
           this.#preloadReady &&
           !this.#crossfadeInProgress
         ) {
-          this.debugLog('Transition missed - triggering now');
-          await this.#startTransition();
-        } else if (this.hasNextItem()) {
+          this.debugLog('Transition missed - swapping immediately');
+          await this.#startTransition({ instant: true });
+        } else if (this.#preloadReady && this.hasNextItem()) {
           // Fallback for non-gapless next item
           await this.skipToPreloadedMediaProduct();
           await this.play();
@@ -1522,11 +1802,9 @@ export default class ShakaPlayer extends BasePlayer {
 
     // Cancel any in-progress transition
     if (this.#crossfadeInProgress) {
-      if (this.#crossfadeTimerId != null) {
-        clearTimeout(this.#crossfadeTimerId);
-      }
+      this.#clearCrossfadeTimers();
       this.#crossfadeInProgress = false;
-      this.#crossfadeTimerId = null;
+      this.#currentTransitionToken = undefined;
     }
 
     this.#isReset = true;
@@ -1534,23 +1812,17 @@ export default class ShakaPlayer extends BasePlayer {
     // Reset players: always unload active player, unload inactive only if !keepPreload
     const promises: Array<Promise<void>> = [];
     const activeShakaInstance = this.getActiveShakaInstance();
-    const activeMediaElement = this.getActiveMediaElement();
     const inactiveShakaInstance = this.getInactiveShakaInstance();
-    const inactiveMediaElement = this.getInactiveMediaElement();
 
     // Always unload the active player
-    if (activeShakaInstance && activeMediaElement.readyState !== 0) {
+    if (activeShakaInstance) {
       promises.push(
         activeShakaInstance.unload(/* initializeMediaSource */ true),
       );
     }
 
     // Unload inactive player only if we're not keeping preload
-    if (
-      !keepPreload &&
-      inactiveShakaInstance &&
-      inactiveMediaElement.readyState !== 0
-    ) {
+    if (!keepPreload && inactiveShakaInstance) {
       promises.push(
         inactiveShakaInstance.unload(/* initializeMediaSource */ true),
       );
