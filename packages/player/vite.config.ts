@@ -1,3 +1,6 @@
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { loadEnv } from 'vite';
 import dts from 'vite-plugin-dts';
 import mkcert from 'vite-plugin-mkcert';
@@ -10,9 +13,19 @@ import { defineConfig } from 'vitest/config';
 const DEV_HOST = 'dev.tidal.com';
 const DEV_PORT = 5173;
 
+const here = fileURLToPath(new URL('.', import.meta.url));
+const srcEntry = resolve(here, 'src/index.ts');
+
 export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory.
   const env = loadEnv(mode, process.cwd(), '');
+
+  // In dev (and tests), short-circuit `../` and `../dist` imports from the
+  // demo pages so they resolve to the live `src/` entry. Without this Vite
+  // serves the prebuilt `dist/index.js` and aggressively memory-caches it,
+  // which means source changes do not show up in the browser until you
+  // rebuild AND restart the dev server. Using src/ enables real HMR.
+  const isProd = mode === 'production';
 
   return {
     build: {
@@ -36,6 +49,20 @@ export default defineConfig(({ mode }) => {
       dts({ bundleTypes: false, tsconfigPath: 'tsconfig.build.json' }),
       mkcert({ hosts: [DEV_HOST] }),
     ],
+    resolve: isProd
+      ? undefined
+      : {
+          alias: [
+            {
+              find: /^\.\.\/dist$/,
+              replacement: srcEntry,
+            },
+            {
+              find: /^\.\.\/$/,
+              replacement: srcEntry,
+            },
+          ],
+        },
     server: {
       host: DEV_HOST,
       open: `https://${DEV_HOST}:${DEV_PORT}/demo/index.html`,
