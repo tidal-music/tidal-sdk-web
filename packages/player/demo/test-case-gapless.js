@@ -197,7 +197,16 @@ async function run() {
     // preload may not finish until the current track is almost over.
     const playbackContext = Player.getPlaybackContext();
     if (playbackContext) {
-      const secondsBeforeEnd = 12;
+      // The transition kicks in `crossfadeInMs` before the end. Seek so we
+      // land a few seconds BEFORE that trigger window, leaving enough room
+      // for setNext() to fetch playback info and finish Shaka.load() before
+      // the crossfade fires. Floor at 12s so short crossfades (gapless / 5s)
+      // still give preload realistic lead time.
+      const preloadHeadroomS = 7;
+      const secondsBeforeEnd = Math.max(
+        12,
+        crossfadeInMs / 1000 + preloadHeadroomS,
+      );
       const seekPosition = playbackContext.actualDuration - secondsBeforeEnd;
       print(
         `Seeking to ${seekPosition.toFixed(1)}s (${secondsBeforeEnd}s before end)`,
