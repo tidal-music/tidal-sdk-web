@@ -153,7 +153,7 @@ describe('registerAdaptations', () => {
     events.addEventListener('playback-quality-changed', handler);
 
     mockPlayer.triggerEvent('adaptation', {
-      // @ts-expect-error: newTrack is not part of shaka.util.FakeEvent
+      // @ts-expect-error: newTrack is not actually part of shaka.util.FakeEvent but we need to simulate it for testing purposes
       newTrack: {
         active: true,
         audioCodec: 'flac',
@@ -186,7 +186,7 @@ describe('registerAdaptations', () => {
     events.addEventListener('playback-quality-changed', handler);
 
     mockPlayer.triggerEvent('adaptation', {
-      // @ts-expect-error: newTrack is not part of shaka.util.FakeEvent
+      // @ts-expect-error: newTrack is not actually part of shaka.util.FakeEvent but we need to simulate it for testing purposes
       newTrack: {
         active: true,
         audioCodec: 'flac',
@@ -217,7 +217,7 @@ describe('registerAdaptations', () => {
     );
 
     mockPlayer.triggerEvent('adaptation', {
-      // @ts-expect-error: newTrack is not part of shaka.util.FakeEvent
+      // @ts-expect-error: newTrack is not actually part of shaka.util.FakeEvent but we need to simulate it for testing purposes
       newTrack: {
         active: true,
         audioCodec: 'flac',
