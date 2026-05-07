@@ -278,6 +278,10 @@ export default class ShakaPlayer extends BasePlayer {
 
         if (
           !this.#crossfadeInProgress &&
+          // timeupdate also fires after a seek while the element is paused;
+          // without this guard we'd start playing the next track even though
+          // the user is paused.
+          !mediaElement.paused &&
           timeRemaining <= startBeforeEndS &&
           timeRemaining > 0
         ) {
@@ -1172,9 +1176,11 @@ export default class ShakaPlayer extends BasePlayer {
       // Re-check timing: the user may have seeked backward (or paused for a
       // long time, or lowered playbackRate) since we scheduled this timer,
       // in which case starting now would pause the outgoing element before
-      // its natural end and truncate audible audio. Only fire when we're
-      // actually inside the trigger window (currentDelayMs <= 0) -- the
-      // timeUpdateHandler safety net will catch us within ~250ms otherwise.
+      // its natural end and truncate audible audio. Re-arm by recursing into
+      // #scheduleCrossfadeTrigger(), which recomputes delayMs from the
+      // current duration / currentTime / playbackRate. This is self-correcting
+      // when paused (we'd just keep deferring with progressively similar
+      // delays until the user resumes and currentTime advances).
       const currentRemaining =
         activeMediaElement.duration - activeMediaElement.currentTime;
       const currentDelayMs =
@@ -1183,8 +1189,9 @@ export default class ShakaPlayer extends BasePlayer {
 
       if (currentDelayMs > 0) {
         this.debugLog(
-          'scheduleCrossfadeTrigger: no longer inside trigger window -- skipping',
+          'scheduleCrossfadeTrigger: no longer inside trigger window -- rescheduling',
         );
+        this.#scheduleCrossfadeTrigger();
         return;
       }
 
