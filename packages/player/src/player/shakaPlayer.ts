@@ -926,15 +926,15 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
+    // Keep explicit handler ref so we can remove this listener if load()
+    // throws below -- otherwise { once: true } never fires and the listener
+    // accumulates on the Shaka instance across repeated load failures.
+    let resolvePlayerLoad!: () => void;
     const playerLoad = new Promise<void>(resolve => {
-      shakaInstance.addEventListener(
-        'loaded',
-        () => {
-          resolve();
-        },
-        { once: true },
-      );
+      resolvePlayerLoad = resolve;
     });
+    const onShakaLoaded = () => resolvePlayerLoad();
+    shakaInstance.addEventListener('loaded', onShakaLoaded, { once: true });
 
     this.debugLog(
       'Loading with',
@@ -984,7 +984,9 @@ export default class ShakaPlayer extends BasePlayer {
       );
     }
 
-    // Set up durationchange listener BEFORE load() to avoid missing the event
+    // Set up durationchange listener BEFORE load() to avoid missing the event.
+    // AbortController lets us tear the listener down if load() throws.
+    const durationChangeAbortController = new AbortController();
     let durationChangePromise: Promise<number> | undefined;
     if (!hasSavedTransition) {
       durationChangePromise = new Promise<number>(resolve =>
@@ -995,7 +997,7 @@ export default class ShakaPlayer extends BasePlayer {
               resolve(e.target.duration);
             }
           },
-          { once: true },
+          { once: true, signal: durationChangeAbortController.signal },
         ),
       );
     }
@@ -1009,6 +1011,11 @@ export default class ShakaPlayer extends BasePlayer {
       this.#handleShakaError(
         new CustomEvent<shaka.extern.Error>('shaka-error', { detail: error }),
       );
+      // load() rejected, so 'loaded' / 'durationchange' will never fire.
+      // Tear the {once:true} listeners down explicitly so they don't pile up
+      // on the Shaka instance / media element across repeated load failures.
+      shakaInstance.removeEventListener('loaded', onShakaLoaded);
+      durationChangeAbortController.abort();
       // The load() rejection means streamInfo will never be played.
       // finishCurrentMediaProduct() in #handleShakaError no-ops here because
       // hasStarted() is false, so the placeholder mediaProductTransition and
@@ -1369,7 +1376,24 @@ export default class ShakaPlayer extends BasePlayer {
     }
 
     const { crossfadeDurationMs } = this.#getTransitionConfig();
-    await this.#startCrossfadeTransition(crossfadeDurationMs);
+
+    // Clamp the effective fade duration to the time actually left on the
+    // outgoing track. If we triggered late (timeUpdateHandler fires at ~4Hz
+    // so we can be up to ~250ms past the planned trigger window), or the
+    // user seeked very close to the end, or the track is shorter than the
+    // configured crossfade, run a shorter fade so the next track reaches
+    // its target volume before the outgoing element naturally ends.
+    // Math.max(1, ...) avoids a divide-by-zero in performCrossfadeStep.
+    const activeMediaElement = this.getActiveMediaElement();
+    const remainingMs = Math.max(
+      0,
+      (activeMediaElement.duration - activeMediaElement.currentTime) * 1000,
+    );
+    const effectiveDurationMs = Math.max(
+      1,
+      Math.min(crossfadeDurationMs, remainingMs),
+    );
+    await this.#startCrossfadeTransition(effectiveDurationMs);
   }
 
   async #waitForPreloadedMediaElementReady(mediaElement: HTMLMediaElement) {
