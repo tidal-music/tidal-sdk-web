@@ -111,7 +111,6 @@ export default class ShakaPlayer extends BasePlayer {
   // fallback in playbackEngineEndedHandler covers cases where the ~4Hz
   // timeupdate cadence skips past this window entirely.
   static readonly #GAPLESS_START_BEFORE_END_S = 0.25;
-  static readonly #MIN_SCHEDULED_CROSSFADE_TRIGGER_DELAY_MS = 1000;
 
   #activePlayer: 1 | 2 = 1;
 
@@ -1175,8 +1174,14 @@ export default class ShakaPlayer extends BasePlayer {
     const { startBeforeEndS } = this.#getTransitionConfig();
     const delayMs = ((remainingS - startBeforeEndS) * 1000) / playbackRate;
 
-    if (delayMs <= ShakaPlayer.#MIN_SCHEDULED_CROSSFADE_TRIGGER_DELAY_MS) {
-      this.debugLog('scheduleCrossfadeTrigger: too close to end -- firing now');
+    if (delayMs <= 0) {
+      // Already inside (or past) the trigger window -- fire immediately so we
+      // don't truncate audible audio off the outgoing track. Firing early
+      // (e.g. with delayMs = 800ms) would pause the outgoing element ~800ms
+      // before its natural end, cutting off audible audio.
+      this.debugLog(
+        'scheduleCrossfadeTrigger: inside trigger window -- firing now',
+      );
       this.#startTransition().catch(console.error);
       return;
     }
@@ -1978,6 +1983,13 @@ export default class ShakaPlayer extends BasePlayer {
     const sinkId = outputDevices.activeDevice.webDeviceId;
 
     if (!sinkId) {
+      return;
+    }
+
+    // Browsers without setSinkId support (e.g. Safari) would otherwise throw
+    // a TypeError on every device change. Both media elements are created the
+    // same way, so checking one is sufficient.
+    if (typeof mediaElementOne.setSinkId !== 'function') {
       return;
     }
 
