@@ -1268,6 +1268,14 @@ export default class ShakaPlayer extends BasePlayer {
       }
       this.#clearCrossfadeTimers();
       this.#crossfadeInProgress = false;
+      this.#currentTransitionToken = undefined;
+      // #preloadReady / #preloadedPayload were cleared up-front but
+      // preloadedStreamingSessionId and the inactive Shaka instance still
+      // hold the loaded content. Tear it all down so the player doesn't
+      // end up with preloadedStreamingSessionId set but no payload --
+      // skipToPreloadedMediaProduct() would reject "Preloaded payload not
+      // found." and BasePlayer would still think a next item exists.
+      this.unloadPreloadedMediaProduct().catch(console.error);
       return;
     }
 
@@ -1351,6 +1359,10 @@ export default class ShakaPlayer extends BasePlayer {
       this.debugLog('Error while starting instant transition', error);
       this.#crossfadeInProgress = false;
       this.#currentTransitionToken = undefined;
+      // Same invariant as #startCrossfadeTransition's catch: tear down
+      // preloadedStreamingSessionId and the inactive Shaka instance so we
+      // don't leave the player thinking a next item exists with no payload.
+      this.unloadPreloadedMediaProduct().catch(console.error);
       return;
     }
 
