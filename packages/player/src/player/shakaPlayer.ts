@@ -1149,13 +1149,33 @@ export default class ShakaPlayer extends BasePlayer {
 
     this.#crossfadeTriggerTimerId = setTimeout(() => {
       this.#crossfadeTriggerTimerId = null;
+
+      // Re-check timing: the user may have seeked backward (or paused for a
+      // long time, or changed playbackRate) since we scheduled this timer,
+      // in which case starting now would truncate audio off the outgoing
+      // track. Bail out -- timeUpdateHandler will trigger naturally when we
+      // actually reach the trigger window again.
+      const currentRemaining =
+        activeMediaElement.duration - activeMediaElement.currentTime;
+      const currentDelayMs =
+        ((currentRemaining - startBeforeEndS) * 1000) /
+        (activeMediaElement.playbackRate || 1);
+
+      if (currentDelayMs > 250) {
+        this.debugLog(
+          'scheduleCrossfadeTrigger: no longer inside trigger window -- skipping',
+        );
+        return;
+      }
+
       // Re-validate state: preload could have been cleared, user might have
       // paused/seeked, or a manual skip already swapped active player.
       if (
         this.#preloadReady &&
         this.#preloadedPayload &&
         !this.#crossfadeInProgress &&
-        !activeMediaElement.paused
+        !activeMediaElement.paused &&
+        activeMediaElement === this.getActiveMediaElement()
       ) {
         this.#startTransition().catch(console.error);
       } else {
@@ -1887,6 +1907,16 @@ export default class ShakaPlayer extends BasePlayer {
     // causes play() to return early).
     this.playbackState = 'NOT_PLAYING';
 
+    // Clear preload state and any scheduled crossfade trigger up-front,
+    // mirroring what #startCrossfadeTransition / #startInstantTransition do.
+    // Otherwise timeupdate or playbackEngineEndedHandler could see the stale
+    // #preloadReady/#preloadedPayload after the swap and try to transition
+    // again -- this time pointing the inactive element at the just-swapped-out
+    // (now active) track.
+    this.#clearCrossfadeTimers();
+    this.#preloadReady = false;
+    this.#preloadedPayload = null;
+
     // Swap to the inactive player which already has the preloaded content.
     this.#completeTransition(inactiveMediaElement, payload);
   }
@@ -1916,8 +1946,10 @@ export default class ShakaPlayer extends BasePlayer {
 
     this.cleanUpStoredPreloadInfo();
 
-    // Clear preloaded payload
+    // Clear all preload state together so #preloadReady doesn't end up true
+    // while the payload is null (would rely on other guards downstream).
     this.#preloadedPayload = null;
+    this.#preloadReady = false;
 
     // Unload inactive player if it has content
     const inactivePlayer = this.getInactiveShakaInstance();
