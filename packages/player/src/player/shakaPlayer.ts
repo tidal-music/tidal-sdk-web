@@ -1212,6 +1212,21 @@ export default class ShakaPlayer extends BasePlayer {
         (activeMediaElement.playbackRate || 1);
 
       if (currentDelayMs > 0) {
+        // Stop rescheduling if preload has been torn down (load(),
+        // unloadPreloadedMediaProduct(), failed transition, ...) or if a
+        // transition is already underway. Otherwise the recursion would keep
+        // scheduling timers for the rest of the track even though there is
+        // no next item.
+        if (
+          !this.#preloadReady ||
+          !this.#preloadedPayload ||
+          this.#crossfadeInProgress
+        ) {
+          this.debugLog(
+            'scheduleCrossfadeTrigger: preload no longer valid -- not rescheduling',
+          );
+          return;
+        }
         this.debugLog(
           'scheduleCrossfadeTrigger: no longer inside trigger window -- rescheduling',
         );
@@ -1536,12 +1551,16 @@ export default class ShakaPlayer extends BasePlayer {
 
     // Cancel any in-progress transition
     if (this.#crossfadeInProgress) {
-      this.#clearCrossfadeTimers();
       this.#crossfadeInProgress = false;
       this.#currentTransitionToken = undefined;
     }
 
-    // Clear preloaded payload if loading a new track
+    // Clear preloaded payload if loading a new track. #clearCrossfadeTimers()
+    // also tears down a previously scheduled crossfade trigger -- otherwise
+    // that timer would fire later, hit the rescheduling path in
+    // #scheduleCrossfadeTrigger and keep re-arming itself for the rest of
+    // the new track even though there is no next item anymore.
+    this.#clearCrossfadeTimers();
     this.#preloadReady = false;
     this.#preloadedPayload = null;
 
@@ -2053,6 +2072,9 @@ export default class ShakaPlayer extends BasePlayer {
 
     // Clear all preload state together so #preloadReady doesn't end up true
     // while the payload is null (would rely on other guards downstream).
+    // Also tear down any armed crossfade trigger -- it would otherwise fire
+    // later and keep rescheduling itself even though the preload is gone.
+    this.#clearCrossfadeTimers();
     this.#preloadedPayload = null;
     this.#preloadReady = false;
 
