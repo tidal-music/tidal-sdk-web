@@ -636,6 +636,12 @@ export default class ShakaPlayer extends BasePlayer {
       console.log(supportResult.drm);
     } */
 
+    // Return true even when no DRM matched: shaka.Player.probeSupport() is
+    // deterministic per browser, so re-probing on every subsequent load() call
+    // would never produce a different result. Returning true makes the player
+    // be marked as DRM-configured (#drmConfiguredPlayers) so we skip the
+    // probe next time. Playback of DRM-protected content will still fail at
+    // load time with a clear Shaka error.
     return true;
   }
 
@@ -894,8 +900,12 @@ export default class ShakaPlayer extends BasePlayer {
           'Critical error from inactive player, clearing preload:',
           errorCode,
         );
-        this.#preloadedPayload = null;
+        // Use the shared teardown so preloadedStreamingSessionId, the stored
+        // transition, and the inactive Shaka instance are all cleaned up. Just
+        // clearing #preloadedPayload/#preloadReady would leave BasePlayer
+        // believing a next item still exists.
         this.#preloadReady = false;
+        this.unloadPreloadedMediaProduct().catch(console.error);
 
         events.dispatchError(
           new PlayerError(
