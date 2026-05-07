@@ -273,7 +273,8 @@ async function run() {
     });
   } catch (error) {
     console.error('Test failed:', error);
-    updateStatus('Error: ' + error.message);
+    const message = error instanceof Error ? error.message : String(error);
+    updateStatus('Error: ' + message);
     reenableStartBtn();
   }
 }

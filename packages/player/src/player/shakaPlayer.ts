@@ -709,7 +709,14 @@ export default class ShakaPlayer extends BasePlayer {
       .getNetworkingEngine()
       ?.registerRequestFilter(async (type, request, context) => {
         if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
-          const isPreload = context?.isPreload ?? false;
+          // context.isPreload is only set when using player.preload() /
+          // PreloadManager. We preload by calling load() on the inactive
+          // Shaka instance directly, so detect preload by which player
+          // owns this filter (the closure-captured playerNumber) vs the
+          // currently active one. context.isPreload still wins if Shaka
+          // sets it, in case we ever swap to the PreloadManager API.
+          const isPreload =
+            context?.isPreload ?? playerNumber !== this.#activePlayer;
 
           const streamingSessionId = isPreload
             ? (this.preloadedStreamingSessionId ??
@@ -739,7 +746,10 @@ export default class ShakaPlayer extends BasePlayer {
     player
       .getNetworkingEngine()
       ?.registerResponseFilter((type, response, context) => {
-        const isPreload = context?.isPreload;
+        // Same preload detection as the request filter above -- context.isPreload
+        // isn't set when we load() directly on the inactive Shaka instance.
+        const isPreload =
+          context?.isPreload ?? playerNumber !== this.#activePlayer;
 
         const streamingSessionId = isPreload
           ? (this.preloadedStreamingSessionId ?? this.currentStreamingSessionId)
