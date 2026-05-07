@@ -577,13 +577,6 @@ export default class ShakaPlayer extends BasePlayer {
   }
 
   async #configureDRMOnce(player: shaka.Player) {
-    const { clientId } =
-      await credentialsProviderStore.credentialsProvider.getCredentials();
-
-    if (!clientId) {
-      return false;
-    }
-
     if ('Cypress' in window) {
       return true;
     }
