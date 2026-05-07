@@ -1405,11 +1405,16 @@ export default class ShakaPlayer extends BasePlayer {
     // user seeked very close to the end, or the track is shorter than the
     // configured crossfade, run a shorter fade so the next track reaches
     // its target volume before the outgoing element naturally ends.
+    // crossfadeDurationMs is wall-clock; remaining media-time must be divided
+    // by playbackRate to compare apples to apples (at 2x, half the wall-clock
+    // remaining as media-time would suggest).
     // Math.max(1, ...) avoids a divide-by-zero in performCrossfadeStep.
     const activeMediaElement = this.getActiveMediaElement();
+    const playbackRate = activeMediaElement.playbackRate || 1;
     const remainingMs = Math.max(
       0,
-      (activeMediaElement.duration - activeMediaElement.currentTime) * 1000,
+      ((activeMediaElement.duration - activeMediaElement.currentTime) * 1000) /
+        playbackRate,
     );
     const effectiveDurationMs = Math.max(
       1,
