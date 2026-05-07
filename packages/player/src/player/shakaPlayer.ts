@@ -125,8 +125,6 @@ export default class ShakaPlayer extends BasePlayer {
   // this in their closures so a stale callback (e.g. one that fired after a
   // reset() or after the user skipped) becomes a safe no-op.
   #currentTransitionToken: object | undefined = undefined;
-  #drmConfigurationPromises = new WeakMap<shaka.Player, Promise<boolean>>();
-  #drmConfiguredPlayers = new WeakSet<shaka.Player>();
 
   #isReset = true;
 
@@ -183,15 +181,6 @@ export default class ShakaPlayer extends BasePlayer {
         outputDevices = impMod.outputDevices;
       })();
     }
-
-    credentialsProviderStore.addEventListener('authorized', () => {
-      if (this.#shakaInstanceOne) {
-        this.#configureDRM(this.#shakaInstanceOne).catch(console.error);
-      }
-      if (this.#shakaInstanceTwo) {
-        this.#configureDRM(this.#shakaInstanceTwo).catch(console.error);
-      }
-    });
 
     /**
      * Check if an event should be ignored based on its source.
@@ -554,31 +543,8 @@ export default class ShakaPlayer extends BasePlayer {
   }
 
   async #configureDRM(player: shaka.Player) {
-    if (this.#drmConfiguredPlayers.has(player)) {
-      return;
-    }
-
-    const pendingConfiguration = this.#drmConfigurationPromises.get(player);
-    if (pendingConfiguration) {
-      await pendingConfiguration;
-      return;
-    }
-
-    const configuration = this.#configureDRMOnce(player);
-    this.#drmConfigurationPromises.set(player, configuration);
-
-    try {
-      if (await configuration) {
-        this.#drmConfiguredPlayers.add(player);
-      }
-    } finally {
-      this.#drmConfigurationPromises.delete(player);
-    }
-  }
-
-  async #configureDRMOnce(player: shaka.Player) {
     if ('Cypress' in window) {
-      return true;
+      return;
     }
 
     const supportResult = await shaka.Player.probeSupport();
@@ -600,7 +566,7 @@ export default class ShakaPlayer extends BasePlayer {
           },
         },
       });
-      return true;
+      return;
     } else if (supportResult.drm['com.apple.fps.1_0']) {
       this.debugLog('Configuring fairplay DRM.');
 
@@ -622,20 +588,12 @@ export default class ShakaPlayer extends BasePlayer {
           },
         },
       });
-      return true;
-    } /* else {
-      console.warn('No supported DRM system.');
-      // eslint-disable-next-line no-console
-      console.log(supportResult.drm);
-    } */
+      return;
+    }
 
-    // Return true even when no DRM matched: shaka.Player.probeSupport() is
-    // deterministic per browser, so re-probing on every subsequent load() call
-    // would never produce a different result. Returning true makes the player
-    // be marked as DRM-configured (#drmConfiguredPlayers) so we skip the
-    // probe next time. Playback of DRM-protected content will still fail at
-    // load time with a clear Shaka error.
-    return true;
+    // No supported DRM system. We intentionally do not throw -- playback of
+    // DRM-protected content will still fail at load() time with a clear Shaka
+    // error, while non-protected content (e.g. preview clips) keeps working.
   }
 
   /**
