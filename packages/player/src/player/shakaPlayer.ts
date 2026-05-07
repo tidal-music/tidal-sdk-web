@@ -311,6 +311,29 @@ export default class ShakaPlayer extends BasePlayer {
         : this.#playerTwoSessionId;
 
       if (sessionIdToFinish) {
+        const isCurrentSession =
+          this.currentStreamingSessionId === sessionIdToFinish;
+
+        // If a crossfade transition is in progress and the ENDED element is
+        // the active session, the swap is already in flight. Calling
+        // finishCurrentMediaProduct() here would delete the session from
+        // streamingSessionStore and unset currentStreamingSessionId, leaving
+        // the player pointing at deleted data for the rest of the crossfade
+        // (~250ms) -- duration / playbackContext getters would return null.
+        // Bail out and let #completeTransition do the cleanup naturally:
+        //   - keep #playerOneSessionId / #playerTwoSessionId set so its
+        //     `outgoingSessionId` branch picks up the just-ended session and
+        //     finalizes it via finishCurrentMediaProduct('completed', true)
+        //   - we don't dispatch a custom 'ended' event ourselves, so
+        //     playbackEngineEndedHandler's fallback (skipToPreloadedMediaProduct)
+        //     doesn't race with the in-flight transition.
+        if (isCurrentSession && this.#crossfadeInProgress) {
+          this.debugLog(
+            `Active track ended mid-crossfade (session: ${sessionIdToFinish}) -- letting #completeTransition finalize`,
+          );
+          return;
+        }
+
         // Ensure currentTime reflects the ended media element, even if it is
         // inactive after gapless crossfade. This is critical for accurate
         // endAssetPosition reporting in finishCurrentMediaProduct().
@@ -325,28 +348,8 @@ export default class ShakaPlayer extends BasePlayer {
           `Ended event from player ${isPlayerOne ? 1 : 2} (session: ${sessionIdToFinish})`,
         );
 
-        const isCurrentSession =
-          this.currentStreamingSessionId === sessionIdToFinish;
-
-        // If a crossfade transition is in progress, the track ending is expected
-        // and the transition will complete on its own. Treat as gapless to prevent
-        // the custom 'ended' event from triggering playbackEngineEndedHandler's
-        // fallback path (skipToPreloadedMediaProduct), which would race with the
-        // in-flight transition and cause a duplicate media-product-transition.
-        const treatAsGapless = !isCurrentSession || this.#crossfadeInProgress;
-
-        if (!treatAsGapless) {
+        if (isCurrentSession) {
           this.finishCurrentMediaProduct('completed');
-        } else if (isCurrentSession) {
-          // Crossfade in progress: the track ended before crossfade completed.
-          // Use the gapless path to avoid dispatching the custom 'ended' event.
-          const savedPlaybackState = this.playbackState;
-          const savedCurrentSessionId = this.currentStreamingSessionId;
-
-          this.finishCurrentMediaProduct('completed', true);
-
-          this.currentStreamingSessionId = savedCurrentSessionId;
-          this.playbackState = savedPlaybackState;
         } else {
           // Gapless case: Track has already been replaced by another track
           // that's actively playing. Finish the session without mutating
