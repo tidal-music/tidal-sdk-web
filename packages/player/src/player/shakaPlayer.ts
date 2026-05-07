@@ -1005,6 +1005,11 @@ export default class ShakaPlayer extends BasePlayer {
       this.#handleShakaError(
         new CustomEvent<shaka.extern.Error>('shaka-error', { detail: error }),
       );
+      // The load() rejection means streamInfo will never be played.
+      // finishCurrentMediaProduct() in #handleShakaError no-ops here because
+      // hasStarted() is false, so the placeholder mediaProductTransition and
+      // saved streamInfo would otherwise leak in streamingSessionStore.
+      streamingSessionStore.deleteSession(streamInfo.streamingSessionId);
       return;
     }
 
@@ -1640,10 +1645,14 @@ export default class ShakaPlayer extends BasePlayer {
         // Best-effort cleanup after failed preload
       }
 
-      // Clear all preload state to maintain consistency
+      // Clear all preload state to maintain consistency. cleanUpStoredPreloadInfo()
+      // also deletes the placeholder mediaProductTransition / streamInfo /
+      // playbackInfo from streamingSessionStore (saved by setNext + the
+      // pre-load placeholder write above), preventing repeated preload failures
+      // from leaking session entries.
       this.#preloadReady = false;
       this.#preloadedPayload = null;
-      this.preloadedStreamingSessionId = undefined;
+      this.cleanUpStoredPreloadInfo();
 
       // Clear the player session ID that was set for the failed load
       if (this.#activePlayer === 1) {

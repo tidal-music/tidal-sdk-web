@@ -36,10 +36,14 @@ export function ensureVideoElementsMounted() {
   const containerEl = document.getElementById(tidalPlayerRootId);
 
   if (containerEl) {
-    if (!(mediaElementOne.id in containerEl.children)) {
+    // Use Node.contains() rather than `id in children` -- the latter checks
+    // for a property name on the HTMLCollection (which isn't reliably the
+    // child's id), so it would return false even when the element is already
+    // mounted and we'd re-appendChild() on every call (which moves the node).
+    if (!containerEl.contains(mediaElementOne)) {
       containerEl.appendChild(mediaElementOne);
     }
-    if (!(mediaElementTwo.id in containerEl.children)) {
+    if (!containerEl.contains(mediaElementTwo)) {
       containerEl.appendChild(mediaElementTwo);
     }
   }
