@@ -1659,6 +1659,22 @@ export default class ShakaPlayer extends BasePlayer {
 
       this.debugLog('Media product transition saved for next track');
 
+      // Revalidate after the multiple awaits above: reset() (or a competing
+      // next()/load()) may have cleared / overwritten preloadedStreamingSessionId
+      // while we were loading. Without this guard, the continuation would
+      // resurrect stale preload state (#preloadReady, #isReset) and re-arm the
+      // crossfade trigger after a reset, leading to a transition pointing at
+      // an unloaded inactive player.
+      if (
+        this.preloadedStreamingSessionId !==
+        payload.streamInfo.streamingSessionId
+      ) {
+        this.debugLog(
+          `next(): preload superseded during load (${payload.streamInfo.streamingSessionId} -> ${this.preloadedStreamingSessionId ?? 'none'}) -- not arming preload`,
+        );
+        return;
+      }
+
       this.#preloadReady = true;
       this.#isReset = false;
 
