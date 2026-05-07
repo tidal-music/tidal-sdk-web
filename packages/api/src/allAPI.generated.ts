@@ -5984,6 +5984,8 @@ export interface paths {
                      * @example offlineInventory
                      */
                     include?: string[];
+                    /** @description One of: PENDING, STORED (e.g. `PENDING`) */
+                    "filter[state]"?: ("PENDING" | "STORED")[];
                     /** @description One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`) */
                     "filter[type]"?: ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
                 };
@@ -22102,6 +22104,11 @@ export interface components {
              */
             accessType?: "PUBLIC" | "UNLISTED" | "PRIVATE";
             /**
+             * @description Whether the track is AI-generated
+             * @example false
+             */
+            ai?: boolean;
+            /**
              * @deprecated
              * @description Available usage for this track. Deprecated: use 'usageRules' instead. This field will be removed in a future version.
              */
@@ -22235,6 +22242,8 @@ export interface components {
         UsageRulesCreateOperation_Payload_Data_Attributes: {
             countryCode?: string;
             free?: ("STREAM" | "DJ" | "STEM" | "DOWNLOAD")[];
+            /** @description Tracks only. Set to true (with empty paid/subscription/free) to clear an explicit track-level override and inherit usage rules from the album. Must be omitted or false when providing explicit usage values. */
+            inherited?: boolean;
             paid?: ("STREAM" | "DJ" | "STEM" | "DOWNLOAD")[];
             subscription?: ("STREAM" | "DJ" | "STEM" | "DOWNLOAD")[];
         };
@@ -22254,6 +22263,8 @@ export interface components {
             countryCode: string;
             /** @description Usage types allowed for free/ad-supported model */
             free?: ("STREAM" | "DJ" | "STEM" | "DOWNLOAD")[];
+            /** @description Whether these usage rules are inherited from a parent (e.g. a track inheriting from its album). Tri-state: true means the rules are inherited, false means an explicit per-track override, null means the value is unknown or not applicable (albums, videos, and legacy data). */
+            inherited?: boolean;
             /** @description Usage types allowed for paid/purchase model */
             paid?: ("STREAM" | "DJ" | "STEM" | "DOWNLOAD")[];
             /** @description Usage types allowed for subscription model */

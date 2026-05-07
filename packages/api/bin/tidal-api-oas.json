@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.7.6"
+    "version" : "1.8.1"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -8828,6 +8828,18 @@
             "items" : {
               "type" : "string",
               "example" : "offlineInventory"
+            }
+          }
+        }, {
+          "description" : "One of: PENDING, STORED (e.g. `PENDING`)",
+          "in" : "query",
+          "name" : "filter[state]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "PENDING", "STORED" ]
             }
           }
         }, {
@@ -35698,6 +35710,11 @@
             "example" : "PRIVATE",
             "enum" : [ "PUBLIC", "UNLISTED", "PRIVATE" ]
           },
+          "ai" : {
+            "type" : "boolean",
+            "description" : "Whether the track is AI-generated",
+            "example" : false
+          },
           "availability" : {
             "type" : "array",
             "description" : "Available usage for this track. Deprecated: use 'usageRules' instead. This field will be removed in a future version.",
@@ -35978,6 +35995,10 @@
               "enum" : [ "STREAM", "DJ", "STEM", "DOWNLOAD" ]
             }
           },
+          "inherited" : {
+            "type" : "boolean",
+            "description" : "Tracks only. Set to true (with empty paid/subscription/free) to clear an explicit track-level override and inherit usage rules from the album. Must be omitted or false when providing explicit usage values."
+          },
           "paid" : {
             "type" : "array",
             "items" : {
@@ -36041,6 +36062,10 @@
               "description" : "Usage types allowed for free/ad-supported model",
               "enum" : [ "STREAM", "DJ", "STEM", "DOWNLOAD" ]
             }
+          },
+          "inherited" : {
+            "type" : "boolean",
+            "description" : "Whether these usage rules are inherited from a parent (e.g. a track inheriting from its album). Tri-state: true means the rules are inherited, false means an explicit per-track override, null means the value is unknown or not applicable (albums, videos, and legacy data)."
           },
           "paid" : {
             "type" : "array",
