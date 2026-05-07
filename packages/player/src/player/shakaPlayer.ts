@@ -304,12 +304,6 @@ export default class ShakaPlayer extends BasePlayer {
       const mediaElement = e.target as HTMLMediaElement;
       timeUpdateHandler(e);
 
-      // Ensure currentTime reflects the ended media element, even if it is inactive
-      // after gapless crossfade. This is critical for accurate endAssetPosition reporting.
-      if (mediaElement.readyState > HTMLMediaElement.HAVE_NOTHING) {
-        this.currentTime = mediaElement.currentTime;
-      }
-
       // Determine which player fired the ended event and finish its session
       const isPlayerOne = mediaElement === mediaElementOne;
       const sessionIdToFinish = isPlayerOne
@@ -317,6 +311,16 @@ export default class ShakaPlayer extends BasePlayer {
         : this.#playerTwoSessionId;
 
       if (sessionIdToFinish) {
+        // Ensure currentTime reflects the ended media element, even if it is
+        // inactive after gapless crossfade. This is critical for accurate
+        // endAssetPosition reporting in finishCurrentMediaProduct().
+        // Gated on sessionIdToFinish so a stale `ended` event from a player
+        // whose session id was already cleared can't clobber the active
+        // player's currentTime.
+        if (mediaElement.readyState > HTMLMediaElement.HAVE_NOTHING) {
+          this.currentTime = mediaElement.currentTime;
+        }
+
         this.debugLog(
           `Ended event from player ${isPlayerOne ? 1 : 2} (session: ${sessionIdToFinish})`,
         );
@@ -1156,17 +1160,18 @@ export default class ShakaPlayer extends BasePlayer {
       this.#crossfadeTriggerTimerId = null;
 
       // Re-check timing: the user may have seeked backward (or paused for a
-      // long time, or changed playbackRate) since we scheduled this timer,
-      // in which case starting now would truncate audio off the outgoing
-      // track. Bail out -- timeUpdateHandler will trigger naturally when we
-      // actually reach the trigger window again.
+      // long time, or lowered playbackRate) since we scheduled this timer,
+      // in which case starting now would pause the outgoing element before
+      // its natural end and truncate audible audio. Only fire when we're
+      // actually inside the trigger window (currentDelayMs <= 0) -- the
+      // timeUpdateHandler safety net will catch us within ~250ms otherwise.
       const currentRemaining =
         activeMediaElement.duration - activeMediaElement.currentTime;
       const currentDelayMs =
         ((currentRemaining - startBeforeEndS) * 1000) /
         (activeMediaElement.playbackRate || 1);
 
-      if (currentDelayMs > 250) {
+      if (currentDelayMs > 0) {
         this.debugLog(
           'scheduleCrossfadeTrigger: no longer inside trigger window -- skipping',
         );
