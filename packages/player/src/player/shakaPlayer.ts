@@ -510,8 +510,13 @@ export default class ShakaPlayer extends BasePlayer {
     this.preloadedStreamingSessionId = undefined;
     this.startAssetPosition = 0;
 
-    const duration =
-      nextMediaElement.duration ?? nextPayload.streamInfo.duration ?? 0;
+    // HTMLMediaElement.duration is NaN until metadata loads (and NaN is not
+    // nullish, so ?? would propagate it through composePlaybackContext);
+    // fall back to the streamInfo value when the element duration isn't
+    // a finite number.
+    const duration = Number.isFinite(nextMediaElement.duration)
+      ? nextMediaElement.duration
+      : (nextPayload.streamInfo.duration ?? 0);
 
     const assetPosition = nextMediaElement.currentTime;
 
@@ -1163,6 +1168,15 @@ export default class ShakaPlayer extends BasePlayer {
       // don't truncate audible audio off the outgoing track. Firing early
       // (e.g. with delayMs = 800ms) would pause the outgoing element ~800ms
       // before its natural end, cutting off audible audio.
+      // Skip when paused: starting the transition here would resume audio
+      // even though the user is paused. timeUpdateHandler will pick it up
+      // when the user resumes (it fires at ~4Hz once playing).
+      if (activeMediaElement.paused) {
+        this.debugLog(
+          'scheduleCrossfadeTrigger: inside trigger window but paused -- deferring to timeUpdateHandler',
+        );
+        return;
+      }
       this.debugLog(
         'scheduleCrossfadeTrigger: inside trigger window -- firing now',
       );
