@@ -212,6 +212,21 @@ export default class ShakaPlayer extends BasePlayer {
       if (this.mediaElement && !this.mediaElement.paused) {
         this.playbackState = 'PLAYING';
       }
+
+      // Re-arm the crossfade trigger if the active element just resumed
+      // and there's no timer pending. #scheduleCrossfadeTrigger bails out
+      // when paused (in both the immediate-fire and reschedule branches)
+      // to avoid a tight setTimeout loop that would keep waking up while
+      // the tab is paused. We rebuild the precise timer here on resume.
+      if (
+        e?.target === this.#getActiveMediaElement() &&
+        this.#preloadReady &&
+        this.#preloadedPayload &&
+        !this.#crossfadeInProgress &&
+        this.#crossfadeTriggerTimerId == null
+      ) {
+        this.#scheduleCrossfadeTrigger();
+      }
     };
 
     const setStalled = (e: Event) => {
@@ -1263,6 +1278,16 @@ export default class ShakaPlayer extends BasePlayer {
         ) {
           this.debugLog(
             'scheduleCrossfadeTrigger: preload no longer valid -- not rescheduling',
+          );
+          return;
+        }
+        // Bail out when paused: currentTime won't advance, so currentDelayMs
+        // would stay positive and we'd recurse into a tight setTimeout loop
+        // (firing every ~currentDelayMs forever while paused). The play /
+        // playing handlers re-arm us once the user resumes.
+        if (activeMediaElement.paused) {
+          this.debugLog(
+            'scheduleCrossfadeTrigger: paused while waiting -- deferring re-arm to play event',
           );
           return;
         }
