@@ -413,17 +413,18 @@ export default class ShakaPlayer extends BasePlayer {
     };
 
     this.#shakaEventHandlers = {
-      bufferingHandler: (event => {
-        // Shaka Player emits buffering events with a custom 'buffering' property
+      bufferingHandler: (event: Event) => {
+        // Shaka Player emits buffering events with a custom `buffering`
+        // property on the event itself (FakeEvent), not in `detail`.
         const bufferingEvent = event as Event & { buffering: boolean };
         if (bufferingEvent.buffering) {
           setStalled(event);
         } else if (this.hasStarted()) {
           setPlaying(event);
         }
-      }) as EventListener,
-      errorHandler: ((e: CustomEvent<shaka.extern.Error>) =>
-        this.#handleShakaError(e)) as EventListener,
+      },
+      errorHandler: (e: Event) =>
+        this.#handleShakaError(e as CustomEvent<shaka.extern.Error>),
       loadedHandler: setNotPlaying,
       stallDetectedHandler: setStalled,
     };
