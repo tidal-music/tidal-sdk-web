@@ -1329,13 +1329,14 @@ export default class ShakaPlayer extends BasePlayer {
     const transitionToken = {};
     this.#currentTransitionToken = transitionToken;
 
-    let currentTrackVolume: number;
-    let nextTrackTargetVolume: number;
+    // Captured outgoing streamInfo so adjustedVolume() can keep applying
+    // loudness normalization for the outgoing track on every step (its
+    // streamingSessionStore entry sticks around until #completeTransition).
+    const currentStreamInfo = streamingSessionStore.getStreamInfo(
+      this.currentStreamingSessionId,
+    );
 
     try {
-      currentTrackVolume = currentMediaElement.volume;
-      nextTrackTargetVolume = this.adjustedVolume(nextPayload.streamInfo);
-
       nextMediaElement.currentTime = 0;
       // Start from a tiny non-zero volume. Chrome can delay starting a second
       // video element that is exactly silent; the first fade step below will
@@ -1387,13 +1388,25 @@ export default class ShakaPlayer extends BasePlayer {
       const fadeOutCurve = Math.cos((progress * Math.PI) / 2);
       const fadeInCurve = Math.sin((progress * Math.PI) / 2);
 
+      // Recompute base volumes per step so a user volume change (or any
+      // other Config.desiredVolumeLevel update) propagated through
+      // BasePlayer mid-fade is honoured immediately. Without this, both
+      // ramps stay anchored to the volume snapshotted at fade start and
+      // the next track ends up at the stale target. adjustedVolume() reads
+      // Config.get('desiredVolumeLevel') live and applies the configured
+      // loudness normalization for the per-stream replayGain.
+      const currentBaseVolume = currentStreamInfo
+        ? this.adjustedVolume(currentStreamInfo)
+        : currentMediaElement.volume;
+      const nextBaseVolume = this.adjustedVolume(nextPayload.streamInfo);
+
       currentMediaElement.volume = Math.max(
         0,
-        Math.min(1, currentTrackVolume * fadeOutCurve),
+        Math.min(1, currentBaseVolume * fadeOutCurve),
       );
       nextMediaElement.volume = Math.max(
         0,
-        Math.min(1, nextTrackTargetVolume * fadeInCurve),
+        Math.min(1, nextBaseVolume * fadeInCurve),
       );
 
       if (progress < 1.0) {
@@ -1416,7 +1429,9 @@ export default class ShakaPlayer extends BasePlayer {
       }
       this.debugLog('Crossfade hit hard deadline -- forcing completion');
       currentMediaElement.volume = 0;
-      nextMediaElement.volume = nextTrackTargetVolume;
+      // Read live again on the deadline path -- the user may have changed
+      // volume just before the deadline fires.
+      nextMediaElement.volume = this.adjustedVolume(nextPayload.streamInfo);
       this.#completeTransition(nextMediaElement, nextPayload, transitionToken);
     }, durationMs + 200);
 
