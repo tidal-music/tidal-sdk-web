@@ -208,7 +208,7 @@ export default class ShakaPlayer extends BasePlayer {
         return;
       }
 
-      // Safari tend to send events wrongly. Verify the media event is actually playing before sending setting state.
+      // Safari tends to send events incorrectly. Verify the media event is actually playing before sending setting state.
       if (this.mediaElement && !this.mediaElement.paused) {
         this.playbackState = 'PLAYING';
       }
@@ -225,7 +225,7 @@ export default class ShakaPlayer extends BasePlayer {
         e.type === 'buffering' &&
         this.mediaElement?.networkState === HTMLMediaElement.NETWORK_LOADING;
 
-      // Safari tend to send events wrongly. Verify the media event is actually paused before sending setting state.
+      // Safari tends to send events incorrectly. Verify the media event is actually paused before sending setting state.
       if (this.mediaElement?.paused || shakaWaiting) {
         this.playbackState = 'STALLED';
       }
