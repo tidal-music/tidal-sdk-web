@@ -1706,18 +1706,35 @@ export default class ShakaPlayer extends BasePlayer {
         this.playbackState = 'NOT_PLAYING';
       }
 
-      // Wait for duration to be available and update the saved transition
+      // Wait for duration to be available and update the saved transition.
+      // Bounded so a stream that never fires `durationchange` (or whose
+      // duration stays NaN/0) can't leave next() -- and therefore the
+      // public setNext() promise -- pending forever. On timeout we fall
+      // back to payload.streamInfo.duration in the actualDuration line
+      // below, which is the value we'd use anyway if duration is still 0.
       if (
         !inactiveMediaElement.duration ||
         isNaN(inactiveMediaElement.duration)
       ) {
         await new Promise<void>(resolve => {
+          const onDurationChange = () => {
+            clearTimeout(timeoutId);
+            resolve();
+          };
+          const timeoutId = setTimeout(() => {
+            inactiveMediaElement.removeEventListener(
+              'durationchange',
+              onDurationChange,
+            );
+            this.debugLog(
+              'next(): durationchange did not fire within 3000ms -- falling back to payload duration',
+            );
+            resolve();
+          }, 3000);
           inactiveMediaElement.addEventListener(
             'durationchange',
-            () => resolve(),
-            {
-              once: true,
-            },
+            onDurationChange,
+            { once: true },
           );
         });
       }
