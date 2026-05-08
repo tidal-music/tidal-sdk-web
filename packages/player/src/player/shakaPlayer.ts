@@ -194,9 +194,9 @@ export default class ShakaPlayer extends BasePlayer {
 
       const target = e.target;
       if (target instanceof HTMLMediaElement) {
-        return target !== this.getActiveMediaElement();
+        return target !== this.#getActiveMediaElement();
       } else if (target instanceof shaka.Player) {
-        return target !== this.getActiveShakaInstance();
+        return target !== this.#getActiveShakaInstance();
       } else {
         // Ignore events from unknown sources.
         return true;
@@ -260,7 +260,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     const timeUpdateHandler = (e: Event) => {
       const mediaElement = e.target as HTMLMediaElement;
-      const activeMediaElement = this.getActiveMediaElement();
+      const activeMediaElement = this.#getActiveMediaElement();
       const isActiveElement = mediaElement === activeMediaElement;
 
       // Only update currentTime from active media element
@@ -294,7 +294,7 @@ export default class ShakaPlayer extends BasePlayer {
       if (this.currentStreamingSessionId) {
         if (
           e.target instanceof HTMLMediaElement &&
-          e.target === this.getActiveMediaElement()
+          e.target === this.#getActiveMediaElement()
         ) {
           streamingSessionStore.overwriteDuration(
             this.currentStreamingSessionId,
@@ -370,7 +370,7 @@ export default class ShakaPlayer extends BasePlayer {
           this.playbackState = savedPlaybackState;
 
           // Also restore currentTime to reflect the active player
-          const activeMediaElement = this.getActiveMediaElement();
+          const activeMediaElement = this.#getActiveMediaElement();
           if (
             activeMediaElement &&
             activeMediaElement.readyState > HTMLMediaElement.HAVE_NOTHING
@@ -468,7 +468,7 @@ export default class ShakaPlayer extends BasePlayer {
     // decoding silently until its natural 'ended' event fires, which
     // accumulates across repeated transitions and can push CPU usage up
     // (and eventually crash the page) over many replays.
-    const outgoingMediaElement = this.getActiveMediaElement();
+    const outgoingMediaElement = this.#getActiveMediaElement();
     const outgoingSessionId =
       this.#activePlayer === 1
         ? this.#playerOneSessionId
@@ -832,7 +832,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     const isFromInactivePlayer =
       e.target instanceof shaka.Player &&
-      e.target !== this.getActiveShakaInstance();
+      e.target !== this.#getActiveShakaInstance();
 
     const error = e.detail;
     const errorCode = `S${error.code}` as ErrorCodes;
@@ -941,8 +941,8 @@ export default class ShakaPlayer extends BasePlayer {
     this.debugLog('loadAndDispatchMediaProductTransition');
     this.currentTime = assetPosition;
 
-    const shakaInstance = this.getActiveShakaInstance();
-    const mediaElement = this.getActiveMediaElement();
+    const shakaInstance = this.#getActiveShakaInstance();
+    const mediaElement = this.#getActiveMediaElement();
 
     if (!shakaInstance || !mediaElement) {
       return;
@@ -1160,7 +1160,7 @@ export default class ShakaPlayer extends BasePlayer {
       this.#crossfadeTriggerTimerId = null;
     }
 
-    const activeMediaElement = this.getActiveMediaElement();
+    const activeMediaElement = this.#getActiveMediaElement();
     const duration = activeMediaElement.duration;
 
     if (!Number.isFinite(duration) || duration <= 0) {
@@ -1205,10 +1205,14 @@ export default class ShakaPlayer extends BasePlayer {
       // current duration / currentTime / playbackRate. This is self-correcting
       // when paused (we'd just keep deferring with progressively similar
       // delays until the user resumes and currentTime advances).
+      // Re-read startBeforeEndS too -- the public API may change crossfadeInMs
+      // (and therefore the trigger window) after we armed the timer.
+      const { startBeforeEndS: currentStartBeforeEndS } =
+        this.#getTransitionConfig();
       const currentRemaining =
         activeMediaElement.duration - activeMediaElement.currentTime;
       const currentDelayMs =
-        ((currentRemaining - startBeforeEndS) * 1000) /
+        ((currentRemaining - currentStartBeforeEndS) * 1000) /
         (activeMediaElement.playbackRate || 1);
 
       if (currentDelayMs > 0) {
@@ -1241,7 +1245,7 @@ export default class ShakaPlayer extends BasePlayer {
         this.#preloadedPayload &&
         !this.#crossfadeInProgress &&
         !activeMediaElement.paused &&
-        activeMediaElement === this.getActiveMediaElement()
+        activeMediaElement === this.#getActiveMediaElement()
       ) {
         this.#startTransition().catch(console.error);
       } else {
@@ -1276,8 +1280,8 @@ export default class ShakaPlayer extends BasePlayer {
   async #startCrossfadeTransition(durationMs: number) {
     this.debugLog(`Starting crossfade transition (${durationMs}ms)`);
 
-    const currentMediaElement = this.getActiveMediaElement();
-    const nextMediaElement = this.getInactiveMediaElement();
+    const currentMediaElement = this.#getActiveMediaElement();
+    const nextMediaElement = this.#getInactiveMediaElement();
     const nextPayload = this.#preloadedPayload!;
 
     // Mark "no longer preloaded" up-front so that if anything (e.g. the SDK
@@ -1387,7 +1391,7 @@ export default class ShakaPlayer extends BasePlayer {
 
   async #startInstantTransition() {
     this.debugLog('Starting instant transition (no fade)');
-    const nextMediaElement = this.getInactiveMediaElement();
+    const nextMediaElement = this.#getInactiveMediaElement();
     const nextPayload = this.#preloadedPayload!;
 
     this.#preloadReady = false;
@@ -1448,7 +1452,7 @@ export default class ShakaPlayer extends BasePlayer {
     // by playbackRate to compare apples to apples (at 2x, half the wall-clock
     // remaining as media-time would suggest).
     // Math.max(1, ...) avoids a divide-by-zero in performCrossfadeStep.
-    const activeMediaElement = this.getActiveMediaElement();
+    const activeMediaElement = this.#getActiveMediaElement();
     const playbackRate = activeMediaElement.playbackRate || 1;
     const remainingMs = Math.max(
       0,
@@ -1494,22 +1498,23 @@ export default class ShakaPlayer extends BasePlayer {
     });
   }
 
-  // Dual player helper methods
-  getActiveMediaElement(): HTMLMediaElement {
+  // Dual player helper methods. Private (`#`) so the dual-player internals
+  // aren't part of the supported public API surface.
+  #getActiveMediaElement(): HTMLMediaElement {
     return this.#activePlayer === 1 ? mediaElementOne : mediaElementTwo;
   }
 
-  getActiveShakaInstance(): shaka.Player | undefined {
+  #getActiveShakaInstance(): shaka.Player | undefined {
     return this.#activePlayer === 1
       ? this.#shakaInstanceOne
       : this.#shakaInstanceTwo;
   }
 
-  getInactiveMediaElement(): HTMLMediaElement {
+  #getInactiveMediaElement(): HTMLMediaElement {
     return this.#activePlayer === 1 ? mediaElementTwo : mediaElementOne;
   }
 
-  getInactiveShakaInstance(): shaka.Player | undefined {
+  #getInactiveShakaInstance(): shaka.Player | undefined {
     return this.#activePlayer === 1
       ? this.#shakaInstanceTwo
       : this.#shakaInstanceOne;
@@ -1530,7 +1535,7 @@ export default class ShakaPlayer extends BasePlayer {
     await this.reset();
     this.#isReset = false;
 
-    await this.#configureHlsForPlayback(this.getActiveShakaInstance());
+    await this.#configureHlsForPlayback(this.#getActiveShakaInstance());
 
     await ensureVideoElementsMounted();
 
@@ -1542,8 +1547,8 @@ export default class ShakaPlayer extends BasePlayer {
       this.playbackState = 'NOT_PLAYING';
     }
 
-    const mediaElement = this.getActiveMediaElement();
-    const shakaInstance = this.getActiveShakaInstance();
+    const mediaElement = this.#getActiveMediaElement();
+    const shakaInstance = this.#getActiveShakaInstance();
 
     if (!shakaInstance || !mediaElement) {
       return;
@@ -1565,7 +1570,7 @@ export default class ShakaPlayer extends BasePlayer {
     this.#preloadedPayload = null;
 
     // Pause and reset inactive player
-    const inactiveElement = this.getInactiveMediaElement();
+    const inactiveElement = this.#getInactiveMediaElement();
     inactiveElement.pause();
     inactiveElement.volume = 0;
 
@@ -1580,14 +1585,14 @@ export default class ShakaPlayer extends BasePlayer {
   }
 
   get mediaElement(): HTMLMediaElement | null {
-    return this.getActiveMediaElement();
+    return this.#getActiveMediaElement();
   }
 
   async next(payload: LoadPayload) {
     this.debugLog('next', payload);
 
-    const inactiveShakaInstance = this.getInactiveShakaInstance();
-    const inactiveMediaElement = this.getInactiveMediaElement();
+    const inactiveShakaInstance = this.#getInactiveShakaInstance();
+    const inactiveMediaElement = this.#getInactiveMediaElement();
 
     if (!inactiveShakaInstance || !inactiveMediaElement) {
       console.warn('Inactive Shaka instance or media element not initialized.');
@@ -1793,7 +1798,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     // Handle 100 % data loss w NLC
     if (this.#shouldRetryStreaming) {
-      const retrySuccessful = this.getActiveShakaInstance()?.retryStreaming();
+      const retrySuccessful = this.#getActiveShakaInstance()?.retryStreaming();
 
       this.#shouldRetryStreaming = !retrySuccessful;
 
@@ -1812,7 +1817,7 @@ export default class ShakaPlayer extends BasePlayer {
     }
 
     // Check if setSinkId is supported (both elements are created the same way, so checking one is sufficient)
-    const activeElement = this.getActiveMediaElement();
+    const activeElement = this.#getActiveMediaElement();
     if (activeElement && 'setSinkId' in activeElement) {
       await this.updateOutputDevice();
     }
@@ -1823,7 +1828,7 @@ export default class ShakaPlayer extends BasePlayer {
 
     await this.mediaElement?.play();
 
-    const activeTrack = this.getActiveShakaInstance()
+    const activeTrack = this.#getActiveShakaInstance()
       ?.getVariantTracks()
       ?.find((v: shaka.extern.Track) => v.active);
 
@@ -1929,8 +1934,8 @@ export default class ShakaPlayer extends BasePlayer {
     // Reset players: always unload active player, unload inactive only if
     // !keepPreload AND unloadPreloadedMediaProduct() didn't already do it.
     const promises: Array<Promise<void>> = [];
-    const activeShakaInstance = this.getActiveShakaInstance();
-    const inactiveShakaInstance = this.getInactiveShakaInstance();
+    const activeShakaInstance = this.#getActiveShakaInstance();
+    const inactiveShakaInstance = this.#getInactiveShakaInstance();
 
     // Always unload the active player
     if (activeShakaInstance) {
@@ -2030,10 +2035,10 @@ export default class ShakaPlayer extends BasePlayer {
       payload.mediaProduct = mediaProductTransition.mediaProduct;
     }
 
-    const inactiveMediaElement = this.getInactiveMediaElement();
+    const inactiveMediaElement = this.#getInactiveMediaElement();
 
     // Pause the current (active) track and set its volume to 0.
-    const activeMediaElement = this.getActiveMediaElement();
+    const activeMediaElement = this.#getActiveMediaElement();
     activeMediaElement.pause();
     activeMediaElement.volume = 0;
 
@@ -2089,8 +2094,8 @@ export default class ShakaPlayer extends BasePlayer {
     this.#preloadReady = false;
 
     // Unload inactive player if it has content
-    const inactivePlayer = this.getInactiveShakaInstance();
-    const inactiveElement = this.getInactiveMediaElement();
+    const inactivePlayer = this.#getInactiveShakaInstance();
+    const inactiveElement = this.#getInactiveMediaElement();
 
     if (inactivePlayer && inactiveElement.readyState !== 0) {
       await inactivePlayer.unload(/* initializeMediaSource */ false);
