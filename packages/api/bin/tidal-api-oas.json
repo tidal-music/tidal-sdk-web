@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.8.1"
+    "version" : "1.9.2"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -122,6 +122,9 @@
   }, {
     "description" : "A shareable link to one or more TIDAL resources.",
     "name" : "shares"
+  }, {
+    "description" : "A Square seller connection linked to a user for receiving payments.",
+    "name" : "squareConnections"
   }, {
     "description" : "A Stripe Connect account linked to a user for receiving payments.",
     "name" : "stripeConnections"
@@ -8831,6 +8834,17 @@
             }
           }
         }, {
+          "description" : "Offline item id (e.g. `1234`)",
+          "in" : "query",
+          "name" : "filter[id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
           "description" : "One of: PENDING, STORED (e.g. `PENDING`)",
           "in" : "query",
           "name" : "filter[state]",
@@ -15346,6 +15360,141 @@
         } ],
         "summary" : "Get sharedResources relationship (\"to-many\").",
         "tags" : [ "shares" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/squareConnections" : {
+      "post" : {
+        "description" : "Creates a new squareConnection.",
+        "parameters" : [ {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SquareConnectionsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareConnections_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single squareConnection.",
+        "tags" : [ "squareConnections" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/squareConnections/{id}" : {
+      "get" : {
+        "description" : "Retrieves single squareConnection by id.",
+        "parameters" : [ {
+          "description" : "Square connection id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareConnections_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get single squareConnection.",
+        "tags" : [ "squareConnections" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
         }
@@ -28963,9 +29112,6 @@
           "description" : {
             "type" : "string"
           },
-          "enabled" : {
-            "type" : "boolean"
-          },
           "name" : {
             "type" : "string"
           },
@@ -29005,9 +29151,6 @@
           },
           "description" : {
             "type" : "string"
-          },
-          "enabled" : {
-            "type" : "boolean"
           },
           "name" : {
             "type" : "string"
@@ -30488,7 +30631,7 @@
         "properties" : {
           "type" : {
             "type" : "string",
-            "enum" : [ "TIDAL_SHARING", "TIDAL_USER_SHARING", "TIDAL_AUTOPLAY_ANDROID", "TIDAL_AUTOPLAY_IOS", "TIDAL_AUTOPLAY_WEB", "TWITTER", "FACEBOOK", "INSTAGRAM", "TIKTOK", "SNAPCHAT", "OFFICIAL_HOMEPAGE", "CASHAPP_CONTRIBUTIONS", "ARTIST_CLAIM_PROVIDER_REDIRECT", "STRIPE_AUTHORIZATION_REDIRECT" ]
+            "enum" : [ "TIDAL_SHARING", "TIDAL_USER_SHARING", "TIDAL_AUTOPLAY_ANDROID", "TIDAL_AUTOPLAY_IOS", "TIDAL_AUTOPLAY_WEB", "TWITTER", "FACEBOOK", "INSTAGRAM", "TIKTOK", "SNAPCHAT", "OFFICIAL_HOMEPAGE", "CASHAPP_CONTRIBUTIONS", "ARTIST_CLAIM_PROVIDER_REDIRECT", "STRIPE_AUTHORIZATION_REDIRECT", "SQUARE_AUTHORIZATION_REDIRECT" ]
           }
         },
         "description" : "metadata about an external link"
@@ -30728,6 +30871,7 @@
               "searchResults" : "#/components/schemas/SearchResults_Resource_Object",
               "searchSuggestions" : "#/components/schemas/SearchSuggestions_Resource_Object",
               "shares" : "#/components/schemas/Shares_Resource_Object",
+              "squareConnections" : "#/components/schemas/SquareConnections_Resource_Object",
               "stripeConnections" : "#/components/schemas/StripeConnections_Resource_Object",
               "stripeDashboardLinks" : "#/components/schemas/StripeDashboardLinks_Resource_Object",
               "temporaryUserTokens" : "#/components/schemas/TemporaryUserTokens_Resource_Object",
@@ -30830,6 +30974,8 @@
             "$ref" : "#/components/schemas/SearchSuggestions_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Shares_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/SquareConnections_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/StripeConnections_Resource_Object"
           }, {
@@ -31061,12 +31207,12 @@
         }
       },
       "Installations_OfflineInventory_Resource_Identifier_Meta" : {
-        "required" : [ "clientStorageState" ],
+        "required" : [ "addedAt" ],
         "type" : "object",
         "properties" : {
-          "clientStorageState" : {
+          "addedAt" : {
             "type" : "string",
-            "enum" : [ "PENDING", "STORED" ]
+            "format" : "date-time"
           }
         }
       },
@@ -34309,6 +34455,121 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/Resource_Identifier"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SquareConnectionsCreateOperation_Payload" : {
+        "required" : [ "data", "meta" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareConnectionsCreateOperation_Payload_Data"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SquareConnectionsCreateOperation_Payload_Meta"
+          }
+        }
+      },
+      "SquareConnectionsCreateOperation_Payload_Data" : {
+        "required" : [ "type" ],
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareConnections" ]
+          }
+        }
+      },
+      "SquareConnectionsCreateOperation_Payload_Meta" : {
+        "required" : [ "platform" ],
+        "type" : "object",
+        "properties" : {
+          "platform" : {
+            "type" : "string",
+            "description" : "Client platform initiating Square onboarding.",
+            "enum" : [ "WEB", "ANDROID", "IOS" ]
+          }
+        }
+      },
+      "SquareConnections_Attributes" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "createdAt" : {
+            "type" : "string",
+            "description" : "Timestamp when the connection was created",
+            "format" : "date-time"
+          },
+          "externalLinks" : {
+            "type" : "array",
+            "description" : "External links for Square connection",
+            "items" : {
+              "$ref" : "#/components/schemas/External_Link"
+            }
+          },
+          "lastModifiedAt" : {
+            "type" : "string",
+            "description" : "Timestamp when the connection was last modified",
+            "format" : "date-time"
+          },
+          "status" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Current status of this Square connection",
+            "enum" : [ "PENDING_REQUIREMENTS", "ACCEPTED", "REJECTED" ]
+          }
+        }
+      },
+      "SquareConnections_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SquareConnections_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SquareConnections_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SquareConnections_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SquareConnections_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareConnections_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
