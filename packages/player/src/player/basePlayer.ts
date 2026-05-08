@@ -70,7 +70,7 @@ function sanitizeDebugValue(value: unknown): unknown {
   for (const [key, nestedValue] of Object.entries(
     value as Record<string, unknown>,
   )) {
-    if (key === 'manifest' || key === 'securityToken' || key === 'streamUrl') {
+    if (isSensitiveDebugKey(key)) {
       sanitized[key] =
         typeof nestedValue === 'string'
           ? `[redacted ${key}, ${nestedValue.length} chars]`
@@ -82,6 +82,17 @@ function sanitizeDebugValue(value: unknown): unknown {
   }
 
   return sanitized;
+}
+
+// Keys whose values shouldn't be written to debug logs. The `token` substring
+// match catches all current and any future credential-bearing fields
+// (e.g. `securityToken`, `licenseSecurityToken`, `accessToken`) without us
+// having to keep an exhaustive enumeration in sync.
+function isSensitiveDebugKey(key: string): boolean {
+  if (key === 'manifest' || key === 'streamUrl') {
+    return true;
+  }
+  return /token/i.test(key);
 }
 
 function playbackStatisticsEndReason(
