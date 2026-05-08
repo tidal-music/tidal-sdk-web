@@ -860,8 +860,19 @@ export default class ShakaPlayer extends BasePlayer {
     const errorCode = `S${error.code}` as ErrorCodes;
 
     switch (error.code) {
-      case shaka.util.Error.Code.LICENSE_REQUEST_FAILED: // 6007
-        if (this.currentStreamingSessionId) {
+      case shaka.util.Error.Code.LICENSE_REQUEST_FAILED: {
+        // 6007
+        // Attribute the failed license fetch to the session that actually
+        // requested it. When the inactive (preloading) Shaka instance
+        // throws this error the request was made for the preloaded track,
+        // so charging it against currentStreamingSessionId would corrupt
+        // analytics for the still-playing active track. Fall back to
+        // currentStreamingSessionId only if the preloaded session id has
+        // already been cleared (race during teardown).
+        const failedSessionId = isFromInactivePlayer
+          ? (this.preloadedStreamingSessionId ?? this.currentStreamingSessionId)
+          : this.currentStreamingSessionId;
+        if (failedSessionId) {
           StreamingMetrics.commit([
             StreamingMetrics.drmLicenseFetch({
               endReason: 'ERROR',
@@ -873,11 +884,12 @@ export default class ShakaPlayer extends BasePlayer {
               startTimestamp: trueTime.timestamp(
                 'streaming_metrics:drm_license_fetch:startTimestamp',
               ),
-              streamingSessionId: this.currentStreamingSessionId,
+              streamingSessionId: failedSessionId,
             }),
           ]).catch(console.error);
         }
         break;
+      }
       case shaka.util.Error.Code.LOAD_INTERRUPTED: // 7000
         return;
       case shaka.util.Error.Code.SRC_EQUALS_PRELOAD_NOT_SUPPORTED:
@@ -2101,16 +2113,28 @@ export default class ShakaPlayer extends BasePlayer {
     this.#preloadedPayload = null;
     this.#preloadReady = false;
 
-    // Unload inactive player if it has content. The default
-    // initializeMediaSource=false matches the previous behaviour for plain
-    // "drop the preload" callers (e.g. when the queue's next item changed);
-    // reset() opts in to true so it ends up with a clean MediaSource on
-    // both instances.
+    // Unload the inactive Shaka instance unconditionally. We previously
+    // gated this on `inactiveElement.readyState !== 0`, but
+    // preloadedStreamingSessionId is set *before* shakaInstance.load()
+    // resolves, so a teardown during an in-flight preload would still see
+    // readyState=0 even though the inactive Shaka instance is mid-load. In
+    // that case the guard would skip unload(), reset() would also skip it
+    // (hadPreloadToTearDown), and the instance would keep doing background
+    // work / holding MSE state. Calling unload() while loading aborts the
+    // in-flight pipeline; wrap in try/catch since it can reject with
+    // LOAD_INTERRUPTED-style errors that we don't want to surface.
+    // initializeMediaSource defaults to false (matches previous behaviour
+    // for plain "drop the preload" callers); reset() opts in to true so it
+    // ends up with a clean MediaSource on both instances.
     const inactivePlayer = this.#getInactiveShakaInstance();
     const inactiveElement = this.#getInactiveMediaElement();
 
-    if (inactivePlayer && inactiveElement.readyState !== 0) {
-      await inactivePlayer.unload(initializeMediaSource);
+    if (inactivePlayer) {
+      try {
+        await inactivePlayer.unload(initializeMediaSource);
+      } catch (err) {
+        this.debugLog('inactivePlayer.unload() rejected (ignored)', err);
+      }
       inactiveElement.volume = 0;
     }
   }
