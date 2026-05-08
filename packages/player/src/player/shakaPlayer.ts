@@ -809,6 +809,28 @@ export default class ShakaPlayer extends BasePlayer {
     return player;
   }
 
+  // Dual player helper methods. Private (`#`) so the dual-player internals
+  // aren't part of the supported public API surface.
+  #getActiveMediaElement(): HTMLMediaElement {
+    return this.#activePlayer === 1 ? mediaElementOne : mediaElementTwo;
+  }
+
+  #getActiveShakaInstance(): shaka.Player | undefined {
+    return this.#activePlayer === 1
+      ? this.#shakaInstanceOne
+      : this.#shakaInstanceTwo;
+  }
+
+  #getInactiveMediaElement(): HTMLMediaElement {
+    return this.#activePlayer === 1 ? mediaElementTwo : mediaElementOne;
+  }
+
+  #getInactiveShakaInstance(): shaka.Player | undefined {
+    return this.#activePlayer === 1
+      ? this.#shakaInstanceTwo
+      : this.#shakaInstanceOne;
+  }
+
   #getTransitionConfig() {
     const crossfadeInMs = Config.get('crossfadeInMs');
 
@@ -1496,28 +1518,6 @@ export default class ShakaPlayer extends BasePlayer {
       mediaElement.addEventListener('loadeddata', resolveReady, { once: true });
       mediaElement.addEventListener('canplay', resolveReady, { once: true });
     });
-  }
-
-  // Dual player helper methods. Private (`#`) so the dual-player internals
-  // aren't part of the supported public API surface.
-  #getActiveMediaElement(): HTMLMediaElement {
-    return this.#activePlayer === 1 ? mediaElementOne : mediaElementTwo;
-  }
-
-  #getActiveShakaInstance(): shaka.Player | undefined {
-    return this.#activePlayer === 1
-      ? this.#shakaInstanceOne
-      : this.#shakaInstanceTwo;
-  }
-
-  #getInactiveMediaElement(): HTMLMediaElement {
-    return this.#activePlayer === 1 ? mediaElementTwo : mediaElementOne;
-  }
-
-  #getInactiveShakaInstance(): shaka.Player | undefined {
-    return this.#activePlayer === 1
-      ? this.#shakaInstanceTwo
-      : this.#shakaInstanceOne;
   }
 
   getPosition() {
