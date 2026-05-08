@@ -19,6 +19,16 @@ const tidalPlayerRootId = 'tidal-player-root';
 export function mountVideoElements() {
   let containerEl = document.getElementById(tidalPlayerRootId);
 
+  // If the existing element isn't a plain <div>, replace it. The most
+  // problematic case is HTMLTemplateElement: appending children stuffs them
+  // into its inert DocumentFragment, so video playback never starts. Other
+  // tags (custom elements, <span>, etc.) might also have side effects we
+  // don't want -- this id is owned by the SDK, so reclaim it.
+  if (containerEl && !(containerEl instanceof HTMLDivElement)) {
+    containerEl.remove();
+    containerEl = null;
+  }
+
   if (!containerEl) {
     containerEl = document.createElement('div');
     containerEl.id = tidalPlayerRootId;

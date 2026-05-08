@@ -1903,7 +1903,13 @@ export default class ShakaPlayer extends BasePlayer {
       !keepPreload && !!this.preloadedStreamingSessionId;
 
     if (!keepPreload) {
-      await this.unloadPreloadedMediaProduct();
+      // Pass initializeMediaSource=true so the inactive Shaka instance ends
+      // up with a fresh MediaSource attached, mirroring what reset() does for
+      // the active instance below. Without this, the inactive instance would
+      // be left in a "no MediaSource" state and the subsequent skip in the
+      // unload-loop (hadPreloadToTearDown) would leave reset's "always end on
+      // a clean MediaSource" invariant inconsistent across the two players.
+      await this.unloadPreloadedMediaProduct({ initializeMediaSource: true });
     }
 
     if (this.playbackState !== 'IDLE') {
@@ -2073,7 +2079,9 @@ export default class ShakaPlayer extends BasePlayer {
     }
   }
 
-  async unloadPreloadedMediaProduct() {
+  async unloadPreloadedMediaProduct({
+    initializeMediaSource = false,
+  }: { initializeMediaSource?: boolean } = {}) {
     this.debugLog(
       'unloadPreloadedMediaProduct',
       this.preloadedStreamingSessionId,
@@ -2093,12 +2101,16 @@ export default class ShakaPlayer extends BasePlayer {
     this.#preloadedPayload = null;
     this.#preloadReady = false;
 
-    // Unload inactive player if it has content
+    // Unload inactive player if it has content. The default
+    // initializeMediaSource=false matches the previous behaviour for plain
+    // "drop the preload" callers (e.g. when the queue's next item changed);
+    // reset() opts in to true so it ends up with a clean MediaSource on
+    // both instances.
     const inactivePlayer = this.#getInactiveShakaInstance();
     const inactiveElement = this.#getInactiveMediaElement();
 
     if (inactivePlayer && inactiveElement.readyState !== 0) {
-      await inactivePlayer.unload(/* initializeMediaSource */ false);
+      await inactivePlayer.unload(initializeMediaSource);
       inactiveElement.volume = 0;
     }
   }
