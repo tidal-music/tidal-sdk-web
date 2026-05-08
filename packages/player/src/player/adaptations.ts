@@ -69,11 +69,15 @@ export function registerAdaptations(
   };
 
   const onAutomaticQualityChange = (ev: Event) => {
-    onManualOrAutomaticQualityChange();
-
     if (!isActivePlayer()) {
       return;
     }
+
+    // onManualOrAutomaticQualityChange() also guards on isActivePlayer()
+    // for its 'variantchanged' caller, so it's safe to call here without
+    // a second guard -- the redundant call would otherwise re-check the
+    // same state we just confirmed.
+    onManualOrAutomaticQualityChange();
 
     // Shaka uses FakeEvent which sets properties directly on the event, not in detail
     const shakaTrack = (ev as Event & { newTrack: shaka.extern.Track })
