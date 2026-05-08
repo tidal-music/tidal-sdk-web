@@ -1837,9 +1837,11 @@ export default class ShakaPlayer extends BasePlayer {
 
       if (reason === 'completed') {
         // With dual player crossfade, the transition should already be complete
-        // by the time the 'ended' event fires. Note: in gapless mode, the
-        // 'ended' custom event is suppressed entirely (isGaplessTransition=true
-        // in #mediaProductEnded), so this handler only runs for non-gapless endings.
+        // by the time the 'ended' event fires. Note: for seamless transitions
+        // (gapless AND crossfade), the 'ended' custom event is suppressed
+        // entirely (isSeamlessTransition=true in #mediaProductEnded), so this
+        // handler only runs for non-seamless endings (e.g. natural end with no
+        // preload, or skip).
         this.debugLog('Track ended - checking for next item');
 
         // Check if we have next track loaded but crossfade didn't trigger
@@ -1890,6 +1892,11 @@ export default class ShakaPlayer extends BasePlayer {
       return;
     }
 
+    // Capture before unloadPreloadedMediaProduct() clears it -- we use this
+    // below to skip the redundant inactive-player unload in the unload-loop.
+    const hadPreloadToTearDown =
+      !keepPreload && !!this.preloadedStreamingSessionId;
+
     if (!keepPreload) {
       await this.unloadPreloadedMediaProduct();
     }
@@ -1919,7 +1926,8 @@ export default class ShakaPlayer extends BasePlayer {
 
     this.#isReset = true;
 
-    // Reset players: always unload active player, unload inactive only if !keepPreload
+    // Reset players: always unload active player, unload inactive only if
+    // !keepPreload AND unloadPreloadedMediaProduct() didn't already do it.
     const promises: Array<Promise<void>> = [];
     const activeShakaInstance = this.getActiveShakaInstance();
     const inactiveShakaInstance = this.getInactiveShakaInstance();
@@ -1931,8 +1939,10 @@ export default class ShakaPlayer extends BasePlayer {
       );
     }
 
-    // Unload inactive player only if we're not keeping preload
-    if (!keepPreload && inactiveShakaInstance) {
+    // Unload inactive player only if we're not keeping preload AND
+    // unloadPreloadedMediaProduct() above didn't already unload it -- avoids
+    // a redundant second unload in the common reset-with-preload case.
+    if (!keepPreload && !hadPreloadToTearDown && inactiveShakaInstance) {
       promises.push(
         inactiveShakaInstance.unload(/* initializeMediaSource */ true),
       );

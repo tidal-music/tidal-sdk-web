@@ -158,20 +158,28 @@ export class BasePlayer {
   #mediaProductEnded({
     endAssetPosition,
     endReason,
-    isGaplessTransition = false,
+    isSeamlessTransition = false,
     streamingSessionId,
   }: {
     endAssetPosition: number;
     endReason: EndReason;
-    isGaplessTransition?: boolean;
+    /**
+     * `true` when the outgoing track is being finalized as part of a seamless
+     * transition to the next preloaded track -- both true gapless (zero overlap)
+     * and crossfade (overlapping fade). Suppresses the custom 'ended' event,
+     * the IDLE state change, and the next-product volume update so the app
+     * doesn't get notified that playback stopped while the next track is
+     * already playing.
+     */
+    isSeamlessTransition?: boolean;
     streamingSessionId: string;
   }) {
     this.debugLog('mediaProductEnded');
 
-    // Only set idealStartTimestamp if NOT in gapless mode.
-    // In gapless crossfade, the next track already started during crossfade
-    // and the correct timestamp was already set at that time.
-    if (!isGaplessTransition && playerState.preloadedStreamingSessionId) {
+    // Only set idealStartTimestamp for non-seamless transitions. During a
+    // seamless transition (gapless or crossfade) the next track already
+    // started and the correct timestamp was already set at that time.
+    if (!isSeamlessTransition && playerState.preloadedStreamingSessionId) {
       performance.mark(
         'streaming_metrics:playback_statistics:idealStartTimestamp',
         {
@@ -184,10 +192,11 @@ export class BasePlayer {
     const mediaProductTransition =
       streamingSessionStore.getMediaProductTransition(streamingSessionId);
 
-    // Only dispatch 'ended' event if NOT in gapless mode
-    // In gapless mode, playback continues seamlessly - dispatching 'ended' would cause
-    // the app to incorrectly advance to the next track
-    if (!isGaplessTransition && mediaProductTransition) {
+    // Only dispatch 'ended' for non-seamless transitions. During a seamless
+    // transition (gapless or crossfade) playback continues into the next
+    // track -- dispatching 'ended' would cause the app to incorrectly
+    // advance to the next track.
+    if (!isSeamlessTransition && mediaProductTransition) {
       events.dispatchEvent(
         ended(endReason, mediaProductTransition.mediaProduct),
       );
@@ -206,9 +215,10 @@ export class BasePlayer {
       this.currentStreamingSessionId = undefined;
     }
 
-    // Only update volume if NOT in gapless mode.
-    // In gapless crossfade, the next track is already playing with managed volume.
-    if (!isGaplessTransition) {
+    // Only update volume for non-seamless transitions. During a seamless
+    // transition (gapless or crossfade) the next track is already playing
+    // with managed volume.
+    if (!isSeamlessTransition) {
       this.updateVolumeLevelForNextProduct();
     }
   }
@@ -503,7 +513,7 @@ export class BasePlayer {
     return streamInfo.expires <= Date.now();
   }
 
-  finishCurrentMediaProduct(endReason: EndReason, isGaplessTransition = false) {
+  finishCurrentMediaProduct(endReason: EndReason, isSeamlessTransition = false) {
     // A media product was loaded but never started.
     if (!this.hasStarted()) {
       return;
@@ -515,9 +525,10 @@ export class BasePlayer {
       : false;
 
     // Nothing is preloaded, player is now idle.
-    // CRITICAL: Skip this in gapless mode - the next track is already playing!
-    // Setting IDLE would dispatch a PlaybackStateChange event and corrupt app state.
-    if (!isGaplessTransition && !this.preloadedStreamingSessionId) {
+    // CRITICAL: Skip this for seamless transitions (gapless / crossfade) -
+    // the next track is already playing and setting IDLE would dispatch a
+    // PlaybackStateChange event and corrupt app state.
+    if (!isSeamlessTransition && !this.preloadedStreamingSessionId) {
       this.playbackState = 'IDLE';
     }
 
@@ -525,7 +536,7 @@ export class BasePlayer {
       this.#mediaProductEnded({
         endAssetPosition: this.currentTime,
         endReason,
-        isGaplessTransition,
+        isSeamlessTransition,
         streamingSessionId: cssi,
       });
     }
