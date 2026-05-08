@@ -513,7 +513,10 @@ export class BasePlayer {
     return streamInfo.expires <= Date.now();
   }
 
-  finishCurrentMediaProduct(endReason: EndReason, isSeamlessTransition = false) {
+  finishCurrentMediaProduct(
+    endReason: EndReason,
+    isSeamlessTransition = false,
+  ) {
     // A media product was loaded but never started.
     if (!this.hasStarted()) {
       return;
