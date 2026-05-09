@@ -22499,7 +22499,13 @@ export interface components {
             /** @enum {string} */
             type: "albums";
         };
-        UserCollectionAlbums_Attributes: Record<string, never>;
+        UserCollectionAlbums_Attributes: {
+            /**
+             * Format: int32
+             * @description Number of items in the collection
+             */
+            numberOfItems: number;
+        };
         UserCollectionAlbums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];

@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.9.2"
+    "version" : "1.9.3"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -36496,7 +36496,15 @@
         }
       },
       "UserCollectionAlbums_Attributes" : {
-        "type" : "object"
+        "required" : [ "numberOfItems" ],
+        "type" : "object",
+        "properties" : {
+          "numberOfItems" : {
+            "type" : "integer",
+            "description" : "Number of items in the collection",
+            "format" : "int32"
+          }
+        }
       },
       "UserCollectionAlbums_Items_Multi_Relationship_Data_Document" : {
         "required" : [ "links" ],
