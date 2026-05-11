@@ -7,10 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-05-11
+
 ### Added
 
-- Implemented crossfade in Shaka
-- Implemented (almost) gapless playback using dual media elements with short crossfade in Shaka
+- Implemented crossfade in Shaka (#492)
+- Implemented (almost) gapless playback using dual media elements with short crossfade in Shaka (#492)
+
+### Changed
+
+- Shaka player updated to: 5.1.3
 
 ## [0.17.0] - 2026-04-22
 
