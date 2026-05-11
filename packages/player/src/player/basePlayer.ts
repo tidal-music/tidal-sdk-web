@@ -35,15 +35,7 @@ const MAX_DEBUG_STRING_LENGTH = 500;
 
 function sanitizeDebugValue(value: unknown): unknown {
   if (typeof value === 'string') {
-    if (value.startsWith('data:')) {
-      return `[redacted data URL, ${value.length} chars]`;
-    }
-
-    if (value.length > MAX_DEBUG_STRING_LENGTH) {
-      return `${value.slice(0, MAX_DEBUG_STRING_LENGTH)}...[truncated ${value.length} chars]`;
-    }
-
-    return value;
+    return sanitizeDebugString(value);
   }
 
   if (!value || typeof value !== 'object') {
@@ -82,6 +74,31 @@ function sanitizeDebugValue(value: unknown): unknown {
   }
 
   return sanitized;
+}
+
+// Sanitize a standalone string argument. Standalone strings can also carry
+// secrets -- e.g. callers that pass a stream URL or token directly as a
+// positional debugLog() arg -- so we apply the same defensive treatment as
+// when they appear under sensitive object keys: strip query strings off
+// URL-like values (where TIDAL stream/license URLs carry tokens), redact
+// data URLs, and truncate anything else that's unreasonably long.
+function sanitizeDebugString(value: string): string {
+  if (value.startsWith('data:')) {
+    return `[redacted data URL, ${value.length} chars]`;
+  }
+
+  if (value.startsWith('http://') || value.startsWith('https://')) {
+    const queryIndex = value.indexOf('?');
+    if (queryIndex !== -1) {
+      return `${value.slice(0, queryIndex)}?[redacted query, ${value.length - queryIndex - 1} chars]`;
+    }
+  }
+
+  if (value.length > MAX_DEBUG_STRING_LENGTH) {
+    return `${value.slice(0, MAX_DEBUG_STRING_LENGTH)}...[truncated ${value.length} chars]`;
+  }
+
+  return value;
 }
 
 // Keys whose values shouldn't be written to debug logs. The `token` substring
