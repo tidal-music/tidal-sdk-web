@@ -60,7 +60,18 @@
       <li>Track 2: Another Brick in the Wall, Pt. 1 (55391450)</li>
     </ul>
 
-    <div class="status" id="status">Initializing...</div>
+    <div style="margin: 1rem 0; display: flex; align-items: center; gap: 0.75rem;">
+      <label for="transitionMode"><strong>Transition Mode:</strong></label>
+      <select id="transitionMode">
+        <option value="0" selected>Gapless (default)</option>
+        <option value="5000">Crossfade 5s</option>
+        <option value="10000">Crossfade 10s</option>
+        <option value="15000">Crossfade 15s</option>
+      </select>
+      <button id="startBtn" style="padding: 0.5rem 1.5rem; font-size: 1rem; cursor: pointer;">Play</button>
+    </div>
+
+    <div class="status" id="status">Select a transition mode and press Play.</div>
 
     <div class="gap-measurement" id="gapMeasurement"></div>
 

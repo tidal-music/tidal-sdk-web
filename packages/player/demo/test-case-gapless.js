@@ -44,10 +44,43 @@ function updateTrackInfo() {
   stateEl.textContent = state;
 }
 
+let runAbortController = null;
+
 async function run() {
+  // Tear down any listeners/state from a previous run so re-clicking Play
+  // doesn't accumulate handlers (and doesn't leak stale closure state like
+  // track1EndTime/track2StartTime that would produce bogus gap measurements).
+  if (runAbortController) {
+    runAbortController.abort();
+  }
+  runAbortController = new AbortController();
+  const { signal } = runAbortController;
+
+  // Reset visible measurement state from any previous run.
+  gapMeasurementEl.textContent = '';
+  gapMeasurementEl.className = 'gap-measurement';
+
   try {
     updateStatus('Logging in...');
     await login();
+
+    // Always start from a clean slate so back-to-back runs don't inherit any
+    // in-flight playback state from a previous run.
+    await Player.reset();
+
+    // Apply transition mode from URL param (for Cypress) or dropdown
+    const transitionSelect = document.getElementById('transitionMode');
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlMode = urlParams.get('crossfadeInMs');
+    if (urlMode !== null) {
+      transitionSelect.value = urlMode;
+    }
+    const crossfadeInMs = Number(transitionSelect.value);
+    Player.setTransitionMode(crossfadeInMs);
+
+    const modeLabel =
+      crossfadeInMs > 0 ? `Crossfade ${crossfadeInMs}ms` : 'Gapless';
+    print(`Transition mode: ${modeLabel} (crossfadeInMs=${crossfadeInMs})`);
 
     updateStatus('Setting up player events...');
 
@@ -57,82 +90,95 @@ async function run() {
     let crossfadeDetected = false;
     let gapMeasurement = null;
 
-    Player.events.addEventListener('media-product-transition', e => {
-      const detail = e.detail;
-      const now = performance.now();
+    Player.events.addEventListener(
+      'media-product-transition',
+      e => {
+        const detail = e.detail;
+        const now = performance.now();
 
-      // Detect transition to second track (crossfade complete)
-      if (detail.mediaProduct.productId === TRACK_2.productId) {
-        track2StartTime = now;
-        crossfadeDetected = true;
+        if (detail.mediaProduct.productId === TRACK_2.productId) {
+          track2StartTime = now;
+          crossfadeDetected = true;
 
-        if (track1EndTime) {
-          // Calculate the gap between track end and track 2 transition
-          const gap = track2StartTime - track1EndTime;
-          gapMeasurement = gap;
+          if (track1EndTime) {
+            const gap = track2StartTime - track1EndTime;
+            gapMeasurement = gap;
 
-          if (gap < 0) {
-            // Negative gap means crossfade started before track 1 ended (ideal gapless)
+            if (gap < 0) {
+              print(
+                `⏱️ GAP MEASURED: -${Math.abs(gap).toFixed(2)}ms (crossfade overlap - PERFECT gapless!)`,
+              );
+              gapMeasurementEl.textContent = `⏱️ Gap: -${Math.abs(gap).toFixed(2)}ms (crossfade overlap - TRUE GAPLESS!)`;
+              gapMeasurementEl.className = 'gap-measurement visible perfect';
+            } else {
+              print(`⏱️ GAP MEASURED: ${gap.toFixed(2)}ms gap between tracks`);
+              gapMeasurementEl.textContent = `⏱️ Gap detected: ${gap.toFixed(2)}ms`;
+              gapMeasurementEl.className = 'gap-measurement visible';
+            }
+
             print(
-              `⏱️ GAP MEASURED: -${Math.abs(gap).toFixed(2)}ms (crossfade overlap - PERFECT gapless!)`,
+              `✓ Crossfade timing: Track 2 started ${Math.abs(gap).toFixed(2)}ms ${gap < 0 ? 'before' : 'after'} track 1 ended`,
             );
-            gapMeasurementEl.textContent = `⏱️ Gap: -${Math.abs(gap).toFixed(2)}ms (crossfade overlap - TRUE GAPLESS!)`;
-            gapMeasurementEl.className = 'gap-measurement visible perfect';
           } else {
-            // Positive gap means there was a gap between tracks
-            print(`⏱️ GAP MEASURED: ${gap.toFixed(2)}ms gap between tracks`);
-            gapMeasurementEl.textContent = `⏱️ Gap detected: ${gap.toFixed(2)}ms`;
-            gapMeasurementEl.className = 'gap-measurement visible';
+            print(
+              `✓ Gapless crossfade complete! Seamless transition achieved.`,
+            );
           }
+        }
 
+        print(`Media product transition: ${detail.mediaProduct.productId}`);
+        updateStatus(`Playing: ${detail.mediaProduct.productId}`, true);
+        updateTrackInfo();
+      },
+      { signal },
+    );
+
+    Player.events.addEventListener(
+      'playback-state-change',
+      () => {
+        updateTrackInfo();
+      },
+      { signal },
+    );
+
+    Player.events.addEventListener(
+      'ended',
+      e => {
+        track1EndTime = performance.now();
+        print(
+          `Track ended: ${e.detail.reason} at ${track1EndTime.toFixed(2)}ms`,
+        );
+
+        if (crossfadeDetected) {
           print(
-            `✓ Crossfade timing: Track 2 started ${Math.abs(gap).toFixed(2)}ms ${gap < 0 ? 'before' : 'after'} track 1 ended`,
+            'Note: Crossfade already completed before track ended (this is expected!)',
           );
         } else {
-          print(`✓ Gapless crossfade complete! Seamless transition achieved.`);
+          print('Waiting for crossfade to complete...');
         }
-      }
 
-      print(`Media product transition: ${detail.mediaProduct.productId}`);
-      updateStatus(`Playing: ${detail.mediaProduct.productId}`, true);
-      updateTrackInfo();
-    });
+        updateTrackInfo();
+      },
+      { signal },
+    );
 
-    Player.events.addEventListener('playback-state-change', () => {
-      updateTrackInfo();
-    });
-
-    Player.events.addEventListener('ended', e => {
-      track1EndTime = performance.now();
-      print(`Track ended: ${e.detail.reason} at ${track1EndTime.toFixed(2)}ms`);
-
-      if (crossfadeDetected) {
+    Player.events.addEventListener(
+      'preload-request',
+      () => {
         print(
-          'Note: Crossfade already completed before track ended (this is expected!)',
+          '📡 Preload request received - loading next track into inactive player',
         );
-      } else {
-        print('Waiting for crossfade to complete...');
-      }
+        updateStatus('Preloading next track...', true);
 
-      updateTrackInfo();
-    });
-
-    Player.events.addEventListener('preload-request', () => {
-      print(
-        '📡 Preload request received - loading next track into inactive player',
-      );
-      updateStatus('Preloading next track...', true);
-
-      // Set the next track when preload is requested
-      Player.setNext(TRACK_2)
-        .then(() => {
-          print(
-            '✓ Next track loaded and playing silently in background (volume=0)',
-          );
-          print('✓ Ready for gapless crossfade at 0.2s before track end');
-        })
-        .catch(console.error);
-    });
+        Player.setNext(TRACK_2)
+          .then(() => {
+            print('✓ Next track loaded into inactive player');
+            print(`✓ Ready for transition (mode: ${modeLabel})`);
+          })
+          .catch(console.error);
+      },
+      { signal },
+    );
 
     // Start playing first track
     updateStatus('Loading first track...');
@@ -145,11 +191,26 @@ async function run() {
 
     updateTrackInfo();
 
-    // Seek to 5 seconds before the end to make test faster
+    // Seek near the end to make the demo fast, but leave enough room for
+    // setNext() to fetch playback info and prepare the inactive Shaka player.
+    // Seeking only 5s before the end makes repeated local runs flaky because
+    // preload may not finish until the current track is almost over.
     const playbackContext = Player.getPlaybackContext();
     if (playbackContext) {
-      const seekPosition = playbackContext.actualDuration - 5;
-      print(`Seeking to ${seekPosition.toFixed(1)}s (5s before end)`);
+      // The transition kicks in `crossfadeInMs` before the end. Seek so we
+      // land a few seconds BEFORE that trigger window, leaving enough room
+      // for setNext() to fetch playback info and finish Shaka.load() before
+      // the crossfade fires. Floor at 12s so short crossfades (gapless / 5s)
+      // still give preload realistic lead time.
+      const preloadHeadroomS = 7;
+      const secondsBeforeEnd = Math.max(
+        12,
+        crossfadeInMs / 1000 + preloadHeadroomS,
+      );
+      const seekPosition = playbackContext.actualDuration - secondsBeforeEnd;
+      print(
+        `Seeking to ${seekPosition.toFixed(1)}s (${secondsBeforeEnd}s before end)`,
+      );
       await Player.seek(seekPosition);
 
       // Wait for seek to complete
@@ -164,22 +225,29 @@ async function run() {
     const intervalId = setInterval(updateTrackInfo, 1000);
 
     // Wait for second track to play for 5 seconds, then pause
-    Player.events.addEventListener('media-product-transition', e => {
-      const detail = e.detail;
-      if (detail.mediaProduct.productId === TRACK_2.productId) {
-        // Use void operator to explicitly ignore the promise
+    Player.events.addEventListener(
+      'media-product-transition',
+      e => {
+        const detail = e.detail;
+        if (detail.mediaProduct.productId !== TRACK_2.productId) {
+          return;
+        }
         void (async () => {
           print('🎵 Second track playing - waiting 5 seconds...');
           await waitFor(5000);
-          print('✅ Test complete! Pausing playback.');
+          // If a new run was started in the meantime, don't tear down its
+          // player state on top of it.
+          if (signal.aborted) {
+            return;
+          }
+          print('✅ Test complete! Resetting player to finalize sessions.');
           print('');
           print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
           print('Summary:');
           print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-          print('- Dual audio element crossfade implemented');
-          print('- Crossfade duration: 25ms (equal-power curve)');
-          print('- Crossfade starts: 0.2s before track end');
-          print('- Second track pre-loaded and playing silently');
+          print(`- Mode: ${modeLabel}`);
+          print('- Dual audio element transition');
+          print('- Second track pre-loaded into inactive player');
           if (gapMeasurement !== null) {
             if (gapMeasurement < 0) {
               print(
@@ -190,16 +258,42 @@ async function run() {
             }
           }
           print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-          Player.pause();
+          await Player.reset();
           clearInterval(intervalId);
           updateStatus('Test complete - Gapless crossfade verified! ✓');
+          reenableStartBtn();
         })();
-      }
+      },
+      { signal },
+    );
+
+    // Stop the periodic UI updates if the run is aborted (e.g. user re-clicks Play)
+    signal.addEventListener('abort', () => {
+      clearInterval(intervalId);
     });
   } catch (error) {
     console.error('Test failed:', error);
-    updateStatus('Error: ' + error.message);
+    const message = error instanceof Error ? error.message : String(error);
+    updateStatus('Error: ' + message);
+    reenableStartBtn();
   }
 }
 
-run();
+function reenableStartBtn() {
+  const btn = document.getElementById('startBtn');
+  if (btn) {
+    btn.disabled = false;
+  }
+}
+
+// Auto-run when URL param is set (Cypress tests), otherwise wait for Play button
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.has('crossfadeInMs')) {
+  run();
+} else {
+  const startBtn = document.getElementById('startBtn');
+  startBtn.addEventListener('click', () => {
+    startBtn.disabled = true;
+    run();
+  });
+}

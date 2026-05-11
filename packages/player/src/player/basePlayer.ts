@@ -31,6 +31,87 @@ export type LoadPayload = {
   streamInfo: StreamInfo;
 };
 
+const MAX_DEBUG_STRING_LENGTH = 500;
+
+function sanitizeDebugValue(value: unknown): unknown {
+  if (typeof value === 'string') {
+    return sanitizeDebugString(value);
+  }
+
+  if (!value || typeof value !== 'object') {
+    return value;
+  }
+
+  if (value instanceof Error) {
+    return {
+      message: value.message,
+      name: value.name,
+      stack: value.stack,
+    };
+  }
+
+  if (value instanceof Event || value instanceof Element) {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(sanitizeDebugValue);
+  }
+
+  const sanitized: Record<string, unknown> = {};
+  for (const [key, nestedValue] of Object.entries(
+    value as Record<string, unknown>,
+  )) {
+    if (isSensitiveDebugKey(key)) {
+      sanitized[key] =
+        typeof nestedValue === 'string'
+          ? `[redacted ${key}, ${nestedValue.length} chars]`
+          : `[redacted ${key}]`;
+      continue;
+    }
+
+    sanitized[key] = sanitizeDebugValue(nestedValue);
+  }
+
+  return sanitized;
+}
+
+// Sanitize a standalone string argument. Standalone strings can also carry
+// secrets -- e.g. callers that pass a stream URL or token directly as a
+// positional debugLog() arg -- so we apply the same defensive treatment as
+// when they appear under sensitive object keys: strip query strings off
+// URL-like values (where TIDAL stream/license URLs carry tokens), redact
+// data URLs, and truncate anything else that's unreasonably long.
+function sanitizeDebugString(value: string): string {
+  if (value.startsWith('data:')) {
+    return `[redacted data URL, ${value.length} chars]`;
+  }
+
+  if (value.startsWith('http://') || value.startsWith('https://')) {
+    const queryIndex = value.indexOf('?');
+    if (queryIndex !== -1) {
+      return `${value.slice(0, queryIndex)}?[redacted query, ${value.length - queryIndex - 1} chars]`;
+    }
+  }
+
+  if (value.length > MAX_DEBUG_STRING_LENGTH) {
+    return `${value.slice(0, MAX_DEBUG_STRING_LENGTH)}...[truncated ${value.length} chars]`;
+  }
+
+  return value;
+}
+
+// Keys whose values shouldn't be written to debug logs. The `token` substring
+// match catches all current and any future credential-bearing fields
+// (e.g. `securityToken`, `licenseSecurityToken`, `accessToken`) without us
+// having to keep an exhaustive enumeration in sync.
+function isSensitiveDebugKey(key: string): boolean {
+  if (key === 'manifest' || key === 'streamUrl') {
+    return true;
+  }
+  return /token/i.test(key);
+}
+
 function playbackStatisticsEndReason(
   endReason: EndReason,
 ): PlaybackStatisticsPayload['endReason'] {
@@ -73,12 +154,25 @@ export class BasePlayer {
 
   // Implements
   #maybeDispatchPreloadRequest() {
+    const crossfadeInS = Config.get('crossfadeInMs') / 1000;
+
     if (
       this.duration &&
-      Math.abs(this.#currentTime - this.duration) <= 30 &&
-      // A false check, rather than undefined, ensures a media product transition hs been made.
+      // Check if the current time is within 15 seconds of when next item should start.
+      // (reduced from 30s to 15s to reduce risk of Safari background tab throttling)
+      Math.abs(this.#currentTime - this.duration + crossfadeInS) <= 15 &&
+      // A false check, rather than undefined, ensures a media product transition has been made.
       this.#hasEmittedPreloadRequest === false
     ) {
+      this.debugLog(
+        'maybeDispatchPreloadRequest',
+        {
+          crossfadeInS,
+          currentTime: this.#currentTime,
+          duration: this.duration,
+        },
+        Math.abs(this.#currentTime - this.duration + crossfadeInS),
+      );
       this.#hasEmittedPreloadRequest = true;
       events.dispatchEvent(preloadRequest());
     }
@@ -92,16 +186,28 @@ export class BasePlayer {
   #mediaProductEnded({
     endAssetPosition,
     endReason,
+    isSeamlessTransition = false,
     streamingSessionId,
   }: {
     endAssetPosition: number;
     endReason: EndReason;
+    /**
+     * `true` when the outgoing track is being finalized as part of a seamless
+     * transition to the next preloaded track -- both true gapless (zero overlap)
+     * and crossfade (overlapping fade). Suppresses the custom 'ended' event,
+     * the IDLE state change, and the next-product volume update so the app
+     * doesn't get notified that playback stopped while the next track is
+     * already playing.
+     */
+    isSeamlessTransition?: boolean;
     streamingSessionId: string;
   }) {
     this.debugLog('mediaProductEnded');
 
-    // If there is a preloaded item if should start right away.
-    if (playerState.preloadedStreamingSessionId) {
+    // Only set idealStartTimestamp for non-seamless transitions. During a
+    // seamless transition (gapless or crossfade) the next track already
+    // started and the correct timestamp was already set at that time.
+    if (!isSeamlessTransition && playerState.preloadedStreamingSessionId) {
       performance.mark(
         'streaming_metrics:playback_statistics:idealStartTimestamp',
         {
@@ -114,7 +220,11 @@ export class BasePlayer {
     const mediaProductTransition =
       streamingSessionStore.getMediaProductTransition(streamingSessionId);
 
-    if (mediaProductTransition) {
+    // Only dispatch 'ended' for non-seamless transitions. During a seamless
+    // transition (gapless or crossfade) playback continues into the next
+    // track -- dispatching 'ended' would cause the app to incorrectly
+    // advance to the next track.
+    if (!isSeamlessTransition && mediaProductTransition) {
       events.dispatchEvent(
         ended(endReason, mediaProductTransition.mediaProduct),
       );
@@ -133,7 +243,12 @@ export class BasePlayer {
       this.currentStreamingSessionId = undefined;
     }
 
-    this.updateVolumeLevelForNextProduct();
+    // Only update volume for non-seamless transitions. During a seamless
+    // transition (gapless or crossfade) the next track is already playing
+    // with managed volume.
+    if (!isSeamlessTransition) {
+      this.updateVolumeLevelForNextProduct();
+    }
   }
 
   adjustedVolume(streamInfo: StreamInfo): number {
@@ -243,7 +358,7 @@ export class BasePlayer {
             ]
           : []),
         'color:inherit',
-        ...args,
+        ...args.map(sanitizeDebugValue),
       );
     }
   }
@@ -426,7 +541,10 @@ export class BasePlayer {
     return streamInfo.expires <= Date.now();
   }
 
-  finishCurrentMediaProduct(endReason: EndReason) {
+  finishCurrentMediaProduct(
+    endReason: EndReason,
+    isSeamlessTransition = false,
+  ) {
     // A media product was loaded but never started.
     if (!this.hasStarted()) {
       return;
@@ -438,7 +556,10 @@ export class BasePlayer {
       : false;
 
     // Nothing is preloaded, player is now idle.
-    if (!this.preloadedStreamingSessionId) {
+    // CRITICAL: Skip this for seamless transitions (gapless / crossfade) -
+    // the next track is already playing and setting IDLE would dispatch a
+    // PlaybackStateChange event and corrupt app state.
+    if (!isSeamlessTransition && !this.preloadedStreamingSessionId) {
       this.playbackState = 'IDLE';
     }
 
@@ -446,6 +567,7 @@ export class BasePlayer {
       this.#mediaProductEnded({
         endAssetPosition: this.currentTime,
         endReason,
+        isSeamlessTransition,
         streamingSessionId: cssi,
       });
     }

@@ -1,6 +1,7 @@
 import { waitForPlayers } from '../internal/helpers/wait-for-players';
 
 export const mediaElementOne = document.createElement('video');
+export const mediaElementTwo = document.createElement('video');
 
 const prepareMediaElement = (mediaEl: HTMLMediaElement) => {
   mediaEl.setAttribute('crossorigin', 'anonymous');
@@ -10,29 +11,50 @@ const prepareMediaElement = (mediaEl: HTMLMediaElement) => {
 prepareMediaElement(mediaElementOne);
 mediaElementOne.id = 'video-one';
 
+prepareMediaElement(mediaElementTwo);
+mediaElementTwo.id = 'video-two';
+
 const tidalPlayerRootId = 'tidal-player-root';
 
 export function mountVideoElements() {
-  const templateEl = document.getElementById(tidalPlayerRootId);
+  let containerEl = document.getElementById(tidalPlayerRootId);
 
-  if (!templateEl) {
-    const template = document.createElement('template');
+  // If the existing element isn't a plain <div>, replace it. The most
+  // problematic case is HTMLTemplateElement: appending children stuffs them
+  // into its inert DocumentFragment, so video playback never starts. Other
+  // tags (custom elements, <span>, etc.) might also have side effects we
+  // don't want -- this id is owned by the SDK, so reclaim it.
+  if (containerEl && !(containerEl instanceof HTMLDivElement)) {
+    containerEl.remove();
+    containerEl = null;
+  }
 
-    template.id = tidalPlayerRootId;
-    document.body.appendChild(template);
+  if (!containerEl) {
+    containerEl = document.createElement('div');
+    containerEl.id = tidalPlayerRootId;
+    containerEl.style.position = 'absolute';
+    containerEl.style.width = '0';
+    containerEl.style.height = '0';
+    containerEl.style.overflow = 'hidden';
+    document.body.appendChild(containerEl);
   }
 
   return ensureVideoElementsMounted();
 }
 
 export function ensureVideoElementsMounted() {
-  const templateEl = document.getElementById(
-    tidalPlayerRootId,
-  ) as HTMLTemplateElement | null;
+  const containerEl = document.getElementById(tidalPlayerRootId);
 
-  if (templateEl) {
-    if (!(mediaElementOne.id in templateEl.children)) {
-      templateEl.appendChild(mediaElementOne);
+  if (containerEl) {
+    // Use Node.contains() rather than `id in children` -- the latter checks
+    // for a property name on the HTMLCollection (which isn't reliably the
+    // child's id), so it would return false even when the element is already
+    // mounted and we'd re-appendChild() on every call (which moves the node).
+    if (!containerEl.contains(mediaElementOne)) {
+      containerEl.appendChild(mediaElementOne);
+    }
+    if (!containerEl.contains(mediaElementTwo)) {
+      containerEl.appendChild(mediaElementTwo);
     }
   }
 
@@ -49,6 +71,13 @@ export function activateVideoElements() {
           !mediaElementOne.src
         ) {
           mediaElementOne.load();
+        }
+
+        if (
+          mediaElementTwo.readyState === HTMLMediaElement.HAVE_NOTHING &&
+          !mediaElementTwo.src
+        ) {
+          mediaElementTwo.load();
         }
 
         resolve();

@@ -29,15 +29,26 @@ class CredentialsProviderStore extends EventTarget {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore - Setter
   #credentialsProvider: CredentialsProvider;
+  #credentialsProviderSubscriptionId = 0;
 
   set credentialsProvider(newCredentialsProvider: CredentialsProvider) {
+    if (this.#credentialsProvider === newCredentialsProvider) {
+      return;
+    }
+
     this.#credentialsProvider = newCredentialsProvider;
-    this.dispatchAuthorized().catch(console.error);
+    this.#credentialsProviderSubscriptionId += 1;
+    const subscriptionId = this.#credentialsProviderSubscriptionId;
+    this.dispatchAuthorized(subscriptionId).catch(console.error);
 
     this.#credentialsProvider.bus(event => {
+      if (subscriptionId !== this.#credentialsProviderSubscriptionId) {
+        return;
+      }
+
       switch (event.detail.type) {
         case 'CredentialsUpdatedMessage':
-          this.dispatchAuthorized().catch(console.error);
+          this.dispatchAuthorized(subscriptionId).catch(console.error);
           break;
         default:
           console.warn('Unhandled event from credentials provider: ', event);
@@ -50,8 +61,21 @@ class CredentialsProviderStore extends EventTarget {
     return this.#credentialsProvider;
   }
 
-  async dispatchAuthorized() {
+  async dispatchAuthorized(subscriptionId?: number) {
     const credentials = await this.#credentialsProvider.getCredentials();
+
+    // The provider may have been swapped while getCredentials() was in
+    // flight. If a subscriptionId was supplied (i.e. caller observed a
+    // specific provider), skip the dispatch when it no longer matches the
+    // active provider's id -- otherwise we'd fire `authorized` /
+    // `unauthenticated` for a stale provider on top of whatever the new
+    // provider has already dispatched.
+    if (
+      subscriptionId !== undefined &&
+      subscriptionId !== this.#credentialsProviderSubscriptionId
+    ) {
+      return;
+    }
 
     if (credentials?.token) {
       this.dispatchEvent(
