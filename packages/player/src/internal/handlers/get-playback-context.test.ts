@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 
-import * as Player from '../../index';
-import { authAndEvents, waitFor } from '../../test-helpers';
+import * as Player from '../../index.js';
+import { authAndEvents, waitFor } from '../../test-helpers.js';
 
-import { getPlaybackContext } from './get-playback-context';
+import { getPlaybackContext } from './get-playback-context.js';
 
 describe('getPlaybackContext', () => {
   authAndEvents(before, after);

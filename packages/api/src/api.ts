@@ -1,7 +1,7 @@
 import type { CredentialsProvider } from '@tidal-music/common';
 import createClient, { type Middleware } from 'openapi-fetch';
 
-import type { paths } from './allAPI.generated';
+import type { paths } from './allAPI.generated.js';
 
 /**
  * Create a Tidal API client with the provided credentials.

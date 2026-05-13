@@ -1,9 +1,9 @@
-import type { PlaybackSession } from './play-log/playback-session';
-import type { DrmLicenseFetch } from './streaming-metrics/drm-license-fetch';
-import type { PlaybackInfoFetch } from './streaming-metrics/playback-info-fetch';
-import type { PlaybackStatistics } from './streaming-metrics/playback-statistics';
-import type { StreamingSessionEnd } from './streaming-metrics/streaming-session-end';
-import type { StreamingSessionStart } from './streaming-metrics/streaming-session-start';
+import type { PlaybackSession } from './play-log/playback-session.js';
+import type { DrmLicenseFetch } from './streaming-metrics/drm-license-fetch.js';
+import type { PlaybackInfoFetch } from './streaming-metrics/playback-info-fetch.js';
+import type { PlaybackStatistics } from './streaming-metrics/playback-statistics.js';
+import type { StreamingSessionEnd } from './streaming-metrics/streaming-session-end.js';
+import type { StreamingSessionStart } from './streaming-metrics/streaming-session-start.js';
 
 export type BaseEvent = {
   client: {

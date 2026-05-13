@@ -1,4 +1,4 @@
-import * as Config from '../../config';
+import * as Config from '../../config.js';
 
 const MIN_CROSSFADE_MS = 0;
 const MAX_CROSSFADE_MS = 15000;

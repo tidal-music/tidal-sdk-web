@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/true-time",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,15 +9,13 @@
     "build:dev": "vite build -m development",
     "clean": "rm -rf coverage dist .eslintcache",
     "typecheck": "tsc",
+    "check:types-resolution": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
     "lint": "eslint . --cache --cache-strategy content",
     "lint:ci": "eslint . --quiet",
     "lint:fix": "pnpm run lint --fix",
     "preview": "vite preview",
     "test": "vitest",
     "test:coverage": "pnpm run test --coverage"
-  },
-  "dependencies": {
-    "@tidal-music/true-time": "workspace:*"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "4.1.5",
@@ -38,8 +36,8 @@
   "module": "./dist/index.js",
   "types": "./dist/src/index.d.ts",
   "exports": {
-    "import": "./dist/index.js",
     "types": "./dist/src/index.d.ts",
+    "import": "./dist/index.js",
     "default": "./dist/index.js"
   }
 }

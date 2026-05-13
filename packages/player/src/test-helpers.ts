@@ -2,11 +2,11 @@
 import * as Auth from '@tidal-music/auth';
 import * as EventProducer from '@tidal-music/event-producer';
 
-import { playerState } from './player/state';
+import { playerState } from './player/state.js';
 
-export { waitFor } from './internal/helpers/wait-for';
+export { waitFor } from './internal/helpers/wait-for.js';
 
-import * as Player from './index';
+import * as Player from './index.js';
 
 export function getPreloadedStreamingSessionId() {
   return playerState.preloadedStreamingSessionId;

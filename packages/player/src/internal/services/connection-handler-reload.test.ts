@@ -1,11 +1,11 @@
 import { expect } from 'chai';
 
-import type { MediaProductTransition } from '../../api/event/media-product-transition';
-import { events } from '../../event-bus';
-import * as Player from '../../index';
-import { playerState } from '../../player/state';
-import { authAndEvents, waitForEvent } from '../../test-helpers';
-import { waitFor } from '../helpers/wait-for';
+import type { MediaProductTransition } from '../../api/event/media-product-transition.js';
+import { events } from '../../event-bus.js';
+import * as Player from '../../index.js';
+import { playerState } from '../../player/state.js';
+import { authAndEvents, waitForEvent } from '../../test-helpers.js';
+import { waitFor } from '../helpers/wait-for.js';
 
 describe('ConnectionHandler', () => {
   authAndEvents(before, after);

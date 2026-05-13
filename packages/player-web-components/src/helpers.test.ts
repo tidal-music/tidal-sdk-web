@@ -1,4 +1,4 @@
-import { asTime, timeDateTime } from './helpers';
+import { asTime, timeDateTime } from './helpers.js';
 
 describe('asTime', () => {
   it('can format undefined times (and default to 0:00)', () => {

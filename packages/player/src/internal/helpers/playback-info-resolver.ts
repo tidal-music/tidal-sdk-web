@@ -1,10 +1,10 @@
 import { type components, createAPIClient } from '@tidal-music/api';
 import shaka from 'shaka-player';
 
-import type { MediaProduct } from '../../api/interfaces';
-import * as Config from '../../config';
-import type { ErrorCodes, ErrorIds } from '../../internal/index';
-import { PlayerError, credentialsProviderStore } from '../../internal/index';
+import type { MediaProduct } from '../../api/interfaces.js';
+import * as Config from '../../config.js';
+import type { ErrorCodes, ErrorIds } from '../../internal/index.js';
+import { PlayerError, credentialsProviderStore } from '../../internal/index.js';
 import type {
   AssetPresentation,
   AudioMode,
@@ -12,11 +12,11 @@ import type {
   PreviewReason,
   StreamType,
   VideoQuality,
-} from '../../internal/types';
-import * as StreamingMetrics from '../event-tracking/streaming-metrics';
-import { withRetries } from '../helpers/retry';
-import { waitFor } from '../helpers/wait-for';
-import { trueTime } from '../true-time';
+} from '../../internal/types.js';
+import * as StreamingMetrics from '../event-tracking/streaming-metrics/index.js';
+import { withRetries } from '../helpers/retry.js';
+import { waitFor } from '../helpers/wait-for.js';
+import { trueTime } from '../true-time.js';
 
 type BasePlaybackInfo = {
   /**

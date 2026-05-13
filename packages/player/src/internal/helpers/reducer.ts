@@ -1,6 +1,6 @@
-import * as Config from '../../config';
+import * as Config from '../../config.js';
 
-import { db } from './event-session';
+import { db } from './event-session.js';
 
 export async function createReducer<P, N extends string>(
   name: N,

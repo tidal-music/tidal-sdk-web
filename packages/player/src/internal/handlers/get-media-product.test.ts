@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 
-import * as Player from '../../index';
-import { waitFor } from '../../test-helpers';
+import * as Player from '../../index.js';
+import { waitFor } from '../../test-helpers.js';
 
-import { getMediaProduct } from './get-media-product';
+import { getMediaProduct } from './get-media-product.js';
 
 describe('getMediaProduct', () => {
   beforeEach(async () => {

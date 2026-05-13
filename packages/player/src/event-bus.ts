@@ -1,4 +1,4 @@
-import { PlayerError } from './internal';
+import { PlayerError } from './internal/index.js';
 
 class PlayerEventTarget extends EventTarget {
   dispatchError(error: PlayerError) {

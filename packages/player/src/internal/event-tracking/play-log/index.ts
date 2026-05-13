@@ -1,11 +1,11 @@
-export { playbackSession, playbackSessionAction } from './playback-session';
+export { playbackSession, playbackSessionAction } from './playback-session.js';
 
-import type { MediaProduct } from '../../../api/interfaces';
-import { isAuthorizedWithUser } from '../../index';
-import { commit as baseCommit } from '../index';
-import type { Events } from '../types';
+import type { MediaProduct } from '../../../api/interfaces.js';
+import { isAuthorizedWithUser } from '../../index.js';
+import { commit as baseCommit } from '../index.js';
+import type { Events } from '../types.js';
 
-import type { PlayLogProductType } from './playback-session';
+import type { PlayLogProductType } from './playback-session.js';
 
 /**
  * Maps the product type of a media product to the product type used in play log events.

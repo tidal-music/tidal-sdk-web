@@ -1,6 +1,6 @@
 import type { TidalMessage } from '@tidal-music/common';
 
-import * as bus from './bus';
+import * as bus from './bus.js';
 
 describe('bus', () => {
   it('bus adds event listener on globalThis', () => {

@@ -1,4 +1,4 @@
-import { getNativePlayer, setActivePlayer } from '../../player/index';
+import { getNativePlayer, setActivePlayer } from '../../player/index.js';
 
 /**
  * Start native player before playback to access output devices.

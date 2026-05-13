@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import {
   activeDevicePassThroughChanged,
   eventName,
-} from './active-device-pass-through-changed';
+} from './active-device-pass-through-changed.js';
 
 describe('activeDeviceDisconnected', () => {
   it('creates a CustomEvent with a predetermined name and passthrough state as boolean in detail', () => {

@@ -1,6 +1,6 @@
 import * as Player from '@tidal-music/player';
 
-import { css, html } from './helpers';
+import { css, html } from './helpers.js';
 
 const styles = css`
   :host {

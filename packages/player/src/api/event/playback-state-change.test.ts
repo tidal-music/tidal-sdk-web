@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { playbackStateChange } from './playback-state-change';
+import { playbackStateChange } from './playback-state-change.js';
 
 describe('PlaybackStateChange', () => {
   it('creates a CustomEvent with a predetermined name', () => {

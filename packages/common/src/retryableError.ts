@@ -1,5 +1,5 @@
-import { captureStackTrace } from './captureStackTrace';
-import { type ErrorOptions, TidalError } from './tidalError';
+import { captureStackTrace } from './captureStackTrace.js';
+import { type ErrorOptions, TidalError } from './tidalError.js';
 
 /**
  * This is a pretty "rough" and "unprecise" error that indicates to the user of the module that the operation failed,

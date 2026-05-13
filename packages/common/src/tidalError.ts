@@ -1,6 +1,6 @@
 // Inspired by: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error#custom_error_types
 
-import { captureStackTrace } from './captureStackTrace';
+import { captureStackTrace } from './captureStackTrace.js';
 
 // Inlined definition of DOM interface to avoid bug in type-extraction package
 export type ErrorOptions = {

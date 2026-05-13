@@ -1,4 +1,4 @@
-import type { NativePlayerDeviceMode } from '../../player/nativeInterface';
+import type { NativePlayerDeviceMode } from '../../player/nativeInterface.js';
 
 export type ActiveDeviceModeChanged = CustomEvent<NativePlayerDeviceMode>;
 export const eventName = 'active-device-mode-changed';

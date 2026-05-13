@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { mapProductTypeToPlayLogProductType } from './index';
+import { mapProductTypeToPlayLogProductType } from './index.js';
 
 describe('mapProductTypeToPlayLogProductType', () => {
   it('returns the correct playlog product type for tracks', () => {

@@ -1,18 +1,18 @@
-import type { EndedEvent } from '../api/event/ended';
-import { mediaProductTransition as mediaProductTransitionEvent } from '../api/event/media-product-transition';
-import * as Config from '../config';
-import { events } from '../event-bus';
-import { composePlaybackContext } from '../internal/helpers/compose-playback-context';
-import { createMediaElementErrorCircuitBreaker } from '../internal/helpers/media-element-error-circuit-breaker';
-import { streamingSessionStore } from '../internal/helpers/streaming-session-store';
-import { waitFor } from '../internal/helpers/wait-for';
+import type { EndedEvent } from '../api/event/ended.js';
+import { mediaProductTransition as mediaProductTransitionEvent } from '../api/event/media-product-transition.js';
+import * as Config from '../config.js';
+import { events } from '../event-bus.js';
+import { composePlaybackContext } from '../internal/helpers/compose-playback-context.js';
+import { createMediaElementErrorCircuitBreaker } from '../internal/helpers/media-element-error-circuit-breaker.js';
+import { streamingSessionStore } from '../internal/helpers/streaming-session-store.js';
+import { waitFor } from '../internal/helpers/wait-for.js';
 
 import {
   ensureVideoElementsMounted,
   mediaElementOne,
-} from './audio-context-store';
-import type { LoadPayload } from './basePlayer';
-import { BasePlayer } from './basePlayer';
+} from './audio-context-store.js';
+import type { LoadPayload } from './basePlayer.js';
+import { BasePlayer } from './basePlayer.js';
 
 // eslint-disable-next-line import/no-default-export
 export default class BrowserPlayer extends BasePlayer {

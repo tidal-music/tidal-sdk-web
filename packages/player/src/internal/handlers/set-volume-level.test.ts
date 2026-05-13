@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import * as Config from '../../config';
+import * as Config from '../../config.js';
 
-import { setVolumeLevel } from './set-volume-level';
+import { setVolumeLevel } from './set-volume-level.js';
 
 describe('setVolumeLevel', () => {
   it('sets desiredVolumeLevel in config', () => {

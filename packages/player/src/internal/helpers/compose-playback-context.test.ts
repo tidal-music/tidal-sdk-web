@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import { composePlaybackContext } from './compose-playback-context';
-import type { StreamInfo } from './manifest-parser';
-import type { PlaybackInfoTrack } from './playback-info-resolver';
+import { composePlaybackContext } from './compose-playback-context.js';
+import type { StreamInfo } from './manifest-parser.js';
+import type { PlaybackInfoTrack } from './playback-info-resolver.js';
 
 describe('composePlaybackContext', () => {
   const streamInfo: StreamInfo = {

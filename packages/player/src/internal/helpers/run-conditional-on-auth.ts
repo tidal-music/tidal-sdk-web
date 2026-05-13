@@ -1,4 +1,4 @@
-import { isAuthorizedWithUser } from '../index';
+import { isAuthorizedWithUser } from '../index.js';
 
 /**
  * Accepts two functions: one to run if the user is authorized,

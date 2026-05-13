@@ -3,9 +3,9 @@ import type * as _EventSender from '@tidal-music/event-producer';
 
 type EventSender = typeof _EventSender;
 
-import * as Config from '../config';
+import * as Config from '../config.js';
 
-import { waitForEvent } from './helpers/wait-for';
+import { waitForEvent } from './helpers/wait-for.js';
 
 class EventSenderStore extends EventTarget {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -300,7 +300,7 @@ async function handleAuthorized() {
   const authorizedWithUser = await isAuthorizedWithUser();
 
   const startPushkin = async () => {
-    const { Pushkin } = await import('./services/pushkin');
+    const { Pushkin } = await import('./services/pushkin.js');
 
     return Pushkin.refresh();
   };

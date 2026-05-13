@@ -1,16 +1,16 @@
 import Bowser from 'bowser';
 import levenshtein from 'js-levenshtein';
 
-import { deviceChange } from '../api/event/device-change';
-import { events } from '../event-bus';
+import { deviceChange } from '../api/event/device-change.js';
+import { events } from '../event-bus.js';
 import type {
   NativePlayerComponentDeviceDescription,
   NativePlayerDeviceMode,
-} from '../player/nativeInterface';
-import type NativePlayer from '../player/nativePlayer';
-import { playerState } from '../player/state';
+} from '../player/nativeInterface.js';
+import type NativePlayer from '../player/nativePlayer.js';
+import { playerState } from '../player/state.js';
 
-import { generateGUID } from './helpers/generate-guid';
+import { generateGUID } from './helpers/generate-guid.js';
 
 const platform = Bowser.parse(navigator.userAgent);
 

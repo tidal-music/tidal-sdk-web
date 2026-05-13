@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { preloadRequest } from './preload-request';
+import { preloadRequest } from './preload-request.js';
 
 describe('preloadRequest', () => {
   it('creates a CustomEvent with a predetermined name', () => {

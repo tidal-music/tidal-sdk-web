@@ -24,3 +24,13 @@ jobs:
       - name: Run Type Checks
         run: |
           pnpm typecheck
+  types-resolution-check:
+    runs-on: ubuntu-latest
+    name: Published Types Resolution
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+      - uses: ./.github/actions/build-projects
+      - name: Verify published types resolve under node10/node16/bundler
+        run: |
+          pnpm check:types-resolution

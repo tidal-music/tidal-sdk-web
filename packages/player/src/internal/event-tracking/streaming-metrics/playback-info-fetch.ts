@@ -1,4 +1,4 @@
-import { createReducer } from '../../helpers/reducer';
+import { createReducer } from '../../helpers/reducer.js';
 
 export type Payload = {
   endReason: 'COMPLETE' | 'ERROR' | 'OTHER';

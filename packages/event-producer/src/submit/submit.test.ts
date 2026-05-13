@@ -1,13 +1,13 @@
 import '@vitest/web-worker';
 import { js2xml } from 'xml-js';
 
-import { config } from '../../test/fixtures/config';
-import { epEvent1 } from '../../test/fixtures/events';
-import * as monitor from '../monitor';
-import * as outage from '../outage';
-import * as queue from '../queue';
+import { config } from '../../test/fixtures/config.js';
+import { epEvent1 } from '../../test/fixtures/events.js';
+import * as monitor from '../monitor/index.js';
+import * as outage from '../outage/index.js';
+import * as queue from '../queue/index.js';
 
-import { submitEvents } from './submit';
+import { submitEvents } from './submit.js';
 
 vi.mock('../queue');
 vi.mock('../monitor');

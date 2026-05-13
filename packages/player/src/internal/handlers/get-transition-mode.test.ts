@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import * as Config from '../../config';
+import * as Config from '../../config.js';
 
-import { getTransitionMode } from './get-transition-mode';
+import { getTransitionMode } from './get-transition-mode.js';
 
 describe('getTransitionMode', () => {
   it('returns crossfadeInMs from config', () => {

@@ -18,32 +18,32 @@ import {
   TokenResponseError,
   UnexpectedError,
   authErrorCodeMap,
-} from '../errors';
+} from '../errors/index.js';
 import {
   deleteCredentials,
   loadCredentials,
   saveCredentialsToStorage,
   setStorageAdapter,
-} from '../storage/storage';
+} from '../storage/storage.js';
 import type {
   DeviceAuthorizationResponse,
   InitArgs,
   LoginConfig,
   TokenJSONResponse,
   UserCredentials,
-} from '../types';
+} from '../types.js';
 import {
   exponentialBackoff,
   handleErrorResponse,
   handleTokenFetch,
   prepareFetch,
-} from '../utils/fetchHandling';
+} from '../utils/fetchHandling.js';
 import {
   base64URLEncode,
   generateOAuthCodeChallenge,
   setCryptoAdapter,
   sha256,
-} from '../utils/utils';
+} from '../utils/utils.js';
 
 const state: {
   credentials?: UserCredentials;

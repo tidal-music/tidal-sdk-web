@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import * as Player from '../../index';
-import { authAndEvents } from '../../test-helpers';
-import { waitFor } from '../helpers/wait-for';
+import * as Player from '../../index.js';
+import { authAndEvents } from '../../test-helpers.js';
+import { waitFor } from '../helpers/wait-for.js';
 
 describe('ConnectionHandler', () => {
   authAndEvents(before, after);

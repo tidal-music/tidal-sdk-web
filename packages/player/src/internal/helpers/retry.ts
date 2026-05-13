@@ -1,4 +1,4 @@
-import { waitFor } from './wait-for';
+import { waitFor } from './wait-for.js';
 
 /**
  * Wraps an async operation with retry logic using exponential backoff.

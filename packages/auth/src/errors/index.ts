@@ -1,6 +1,6 @@
-export { AuthenticationError } from './authenticationError';
-export { TokenResponseError } from './tokenResponseError';
-export { UnexpectedError } from './unexpectedError';
+export { AuthenticationError } from './authenticationError.js';
+export { TokenResponseError } from './tokenResponseError.js';
+export { UnexpectedError } from './unexpectedError.js';
 
 export const authErrorCodeMap = {
   authenticationError: 'A0000',

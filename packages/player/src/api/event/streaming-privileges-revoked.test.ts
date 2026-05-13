@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import {
   eventName,
   streamingPrivilegesRevokedEvent,
-} from './streaming-privileges-revoked';
+} from './streaming-privileges-revoked.js';
 
 describe('streamingPrivilegesRevokedEvent', () => {
   it('creates a CustomEvent with a predetermined name and playing device name in detail', () => {

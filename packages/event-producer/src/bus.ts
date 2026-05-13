@@ -1,6 +1,6 @@
 import type { Bus, BusEvent, TidalMessage } from '@tidal-music/common';
 
-import { OutageStartError } from './outage';
+import { OutageStartError } from './outage/index.js';
 
 /**
  * The bus used by the EventSender for all "asynchronous" communication.

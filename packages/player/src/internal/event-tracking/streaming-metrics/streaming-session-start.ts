@@ -1,6 +1,6 @@
 import Bowser from 'bowser';
 
-import { createReducer } from '../../helpers/reducer';
+import { createReducer } from '../../helpers/reducer.js';
 
 const platform = Bowser.parse(navigator.userAgent);
 

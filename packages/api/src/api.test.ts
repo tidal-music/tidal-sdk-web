@@ -1,4 +1,4 @@
-import { createAPIClient } from './api';
+import { createAPIClient } from './api.js';
 
 const mockCredentialsProvider = () => ({
   bus: vi.fn(),

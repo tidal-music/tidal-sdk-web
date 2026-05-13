@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import * as Config from '../../config';
+import * as Config from '../../config.js';
 
-import { setLegacyApiUrl } from './set-legacy-api-url';
+import { setLegacyApiUrl } from './set-legacy-api-url.js';
 
 describe('setLegacyApiUrl', () => {
   it('sets the legacy url in config', () => {

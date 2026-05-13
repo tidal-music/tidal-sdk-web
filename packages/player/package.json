@@ -1,11 +1,11 @@
 {
   "name": "@tidal-music/player",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "description": "Player logic for TIDAL",
   "type": "module",
   "exports": {
-    "import": "./dist/index.js",
     "types": "./dist/src/index.d.ts",
+    "import": "./dist/index.js",
     "default": "./dist/index.js"
   },
   "module": "./dist/index.js",
@@ -21,6 +21,7 @@
     "lint:ci": "eslint . --quiet",
     "lint:fix": "pnpm run lint --fix",
     "typecheck": "tsc",
+    "check:types-resolution": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
     "prepublishOnly": "npx --yes @skypack/package-check --cwd .",
     "internal:cypress:open": "pnpm cypress open",
     "internal:cypress:run": "pnpm cypress run",

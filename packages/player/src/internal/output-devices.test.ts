@@ -1,14 +1,14 @@
 import { expect } from 'chai';
 
-import { events } from '../event-bus';
-import type { NativePlayerComponentDeviceDescription } from '../player/nativeInterface';
+import { events } from '../event-bus.js';
+import type { NativePlayerComponentDeviceDescription } from '../player/nativeInterface.js';
 
 import {
   OutputDevice,
   OutputDevices,
   findOutputType,
   getOutputDeviceByName,
-} from './output-devices';
+} from './output-devices.js';
 
 const defaultWd: MediaDeviceInfo = {
   deviceId: '12d6as',

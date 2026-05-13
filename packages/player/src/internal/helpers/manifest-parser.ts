@@ -1,8 +1,8 @@
-import { mimeTypes } from '../../internal/constants';
-import type { NativePlayerStreamFormat } from '../../player/nativeInterface';
-import type { AudioQuality, Codec, VideoQuality } from '../types';
+import { mimeTypes } from '../../internal/constants.js';
+import type { NativePlayerStreamFormat } from '../../player/nativeInterface.js';
+import type { AudioQuality, Codec, VideoQuality } from '../types.js';
 
-import type { PlaybackInfo } from './playback-info-resolver';
+import type { PlaybackInfo } from './playback-info-resolver.js';
 
 type EmuManifest = Readonly<{
   mimeType: string;

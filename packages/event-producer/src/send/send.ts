@@ -1,13 +1,13 @@
 import type { CredentialsProvider } from '@tidal-music/common';
 import { trueTime } from '@tidal-music/true-time';
 
-import type { Config } from '../config';
-import * as monitor from '../monitor';
-import * as queue from '../queue';
-import type { EPEvent, SentEvent } from '../types';
-import { getEventHeaders } from '../utils/headerUtils';
-import { validateEvent } from '../utils/validateEvent';
-import { uuid } from '../uuid/uuid';
+import type { Config } from '../config.js';
+import * as monitor from '../monitor/index.js';
+import * as queue from '../queue/index.js';
+import type { EPEvent, SentEvent } from '../types.js';
+import { getEventHeaders } from '../utils/headerUtils.js';
+import { validateEvent } from '../utils/validateEvent.js';
+import { uuid } from '../uuid/uuid.js';
 
 type CreatePayloadParams = {
   event: SentEvent;

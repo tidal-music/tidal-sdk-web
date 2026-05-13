@@ -6,7 +6,7 @@ import type {
   PreviewReason,
   StreamType,
   VideoQuality,
-} from '../internal/types';
+} from '../internal/types.js';
 
 /**
  * Contains playback related information for active media product.
@@ -50,7 +50,7 @@ export type PlaybackContext = {
  */
 export type PlaybackState = 'IDLE' | 'NOT_PLAYING' | 'PLAYING' | 'STALLED';
 export type LoudnessNormalizationMode = 'ALBUM' | 'NONE' | 'TRACK';
-export type { AudioQuality } from '../internal/types';
+export type { AudioQuality } from '../internal/types.js';
 
 /**
  * Contains information about a TIDAL media product.

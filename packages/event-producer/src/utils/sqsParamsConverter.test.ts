@@ -1,6 +1,6 @@
-import { epEvent1 } from '../../test/fixtures/events';
+import { epEvent1 } from '../../test/fixtures/events.js';
 
-import { eventsToSqsRequestParameters } from './sqsParamsConverter';
+import { eventsToSqsRequestParameters } from './sqsParamsConverter.js';
 
 describe('sqsParamsConverter', () => {
   it('eventToSqsRequestParameters - contains every event value stringified', () => {

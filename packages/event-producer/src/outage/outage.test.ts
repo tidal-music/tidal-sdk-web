@@ -1,6 +1,6 @@
-import * as bus from '../bus';
+import * as bus from '../bus.js';
 
-import * as outage from './index';
+import * as outage from './index.js';
 
 describe('outage', () => {
   it('sets outage state true and posts messages to the bus.', () => {

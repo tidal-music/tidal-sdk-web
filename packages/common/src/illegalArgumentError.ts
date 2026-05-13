@@ -1,5 +1,5 @@
-import { captureStackTrace } from './captureStackTrace';
-import { type ErrorOptions, TidalError } from './tidalError';
+import { captureStackTrace } from './captureStackTrace.js';
+import { type ErrorOptions, TidalError } from './tidalError.js';
 
 /**
  * Raised whenever an illegal argument was passed to a function.

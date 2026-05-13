@@ -6,6 +6,6 @@
  *
  * @ignore
  */
-export type { components } from './allAPI.generated';
+export type { components } from './allAPI.generated.js';
 
-export { createAPIClient } from './api';
+export { createAPIClient } from './api.js';

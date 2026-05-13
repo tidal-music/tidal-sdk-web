@@ -1,6 +1,6 @@
-import type { EPEvent } from '../types';
+import type { EPEvent } from '../types.js';
 
-import { db } from './db';
+import { db } from './db.js';
 
 let isInitialized = false;
 

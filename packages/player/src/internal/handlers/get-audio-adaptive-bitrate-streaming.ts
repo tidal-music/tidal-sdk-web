@@ -1,4 +1,4 @@
-import * as Config from '../../config';
+import * as Config from '../../config.js';
 
 /**
  * Get the current adaptive bitrate streaming setting for audio.

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { db } from './event-session';
+import { db } from './event-session.js';
 
 describe('EventSessionDB', () => {
   it('should put and get an event', async () => {

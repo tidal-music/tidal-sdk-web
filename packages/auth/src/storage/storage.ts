@@ -1,9 +1,9 @@
 import { TidalError } from '@tidal-music/common';
 
-import { authErrorCodeMap } from '../errors';
-import type { StorageAdapter, UserCredentials } from '../types';
+import { authErrorCodeMap } from '../errors/index.js';
+import type { StorageAdapter, UserCredentials } from '../types.js';
 
-import { database } from './database';
+import { database } from './database.js';
 import {
   decodeCredentials,
   decryptCredentials,
@@ -12,7 +12,7 @@ import {
   getEncryptionKey,
   unwrapCryptoKey,
   wrapCryptoKey,
-} from './storageUtils';
+} from './storageUtils.js';
 
 let customStorage: StorageAdapter | undefined;
 

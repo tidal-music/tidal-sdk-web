@@ -1,6 +1,6 @@
-import type { LoudnessNormalizationMode } from '../../api/interfaces';
-import * as Config from '../../config';
-import { playerState } from '../../player/state';
+import type { LoudnessNormalizationMode } from '../../api/interfaces.js';
+import * as Config from '../../config.js';
+import { playerState } from '../../player/state.js';
 
 /**
  * Set loudness normalization mode.

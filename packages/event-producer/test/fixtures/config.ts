@@ -1,6 +1,6 @@
-import { type Config } from '../../src';
+import { type Config } from '../../src/index.js';
 
-import { credentialsProvider1 } from './credentialsProvider';
+import { credentialsProvider1 } from './credentialsProvider.js';
 
 export const config: Config = {
   appInfo: { appName: 'withJoy', appVersion: '777' },
