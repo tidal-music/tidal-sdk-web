@@ -13,9 +13,11 @@
     "test": "pnpm -r test --run",
     "test:coverage": "pnpm -r test:coverage",
     "typecheck": "pnpm -r typecheck",
+    "check:types-resolution": "pnpm -r --workspace-concurrency=1 --filter='!@tidal-music/template' check:types-resolution",
     "generateTypes": "pnpm -r generateTypes"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.2",
     "@eslint/compat": "2.1.0",
     "eslint": "10.3.0",
     "eslint-config-tidal": "5.0.0",

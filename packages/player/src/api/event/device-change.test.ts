@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 
-import * as Player from '../../index';
-import { OutputDevice } from '../../internal/output-devices';
-import { authAndEvents } from '../../test-helpers';
+import * as Player from '../../index.js';
+import { OutputDevice } from '../../internal/output-devices.js';
+import { authAndEvents } from '../../test-helpers.js';
 
-import { deviceChange } from './device-change';
+import { deviceChange } from './device-change.js';
 
 beforeEach(async () => {
   await Player.load(

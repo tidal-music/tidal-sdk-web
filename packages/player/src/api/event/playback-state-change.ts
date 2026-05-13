@@ -1,4 +1,4 @@
-import type { PlaybackState } from '../interfaces';
+import type { PlaybackState } from '../interfaces.js';
 
 type PlaybackStateChangePayload = {
   state: PlaybackState;

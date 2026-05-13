@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { streamingSessionStart } from './streaming-session-start';
+import { streamingSessionStart } from './streaming-session-start.js';
 
 describe('streamingSessionStart', () => {
   it('sets values', async () => {

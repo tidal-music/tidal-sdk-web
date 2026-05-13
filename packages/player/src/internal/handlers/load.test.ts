@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 
-import * as Player from '../../index';
+import * as Player from '../../index.js';
 import {
   authAndEvents,
   getPreloadedStreamingSessionId,
-} from '../../test-helpers';
+} from '../../test-helpers.js';
 
 describe('load', () => {
   authAndEvents(before, after);

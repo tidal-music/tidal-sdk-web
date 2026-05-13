@@ -5,7 +5,7 @@ import {
   captureStackTrace,
 } from '@tidal-music/common';
 
-import * as bus from '../bus';
+import * as bus from '../bus.js';
 
 /**
  * This read-only property indicates whether or not there is an outage.

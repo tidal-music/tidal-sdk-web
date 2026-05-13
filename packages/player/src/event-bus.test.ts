@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 
-import { events } from './event-bus';
-import { PlayerError } from './internal/index';
-import { authAndEvents, waitForEvent } from './test-helpers';
+import { events } from './event-bus.js';
+import { PlayerError } from './internal/index.js';
+import { authAndEvents, waitForEvent } from './test-helpers.js';
 
-import * as Player from './index';
+import * as Player from './index.js';
 
 describe('eventBus', () => {
   authAndEvents(before, after);

@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 
-import * as Player from '../../index';
-import { authAndEvents, waitFor } from '../../test-helpers';
+import * as Player from '../../index.js';
+import { authAndEvents, waitFor } from '../../test-helpers.js';
 
-import { getAssetPosition } from './get-asset-position';
+import { getAssetPosition } from './get-asset-position.js';
 
 describe('getAssetPosition', () => {
   authAndEvents(before, after);

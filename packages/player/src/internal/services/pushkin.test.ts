@@ -1,6 +1,6 @@
-import { authAndEvents, credentialsProvider } from '../../test-helpers';
+import { authAndEvents, credentialsProvider } from '../../test-helpers.js';
 
-import { fetchWebSocketURL, socketOpen } from './pushkin';
+import { fetchWebSocketURL, socketOpen } from './pushkin.js';
 
 describe('Pushkin', () => {
   authAndEvents(before, after);

@@ -1,5 +1,5 @@
-import { NetworkError } from './networkError';
-import { TidalError } from './tidalError';
+import { NetworkError } from './networkError.js';
+import { TidalError } from './tidalError.js';
 
 describe('TidalError', () => {
   it('is an instance of TidalError', () => {

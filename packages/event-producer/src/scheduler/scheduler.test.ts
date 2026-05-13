@@ -1,11 +1,11 @@
 import '@vitest/web-worker';
 
-import { config } from '../../test/fixtures/config';
-import { init as initConfig } from '../config';
-import * as monitor from '../monitor';
-import * as submit from '../submit/submit';
+import { config } from '../../test/fixtures/config.js';
+import { init as initConfig } from '../config.js';
+import * as monitor from '../monitor/index.js';
+import * as submit from '../submit/submit.js';
 
-import * as scheduler from './scheduler';
+import * as scheduler from './scheduler.js';
 
 vi.useFakeTimers();
 describe.sequential('Scheduler', () => {

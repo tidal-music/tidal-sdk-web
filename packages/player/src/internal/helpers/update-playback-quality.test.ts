@@ -1,16 +1,16 @@
 import { expect } from 'chai';
 import type shaka from 'shaka-player';
 
-import type { PlaybackQualityChangedPayload } from '../../api/event/playback-quality-changed';
-import type { MediaProduct, PlaybackContext } from '../../api/interfaces';
-import { events } from '../../event-bus';
+import type { PlaybackQualityChangedPayload } from '../../api/event/playback-quality-changed.js';
+import type { MediaProduct, PlaybackContext } from '../../api/interfaces.js';
+import { events } from '../../event-bus.js';
 
-import { streamingSessionStore } from './streaming-session-store';
+import { streamingSessionStore } from './streaming-session-store.js';
 import {
   idToBitDepth,
   shakaTrackToAudioQuality,
   updatePlaybackQuality,
-} from './update-playback-quality';
+} from './update-playback-quality.js';
 
 describe('update-playback-quality', () => {
   describe('shakaTrackToAudioQuality', () => {

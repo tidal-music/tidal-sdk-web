@@ -1,14 +1,14 @@
 import { expect } from 'chai';
 
-import { mimeTypes } from '../internal/constants';
+import { mimeTypes } from '../internal/constants.js';
 
-import { mountVideoElements } from './audio-context-store';
+import { mountVideoElements } from './audio-context-store.js';
 
 import {
   getAppropriatePlayer,
   resetAllPlayers,
   setPlayerConfig,
-} from './index';
+} from './index.js';
 
 // Mock native player component for tests
 class NativePlayerMock extends EventTarget {

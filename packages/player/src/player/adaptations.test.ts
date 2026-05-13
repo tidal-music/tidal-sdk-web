@@ -1,18 +1,18 @@
 import { expect } from 'chai';
 import type shaka from 'shaka-player';
 
-import type { PlaybackQualityChangedPayload } from '../api/event/playback-quality-changed';
-import type { MediaProduct, PlaybackContext } from '../api/interfaces';
-import { events } from '../event-bus';
-import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
-import { streamingSessionStore } from '../internal/helpers/streaming-session-store';
-import { trueTime } from '../internal/true-time';
+import type { PlaybackQualityChangedPayload } from '../api/event/playback-quality-changed.js';
+import type { MediaProduct, PlaybackContext } from '../api/interfaces.js';
+import { events } from '../event-bus.js';
+import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index.js';
+import { streamingSessionStore } from '../internal/helpers/streaming-session-store.js';
+import { trueTime } from '../internal/true-time.js';
 
 import {
   registerAdaptations,
   saveAdaptation,
   shakaTrackToAdaptation,
-} from './adaptations';
+} from './adaptations.js';
 
 await trueTime.synchronize();
 

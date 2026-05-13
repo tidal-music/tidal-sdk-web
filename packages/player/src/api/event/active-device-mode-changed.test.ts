@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import {
   activeDeviceModeChanged,
   eventName,
-} from './active-device-mode-changed';
+} from './active-device-mode-changed.js';
 
 describe('activeDeviceDisconnected', () => {
   it('creates a CustomEvent with a predetermined name and device mode as detail', () => {

@@ -1,13 +1,13 @@
 import '@vitest/web-worker';
 
-import { config } from '../../test/fixtures/config';
-import { credentialsProvider1 } from '../../test/fixtures/credentialsProvider';
-import { eventPayload1 } from '../../test/fixtures/events';
-import * as monitor from '../monitor';
-import * as queue from '../queue';
-import * as uuid from '../uuid/uuid';
+import { config } from '../../test/fixtures/config.js';
+import { credentialsProvider1 } from '../../test/fixtures/credentialsProvider.js';
+import { eventPayload1 } from '../../test/fixtures/events.js';
+import * as monitor from '../monitor/index.js';
+import * as queue from '../queue/index.js';
+import * as uuid from '../uuid/uuid.js';
 
-import { type SendEventParams, sendEvent } from './send';
+import { type SendEventParams, sendEvent } from './send.js';
 
 vi.mock('../monitor');
 vi.mock('../queue');

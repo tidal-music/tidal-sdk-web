@@ -1,4 +1,4 @@
-import { waitForPlayers } from '../internal/helpers/wait-for-players';
+import { waitForPlayers } from '../internal/helpers/wait-for-players.js';
 
 export const mediaElementOne = document.createElement('video');
 export const mediaElementTwo = document.createElement('video');

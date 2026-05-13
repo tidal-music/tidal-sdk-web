@@ -1,7 +1,7 @@
 import type { CredentialsProvider } from '@tidal-music/common';
 
-import type { BlockedConsentCategories } from './blockedConsentCategories';
-import type { AppInfo, PlatformData } from './types';
+import type { BlockedConsentCategories } from './blockedConsentCategories.js';
+import type { AppInfo, PlatformData } from './types.js';
 
 /**
  *

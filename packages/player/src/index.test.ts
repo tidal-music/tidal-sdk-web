@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 
-import * as Config from './config';
-import { authAndEvents, mockNativePlayer } from './test-helpers';
+import * as Config from './config.js';
+import { authAndEvents, mockNativePlayer } from './test-helpers.js';
 
-import * as Player from './index';
+import * as Player from './index.js';
 
 describe('bootstrap', () => {
   it('enables output devices if options.outputDevices is true', () => {

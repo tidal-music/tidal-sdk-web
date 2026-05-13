@@ -2,7 +2,7 @@ import type * as _EventSender from '@tidal-music/event-producer';
 
 type EventSender = typeof _EventSender;
 
-import { eventSenderStore } from '../index';
+import { eventSenderStore } from '../index.js';
 
 /**
  * Set the event sender TIDAL Player SDK should use for sending events.

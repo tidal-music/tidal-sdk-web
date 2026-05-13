@@ -14,7 +14,7 @@ describe.sequential('uuid', () => {
 
   it('throws error if used before init if crypto not in globalThis', async () => {
     vi.stubGlobal('crypto', undefined);
-    const { uuid } = await import('./uuid');
+    const { uuid } = await import('./uuid.js');
     expect(() => uuid()).toThrowError(
       'Uuid not initialized; run await init(); before using uuid.',
     );
@@ -24,7 +24,7 @@ describe.sequential('uuid', () => {
     vi.stubGlobal('crypto', {
       randomUUID: vi.fn().mockReturnValue('aRandomIdFromCrypto'),
     });
-    const { init, uuid } = await import('./uuid');
+    const { init, uuid } = await import('./uuid.js');
 
     await init();
     expect(uuid()).toEqual('aRandomIdFromCrypto');
@@ -34,7 +34,7 @@ describe.sequential('uuid', () => {
     vi.stubGlobal('crypto', {
       randomUUID: undefined,
     });
-    const { init, uuid } = await import('./uuid');
+    const { init, uuid } = await import('./uuid.js');
     await init();
     expect(uuid()).toEqual('aRandomIdFromNanoid');
   });

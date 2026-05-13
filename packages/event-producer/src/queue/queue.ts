@@ -1,4 +1,4 @@
-import type { Config, EPEvent } from '../types';
+import type { Config, EPEvent } from '../types.js';
 
 import QueueWebWorker from './worker?worker&inline';
 

@@ -1,6 +1,6 @@
-import type { PlaybackContext } from '../../api/interfaces';
-import { playerState } from '../../player/state';
-import { streamingSessionStore } from '../helpers/streaming-session-store';
+import type { PlaybackContext } from '../../api/interfaces.js';
+import { playerState } from '../../player/state.js';
+import { streamingSessionStore } from '../helpers/streaming-session-store.js';
 
 /**
  * Gets the currently active playback context. This is the same value

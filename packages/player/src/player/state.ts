@@ -1,8 +1,8 @@
-import { streamingSessionStore } from '../internal/helpers/streaming-session-store';
+import { streamingSessionStore } from '../internal/helpers/streaming-session-store.js';
 
-import type BrowserPlayer from './browserPlayer';
-import type NativePlayer from './nativePlayer';
-import type ShakaPlayer from './shakaPlayer';
+import type BrowserPlayer from './browserPlayer.js';
+import type NativePlayer from './nativePlayer.js';
+import type ShakaPlayer from './shakaPlayer.js';
 
 type Player = BrowserPlayer | NativePlayer | ShakaPlayer;
 

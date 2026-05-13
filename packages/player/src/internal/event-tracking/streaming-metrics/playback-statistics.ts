@@ -1,6 +1,6 @@
-import { createReducer } from '../../helpers/reducer';
-import type { OutputType } from '../../output-devices';
-import type { AudioQuality, VideoQuality } from '../../types';
+import { createReducer } from '../../helpers/reducer.js';
+import type { OutputType } from '../../output-devices.js';
+import type { AudioQuality, VideoQuality } from '../../types.js';
 
 export type StatisticsOutputType =
   | 'BLUETOOTH'

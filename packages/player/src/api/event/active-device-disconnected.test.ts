@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import {
   activeDeviceDisconnected,
   eventName,
-} from './active-device-disconnected';
+} from './active-device-disconnected.js';
 
 describe('activeDeviceDisconnected', () => {
   it('creates a CustomEvent with a predetermined name', () => {

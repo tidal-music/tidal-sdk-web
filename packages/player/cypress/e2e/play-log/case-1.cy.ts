@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { INTERCEPT_OPTIONS, SDK_BATCH_INTERVAL } from '../../helpers';
+import { INTERCEPT_OPTIONS, SDK_BATCH_INTERVAL } from '../../helpers.js';
 
 it('Client Test Case 1', () => {
   const credentials = JSON.parse(atob(Cypress.env().TEST_USER.substring(1, Cypress.env().TEST_USER.length - 1)));

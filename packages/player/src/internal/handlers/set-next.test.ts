@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 
-import * as Player from '../../index';
-import type { MediaProduct } from '../../index';
-import { waitFor } from '../../internal/helpers/wait-for';
-import { authAndEvents, waitForEvent } from '../../test-helpers';
+import * as Player from '../../index.js';
+import type { MediaProduct } from '../../index.js';
+import { waitFor } from '../../internal/helpers/wait-for.js';
+import { authAndEvents, waitForEvent } from '../../test-helpers.js';
 
 describe('nextHandler', () => {
   authAndEvents(before, after);

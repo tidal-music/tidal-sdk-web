@@ -1,23 +1,23 @@
-import type { MediaProduct } from '../../api/interfaces';
-import * as Config from '../../config';
-import { generateGUID } from '../../internal/helpers/generate-guid';
-import { getIsPostPaywall } from '../../internal/helpers/get-is-post-paywall';
-import { parseManifest } from '../../internal/helpers/manifest-parser';
-import { fetchPlaybackInfo } from '../../internal/helpers/playback-info-resolver';
-import type { PlaybackInfo } from '../../internal/helpers/playback-info-resolver';
+import type { MediaProduct } from '../../api/interfaces.js';
+import * as Config from '../../config.js';
+import { generateGUID } from '../../internal/helpers/generate-guid.js';
+import { getIsPostPaywall } from '../../internal/helpers/get-is-post-paywall.js';
+import { parseManifest } from '../../internal/helpers/manifest-parser.js';
+import { fetchPlaybackInfo } from '../../internal/helpers/playback-info-resolver.js';
+import type { PlaybackInfo } from '../../internal/helpers/playback-info-resolver.js';
 import {
   cancelQueuedOnendedHandler,
   getAppropriatePlayer,
   maybeSwitchPlayerOnEnd,
   predictPlayerType,
   unloadPreloadedMediaProduct,
-} from '../../player/index';
-import { playerState } from '../../player/state';
-import * as PlayLog from '../event-tracking/play-log/index';
-import * as StreamingMetrics from '../event-tracking/streaming-metrics/index';
-import { streamingSessionStore } from '../helpers/streaming-session-store';
-import { credentialsProviderStore, eventSenderStore } from '../index';
-import { trueTime } from '../true-time';
+} from '../../player/index.js';
+import { playerState } from '../../player/state.js';
+import * as PlayLog from '../event-tracking/play-log/index.js';
+import * as StreamingMetrics from '../event-tracking/streaming-metrics/index.js';
+import { streamingSessionStore } from '../helpers/streaming-session-store.js';
+import { credentialsProviderStore, eventSenderStore } from '../index.js';
+import { trueTime } from '../true-time.js';
 
 let controller: AbortController;
 

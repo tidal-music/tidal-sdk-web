@@ -1,5 +1,5 @@
-import type { LoudnessNormalizationMode } from './api/interfaces';
-import type { AudioQuality } from './internal/types';
+import type { LoudnessNormalizationMode } from './api/interfaces.js';
+import type { AudioQuality } from './internal/types.js';
 
 type Config = {
   apiUrl: string;

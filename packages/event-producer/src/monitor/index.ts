@@ -1,10 +1,10 @@
 import { trueTime } from '@tidal-music/true-time';
 
-import { getConfig } from '../config';
-import type { EPEvent } from '../types';
-import { getEventHeaders } from '../utils/headerUtils';
-import { eventsToSqsRequestParameters } from '../utils/sqsParamsConverter';
-import { uuid } from '../uuid/uuid';
+import { getConfig } from '../config.js';
+import type { EPEvent } from '../types.js';
+import { getEventHeaders } from '../utils/headerUtils.js';
+import { eventsToSqsRequestParameters } from '../utils/sqsParamsConverter.js';
+import { uuid } from '../uuid/uuid.js';
 
 type MonitoringInformation = {
   /**

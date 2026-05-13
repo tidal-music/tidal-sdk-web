@@ -1,4 +1,4 @@
-import { helloTemplate } from './template';
+import { helloTemplate } from './template.js';
 
 describe('helloTemplate', () => {
   it("greets with Template's name", () => {

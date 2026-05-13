@@ -1,7 +1,7 @@
-import { eventName } from '../../api/event/active-device-mode-changed';
-import { events } from '../../event-bus';
-import type { NativePlayerDeviceMode } from '../../player/nativeInterface';
-import { on } from '../helpers/on';
+import { eventName } from '../../api/event/active-device-mode-changed.js';
+import { events } from '../../event-bus.js';
+import type { NativePlayerDeviceMode } from '../../player/nativeInterface.js';
+import { on } from '../helpers/on.js';
 
 /**
  * Set device mode. Only available for native player.
@@ -12,7 +12,7 @@ import { on } from '../helpers/on';
 export async function setOutputDeviceMode(
   mode: NativePlayerDeviceMode = 'shared',
 ): Promise<NativePlayerDeviceMode> {
-  const { outputDevices } = await import('../output-devices');
+  const { outputDevices } = await import('../output-devices.js');
 
   const upcomingEvent = on(events, eventName);
 

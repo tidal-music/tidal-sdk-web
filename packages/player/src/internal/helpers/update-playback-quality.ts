@@ -1,12 +1,12 @@
 import type shaka from 'shaka-player';
 
-import { playbackQualityChanged } from '../../api/event/playback-quality-changed';
-import type { AudioQuality } from '../../api/interfaces';
-import { events } from '../../event-bus';
-import type { NativePlayerStreamFormat } from '../../player/nativeInterface';
+import { playbackQualityChanged } from '../../api/event/playback-quality-changed.js';
+import type { AudioQuality } from '../../api/interfaces.js';
+import { events } from '../../event-bus.js';
+import type { NativePlayerStreamFormat } from '../../player/nativeInterface.js';
 
-import { streamFormatToCodec } from './manifest-parser';
-import { streamingSessionStore } from './streaming-session-store';
+import { streamFormatToCodec } from './manifest-parser.js';
+import { streamingSessionStore } from './streaming-session-store.js';
 
 /**
  * Infer the audio quality from a Shaka track.

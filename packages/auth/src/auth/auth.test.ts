@@ -5,11 +5,11 @@ import {
 } from '@tidal-music/common';
 import { trueTime } from '@tidal-music/true-time';
 
-import { UnexpectedError, authErrorCodeMap } from '../errors';
-import * as fixtures from '../fixtures';
-import * as _storage from '../storage/storage';
-import * as _fetchHandling from '../utils/fetchHandling';
-import * as _utils from '../utils/utils';
+import { UnexpectedError, authErrorCodeMap } from '../errors/index.js';
+import * as fixtures from '../fixtures.js';
+import * as _storage from '../storage/storage.js';
+import * as _fetchHandling from '../utils/fetchHandling.js';
+import * as _utils from '../utils/utils.js';
 
 import {
   bus,
@@ -21,7 +21,7 @@ import {
   initializeLogin,
   logout,
   setCredentials,
-} from './auth';
+} from './auth.js';
 
 const storage = vi.mocked(_storage);
 const utils = vi.mocked(_utils);

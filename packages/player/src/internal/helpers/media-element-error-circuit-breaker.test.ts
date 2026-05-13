@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { createMediaElementErrorCircuitBreaker } from './media-element-error-circuit-breaker';
+import { createMediaElementErrorCircuitBreaker } from './media-element-error-circuit-breaker.js';
 
 describe('createMediaElementErrorCircuitBreaker', () => {
   function setup({

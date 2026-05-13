@@ -1,5 +1,5 @@
-import { db } from '../helpers/event-session';
-import { eventSenderStore } from '../index';
+import { db } from '../helpers/event-session.js';
+import { eventSenderStore } from '../index.js';
 
 type BaseCommitData = {
   group: string;

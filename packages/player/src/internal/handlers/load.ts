@@ -1,29 +1,29 @@
-import type { MediaProduct } from '../../api/interfaces';
-import * as Config from '../../config';
-import { events } from '../../event-bus';
-import * as StreamingMetrics from '../../internal/event-tracking/streaming-metrics/index';
-import { generateGUID } from '../../internal/helpers/generate-guid';
-import { parseManifest } from '../../internal/helpers/manifest-parser';
-import { fetchPlaybackInfo } from '../../internal/helpers/playback-info-resolver';
-import type { PlaybackInfo } from '../../internal/helpers/playback-info-resolver';
-import { streamingSessionStore } from '../../internal/helpers/streaming-session-store';
+import type { MediaProduct } from '../../api/interfaces.js';
+import * as Config from '../../config.js';
+import { events } from '../../event-bus.js';
+import * as StreamingMetrics from '../../internal/event-tracking/streaming-metrics/index.js';
+import { generateGUID } from '../../internal/helpers/generate-guid.js';
+import { parseManifest } from '../../internal/helpers/manifest-parser.js';
+import { fetchPlaybackInfo } from '../../internal/helpers/playback-info-resolver.js';
+import type { PlaybackInfo } from '../../internal/helpers/playback-info-resolver.js';
+import { streamingSessionStore } from '../../internal/helpers/streaming-session-store.js';
 import {
   PlayerError,
   credentialsProviderStore,
   eventSenderStore,
-} from '../../internal/index';
-import ConnectionHandler from '../../internal/services/connection-handler';
+} from '../../internal/index.js';
+import ConnectionHandler from '../../internal/services/connection-handler.js';
 import {
   getAppropriatePlayer,
   predictPlayerType,
   setActivePlayer,
-} from '../../player/index';
-import { playerState } from '../../player/state';
-import { Pushkin } from '../services/pushkin';
-import { trueTime } from '../true-time';
+} from '../../player/index.js';
+import { playerState } from '../../player/state.js';
+import { Pushkin } from '../services/pushkin.js';
+import { trueTime } from '../true-time.js';
 
-import { reset } from './reset';
-import { latestNextCall } from './set-next';
+import { reset } from './reset.js';
+import { latestNextCall } from './set-next.js';
 
 /**
  * Will reset TIDAL Player from any current state and immediately make a

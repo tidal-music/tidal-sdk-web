@@ -1,4 +1,4 @@
-import type { EPEvent, SentEvent } from '../../src';
+import type { EPEvent, SentEvent } from '../../src/index.js';
 
 export const eventPayload1: SentEvent = {
   consentCategory: 'NECESSARY',

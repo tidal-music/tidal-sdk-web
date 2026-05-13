@@ -1,7 +1,7 @@
-import type { ConsentCategory } from './blockedConsentCategories';
+import type { ConsentCategory } from './blockedConsentCategories.js';
 
-export type * from './blockedConsentCategories';
-export type * from './config';
+export type * from './blockedConsentCategories.js';
+export type * from './config.js';
 
 export type AppInfo = {
   appName: string;

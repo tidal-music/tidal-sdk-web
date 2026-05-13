@@ -1,6 +1,6 @@
 import * as Player from '@tidal-music/player';
 
-import { asTime, timeDateTime } from './helpers';
+import { asTime, timeDateTime } from './helpers.js';
 
 const customElementName = 'tidal-duration-time';
 

@@ -1,4 +1,4 @@
-import * as Config from '../../config';
+import * as Config from '../../config.js';
 
 /**
  * Gets current volume level.

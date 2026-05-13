@@ -1,6 +1,6 @@
 import type { CredentialsProvider } from '@tidal-music/common';
 
-import { credentialsProviderStore } from '../index';
+import { credentialsProviderStore } from '../index.js';
 
 /**
  * Set the credentials provider TIDAL Player SDK should use for getting

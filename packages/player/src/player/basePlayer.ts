@@ -1,28 +1,28 @@
-import { type EndReason, type EndedEvent, ended } from '../api/event/ended';
-import type { MediaProductTransitionPayload } from '../api/event/media-product-transition';
-import { playbackStateChange } from '../api/event/playback-state-change';
-import { preloadRequest } from '../api/event/preload-request';
-import type { MediaProduct, PlaybackState } from '../api/interfaces';
-import * as Config from '../config';
-import { events } from '../event-bus';
-import * as PlayLog from '../internal/event-tracking/play-log/index';
-import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
+import { type EndReason, type EndedEvent, ended } from '../api/event/ended.js';
+import type { MediaProductTransitionPayload } from '../api/event/media-product-transition.js';
+import { playbackStateChange } from '../api/event/playback-state-change.js';
+import { preloadRequest } from '../api/event/preload-request.js';
+import type { MediaProduct, PlaybackState } from '../api/interfaces.js';
+import * as Config from '../config.js';
+import { events } from '../event-bus.js';
+import * as PlayLog from '../internal/event-tracking/play-log/index.js';
+import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index.js';
 import {
   type BasePayload as PlaybackStatisticsPayload,
   type StatisticsOutputType,
   transformOutputType,
-} from '../internal/event-tracking/streaming-metrics/playback-statistics';
-import { load } from '../internal/handlers/load';
-import { getIsPostPaywall } from '../internal/helpers/get-is-post-paywall';
-import type { StreamInfo } from '../internal/helpers/manifest-parser';
-import { normalizeVolume } from '../internal/helpers/normalize-volume';
-import type { PlaybackInfo } from '../internal/helpers/playback-info-resolver';
-import { streamingSessionStore } from '../internal/helpers/streaming-session-store';
-import { waitFor } from '../internal/helpers/wait-for';
-import type { OutputType } from '../internal/output-devices';
-import { trueTime } from '../internal/true-time';
+} from '../internal/event-tracking/streaming-metrics/playback-statistics.js';
+import { load } from '../internal/handlers/load.js';
+import { getIsPostPaywall } from '../internal/helpers/get-is-post-paywall.js';
+import type { StreamInfo } from '../internal/helpers/manifest-parser.js';
+import { normalizeVolume } from '../internal/helpers/normalize-volume.js';
+import type { PlaybackInfo } from '../internal/helpers/playback-info-resolver.js';
+import { streamingSessionStore } from '../internal/helpers/streaming-session-store.js';
+import { waitFor } from '../internal/helpers/wait-for.js';
+import type { OutputType } from '../internal/output-devices.js';
+import { trueTime } from '../internal/true-time.js';
 
-import { playerState } from './state';
+import { playerState } from './state.js';
 
 export type LoadPayload = {
   assetPosition: number;

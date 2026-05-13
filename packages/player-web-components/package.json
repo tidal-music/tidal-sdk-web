@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/player-web-components",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "module": "dist/index.js",
   "types": "./dist/src/index.d.ts",
@@ -13,8 +13,8 @@
   },
   "license": "Apache-2.0",
   "exports": {
-    "import": "./dist/index.js",
     "types": "./dist/src/index.d.ts",
+    "import": "./dist/index.js",
     "default": "./dist/index.js"
   },
   "keywords": [
@@ -35,6 +35,7 @@
     "test:coverage": "pnpm run test --coverage",
     "test:ui": "pnpm run test:coverage --ui",
     "typecheck": "tsc",
+    "check:types-resolution": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
     "prepublishOnly": "npx --yes @skypack/package-check --cwd ."
   },
   "devDependencies": {

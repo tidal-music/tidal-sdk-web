@@ -1,4 +1,4 @@
-import type { MediaProduct, PlaybackContext } from '../interfaces';
+import type { MediaProduct, PlaybackContext } from '../interfaces.js';
 
 /**
  * Playback engine has recently made a transition to requested mediaProduct X.

@@ -1,4 +1,4 @@
-import * as Config from '../../config';
+import * as Config from '../../config.js';
 
 /**
  * Set the desired volume level. Range 0-100. This level will be used for all players,

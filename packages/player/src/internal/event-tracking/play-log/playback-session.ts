@@ -1,11 +1,11 @@
-import type { MediaProduct } from '../../../api/interfaces';
-import { createReducer } from '../../helpers/reducer';
+import type { MediaProduct } from '../../../api/interfaces.js';
+import { createReducer } from '../../helpers/reducer.js';
 import type {
   AssetPresentation,
   AudioMode,
   AudioQuality,
   VideoQuality,
-} from '../../types';
+} from '../../types.js';
 
 type Action = {
   actionType: 'PLAYBACK_START' | 'PLAYBACK_STOP';

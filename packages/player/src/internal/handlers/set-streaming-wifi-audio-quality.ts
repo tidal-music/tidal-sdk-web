@@ -1,5 +1,5 @@
-import * as Config from '../../config';
-import type { AudioQuality } from '../../internal/types';
+import * as Config from '../../config.js';
+import type { AudioQuality } from '../../internal/types.js';
 
 /**
  * Set the AudioQuality to use when streaming over WiFi.
