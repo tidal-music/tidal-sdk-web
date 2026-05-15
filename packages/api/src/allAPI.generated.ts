@@ -22418,6 +22418,11 @@ export interface components {
             inherited?: boolean;
             paid?: ("STREAM" | "DJ" | "STEM" | "DOWNLOAD")[];
             subscription?: ("STREAM" | "DJ" | "STEM" | "DOWNLOAD")[];
+            /**
+             * Format: date-time
+             * @description Datetime from which these usage rules are valid (ISO 8601)
+             */
+            validFrom?: string;
         };
         UsageRulesCreateOperation_Payload_Data_Relationships: {
             subject: components["schemas"]["UsageRulesCreateOperation_Payload_Data_Relationships_Subject"];
@@ -22441,6 +22446,11 @@ export interface components {
             paid?: ("STREAM" | "DJ" | "STEM" | "DOWNLOAD")[];
             /** @description Usage types allowed for subscription model */
             subscription?: ("STREAM" | "DJ" | "STEM" | "DOWNLOAD")[];
+            /**
+             * Format: date-time
+             * @description Datetime from which these usage rules are valid (ISO 8601)
+             */
+            validFrom?: string;
         };
         UsageRules_Multi_Resource_Data_Document: {
             data: components["schemas"]["UsageRules_Resource_Object"][];
