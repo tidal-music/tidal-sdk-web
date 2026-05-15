@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import * as Config from '../../config';
+import * as Config from '../../config.js';
 
-import { setApiUrl } from './set-api-url';
+import { setApiUrl } from './set-api-url.js';
 
 describe('setApiUrl', () => {
   it('sets the url in config', () => {

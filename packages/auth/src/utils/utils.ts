@@ -1,4 +1,4 @@
-import type { CryptoAdapter } from '../types';
+import type { CryptoAdapter } from '../types.js';
 
 let cryptoAdapter: CryptoAdapter | undefined;
 

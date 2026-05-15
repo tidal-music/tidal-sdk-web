@@ -1,9 +1,9 @@
-import { streamingPrivilegesRevokedEvent } from '../../api/event/streaming-privileges-revoked';
-import * as Config from '../../config';
-import { events } from '../../event-bus';
-import { getAccessToken, isAuthorizedWithUser } from '../../internal/index';
-import { playerState } from '../../player/state';
-import { trueTime } from '../true-time';
+import { streamingPrivilegesRevokedEvent } from '../../api/event/streaming-privileges-revoked.js';
+import * as Config from '../../config.js';
+import { events } from '../../event-bus.js';
+import { getAccessToken, isAuthorizedWithUser } from '../../internal/index.js';
+import { playerState } from '../../player/state.js';
+import { trueTime } from '../true-time.js';
 
 // Outgoing events: client -> pushkin
 

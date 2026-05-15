@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import * as Config from '../../config';
+import * as Config from '../../config.js';
 
-import { setAudioAdaptiveBitrateStreaming } from './set-audio-adaptive-bitrate-streaming';
+import { setAudioAdaptiveBitrateStreaming } from './set-audio-adaptive-bitrate-streaming.js';
 
 describe('setAudioAdaptiveBitrateStreaming', () => {
   it('sets audioAdaptiveBitrateStreaming to false in config', () => {

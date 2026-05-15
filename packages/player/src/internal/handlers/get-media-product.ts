@@ -1,5 +1,5 @@
-import type { MediaProduct } from '../../api/interfaces';
-import { playerState } from '../../player/state';
+import type { MediaProduct } from '../../api/interfaces.js';
+import { playerState } from '../../player/state.js';
 
 /**
  * Gets the currently active media product. This is the same value as

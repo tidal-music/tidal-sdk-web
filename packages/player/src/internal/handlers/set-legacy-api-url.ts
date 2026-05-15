@@ -1,4 +1,4 @@
-import * as Config from '../../config';
+import * as Config from '../../config.js';
 
 /**
  * Configure the module to use a custom URL for legacy API endpoints (e.g. playbackinfo, rt/connect).

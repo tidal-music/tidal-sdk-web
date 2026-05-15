@@ -1,4 +1,4 @@
-import { helloTemplate } from './template';
+import { helloTemplate } from './template.js';
 
 vi.mock('./template', () => ({
   helloTemplate: vi.fn(),
@@ -6,7 +6,7 @@ vi.mock('./template', () => ({
 
 describe('helloTemplate', () => {
   it("greets with Template's name", async () => {
-    await import('./index');
+    await import('./index.js');
     expect(helloTemplate).toHaveBeenCalled();
   });
 });

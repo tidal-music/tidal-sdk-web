@@ -1,4 +1,4 @@
-import { playerState } from '../../player/state';
+import { playerState } from '../../player/state.js';
 
 /**
  * Perform a seek on the active player.

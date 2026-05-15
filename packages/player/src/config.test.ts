@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import * as Config from './config';
+import * as Config from './config.js';
 
 describe('Config', () => {
   it('can set/get value', async () => {

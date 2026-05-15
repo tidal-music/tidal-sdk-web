@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import type { PlaybackContext } from '../interfaces';
+import type { PlaybackContext } from '../interfaces.js';
 
-import { playbackQualityChanged } from './playback-quality-changed';
+import { playbackQualityChanged } from './playback-quality-changed.js';
 
 describe('playbackQualityChanged', () => {
   it('creates a CustomEvent with a predetermined name', () => {

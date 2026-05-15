@@ -13,8 +13,8 @@
   "module": "dist/index.js",
   "types": "./dist/src/index.d.ts",
   "exports": {
-    "import": "./dist/index.js",
     "types": "./dist/src/index.d.ts",
+    "import": "./dist/index.js",
     "default": "./dist/index.js"
   },
   "scripts": {
@@ -31,10 +31,10 @@
     "test": "vitest",
     "test:coverage": "pnpm run test --coverage",
     "test:ui": "pnpm run test:coverage --ui",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "check:types-resolution": "attw --pack . --ignore-rules=cjs-resolves-to-esm"
   },
   "dependencies": {
-    "@tidal-music/api": "workspace:*",
     "openapi-fetch": "0.17.0"
   },
   "devDependencies": {

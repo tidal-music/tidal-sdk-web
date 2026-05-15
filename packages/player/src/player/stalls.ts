@@ -1,8 +1,8 @@
-import type { MediaProductTransition } from '../api/event/media-product-transition';
-import { events } from '../event-bus';
-import type { Stall } from '../internal/event-tracking/streaming-metrics/playback-statistics';
-import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/playback-statistics';
-import { trueTime } from '../internal/true-time';
+import type { MediaProductTransition } from '../api/event/media-product-transition.js';
+import { events } from '../event-bus.js';
+import type { Stall } from '../internal/event-tracking/streaming-metrics/playback-statistics.js';
+import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/playback-statistics.js';
+import { trueTime } from '../internal/true-time.js';
 
 const state = {
   isPlaying: false,

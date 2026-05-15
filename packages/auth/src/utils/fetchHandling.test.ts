@@ -1,4 +1,4 @@
-import { exponentialBackoff } from './fetchHandling';
+import { exponentialBackoff } from './fetchHandling.js';
 
 describe('fetchHandling', () => {
   describe('exponentialBackoff', () => {

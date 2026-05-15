@@ -1,4 +1,4 @@
-import type { MediaProduct } from '../interfaces';
+import type { MediaProduct } from '../interfaces.js';
 
 export type EndReason = 'completed' | 'error' | 'skip';
 export type EndedEvent = CustomEvent<{

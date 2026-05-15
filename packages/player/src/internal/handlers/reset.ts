@@ -1,8 +1,8 @@
 import {
   cancelQueuedOnendedHandler,
   resetAllPlayers,
-} from '../../player/index';
-import ConnectionHandler from '../services/connection-handler';
+} from '../../player/index.js';
+import ConnectionHandler from '../services/connection-handler.js';
 
 /**
  * Gracefully reset to a clean initial state. Stops playback, removes any

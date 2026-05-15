@@ -1,7 +1,7 @@
-import type { PlaybackContext } from '../../api/interfaces';
+import type { PlaybackContext } from '../../api/interfaces.js';
 
-import type { StreamInfo } from './manifest-parser';
-import type { PlaybackInfo } from './playback-info-resolver';
+import type { StreamInfo } from './manifest-parser.js';
+import type { PlaybackInfo } from './playback-info-resolver.js';
 
 type Params = {
   assetPosition: number;

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { ended } from './ended';
+import { ended } from './ended.js';
 
 describe('ended', () => {
   it('creates a CustomEvent with a predetermined name', () => {

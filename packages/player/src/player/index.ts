@@ -1,12 +1,12 @@
-import type { MediaProduct } from '../api/interfaces';
-import { events } from '../event-bus';
-import { mimeTypes } from '../internal/constants';
-import type { AudioQuality } from '../internal/types';
+import type { MediaProduct } from '../api/interfaces.js';
+import { events } from '../event-bus.js';
+import { mimeTypes } from '../internal/constants.js';
+import type { AudioQuality } from '../internal/types.js';
 
-import type { default as BrowserPlayerType } from './browserPlayer';
-import type { default as NativePlayerType } from './nativePlayer';
-import type { default as ShakaPlayerType } from './shakaPlayer';
-import { playerState } from './state';
+import type { default as BrowserPlayerType } from './browserPlayer.js';
+import type { default as NativePlayerType } from './nativePlayer.js';
+import type { default as ShakaPlayerType } from './shakaPlayer.js';
+import { playerState } from './state.js';
 
 let endedHandler: EventListenerOrEventListenerObject;
 
@@ -108,7 +108,7 @@ export function maybeSwitchPlayerOnEnd(preloadPlayer: Player) {
 }
 
 export async function getNativePlayer() {
-  const { default: NativePlayer } = await import('./nativePlayer');
+  const { default: NativePlayer } = await import('./nativePlayer.js');
 
   if (!players.native) {
     players.native = new NativePlayer();
@@ -118,7 +118,7 @@ export async function getNativePlayer() {
 }
 
 async function getBrowserPlayer() {
-  const { default: BrowserPlayer } = await import('./browserPlayer');
+  const { default: BrowserPlayer } = await import('./browserPlayer.js');
 
   if (!players.browser) {
     players.browser = new BrowserPlayer();
@@ -128,7 +128,7 @@ async function getBrowserPlayer() {
 }
 
 async function getShakaPlayer() {
-  const { default: ShakaPlayer } = await import('./shakaPlayer');
+  const { default: ShakaPlayer } = await import('./shakaPlayer.js');
 
   if (!players.shaka) {
     players.shaka = new ShakaPlayer();

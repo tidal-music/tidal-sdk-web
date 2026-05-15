@@ -1,4 +1,4 @@
-import type { EPEvent } from '../types';
+import type { EPEvent } from '../types.js';
 
 const encoder = new TextEncoder();
 

@@ -1,9 +1,9 @@
 import type shaka from 'shaka-player';
 
-import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
-import type { Adaptation } from '../internal/event-tracking/streaming-metrics/playback-statistics';
-import { updatePlaybackQuality } from '../internal/helpers/update-playback-quality';
-import { trueTime } from '../internal/true-time';
+import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index.js';
+import type { Adaptation } from '../internal/event-tracking/streaming-metrics/playback-statistics.js';
+import { updatePlaybackQuality } from '../internal/helpers/update-playback-quality.js';
+import { trueTime } from '../internal/true-time.js';
 
 export function shakaTrackToAdaptation(
   shakaTrack: shaka.extern.Track,

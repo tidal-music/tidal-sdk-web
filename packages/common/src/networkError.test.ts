@@ -1,6 +1,6 @@
-import { NetworkError } from './networkError';
-import { RetryableError } from './retryableError';
-import { TidalError } from './tidalError';
+import { NetworkError } from './networkError.js';
+import { RetryableError } from './retryableError.js';
+import { TidalError } from './tidalError.js';
 
 describe('NetworkError', () => {
   it('is an instance of NetworkError', () => {

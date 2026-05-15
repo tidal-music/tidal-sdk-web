@@ -1,9 +1,9 @@
 import '@vitest/web-worker';
 
-import { config } from '../../test/fixtures/config';
-import { credentials1 } from '../../test/fixtures/credentialsProvider';
+import { config } from '../../test/fixtures/config.js';
+import { credentials1 } from '../../test/fixtures/credentialsProvider.js';
 
-import { getEventHeaders } from './headerUtils';
+import { getEventHeaders } from './headerUtils.js';
 
 describe('headerUtils', () => {
   it('verify that event headers contain both default and supplied headers', () => {

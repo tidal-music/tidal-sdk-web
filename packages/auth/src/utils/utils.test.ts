@@ -5,7 +5,7 @@ import {
   generateOAuthCodeChallenge,
   setCryptoAdapter,
   sha256,
-} from './utils';
+} from './utils.js';
 
 describe('utils', () => {
   beforeEach(() => {

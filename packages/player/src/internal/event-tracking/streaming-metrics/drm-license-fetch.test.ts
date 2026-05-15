@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { drmLicenseFetch } from './drm-license-fetch';
+import { drmLicenseFetch } from './drm-license-fetch.js';
 
 describe('drmLicenseFetch', () => {
   it('sets values', async () => {

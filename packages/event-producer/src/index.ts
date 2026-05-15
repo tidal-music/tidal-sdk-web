@@ -1,22 +1,22 @@
 import { IllegalArgumentError } from '@tidal-music/common';
 
-import * as bus from './bus';
-import type { Config } from './config';
-import { getConfig } from './config';
-import { init as _init } from './init';
-import * as monitor from './monitor';
-import * as outage from './outage';
-import * as queue from './queue/queue';
-import * as send from './send/send';
-import { submitEvents } from './submit/submit';
-import type { SentEvent } from './types';
+import * as bus from './bus.js';
+import type { Config } from './config.js';
+import { getConfig } from './config.js';
+import { init as _init } from './init.js';
+import * as monitor from './monitor/index.js';
+import * as outage from './outage/index.js';
+import * as queue from './queue/queue.js';
+import * as send from './send/send.js';
+import { submitEvents } from './submit/submit.js';
+import type { SentEvent } from './types.js';
 
 export {
   getConfig,
   setConsentCategory,
   setCredentialsProvider,
-} from './config';
-export type * from './types';
+} from './config.js';
+export type * from './types.js';
 
 /**
  * This is the user exposed function that wraps sendEvent with the config and credentialsProvider.

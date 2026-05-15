@@ -1,12 +1,12 @@
-export { drmLicenseFetch } from './drm-license-fetch';
-export { playbackInfoFetch } from './playback-info-fetch';
-export { playbackStatistics } from './playback-statistics';
-export { streamingSessionEnd } from './streaming-session-end';
-export { streamingSessionStart } from './streaming-session-start';
+export { drmLicenseFetch } from './drm-license-fetch.js';
+export { playbackInfoFetch } from './playback-info-fetch.js';
+export { playbackStatistics } from './playback-statistics.js';
+export { streamingSessionEnd } from './streaming-session-end.js';
+export { streamingSessionStart } from './streaming-session-start.js';
 
-import { runIfAuthorizedWithUser } from '../../helpers/run-if-authorized-with-user';
-import { commit as baseCommit } from '../index';
-import type { Events } from '../types';
+import { runIfAuthorizedWithUser } from '../../helpers/run-if-authorized-with-user.js';
+import { commit as baseCommit } from '../index.js';
+import type { Events } from '../types.js';
 
 /**
  * Send event to event system scoped to streaming_metrics group.

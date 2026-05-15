@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 
-import * as Player from '../../index';
-import { outputDevices } from '../../internal/output-devices';
-import { authAndEvents } from '../../test-helpers';
+import * as Player from '../../index.js';
+import { outputDevices } from '../../internal/output-devices.js';
+import { authAndEvents } from '../../test-helpers.js';
 
-import { getOutputDevices } from './get-output-devices';
+import { getOutputDevices } from './get-output-devices.js';
 
 describe('getOutputDevices', () => {
   authAndEvents(before, after);

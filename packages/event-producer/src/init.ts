@@ -1,9 +1,9 @@
 import { trueTime } from '@tidal-music/true-time';
 
-import * as config from './config';
-import * as queue from './queue';
-import * as scheduler from './scheduler/scheduler';
-import { init as initUuid } from './uuid/uuid';
+import * as config from './config.js';
+import * as queue from './queue/index.js';
+import * as scheduler from './scheduler/scheduler.js';
+import { init as initUuid } from './uuid/uuid.js';
 
 /**
  * Initializes the EventProducer and the tools it depends on (uuid, trueTime and the indexedDB).

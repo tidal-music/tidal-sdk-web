@@ -27,6 +27,15 @@ jobs:
           modules_list=()
           while IFS= read -r file; do
             [ -z "$file" ] && continue
+            # tj-actions/changed-files@v47 with `separator: "\n"` writes the
+            # paths to $GITHUB_OUTPUT as `path1\<NL>path2\<NL>...pathN`, i.e. a
+            # literal backslash before each newline. Without this strip the
+            # check below sees `packages/foo/package.json\` (with trailing
+            # backslash), the file doesn't exist, and the package is dropped
+            # from the release matrix. Only the last entry has no trailing
+            # backslash, so previously only the last bumped package was
+            # released when a PR bumped multiple packages.
+            file="${file%\\}"
             ./bin/check-version-bump.sh ./"$file"
 
             # check-version-bump exits with 0 if it detects a bump, otherwise with 1

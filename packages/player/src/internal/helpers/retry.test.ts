@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { withRetries } from './retry';
+import { withRetries } from './retry.js';
 
 describe('withRetries', () => {
   const FAST = { baseDelayMs: 1, maxRetries: 3 };

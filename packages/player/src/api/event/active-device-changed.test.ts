@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { activeDeviceChanged, eventName } from './active-device-changed';
+import { activeDeviceChanged, eventName } from './active-device-changed.js';
 
 describe('activeDeviceChanged', () => {
   it('creates a CustomEvent with a predetermined name with id as detail', () => {

@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 
-import { TrueTime } from '.';
+import { TrueTime } from './index.js';
 
 vi.useFakeTimers({
   // Use same faking as Vitest 2, ie. not faking `performance`. See: https://github.com/vitest-dev/vitest/issues/7198

@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import { authAndEvents, credentialsProvider } from '../../test-helpers';
+import { authAndEvents, credentialsProvider } from '../../test-helpers.js';
 
-import { fetchPlaybackInfo } from './playback-info-resolver';
+import { fetchPlaybackInfo } from './playback-info-resolver.js';
 
 describe('playbackInfoResolver', () => {
   authAndEvents(before, after);

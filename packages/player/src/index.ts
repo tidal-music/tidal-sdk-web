@@ -1,14 +1,14 @@
-import * as Config from './config';
-import { trueTime } from './internal/true-time';
+import * as Config from './config.js';
+import { trueTime } from './internal/true-time.js';
 import {
   activateVideoElements,
   mountVideoElements,
-} from './player/audio-context-store';
-import type BrowserPlayer from './player/browserPlayer';
-import type { PlayerConfig } from './player/index';
-import { setPlayerConfig } from './player/index';
-import type ShakaPlayer from './player/shakaPlayer';
-import { playerState } from './player/state';
+} from './player/audio-context-store.js';
+import type BrowserPlayer from './player/browserPlayer.js';
+import type { PlayerConfig } from './player/index.js';
+import { setPlayerConfig } from './player/index.js';
+import type ShakaPlayer from './player/shakaPlayer.js';
+import { playerState } from './player/state.js';
 
 trueTime.synchronize().then().catch(console.error);
 
@@ -74,17 +74,17 @@ mountVideoElements().then().catch(console.error);
 activateVideoElements().then().catch(console.error);
 removeOldIDB();
 
-export * from './api/index';
-export type * from './api/index';
-export type * from './api/interfaces';
+export * from './api/index.js';
+export type * from './api/index.js';
+export type * from './api/interfaces.js';
 
-export { events } from './event-bus';
+export { events } from './event-bus.js';
 export type {
   PlayerErrorInterface as Error,
   ErrorCodes,
-} from './internal/index';
+} from './internal/index.js';
 
-export type { OutputDevice } from './internal/output-devices';
+export type { OutputDevice } from './internal/output-devices.js';
 
 export type {
   AssetPresentation,
@@ -93,5 +93,5 @@ export type {
   Codec,
   StreamType,
   VideoQuality,
-} from './internal/types';
-export type { NativePlayerDeviceMode as DeviceMode } from './player/nativeInterface';
+} from './internal/types.js';
+export type { NativePlayerDeviceMode as DeviceMode } from './player/nativeInterface.js';

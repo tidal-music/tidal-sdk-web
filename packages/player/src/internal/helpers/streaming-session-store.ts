@@ -1,7 +1,7 @@
-import type { MediaProductTransitionPayload } from '../../api/event/media-product-transition';
+import type { MediaProductTransitionPayload } from '../../api/event/media-product-transition.js';
 
-import type { StreamInfo } from './manifest-parser';
-import type { PlaybackInfo } from './playback-info-resolver';
+import type { StreamInfo } from './manifest-parser.js';
+import type { PlaybackInfo } from './playback-info-resolver.js';
 
 class StreamingSessionStore {
   #mediaProductTransitions = new Map<string, MediaProductTransitionPayload>();

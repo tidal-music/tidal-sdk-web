@@ -1,5 +1,5 @@
-import { captureStackTrace } from './captureStackTrace';
-import { type ErrorOptions, TidalError } from './tidalError';
+import { captureStackTrace } from './captureStackTrace.js';
+import { type ErrorOptions, TidalError } from './tidalError.js';
 
 /**
  * Raised whenever an error occurs as the result of bad network conditions.

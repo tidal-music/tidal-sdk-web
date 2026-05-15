@@ -1,6 +1,6 @@
-import { events } from '../../event-bus';
-import { playerState } from '../../player/state';
-import { trueTime } from '../true-time';
+import { events } from '../../event-bus.js';
+import { playerState } from '../../player/state.js';
+import { trueTime } from '../true-time.js';
 
 /**
  * Start playback of active media product.

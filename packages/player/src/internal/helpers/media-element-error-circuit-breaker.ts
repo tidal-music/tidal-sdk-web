@@ -1,6 +1,6 @@
-import { events } from '../../event-bus';
-import { PlayerError } from '../index';
-import { trueTime } from '../true-time';
+import { events } from '../../event-bus.js';
+import { PlayerError } from '../index.js';
+import { trueTime } from '../true-time.js';
 
 /**
  * Default ceiling for raw HTMLMediaElement `error` events the player will

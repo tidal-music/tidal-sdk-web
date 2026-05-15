@@ -6,7 +6,7 @@ import {
   getEncryptionKey,
   unwrapCryptoKey,
   wrapCryptoKey,
-} from './storageUtils';
+} from './storageUtils.js';
 
 describe('storageUtils', () => {
   beforeEach(() => {

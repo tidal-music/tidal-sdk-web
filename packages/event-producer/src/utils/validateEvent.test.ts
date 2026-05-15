@@ -1,6 +1,6 @@
-import { epEvent1 } from '../../test/fixtures/events';
+import { epEvent1 } from '../../test/fixtures/events.js';
 
-import { validateEvent } from './validateEvent';
+import { validateEvent } from './validateEvent.js';
 
 describe('validateEvent', () => {
   it('validates normal event', () => {

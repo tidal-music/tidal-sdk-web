@@ -1,3 +1,3 @@
-import { helloTemplate } from './template';
+import { helloTemplate } from './template.js';
 
 helloTemplate();

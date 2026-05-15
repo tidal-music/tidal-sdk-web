@@ -1,14 +1,14 @@
-import { authErrorCodeMap } from '../errors';
-import * as fixtures from '../fixtures';
+import { authErrorCodeMap } from '../errors/index.js';
+import * as fixtures from '../fixtures.js';
 
-import { database as _database } from './database';
+import { database as _database } from './database.js';
 import {
   deleteCredentials,
   loadCredentials,
   saveCredentialsToStorage,
   setStorageAdapter,
-} from './storage';
-import * as _storageUtils from './storageUtils';
+} from './storage.js';
+import * as _storageUtils from './storageUtils.js';
 
 const database = vi.mocked(_database);
 const storageUtils = vi.mocked(_storageUtils);

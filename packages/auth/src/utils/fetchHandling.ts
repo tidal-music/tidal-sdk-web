@@ -4,8 +4,8 @@ import {
   TokenResponseError,
   UnexpectedError,
   authErrorCodeMap,
-} from '../errors';
-import type { TokenJSONError, UserCredentials } from '../types';
+} from '../errors/index.js';
+import type { TokenJSONError, UserCredentials } from '../types.js';
 
 export const handleErrorResponse = async (response: Response) => {
   if (response.status === 0) {

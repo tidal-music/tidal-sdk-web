@@ -1,29 +1,29 @@
-import { activeDeviceChanged as activeDeviceChangedEvent } from '../api/event/active-device-changed';
-import { activeDeviceDisconnected as activeDeviceDisconnectedEvent } from '../api/event/active-device-disconnected';
-import { activeDeviceModeChanged as activeDeviceModeChangedEvent } from '../api/event/active-device-mode-changed';
-import type { EndedEvent } from '../api/event/ended';
-import { mediaProductTransition as mediaProductTransitionEvent } from '../api/event/media-product-transition';
-import * as Config from '../config';
-import { events } from '../event-bus';
-import type { ErrorCodes } from '../internal';
-import { PlayerError } from '../internal';
-import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
-import { composePlaybackContext } from '../internal/helpers/compose-playback-context';
-import { streamingSessionStore } from '../internal/helpers/streaming-session-store';
-import type { OutputDevices } from '../internal/output-devices';
-import { trueTime } from '../internal/true-time';
+import { activeDeviceChanged as activeDeviceChangedEvent } from '../api/event/active-device-changed.js';
+import { activeDeviceDisconnected as activeDeviceDisconnectedEvent } from '../api/event/active-device-disconnected.js';
+import { activeDeviceModeChanged as activeDeviceModeChangedEvent } from '../api/event/active-device-mode-changed.js';
+import type { EndedEvent } from '../api/event/ended.js';
+import { mediaProductTransition as mediaProductTransitionEvent } from '../api/event/media-product-transition.js';
+import * as Config from '../config.js';
+import { events } from '../event-bus.js';
+import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index.js';
+import { composePlaybackContext } from '../internal/helpers/compose-playback-context.js';
+import { streamingSessionStore } from '../internal/helpers/streaming-session-store.js';
+import { PlayerError } from '../internal/index.js';
+import type { ErrorCodes } from '../internal/index.js';
+import type { OutputDevices } from '../internal/output-devices.js';
+import { trueTime } from '../internal/true-time.js';
 
 // eslint-disable-next-line import/order
-import type { LoadPayload } from './basePlayer';
+import type { LoadPayload } from './basePlayer.js';
 
-import { BasePlayer } from './basePlayer';
+import { BasePlayer } from './basePlayer.js';
 import type {
   NativePlayerComponent,
   NativePlayerComponentDeviceDescription,
   NativePlayerComponentInterface,
   NativePlayerComponentSupportedEvents,
-} from './nativeInterface';
-import { playerState } from './state';
+} from './nativeInterface.js';
+import { playerState } from './state.js';
 
 type MediaErrorCode =
   | 'file_checksum_mismatch'
@@ -90,7 +90,7 @@ export default class NativePlayer extends BasePlayer {
     if (Config.get('outputDevicesEnabled')) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       (async () => {
-        const impMod = await import('../internal/output-devices');
+        const impMod = await import('../internal/output-devices.js');
 
         outputDevices = impMod.outputDevices;
 

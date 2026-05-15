@@ -1,6 +1,6 @@
-import * as ActiveDeviceChanged from '../../api/event/active-device-changed';
-import { events } from '../../event-bus';
-import { on } from '../helpers/on';
+import * as ActiveDeviceChanged from '../../api/event/active-device-changed.js';
+import { events } from '../../event-bus.js';
+import { on } from '../helpers/on.js';
 
 /**
  * Set the output device. Applies to each sub-player that supports
@@ -10,7 +10,7 @@ import { on } from '../helpers/on';
  * @returns {Promise<string>} - The sinkId we are now using as output.
  */
 export async function setOutputDevice(sinkId: string): Promise<string> {
-  const { outputDevices } = await import('../output-devices');
+  const { outputDevices } = await import('../output-devices.js');
 
   const upcomingEvent = on(events, ActiveDeviceChanged.eventName);
 

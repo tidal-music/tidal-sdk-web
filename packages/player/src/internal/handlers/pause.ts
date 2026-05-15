@@ -1,4 +1,4 @@
-import { playerState } from '../../player/state';
+import { playerState } from '../../player/state.js';
 
 /**
  * Pause playback of active media product in the active player.

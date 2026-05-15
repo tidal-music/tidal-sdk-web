@@ -1,10 +1,10 @@
 import '@vitest/web-worker';
 
-import { epEvent1, epEvent2 } from '../../test/fixtures/events';
-import { init as initUuid } from '../uuid/uuid';
+import { epEvent1, epEvent2 } from '../../test/fixtures/events.js';
+import { init as initUuid } from '../uuid/uuid.js';
 
-import { db as _db } from './db';
-import * as queue from './queue';
+import { db as _db } from './db.js';
+import * as queue from './queue.js';
 
 const db = vi.mocked(_db);
 

@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import * as Config from '../../config';
+import * as Config from '../../config.js';
 
-import { setStreamingWifiAudioQuality } from './set-streaming-wifi-audio-quality';
+import { setStreamingWifiAudioQuality } from './set-streaming-wifi-audio-quality.js';
 
 describe('setStreamingWifiAudioQuality', () => {
   it('sets the client token in config', () => {

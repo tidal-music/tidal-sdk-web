@@ -1,7 +1,10 @@
 import { expect } from 'chai';
 
-import { parseManifest } from './manifest-parser';
-import type { PlaybackInfo, PlaybackInfoTrack } from './playback-info-resolver';
+import { parseManifest } from './manifest-parser.js';
+import type {
+  PlaybackInfo,
+  PlaybackInfoTrack,
+} from './playback-info-resolver.js';
 
 const dashPlaybackInfoTrack: PlaybackInfoTrack = {
   albumPeakAmplitude: 0,

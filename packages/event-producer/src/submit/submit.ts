@@ -1,11 +1,11 @@
 import { IllegalArgumentError } from '@tidal-music/common';
 
-import type { Config } from '../config';
-import * as monitor from '../monitor';
-import { isOutage, setOutage } from '../outage';
-import * as queue from '../queue';
-import type { EPEvent } from '../types';
-import { eventsToSqsRequestParameters } from '../utils/sqsParamsConverter';
+import type { Config } from '../config.js';
+import * as monitor from '../monitor/index.js';
+import { isOutage, setOutage } from '../outage/index.js';
+import * as queue from '../queue/index.js';
+import type { EPEvent } from '../types.js';
+import { eventsToSqsRequestParameters } from '../utils/sqsParamsConverter.js';
 
 /**
  * Takes the first 10 events from the queue and sends them to backend.

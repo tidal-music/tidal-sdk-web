@@ -1,4 +1,4 @@
-import type { EPEvent } from '../types';
+import type { EPEvent } from '../types.js';
 
 export function eventsToSqsRequestParameters(events: Array<EPEvent>) {
   const params = new URLSearchParams();

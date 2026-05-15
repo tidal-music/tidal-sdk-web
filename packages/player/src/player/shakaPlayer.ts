@@ -2,39 +2,39 @@ import shaka from 'shaka-player';
 // If you want to use the debug version, switch to the line below:
 // import shaka from 'shaka-player/dist/shaka-player.compiled.debug.js';
 
-import { activeDeviceChanged as activeDeviceChangedEvent } from '../api/event/active-device-changed';
-import type { EndedEvent } from '../api/event/ended';
-import { mediaProductTransition as mediaProductTransitionEvent } from '../api/event/media-product-transition';
-import type { MediaProduct, PlaybackContext } from '../api/interfaces';
-import * as Config from '../config';
-import { events } from '../event-bus';
+import { activeDeviceChanged as activeDeviceChangedEvent } from '../api/event/active-device-changed.js';
+import type { EndedEvent } from '../api/event/ended.js';
+import { mediaProductTransition as mediaProductTransitionEvent } from '../api/event/media-product-transition.js';
+import type { MediaProduct, PlaybackContext } from '../api/interfaces.js';
+import * as Config from '../config.js';
+import { events } from '../event-bus.js';
+import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index.js';
+import { composePlaybackContext } from '../internal/helpers/compose-playback-context.js';
+import type { StreamInfo } from '../internal/helpers/manifest-parser.js';
+import { createMediaElementErrorCircuitBreaker } from '../internal/helpers/media-element-error-circuit-breaker.js';
+import type { PlaybackInfo } from '../internal/helpers/playback-info-resolver.js';
+import { streamingSessionStore } from '../internal/helpers/streaming-session-store.js';
+import { updatePlaybackQuality } from '../internal/helpers/update-playback-quality.js';
+import { waitFor } from '../internal/helpers/wait-for.js';
 import {
   type ErrorCodes,
   PlayerError,
   credentialsProviderStore,
-} from '../internal';
-import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index';
-import { composePlaybackContext } from '../internal/helpers/compose-playback-context';
-import type { StreamInfo } from '../internal/helpers/manifest-parser';
-import { createMediaElementErrorCircuitBreaker } from '../internal/helpers/media-element-error-circuit-breaker';
-import type { PlaybackInfo } from '../internal/helpers/playback-info-resolver';
-import { streamingSessionStore } from '../internal/helpers/streaming-session-store';
-import { updatePlaybackQuality } from '../internal/helpers/update-playback-quality';
-import { waitFor } from '../internal/helpers/wait-for';
-import type { OutputDevices } from '../internal/output-devices';
-import { trueTime } from '../internal/true-time';
+} from '../internal/index.js';
+import type { OutputDevices } from '../internal/output-devices.js';
+import { trueTime } from '../internal/true-time.js';
 
-import { registerAdaptations } from './adaptations';
+import { registerAdaptations } from './adaptations.js';
 import {
   ensureVideoElementsMounted,
   mediaElementOne,
   mediaElementTwo,
-} from './audio-context-store';
-import type { LoadPayload } from './basePlayer';
-import { BasePlayer } from './basePlayer';
-import * as FairplayDRM from './fairplay-drm';
-import { registerStalls } from './stalls';
-import { playerState } from './state';
+} from './audio-context-store.js';
+import type { LoadPayload } from './basePlayer.js';
+import { BasePlayer } from './basePlayer.js';
+import * as FairplayDRM from './fairplay-drm.js';
+import { registerStalls } from './stalls.js';
+import { playerState } from './state.js';
 
 let outputDevices: OutputDevices | undefined;
 
@@ -176,7 +176,7 @@ export default class ShakaPlayer extends BasePlayer {
     if (Config.get('outputDevicesEnabled')) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       (async () => {
-        const impMod = await import('../internal/output-devices');
+        const impMod = await import('../internal/output-devices.js');
 
         outputDevices = impMod.outputDevices;
       })();

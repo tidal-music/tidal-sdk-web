@@ -1,4 +1,4 @@
-import type { OutputDevice } from '../../internal/output-devices';
+import type { OutputDevice } from '../../internal/output-devices.js';
 
 type DeviceChangePayload = {
   devices: Array<OutputDevice>;

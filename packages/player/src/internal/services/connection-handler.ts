@@ -1,6 +1,6 @@
-import type { MediaProduct } from '../../api/interfaces';
-import { events } from '../../event-bus';
-import { playerState } from '../../player/state';
+import type { MediaProduct } from '../../api/interfaces.js';
+import { events } from '../../event-bus.js';
+import { playerState } from '../../player/state.js';
 
 /**
  * A class to handle connection lost/reconnect.

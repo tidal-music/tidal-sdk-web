@@ -1,4 +1,4 @@
-import type { PlaybackContext } from '../interfaces';
+import type { PlaybackContext } from '../interfaces.js';
 
 export type PlaybackQualityChangedPayload = {
   playbackContext: PlaybackContext;

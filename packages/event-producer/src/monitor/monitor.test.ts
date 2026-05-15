@@ -1,11 +1,11 @@
 import '@vitest/web-worker';
 import { trueTime } from '@tidal-music/true-time';
 
-import { config } from '../../test/fixtures/config';
-import { init } from '../config';
-import * as sqsParamsConverter from '../utils/sqsParamsConverter';
+import { config } from '../../test/fixtures/config.js';
+import { init } from '../config.js';
+import * as sqsParamsConverter from '../utils/sqsParamsConverter.js';
 
-import * as monitor from './';
+import * as monitor from './index.js';
 
 describe.sequential('monitor', () => {
   beforeEach(() => {

@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import type { MediaProduct, PlaybackContext } from '../interfaces';
+import type { MediaProduct, PlaybackContext } from '../interfaces.js';
 
-import { mediaProductTransition } from './media-product-transition';
+import { mediaProductTransition } from './media-product-transition.js';
 
 describe('mediaProductTransition', () => {
   it('creates a CustomEvent with a predetermined name', () => {
