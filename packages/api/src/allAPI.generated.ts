@@ -21627,7 +21627,7 @@ export interface components {
              * @description Current status of this Square connection
              * @enum {string}
              */
-            status: "PENDING_REQUIREMENTS" | "ACCEPTED" | "REJECTED";
+            status: "DRAFT" | "PENDING_REQUIREMENTS" | "KYC_PENDING" | "ACCEPTED" | "REJECTED" | "SUSPENDED";
         };
         SquareConnections_Multi_Resource_Data_Document: {
             data: components["schemas"]["SquareConnections_Resource_Object"][];
@@ -21719,7 +21719,7 @@ export interface components {
              * @description Current status of this Stripe connection
              * @enum {string}
              */
-            status: "PENDING_REQUIREMENTS" | "UNDER_REVIEW" | "ACCEPTED" | "REJECTED";
+            status: "PENDING_REQUIREMENTS" | "UNDER_REVIEW" | "ACCEPTED" | "REJECTED" | "SUSPENDED";
         };
         StripeConnections_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -22605,7 +22605,13 @@ export interface components {
             /** @enum {string} */
             type: "artists";
         };
-        UserCollectionArtists_Attributes: Record<string, never>;
+        UserCollectionArtists_Attributes: {
+            /**
+             * Format: int32
+             * @description Number of items in the collection
+             */
+            numberOfItems: number;
+        };
         UserCollectionArtists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -22893,7 +22899,13 @@ export interface components {
             /** @enum {string} */
             type: "tracks" | "albums" | "artists" | "playlists" | "videos";
         };
-        UserCollectionSaveForLaters_Attributes: Record<string, never>;
+        UserCollectionSaveForLaters_Attributes: {
+            /**
+             * Format: int32
+             * @description Number of items in the collection
+             */
+            numberOfItems: number;
+        };
         UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -23068,7 +23080,13 @@ export interface components {
             /** @enum {string} */
             type: "videos";
         };
-        UserCollectionVideos_Attributes: Record<string, never>;
+        UserCollectionVideos_Attributes: {
+            /**
+             * Format: int32
+             * @description Number of items in the collection
+             */
+            numberOfItems: number;
+        };
         UserCollectionVideos_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
