@@ -533,10 +533,12 @@ export async function fetchPlaybackInfo(options: Options) {
   try {
     let playbackInfo: PlaybackInfo;
 
-    if (options.playerType === 'native') {
-      playbackInfo = await _fetchLegacyPlaybackInfo(options);
-    } else if (options.mediaProduct.productType === 'video') {
+    if (options.mediaProduct.productType === 'video') {
       playbackInfo = await _fetchVideoManifest(options);
+    } else if (!options.accessToken) {
+      // Legacy v1 API is needed for preview access without a full access token,
+      // since the v2 trackManifests endpoint requires authentication.
+      playbackInfo = await _fetchLegacyPlaybackInfo(options);
     } else {
       playbackInfo = await _fetchTrackManifest(options);
     }

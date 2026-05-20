@@ -7,11 +7,9 @@ import { fetchPlaybackInfo } from './playback-info-resolver.js';
 describe('playbackInfoResolver', () => {
   authAndEvents(before, after);
 
-  it('fetches playback info via legacy API if there is only clientId defined, gets preview', async () => {
+  it('fetches playback info via legacy API when no accessToken is provided, gets preview', async () => {
     const { clientId } = await credentialsProvider.getCredentials();
 
-    // Use playerType: 'native' to test the legacy v1 playbackinfo endpoint
-    // which supports preview access without a full access token
     const result = await fetchPlaybackInfo({
       accessToken: undefined,
       audioAdaptiveBitrateStreaming: true,
@@ -23,7 +21,6 @@ describe('playbackInfoResolver', () => {
         sourceId: '',
         sourceType: '',
       },
-      playerType: 'native',
       prefetch: false,
       // eslint-disable-next-line no-restricted-syntax
       streamingSessionId: `tidal-player-js-test-${Date.now()}`,
@@ -34,14 +31,13 @@ describe('playbackInfoResolver', () => {
     expect(result.manifest).to.not.equal(undefined);
   });
 
-  it('fetches playback info via legacy API if there is an accessToken defined, gets full', async () => {
+  it('fetches playback info via trackManifests API when accessToken is provided, even for native player type', async () => {
     const { clientId, token } = await credentialsProvider.getCredentials();
 
     if (!token) {
       throw new Error('No access token, cannot fulfill test.');
     }
 
-    // Use playerType: 'native' to test the legacy v1 playbackinfo endpoint
     const result = await fetchPlaybackInfo({
       accessToken: token,
       audioAdaptiveBitrateStreaming: true,
