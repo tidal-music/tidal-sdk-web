@@ -10619,6 +10619,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
+                     * @deprecated
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
@@ -15046,6 +15047,16 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, owners
                      * @example items
@@ -21609,6 +21620,11 @@ export interface components {
              * @enum {string}
              */
             platform: "WEB" | "ANDROID" | "IOS";
+            /**
+             * @description Optional post-finalize redirect URL. Otherwise uses platform default.
+             * @example tidal://square-auth/return?flow=onboarding&ref=abc
+             */
+            redirectUrl?: string;
         };
         SquareConnections_Attributes: {
             /**
@@ -22995,7 +23011,13 @@ export interface components {
             /** @enum {string} */
             type: "tracks";
         };
-        UserCollectionTracks_Attributes: Record<string, never>;
+        UserCollectionTracks_Attributes: {
+            /**
+             * Format: int32
+             * @description Number of items in the collection
+             */
+            numberOfItems: number;
+        };
         UserCollectionTracks_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionTracks_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];

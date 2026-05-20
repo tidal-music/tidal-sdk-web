@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.10.3"
+    "version" : "1.10.7"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -15369,6 +15369,7 @@
       "post" : {
         "description" : "Creates a new squareConnection.",
         "parameters" : [ {
+          "deprecated" : true,
           "description" : "ISO 3166-1 alpha-2 country code",
           "example" : "US",
           "in" : "query",
@@ -21700,6 +21701,25 @@
       "get" : {
         "description" : "Retrieves multiple userCollectionTracks by available filters, or without if applicable.",
         "parameters" : [ {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items, owners",
           "example" : "items",
           "in" : "query",
@@ -34493,6 +34513,11 @@
             "type" : "string",
             "description" : "Client platform initiating Square onboarding.",
             "enum" : [ "WEB", "ANDROID", "IOS" ]
+          },
+          "redirectUrl" : {
+            "type" : "string",
+            "description" : "Optional post-finalize redirect URL. Otherwise uses platform default.",
+            "example" : "tidal://square-auth/return?flow=onboarding&ref=abc"
           }
         }
       },
@@ -37722,7 +37747,15 @@
         }
       },
       "UserCollectionTracks_Attributes" : {
-        "type" : "object"
+        "required" : [ "numberOfItems" ],
+        "type" : "object",
+        "properties" : {
+          "numberOfItems" : {
+            "type" : "integer",
+            "description" : "Number of items in the collection",
+            "format" : "int32"
+          }
+        }
       },
       "UserCollectionTracks_Items_Multi_Relationship_Data_Document" : {
         "required" : [ "links" ],
