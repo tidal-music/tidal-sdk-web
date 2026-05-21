@@ -13659,7 +13659,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionAlbums_Items_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13951,7 +13951,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionArtists_Items_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -15563,7 +15563,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionVideos_Items_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -22517,6 +22517,13 @@ export interface components {
             /** Format: date-time */
             addedAt?: string;
         };
+        UserCollectionAlbumsItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
+            id: string;
+            /** @enum {string} */
+            reason: "NOT_FOUND" | "ALREADY_PRESENT";
+            /** @enum {string} */
+            type: "albums";
+        };
         UserCollectionAlbumsItemsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionAlbumsItemsRelationshipRemoveOperation_Payload_Data"][];
         };
@@ -22527,10 +22534,24 @@ export interface components {
         };
         UserCollectionAlbums_Attributes: {
             /**
+             * Format: date-time
+             * @description When the collection was last modified
+             */
+            lastModifiedAt?: string;
+            /**
              * Format: int32
              * @description Number of items in the collection
              */
             numberOfItems: number;
+        };
+        UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document_Meta: {
+            skipped: components["schemas"]["UserCollectionAlbumsItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
         };
         UserCollectionAlbums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier"][];
@@ -22613,6 +22634,13 @@ export interface components {
             /** Format: date-time */
             addedAt?: string;
         };
+        UserCollectionArtistsItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
+            id: string;
+            /** @enum {string} */
+            reason: "NOT_FOUND" | "ALREADY_PRESENT";
+            /** @enum {string} */
+            type: "artists";
+        };
         UserCollectionArtistsItemsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionArtistsItemsRelationshipRemoveOperation_Payload_Data"][];
         };
@@ -22623,10 +22651,24 @@ export interface components {
         };
         UserCollectionArtists_Attributes: {
             /**
+             * Format: date-time
+             * @description When the collection was last modified
+             */
+            lastModifiedAt?: string;
+            /**
              * Format: int32
              * @description Number of items in the collection
              */
             numberOfItems: number;
+        };
+        UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document_Meta: {
+            skipped: components["schemas"]["UserCollectionArtistsItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
         };
         UserCollectionArtists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier"][];
@@ -23094,6 +23136,13 @@ export interface components {
             /** @enum {string} */
             type: "videos";
         };
+        UserCollectionVideosItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
+            id: string;
+            /** @enum {string} */
+            reason: "NOT_FOUND" | "ALREADY_PRESENT";
+            /** @enum {string} */
+            type: "videos";
+        };
         UserCollectionVideosItemsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionVideosItemsRelationshipRemoveOperation_Payload_Data"][];
         };
@@ -23104,10 +23153,24 @@ export interface components {
         };
         UserCollectionVideos_Attributes: {
             /**
+             * Format: date-time
+             * @description When the collection was last modified
+             */
+            lastModifiedAt?: string;
+            /**
              * Format: int32
              * @description Number of items in the collection
              */
             numberOfItems: number;
+        };
+        UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document_Meta: {
+            skipped: components["schemas"]["UserCollectionVideosItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
         };
         UserCollectionVideos_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier"][];
