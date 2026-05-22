@@ -39,11 +39,25 @@ export const submitEvents = async ({
   }
   const uri = accessToken ? config.tlConsumerUri : config.tlPublicConsumerUri;
   const body = eventsToSqsRequestParameters(eventsBatch);
-  const res = await fetch(uri, {
-    body,
-    headers,
-    method: 'post',
-  });
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+  let res: Response;
+  try {
+    res = await fetch(uri, {
+      body,
+      headers,
+      method: 'post',
+      signal: controller.signal,
+    });
+  } catch {
+    clearTimeout(timeoutId);
+    setOutage(true);
+    return;
+  }
+  clearTimeout(timeoutId);
+
   if (res.ok) {
     if (isOutage()) {
       setOutage(false);

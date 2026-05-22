@@ -304,4 +304,34 @@ describe.sequential('submit', () => {
 
     expect(queue.setEvents).toHaveBeenCalledWith([epEvent1]);
   });
+
+  it('triggers outage on fetch timeout (AbortError) and does not remove events', async () => {
+    vi.spyOn(outage, 'setOutage');
+    vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockRejectedValue(
+          new DOMException('The operation was aborted.', 'AbortError'),
+        ),
+    );
+    await submitEvents({ config });
+
+    expect(outage.setOutage).toHaveBeenCalledWith(true);
+    expect(queue.removeEvents).not.toHaveBeenCalled();
+  });
+
+  it('triggers outage on network error and does not remove events', async () => {
+    vi.spyOn(outage, 'setOutage');
+    vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockRejectedValue(new TypeError('Failed to fetch')),
+    );
+    await submitEvents({ config });
+
+    expect(outage.setOutage).toHaveBeenCalledWith(true);
+    expect(queue.removeEvents).not.toHaveBeenCalled();
+  });
 });
