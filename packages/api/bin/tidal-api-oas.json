@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.10.9"
+    "version" : "1.10.14"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -16339,7 +16339,7 @@
         "summary" : "Get single trackFile.",
         "tags" : [ "trackFiles" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "PARTNER"
         }
       }
     },
@@ -21484,6 +21484,15 @@
             "type" : "string"
           }
         }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items",
           "example" : "items",
           "in" : "query",
@@ -21554,6 +21563,15 @@
             "type" : "string"
           }
         }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
@@ -21570,7 +21588,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document"
+                  "$ref" : "#/components/schemas/UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -22095,7 +22113,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserCollectionTracks_Items_Multi_Relationship_Data_Document"
+                  "$ref" : "#/components/schemas/UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -37593,6 +37611,23 @@
           }
         }
       },
+      "UserCollectionSaveForLatersItemsRelationshipAddOperation_Response_Meta_SkippedItem" : {
+        "required" : [ "id", "reason", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "reason" : {
+            "type" : "string",
+            "enum" : [ "NOT_FOUND", "ALREADY_PRESENT" ]
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "tracks", "albums", "artists", "playlists", "videos" ]
+          }
+        }
+      },
       "UserCollectionSaveForLatersItemsRelationshipRemoveOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -37624,10 +37659,48 @@
         "required" : [ "numberOfItems" ],
         "type" : "object",
         "properties" : {
+          "lastModifiedAt" : {
+            "type" : "string",
+            "description" : "When the collection was last modified",
+            "format" : "date-time"
+          },
           "numberOfItems" : {
             "type" : "integer",
             "description" : "Number of items in the collection",
             "format" : "int32"
+          }
+        }
+      },
+      "UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserCollectionSaveForLaters_Items_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document_Meta"
+          }
+        }
+      },
+      "UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document_Meta" : {
+        "required" : [ "skipped" ],
+        "type" : "object",
+        "properties" : {
+          "skipped" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserCollectionSaveForLatersItemsRelationshipAddOperation_Response_Meta_SkippedItem"
+            }
           }
         }
       },
@@ -37829,6 +37902,23 @@
           }
         }
       },
+      "UserCollectionTracksItemsRelationshipAddOperation_Response_Meta_SkippedItem" : {
+        "required" : [ "id", "reason", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "reason" : {
+            "type" : "string",
+            "enum" : [ "NOT_FOUND", "ALREADY_PRESENT" ]
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "tracks" ]
+          }
+        }
+      },
       "UserCollectionTracksItemsRelationshipRemoveOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -37860,10 +37950,48 @@
         "required" : [ "numberOfItems" ],
         "type" : "object",
         "properties" : {
+          "lastModifiedAt" : {
+            "type" : "string",
+            "description" : "When the collection was last modified",
+            "format" : "date-time"
+          },
           "numberOfItems" : {
             "type" : "integer",
             "description" : "Number of items in the collection",
             "format" : "int32"
+          }
+        }
+      },
+      "UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserCollectionTracks_Items_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document_Meta"
+          }
+        }
+      },
+      "UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document_Meta" : {
+        "required" : [ "skipped" ],
+        "type" : "object",
+        "properties" : {
+          "skipped" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserCollectionTracksItemsRelationshipAddOperation_Response_Meta_SkippedItem"
+            }
           }
         }
       },

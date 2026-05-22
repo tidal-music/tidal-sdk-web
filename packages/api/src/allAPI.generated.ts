@@ -14845,6 +14845,11 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
                      * @example items
                      */
@@ -14888,7 +14893,13 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: never;
+                query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                };
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -14914,7 +14925,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -15271,7 +15282,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionTracks_Items_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -22949,6 +22960,13 @@ export interface components {
             /** @enum {string} */
             type: "tracks" | "albums" | "artists" | "playlists" | "videos";
         };
+        UserCollectionSaveForLatersItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
+            id: string;
+            /** @enum {string} */
+            reason: "NOT_FOUND" | "ALREADY_PRESENT";
+            /** @enum {string} */
+            type: "tracks" | "albums" | "artists" | "playlists" | "videos";
+        };
         UserCollectionSaveForLatersItemsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionSaveForLatersItemsRelationshipRemoveOperation_Payload_Data"][];
         };
@@ -22959,10 +22977,24 @@ export interface components {
         };
         UserCollectionSaveForLaters_Attributes: {
             /**
+             * Format: date-time
+             * @description When the collection was last modified
+             */
+            lastModifiedAt?: string;
+            /**
              * Format: int32
              * @description Number of items in the collection
              */
             numberOfItems: number;
+        };
+        UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document_Meta: {
+            skipped: components["schemas"]["UserCollectionSaveForLatersItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
         };
         UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier"][];
@@ -23045,6 +23077,13 @@ export interface components {
             /** Format: date-time */
             addedAt?: string;
         };
+        UserCollectionTracksItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
+            id: string;
+            /** @enum {string} */
+            reason: "NOT_FOUND" | "ALREADY_PRESENT";
+            /** @enum {string} */
+            type: "tracks";
+        };
         UserCollectionTracksItemsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionTracksItemsRelationshipRemoveOperation_Payload_Data"][];
         };
@@ -23055,10 +23094,24 @@ export interface components {
         };
         UserCollectionTracks_Attributes: {
             /**
+             * Format: date-time
+             * @description When the collection was last modified
+             */
+            lastModifiedAt?: string;
+            /**
              * Format: int32
              * @description Number of items in the collection
              */
             numberOfItems: number;
+        };
+        UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["UserCollectionTracks_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document_Meta: {
+            skipped: components["schemas"]["UserCollectionTracksItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
         };
         UserCollectionTracks_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionTracks_Items_Resource_Identifier"][];
