@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/tidal-sdk-web",
-  "packageManager": "pnpm@11.0.9",
+  "packageManager": "pnpm@11.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -19,15 +19,15 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
     "@eslint/compat": "2.1.0",
-    "eslint": "10.3.0",
+    "eslint": "10.4.0",
     "eslint-config-tidal": "5.0.0",
     "eslint-plugin-disable-autofix": "6.1.1",
     "eslint-plugin-jsdoc": "62.9.0",
     "typedoc": "0.28.19",
-    "vite": "8.0.12",
-    "vite-plugin-dts": "5.0.0",
+    "vite": "8.0.13",
+    "vite-plugin-dts": "5.0.1",
     "vite-plugin-mkcert": "2.0.0",
     "vite-plugin-package-version": "1.1.0",
-    "vitest": "4.1.5"
+    "vitest": "4.1.7"
   }
 }
