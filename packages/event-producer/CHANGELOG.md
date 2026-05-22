@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- `submitEvents` now aborts the batch `POST` after a 5 s timeout and treats fetch errors as an outage (events stay queued for retry) so a network/SSL-inspection device that silently drops the telemetry request can no longer block the event loop and stall playback in the consuming app.
+- `submitEvents` now aborts the batch `POST` after a 10 s timeout and treats fetch errors as an outage (events stay queued for retry) so a network/SSL-inspection device that silently drops the telemetry request can no longer block the event loop and stall playback in the consuming app.
 
 ## [2.4.1] - 2026-05-13
 

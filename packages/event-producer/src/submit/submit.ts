@@ -41,7 +41,7 @@ export const submitEvents = async ({
   const body = eventsToSqsRequestParameters(eventsBatch);
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 5000);
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
 
   let res: Response;
   try {
