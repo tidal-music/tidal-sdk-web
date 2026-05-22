@@ -3,6 +3,7 @@
   "extends": [
     "config:recommended"
   ],
+  "minimumReleaseAge": "2 days",
   "ignoreDeps": [],
   "packageRules": [{
     "description": "Group Npm packages",
