@@ -22,7 +22,7 @@
     "eslint": "10.4.0",
     "eslint-config-tidal": "5.0.0",
     "eslint-plugin-disable-autofix": "6.1.1",
-    "eslint-plugin-jsdoc": "62.9.0",
+    "eslint-plugin-jsdoc": "63.0.0",
     "typedoc": "0.28.19",
     "vite": "8.0.13",
     "vite-plugin-dts": "5.0.1",
