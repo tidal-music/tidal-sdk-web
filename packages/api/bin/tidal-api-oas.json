@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.10.14"
+    "version" : "1.10.16"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -21715,99 +21715,6 @@
         }
       }
     },
-    "/userCollectionTracks" : {
-      "get" : {
-        "description" : "Retrieves multiple userCollectionTracks by available filters, or without if applicable.",
-        "parameters" : [ {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
-          "example" : "en-US",
-          "in" : "query",
-          "name" : "locale",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : "en-US"
-          }
-        }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: items, owners",
-          "example" : "items",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "items"
-            }
-          }
-        }, {
-          "description" : "User collection tracks id (e.g. `FMJUCzH4`)",
-          "in" : "query",
-          "name" : "filter[id]",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/UserCollectionTracks_Multi_Resource_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
-        } ],
-        "summary" : "Get multiple userCollectionTracks.",
-        "tags" : [ "userCollectionTracks" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      }
-    },
     "/userCollectionTracks/{id}" : {
       "get" : {
         "description" : "Retrieves single userCollectionTrack by id.",
@@ -32709,7 +32616,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -32760,7 +32667,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -36489,7 +36396,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -36545,7 +36452,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -36780,7 +36687,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -36836,7 +36743,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -37373,7 +37280,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -37400,7 +37307,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -37868,7 +37775,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -37924,7 +37831,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -38159,7 +38066,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -38203,7 +38110,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -38438,7 +38345,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -38477,7 +38384,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -38504,7 +38411,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -38543,7 +38450,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -38570,7 +38477,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -38597,7 +38504,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -38624,7 +38531,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -38663,7 +38570,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -38690,7 +38597,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -38717,7 +38624,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 20,
+            "maxItems" : 50,
             "minItems" : 1,
             "type" : "array",
             "items" : {
