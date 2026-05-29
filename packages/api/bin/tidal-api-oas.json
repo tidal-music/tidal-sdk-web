@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.10.16"
+    "version" : "1.10.17"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -814,7 +814,7 @@
             }
           }
         }, {
-          "description" : "Album id (e.g. `251380836`)",
+          "description" : "List of album IDs (e.g. `251380836`)",
           "in" : "query",
           "name" : "filter[id]",
           "required" : false,
@@ -3726,7 +3726,7 @@
             }
           }
         }, {
-          "description" : "Artist id (e.g. `1566`)",
+          "description" : "List of artist IDs (e.g. `1566`)",
           "in" : "query",
           "name" : "filter[id]",
           "required" : false,
@@ -11042,7 +11042,7 @@
             }
           }
         }, {
-          "description" : "Playlist id (e.g. `550e8400-e29b-41d4-a716-446655440000`)",
+          "description" : "List of playlist IDs (e.g. `550e8400-e29b-41d4-a716-446655440000`)",
           "in" : "query",
           "name" : "filter[id]",
           "required" : false,
@@ -16117,7 +16117,7 @@
             }
           }
         }, {
-          "description" : "Terms id (e.g. `a468bee88def`)",
+          "description" : "List of terms IDs (e.g. `a468bee88def`)",
           "in" : "query",
           "name" : "filter[id]",
           "required" : false,

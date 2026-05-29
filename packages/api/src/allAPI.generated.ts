@@ -428,7 +428,7 @@ export interface paths {
                     include?: string[];
                     /** @description List of barcode IDs (EAN-13 or UPC-A). NOTE: Supplying more than one barcode ID will currently only return one album per barcode ID. (e.g. `196589525444`) */
                     "filter[barcodeId]"?: string[];
-                    /** @description Album id (e.g. `251380836`) */
+                    /** @description List of album IDs (e.g. `251380836`) */
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
@@ -2443,7 +2443,7 @@ export interface paths {
                     include?: string[];
                     /** @description Artist handle (e.g. `jayz`) */
                     "filter[handle]"?: string[];
-                    /** @description Artist id (e.g. `1566`) */
+                    /** @description List of artist IDs (e.g. `1566`) */
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
@@ -7553,7 +7553,7 @@ export interface paths {
                      * @example collaboratorProfiles
                      */
                     include?: string[];
-                    /** @description Playlist id (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
+                    /** @description List of playlist IDs (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
@@ -11188,7 +11188,7 @@ export interface paths {
                 query?: {
                     /** @description Filter by countryCode */
                     "filter[countryCode]"?: string[];
-                    /** @description Terms id (e.g. `a468bee88def`) */
+                    /** @description List of terms IDs (e.g. `a468bee88def`) */
                     "filter[id]"?: string[];
                     /** @description Filter by isLatestVersion */
                     "filter[isLatestVersion]"?: string[];
