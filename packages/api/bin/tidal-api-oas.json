@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.10.20"
+    "version" : "1.10.23"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -116,6 +116,9 @@
   }, {
     "description" : "A share saved to a user's collection.",
     "name" : "savedShares"
+  }, {
+    "description" : "An OAuth scope that a client may request from end users.",
+    "name" : "scopes"
   }, {
     "description" : "A user's recent search history entry.",
     "name" : "searchHistoryEntries"
@@ -8405,6 +8408,87 @@
         }
       }
     },
+    "/genres" : {
+      "get" : {
+        "description" : "Retrieves multiple genres by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
+          "description" : "Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from (e.g. `'1,2,3' or 'USER_SELECTABLE'`)",
+          "in" : "query",
+          "name" : "filter[id]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Genres_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple genres.",
+        "tags" : [ "genres" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/genres/{id}" : {
       "get" : {
         "description" : "Retrieves single genre by id.",
@@ -13663,6 +13747,68 @@
         } ],
         "summary" : "Create single savedShare.",
         "tags" : [ "savedShares" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/scopes" : {
+      "get" : {
+        "description" : "Retrieves multiple scopes by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Filters scopes by their `requiredAccessTier`. (e.g. `THIRD_PARTY`)",
+          "in" : "query",
+          "name" : "filter[requiredAccessTier]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "THIRD_PARTY", "THIRD_PARTY_PROD", "PARTNER", "INTERNAL" ]
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Scopes_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple scopes.",
+        "tags" : [ "scopes" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
         }
@@ -20550,7 +20696,7 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "FOLDERS" ]
+            "enum" : [ "FLAT", "FOLDERS" ]
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -20662,7 +20808,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserCollectionPlaylists_Items_Multi_Relationship_Data_Document"
+                  "$ref" : "#/components/schemas/UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -30571,6 +30717,7 @@
               "purchases" : "#/components/schemas/Purchases_Resource_Object",
               "reactions" : "#/components/schemas/Reactions_Resource_Object",
               "savedShares" : "#/components/schemas/SavedShares_Resource_Object",
+              "scopes" : "#/components/schemas/Scopes_Resource_Object",
               "searchHistoryEntries" : "#/components/schemas/SearchHistoryEntries_Resource_Object",
               "searchResults" : "#/components/schemas/SearchResults_Resource_Object",
               "searchSuggestions" : "#/components/schemas/SearchSuggestions_Resource_Object",
@@ -30674,6 +30821,8 @@
             "$ref" : "#/components/schemas/Reactions_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/SavedShares_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/Scopes_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/SearchHistoryEntries_Resource_Object"
           }, {
@@ -33645,6 +33794,86 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/SavedShares_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Scopes_Attributes" : {
+        "required" : [ "description", "name", "requiredAccessTier" ],
+        "type" : "object",
+        "properties" : {
+          "consentText" : {
+            "type" : "string",
+            "description" : "Text shown to the end user on the OAuth consent screen when this scope is requested.",
+            "example" : "List all playlists created by you."
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Technical description of the scope.",
+            "example" : "Required to list playlists created by a user."
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Wire-format scope name as used in OAuth requests.",
+            "example" : "playlists.read"
+          },
+          "requiredAccessTier" : {
+            "type" : "string",
+            "description" : "Client access tier required to request this scope. A client whose access tier is at least this value can include the scope when initiating an OAuth flow.",
+            "example" : "THIRD_PARTY",
+            "enum" : [ "THIRD_PARTY", "THIRD_PARTY_PROD", "PARTNER", "INTERNAL" ]
+          }
+        }
+      },
+      "Scopes_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Scopes_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Scopes_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/Scopes_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Scopes_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Scopes_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -37057,6 +37286,35 @@
           "id" : {
             "type" : "string"
           },
+          "meta" : {
+            "$ref" : "#/components/schemas/UserCollectionPlaylistsItemsRelationshipAddOperation_Payload_Data_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "playlists" ]
+          }
+        }
+      },
+      "UserCollectionPlaylistsItemsRelationshipAddOperation_Payload_Data_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "addedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "UserCollectionPlaylistsItemsRelationshipAddOperation_Response_Meta_SkippedItem" : {
+        "required" : [ "id", "reason", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "reason" : {
+            "type" : "string",
+            "enum" : [ "NOT_FOUND", "ALREADY_PRESENT" ]
+          },
           "type" : {
             "type" : "string",
             "enum" : [ "playlists" ]
@@ -37091,7 +37349,53 @@
         }
       },
       "UserCollectionPlaylists_Attributes" : {
-        "type" : "object"
+        "required" : [ "numberOfItems" ],
+        "type" : "object",
+        "properties" : {
+          "lastModifiedAt" : {
+            "type" : "string",
+            "description" : "When the collection was last modified",
+            "format" : "date-time"
+          },
+          "numberOfItems" : {
+            "type" : "integer",
+            "description" : "Number of items in the collection",
+            "format" : "int32"
+          }
+        }
+      },
+      "UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserCollectionPlaylists_Items_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document_Meta"
+          }
+        }
+      },
+      "UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document_Meta" : {
+        "required" : [ "skipped" ],
+        "type" : "object",
+        "properties" : {
+          "skipped" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserCollectionPlaylistsItemsRelationshipAddOperation_Response_Meta_SkippedItem"
+            }
+          }
+        }
       },
       "UserCollectionPlaylists_Items_Multi_Relationship_Data_Document" : {
         "required" : [ "links" ],
