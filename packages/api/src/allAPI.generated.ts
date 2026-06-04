@@ -13867,7 +13867,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection
                      * @example items
                      */
                     include?: string[];
@@ -13962,7 +13962,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection
                      * @example items
                      */
                     include?: string[];
@@ -14254,6 +14254,65 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userCollectionFolders/{id}/relationships/userCollection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get userCollection relationship ("to-one").
+         * @description Retrieves userCollection relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: userCollection
+                     * @example userCollection
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Folder Id
+                     * @example CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -22387,6 +22446,11 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        UserCollection: {
+            id: string;
+            /** @enum {string} */
+            type: "userCollectionPlaylists";
+        };
         UserCollectionAlbumsAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
@@ -22626,13 +22690,24 @@ export interface components {
         };
         UserCollectionFoldersCreateOperation_Payload_Data: {
             attributes: components["schemas"]["UserCollectionFoldersCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["UserCollectionFoldersCreateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "userCollectionFolders";
         };
         UserCollectionFoldersCreateOperation_Payload_Data_Attributes: {
-            /** @enum {string} */
-            collectionType: "PLAYLISTS";
+            /**
+             * @deprecated
+             * @description The type of user collection this folder belongs to. Deprecated: send the 'userCollection' relationship instead. Accepted for backward compatibility during migration and will be removed in a future version.
+             * @enum {string}
+             */
+            collectionType?: "PLAYLISTS";
             name: string;
+        };
+        UserCollectionFoldersCreateOperation_Payload_Data_Relationships: {
+            userCollection: components["schemas"]["UserCollectionFoldersCreateOperation_Payload_Data_Relationships_UserCollection"];
+        };
+        UserCollectionFoldersCreateOperation_Payload_Data_Relationships_UserCollection: {
+            data: components["schemas"]["UserCollection"];
         };
         UserCollectionFoldersDeleteResource400ResponseBody: {
             errors: {
@@ -22674,8 +22749,12 @@ export interface components {
             name?: string;
         };
         UserCollectionFolders_Attributes: {
-            /** @enum {string} */
-            collectionType: "PLAYLISTS";
+            /**
+             * @deprecated
+             * @description The type of user collection this folder belongs to. Deprecated: use the 'userCollection' relationship instead. This field will be removed in a future version, so clients should not depend on its presence.
+             * @enum {string}
+             */
+            collectionType?: "PLAYLISTS";
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -22719,6 +22798,7 @@ export interface components {
         UserCollectionFolders_Relationships: {
             items?: components["schemas"]["UserCollectionFolders_Items_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            userCollection?: components["schemas"]["Single_Relationship_Data_Document"];
         };
         UserCollectionFolders_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionFolders_Attributes"];
@@ -22733,6 +22813,11 @@ export interface components {
              * @enum {string}
              */
             type: "userCollectionFolders";
+        };
+        UserCollectionFolders_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         UserCollectionFolders_Single_Resource_Data_Document: {
             data: components["schemas"]["UserCollectionFolders_Resource_Object"];
@@ -23103,8 +23188,13 @@ export interface components {
         };
         UserCollectionVideosItemsRelationshipAddOperation_Payload_Data: {
             id: string;
+            meta?: components["schemas"]["UserCollectionVideosItemsRelationshipAddOperation_Payload_Data_Meta"];
             /** @enum {string} */
             type: "videos";
+        };
+        UserCollectionVideosItemsRelationshipAddOperation_Payload_Data_Meta: {
+            /** Format: date-time */
+            addedAt?: string;
         };
         UserCollectionVideosItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
             id: string;
