@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.10.25"
+    "version" : "1.10.26"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -243,7 +243,7 @@
           "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -265,7 +265,7 @@
           "description" : "One of: DEVELOPER, UPLOAD_MARKETPLACE (e.g. `DEVELOPER`)",
           "in" : "query",
           "name" : "filter[terms.termsType]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -2774,7 +2774,7 @@
           "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -5084,7 +5084,7 @@
           "description" : "Artwork id (e.g. `a468bee88def`)",
           "in" : "query",
           "name" : "filter[id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -5390,7 +5390,7 @@
           "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -5867,7 +5867,7 @@
           "description" : "Invite code",
           "in" : "query",
           "name" : "filter[code]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -6319,7 +6319,7 @@
           "description" : "Filter by subject resource ID (e.g. `12345`)",
           "in" : "query",
           "name" : "filter[subject.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -6330,7 +6330,7 @@
           "description" : "Filter by subject resource type (e.g. `albums`)",
           "in" : "query",
           "name" : "filter[subject.type]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -6893,7 +6893,7 @@
           "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -7550,7 +7550,7 @@
           "description" : "Download id (e.g. `VFJBQ0tTOjEyMzQ1`)",
           "in" : "query",
           "name" : "filter[id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -7776,7 +7776,7 @@
           "description" : "The id of the subject resource",
           "in" : "query",
           "name" : "filter[subject.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -7787,7 +7787,7 @@
           "description" : "The type of the subject resource (e.g., albums, tracks, artists) (e.g. `tracks`)",
           "in" : "query",
           "name" : "filter[subject.type]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -8130,7 +8130,7 @@
           "description" : "type of the page (e.g. `ARTIST`)",
           "in" : "query",
           "name" : "filter[pageType]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -8141,7 +8141,7 @@
           "description" : "the subject id, eg. artistId (e.g. `67890`)",
           "in" : "query",
           "name" : "filter[subject.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -8433,7 +8433,7 @@
           "description" : "Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from (e.g. `'1,2,3' or 'USER_SELECTABLE'`)",
           "in" : "query",
           "name" : "filter[id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -8914,7 +8914,7 @@
           "description" : "One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`)",
           "in" : "query",
           "name" : "filter[type]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -9642,7 +9642,7 @@
           "description" : "List of offline task IDs (e.g. `a468bee88def`)",
           "in" : "query",
           "name" : "filter[installation.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -10084,7 +10084,7 @@
           "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -12318,7 +12318,7 @@
           "description" : "List of price configurations IDs (e.g. `cHJpY2UtY29uZmlnLTEyMzpVUw`)",
           "in" : "query",
           "name" : "filter[id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -12520,7 +12520,7 @@
           "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -12753,7 +12753,7 @@
           "description" : "List of barcode IDs (EAN-13 or UPC-A) (e.g. `00602527336510`)",
           "in" : "query",
           "name" : "filter[barcodeId]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -12764,7 +12764,7 @@
           "description" : "Content provider ID (e.g. `50`)",
           "in" : "query",
           "name" : "filter[provider.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -13058,7 +13058,7 @@
           "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -13069,7 +13069,7 @@
           "description" : "The type of purchased content (e.g. `albums`)",
           "in" : "query",
           "name" : "filter[subject.type]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -13337,7 +13337,7 @@
           "description" : "Filter by subject resource ID (e.g. `12345`)",
           "in" : "query",
           "name" : "filter[subject.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -13348,7 +13348,7 @@
           "description" : "Filter by subject resource type (e.g. `albums`)",
           "in" : "query",
           "name" : "filter[subject.type]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -13759,7 +13759,7 @@
           "description" : "Filters scopes by their `requiredAccessTier`. (e.g. `THIRD_PARTY`)",
           "in" : "query",
           "name" : "filter[requiredAccessTier]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -14893,7 +14893,7 @@
           "description" : "A share code (e.g. `xyz`)",
           "in" : "query",
           "name" : "filter[code]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -15408,7 +15408,7 @@
           "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -15636,7 +15636,7 @@
           "description" : "User id. Use `me` for the authenticated user",
           "in" : "query",
           "name" : "filter[owners.id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -16018,7 +16018,7 @@
           "description" : "One of: DEVELOPER, UPLOAD_MARKETPLACE (e.g. `DEVELOPER`)",
           "in" : "query",
           "name" : "filter[termsType]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -19910,7 +19910,7 @@
           "description" : "Folder Id (e.g. `CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX`)",
           "in" : "query",
           "name" : "filter[id]",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {

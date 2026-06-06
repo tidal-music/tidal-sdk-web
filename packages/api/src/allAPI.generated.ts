@@ -17,18 +17,18 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, terms
                      * @example owners
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                     /** @description Filter by terms.isLatestVersion */
                     "filter[terms.isLatestVersion]"?: string[];
                     /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE (e.g. `DEVELOPER`) */
-                    "filter[terms.termsType]"?: ("DEVELOPER" | "UPLOAD_MARKETPLACE")[];
+                    "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE")[];
                 };
                 header?: never;
                 path?: never;
@@ -1750,14 +1750,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists
                      * @example acceptedArtists
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -3359,7 +3359,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -3371,7 +3371,7 @@ export interface paths {
                      */
                     include?: string[];
                     /** @description Artwork id (e.g. `a468bee88def`) */
-                    "filter[id]"?: string[];
+                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -3584,14 +3584,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -3925,14 +3925,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
                      * @example owners
                      */
                     include?: string[];
                     /** @description Invite code */
-                    "filter[code]"?: string[];
+                    "filter[code]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -4232,7 +4232,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
@@ -4245,9 +4245,9 @@ export interface paths {
                     /** @description Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[parentComment.id]"?: string[];
                     /** @description Filter by subject resource ID (e.g. `12345`) */
-                    "filter[subject.id]"?: string[];
+                    "filter[subject.id]": string[];
                     /** @description Filter by subject resource type (e.g. `albums`) */
-                    "filter[subject.type]"?: ("albums" | "tracks")[];
+                    "filter[subject.type]": ("albums" | "tracks")[];
                 };
                 header?: never;
                 path?: never;
@@ -4645,14 +4645,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: claimedResource, claimingArtist, owners
                      * @example claimedResource
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -5155,14 +5155,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
                     /** @description Download id (e.g. `VFJBQ0tTOjEyMzQ1`) */
-                    "filter[id]"?: string[];
+                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -5330,16 +5330,16 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: subject
                      * @example subject
                      */
                     include?: string[];
                     /** @description The id of the subject resource */
-                    "filter[subject.id]"?: string[];
+                    "filter[subject.id]": string[];
                     /** @description The type of the subject resource (e.g., albums, tracks, artists) (e.g. `tracks`) */
-                    "filter[subject.type]"?: ("tracks" | "albums" | "artists")[];
+                    "filter[subject.type]": ("tracks" | "albums" | "artists")[];
                 };
                 header?: never;
                 path?: never;
@@ -5566,9 +5566,9 @@ export interface paths {
                      */
                     include?: string[];
                     /** @description type of the page (e.g. `ARTIST`) */
-                    "filter[pageType]"?: string[];
+                    "filter[pageType]": string[];
                     /** @description the subject id, eg. artistId (e.g. `67890`) */
-                    "filter[subject.id]"?: string[];
+                    "filter[subject.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -5762,7 +5762,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -5771,7 +5771,7 @@ export interface paths {
                      */
                     locale?: string;
                     /** @description Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from (e.g. `'1,2,3' or 'USER_SELECTABLE'`) */
-                    "filter[id]"?: string[];
+                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -6036,7 +6036,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -6049,7 +6049,7 @@ export interface paths {
                     /** @description One of: PENDING, STORED (e.g. `PENDING`) */
                     "filter[state]"?: ("PENDING" | "STORED")[];
                     /** @description One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`) */
-                    "filter[type]"?: ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
+                    "filter[type]": ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
                 };
                 header?: never;
                 path: {
@@ -6609,7 +6609,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -6618,7 +6618,7 @@ export interface paths {
                      */
                     include?: string[];
                     /** @description List of offline task IDs (e.g. `a468bee88def`) */
-                    "filter[installation.id]"?: string[];
+                    "filter[installation.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -6941,7 +6941,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -6950,7 +6950,7 @@ export interface paths {
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -8442,9 +8442,9 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description List of price configurations IDs (e.g. `cHJpY2UtY29uZmlnLTEyMzpVUw`) */
-                    "filter[id]"?: string[];
+                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -8585,14 +8585,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, provider
                      * @example owners
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -8754,7 +8754,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -8766,9 +8766,9 @@ export interface paths {
                      */
                     include?: string[];
                     /** @description List of barcode IDs (EAN-13 or UPC-A) (e.g. `00602527336510`) */
-                    "filter[barcodeId]"?: string[];
+                    "filter[barcodeId]": string[];
                     /** @description Content provider ID (e.g. `50`) */
-                    "filter[provider.id]"?: string[];
+                    "filter[provider.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -8986,7 +8986,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -8995,9 +8995,9 @@ export interface paths {
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                     /** @description The type of purchased content (e.g. `albums`) */
-                    "filter[subject.type]"?: ("albums" | "tracks")[];
+                    "filter[subject.type]": ("albums" | "tracks")[];
                 };
                 header?: never;
                 path?: never;
@@ -9165,7 +9165,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
                     statsOnly?: boolean;
                     viewerContext?: string;
@@ -9179,9 +9179,9 @@ export interface paths {
                     /** @description Filter by emoji (e.g. `👍`) */
                     "filter[emoji]"?: string[];
                     /** @description Filter by subject resource ID (e.g. `12345`) */
-                    "filter[subject.id]"?: string[];
+                    "filter[subject.id]": string[];
                     /** @description Filter by subject resource type (e.g. `albums`) */
-                    "filter[subject.type]"?: ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments")[];
+                    "filter[subject.type]": ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments")[];
                 };
                 header?: never;
                 path?: never;
@@ -9496,9 +9496,9 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Filters scopes by their `requiredAccessTier`. (e.g. `THIRD_PARTY`) */
-                    "filter[requiredAccessTier]"?: ("THIRD_PARTY" | "THIRD_PARTY_PROD" | "PARTNER" | "INTERNAL")[];
+                    "filter[requiredAccessTier]": ("THIRD_PARTY" | "THIRD_PARTY_PROD" | "PARTNER" | "INTERNAL")[];
                 };
                 header?: never;
                 path?: never;
@@ -10301,14 +10301,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, sharedResources
                      * @example owners
                      */
                     include?: string[];
                     /** @description A share code (e.g. `xyz`) */
-                    "filter[code]"?: string[];
+                    "filter[code]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -10693,14 +10693,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -10855,14 +10855,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -11147,13 +11147,13 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Filter by countryCode */
                     "filter[countryCode]"?: string[];
                     /** @description Filter by isLatestVersion */
                     "filter[isLatestVersion]"?: string[];
                     /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE (e.g. `DEVELOPER`) */
-                    "filter[termsType]"?: ("DEVELOPER" | "UPLOAD_MARKETPLACE")[];
+                    "filter[termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE")[];
                 };
                 header?: never;
                 path?: never;
@@ -13865,14 +13865,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection
                      * @example items
                      */
                     include?: string[];
                     /** @description Folder Id (e.g. `CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX`) */
-                    "filter[id]"?: string[];
+                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
