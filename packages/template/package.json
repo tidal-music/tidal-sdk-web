@@ -35,11 +35,11 @@
     "check:types-resolution": "attw --pack . --ignore-rules=cjs-resolves-to-esm"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "4.1.7",
-    "@vitest/ui": "4.1.7",
+    "@vitest/coverage-v8": "4.1.8",
+    "@vitest/ui": "4.1.8",
     "typescript": "6.0.3",
-    "vite": "8.0.14",
-    "vite-plugin-dts": "5.0.1",
-    "vitest": "4.1.7"
+    "vite": "8.0.16",
+    "vite-plugin-dts": "5.0.2",
+    "vitest": "4.1.8"
   }
 }
