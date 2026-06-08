@@ -17,18 +17,18 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, terms
                      * @example owners
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                     /** @description Filter by terms.isLatestVersion */
                     "filter[terms.isLatestVersion]"?: string[];
                     /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE (e.g. `DEVELOPER`) */
-                    "filter[terms.termsType]"?: ("DEVELOPER" | "UPLOAD_MARKETPLACE")[];
+                    "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE")[];
                 };
                 header?: never;
                 path?: never;
@@ -223,61 +223,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/albumStatistics": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get multiple albumStatistics.
-         * @description Retrieves multiple albumStatistics by available filters, or without if applicable.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
-                    include?: string[];
-                    /** @description List of album IDs (e.g. `251380836`) */
-                    "filter[id]"?: string[];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["AlbumStatistics_Multi_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/albumStatistics/{id}": {
         parameters: {
             query?: never;
@@ -428,7 +373,7 @@ export interface paths {
                     include?: string[];
                     /** @description List of barcode IDs (EAN-13 or UPC-A). NOTE: Supplying more than one barcode ID will currently only return one album per barcode ID. (e.g. `196589525444`) */
                     "filter[barcodeId]"?: string[];
-                    /** @description Album id (e.g. `251380836`) */
+                    /** @description List of album IDs (e.g. `251380836`) */
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
@@ -1630,66 +1575,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/artistBiographies": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get multiple artistBiographies.
-         * @description Retrieves multiple artistBiographies by available filters, or without if applicable.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
-                    include?: string[];
-                    /** @description Artist id (e.g. `1566`) */
-                    "filter[id]"?: string[];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["ArtistBiographies_Multi_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/artistBiographies/{id}": {
         parameters: {
             query?: never;
@@ -1865,14 +1750,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists
                      * @example acceptedArtists
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -2314,56 +2199,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/artistRoles": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get multiple artistRoles.
-         * @description Retrieves multiple artistRoles by available filters, or without if applicable.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description List of artist role IDs (e.g. `1`) */
-                    "filter[id]"?: string[];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["ArtistRoles_Multi_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/artistRoles/{id}": {
         parameters: {
             query?: never;
@@ -2443,7 +2278,7 @@ export interface paths {
                     include?: string[];
                     /** @description Artist handle (e.g. `jayz`) */
                     "filter[handle]"?: string[];
-                    /** @description Artist id (e.g. `1566`) */
+                    /** @description List of artist IDs (e.g. `1566`) */
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
@@ -3524,7 +3359,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -3536,7 +3371,7 @@ export interface paths {
                      */
                     include?: string[];
                     /** @description Artwork id (e.g. `a468bee88def`) */
-                    "filter[id]"?: string[];
+                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -3749,14 +3584,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -4021,6 +3856,369 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/collaborationInviteRedemptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create single collaborationInviteRedemption.
+         * @description Creates a new collaborationInviteRedemption.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["CollaborationInviteRedemptionsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["CollaborationInviteRedemptions_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/collaborationInvites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple collaborationInvites.
+         * @description Retrieves multiple collaborationInvites by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Invite code */
+                    "filter[code]": string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["CollaborationInvites_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single collaborationInvite.
+         * @description Creates a new collaborationInvite.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["CollaborationInvitesCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["CollaborationInvites_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/collaborationInvites/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single collaborationInvite.
+         * @description Retrieves single collaborationInvite by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
+                     * @example owners
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Collaboration invite id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["CollaborationInvites_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Delete single collaborationInvite.
+         * @description Deletes existing collaborationInvite.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Collaboration invite id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/collaborationInvites/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Collaboration invite id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["CollaborationInvites_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/collaborationInvites/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: subject
+                     * @example subject
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Collaboration invite id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["CollaborationInvites_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/comments": {
         parameters: {
             query?: never;
@@ -4034,7 +4232,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
@@ -4047,9 +4245,9 @@ export interface paths {
                     /** @description Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[parentComment.id]"?: string[];
                     /** @description Filter by subject resource ID (e.g. `12345`) */
-                    "filter[subject.id]"?: string[];
+                    "filter[subject.id]": string[];
                     /** @description Filter by subject resource type (e.g. `albums`) */
-                    "filter[subject.type]"?: ("albums" | "tracks")[];
+                    "filter[subject.type]": ("albums" | "tracks")[];
                 };
                 header?: never;
                 path?: never;
@@ -4447,14 +4645,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: claimedResource, claimingArtist, owners
                      * @example claimedResource
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -4767,61 +4965,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/credits": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get multiple credits.
-         * @description Retrieves multiple credits by available filters, or without if applicable.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artist, category
-                     * @example artist
-                     */
-                    include?: string[];
-                    /** @description List of credit IDs (e.g. `3fG7kLmN2pQrStUv`) */
-                    "filter[id]"?: string[];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Credits_Multi_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/credits/{id}": {
         parameters: {
             query?: never;
@@ -5012,14 +5155,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
                     /** @description Download id (e.g. `VFJBQ0tTOjEyMzQ1`) */
-                    "filter[id]"?: string[];
+                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -5187,16 +5330,16 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: subject
                      * @example subject
                      */
                     include?: string[];
                     /** @description The id of the subject resource */
-                    "filter[subject.id]"?: string[];
+                    "filter[subject.id]": string[];
                     /** @description The type of the subject resource (e.g., albums, tracks, artists) (e.g. `tracks`) */
-                    "filter[subject.type]"?: ("tracks" | "albums" | "artists")[];
+                    "filter[subject.type]": ("tracks" | "albums" | "artists")[];
                 };
                 header?: never;
                 path?: never;
@@ -5270,87 +5413,6 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["DspSharingLinks_Single_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/dynamicModules": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get multiple dynamicModules.
-         * @description Retrieves multiple dynamicModules by available filters, or without if applicable.
-         */
-        get: {
-            parameters: {
-                query: {
-                    refreshId?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
-                     * @description The type of device making the request
-                     * @example PHONE
-                     */
-                    deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
-                    /**
-                     * @description The system type of the device making the request
-                     * @example IOS
-                     */
-                    systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
-                     */
-                    include?: string[];
-                    /** @description DynamicModules Id (e.g. `nejMcAhh5N8S3EQ4LaqysVdI0cZZ`) */
-                    "filter[id]"?: string[];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["DynamicModules_Multi_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -5504,9 +5566,9 @@ export interface paths {
                      */
                     include?: string[];
                     /** @description type of the page (e.g. `ARTIST`) */
-                    "filter[pageType]"?: string[];
+                    "filter[pageType]": string[];
                     /** @description the subject id, eg. artistId (e.g. `67890`) */
-                    "filter[subject.id]"?: string[];
+                    "filter[subject.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -5700,7 +5762,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -5709,7 +5771,7 @@ export interface paths {
                      */
                     locale?: string;
                     /** @description Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from (e.g. `'1,2,3' or 'USER_SELECTABLE'`) */
-                    "filter[id]"?: string[];
+                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -5826,8 +5888,6 @@ export interface paths {
                     include?: string[];
                     /** @description Client-provided installation identifier to filter by (e.g. `a468bee88def`) */
                     "filter[clientProvidedInstallationId]"?: string[];
-                    /** @description List of installation IDs (e.g. `a468bee88def`) */
-                    "filter[id]"?: string[];
                     /** @description User ID to filter by. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
                 };
@@ -5976,7 +6036,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -5989,7 +6049,7 @@ export interface paths {
                     /** @description One of: PENDING, STORED (e.g. `PENDING`) */
                     "filter[state]"?: ("PENDING" | "STORED")[];
                     /** @description One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`) */
-                    "filter[type]"?: ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
+                    "filter[type]": ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
                 };
                 header?: never;
                 path: {
@@ -6172,46 +6232,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get multiple lyrics.
-         * @description Retrieves multiple lyrics by available filters, or without if applicable.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners, track
-                     * @example owners
-                     */
-                    include?: string[];
-                    /** @description Lyrics Id (e.g. `nejMcAhh5N8S3EQ4LaqysVdI0cZZ`) */
-                    "filter[id]"?: string[];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Lyrics_Multi_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
+        get?: never;
         put?: never;
         /**
          * Create single lyric.
@@ -6588,7 +6609,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -6596,10 +6617,8 @@ export interface paths {
                      * @example collection
                      */
                     include?: string[];
-                    /** @description List of offline task IDs (e.g. `a468bee8-8def-4a1b-8c1e-123456789abc`) */
-                    "filter[id]"?: string[];
                     /** @description List of offline task IDs (e.g. `a468bee88def`) */
-                    "filter[installation.id]"?: string[];
+                    "filter[installation.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -6922,7 +6941,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -6931,7 +6950,7 @@ export interface paths {
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -7553,7 +7572,7 @@ export interface paths {
                      * @example collaboratorProfiles
                      */
                     include?: string[];
-                    /** @description Playlist id (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
+                    /** @description List of playlist IDs (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
@@ -8423,9 +8442,9 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description List of price configurations IDs (e.g. `cHJpY2UtY29uZmlnLTEyMzpVUw`) */
-                    "filter[id]"?: string[];
+                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -8566,14 +8585,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, provider
                      * @example owners
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -8735,7 +8754,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -8747,9 +8766,9 @@ export interface paths {
                      */
                     include?: string[];
                     /** @description List of barcode IDs (EAN-13 or UPC-A) (e.g. `00602527336510`) */
-                    "filter[barcodeId]"?: string[];
+                    "filter[barcodeId]": string[];
                     /** @description Content provider ID (e.g. `50`) */
-                    "filter[provider.id]"?: string[];
+                    "filter[provider.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -8901,56 +8920,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/providers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get multiple providers.
-         * @description Retrieves multiple providers by available filters, or without if applicable.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description List of provider IDs (e.g. `12345`) */
-                    "filter[id]"?: string[];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Providers_Multi_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/providers/{id}": {
         parameters: {
             query?: never;
@@ -9017,7 +8986,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -9026,9 +8995,9 @@ export interface paths {
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                     /** @description The type of purchased content (e.g. `albums`) */
-                    "filter[subject.type]"?: ("albums" | "tracks")[];
+                    "filter[subject.type]": ("albums" | "tracks")[];
                 };
                 header?: never;
                 path?: never;
@@ -9196,7 +9165,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
                     statsOnly?: boolean;
                     viewerContext?: string;
@@ -9210,9 +9179,9 @@ export interface paths {
                     /** @description Filter by emoji (e.g. `👍`) */
                     "filter[emoji]"?: string[];
                     /** @description Filter by subject resource ID (e.g. `12345`) */
-                    "filter[subject.id]"?: string[];
+                    "filter[subject.id]": string[];
                     /** @description Filter by subject resource type (e.g. `albums`) */
-                    "filter[subject.type]"?: ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments")[];
+                    "filter[subject.type]": ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments")[];
                 };
                 header?: never;
                 path?: never;
@@ -9514,7 +9483,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/searchHistoryEntries": {
+    "/scopes": {
         parameters: {
             query?: never;
             header?: never;
@@ -9522,19 +9491,14 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get multiple searchHistoryEntries.
-         * @description Retrieves multiple searchHistoryEntries by available filters, or without if applicable.
+         * Get multiple scopes.
+         * @description Retrieves multiple scopes by available filters, or without if applicable.
          */
         get: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /** @description Opaque identifier for a search history entry (e.g. `MjcyNjg5OTAjamF5`) */
-                    "filter[id]"?: string[];
+                query: {
+                    /** @description Filters scopes by their `requiredAccessTier`. (e.g. `THIRD_PARTY`) */
+                    "filter[requiredAccessTier]": ("THIRD_PARTY" | "THIRD_PARTY_PROD" | "PARTNER" | "INTERNAL")[];
                 };
                 header?: never;
                 path?: never;
@@ -9548,7 +9512,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SearchHistoryEntries_Multi_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Scopes_Multi_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -10337,16 +10301,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, sharedResources
                      * @example owners
                      */
                     include?: string[];
                     /** @description A share code (e.g. `xyz`) */
-                    "filter[code]"?: string[];
-                    /** @description List of shares IDs (e.g. `a468bee88def`) */
-                    "filter[id]"?: string[];
+                    "filter[code]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -10619,6 +10581,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
+                     * @deprecated
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
@@ -10730,14 +10693,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -10892,14 +10855,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
+                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -11184,15 +11147,13 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /** @description Filter by countryCode */
                     "filter[countryCode]"?: string[];
-                    /** @description Terms id (e.g. `a468bee88def`) */
-                    "filter[id]"?: string[];
                     /** @description Filter by isLatestVersion */
                     "filter[isLatestVersion]"?: string[];
                     /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE (e.g. `DEVELOPER`) */
-                    "filter[termsType]"?: ("DEVELOPER" | "UPLOAD_MARKETPLACE")[];
+                    "filter[termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE")[];
                 };
                 header?: never;
                 path?: never;
@@ -11406,46 +11367,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get multiple trackSourceFiles.
-         * @description Retrieves multiple trackSourceFiles by available filters, or without if applicable.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
-                    include?: string[];
-                    /** @description Track source file id (e.g. `a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11`) */
-                    "filter[id]"?: string[];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Multi_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
+        get?: never;
         put?: never;
         /**
          * Create single trackSourceFile.
@@ -11596,61 +11518,6 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/trackStatistics": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get multiple trackStatistics.
-         * @description Retrieves multiple trackStatistics by available filters, or without if applicable.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
-                    include?: string[];
-                    /** @description List of track IDs (e.g. `75413016`) */
-                    "filter[id]"?: string[];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["TrackStatistics_Multi_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13239,56 +13106,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/tracksMetadataStatus": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get multiple tracksMetadataStatus.
-         * @description Retrieves multiple tracksMetadataStatus by available filters, or without if applicable.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description List of track IDs (e.g. `75413016`) */
-                    "filter[id]"?: string[];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["TracksMetadataStatus_Multi_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/tracksMetadataStatus/{id}": {
         parameters: {
             query?: never;
@@ -13349,41 +13166,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get multiple usageRules.
-         * @description Retrieves multiple usageRules by available filters, or without if applicable.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description List of usage rules IDs (e.g. `VFJBQ0tTOjEyMzpOTw`) */
-                    "filter[id]"?: string[];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UsageRules_Multi_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
+        get?: never;
         put?: never;
         /**
          * Create single usageRule.
@@ -13658,7 +13441,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionAlbums_Items_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13950,7 +13733,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionArtists_Items_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14082,14 +13865,14 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: {
+                query: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection
                      * @example items
                      */
                     include?: string[];
                     /** @description Folder Id (e.g. `CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX`) */
-                    "filter[id]"?: string[];
+                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -14179,7 +13962,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection
                      * @example items
                      */
                     include?: string[];
@@ -14491,6 +14274,65 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/userCollectionFolders/{id}/relationships/userCollection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get userCollection relationship ("to-one").
+         * @description Retrieves userCollection relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: userCollection
+                     * @example userCollection
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Folder Id
+                     * @example CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/userCollectionPlaylists/{id}": {
         parameters: {
             query?: never;
@@ -14574,7 +14416,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    collectionView?: "FOLDERS";
+                    collectionView?: "FLAT" | "FOLDERS";
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
@@ -14649,7 +14491,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionPlaylists_Items_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14844,6 +14686,11 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
                      * @example items
                      */
@@ -14887,7 +14734,13 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: never;
+                query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                };
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -14913,7 +14766,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -15012,61 +14865,6 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLaters_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/userCollectionTracks": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get multiple userCollectionTracks.
-         * @description Retrieves multiple userCollectionTracks by available filters, or without if applicable.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners
-                     * @example items
-                     */
-                    include?: string[];
-                    /** @description User collection tracks id (e.g. `FMJUCzH4`) */
-                    "filter[id]"?: string[];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionTracks_Multi_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -15260,7 +15058,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionTracks_Items_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -15552,7 +15350,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionVideos_Items_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -19481,6 +19279,128 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        CollaborationInviteRedemptionsCreateOperation_Payload: {
+            data: components["schemas"]["CollaborationInviteRedemptionsCreateOperation_Payload_Data"];
+        };
+        CollaborationInviteRedemptionsCreateOperation_Payload_Data: {
+            relationships: components["schemas"]["CollaborationInviteRedemptionsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "collaborationInviteRedemptions";
+        };
+        CollaborationInviteRedemptionsCreateOperation_Payload_Data_Relationships: {
+            invite: components["schemas"]["CollaborationInviteRedemptionsCreateOperation_Payload_Data_Relationships_Invite"];
+        };
+        CollaborationInviteRedemptionsCreateOperation_Payload_Data_Relationships_Invite: {
+            data: components["schemas"]["CollaborationInviteRedemptionsCreateOperation_Payload_Data_Relationships_Invite_Data"];
+        };
+        CollaborationInviteRedemptionsCreateOperation_Payload_Data_Relationships_Invite_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "collaborationInvites";
+        };
+        CollaborationInviteRedemptions_Attributes: {
+            /**
+             * Format: date-time
+             * @description Datetime the invite was redeemed (ISO 8601)
+             */
+            redeemedAt: string;
+        };
+        CollaborationInviteRedemptions_Multi_Resource_Data_Document: {
+            data: components["schemas"]["CollaborationInviteRedemptions_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        CollaborationInviteRedemptions_Resource_Object: {
+            attributes?: components["schemas"]["CollaborationInviteRedemptions_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "collaborationInviteRedemptions";
+        };
+        CollaborationInviteRedemptions_Single_Resource_Data_Document: {
+            data: components["schemas"]["CollaborationInviteRedemptions_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        CollaborationInvitesCreateOperation_Payload: {
+            data: components["schemas"]["CollaborationInvitesCreateOperation_Payload_Data"];
+        };
+        CollaborationInvitesCreateOperation_Payload_Data: {
+            relationships: components["schemas"]["CollaborationInvitesCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "collaborationInvites";
+        };
+        CollaborationInvitesCreateOperation_Payload_Data_Relationships: {
+            subject: components["schemas"]["CollaborationInvitesCreateOperation_Payload_Data_Relationships_Subject"];
+        };
+        CollaborationInvitesCreateOperation_Payload_Data_Relationships_Subject: {
+            data: components["schemas"]["CollaborationInvitesCreateOperation_Payload_Data_Relationships_Subject_Data"];
+        };
+        CollaborationInvitesCreateOperation_Payload_Data_Relationships_Subject_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "playlists";
+        };
+        CollaborationInvites_Attributes: {
+            /** @description Opaque invite code embedded in the share link */
+            code: string;
+            /**
+             * Format: date-time
+             * @description Datetime the invite was created (ISO 8601)
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Datetime the invite expires (ISO 8601)
+             */
+            expiresAt: string;
+            /** @description Whether the invite has been revoked by the subject's owner */
+            revoked: boolean;
+        };
+        CollaborationInvites_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        CollaborationInvites_Multi_Resource_Data_Document: {
+            data: components["schemas"]["CollaborationInvites_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        CollaborationInvites_Relationships: {
+            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            subject?: components["schemas"]["Single_Relationship_Data_Document"];
+        };
+        CollaborationInvites_Resource_Object: {
+            attributes?: components["schemas"]["CollaborationInvites_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["CollaborationInvites_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "collaborationInvites";
+        };
+        CollaborationInvites_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        CollaborationInvites_Single_Resource_Data_Document: {
+            data: components["schemas"]["CollaborationInvites_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         CommentsCreateOperation_Payload: {
             data: components["schemas"]["CommentsCreateOperation_Payload_Data"];
         };
@@ -20174,7 +20094,7 @@ export interface components {
                 status: string;
             }[];
         };
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -21392,6 +21312,52 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Scopes_Attributes: {
+            /**
+             * @description Text shown to the end user on the OAuth consent screen when this scope is requested.
+             * @example List all playlists created by you.
+             */
+            consentText?: string;
+            /**
+             * @description Technical description of the scope.
+             * @example Required to list playlists created by a user.
+             */
+            description: string;
+            /**
+             * @description Wire-format scope name as used in OAuth requests.
+             * @example playlists.read
+             */
+            name: string;
+            /**
+             * @description Client access tier required to request this scope. A client whose access tier is at least this value can include the scope when initiating an OAuth flow.
+             * @example THIRD_PARTY
+             * @enum {string}
+             */
+            requiredAccessTier: "THIRD_PARTY" | "THIRD_PARTY_PROD" | "PARTNER" | "INTERNAL";
+        };
+        Scopes_Multi_Resource_Data_Document: {
+            data: components["schemas"]["Scopes_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Scopes_Resource_Object: {
+            attributes?: components["schemas"]["Scopes_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "scopes";
+        };
+        Scopes_Single_Resource_Data_Document: {
+            data: components["schemas"]["Scopes_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         SearchHistoryEntries_Attributes: {
             highlights: components["schemas"]["Highlight"][];
             query: string;
@@ -21609,6 +21575,11 @@ export interface components {
              * @enum {string}
              */
             platform: "WEB" | "ANDROID" | "IOS";
+            /**
+             * @description Optional post-finalize redirect URL. Otherwise uses platform default.
+             * @example tidal://square-auth/return?flow=onboarding&ref=abc
+             */
+            redirectUrl?: string;
         };
         SquareConnections_Attributes: {
             /**
@@ -21627,7 +21598,7 @@ export interface components {
              * @description Current status of this Square connection
              * @enum {string}
              */
-            status: "PENDING_REQUIREMENTS" | "ACCEPTED" | "REJECTED";
+            status: "DRAFT" | "PENDING_REQUIREMENTS" | "KYC_PENDING" | "ACCEPTED" | "REJECTED" | "SUSPENDED";
         };
         SquareConnections_Multi_Resource_Data_Document: {
             data: components["schemas"]["SquareConnections_Resource_Object"][];
@@ -21719,7 +21690,7 @@ export interface components {
              * @description Current status of this Stripe connection
              * @enum {string}
              */
-            status: "PENDING_REQUIREMENTS" | "UNDER_REVIEW" | "ACCEPTED" | "REJECTED";
+            status: "PENDING_REQUIREMENTS" | "UNDER_REVIEW" | "ACCEPTED" | "REJECTED" | "SUSPENDED";
         };
         StripeConnections_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -22475,6 +22446,11 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        UserCollection: {
+            id: string;
+            /** @enum {string} */
+            type: "userCollectionPlaylists";
+        };
         UserCollectionAlbumsAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
@@ -22501,6 +22477,13 @@ export interface components {
             /** Format: date-time */
             addedAt?: string;
         };
+        UserCollectionAlbumsItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
+            id: string;
+            /** @enum {string} */
+            reason: "NOT_FOUND" | "ALREADY_PRESENT";
+            /** @enum {string} */
+            type: "albums";
+        };
         UserCollectionAlbumsItemsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionAlbumsItemsRelationshipRemoveOperation_Payload_Data"][];
         };
@@ -22511,10 +22494,24 @@ export interface components {
         };
         UserCollectionAlbums_Attributes: {
             /**
+             * Format: date-time
+             * @description When the collection was last modified
+             */
+            lastModifiedAt?: string;
+            /**
              * Format: int32
              * @description Number of items in the collection
              */
             numberOfItems: number;
+        };
+        UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document_Meta: {
+            skipped: components["schemas"]["UserCollectionAlbumsItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
         };
         UserCollectionAlbums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier"][];
@@ -22597,6 +22594,13 @@ export interface components {
             /** Format: date-time */
             addedAt?: string;
         };
+        UserCollectionArtistsItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
+            id: string;
+            /** @enum {string} */
+            reason: "NOT_FOUND" | "ALREADY_PRESENT";
+            /** @enum {string} */
+            type: "artists";
+        };
         UserCollectionArtistsItemsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionArtistsItemsRelationshipRemoveOperation_Payload_Data"][];
         };
@@ -22605,7 +22609,27 @@ export interface components {
             /** @enum {string} */
             type: "artists";
         };
-        UserCollectionArtists_Attributes: Record<string, never>;
+        UserCollectionArtists_Attributes: {
+            /**
+             * Format: date-time
+             * @description When the collection was last modified
+             */
+            lastModifiedAt?: string;
+            /**
+             * Format: int32
+             * @description Number of items in the collection
+             */
+            numberOfItems: number;
+        };
+        UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document_Meta: {
+            skipped: components["schemas"]["UserCollectionArtistsItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
         UserCollectionArtists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -22666,13 +22690,24 @@ export interface components {
         };
         UserCollectionFoldersCreateOperation_Payload_Data: {
             attributes: components["schemas"]["UserCollectionFoldersCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["UserCollectionFoldersCreateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "userCollectionFolders";
         };
         UserCollectionFoldersCreateOperation_Payload_Data_Attributes: {
-            /** @enum {string} */
-            collectionType: "PLAYLISTS";
+            /**
+             * @deprecated
+             * @description The type of user collection this folder belongs to. Deprecated: send the 'userCollection' relationship instead. Accepted for backward compatibility during migration and will be removed in a future version.
+             * @enum {string}
+             */
+            collectionType?: "PLAYLISTS";
             name: string;
+        };
+        UserCollectionFoldersCreateOperation_Payload_Data_Relationships: {
+            userCollection: components["schemas"]["UserCollectionFoldersCreateOperation_Payload_Data_Relationships_UserCollection"];
+        };
+        UserCollectionFoldersCreateOperation_Payload_Data_Relationships_UserCollection: {
+            data: components["schemas"]["UserCollection"];
         };
         UserCollectionFoldersDeleteResource400ResponseBody: {
             errors: {
@@ -22714,8 +22749,12 @@ export interface components {
             name?: string;
         };
         UserCollectionFolders_Attributes: {
-            /** @enum {string} */
-            collectionType: "PLAYLISTS";
+            /**
+             * @deprecated
+             * @description The type of user collection this folder belongs to. Deprecated: use the 'userCollection' relationship instead. This field will be removed in a future version, so clients should not depend on its presence.
+             * @enum {string}
+             */
+            collectionType?: "PLAYLISTS";
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -22759,6 +22798,7 @@ export interface components {
         UserCollectionFolders_Relationships: {
             items?: components["schemas"]["UserCollectionFolders_Items_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            userCollection?: components["schemas"]["Single_Relationship_Data_Document"];
         };
         UserCollectionFolders_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionFolders_Attributes"];
@@ -22773,6 +22813,11 @@ export interface components {
              * @enum {string}
              */
             type: "userCollectionFolders";
+        };
+        UserCollectionFolders_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         UserCollectionFolders_Single_Resource_Data_Document: {
             data: components["schemas"]["UserCollectionFolders_Resource_Object"];
@@ -22797,6 +22842,18 @@ export interface components {
         };
         UserCollectionPlaylistsItemsRelationshipAddOperation_Payload_Data: {
             id: string;
+            meta?: components["schemas"]["UserCollectionPlaylistsItemsRelationshipAddOperation_Payload_Data_Meta"];
+            /** @enum {string} */
+            type: "playlists";
+        };
+        UserCollectionPlaylistsItemsRelationshipAddOperation_Payload_Data_Meta: {
+            /** Format: date-time */
+            addedAt?: string;
+        };
+        UserCollectionPlaylistsItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
+            id: string;
+            /** @enum {string} */
+            reason: "NOT_FOUND" | "ALREADY_PRESENT";
             /** @enum {string} */
             type: "playlists";
         };
@@ -22808,7 +22865,27 @@ export interface components {
             /** @enum {string} */
             type: "playlists";
         };
-        UserCollectionPlaylists_Attributes: Record<string, never>;
+        UserCollectionPlaylists_Attributes: {
+            /**
+             * Format: date-time
+             * @description When the collection was last modified
+             */
+            lastModifiedAt?: string;
+            /**
+             * Format: int32
+             * @description Number of items in the collection
+             */
+            numberOfItems: number;
+        };
+        UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["UserCollectionPlaylists_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document_Meta: {
+            skipped: components["schemas"]["UserCollectionPlaylistsItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
         UserCollectionPlaylists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionPlaylists_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -22885,6 +22962,13 @@ export interface components {
             /** @enum {string} */
             type: "tracks" | "albums" | "artists" | "playlists" | "videos";
         };
+        UserCollectionSaveForLatersItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
+            id: string;
+            /** @enum {string} */
+            reason: "NOT_FOUND" | "ALREADY_PRESENT";
+            /** @enum {string} */
+            type: "tracks" | "albums" | "artists" | "playlists" | "videos";
+        };
         UserCollectionSaveForLatersItemsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionSaveForLatersItemsRelationshipRemoveOperation_Payload_Data"][];
         };
@@ -22893,7 +22977,27 @@ export interface components {
             /** @enum {string} */
             type: "tracks" | "albums" | "artists" | "playlists" | "videos";
         };
-        UserCollectionSaveForLaters_Attributes: Record<string, never>;
+        UserCollectionSaveForLaters_Attributes: {
+            /**
+             * Format: date-time
+             * @description When the collection was last modified
+             */
+            lastModifiedAt?: string;
+            /**
+             * Format: int32
+             * @description Number of items in the collection
+             */
+            numberOfItems: number;
+        };
+        UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document_Meta: {
+            skipped: components["schemas"]["UserCollectionSaveForLatersItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
         UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -22975,6 +23079,13 @@ export interface components {
             /** Format: date-time */
             addedAt?: string;
         };
+        UserCollectionTracksItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
+            id: string;
+            /** @enum {string} */
+            reason: "NOT_FOUND" | "ALREADY_PRESENT";
+            /** @enum {string} */
+            type: "tracks";
+        };
         UserCollectionTracksItemsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["UserCollectionTracksItemsRelationshipRemoveOperation_Payload_Data"][];
         };
@@ -22983,7 +23094,27 @@ export interface components {
             /** @enum {string} */
             type: "tracks";
         };
-        UserCollectionTracks_Attributes: Record<string, never>;
+        UserCollectionTracks_Attributes: {
+            /**
+             * Format: date-time
+             * @description When the collection was last modified
+             */
+            lastModifiedAt?: string;
+            /**
+             * Format: int32
+             * @description Number of items in the collection
+             */
+            numberOfItems: number;
+        };
+        UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["UserCollectionTracks_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document_Meta: {
+            skipped: components["schemas"]["UserCollectionTracksItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
         UserCollectionTracks_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionTracks_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -23057,6 +23188,18 @@ export interface components {
         };
         UserCollectionVideosItemsRelationshipAddOperation_Payload_Data: {
             id: string;
+            meta?: components["schemas"]["UserCollectionVideosItemsRelationshipAddOperation_Payload_Data_Meta"];
+            /** @enum {string} */
+            type: "videos";
+        };
+        UserCollectionVideosItemsRelationshipAddOperation_Payload_Data_Meta: {
+            /** Format: date-time */
+            addedAt?: string;
+        };
+        UserCollectionVideosItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
+            id: string;
+            /** @enum {string} */
+            reason: "NOT_FOUND" | "ALREADY_PRESENT";
             /** @enum {string} */
             type: "videos";
         };
@@ -23068,7 +23211,27 @@ export interface components {
             /** @enum {string} */
             type: "videos";
         };
-        UserCollectionVideos_Attributes: Record<string, never>;
+        UserCollectionVideos_Attributes: {
+            /**
+             * Format: date-time
+             * @description When the collection was last modified
+             */
+            lastModifiedAt?: string;
+            /**
+             * Format: int32
+             * @description Number of items in the collection
+             */
+            numberOfItems: number;
+        };
+        UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document_Meta: {
+            skipped: components["schemas"]["UserCollectionVideosItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
         UserCollectionVideos_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
