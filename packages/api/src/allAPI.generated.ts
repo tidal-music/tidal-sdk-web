@@ -13283,11 +13283,6 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -13356,11 +13351,6 @@ export interface paths {
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("addedAt" | "-addedAt" | "artists.name" | "-artists.name" | "releaseDate" | "-releaseDate" | "title" | "-title")[];
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -13409,13 +13399,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -13575,11 +13559,6 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -13648,11 +13627,6 @@ export interface paths {
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("addedAt" | "-addedAt" | "name" | "-name")[];
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -13701,13 +13675,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -14348,11 +14316,6 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -14686,11 +14649,6 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
                      * @example items
                      */
@@ -14734,13 +14692,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -14900,11 +14852,6 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -14973,11 +14920,6 @@ export interface paths {
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("addedAt" | "-addedAt" | "albums.title" | "-albums.title" | "artists.name" | "-artists.name" | "duration" | "-duration" | "title" | "-title")[];
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -15026,13 +14968,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -15192,11 +15128,6 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -15265,11 +15196,6 @@ export interface paths {
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("addedAt" | "-addedAt" | "artists.name" | "-artists.name" | "duration" | "-duration" | "title" | "-title")[];
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -15318,13 +15244,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -15485,11 +15405,6 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -15559,11 +15474,6 @@ export interface paths {
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("albums.addedAt" | "-albums.addedAt" | "albums.artists.name" | "-albums.artists.name" | "albums.releaseDate" | "-albums.releaseDate" | "albums.title" | "-albums.title")[];
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -15613,13 +15523,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -15715,11 +15619,6 @@ export interface paths {
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("artists.addedAt" | "-artists.addedAt" | "artists.name" | "-artists.name")[];
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -15769,13 +15668,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -16073,11 +15966,6 @@ export interface paths {
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("tracks.addedAt" | "-tracks.addedAt" | "tracks.albums.title" | "-tracks.albums.title" | "tracks.artists.name" | "-tracks.artists.name" | "tracks.duration" | "-tracks.duration" | "tracks.title" | "-tracks.title")[];
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -16127,13 +16015,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -16229,11 +16111,6 @@ export interface paths {
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("videos.addedAt" | "-videos.addedAt" | "videos.artists.name" | "-videos.artists.name" | "videos.duration" | "-videos.duration" | "videos.title" | "-videos.title")[];
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -16283,13 +16160,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -16379,11 +16250,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
                     /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
@@ -16571,11 +16437,6 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -16642,11 +16503,6 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -16710,11 +16566,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
                     /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
@@ -16782,11 +16633,6 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -16850,11 +16696,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
                     /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
@@ -16986,11 +16827,6 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -17057,11 +16893,6 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
                      * @example artists
                      */
@@ -17105,13 +16936,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -17158,13 +16983,7 @@ export interface paths {
          */
         delete: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -17279,11 +17098,6 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: tracks
                      * @example tracks
                      */
@@ -17327,13 +17141,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -17380,13 +17188,7 @@ export interface paths {
          */
         delete: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -17440,11 +17242,6 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: videos
                      * @example videos
                      */
@@ -17488,13 +17285,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -17541,13 +17332,7 @@ export interface paths {
          */
         delete: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -17599,11 +17384,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
                     /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
@@ -17672,11 +17452,6 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -17744,11 +17519,6 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
@@ -17815,11 +17585,6 @@ export interface paths {
                 query?: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
                     /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
@@ -19054,6 +18819,11 @@ export interface components {
              * @enum {string}
              */
             accessType?: "PUBLIC" | "UNLISTED" | "PRIVATE";
+            /**
+             * @description Whether the album is AI-generated
+             * @example false
+             */
+            ai?: boolean;
             /**
              * @description Album type
              * @enum {string}

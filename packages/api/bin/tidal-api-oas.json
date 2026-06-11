@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.10.28"
+    "version" : "1.10.32"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -19042,15 +19042,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -19220,15 +19211,6 @@
             }
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -19305,15 +19287,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -19470,15 +19443,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -19652,15 +19616,6 @@
             }
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -19737,15 +19692,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -20611,15 +20557,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -21167,15 +21104,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items",
           "example" : "items",
           "in" : "query",
@@ -21242,15 +21170,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -21407,15 +21326,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -21589,15 +21499,6 @@
             }
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -21674,15 +21575,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -21839,15 +21731,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -22021,15 +21904,6 @@
             }
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -22106,15 +21980,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -22272,15 +22137,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -22456,15 +22312,6 @@
             }
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -22542,15 +22389,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -22710,15 +22548,6 @@
             }
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -22796,15 +22625,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -23278,15 +23098,6 @@
             }
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -23364,15 +23175,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -23532,15 +23334,6 @@
             }
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -23622,15 +23415,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
@@ -23693,15 +23477,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -23945,15 +23720,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -24044,15 +23810,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -24131,15 +23888,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -24234,15 +23982,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -24321,15 +24060,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -24506,15 +24236,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -24597,15 +24318,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
@@ -24678,15 +24390,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: artists",
           "example" : "artists",
           "in" : "query",
@@ -24753,15 +24456,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -24922,15 +24616,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
@@ -25003,15 +24688,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: tracks",
           "example" : "tracks",
           "in" : "query",
@@ -25078,15 +24754,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -25167,15 +24834,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
         "requestBody" : {
@@ -25248,15 +24906,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: videos",
           "example" : "videos",
           "in" : "query",
@@ -25323,15 +24972,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -25409,15 +25049,6 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -25508,15 +25139,6 @@
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
           "in" : "query",
           "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -25613,15 +25235,6 @@
             "type" : "string"
           }
         }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
           "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
           "example" : "en-US",
           "in" : "query",
@@ -25708,15 +25321,6 @@
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
           "in" : "query",
           "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "ISO 3166-1 alpha-2 country code",
-          "example" : "US",
-          "in" : "query",
-          "name" : "countryCode",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -27906,6 +27510,11 @@
             "description" : "Access type",
             "example" : "PRIVATE",
             "enum" : [ "PUBLIC", "UNLISTED", "PRIVATE" ]
+          },
+          "ai" : {
+            "type" : "boolean",
+            "description" : "Whether the album is AI-generated",
+            "example" : false
           },
           "albumType" : {
             "type" : "string",
