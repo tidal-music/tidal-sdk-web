@@ -19612,8 +19612,6 @@ export interface components {
         ClientsUpdateOperation_Payload_Data_Attributes: {
             description?: string;
             name?: string;
-            /** @enum {string} */
-            platformPreset?: "NONE" | "WEB" | "ANDROID" | "IOS";
             redirectUris?: string[];
             scopes?: string[];
         };
@@ -19625,8 +19623,6 @@ export interface components {
             createdAt?: string;
             description?: string;
             name: string;
-            /** @enum {string} */
-            platformPreset?: "NONE" | "WEB" | "ANDROID" | "IOS";
             redirectUris?: string[];
             scopes?: string[];
         };

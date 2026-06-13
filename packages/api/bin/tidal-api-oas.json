@@ -29270,10 +29270,6 @@
           "name" : {
             "type" : "string"
           },
-          "platformPreset" : {
-            "type" : "string",
-            "enum" : [ "NONE", "WEB", "ANDROID", "IOS" ]
-          },
           "redirectUris" : {
             "type" : "array",
             "items" : {
@@ -29309,10 +29305,6 @@
           },
           "name" : {
             "type" : "string"
-          },
-          "platformPreset" : {
-            "type" : "string",
-            "enum" : [ "NONE", "WEB", "ANDROID", "IOS" ]
           },
           "redirectUris" : {
             "type" : "array",
