@@ -19,7 +19,7 @@ class TidalPlayTrigger extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['product-id', 'product-type'];
+    return ['product-id', 'product-type', 'share-code'];
   }
 
   async #loadAndPlay() {
@@ -33,14 +33,15 @@ class TidalPlayTrigger extends HTMLElement {
   }
 
   #loadIfNotLoaded() {
-    const currentProductIdInPlayer =
-      Player.getMediaProduct()?.productId ?? undefined;
+    const currentMediaProduct = Player.getMediaProduct();
+    const nextMediaProduct = this.mediaProduct;
 
     if (
-      this.mediaProduct &&
-      this.mediaProduct.productId !== currentProductIdInPlayer
+      nextMediaProduct &&
+      (currentMediaProduct?.productId !== nextMediaProduct.productId ||
+        currentMediaProduct?.shareCode !== nextMediaProduct.shareCode)
     ) {
-      return Player.load(this.mediaProduct, 0);
+      return Player.load(nextMediaProduct, 0);
     }
 
     return undefined;
@@ -89,10 +90,12 @@ class TidalPlayTrigger extends HTMLElement {
 
     const productType =
       this.getAttribute('product-type') === 'video' ? 'video' : 'track';
+    const shareCode = this.getAttribute('share-code') ?? undefined;
 
     return {
       productId,
       productType,
+      shareCode,
       sourceId: '',
       sourceType: '',
     };
