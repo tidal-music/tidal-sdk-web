@@ -39,6 +39,7 @@ class TidalPlayTrigger extends HTMLElement {
     if (
       nextMediaProduct &&
       (currentMediaProduct?.productId !== nextMediaProduct.productId ||
+        currentMediaProduct?.productType !== nextMediaProduct.productType ||
         currentMediaProduct?.shareCode !== nextMediaProduct.shareCode)
     ) {
       return Player.load(nextMediaProduct, 0);
@@ -90,7 +91,8 @@ class TidalPlayTrigger extends HTMLElement {
 
     const productType =
       this.getAttribute('product-type') === 'video' ? 'video' : 'track';
-    const shareCode = this.getAttribute('share-code') ?? undefined;
+    const rawShareCode = this.getAttribute('share-code');
+    const shareCode = rawShareCode?.trim() || undefined;
 
     return {
       productId,
