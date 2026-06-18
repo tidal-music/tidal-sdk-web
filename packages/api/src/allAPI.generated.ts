@@ -1737,6 +1737,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/artistClaimStatuses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple artistClaimStatuses.
+         * @description Retrieves multiple artistClaimStatuses by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description List of artist claim status IDs (e.g. `QVJUSVNUUzoxNTY2`) */
+                    "filter[id]": string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistClaimStatuses_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/artistClaims": {
         parameters: {
             query?: never;
@@ -2272,7 +2322,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
@@ -2376,7 +2426,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
@@ -2545,6 +2595,65 @@ export interface paths {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: biography
                      * @example biography
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Artists_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artists/{id}/relationships/claimStatus": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get claimStatus relationship ("to-one").
+         * @description Retrieves claimStatus relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: claimStatus
+                     * @example claimStatus
                      */
                     include?: string[];
                 };
@@ -19121,6 +19230,38 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ArtistClaimStatuses_Attributes: {
+            /** @description Claim sources contributing to the current status. Empty when there is no active claim. */
+            claimSources: ("ARTIST_CLAIMS" | "MANUAL_ARTIST_CLAIMS")[];
+            /**
+             * @description Whether the artist profile currently has an active claim
+             * @enum {string}
+             */
+            status: "CLAIM_IN_PROGRESS" | "NO_ACTIVE_CLAIM";
+        };
+        ArtistClaimStatuses_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ArtistClaimStatuses_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ArtistClaimStatuses_Resource_Object: {
+            attributes?: components["schemas"]["ArtistClaimStatuses_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "artistClaimStatuses";
+        };
+        ArtistClaimStatuses_Single_Resource_Data_Document: {
+            data: components["schemas"]["ArtistClaimStatuses_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload_Data"][];
         };
@@ -19414,6 +19555,7 @@ export interface components {
         Artists_Relationships: {
             albums?: components["schemas"]["Multi_Relationship_Data_Document"];
             biography?: components["schemas"]["Single_Relationship_Data_Document"];
+            claimStatus?: components["schemas"]["Single_Relationship_Data_Document"];
             followers?: components["schemas"]["Artists_Followers_Multi_Relationship_Data_Document"];
             following?: components["schemas"]["Artists_Following_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
@@ -20473,7 +20615,7 @@ export interface components {
                 status: string;
             }[];
         };
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };

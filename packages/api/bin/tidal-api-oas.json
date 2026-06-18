@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.10.33"
+    "version" : "1.10.34"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -33,6 +33,9 @@
   }, {
     "description" : "A biography text for an artist.",
     "name" : "artistBiographies"
+  }, {
+    "description" : "Claim status for an artist profile.",
+    "name" : "artistClaimStatuses"
   }, {
     "description" : "A claim by an artist to own an artist profile via DSP authentication.",
     "name" : "artistClaims"
@@ -2757,6 +2760,67 @@
         }
       }
     },
+    "/artistClaimStatuses" : {
+      "get" : {
+        "description" : "Retrieves multiple artistClaimStatuses by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "List of artist claim status IDs (e.g. `QVJUSVNUUzoxNTY2`)",
+          "in" : "query",
+          "name" : "filter[id]",
+          "required" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ArtistClaimStatuses_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple artistClaimStatuses.",
+        "tags" : [ "artistClaimStatuses" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/artistClaims" : {
       "get" : {
         "description" : "Retrieves multiple artistClaims by available filters, or without if applicable.",
@@ -3492,7 +3556,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -3673,7 +3737,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, biography, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -3969,6 +4033,78 @@
         "tags" : [ "artists" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/artists/{id}/relationships/claimStatus" : {
+      "get" : {
+        "description" : "Retrieves claimStatus relationship.",
+        "parameters" : [ {
+          "description" : "Artist id",
+          "example" : "1566",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: claimStatus",
+          "example" : "claimStatus",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "claimStatus"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Artists_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get claimStatus relationship (\"to-one\").",
+        "tags" : [ "artists" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -28129,6 +28265,78 @@
           }
         }
       },
+      "ArtistClaimStatuses_Attributes" : {
+        "required" : [ "claimSources", "status" ],
+        "type" : "object",
+        "properties" : {
+          "claimSources" : {
+            "type" : "array",
+            "description" : "Claim sources contributing to the current status. Empty when there is no active claim.",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "ARTIST_CLAIMS", "MANUAL_ARTIST_CLAIMS" ]
+            }
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Whether the artist profile currently has an active claim",
+            "enum" : [ "CLAIM_IN_PROGRESS", "NO_ACTIVE_CLAIM" ]
+          }
+        }
+      },
+      "ArtistClaimStatuses_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistClaimStatuses_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ArtistClaimStatuses_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ArtistClaimStatuses_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ArtistClaimStatuses_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ArtistClaimStatuses_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -28824,6 +29032,9 @@
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "biography" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          },
+          "claimStatus" : {
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
           },
           "followers" : {
@@ -31281,6 +31492,7 @@
               "albums" : "#/components/schemas/Albums_Resource_Object",
               "appreciations" : "#/components/schemas/Appreciations_Resource_Object",
               "artistBiographies" : "#/components/schemas/ArtistBiographies_Resource_Object",
+              "artistClaimStatuses" : "#/components/schemas/ArtistClaimStatuses_Resource_Object",
               "artistClaims" : "#/components/schemas/ArtistClaims_Resource_Object",
               "artistRoles" : "#/components/schemas/ArtistRoles_Resource_Object",
               "artists" : "#/components/schemas/Artists_Resource_Object",
@@ -31358,6 +31570,8 @@
             "$ref" : "#/components/schemas/Appreciations_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/ArtistBiographies_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/ArtistClaimStatuses_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/ArtistClaims_Resource_Object"
           }, {
