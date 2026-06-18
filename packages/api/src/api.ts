@@ -2,17 +2,21 @@ import type { CredentialsProvider } from '@tidal-music/common';
 import createClient, { type Middleware } from 'openapi-fetch';
 
 import type { paths } from './allAPI.generated.js';
+import { type RetryOptions, fetchWithRetry } from './retry.js';
 
 /**
  * Create a Tidal API client with the provided credentials.
  *
  * @param credentialsProvider The credentials provider, from Auth module.
  * @param baseUrl Override the base URL to use for the API client.
+ * @param retryOptions Override the retry mechanism applied to idempotent
+ *   (GET/HEAD/OPTIONS) requests. Pass `{ enabled: false }` to disable it.
  * @returns A Tidal API client.
  */
 export function createAPIClient(
   credentialsProvider: CredentialsProvider,
   baseUrl = 'https://openapi.tidal.com/v2/',
+  retryOptions?: RetryOptions,
 ) {
   const authMiddleware: Middleware = {
     async onRequest({ request }) {
@@ -36,6 +40,8 @@ export function createAPIClient(
 
   const apiClient = createClient<paths>({
     baseUrl,
+    // Retry idempotent (GET/HEAD/OPTIONS) requests on transient failures.
+    fetch: fetchWithRetry(retryOptions),
     // Preserve commas and reserved characters in query values (e.g. JSON:API
     // `include` lists and `page[cursor]`) so gateways parse them as intended.
     querySerializer: { allowReserved: true },

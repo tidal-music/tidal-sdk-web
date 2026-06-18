@@ -93,6 +93,63 @@ describe('createAPIClient', () => {
     );
   });
 
+  it('retries idempotent GET requests on a 503 then resolves with data', async () => {
+    const fetchMock = vi
+      .fn<(input: Request) => Promise<Response>>()
+      .mockResolvedValueOnce(new Response('', { status: 503 }))
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ data: [] }), {
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          status: 200,
+        }),
+      );
+    vi.stubGlobal('fetch', fetchMock);
+
+    const provider = mockCredentialsProvider();
+    const client = createAPIClient(provider, undefined, {
+      status: { baseDelayMs: 0, maxDelayMs: 0 },
+    });
+    const { data } = await client.GET('/albums');
+
+    expect(data).toEqual({ data: [] });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+
+    // The Authorization header (stamped once by the auth middleware) must
+    // survive the per-attempt Request reconstruction on the retried call.
+    const retried = fetchMock.mock.calls.at(1)?.[0];
+    if (!(retried instanceof Request)) {
+      throw new Error('expected the retried fetch argument to be a Request');
+    }
+    expect(retried.headers.get('Authorization')).toBe(
+      'Bearer test-access-token',
+    );
+  });
+
+  it('does not retry non-idempotent POST requests on a 503', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response('', { status: 503 }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const provider = mockCredentialsProvider();
+    const client = createAPIClient(provider, undefined, {
+      status: { baseDelayMs: 0, maxDelayMs: 0 },
+    });
+    await client.POST('/albums', {
+      body: {
+        data: {
+          attributes: { title: 'Test Album' },
+          relationships: {
+            artists: { data: [{ id: '123', type: 'artists' }] },
+          },
+          type: 'albums',
+        },
+      },
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   it('serializes query params with allowReserved (commas in include, page[cursor])', async () => {
     const provider = mockCredentialsProvider();
     const client = createAPIClient(provider);
