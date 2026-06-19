@@ -14,7 +14,6 @@ import type {
   VideoQuality,
 } from '../../internal/types.js';
 import * as StreamingMetrics from '../event-tracking/streaming-metrics/index.js';
-import { withRetries } from '../helpers/retry.js';
 import { waitFor } from '../helpers/wait-for.js';
 import { trueTime } from '../true-time.js';
 
@@ -334,16 +333,10 @@ function parseDataUrl(dataUrl: string | undefined):
   };
 }
 
-const TRACK_MANIFEST_MAX_RETRIES = 3;
-const TRACK_MANIFEST_BASE_DELAY_MS = 500;
-
-function isRetryableStatus(status: number): boolean {
-  return (status >= 500 && status < 600) || status === 429;
-}
-
 /**
  * Fetches the track manifest for a given media product using the API client.
- * Retries on 5xx and 429 errors with exponential backoff.
+ * Transient failures (network errors, timeouts, 429/5xx) are retried inside
+ * `createAPIClient`'s default retry mechanism.
  */
 // eslint-disable-next-line complexity
 async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
@@ -366,33 +359,24 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
 
   let response;
   try {
-    response = await withRetries(
-      () =>
-        apiClient.GET('/trackManifests/{id}', {
-          params: {
-            headers: {
-              'x-playback-session-id': streamingSessionId,
-            },
-            path: {
-              id: trackId,
-            },
-            query: {
-              adaptive: audioAdaptiveBitrateStreaming,
-              formats: audioQualityToFormats(audioQuality),
-              manifestType: isFairPlaySupported ? 'HLS' : 'MPEG_DASH',
-              shareCode,
-              uriScheme: 'DATA',
-              usage: 'PLAYBACK',
-            },
-          },
-        }),
-      {
-        baseDelayMs: TRACK_MANIFEST_BASE_DELAY_MS,
-        maxRetries: TRACK_MANIFEST_MAX_RETRIES,
-        shouldRetry: res =>
-          Boolean(res.error) && isRetryableStatus(res.response.status),
+    response = await apiClient.GET('/trackManifests/{id}', {
+      params: {
+        headers: {
+          'x-playback-session-id': streamingSessionId,
+        },
+        path: {
+          id: trackId,
+        },
+        query: {
+          adaptive: audioAdaptiveBitrateStreaming,
+          formats: audioQualityToFormats(audioQuality),
+          manifestType: isFairPlaySupported ? 'HLS' : 'MPEG_DASH',
+          shareCode,
+          uriScheme: 'DATA',
+          usage: 'PLAYBACK',
+        },
       },
-    );
+    });
   } catch {
     throw new PlayerError('PENetwork', 'NPBI0');
   }
@@ -446,7 +430,8 @@ async function _fetchTrackManifest(options: Options): Promise<PlaybackInfo> {
 
 /**
  * Fetches the video manifest for a given media product using the API client.
- * Retries on 5xx and 429 errors with exponential backoff.
+ * Transient failures (network errors, timeouts, 429/5xx) are retried inside
+ * `createAPIClient`'s default retry mechanism.
  */
 async function _fetchVideoManifest(options: Options): Promise<PlaybackInfo> {
   const apiClient = createAPIClient(
@@ -459,29 +444,20 @@ async function _fetchVideoManifest(options: Options): Promise<PlaybackInfo> {
 
   let response;
   try {
-    response = await withRetries(
-      () =>
-        apiClient.GET('/videoManifests/{id}', {
-          params: {
-            headers: {
-              'x-playback-session-id': streamingSessionId,
-            },
-            path: {
-              id: videoId,
-            },
-            query: {
-              uriScheme: 'DATA',
-              usage: 'PLAYBACK',
-            },
-          },
-        }),
-      {
-        baseDelayMs: TRACK_MANIFEST_BASE_DELAY_MS,
-        maxRetries: TRACK_MANIFEST_MAX_RETRIES,
-        shouldRetry: res =>
-          Boolean(res.error) && isRetryableStatus(res.response.status),
+    response = await apiClient.GET('/videoManifests/{id}', {
+      params: {
+        headers: {
+          'x-playback-session-id': streamingSessionId,
+        },
+        path: {
+          id: videoId,
+        },
+        query: {
+          uriScheme: 'DATA',
+          usage: 'PLAYBACK',
+        },
       },
-    );
+    });
   } catch {
     throw new PlayerError('PENetwork', 'NPBI0');
   }
