@@ -1,18 +1,15 @@
 /**
  * HTTP retry mechanism for the TIDAL API client
  *
- * Idempotent requests (GET/HEAD/OPTIONS) are retried with exponential backoff
- * and jitter, using a separate retry budget per failure category. The delay
- * before a retry is
+ * Read-only requests (GET/HEAD/OPTIONS) are retried with exponential backoff
+ * and jitter. The delay before a retry is
  *
  *   D = min(B * 2 ** n * j, M)
  *
  * where B is the base delay, n is the zero-based retry number, j is a random
  * jitter factor in [0.8, 1) and M is the maximum delay.
  *
- * Non-idempotent requests (POST/PATCH/PUT/DELETE) are passed through untouched —
- * a failed write must never be silently repeated, and the per-attempt read
- * timeout would otherwise risk aborting an in-flight mutation.
+ * Write requests (POST/PATCH/PUT/DELETE) are passed through untouched.
  */
 
 /** A fetch implementation compatible with openapi-fetch's `fetch` option. */
