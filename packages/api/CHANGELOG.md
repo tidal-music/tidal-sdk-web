@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- HTTP retry mechanism for idempotent (GET/HEAD/OPTIONS) requests. Transient
+- HTTP retry mechanism for read-only (GET/HEAD/OPTIONS) requests. Transient
   failures (HTTP 429/5xx, network errors and read timeouts) are retried with
   per-category exponential backoff and jitter, and requests now use a 10s read
   timeout. Configurable via the new optional `retryOptions` parameter of
