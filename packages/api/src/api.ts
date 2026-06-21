@@ -9,7 +9,7 @@ import { type RetryOptions, fetchWithRetry } from './retry.js';
  *
  * @param credentialsProvider The credentials provider, from Auth module.
  * @param baseUrl Override the base URL to use for the API client.
- * @param retryOptions Override the retry mechanism applied to idempotent
+ * @param retryOptions Customize the retry mechanism applied to read-only
  *   (GET/HEAD/OPTIONS) requests. Pass `{ enabled: false }` to disable it.
  * @returns A Tidal API client.
  */
@@ -40,7 +40,7 @@ export function createAPIClient(
 
   const apiClient = createClient<paths>({
     baseUrl,
-    // Retry idempotent (GET/HEAD/OPTIONS) requests on transient failures.
+    // Retry read-only (GET/HEAD/OPTIONS) requests on transient failures.
     fetch: fetchWithRetry(retryOptions),
     // Preserve commas and reserved characters in query values (e.g. JSON:API
     // `include` lists and `page[cursor]`) so gateways parse them as intended.

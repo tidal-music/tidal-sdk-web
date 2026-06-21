@@ -93,7 +93,7 @@ describe('createAPIClient', () => {
     );
   });
 
-  it('retries idempotent GET requests on a 503 then resolves with data', async () => {
+  it('retries read-only GET requests on a 503 then resolves with data', async () => {
     const fetchMock = vi
       .fn<(input: Request) => Promise<Response>>()
       .mockResolvedValueOnce(new Response('', { status: 503 }))
