@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.2] - 2026-06-19
+
+### Changed
+
+- Track and video manifest requests now rely on `@tidal-music/api`'s built-in
+  retry mechanism instead of the player's own retry wrapper, avoiding nested
+  retries. Transient failures (HTTP 429/5xx, network errors and read timeouts)
+  are retried with exponential backoff and a 10s per-attempt read timeout.
+
 ## [0.18.1] - 2026-05-13
 
 ### Fixed
