@@ -17,6 +17,7 @@ import { getIsPostPaywall } from '../internal/helpers/get-is-post-paywall.js';
 import type { StreamInfo } from '../internal/helpers/manifest-parser.js';
 import { normalizeVolume } from '../internal/helpers/normalize-volume.js';
 import type { PlaybackInfo } from '../internal/helpers/playback-info-resolver.js';
+import { timestamps } from '../internal/helpers/streaming-metrics-timestamps.js';
 import { streamingSessionStore } from '../internal/helpers/streaming-session-store.js';
 import { waitFor } from '../internal/helpers/wait-for.js';
 import type { OutputType } from '../internal/output-devices.js';
@@ -208,12 +209,9 @@ export class BasePlayer {
     // seamless transition (gapless or crossfade) the next track already
     // started and the correct timestamp was already set at that time.
     if (!isSeamlessTransition && playerState.preloadedStreamingSessionId) {
-      performance.mark(
+      timestamps.mark(
         'streaming_metrics:playback_statistics:idealStartTimestamp',
-        {
-          detail: playerState.preloadedStreamingSessionId,
-          startTime: trueTime.now(),
-        },
+        playerState.preloadedStreamingSessionId,
       );
     }
 
@@ -429,46 +427,38 @@ export class BasePlayer {
       return;
     }
 
-    performance.mark(
+    timestamps.mark(
       'streaming_metrics:playback_statistics:actualStartTimestamp',
-      {
-        detail: streamingSessionId,
-        startTime: trueTime.now(),
-      },
+      streamingSessionId,
     );
-
-    performance.measure('idealStartTimestamp -> actualStartTimestamp', {
-      detail: streamingSessionId,
-      end: 'streaming_metrics:playback_statistics:actualStartTimestamp',
-      start: 'streaming_metrics:playback_statistics:idealStartTimestamp',
-    });
 
     try {
       // Start filling in playbackStatistics
       StreamingMetrics.playbackStatistics({
-        actualStartTimestamp: trueTime.timestamp(
+        actualStartTimestamp: timestamps.get(
           'streaming_metrics:playback_statistics:actualStartTimestamp',
           streamingSessionId,
         ),
-        idealStartTimestamp: trueTime.timestamp(
+        idealStartTimestamp: timestamps.get(
           'streaming_metrics:playback_statistics:idealStartTimestamp',
           streamingSessionId,
         ),
         outputDevice: this.#outputDeviceType,
         streamingSessionId,
-      });
+      }).catch(console.error);
     } catch (e) {
       console.error(
         e,
         'actualStartTimestamp or idealStartTimestamp is missing for this streaming session',
       );
     } finally {
-      performance.clearMarks(
+      timestamps.clear(
         'streaming_metrics:playback_statistics:actualStartTimestamp',
+        streamingSessionId,
       );
-
-      performance.clearMarks(
+      timestamps.clear(
         'streaming_metrics:playback_statistics:idealStartTimestamp',
+        streamingSessionId,
       );
     }
 
