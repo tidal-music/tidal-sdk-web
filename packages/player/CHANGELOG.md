@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.3] - 2026-06-23
+
+### Fixed
+
+- Streaming metrics timestamps are now scoped per streaming session in memory
+  instead of relying on shared browser Performance API marks. Quickly skipping
+  tracks could let one session clear or overwrite another session's marks, and
+  when the timestamp lookup threw inside the DRM license request/response
+  filters Shaka surfaced it as a spurious inner `1007` / outer `6007` error even
+  though the network request had succeeded. DRM license fetch metrics are now
+  captured at request time and recovered from `response.originalRequest`, so the
+  emitted `drm_license_fetch` events keep the correct request session id and
+  plausible request/response timestamps ([#661](https://github.com/tidal-music/tidal-sdk-web/pull/661)).
+
 ## [0.18.2] - 2026-06-19
 
 ### Changed
