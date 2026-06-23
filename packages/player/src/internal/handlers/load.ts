@@ -6,6 +6,7 @@ import { generateGUID } from '../../internal/helpers/generate-guid.js';
 import { parseManifest } from '../../internal/helpers/manifest-parser.js';
 import { fetchPlaybackInfo } from '../../internal/helpers/playback-info-resolver.js';
 import type { PlaybackInfo } from '../../internal/helpers/playback-info-resolver.js';
+import { timestamps } from '../../internal/helpers/streaming-metrics-timestamps.js';
 import { streamingSessionStore } from '../../internal/helpers/streaming-session-store.js';
 import {
   PlayerError,
@@ -73,12 +74,9 @@ export async function load(
   ) {
     const player = playerState.activePlayer;
 
-    performance.mark(
+    timestamps.mark(
       'streaming_metrics:playback_statistics:idealStartTimestamp',
-      {
-        detail: playerState.preloadedStreamingSessionId,
-        startTime: trueTime.now(),
-      },
+      playerState.preloadedStreamingSessionId,
     );
 
     await player.reset({ keepPreload: true });
@@ -111,12 +109,9 @@ export async function load(
     }),
   ]).catch(console.error);
 
-  performance.mark(
+  timestamps.mark(
     'streaming_metrics:playback_statistics:idealStartTimestamp',
-    {
-      detail: streamingSessionId,
-      startTime: trueTime.now(),
-    },
+    streamingSessionId,
   );
 
   const { clientId, token } =

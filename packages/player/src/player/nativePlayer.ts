@@ -7,6 +7,7 @@ import * as Config from '../config.js';
 import { events } from '../event-bus.js';
 import * as StreamingMetrics from '../internal/event-tracking/streaming-metrics/index.js';
 import { composePlaybackContext } from '../internal/helpers/compose-playback-context.js';
+import { timestamps } from '../internal/helpers/streaming-metrics-timestamps.js';
 import { streamingSessionStore } from '../internal/helpers/streaming-session-store.js';
 import { PlayerError } from '../internal/index.js';
 import type { ErrorCodes } from '../internal/index.js';
@@ -161,8 +162,9 @@ export default class NativePlayer extends BasePlayer {
   async #handleNetworkError() {
     this.debugLog('handleNetworkError');
 
-    const actualStartTimestamp = trueTime.timestamp(
+    const actualStartTimestamp = timestamps.get(
       'streaming_metrics:playback_statistics:actualStartTimestamp',
+      this.currentStreamingSessionId,
     );
     const timeSinceStart =
       actualStartTimestamp !== undefined

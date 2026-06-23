@@ -14,8 +14,8 @@ import type {
   VideoQuality,
 } from '../../internal/types.js';
 import * as StreamingMetrics from '../event-tracking/streaming-metrics/index.js';
+import { timestamps } from '../helpers/streaming-metrics-timestamps.js';
 import { waitFor } from '../helpers/wait-for.js';
-import { trueTime } from '../true-time.js';
 
 type BasePlaybackInfo = {
   /**
@@ -501,10 +501,10 @@ export async function fetchPlaybackInfo(options: Options) {
   const { streamingSessionId } = options;
   const events = [];
 
-  performance.mark('streaming_metrics:playback_info_fetch:startTimestamp', {
-    detail: streamingSessionId,
-    startTime: trueTime.now(),
-  });
+  timestamps.mark(
+    'streaming_metrics:playback_info_fetch:startTimestamp',
+    streamingSessionId,
+  );
 
   try {
     let playbackInfo: PlaybackInfo;
@@ -553,17 +553,17 @@ export async function fetchPlaybackInfo(options: Options) {
       }).catch(console.error);
     }
 
-    performance.mark('streaming_metrics:playback_info_fetch:endTimestamp', {
-      detail: streamingSessionId,
-      startTime: trueTime.now(),
-    });
+    timestamps.mark(
+      'streaming_metrics:playback_info_fetch:endTimestamp',
+      streamingSessionId,
+    );
 
     return playbackInfo;
   } catch (e) {
-    performance.mark('streaming_metrics:playback_info_fetch:endTimestamp', {
-      detail: streamingSessionId,
-      startTime: trueTime.now(),
-    });
+    timestamps.mark(
+      'streaming_metrics:playback_info_fetch:endTimestamp',
+      streamingSessionId,
+    );
 
     StreamingMetrics.playbackInfoFetch({
       endReason: 'ERROR',
@@ -575,8 +575,9 @@ export async function fetchPlaybackInfo(options: Options) {
     events.push(
       StreamingMetrics.streamingSessionEnd({
         streamingSessionId,
-        timestamp: trueTime.timestamp(
+        timestamp: timestamps.get(
           'streaming_metrics:playback_info_fetch:endTimestamp',
+          streamingSessionId,
         ),
       }),
     );
@@ -586,11 +587,13 @@ export async function fetchPlaybackInfo(options: Options) {
   } finally {
     events.push(
       StreamingMetrics.playbackInfoFetch({
-        endTimestamp: trueTime.timestamp(
+        endTimestamp: timestamps.get(
           'streaming_metrics:playback_info_fetch:endTimestamp',
+          streamingSessionId,
         ),
-        startTimestamp: trueTime.timestamp(
+        startTimestamp: timestamps.get(
           'streaming_metrics:playback_info_fetch:startTimestamp',
+          streamingSessionId,
         ),
         streamingSessionId,
       }),
@@ -598,11 +601,13 @@ export async function fetchPlaybackInfo(options: Options) {
 
     StreamingMetrics.commit(events).catch(console.error);
 
-    performance.clearMarks(
+    timestamps.clear(
       'streaming_metrics:playback_info_fetch:endTimestamp',
+      streamingSessionId,
     );
-    performance.clearMarks(
+    timestamps.clear(
       'streaming_metrics:playback_info_fetch:startTimestamp',
+      streamingSessionId,
     );
   }
 }

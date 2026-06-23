@@ -13,6 +13,7 @@ import { composePlaybackContext } from '../internal/helpers/compose-playback-con
 import type { StreamInfo } from '../internal/helpers/manifest-parser.js';
 import { createMediaElementErrorCircuitBreaker } from '../internal/helpers/media-element-error-circuit-breaker.js';
 import type { PlaybackInfo } from '../internal/helpers/playback-info-resolver.js';
+import { timestamps } from '../internal/helpers/streaming-metrics-timestamps.js';
 import { streamingSessionStore } from '../internal/helpers/streaming-session-store.js';
 import { updatePlaybackQuality } from '../internal/helpers/update-playback-quality.js';
 import { waitFor } from '../internal/helpers/wait-for.js';
@@ -22,7 +23,6 @@ import {
   credentialsProviderStore,
 } from '../internal/index.js';
 import type { OutputDevices } from '../internal/output-devices.js';
-import { trueTime } from '../internal/true-time.js';
 
 import { registerAdaptations } from './adaptations.js';
 import {
@@ -554,12 +554,9 @@ export default class ShakaPlayer extends BasePlayer {
       mediaProductTransitionEvent(nextPayload.mediaProduct, playbackContext),
     );
 
-    performance.mark(
+    timestamps.mark(
       'streaming_metrics:playback_statistics:idealStartTimestamp',
-      {
-        detail: nextPayload.streamInfo.streamingSessionId,
-        startTime: trueTime.now(),
-      },
+      nextPayload.streamInfo.streamingSessionId,
     );
 
     this.mediaProductStarted(nextPayload.streamInfo.streamingSessionId);
@@ -739,12 +736,9 @@ export default class ShakaPlayer extends BasePlayer {
               this.currentStreamingSessionId) // If we switch quickly from preload -> current.
             : this.currentStreamingSessionId;
 
-          performance.mark(
+          timestamps.mark(
             'streaming_metrics:drm_license_fetch:startTimestamp',
-            {
-              detail: streamingSessionId,
-              startTime: trueTime.now(),
-            },
+            streamingSessionId,
           );
 
           // Ensure header is octet-stream for license requests
@@ -773,46 +767,41 @@ export default class ShakaPlayer extends BasePlayer {
 
         if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
           if (streamingSessionId) {
-            performance.mark(
+            timestamps.mark(
               'streaming_metrics:drm_license_fetch:endTimestamp',
-              {
-                detail: streamingSessionId,
-                startTime: trueTime.now(),
-              },
+              streamingSessionId,
             );
-
-            performance.measure('streaming_metrics:drm_license_fetch', {
-              detail: streamingSessionId,
-              end: 'streaming_metrics:drm_license_fetch:endTimestamp',
-              start: 'streaming_metrics:drm_license_fetch:startTimestamp',
-            });
 
             StreamingMetrics.playbackStatistics({
               cdm: responseURIToCDMType(response.uri),
               cdmVersion: null,
               streamingSessionId,
-            });
+            }).catch(console.error);
 
             StreamingMetrics.commit([
               StreamingMetrics.drmLicenseFetch({
                 endReason: 'COMPLETE',
-                endTimestamp: trueTime.timestamp(
+                endTimestamp: timestamps.get(
                   'streaming_metrics:drm_license_fetch:endTimestamp',
+                  streamingSessionId,
                 ),
                 errorCode: null,
                 errorMessage: null,
-                startTimestamp: trueTime.timestamp(
+                startTimestamp: timestamps.get(
                   'streaming_metrics:drm_license_fetch:startTimestamp',
+                  streamingSessionId,
                 ),
                 streamingSessionId,
               }),
             ]).catch(console.error);
 
-            performance.clearMarks(
+            timestamps.clear(
               'streaming_metrics:drm_license_fetch:endTimestamp',
+              streamingSessionId,
             );
-            performance.clearMarks(
+            timestamps.clear(
               'streaming_metrics:drm_license_fetch:startTimestamp',
+              streamingSessionId,
             );
           }
         }
@@ -889,20 +878,35 @@ export default class ShakaPlayer extends BasePlayer {
           ? (this.preloadedStreamingSessionId ?? this.currentStreamingSessionId)
           : this.currentStreamingSessionId;
         if (failedSessionId) {
+          timestamps.mark(
+            'streaming_metrics:drm_license_fetch:endTimestamp',
+            failedSessionId,
+          );
           StreamingMetrics.commit([
             StreamingMetrics.drmLicenseFetch({
               endReason: 'ERROR',
-              endTimestamp: trueTime.timestamp(
+              endTimestamp: timestamps.get(
                 'streaming_metrics:drm_license_fetch:endTimestamp',
+                failedSessionId,
               ),
               errorCode,
               errorMessage: JSON.stringify(error),
-              startTimestamp: trueTime.timestamp(
+              startTimestamp: timestamps.get(
                 'streaming_metrics:drm_license_fetch:startTimestamp',
+                failedSessionId,
               ),
               streamingSessionId: failedSessionId,
             }),
           ]).catch(console.error);
+
+          timestamps.clear(
+            'streaming_metrics:drm_license_fetch:endTimestamp',
+            failedSessionId,
+          );
+          timestamps.clear(
+            'streaming_metrics:drm_license_fetch:startTimestamp',
+            failedSessionId,
+          );
         }
         break;
       }
