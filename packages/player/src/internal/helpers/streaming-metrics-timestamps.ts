@@ -30,7 +30,7 @@ function get(prefix: string, streamingSessionId: string | undefined) {
   );
 }
 
-/** Clears previously collected streaming metrics performance marks. */
+/** Clears a previously collected streaming metrics timestamp. */
 function clear(prefix: string, streamingSessionId: string | undefined) {
   if (!streamingSessionId) {
     return;

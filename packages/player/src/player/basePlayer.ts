@@ -432,35 +432,28 @@ export class BasePlayer {
       streamingSessionId,
     );
 
-    try {
-      // Start filling in playbackStatistics
-      StreamingMetrics.playbackStatistics({
-        actualStartTimestamp: timestamps.get(
-          'streaming_metrics:playback_statistics:actualStartTimestamp',
-          streamingSessionId,
-        ),
-        idealStartTimestamp: timestamps.get(
-          'streaming_metrics:playback_statistics:idealStartTimestamp',
-          streamingSessionId,
-        ),
-        outputDevice: this.#outputDeviceType,
-        streamingSessionId,
-      }).catch(console.error);
-    } catch (e) {
-      console.error(
-        e,
-        'actualStartTimestamp or idealStartTimestamp is missing for this streaming session',
-      );
-    } finally {
-      timestamps.clear(
+    // Start filling in playbackStatistics
+    StreamingMetrics.playbackStatistics({
+      actualStartTimestamp: timestamps.get(
         'streaming_metrics:playback_statistics:actualStartTimestamp',
         streamingSessionId,
-      );
-      timestamps.clear(
+      ),
+      idealStartTimestamp: timestamps.get(
         'streaming_metrics:playback_statistics:idealStartTimestamp',
         streamingSessionId,
-      );
-    }
+      ),
+      outputDevice: this.#outputDeviceType,
+      streamingSessionId,
+    }).catch(console.error);
+
+    timestamps.clear(
+      'streaming_metrics:playback_statistics:actualStartTimestamp',
+      streamingSessionId,
+    );
+    timestamps.clear(
+      'streaming_metrics:playback_statistics:idealStartTimestamp',
+      streamingSessionId,
+    );
 
     const mediaProductTransition =
       streamingSessionStore.getMediaProductTransition(streamingSessionId);
