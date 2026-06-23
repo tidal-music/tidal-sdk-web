@@ -9,3 +9,5 @@
 export type { components } from './allAPI.generated.js';
 
 export { createAPIClient } from './api.js';
+
+export type { RetryOptions } from './retry.js';
