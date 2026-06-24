@@ -8886,7 +8886,9 @@ export interface paths {
                      */
                     include?: string[];
                     /** @description List of barcode IDs (EAN-13 or UPC-A) (e.g. `00602527336510`) */
-                    "filter[barcodeId]": string[];
+                    "filter[barcodeId]"?: string[];
+                    /** @description List of GRIDs (Global Release Identifier, ISO 7064) (e.g. `A10302B0013941653J`) */
+                    "filter[grid]"?: string[];
                     /** @description Content provider ID (e.g. `50`) */
                     "filter[provider.id]": string[];
                 };
@@ -21566,10 +21568,11 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         ProviderProductInfos_Attributes: {
-            barcodeId: string;
+            barcodeId?: string;
             broken?: boolean;
             /** Format: int32 */
             brokenCode?: number;
+            grid?: string;
             tracks?: components["schemas"]["TrackInfo"][];
         };
         ProviderProductInfos_Multi_Resource_Data_Document: {

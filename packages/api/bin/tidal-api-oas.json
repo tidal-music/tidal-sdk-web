@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.10.39"
+    "version" : "1.10.40"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -12917,7 +12917,18 @@
           "description" : "List of barcode IDs (EAN-13 or UPC-A) (e.g. `00602527336510`)",
           "in" : "query",
           "name" : "filter[barcodeId]",
-          "required" : true,
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "List of GRIDs (Global Release Identifier, ISO 7064) (e.g. `A10302B0013941653J`)",
+          "in" : "query",
+          "name" : "filter[grid]",
+          "required" : false,
           "schema" : {
             "type" : "array",
             "items" : {
@@ -34000,7 +34011,6 @@
         }
       },
       "ProviderProductInfos_Attributes" : {
-        "required" : [ "barcodeId" ],
         "type" : "object",
         "properties" : {
           "barcodeId" : {
@@ -34012,6 +34022,9 @@
           "brokenCode" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "grid" : {
+            "type" : "string"
           },
           "tracks" : {
             "type" : "array",
