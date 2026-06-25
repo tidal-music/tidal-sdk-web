@@ -5551,6 +5551,172 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/dynamicModules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple dynamicModules.
+         * @description Retrieves multiple dynamicModules by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    refreshId?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @example items
+                     */
+                    include?: string[];
+                    /** @description DynamicModules Id (e.g. `nejMcAhh5N8S3EQ4LaqysVdI0cZZ`) */
+                    "filter[id]": string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["DynamicModules_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dynamicModules/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single dynamicModule.
+         * @description Retrieves single dynamicModule by id.
+         */
+        get: {
+            parameters: {
+                query: {
+                    refreshId?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @example items
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description DynamicModules Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["DynamicModules_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/dynamicModules/{id}/relationships/items": {
         parameters: {
             query?: never;
@@ -20380,23 +20546,11 @@ export interface components {
              */
             icons: ("SPOTLIGHT_INFO" | "UNKNOWN")[];
             /**
-             * @description Type of representation of the items in the module view all screen
-             * @example COMPACT
-             * @enum {string}
-             */
-            layoutType: "COMPACT" | "GRID" | "UNKNOWN";
-            /**
-             * @description Type of representation of the module
+             * @description Layout of the module preview on the dynamic page
              * @example HORIZONTAL_LIST
              * @enum {string}
              */
-            moduleType: "ARTIST_LIST" | "COMPACT_GRID_CARD" | "COMPACT_HORIZONTAL_LIST" | "COMPACT_HORIZONTAL_LIST_WITH_CONTEXT" | "FEATURED_CARD" | "GRID_CARD" | "GRID_CARD_WITH_CONTEXT" | "GRID_HIGHLIGHT_CARD" | "ANNIVERSARY_CARD" | "ARTIST_BIRTHDAY_CARD" | "ARTIST_MEMORIAM_CARD" | "ARTIST_TRACK_CREDITS_CARD" | "PILL_LIST" | "VERTICAL_LIST" | "DISCOGRAPHY_TABS" | "MAGAZINE_LIST" | "HORIZONTAL_LIST" | "HORIZONTAL_LIST_WITH_CONTEXT" | "SHORTCUT_LIST" | "TRACK_LIST" | "VERTICAL_LIST_CARD" | "TEXT_CARD" | "LINKS_LIST" | "PUBLIC_PLAYLIST_LIST";
-            /**
-             * @description Type of source represented by the module
-             * @example SHORTCUTS
-             * @enum {string}
-             */
-            sourceType: "ALBUM_RECOMMENDATIONS" | "BECAUSE_YOU_LISTENED_TO_ALBUM" | "BECAUSE_YOU_ADDED_ALBUM" | "BECAUSE_YOU_ADDED_ARTIST" | "CONTINUE_LISTEN_TO" | "DAILY_MIXES" | "FORGOTTEN_FAVORITES" | "GENRE_MIXES" | "HISTORY_MIXES" | "LOCAL_PLAYLISTS" | "MY_PLAYLISTS" | "NEW_ALBUM_SUGGESTIONS" | "NEW_TRACK_SUGGESTIONS" | "NEW_ALBUMS" | "NEW_TRACKS" | "POPULAR_PLAYLISTS" | "RECENTLY_UPDATED_FAVORITED_PLAYLIST" | "RECOMMENDED_USERS_PLAYLISTS" | "SUGGESTED_ESSENTIAL_PLAYLISTS" | "SUGGESTED_RADIOS_MIXES" | "WELCOME_MIX" | "YOUR_FAVORITE_ARTISTS" | "UPLOADS_FOR_YOU" | "LATEST_SPOTLIGHTED_TRACKS" | "SHORTCUTS" | "ARTIST_TOP_TRACKS" | "ARTIST_SPOTLIGHTED_TRACKS" | "ARTIST_ALBUMS" | "ARTIST_TOP_SINGLES" | "ARTIST_COMPILATIONS" | "ARTIST_LIVE_ALBUMS" | "ARTIST_APPEARS_ON" | "ARTIST_PLAYLIST" | "ARTIST_PUBLIC_PLAYLIST" | "ARTIST_SIMILAR_ARTISTS" | "ARTIST_TRACK_UPLOADS" | "ARTIST_LINKS" | "ARTIST_VIDEOS" | "ARTIST_CREDITS" | "ARTIST_DISCOGRAPHY" | "ALBUM_ITEMS" | "ALBUM_MORE_BY_ARTIST" | "ALBUM_OTHER_VERSIONS" | "ALBUM_RELATED_ALBUMS" | "ALBUM_RELATED_ARTISTS" | "COLLECTION_ITEMS" | "ALBUM_ANNIVERSARY" | "ARTIST_BIRTHDAY" | "ARTIST_MEMORIAM" | "DJ_TOOLS" | "DJ_ARTIST_CURATED" | "THE_HITS" | "FROM_OUR_EDITORS" | "TOP_PLAYLISTS" | "FEATURED_TOP_TRACKS" | "FEATURED_TOP_ALBUMS" | "TOP_ARTISTS_ESSENTIALS" | "FEATURED_RECOMMENDED_PLAYLISTS" | "HOME_3_FEATURED_PLAYLISTS" | "HOME_3_FEATURED_UPLOAD_TRACKS" | "HOME_3_FEATURED_ALBUMS" | "POPULAR_ALBUMS" | "POPULAR_ARTISTS" | "POPULAR_MIXES" | "FEATURED_RECOMMENDED_TRACKS" | "FEATURED_RECOMMENDED_ALBUMS" | "FEATURED_RECOMMENDED_CLASSIC_ALBUMS" | "BACK_TO_SCHOOL_MUSIC_101" | "BACK_TO_SCHOOL_GENRES_FOR_BEGINNERS" | "HEADLINERS_2026" | "HOME_3_0_GENERIC_PLAYLISTS_1" | "HOME_3_0_GENERIC_PLAYLISTS_2" | "HOME_3_0_GENERIC_ALBUMS_1" | "HOME_3_0_GENERIC_TRACKS_1" | "HOME_3_0_GENERIC_ARTISTS_1" | "HOME_3_0_GENERIC_VIDEOS_1" | "STAFF_PICKS_PAGE_ALBUMS_WE_LOVE" | "STAFF_PICKS_PAGE_EXPLORE" | "STAFF_PICKS_PAGE_FAVORITE_SONGS" | "STAFF_PICKS_PAGE_RECENTLY_UPDATED_PLAYLISTS" | "STAFF_PICKS_PAGE_TIDAL_NEWS_MAGAZINE" | "STAFF_PICKS_PAGE_WHAT_LISTENING_TO" | "BASED_ON_YOUR_INTERESTS_1" | "BASED_ON_YOUR_INTERESTS_2" | "UPLOAD_PAGE_SPOTLIGHTED_PLAYLISTS" | "UPLOAD_PAGE_PAYGATED_ALBUMS" | "UPLOAD_PAGE_ALBUMS" | "TOP_UPLOADERS" | "UPLOAD_PAGE_ARTISTS" | "UPLOAD_PAGE_FEATURED_MAGAZINE" | "EXPLORE_DECADES" | "EXPLORE_GENRES" | "EXPLORE_MOODS" | "ARTIST_POPULAR_RELEASES" | "PURCHASES_FOR_YOU" | "UNKNOWN";
+            previewLayout: "ARTIST_LIST" | "COMPACT_GRID_CARD" | "COMPACT_HORIZONTAL_LIST" | "COMPACT_HORIZONTAL_LIST_WITH_CONTEXT" | "FEATURED_CARD" | "GRID_CARD" | "GRID_CARD_WITH_CONTEXT" | "GRID_HIGHLIGHT_CARD" | "ANNIVERSARY_CARD" | "ARTIST_BIRTHDAY_CARD" | "ARTIST_MEMORIAM_CARD" | "ARTIST_TRACK_CREDITS_CARD" | "PILL_LIST" | "VERTICAL_LIST" | "DISCOGRAPHY_TABS" | "MAGAZINE_LIST" | "HORIZONTAL_LIST" | "HORIZONTAL_LIST_WITH_CONTEXT" | "SHORTCUT_LIST" | "TRACK_LIST" | "VERTICAL_LIST_CARD" | "TEXT_CARD" | "LINKS_LIST" | "PUBLIC_PLAYLIST_LIST";
             /**
              * @description Subtitle of the module
              * @example Short description of this module
@@ -20407,6 +20561,12 @@ export interface components {
              * @example Shortcuts
              */
             title?: string;
+            /**
+             * @description Layout of the module's items in the view all screen
+             * @example COMPACT
+             * @enum {string}
+             */
+            viewAllLayout: "COMPACT" | "GRID" | "UNKNOWN";
         };
         DynamicModules_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
