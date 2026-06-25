@@ -5565,7 +5565,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    refreshId?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -5646,7 +5647,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    refreshId?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -5731,7 +5733,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    refreshId?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -5818,7 +5821,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    refreshId?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -5845,8 +5849,8 @@ export interface paths {
                      */
                     clientVersion: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: dynamicModules, subject
-                     * @example dynamicModules
+                     * @description Allows the client to customize which related resources should be returned. Available options: modules, subject
+                     * @example modules
                      */
                     include?: string[];
                     /** @description type of the page (e.g. `ARTIST`) */
@@ -5887,7 +5891,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/dynamicPages/{id}/relationships/dynamicModules": {
+    "/dynamicPages/{id}/relationships/modules": {
         parameters: {
             query?: never;
             header?: never;
@@ -5895,13 +5899,14 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get dynamicModules relationship ("to-many").
-         * @description Retrieves dynamicModules relationship.
+         * Get modules relationship ("to-many").
+         * @description Retrieves modules relationship.
          */
         get: {
             parameters: {
                 query: {
-                    refreshId?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -5930,8 +5935,8 @@ export interface paths {
                      */
                     clientVersion: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: dynamicModules
-                     * @example dynamicModules
+                     * @description Allows the client to customize which related resources should be returned. Available options: modules
+                     * @example modules
                      */
                     include?: string[];
                 };
@@ -20542,7 +20547,7 @@ export interface components {
         DynamicModules_Attributes: {
             /**
              * @description Type of icons the module should show
-             * @example SPOTLIGHT_ICON
+             * @example SPOTLIGHT_INFO
              */
             icons: ("SPOTLIGHT_INFO" | "UNKNOWN")[];
             /**
@@ -20625,7 +20630,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         DynamicPages_Relationships: {
-            dynamicModules?: components["schemas"]["Multi_Relationship_Data_Document"];
+            modules?: components["schemas"]["Multi_Relationship_Data_Document"];
             subject?: components["schemas"]["Single_Relationship_Data_Document"];
         };
         DynamicPages_Resource_Object: {
@@ -20635,12 +20640,20 @@ export interface components {
              * @example 12345
              */
             id: string;
+            meta?: components["schemas"]["DynamicPages_Resource_Object_Meta"];
             relationships?: components["schemas"]["DynamicPages_Relationships"];
             /**
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
              */
             type: "dynamicPages";
+        };
+        DynamicPages_Resource_Object_Meta: {
+            /**
+             * @description Reason why data has been redacted on this page
+             * @enum {string}
+             */
+            redactionReason?: "NO_BIRTHDAY" | "MINOR";
         };
         DynamicPages_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"];
@@ -22519,11 +22532,15 @@ export interface components {
              * @example 12345
              */
             id: string;
+            meta?: components["schemas"]["Terms_Resource_Object_Meta"];
             /**
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
              */
             type: "terms";
+        };
+        Terms_Resource_Object_Meta: {
+            isLatestVersion: boolean;
         };
         Terms_Single_Resource_Data_Document: {
             data: components["schemas"]["Terms_Resource_Object"];
