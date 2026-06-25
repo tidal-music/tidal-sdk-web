@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.10.43"
+    "version" : "1.10.44"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -8071,8 +8071,9 @@
       "get" : {
         "description" : "Retrieves multiple dynamicModules by available filters, or without if applicable.",
         "parameters" : [ {
+          "description" : "Stable seed used to keep dynamic page and module results consistent across a client session.",
           "in" : "query",
-          "name" : "refreshId",
+          "name" : "refreshSeed",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -8211,8 +8212,9 @@
             "type" : "string"
           }
         }, {
+          "description" : "Stable seed used to keep dynamic page and module results consistent across a client session.",
           "in" : "query",
-          "name" : "refreshId",
+          "name" : "refreshSeed",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -8340,8 +8342,9 @@
             "type" : "string"
           }
         }, {
+          "description" : "Stable seed used to keep dynamic page and module results consistent across a client session.",
           "in" : "query",
-          "name" : "refreshId",
+          "name" : "refreshSeed",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -8468,8 +8471,9 @@
       "get" : {
         "description" : "Retrieves multiple dynamicPages by available filters, or without if applicable.",
         "parameters" : [ {
+          "description" : "Stable seed used to keep dynamic page and module results consistent across a client session.",
           "in" : "query",
-          "name" : "refreshId",
+          "name" : "refreshSeed",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -8523,8 +8527,8 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: dynamicModules, subject",
-          "example" : "dynamicModules",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: modules, subject",
+          "example" : "modules",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -8532,7 +8536,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "dynamicModules"
+              "example" : "modules"
             }
           }
         }, {
@@ -8606,9 +8610,9 @@
         }
       }
     },
-    "/dynamicPages/{id}/relationships/dynamicModules" : {
+    "/dynamicPages/{id}/relationships/modules" : {
       "get" : {
-        "description" : "Retrieves dynamicModules relationship.",
+        "description" : "Retrieves modules relationship.",
         "parameters" : [ {
           "description" : "DynamicPages Id",
           "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
@@ -8619,8 +8623,9 @@
             "type" : "string"
           }
         }, {
+          "description" : "Stable seed used to keep dynamic page and module results consistent across a client session.",
           "in" : "query",
-          "name" : "refreshId",
+          "name" : "refreshSeed",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -8682,8 +8687,8 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: dynamicModules",
-          "example" : "dynamicModules",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: modules",
+          "example" : "modules",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -8691,7 +8696,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "dynamicModules"
+              "example" : "modules"
             }
           }
         } ],
@@ -8736,7 +8741,7 @@
         }, {
           "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
-        "summary" : "Get dynamicModules relationship (\"to-many\").",
+        "summary" : "Get modules relationship (\"to-many\").",
         "tags" : [ "dynamicPages" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -31265,11 +31270,11 @@
           "icons" : {
             "type" : "array",
             "description" : "Type of icons the module should show",
-            "example" : "SPOTLIGHT_ICON",
+            "example" : "SPOTLIGHT_INFO",
             "items" : {
               "type" : "string",
               "description" : "Type of icons the module should show",
-              "example" : "SPOTLIGHT_ICON",
+              "example" : "SPOTLIGHT_INFO",
               "enum" : [ "SPOTLIGHT_INFO", "UNKNOWN" ]
             }
           },
@@ -31434,7 +31439,7 @@
       },
       "DynamicPages_Relationships" : {
         "properties" : {
-          "dynamicModules" : {
+          "modules" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "subject" : {
@@ -31454,6 +31459,9 @@
             "description" : "Resource id",
             "example" : "12345"
           },
+          "meta" : {
+            "$ref" : "#/components/schemas/DynamicPages_Resource_Object_Meta"
+          },
           "relationships" : {
             "$ref" : "#/components/schemas/DynamicPages_Relationships"
           },
@@ -31462,6 +31470,16 @@
             "type" : "string",
             "description" : "Resource type",
             "example" : "tracks"
+          }
+        }
+      },
+      "DynamicPages_Resource_Object_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "redactionReason" : {
+            "type" : "string",
+            "description" : "Reason why data has been redacted on this page",
+            "enum" : [ "NO_BIRTHDAY", "MINOR" ]
           }
         }
       },
@@ -36058,11 +36076,23 @@
             "description" : "Resource id",
             "example" : "12345"
           },
+          "meta" : {
+            "$ref" : "#/components/schemas/Terms_Resource_Object_Meta"
+          },
           "type" : {
             "minLength" : 1,
             "type" : "string",
             "description" : "Resource type",
             "example" : "tracks"
+          }
+        }
+      },
+      "Terms_Resource_Object_Meta" : {
+        "required" : [ "isLatestVersion" ],
+        "type" : "object",
+        "properties" : {
+          "isLatestVersion" : {
+            "type" : "boolean"
           }
         }
       },
