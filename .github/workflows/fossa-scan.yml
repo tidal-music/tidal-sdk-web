@@ -8,7 +8,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
           - name: "Checkout Code"
-            uses: actions/checkout@v6
+            uses: actions/checkout@v7
 
           - name: "Run FOSSA Scan"
             uses: fossas/fossa-action@ff70fe9fe17cbd2040648f1c45e8ec4e4884dcf3 # v1.9.0
