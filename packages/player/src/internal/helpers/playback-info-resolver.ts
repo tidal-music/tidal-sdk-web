@@ -500,6 +500,7 @@ async function _fetchVideoManifest(options: Options): Promise<PlaybackInfo> {
 export async function fetchPlaybackInfo(options: Options) {
   const { streamingSessionId } = options;
   const events = [];
+  let fetchError: Error | undefined;
 
   timestamps.mark(
     'streaming_metrics:playback_info_fetch:startTimestamp',
@@ -520,11 +521,6 @@ export async function fetchPlaybackInfo(options: Options) {
     if (playbackInfo === undefined) {
       throw new Error('Playback info was fetched, but undefined.');
     }
-
-    StreamingMetrics.playbackInfoFetch({
-      endReason: 'COMPLETE',
-      streamingSessionId,
-    }).catch(console.error);
 
     const hasAds = 'adInfo' in playbackInfo;
 
@@ -565,12 +561,10 @@ export async function fetchPlaybackInfo(options: Options) {
       streamingSessionId,
     );
 
-    StreamingMetrics.playbackInfoFetch({
-      endReason: 'ERROR',
-      errorCode: (e as Error | PlayerError).message,
-      errorMessage: (e as Error | PlayerError).stack,
-      streamingSessionId,
-    }).catch(console.error);
+    // Stash the error for the single committed event in `finally`. Emitting it
+    // here as a separate fire-and-forget reducer call raced (and lost to) that
+    // event's read-modify-write, so errors surfaced as COMPLETE.
+    fetchError = e instanceof Error ? e : new Error(String(e));
 
     events.push(
       StreamingMetrics.streamingSessionEnd({
@@ -587,10 +581,13 @@ export async function fetchPlaybackInfo(options: Options) {
   } finally {
     events.push(
       StreamingMetrics.playbackInfoFetch({
+        endReason: fetchError ? 'ERROR' : 'COMPLETE',
         endTimestamp: timestamps.get(
           'streaming_metrics:playback_info_fetch:endTimestamp',
           streamingSessionId,
         ),
+        errorCode: fetchError?.message ?? null,
+        errorMessage: fetchError?.stack ?? null,
         startTimestamp: timestamps.get(
           'streaming_metrics:playback_info_fetch:startTimestamp',
           streamingSessionId,
