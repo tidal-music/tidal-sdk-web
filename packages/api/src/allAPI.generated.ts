@@ -7857,7 +7857,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners
+                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts
                      * @example collaboratorProfiles
                      */
                     include?: string[];
@@ -7965,7 +7965,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners
+                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts
                      * @example collaboratorProfiles
                      */
                     include?: string[];
@@ -8700,6 +8700,67 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Playlists_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/playlists/{id}/relationships/suggestedCoverArts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get suggestedCoverArts relationship ("to-many").
+         * @description Retrieves suggestedCoverArts relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: suggestedCoverArts
+                     * @example suggestedCoverArts
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Playlist id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -21623,6 +21684,7 @@ export interface components {
             items?: components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
             ownerProfiles?: components["schemas"]["Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            suggestedCoverArts?: components["schemas"]["Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document"];
         };
         Playlists_Resource_Object: {
             attributes?: components["schemas"]["Playlists_Attributes"];
@@ -21642,6 +21704,30 @@ export interface components {
             data: components["schemas"]["Playlists_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Playlists_SuggestedCoverArts_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Playlists_SuggestedCoverArts_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Playlists_SuggestedCoverArts_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Playlists_SuggestedCoverArts_Resource_Identifier_Meta: {
+            /** @description Background color for the suggested artwork */
+            backgroundColor: string;
+            /** @description Foreground color for the suggested artwork */
+            foregroundColor: string;
         };
         PriceConfigurationsCreateOperation_Payload: {
             data: components["schemas"]["PriceConfigurationsCreateOperation_Payload_Data"];
@@ -23451,14 +23537,16 @@ export interface components {
         };
         UserCollectionFoldersItemsRelationshipAddOperation_Payload_Data: {
             id: string;
-            type: string;
+            /** @enum {string} */
+            type: "playlists";
         };
         UserCollectionFoldersItemsRelationshipRemoveOperation_Payload: {
             data?: components["schemas"]["UserCollectionFoldersItemsRelationshipRemoveOperation_Payload_Data"][];
         };
         UserCollectionFoldersItemsRelationshipRemoveOperation_Payload_Data: {
             id: string;
-            type: string;
+            /** @enum {string} */
+            type: "playlists";
         };
         UserCollectionFoldersUpdateOperation_Payload: {
             data: components["schemas"]["UserCollectionFoldersUpdateOperation_Payload_Data"];

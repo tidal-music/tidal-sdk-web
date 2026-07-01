@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.10.49"
+    "version" : "1.10.51"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -11412,7 +11412,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts",
           "example" : "collaboratorProfiles",
           "in" : "query",
           "name" : "include",
@@ -11646,7 +11646,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts",
           "example" : "collaboratorProfiles",
           "in" : "query",
           "name" : "include",
@@ -12737,6 +12737,86 @@
         "tags" : [ "playlists" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/playlists/{id}/relationships/suggestedCoverArts" : {
+      "get" : {
+        "description" : "Retrieves suggestedCoverArts relationship.",
+        "parameters" : [ {
+          "description" : "Playlist id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: suggestedCoverArts",
+          "example" : "suggestedCoverArts",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "suggestedCoverArts"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get suggestedCoverArts relationship (\"to-many\").",
+        "tags" : [ "playlists" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -34009,6 +34089,9 @@
           },
           "owners" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "suggestedCoverArts" : {
+            "$ref" : "#/components/schemas/Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document"
           }
         }
       },
@@ -34047,6 +34130,57 @@
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Playlists_SuggestedCoverArts_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Playlists_SuggestedCoverArts_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Playlists_SuggestedCoverArts_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Playlists_SuggestedCoverArts_Resource_Identifier_Meta" : {
+        "required" : [ "backgroundColor", "foregroundColor" ],
+        "type" : "object",
+        "properties" : {
+          "backgroundColor" : {
+            "type" : "string",
+            "description" : "Background color for the suggested artwork"
+          },
+          "foregroundColor" : {
+            "type" : "string",
+            "description" : "Foreground color for the suggested artwork"
           }
         }
       },
@@ -38209,7 +38343,8 @@
             "type" : "string"
           },
           "type" : {
-            "type" : "string"
+            "type" : "string",
+            "enum" : [ "playlists" ]
           }
         }
       },
@@ -38234,7 +38369,8 @@
             "type" : "string"
           },
           "type" : {
-            "type" : "string"
+            "type" : "string",
+            "enum" : [ "playlists" ]
           }
         }
       },
