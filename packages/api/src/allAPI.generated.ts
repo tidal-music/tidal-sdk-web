@@ -7857,7 +7857,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners
+                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts
                      * @example collaboratorProfiles
                      */
                     include?: string[];
@@ -7965,7 +7965,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners
+                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts
                      * @example collaboratorProfiles
                      */
                     include?: string[];
@@ -8700,6 +8700,67 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Playlists_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/playlists/{id}/relationships/suggestedCoverArts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get suggestedCoverArts relationship ("to-many").
+         * @description Retrieves suggestedCoverArts relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: suggestedCoverArts
+                     * @example suggestedCoverArts
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Playlist id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -20556,13 +20617,13 @@ export interface components {
              * @example ALBUM_RELATED_ALBUMS
              * @enum {string}
              */
-            moduleKind: "ALBUM_RECOMMENDATIONS" | "BECAUSE_YOU_LISTENED_TO_ALBUM" | "BECAUSE_YOU_ADDED_ALBUM" | "BECAUSE_YOU_ADDED_ARTIST" | "CONTINUE_LISTEN_TO" | "DAILY_MIXES" | "FORGOTTEN_FAVORITES" | "GENRE_MIXES" | "HISTORY_MIXES" | "LOCAL_PLAYLISTS" | "MY_PLAYLISTS" | "NEW_ALBUM_SUGGESTIONS" | "NEW_TRACK_SUGGESTIONS" | "NEW_ALBUMS" | "NEW_TRACKS" | "POPULAR_PLAYLISTS" | "RECENTLY_UPDATED_FAVORITED_PLAYLIST" | "RECOMMENDED_USERS_PLAYLISTS" | "SUGGESTED_ESSENTIAL_PLAYLISTS" | "SUGGESTED_RADIOS_MIXES" | "WELCOME_MIX" | "YOUR_FAVORITE_ARTISTS" | "UPLOADS_FOR_YOU" | "LATEST_SPOTLIGHTED_TRACKS" | "SHORTCUTS" | "ARTIST_TOP_TRACKS" | "ARTIST_SPOTLIGHTED_TRACKS" | "ARTIST_ALBUMS" | "ARTIST_TOP_SINGLES" | "ARTIST_COMPILATIONS" | "ARTIST_LIVE_ALBUMS" | "ARTIST_APPEARS_ON" | "ARTIST_PLAYLIST" | "ARTIST_PUBLIC_PLAYLIST" | "ARTIST_SIMILAR_ARTISTS" | "ARTIST_TRACK_UPLOADS" | "ARTIST_LINKS" | "ARTIST_VIDEOS" | "ARTIST_CREDITS" | "ARTIST_DISCOGRAPHY" | "ALBUM_ITEMS" | "ALBUM_MORE_BY_ARTIST" | "ALBUM_OTHER_VERSIONS" | "ALBUM_RELATED_ALBUMS" | "ALBUM_RELATED_ARTISTS" | "COLLECTION_ITEMS" | "ALBUM_ANNIVERSARY" | "ARTIST_BIRTHDAY" | "ARTIST_MEMORIAM" | "DJ_TOOLS" | "DJ_ARTIST_CURATED" | "THE_HITS" | "FROM_OUR_EDITORS" | "TOP_PLAYLISTS" | "FEATURED_TOP_TRACKS" | "FEATURED_TOP_ALBUMS" | "TOP_ARTISTS_ESSENTIALS" | "FEATURED_RECOMMENDED_PLAYLISTS" | "HOME_3_FEATURED_PLAYLISTS" | "HOME_3_FEATURED_UPLOAD_TRACKS" | "HOME_3_FEATURED_ALBUMS" | "POPULAR_ALBUMS" | "POPULAR_ARTISTS" | "POPULAR_MIXES" | "FEATURED_RECOMMENDED_TRACKS" | "FEATURED_RECOMMENDED_ALBUMS" | "FEATURED_RECOMMENDED_CLASSIC_ALBUMS" | "BACK_TO_SCHOOL_MUSIC_101" | "BACK_TO_SCHOOL_GENRES_FOR_BEGINNERS" | "HEADLINERS_2026" | "HOME_3_0_GENERIC_PLAYLISTS_1" | "HOME_3_0_GENERIC_PLAYLISTS_2" | "HOME_3_0_GENERIC_ALBUMS_1" | "HOME_3_0_GENERIC_TRACKS_1" | "HOME_3_0_GENERIC_ARTISTS_1" | "HOME_3_0_GENERIC_VIDEOS_1" | "STAFF_PICKS_PAGE_ALBUMS_WE_LOVE" | "STAFF_PICKS_PAGE_EXPLORE" | "STAFF_PICKS_PAGE_FAVORITE_SONGS" | "STAFF_PICKS_PAGE_RECENTLY_UPDATED_PLAYLISTS" | "STAFF_PICKS_PAGE_TIDAL_NEWS_MAGAZINE" | "STAFF_PICKS_PAGE_WHAT_LISTENING_TO" | "BASED_ON_YOUR_INTERESTS_1" | "BASED_ON_YOUR_INTERESTS_2" | "UPLOAD_PAGE_SPOTLIGHTED_PLAYLISTS" | "UPLOAD_PAGE_PAYGATED_ALBUMS" | "UPLOAD_PAGE_ALBUMS" | "TOP_UPLOADERS" | "UPLOAD_PAGE_ARTISTS" | "UPLOAD_PAGE_FEATURED_MAGAZINE" | "EXPLORE_DECADES" | "EXPLORE_GENRES" | "EXPLORE_MOODS" | "ARTIST_POPULAR_RELEASES" | "PURCHASES_FOR_YOU" | "UNKNOWN";
+            moduleKind: "ALBUM_RECOMMENDATIONS" | "BECAUSE_YOU_LISTENED_TO_ALBUM" | "BECAUSE_YOU_ADDED_ALBUM" | "BECAUSE_YOU_ADDED_ARTIST" | "CONTINUE_LISTEN_TO" | "DAILY_MIXES" | "FORGOTTEN_FAVORITES" | "GENRE_MIXES" | "HISTORY_MIXES" | "LOCAL_PLAYLISTS" | "MY_PLAYLISTS" | "NEW_ALBUM_SUGGESTIONS" | "NEW_TRACK_SUGGESTIONS" | "NEW_ALBUMS" | "NEW_TRACKS" | "POPULAR_PLAYLISTS" | "RECENTLY_UPDATED_FAVORITED_PLAYLIST" | "RECOMMENDED_USERS_PLAYLISTS" | "SUGGESTED_ESSENTIAL_PLAYLISTS" | "SUGGESTED_RADIOS_MIXES" | "WELCOME_MIX" | "YOUR_FAVORITE_ARTISTS" | "UPLOADS_FOR_YOU" | "LATEST_SPOTLIGHTED_TRACKS" | "SHORTCUTS" | "ARTIST_TOP_TRACKS" | "ARTIST_SPOTLIGHTED_TRACKS" | "ARTIST_ALBUMS" | "ARTIST_TOP_SINGLES" | "ARTIST_COMPILATIONS" | "ARTIST_LIVE_ALBUMS" | "ARTIST_APPEARS_ON" | "ARTIST_PLAYLIST" | "ARTIST_PUBLIC_PLAYLIST" | "ARTIST_SIMILAR_ARTISTS" | "ARTIST_TRACK_UPLOADS" | "ARTIST_LINKS" | "ARTIST_VIDEOS" | "ARTIST_CREDITS" | "ARTIST_DISCOGRAPHY" | "ALBUM_ITEMS" | "ALBUM_MORE_BY_ARTIST" | "ALBUM_OTHER_VERSIONS" | "ALBUM_RELATED_ALBUMS" | "ALBUM_RELATED_ARTISTS" | "PLAYLIST_ITEMS" | "ALBUM_ANNIVERSARY" | "ARTIST_BIRTHDAY" | "ARTIST_MEMORIAM" | "DJ_TOOLS" | "DJ_ARTIST_CURATED" | "THE_HITS" | "FROM_OUR_EDITORS" | "TOP_PLAYLISTS" | "FEATURED_TOP_TRACKS" | "FEATURED_TOP_ALBUMS" | "TOP_ARTISTS_ESSENTIALS" | "FEATURED_RECOMMENDED_PLAYLISTS" | "HOME_3_FEATURED_PLAYLISTS" | "HOME_3_FEATURED_UPLOAD_TRACKS" | "HOME_3_FEATURED_ALBUMS" | "POPULAR_ALBUMS" | "POPULAR_ARTISTS" | "POPULAR_MIXES" | "FEATURED_RECOMMENDED_TRACKS" | "FEATURED_RECOMMENDED_ALBUMS" | "FEATURED_RECOMMENDED_CLASSIC_ALBUMS" | "BACK_TO_SCHOOL_MUSIC_101" | "BACK_TO_SCHOOL_GENRES_FOR_BEGINNERS" | "HEADLINERS_2026" | "HOME_3_0_GENERIC_PLAYLISTS_1" | "HOME_3_0_GENERIC_PLAYLISTS_2" | "HOME_3_0_GENERIC_ALBUMS_1" | "HOME_3_0_GENERIC_TRACKS_1" | "HOME_3_0_GENERIC_ARTISTS_1" | "HOME_3_0_GENERIC_VIDEOS_1" | "STAFF_PICKS_PAGE_ALBUMS_WE_LOVE" | "STAFF_PICKS_PAGE_EXPLORE" | "STAFF_PICKS_PAGE_FAVORITE_SONGS" | "STAFF_PICKS_PAGE_RECENTLY_UPDATED_PLAYLISTS" | "STAFF_PICKS_PAGE_TIDAL_NEWS_MAGAZINE" | "STAFF_PICKS_PAGE_WHAT_LISTENING_TO" | "BASED_ON_YOUR_INTERESTS_1" | "BASED_ON_YOUR_INTERESTS_2" | "UPLOAD_PAGE_SPOTLIGHTED_PLAYLISTS" | "UPLOAD_PAGE_PAYGATED_ALBUMS" | "UPLOAD_PAGE_ALBUMS" | "TOP_UPLOADERS" | "UPLOAD_PAGE_ARTISTS" | "UPLOAD_PAGE_FEATURED_MAGAZINE" | "EXPLORE_DECADES" | "EXPLORE_GENRES" | "EXPLORE_MOODS" | "ARTIST_POPULAR_RELEASES" | "PURCHASES_FOR_YOU" | "UNKNOWN";
             /**
              * @description Presentation used when rendering the module preview on a dynamic page.
              * @example HORIZONTAL_LIST
              * @enum {string}
              */
-            previewPresentation: "ARTIST_LIST" | "COMPACT_GRID_CARD" | "COMPACT_HORIZONTAL_LIST" | "COMPACT_HORIZONTAL_LIST_WITH_CONTEXT" | "FEATURED_CARD" | "GRID_CARD" | "GRID_CARD_WITH_CONTEXT" | "GRID_HIGHLIGHT_CARD" | "ANNIVERSARY_CARD" | "ARTIST_BIRTHDAY_CARD" | "ARTIST_MEMORIAM_CARD" | "ARTIST_TRACK_CREDITS_CARD" | "PILL_LIST" | "VERTICAL_LIST" | "DISCOGRAPHY_TABS" | "MAGAZINE_LIST" | "HORIZONTAL_LIST" | "HORIZONTAL_LIST_WITH_CONTEXT" | "SHORTCUT_LIST" | "TRACK_LIST" | "VERTICAL_LIST_CARD" | "TEXT_CARD" | "LINKS_LIST" | "PUBLIC_PLAYLIST_LIST";
+            previewPresentation: "ARTIST_LIST" | "COMPACT_GRID_CARD" | "COMPACT_HORIZONTAL_LIST" | "COMPACT_HORIZONTAL_LIST_WITH_CONTEXT" | "FEATURED_CARD" | "GRID_CARD" | "GRID_CARD_WITH_CONTEXT" | "GRID_HIGHLIGHT_CARD" | "ANNIVERSARY_CARD" | "ARTIST_BIRTHDAY_CARD" | "ARTIST_MEMORIAM_CARD" | "ARTIST_TRACK_CREDITS_CARD" | "PILL_LIST" | "VERTICAL_LIST" | "DISCOGRAPHY_TABS" | "MAGAZINE_LIST" | "HORIZONTAL_LIST" | "HORIZONTAL_LIST_WITH_CONTEXT" | "SHORTCUT_LIST" | "TRACK_LIST" | "VERTICAL_LIST_CARD" | "TEXT_CARD" | "LINKS_LIST" | "PUBLIC_PLAYLIST_LIST" | "UNKNOWN";
             /**
              * @description Subtitle of the module
              * @example Short description of this module
@@ -21296,6 +21357,8 @@ export interface components {
         PlayQueuesUpdateOperation_Payload_Data_Attributes: {
             /** @enum {string} */
             repeat?: "NONE" | "ONE" | "BATCH";
+            /** @enum {string} */
+            shuffle?: "OFF" | "BATCH" | "ALL";
             shuffled?: boolean;
         };
         PlayQueues_Attributes: {
@@ -21314,6 +21377,11 @@ export interface components {
              * @enum {string}
              */
             repeat: "NONE" | "ONE" | "BATCH";
+            /**
+             * @description Queue's shuffle mode
+             * @enum {string}
+             */
+            shuffle: "OFF" | "BATCH" | "ALL";
             /** @description Queue is shuffled or not */
             shuffled: boolean;
         };
@@ -21623,6 +21691,7 @@ export interface components {
             items?: components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
             ownerProfiles?: components["schemas"]["Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            suggestedCoverArts?: components["schemas"]["Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document"];
         };
         Playlists_Resource_Object: {
             attributes?: components["schemas"]["Playlists_Attributes"];
@@ -21642,6 +21711,30 @@ export interface components {
             data: components["schemas"]["Playlists_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Playlists_SuggestedCoverArts_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Playlists_SuggestedCoverArts_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Playlists_SuggestedCoverArts_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Playlists_SuggestedCoverArts_Resource_Identifier_Meta: {
+            /** @description Background color for the suggested artwork */
+            backgroundColor: string;
+            /** @description Foreground color for the suggested artwork */
+            foregroundColor: string;
         };
         PriceConfigurationsCreateOperation_Payload: {
             data: components["schemas"]["PriceConfigurationsCreateOperation_Payload_Data"];
@@ -23451,14 +23544,16 @@ export interface components {
         };
         UserCollectionFoldersItemsRelationshipAddOperation_Payload_Data: {
             id: string;
-            type: string;
+            /** @enum {string} */
+            type: "playlists";
         };
         UserCollectionFoldersItemsRelationshipRemoveOperation_Payload: {
             data?: components["schemas"]["UserCollectionFoldersItemsRelationshipRemoveOperation_Payload_Data"][];
         };
         UserCollectionFoldersItemsRelationshipRemoveOperation_Payload_Data: {
             id: string;
-            type: string;
+            /** @enum {string} */
+            type: "playlists";
         };
         UserCollectionFoldersUpdateOperation_Payload: {
             data: components["schemas"]["UserCollectionFoldersUpdateOperation_Payload_Data"];
