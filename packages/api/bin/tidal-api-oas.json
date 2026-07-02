@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.10.51"
+    "version" : "1.10.53"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -33319,13 +33319,17 @@
             "type" : "string",
             "enum" : [ "NONE", "ONE", "BATCH" ]
           },
+          "shuffle" : {
+            "type" : "string",
+            "enum" : [ "OFF", "BATCH", "ALL" ]
+          },
           "shuffled" : {
             "type" : "boolean"
           }
         }
       },
       "PlayQueues_Attributes" : {
-        "required" : [ "createdAt", "lastModifiedAt", "repeat", "shuffled" ],
+        "required" : [ "createdAt", "lastModifiedAt", "repeat", "shuffle", "shuffled" ],
         "type" : "object",
         "properties" : {
           "createdAt" : {
@@ -33342,6 +33346,11 @@
             "type" : "string",
             "description" : "Queue's repeat mode",
             "enum" : [ "NONE", "ONE", "BATCH" ]
+          },
+          "shuffle" : {
+            "type" : "string",
+            "description" : "Queue's shuffle mode",
+            "enum" : [ "OFF", "BATCH", "ALL" ]
           },
           "shuffled" : {
             "type" : "boolean",

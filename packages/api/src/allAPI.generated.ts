@@ -21357,6 +21357,8 @@ export interface components {
         PlayQueuesUpdateOperation_Payload_Data_Attributes: {
             /** @enum {string} */
             repeat?: "NONE" | "ONE" | "BATCH";
+            /** @enum {string} */
+            shuffle?: "OFF" | "BATCH" | "ALL";
             shuffled?: boolean;
         };
         PlayQueues_Attributes: {
@@ -21375,6 +21377,11 @@ export interface components {
              * @enum {string}
              */
             repeat: "NONE" | "ONE" | "BATCH";
+            /**
+             * @description Queue's shuffle mode
+             * @enum {string}
+             */
+            shuffle: "OFF" | "BATCH" | "ALL";
             /** @description Queue is shuffled or not */
             shuffled: boolean;
         };
