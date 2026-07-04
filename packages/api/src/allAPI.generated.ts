@@ -20782,6 +20782,11 @@ export interface components {
         /** @description File status */
         File_Status: {
             /**
+             * @description Status of scanning the file for being AI-generated. Present only for file types that support AI scanning (e.g. track source files); absent otherwise.
+             * @enum {string}
+             */
+            aiScanningFileStatus?: "NOT_SCANNED" | "SCANNING" | "IS_AI" | "NOT_AI" | "ERROR";
+            /**
              * @description Moderation status for file
              * @enum {string}
              */

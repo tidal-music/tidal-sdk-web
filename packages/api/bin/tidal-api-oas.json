@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
     "title" : "TIDAL API",
-    "version" : "1.10.53"
+    "version" : "1.10.54"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -31700,6 +31700,11 @@
         "required" : [ "moderationFileStatus", "technicalFileStatus" ],
         "type" : "object",
         "properties" : {
+          "aiScanningFileStatus" : {
+            "type" : "string",
+            "description" : "Status of scanning the file for being AI-generated. Present only for file types that support AI scanning (e.g. track source files); absent otherwise.",
+            "enum" : [ "NOT_SCANNED", "SCANNING", "IS_AI", "NOT_AI", "ERROR" ]
+          },
           "moderationFileStatus" : {
             "type" : "string",
             "description" : "Moderation status for file",
