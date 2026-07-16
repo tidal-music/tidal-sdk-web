@@ -1,20 +1,17 @@
 import { expect } from 'chai';
 
+import { events } from '../event-bus.js';
+
+import type { LoadPayload } from './basePlayer.js';
 import NativePlayer, { EventWaitCancelledError } from './nativePlayer.js';
 
 type Listener = (...args: Array<unknown>) => void;
 
 /**
- * Stand-in for the native player bridge
- * (window.NativePlayerComponent.Player()).
- *
- * Critically, it models Electron's contextBridge semantics: a function passed
- * across the isolated-world boundary does NOT keep its identity, so the bridge
- * can never find the wrapper it created for an earlier addEventListener when
- * removeEventListener is later called with the "same" function. We reproduce
- * that by making removeEventListener a no-op. A correct SDK must therefore not
- * rely on removeEventListener to bound its listener count — which is exactly
- * the leak these tests guard against.
+ * Stand-in for the native player bridge. Models Electron's contextBridge
+ * semantics — a function loses its identity across the boundary, so
+ * removeEventListener can never match its addEventListener — by making
+ * removeEventListener a no-op. This is the leak these tests guard against.
  */
 class NativePlayerComponentMock {
   listeners = new Map<string, Array<Listener>>();
@@ -52,8 +49,7 @@ class NativePlayerComponentMock {
 
   releaseDevice() {}
 
-  // No-op on purpose: see the class comment. The contextBridge cannot match
-  // the listener, so removal never happens across the real bridge.
+  // No-op on purpose: see the class comment.
   removeEventListener() {}
 
   seek() {}
@@ -70,9 +66,7 @@ class NativePlayerComponentMock {
 describe('NativePlayer pending event waits', () => {
   let bridge: NativePlayerComponentMock;
   let player: NativePlayer;
-  // Listeners registered by the NativePlayer constructor itself
-  // (registerEventListeners); the waits under test add at most one dispatcher
-  // per event type on top of these.
+  // Listeners the constructor registers; waits add at most one dispatcher per event type on top.
   let baselineMediaduration: number;
   let baselineMediastate: number;
 
@@ -129,10 +123,8 @@ describe('NativePlayer pending event waits', () => {
   });
 
   it('registers at most one bridge listener per event type when waits resolve', async () => {
-    // Even though removeEventListener is a no-op across the contextBridge, the
-    // SDK must not add a bridge listener per wait. It registers a single
-    // persistent dispatcher per event type and routes each transient waiter
-    // through a JS-side collection instead.
+    // The SDK must register one persistent dispatcher per event type, not one
+    // bridge listener per wait (removeEventListener is a no-op across the bridge).
     for (let i = 0; i < 25; i += 1) {
       const durationWait = player.nativeEvent('mediaduration');
       const stateWait = player.mediaStateChange('active');
@@ -150,10 +142,8 @@ describe('NativePlayer pending event waits', () => {
   });
 
   it('does not accumulate bridge listeners across repeated waits and resets', async () => {
-    // Simulates repeated track transitions while the native player never
-    // answers (e.g. after the player process crashed): every load awaits
-    // mediaduration/mediastate events that never arrive, and reset() flushes
-    // them. The bridge listener count must stay bounded regardless.
+    // Repeated transitions where the native events never arrive and reset()
+    // flushes the pending waits. The bridge listener count must stay bounded.
     for (let i = 0; i < 25; i += 1) {
       const durationWait = player.nativeEvent('mediaduration');
       const stateWait = player.mediaStateChange('active');
@@ -189,5 +179,50 @@ describe('NativePlayer pending event waits', () => {
     const freshResult = await freshWait;
 
     expect((freshResult as unknown as { target: number }).target).to.equal(42);
+  });
+
+  it('load() swallows the cancellation when a reset interrupts its duration wait', async () => {
+    const transitions: Array<Event> = [];
+    const onTransition = (event: Event) => transitions.push(event);
+
+    events.addEventListener('media-product-transition', onTransition);
+
+    const payload = {
+      assetPosition: 0,
+      mediaProduct: {},
+      playbackInfo: {},
+      streamInfo: {
+        expires: 3600000,
+        id: 'stream-1',
+        prefetched: false,
+        quality: 'LOSSLESS',
+        securityToken: 'token',
+        streamFormat: 'flac',
+        streamUrl: 'https://example.com/stream',
+        streamingSessionId: 'session-1',
+        type: 'track',
+      },
+    } as unknown as LoadPayload;
+
+    try {
+      const loadPromise = player.load(payload, 'implicit');
+
+      // Let load() get past its initial reset() and register the mediaduration
+      // wait before we interrupt it (the native event never arrives).
+      await new Promise(resolve => {
+        setTimeout(resolve);
+      });
+
+      await player.reset();
+
+      // load() must resolve rather than surface the cancellation as an
+      // unhandled rejection...
+      await loadPromise;
+
+      // ...and must not dispatch a transition for the abandoned media product.
+      expect(transitions).to.have.length(0);
+    } finally {
+      events.removeEventListener('media-product-transition', onTransition);
+    }
   });
 });

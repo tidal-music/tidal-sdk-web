@@ -61,23 +61,13 @@ const deviceErrorCodeMap: Record<DeviceErrorNames, ErrorCodes> = {
 
 let outputDevices: OutputDevices | undefined;
 
-/**
- * A pending JS-side waiter for a native player event. Waiters are held in a
- * plain JS collection rather than registered individually on the native
- * bridge, so their identity stays stable — see NativePlayer#eventWaiters for
- * why that matters.
- */
+/** A pending JS-side waiter for a native player event (see #eventWaiters). */
 type NativeEventWaiter = {
   predicate?: (event: Event) => boolean;
   settle: (event: Event) => void;
 };
 
-/**
- * Rejected into pending native event waits (nativeEvent / mediaStateChange)
- * when the player is reset before the awaited event arrives. Callers treat it
- * as "this wait is obsolete" and bail out instead of continuing with state
- * that belongs to a previous media product.
- */
+/** Rejected into pending event waits when the player is reset before the event arrives. */
 export class EventWaitCancelledError extends Error {
   constructor(eventName: string) {
     super(`Wait for native player event '${eventName}' was cancelled.`);
@@ -89,10 +79,7 @@ export class EventWaitCancelledError extends Error {
 export default class NativePlayer extends BasePlayer {
   #currentOutputId = 'default';
 
-  /**
-   * Event types for which the single persistent bridge dispatcher has already
-   * been registered (see #ensureEventDispatcher).
-   */
+  /** Event types that already have a persistent dispatcher (see #ensureEventDispatcher). */
   #dispatchedEvents = new Set<NativePlayerComponentSupportedEvents>();
 
   /**
@@ -108,31 +95,21 @@ export default class NativePlayer extends BasePlayer {
   #duration!: number;
 
   /**
-   * Transient waiters for native player events, keyed by event name, resolved
-   * by the per-event dispatcher registered in #ensureEventDispatcher.
+   * Transient waiters for native player events, keyed by event name, fanned out
+   * to by the per-event dispatcher in #ensureEventDispatcher.
    *
-   * Waiters live here, on the JS side, rather than as individual bridge
-   * listeners because Electron's contextBridge does not preserve function
-   * reference identity across the isolated-world boundary: the wrapper it
-   * creates for a listener passed to removeEventListener differs from the one
-   * created for the matching addEventListener, so removeEventListener never
-   * matches and every transient bridge listener would leak — one per media
-   * product transition, for the lifetime of the app. Registering a single
-   * persistent dispatcher per event type and fanning out to these
-   * identity-stable waiters keeps the native listener count constant.
+   * Waiters live on the JS side rather than as individual bridge listeners
+   * because Electron's contextBridge does not preserve function identity across
+   * the isolated-world boundary, so removeEventListener never matches its
+   * addEventListener and every transient bridge listener would leak. One
+   * persistent dispatcher per event type keeps the native listener count fixed.
    */
   #eventWaiters = new Map<
     NativePlayerComponentSupportedEvents,
     Set<NativeEventWaiter>
   >();
 
-  /**
-   * Cancel callbacks for event waits that have not settled yet. Without this
-   * registry, a wait whose event never arrives (e.g. because the native
-   * player process died) keeps the closure of the awaiting call — including
-   * the full load payload — alive for the lifetime of the app, one set per
-   * media product transition.
-   */
+  /** Cancel callbacks for unsettled event waits, so reset() can drop them instead of leaking closures. */
   #pendingEventWaits = new Set<() => void>();
 
   #player!: NativePlayerComponentInterface;
@@ -174,10 +151,9 @@ export default class NativePlayer extends BasePlayer {
   }
 
   /**
-   * Register exactly one persistent bridge listener per event type. It is
-   * added once and never removed (removal across the contextBridge is a no-op
-   * — see #eventWaiters), which keeps the native listener count bounded. The
-   * listener fans each native event out to any JS-side waiters for that type.
+   * Register exactly one persistent bridge listener per event type (never
+   * removed, since removal across the contextBridge is a no-op — see
+   * #eventWaiters) that fans each native event out to its JS-side waiters.
    */
   #ensureEventDispatcher(eventName: NativePlayerComponentSupportedEvents) {
     if (this.#dispatchedEvents.has(eventName)) {
@@ -305,8 +281,7 @@ export default class NativePlayer extends BasePlayer {
 
       throw error;
     } finally {
-      // Whichever way the race settles, do not leave the online listener
-      // on window forever.
+      // However the race settles, don't leave the online listener on window.
       onlineListenerAbort.abort();
     }
 
@@ -316,12 +291,9 @@ export default class NativePlayer extends BasePlayer {
   }
 
   /**
-   * Wait for the next native player event of a given type, optionally
-   * filtered by a predicate. The waiter is dispatched by the persistent
-   * per-type bridge listener (see #ensureEventDispatcher) and registered in
-   * #pendingEventWaits so that reset() can cancel it (rejecting with
-   * {@link EventWaitCancelledError}) instead of leaving the awaiting closure
-   * dangling forever when the event never arrives.
+   * Wait for the next native player event of a given type, optionally filtered
+   * by a predicate. reset() can cancel the wait via #pendingEventWaits,
+   * rejecting with {@link EventWaitCancelledError}.
    */
   #waitForPlayerEvent<T extends Event>(
     eventName: NativePlayerComponentSupportedEvents,
@@ -433,8 +405,7 @@ export default class NativePlayer extends BasePlayer {
       await this.mediaStateChange('active');
     } catch (error) {
       if (error instanceof EventWaitCancelledError) {
-        // Player was reset while waiting; do not dispatch a transition for
-        // a media product that is no longer current.
+        // Player was reset while waiting; the transition is obsolete.
         return;
       }
 
@@ -507,8 +478,7 @@ export default class NativePlayer extends BasePlayer {
           this.currentTime = assetPosition;
         }
       })().catch((error: unknown) => {
-        // A cancelled wait means the player was reset before becoming
-        // active; the deferred seek is obsolete, not an error.
+        // A cancelled wait means the player was reset; the seek is obsolete, not an error.
         if (!(error instanceof EventWaitCancelledError)) {
           console.error(error);
         }
@@ -719,9 +689,8 @@ export default class NativePlayer extends BasePlayer {
   async reset(
     { keepPreload }: { keepPreload: boolean } = { keepPreload: false },
   ) {
-    // Settle event waits belonging to the previous media product so their
-    // listeners and closures cannot accumulate when the native player never
-    // delivers the awaited event (e.g. after the player process crashed).
+    // Cancel waits from the previous media product so they cannot leak when
+    // the awaited native event never arrives.
     this.#cancelPendingEventWaits();
 
     if (this.currentStreamingSessionId === undefined) {
