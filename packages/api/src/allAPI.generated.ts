@@ -10994,7 +10994,13 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: selectedSite, sites
+                     * @example selectedSite
+                     */
+                    include?: string[];
+                };
                 header?: never;
                 path: {
                     /**
@@ -11014,6 +11020,165 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["SquareConnections_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/squareConnections/{id}/relationships/selectedSite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get selectedSite relationship ("to-many").
+         * @description Retrieves selectedSite relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: selectedSite
+                     * @example selectedSite
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square connection id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareConnections_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update selectedSite relationship ("to-many").
+         * @description Updates selectedSite relationship.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Square connection id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareConnectionsUpdateMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/squareConnections/{id}/relationships/sites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get sites relationship ("to-many").
+         * @description Retrieves sites relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: sites
+                     * @example sites
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square connection id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareConnections_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18989,7 +19154,7 @@ export interface components {
             type: "acceptedTerms";
         };
         AcceptedTerms_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -19322,7 +19487,7 @@ export interface components {
             type: "albums";
         };
         Albums_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -19828,7 +19993,7 @@ export interface components {
             type: "artists";
         };
         Artists_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20159,7 +20324,7 @@ export interface components {
             type: "collaborationInvites";
         };
         CollaborationInvites_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20187,7 +20352,7 @@ export interface components {
             subject: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_Subject"];
         };
         CommentsCreateOperation_Payload_Data_Relationships_ParentComment: {
-            data?: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data"];
+            data: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data"] | (never | null);
         };
         CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data: {
             id: string;
@@ -20287,7 +20452,7 @@ export interface components {
             type: "comments";
         };
         Comments_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20381,7 +20546,7 @@ export interface components {
             type: "contentClaims";
         };
         ContentClaims_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20430,7 +20595,7 @@ export interface components {
             type: "credits";
         };
         Credits_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20597,7 +20762,7 @@ export interface components {
             type: "dspSharingLinks";
         };
         DspSharingLinks_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20724,7 +20889,7 @@ export interface components {
             redactionReason?: "NO_BIRTHDAY" | "MINOR";
         };
         DynamicPages_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20782,7 +20947,7 @@ export interface components {
         /** @description File status */
         File_Status: {
             /**
-             * @description Status of scanning the file for being AI-generated. Present only for file types that support AI scanning (e.g. track source files); absent otherwise.
+             * @description Status of scanning the file for being AI-generated. Only present for file types that support AI scanning (e.g. track source files) and when a scanning status is available for the file; absent otherwise.
              * @enum {string}
              */
             aiScanningFileStatus?: "NOT_SCANNED" | "SCANNING" | "IS_AI" | "NOT_AI" | "ERROR";
@@ -20874,7 +21039,7 @@ export interface components {
                 status: string;
             }[];
         };
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -21091,7 +21256,7 @@ export interface components {
             type: "lyrics";
         };
         Lyrics_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21273,7 +21438,7 @@ export interface components {
             type: "offlineTasks";
         };
         OfflineTasks_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21410,7 +21575,7 @@ export interface components {
             legacySource?: components["schemas"]["LegacySource"];
         };
         PlayQueues_Current_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["PlayQueues_Current_Resource_Identifier"];
+            data?: components["schemas"]["PlayQueues_Current_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21493,7 +21658,7 @@ export interface components {
             type: "playQueues";
         };
         PlayQueues_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21841,7 +22006,7 @@ export interface components {
             type: "providerOwners";
         };
         ProviderOwners_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21882,7 +22047,7 @@ export interface components {
             type: "providerProductInfos";
         };
         ProviderProductInfos_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21962,7 +22127,7 @@ export interface components {
             type: "purchases";
         };
         Purchases_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -22376,7 +22541,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             links: components["schemas"]["Links"];
         };
         SquareConnectionsCreateOperation_Payload: {
@@ -22399,7 +22564,32 @@ export interface components {
              */
             redirectUrl?: string;
         };
+        SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload: {
+            /** @description The site to select; an empty array clears the selection. At most one site can be selected. */
+            data: components["schemas"]["SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload_Data"][];
+        };
+        /** @description The site to select; an empty array clears the selection. At most one site can be selected. */
+        SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "squareSites";
+        };
+        SquareConnectionsUpdateMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example IDEMPOTENT_REQUEST_IN_PROGRESS
+                 * @enum {string}
+                 */
+                code: "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_SITES_SCOPE";
+                /** @example The Square credential is missing the OAuth scopes required by the Square Online sites feature (ONLINE_STORE_SITE_READ, CHANNELS_READ). Re-run Square onboarding to grant them. */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
         SquareConnections_Attributes: {
+            /** @description Per-feature capability statuses for this Square connection. Every capability the connection offers is listed with a status carrying more than mere presence: SITES is GRANTED when the Square Online sites scopes are granted, or REQUIRES_REAUTH when the connection exists but its credential lacks them (the seller must reconnect Square via POST /squareConnections). Because a connection always offers the sites feature, SITES is always present here. Extensible — only SITES is defined today. Absent only when the connection has no sites state (e.g. no approved Square credential). Client rule: if SITES != GRANTED prompt reconnect; else if selectedSite.data is empty show the site picker; else the selected site is shown to buyers. */
+            capabilities?: components["schemas"]["SquareConnections_Capability"][];
             /**
              * Format: date-time
              * @description Timestamp when the connection was created
@@ -22418,13 +22608,64 @@ export interface components {
              */
             status: "DRAFT" | "PENDING_REQUIREMENTS" | "KYC_PENDING" | "ACCEPTED" | "REJECTED" | "SUSPENDED";
         };
+        SquareConnections_Capability: {
+            /**
+             * @description The capability name
+             * @enum {string}
+             */
+            name: "SITES";
+            /**
+             * @description The capability's current status
+             * @enum {string}
+             */
+            status: "GRANTED" | "REQUIRES_REAUTH";
+        };
+        SquareConnections_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         SquareConnections_Multi_Resource_Data_Document: {
             data: components["schemas"]["SquareConnections_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SquareConnections_Relationships: {
+            selectedSite?: components["schemas"]["Multi_Relationship_Data_Document"];
+            sites?: components["schemas"]["Multi_Relationship_Data_Document"];
+        };
         SquareConnections_Resource_Object: {
             attributes?: components["schemas"]["SquareConnections_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["SquareConnections_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "squareConnections";
+        };
+        SquareConnections_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareConnections_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareSites_Attributes: {
+            /** @description The site's domain, if one is configured */
+            domain?: string;
+            /** @description Whether the site is published on Square Online */
+            published?: boolean;
+        };
+        SquareSites_Multi_Resource_Data_Document: {
+            data: components["schemas"]["SquareSites_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareSites_Resource_Object: {
+            attributes?: components["schemas"]["SquareSites_Attributes"];
             /**
              * @description Resource id
              * @example 12345
@@ -22434,10 +22675,10 @@ export interface components {
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
              */
-            type: "squareConnections";
+            type: "squareSites";
         };
-        SquareConnections_Single_Resource_Data_Document: {
-            data: components["schemas"]["SquareConnections_Resource_Object"];
+        SquareSites_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareSites_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -23186,7 +23427,7 @@ export interface components {
             type: "tracks";
         };
         Tracks_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -23639,7 +23880,7 @@ export interface components {
             type: "userCollectionFolders";
         };
         UserCollectionFolders_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -25018,7 +25259,7 @@ export interface components {
             type: "videos";
         };
         Videos_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -25117,6 +25358,15 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["Idempotency422ResponseBody"];
+            };
+        };
+        /** @description The Square credential is missing the OAuth scopes required by the Square Online sites feature (ONLINE_STORE_SITE_READ, CHANNELS_READ). Re-run Square onboarding to grant them.; A request with this idempotency key is currently being processed */
+        SquareConnectionsUpdateMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsUpdateMultiDataRelationship409ResponseBody"];
             };
         };
         /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
