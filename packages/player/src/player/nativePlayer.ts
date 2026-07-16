@@ -61,9 +61,39 @@ const deviceErrorCodeMap: Record<DeviceErrorNames, ErrorCodes> = {
 
 let outputDevices: OutputDevices | undefined;
 
+/**
+ * A pending JS-side waiter for a native player event. Waiters are held in a
+ * plain JS collection rather than registered individually on the native
+ * bridge, so their identity stays stable — see NativePlayer#eventWaiters for
+ * why that matters.
+ */
+type NativeEventWaiter = {
+  predicate?: (event: Event) => boolean;
+  settle: (event: Event) => void;
+};
+
+/**
+ * Rejected into pending native event waits (nativeEvent / mediaStateChange)
+ * when the player is reset before the awaited event arrives. Callers treat it
+ * as "this wait is obsolete" and bail out instead of continuing with state
+ * that belongs to a previous media product.
+ */
+export class EventWaitCancelledError extends Error {
+  constructor(eventName: string) {
+    super(`Wait for native player event '${eventName}' was cancelled.`);
+    this.name = 'EventWaitCancelledError';
+  }
+}
+
 // eslint-disable-next-line import/no-default-export
 export default class NativePlayer extends BasePlayer {
   #currentOutputId = 'default';
+
+  /**
+   * Event types for which the single persistent bridge dispatcher has already
+   * been registered (see #ensureEventDispatcher).
+   */
+  #dispatchedEvents = new Set<NativePlayerComponentSupportedEvents>();
 
   /**
    * A Boolean which is true if the media contained in the element has finished playing.
@@ -76,6 +106,34 @@ export default class NativePlayer extends BasePlayer {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/ended
    */
   #duration!: number;
+
+  /**
+   * Transient waiters for native player events, keyed by event name, resolved
+   * by the per-event dispatcher registered in #ensureEventDispatcher.
+   *
+   * Waiters live here, on the JS side, rather than as individual bridge
+   * listeners because Electron's contextBridge does not preserve function
+   * reference identity across the isolated-world boundary: the wrapper it
+   * creates for a listener passed to removeEventListener differs from the one
+   * created for the matching addEventListener, so removeEventListener never
+   * matches and every transient bridge listener would leak — one per media
+   * product transition, for the lifetime of the app. Registering a single
+   * persistent dispatcher per event type and fanning out to these
+   * identity-stable waiters keeps the native listener count constant.
+   */
+  #eventWaiters = new Map<
+    NativePlayerComponentSupportedEvents,
+    Set<NativeEventWaiter>
+  >();
+
+  /**
+   * Cancel callbacks for event waits that have not settled yet. Without this
+   * registry, a wait whose event never arrives (e.g. because the native
+   * player process died) keeps the closure of the awaiting call — including
+   * the full load payload — alive for the lifetime of the app, one set per
+   * media product transition.
+   */
+  #pendingEventWaits = new Set<() => void>();
 
   #player!: NativePlayerComponentInterface;
 
@@ -107,6 +165,40 @@ export default class NativePlayer extends BasePlayer {
 
     this.registerEventListeners();
     this.#player.setVolume(100);
+  }
+
+  #cancelPendingEventWaits() {
+    for (const cancel of [...this.#pendingEventWaits]) {
+      cancel();
+    }
+  }
+
+  /**
+   * Register exactly one persistent bridge listener per event type. It is
+   * added once and never removed (removal across the contextBridge is a no-op
+   * — see #eventWaiters), which keeps the native listener count bounded. The
+   * listener fans each native event out to any JS-side waiters for that type.
+   */
+  #ensureEventDispatcher(eventName: NativePlayerComponentSupportedEvents) {
+    if (this.#dispatchedEvents.has(eventName)) {
+      return;
+    }
+
+    this.#dispatchedEvents.add(eventName);
+    this.#player.addEventListener(eventName, (event: Event) => {
+      const waiters = this.#eventWaiters.get(eventName);
+
+      if (!waiters?.size) {
+        return;
+      }
+
+      // Copy before iterating: settle() removes the waiter from the set.
+      for (const waiter of [...waiters]) {
+        if (!waiter.predicate || waiter.predicate(event)) {
+          waiter.settle(event);
+        }
+      }
+    });
   }
 
   #handleDeviceError(errorName: DeviceErrorNames) {
@@ -192,16 +284,80 @@ export default class NativePlayer extends BasePlayer {
       If we go online before playback stops; do nothing = native player retries and recovers.
       If playback stops without an online event emitting = emit error.
     */
-    const raceResult = await Promise.race([
-      this.mediaStateChange('idle') as Promise<'idle'>,
-      new Promise<'online'>(resolve => {
-        window.addEventListener('online', () => resolve('online'));
-      }),
-    ]);
+    const onlineListenerAbort = new AbortController();
+    let raceResult: 'idle' | 'online';
+
+    try {
+      raceResult = await Promise.race([
+        this.mediaStateChange('idle') as Promise<'idle'>,
+        new Promise<'online'>(resolve => {
+          window.addEventListener('online', () => resolve('online'), {
+            once: true,
+            signal: onlineListenerAbort.signal,
+          });
+        }),
+      ]);
+    } catch (error) {
+      if (error instanceof EventWaitCancelledError) {
+        // Player was reset while waiting; nothing left to report.
+        return;
+      }
+
+      throw error;
+    } finally {
+      // Whichever way the race settles, do not leave the online listener
+      // on window forever.
+      onlineListenerAbort.abort();
+    }
 
     if (raceResult === 'idle') {
       events.dispatchError(new PlayerError('PENetwork', 'NPN01'));
     }
+  }
+
+  /**
+   * Wait for the next native player event of a given type, optionally
+   * filtered by a predicate. The waiter is dispatched by the persistent
+   * per-type bridge listener (see #ensureEventDispatcher) and registered in
+   * #pendingEventWaits so that reset() can cancel it (rejecting with
+   * {@link EventWaitCancelledError}) instead of leaving the awaiting closure
+   * dangling forever when the event never arrives.
+   */
+  #waitForPlayerEvent<T extends Event>(
+    eventName: NativePlayerComponentSupportedEvents,
+    predicate?: (event: T) => boolean,
+  ): Promise<T> {
+    this.#ensureEventDispatcher(eventName);
+
+    return new Promise<T>((resolve, reject) => {
+      const existing = this.#eventWaiters.get(eventName);
+      const waiters = existing ?? new Set<NativeEventWaiter>();
+
+      if (!existing) {
+        this.#eventWaiters.set(eventName, waiters);
+      }
+
+      const cleanup = () => {
+        waiters.delete(waiter);
+        this.#pendingEventWaits.delete(cancel);
+      };
+
+      const waiter: NativeEventWaiter = {
+        predicate: predicate as ((event: Event) => boolean) | undefined,
+        settle: (event: Event) => {
+          cleanup();
+          resolve(event as T);
+        },
+      };
+
+      const cancel = () => {
+        cleanup();
+        reject(new EventWaitCancelledError(eventName));
+      };
+
+      waiters.add(waiter);
+      this.#pendingEventWaits.add(cancel);
+    });
   }
 
   /**
@@ -229,7 +385,16 @@ export default class NativePlayer extends BasePlayer {
    * can gather the duration data and send a media product transition.
    */
   async handleAutomaticTransitionToPreloadedMediaProduct() {
-    await this.nativeEvent('mediaduration');
+    try {
+      await this.nativeEvent('mediaduration');
+    } catch (error) {
+      if (error instanceof EventWaitCancelledError) {
+        // Player was reset while waiting; the transition is obsolete.
+        return;
+      }
+
+      throw error;
+    }
 
     this.#preloadedLoadPayload = undefined;
 
@@ -264,7 +429,17 @@ export default class NativePlayer extends BasePlayer {
       );
     }
 
-    await this.mediaStateChange('active');
+    try {
+      await this.mediaStateChange('active');
+    } catch (error) {
+      if (error instanceof EventWaitCancelledError) {
+        // Player was reset while waiting; do not dispatch a transition for
+        // a media product that is no longer current.
+        return;
+      }
+
+      throw error;
+    }
 
     events.dispatchEvent(
       mediaProductTransitionEvent(mediaProduct, updatedPlaybackContext),
@@ -300,7 +475,16 @@ export default class NativePlayer extends BasePlayer {
       throw new Error('Stream format is undefined.');
     }
 
-    await mediaDurationEventPromise;
+    try {
+      await mediaDurationEventPromise;
+    } catch (error) {
+      if (error instanceof EventWaitCancelledError) {
+        // Player was reset during load, do not continue.
+        return;
+      }
+
+      throw error;
+    }
 
     // Player was reset during load, do not continue.
     if (this.currentStreamingSessionId !== streamInfo.streamingSessionId) {
@@ -322,7 +506,13 @@ export default class NativePlayer extends BasePlayer {
           await this.seek(assetPosition);
           this.currentTime = assetPosition;
         }
-      })().catch(console.error);
+      })().catch((error: unknown) => {
+        // A cancelled wait means the player was reset before becoming
+        // active; the deferred seek is obsolete, not an error.
+        if (!(error instanceof EventWaitCancelledError)) {
+          console.error(error);
+        }
+      });
     } else {
       this.currentTime = 0;
     }
@@ -350,27 +540,14 @@ export default class NativePlayer extends BasePlayer {
   }
 
   mediaStateChange(state: string): Promise<string> {
-    return new Promise<string>(resolve => {
-      const handler = (event: Event & { target: string }) => {
-        if (event.target === state) {
-          this.#player.removeEventListener('mediastate', handler);
-          resolve(event.target);
-        }
-      };
-
-      this.#player.addEventListener('mediastate', handler);
-    });
+    return this.#waitForPlayerEvent<Event & { target: string }>(
+      'mediastate',
+      event => event.target === state,
+    ).then(event => event.target);
   }
 
   nativeEvent(eventName: NativePlayerComponentSupportedEvents): Promise<Event> {
-    return new Promise(resolve => {
-      const handler = (event: Event) => {
-        this.#player.removeEventListener(eventName, handler);
-        resolve(event);
-      };
-
-      this.#player.addEventListener(eventName, handler);
-    });
+    return this.#waitForPlayerEvent(eventName);
   }
 
   async next(payload: LoadPayload) {
@@ -542,6 +719,11 @@ export default class NativePlayer extends BasePlayer {
   async reset(
     { keepPreload }: { keepPreload: boolean } = { keepPreload: false },
   ) {
+    // Settle event waits belonging to the previous media product so their
+    // listeners and closures cannot accumulate when the native player never
+    // delivers the awaited event (e.g. after the player process crashed).
+    this.#cancelPendingEventWaits();
+
     if (this.currentStreamingSessionId === undefined) {
       return;
     }
@@ -573,7 +755,16 @@ export default class NativePlayer extends BasePlayer {
   async seek(seconds: number) {
     // Native player cannot seek until active state has happened.
     if (!this.hasStarted()) {
-      await this.mediaStateChange('active');
+      try {
+        await this.mediaStateChange('active');
+      } catch (error) {
+        if (error instanceof EventWaitCancelledError) {
+          // Player was reset while waiting to become seekable; drop the seek.
+          return;
+        }
+
+        throw error;
+      }
     }
 
     this.seekStart(this.currentTime);

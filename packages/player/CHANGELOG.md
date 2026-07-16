@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Native player: stopped leaking a native `mediaduration` / `mediastate` event
+  listener on every track transition. `nativeEvent` / `mediaStateChange` used
+  to add a bridge event listener per wait and remove it once the event
+  arrived, but across Electron's `contextBridge` the function handed to
+  `removeEventListener` is wrapped as a _different_ proxy than the one
+  `addEventListener` registered, so removal never matched — every wait leaked
+  a listener and its awaiting closure (including the full load payload), one
+  set per track skip, growing renderer memory unboundedly. This surfaced as
+  the `MaxListenersExceededWarning` for `mediaduration` in desktop logs and
+  contributed to renderer out-of-memory crashes on 32-bit (Windows) builds.
+  Waits are now dispatched by a single persistent listener per event type and
+  tracked in a JS-side registry with stable identity, so the native listener
+  count stays constant regardless of how many tracks are played. Pending waits
+  are still cancelled when the player is reset — freeing the awaiting closure
+  when the awaited event never arrives, e.g. because the native player process
+  crashed — and the temporary `online` listener used during network-error
+  recovery is removed once the recovery race settles.
+
 ## [0.18.3] - 2026-06-23
 
 ### Fixed
