@@ -11048,7 +11048,7 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get selectedSite relationship ("to-many").
+         * Get selectedSite relationship ("to-one").
          * @description Retrieves selectedSite relationship.
          */
         get: {
@@ -11059,8 +11059,6 @@ export interface paths {
                      * @example selectedSite
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
@@ -11080,7 +11078,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SquareConnections_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SquareConnections_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11099,7 +11097,7 @@ export interface paths {
         options?: never;
         head?: never;
         /**
-         * Update selectedSite relationship ("to-many").
+         * Update selectedSite relationship ("to-one").
          * @description Updates selectedSite relationship.
          */
         patch: {
@@ -11124,11 +11122,20 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareConnections_Single_Relationship_Data_Document"];
+                    };
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["SquareConnectionsUpdateMultiDataRelationship409Response"];
+                409: components["responses"]["SquareConnectionsUpdateSingleDataRelationship409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -22565,16 +22572,15 @@ export interface components {
             redirectUrl?: string;
         };
         SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload: {
-            /** @description The site to select; an empty array clears the selection. At most one site can be selected. */
-            data: components["schemas"]["SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload_Data"][];
+            data: components["schemas"]["SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload_Data"] | (never | null);
         };
-        /** @description The site to select; an empty array clears the selection. At most one site can be selected. */
+        /** @description The site to select; null clears the selection. */
         SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload_Data: {
             id: string;
             /** @enum {string} */
             type: "squareSites";
-        };
-        SquareConnectionsUpdateMultiDataRelationship409ResponseBody: {
+        } | null;
+        SquareConnectionsUpdateSingleDataRelationship409ResponseBody: {
             errors: {
                 /**
                  * @example IDEMPOTENT_REQUEST_IN_PROGRESS
@@ -22588,7 +22594,7 @@ export interface components {
             }[];
         };
         SquareConnections_Attributes: {
-            /** @description Per-feature capability statuses for this Square connection. Every capability the connection offers is listed with a status carrying more than mere presence: SITES is GRANTED when the Square Online sites scopes are granted, or REQUIRES_REAUTH when the connection exists but its credential lacks them (the seller must reconnect Square via POST /squareConnections). Because a connection always offers the sites feature, SITES is always present here. Extensible — only SITES is defined today. Absent only when the connection has no sites state (e.g. no approved Square credential). Client rule: if SITES != GRANTED prompt reconnect; else if selectedSite.data is empty show the site picker; else the selected site is shown to buyers. */
+            /** @description Per-feature capability statuses for this Square connection. Every capability the connection offers is listed with a status carrying more than mere presence: SITES is GRANTED when the Square Online sites scopes are granted, or REQUIRES_REAUTH when the connection exists but its credential lacks them (the seller must reconnect Square via POST /squareConnections). Because a connection always offers the sites feature, SITES is always present here. Extensible — only SITES is defined today. Absent only when the connection has no sites state (e.g. no approved Square credential). Client rule: if SITES != GRANTED prompt reconnect; else if selectedSite.data is null show the site picker; else the selected site is shown to buyers. */
             capabilities?: components["schemas"]["SquareConnections_Capability"][];
             /**
              * Format: date-time
@@ -22631,7 +22637,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         SquareConnections_Relationships: {
-            selectedSite?: components["schemas"]["Multi_Relationship_Data_Document"];
+            selectedSite?: components["schemas"]["Single_Relationship_Data_Document"];
             sites?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         SquareConnections_Resource_Object: {
@@ -22647,6 +22653,11 @@ export interface components {
              * @enum {string}
              */
             type: "squareConnections";
+        };
+        SquareConnections_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         SquareConnections_Single_Resource_Data_Document: {
             data: components["schemas"]["SquareConnections_Resource_Object"];
@@ -25361,12 +25372,12 @@ export interface components {
             };
         };
         /** @description The Square credential is missing the OAuth scopes required by the Square Online sites feature (ONLINE_STORE_SITE_READ, CHANNELS_READ). Re-run Square onboarding to grant them.; A request with this idempotency key is currently being processed */
-        SquareConnectionsUpdateMultiDataRelationship409Response: {
+        SquareConnectionsUpdateSingleDataRelationship409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["SquareConnectionsUpdateMultiDataRelationship409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsUpdateSingleDataRelationship409ResponseBody"];
             };
         };
         /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
