@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Working with responses\n\n- **Enums** — new values can be added to any enum at any time. Treat unknown values as forward-compatible, not as errors.\n- **IDs** are opaque strings. Never parse, construct, or infer meaning from them.\n- **Formats** — dates, times and durations are ISO 8601 (`2024-05-01T12:00:00Z`, `PT3M5S`); countries ISO 3166-1 alpha-2; languages BCP 47; currencies ISO 4217; colors six-digit hex.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: a resource's `relationships` object contains just the relationships named in [`include`](https://jsonapi.org/format/#fetching-includes) — a relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<member>]=value`](https://jsonapi.org/format/#fetching-filtering) filters collections; each endpoint documents its available filters, and most collections require at least one.\n- [`sort=<member>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<member>` descending (`sort=-addedAt`). Filter and sort members are relative to the resources being returned.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) follow JSON:API semantics: attributes omitted from the payload are left unchanged; attributes set to `null` are cleared.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Once the original request has completed, retrying with the same key and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### [DRAFT] Availability and replacements\n\nMedia resources — `tracks`, `albums`, `videos` — are licensed per territory: a resource's `usageRules` relationship describes what it may be used for (e.g. `STREAM`) in a given country, so a resource may not be streamable in the requested `countryCode`. When it isn't, it may have a streamable substitute, exposed through its to-one `replacement` relationship — empty when the resource is streamable as-is or no substitute exists.\n\nIdentifiers stored in collections never change: the primary data always shows what was originally added. To find what can be played instead, include the replacement — e.g. `include=items.replacement` on a user's track collection.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.65"
+    "version" : "1.10.66"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -719,8 +719,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "default" : "-createdAt",
               "enum" : [ "createdAt", "-createdAt", "title", "-title" ],
+              "default" : "-createdAt",
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -6438,8 +6438,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "default" : "-createdAt",
               "enum" : [ "createdAt", "-createdAt", "likeCount", "-likeCount", "replyCount", "-replyCount", "startTime", "-startTime" ],
+              "default" : "-createdAt",
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "LikeCountAsc", "LikeCountDesc", "ReplyCountAsc", "ReplyCountDesc", "StartTimeAsc", "StartTimeDesc" ]
             }
           }
@@ -11400,8 +11400,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "default" : "-createdAt",
               "enum" : [ "createdAt", "-createdAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
+              "default" : "-createdAt",
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "LastModifiedAtAsc", "LastModifiedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -12338,8 +12338,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "itemIndex",
               "enum" : [ "addedAt", "-addedAt", "albums.title", "-albums.title", "artists.name", "-artists.name", "duration", "-duration", "itemIndex", "-itemIndex", "title", "-title" ],
+              "default" : "itemIndex",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "AlbumsTitleAsc", "AlbumsTitleDesc", "ArtistsNameAsc", "ArtistsNameDesc", "DurationAsc", "DurationDesc", "ItemIndexAsc", "ItemIndexDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -14414,8 +14414,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "ISO 3166-1 alpha-2 country code",
@@ -14508,8 +14508,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -14610,8 +14610,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -14712,8 +14712,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -14814,8 +14814,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -14916,8 +14916,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -15018,8 +15018,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -15120,8 +15120,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "ISO 3166-1 alpha-2 country code",
@@ -15214,8 +15214,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "ISO 3166-1 alpha-2 country code",
@@ -15316,8 +15316,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "ISO 3166-1 alpha-2 country code",
@@ -17488,8 +17488,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "default" : "-createdAt",
               "enum" : [ "createdAt", "-createdAt", "title", "-title" ],
+              "default" : "-createdAt",
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -19964,8 +19964,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "-addedAt",
               "enum" : [ "addedAt", "-addedAt", "artists.name", "-artists.name", "releaseDate", "-releaseDate", "title", "-title" ],
+              "default" : "-addedAt",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "ArtistsNameAsc", "ArtistsNameDesc", "ReleaseDateAsc", "ReleaseDateDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -20369,8 +20369,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "-addedAt",
               "enum" : [ "addedAt", "-addedAt", "name", "-name" ],
+              "default" : "-addedAt",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -21022,8 +21022,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "addedAt",
               "enum" : [ "addedAt", "-addedAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
+              "default" : "addedAt",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "LastModifiedAtAsc", "LastModifiedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -21487,8 +21487,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "-addedAt",
               "enum" : [ "addedAt", "-addedAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
+              "default" : "-addedAt",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "LastModifiedAtAsc", "LastModifiedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -22252,8 +22252,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "-addedAt",
               "enum" : [ "addedAt", "-addedAt", "albums.title", "-albums.title", "artists.name", "-artists.name", "duration", "-duration", "title", "-title" ],
+              "default" : "-addedAt",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "AlbumsTitleAsc", "AlbumsTitleDesc", "ArtistsNameAsc", "ArtistsNameDesc", "DurationAsc", "DurationDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -22657,8 +22657,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "-addedAt",
               "enum" : [ "addedAt", "-addedAt", "artists.name", "-artists.name", "duration", "-duration", "title", "-title" ],
+              "default" : "-addedAt",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "ArtistsNameAsc", "ArtistsNameDesc", "DurationAsc", "DurationDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -23065,8 +23065,8 @@
             "items" : {
               "type" : "string",
               "example" : "albums.addedAt",
-              "default" : "-albums.addedAt",
               "enum" : [ "albums.addedAt", "-albums.addedAt", "albums.artists.name", "-albums.artists.name", "albums.releaseDate", "-albums.releaseDate", "albums.title", "-albums.title" ],
+              "default" : "-albums.addedAt",
               "x-enum-varnames" : [ "AlbumsAddedAtAsc", "AlbumsAddedAtDesc", "AlbumsArtistsNameAsc", "AlbumsArtistsNameDesc", "AlbumsReleaseDateAsc", "AlbumsReleaseDateDesc", "AlbumsTitleAsc", "AlbumsTitleDesc" ]
             }
           }
@@ -23301,8 +23301,8 @@
             "items" : {
               "type" : "string",
               "example" : "artists.addedAt",
-              "default" : "-artists.addedAt",
               "enum" : [ "artists.addedAt", "-artists.addedAt", "artists.name", "-artists.name" ],
+              "default" : "-artists.addedAt",
               "x-enum-varnames" : [ "ArtistsAddedAtAsc", "ArtistsAddedAtDesc", "ArtistsNameAsc", "ArtistsNameDesc" ]
             }
           }
@@ -23625,8 +23625,8 @@
             "items" : {
               "type" : "string",
               "example" : "playlists.addedAt",
-              "default" : "-playlists.addedAt",
               "enum" : [ "playlists.addedAt", "-playlists.addedAt", "playlists.lastUpdatedAt", "-playlists.lastUpdatedAt", "playlists.name", "-playlists.name" ],
+              "default" : "-playlists.addedAt",
               "x-enum-varnames" : [ "PlaylistsAddedAtAsc", "PlaylistsAddedAtDesc", "PlaylistsLastUpdatedAtAsc", "PlaylistsLastUpdatedAtDesc", "PlaylistsNameAsc", "PlaylistsNameDesc" ]
             }
           }
@@ -23851,8 +23851,8 @@
             "items" : {
               "type" : "string",
               "example" : "tracks.addedAt",
-              "default" : "-tracks.addedAt",
               "enum" : [ "tracks.addedAt", "-tracks.addedAt", "tracks.albums.title", "-tracks.albums.title", "tracks.artists.name", "-tracks.artists.name", "tracks.duration", "-tracks.duration", "tracks.title", "-tracks.title" ],
+              "default" : "-tracks.addedAt",
               "x-enum-varnames" : [ "TracksAddedAtAsc", "TracksAddedAtDesc", "TracksAlbumsTitleAsc", "TracksAlbumsTitleDesc", "TracksArtistsNameAsc", "TracksArtistsNameDesc", "TracksDurationAsc", "TracksDurationDesc", "TracksTitleAsc", "TracksTitleDesc" ]
             }
           }
@@ -24087,8 +24087,8 @@
             "items" : {
               "type" : "string",
               "example" : "videos.addedAt",
-              "default" : "-videos.addedAt",
               "enum" : [ "videos.addedAt", "-videos.addedAt", "videos.artists.name", "-videos.artists.name", "videos.duration", "-videos.duration", "videos.title", "-videos.title" ],
+              "default" : "-videos.addedAt",
               "x-enum-varnames" : [ "VideosAddedAtAsc", "VideosAddedAtDesc", "VideosArtistsNameAsc", "VideosArtistsNameDesc", "VideosDurationAsc", "VideosDurationDesc", "VideosTitleAsc", "VideosTitleDesc" ]
             }
           }
@@ -29826,7 +29826,7 @@
         }
       },
       "Artwork_File" : {
-        "required" : [ "href" ],
+        "required" : [ "href", "meta" ],
         "type" : "object",
         "properties" : {
           "href" : {
@@ -36117,8 +36117,7 @@
             "enum" : [ "squareSites" ]
           }
         },
-        "description" : "The site to select; null clears the selection.",
-        "nullable" : true
+        "description" : "The site to select; null clears the selection."
       },
       "SquareConnectionsUpdateSingleDataRelationship409ResponseBody" : {
         "type" : "object",
@@ -36404,8 +36403,8 @@
             "description" : "Deprecated: use meta.integrationType instead.",
             "example" : "REDIRECT",
             "deprecated" : true,
-            "default" : "REDIRECT",
-            "enum" : [ "REDIRECT", "EMBEDDED" ]
+            "enum" : [ "REDIRECT", "EMBEDDED" ],
+            "default" : "REDIRECT"
           },
           "refreshUrl" : {
             "type" : "string",
@@ -36429,8 +36428,8 @@
             "type" : "string",
             "description" : "Integration type for Stripe onboarding",
             "example" : "REDIRECT",
-            "default" : "REDIRECT",
-            "enum" : [ "REDIRECT", "EMBEDDED" ]
+            "enum" : [ "REDIRECT", "EMBEDDED" ],
+            "default" : "REDIRECT"
           },
           "refreshUrl" : {
             "type" : "string",
@@ -38848,12 +38847,6 @@
         "required" : [ "name" ],
         "type" : "object",
         "properties" : {
-          "collectionType" : {
-            "type" : "string",
-            "description" : "The type of user collection this folder belongs to. Deprecated: send the 'userCollection' relationship instead. Accepted for backward compatibility during migration and will be removed in a future version.",
-            "deprecated" : true,
-            "enum" : [ "PLAYLISTS" ]
-          },
           "name" : {
             "type" : "string"
           }
@@ -38994,12 +38987,6 @@
         "required" : [ "createdAt", "lastModifiedAt", "name" ],
         "type" : "object",
         "properties" : {
-          "collectionType" : {
-            "type" : "string",
-            "description" : "The type of user collection this folder belongs to. Deprecated: use the 'userCollection' relationship instead. This field will be removed in a future version, so clients should not depend on its presence.",
-            "deprecated" : true,
-            "enum" : [ "PLAYLISTS" ]
-          },
           "createdAt" : {
             "type" : "string",
             "format" : "date-time"

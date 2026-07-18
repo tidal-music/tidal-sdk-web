@@ -20039,7 +20039,7 @@ export interface components {
         Artwork_File: {
             /** @description Artwork file href */
             href: string;
-            meta?: components["schemas"]["Artwork_File_Meta"];
+            meta: components["schemas"]["Artwork_File_Meta"];
         };
         /** @description Metadata about an artwork file */
         Artwork_File_Meta: {
@@ -22579,7 +22579,7 @@ export interface components {
             id: string;
             /** @enum {string} */
             type: "squareSites";
-        } | null;
+        };
         SquareConnectionsUpdateSingleDataRelationship409ResponseBody: {
             errors: {
                 /**
@@ -23769,12 +23769,6 @@ export interface components {
             type: "userCollectionFolders";
         };
         UserCollectionFoldersCreateOperation_Payload_Data_Attributes: {
-            /**
-             * @deprecated
-             * @description The type of user collection this folder belongs to. Deprecated: send the 'userCollection' relationship instead. Accepted for backward compatibility during migration and will be removed in a future version.
-             * @enum {string}
-             */
-            collectionType?: "PLAYLISTS";
             name: string;
         };
         UserCollectionFoldersCreateOperation_Payload_Data_Relationships: {
@@ -23825,12 +23819,6 @@ export interface components {
             name?: string;
         };
         UserCollectionFolders_Attributes: {
-            /**
-             * @deprecated
-             * @description The type of user collection this folder belongs to. Deprecated: use the 'userCollection' relationship instead. This field will be removed in a future version, so clients should not depend on its presence.
-             * @enum {string}
-             */
-            collectionType?: "PLAYLISTS";
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
