@@ -5,10 +5,10 @@
       "name" : "TIDAL Developer - Discussions",
       "url" : "https://github.com/orgs/tidal-music/discussions"
     },
-    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)–compliant web API that exposes TIDAL’s music, metadata, and user-related functionality through a consistent, resource-oriented design. More information and API management are available at [developer.tidal.com](https://developer.tidal.com)",
-    "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-overview",
+    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Working with responses\n\n- **Enums** — new values can be added to any enum at any time. Treat unknown values as forward-compatible, not as errors.\n- **IDs** are opaque strings. Never parse, construct, or infer meaning from them.\n- **Formats** — dates, times and durations are ISO 8601 (`2024-05-01T12:00:00Z`, `PT3M5S`); countries ISO 3166-1 alpha-2; languages BCP 47; currencies ISO 4217; colors six-digit hex.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: a resource's `relationships` object contains just the relationships named in [`include`](https://jsonapi.org/format/#fetching-includes) — a relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<member>]=value`](https://jsonapi.org/format/#fetching-filtering) filters collections; each endpoint documents its available filters, and most collections require at least one.\n- [`sort=<member>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<member>` descending (`sort=-addedAt`). Filter and sort members are relative to the resources being returned.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) follow JSON:API semantics: attributes omitted from the payload are left unchanged; attributes set to `null` are cleared.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Once the original request has completed, retrying with the same key and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### [DRAFT] Availability and replacements\n\nMedia resources — `tracks`, `albums`, `videos` — are licensed per territory: a resource's `usageRules` relationship describes what it may be used for (e.g. `STREAM`) in a given country, so a resource may not be streamable in the requested `countryCode`. When it isn't, it may have a streamable substitute, exposed through its to-one `replacement` relationship — empty when the resource is streamable as-is or no substitute exists.\n\nIdentifiers stored in collections never change: the primary data always shows what was originally added. To find what can be played instead, include the replacement — e.g. `include=items.replacement` on a user's track collection.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
+    "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.47"
+    "version" : "1.10.67"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -137,6 +137,9 @@
   }, {
     "description" : "A Square seller connection linked to a user for receiving payments.",
     "name" : "squareConnections"
+  }, {
+    "description" : "A Square Online site belonging to the seller's Square account.",
+    "name" : "squareSites"
   }, {
     "description" : "A Stripe Connect account linked to a user for receiving payments.",
     "name" : "stripeConnections"
@@ -716,8 +719,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "default" : "-createdAt",
               "enum" : [ "createdAt", "-createdAt", "title", "-title" ],
+              "default" : "-createdAt",
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -6435,8 +6438,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "default" : "-createdAt",
               "enum" : [ "createdAt", "-createdAt", "likeCount", "-likeCount", "replyCount", "-replyCount", "startTime", "-startTime" ],
+              "default" : "-createdAt",
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "LikeCountAsc", "LikeCountDesc", "ReplyCountAsc", "ReplyCountDesc", "StartTimeAsc", "StartTimeDesc" ]
             }
           }
@@ -11397,8 +11400,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "default" : "-createdAt",
               "enum" : [ "createdAt", "-createdAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
+              "default" : "-createdAt",
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "LastModifiedAtAsc", "LastModifiedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -11412,7 +11415,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts",
           "example" : "collaboratorProfiles",
           "in" : "query",
           "name" : "include",
@@ -11646,7 +11649,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts",
           "example" : "collaboratorProfiles",
           "in" : "query",
           "name" : "include",
@@ -12335,8 +12338,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "itemIndex",
               "enum" : [ "addedAt", "-addedAt", "albums.title", "-albums.title", "artists.name", "-artists.name", "duration", "-duration", "itemIndex", "-itemIndex", "title", "-title" ],
+              "default" : "itemIndex",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "AlbumsTitleAsc", "AlbumsTitleDesc", "ArtistsNameAsc", "ArtistsNameDesc", "DurationAsc", "DurationDesc", "ItemIndexAsc", "ItemIndexDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -12737,6 +12740,86 @@
         "tags" : [ "playlists" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/playlists/{id}/relationships/suggestedCoverArts" : {
+      "get" : {
+        "description" : "Retrieves suggestedCoverArts relationship.",
+        "parameters" : [ {
+          "description" : "Playlist id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: suggestedCoverArts",
+          "example" : "suggestedCoverArts",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "suggestedCoverArts"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get suggestedCoverArts relationship (\"to-many\").",
+        "tags" : [ "playlists" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -14331,8 +14414,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "ISO 3166-1 alpha-2 country code",
@@ -14425,8 +14508,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -14527,8 +14610,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -14629,8 +14712,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -14731,8 +14814,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -14833,8 +14916,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -14935,8 +15018,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
@@ -15037,8 +15120,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "ISO 3166-1 alpha-2 country code",
@@ -15131,8 +15214,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "ISO 3166-1 alpha-2 country code",
@@ -15233,8 +15316,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "default" : "INCLUDE",
-            "enum" : [ "INCLUDE", "EXCLUDE" ]
+            "enum" : [ "INCLUDE", "EXCLUDE" ],
+            "default" : "INCLUDE"
           }
         }, {
           "description" : "ISO 3166-1 alpha-2 country code",
@@ -15781,6 +15864,19 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: selectedSite, sites",
+          "example" : "selectedSite",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "selectedSite"
+            }
+          }
         } ],
         "responses" : {
           "200" : {
@@ -15822,6 +15918,232 @@
           "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
         "summary" : "Get single squareConnection.",
+        "tags" : [ "squareConnections" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/squareConnections/{id}/relationships/selectedSite" : {
+      "get" : {
+        "description" : "Retrieves selectedSite relationship.",
+        "parameters" : [ {
+          "description" : "Square connection id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: selectedSite",
+          "example" : "selectedSite",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "selectedSite"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareConnections_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get selectedSite relationship (\"to-one\").",
+        "tags" : [ "squareConnections" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Updates selectedSite relationship.",
+        "parameters" : [ {
+          "description" : "Square connection id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareConnections_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareConnectionsUpdateSingleDataRelationship409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update selectedSite relationship (\"to-one\").",
+        "tags" : [ "squareConnections" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/squareConnections/{id}/relationships/sites" : {
+      "get" : {
+        "description" : "Retrieves sites relationship.",
+        "parameters" : [ {
+          "description" : "Square connection id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: sites",
+          "example" : "sites",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "sites"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareConnections_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get sites relationship (\"to-many\").",
         "tags" : [ "squareConnections" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -17166,8 +17488,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "default" : "-createdAt",
               "enum" : [ "createdAt", "-createdAt", "title", "-title" ],
+              "default" : "-createdAt",
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -19642,8 +19964,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "-addedAt",
               "enum" : [ "addedAt", "-addedAt", "artists.name", "-artists.name", "releaseDate", "-releaseDate", "title", "-title" ],
+              "default" : "-addedAt",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "ArtistsNameAsc", "ArtistsNameDesc", "ReleaseDateAsc", "ReleaseDateDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -20047,8 +20369,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "-addedAt",
               "enum" : [ "addedAt", "-addedAt", "name", "-name" ],
+              "default" : "-addedAt",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -20700,8 +21022,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "addedAt",
               "enum" : [ "addedAt", "-addedAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
+              "default" : "addedAt",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "LastModifiedAtAsc", "LastModifiedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -21165,8 +21487,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "-addedAt",
               "enum" : [ "addedAt", "-addedAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
+              "default" : "-addedAt",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "LastModifiedAtAsc", "LastModifiedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -21930,8 +22252,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "-addedAt",
               "enum" : [ "addedAt", "-addedAt", "albums.title", "-albums.title", "artists.name", "-artists.name", "duration", "-duration", "title", "-title" ],
+              "default" : "-addedAt",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "AlbumsTitleAsc", "AlbumsTitleDesc", "ArtistsNameAsc", "ArtistsNameDesc", "DurationAsc", "DurationDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -22335,8 +22657,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "default" : "-addedAt",
               "enum" : [ "addedAt", "-addedAt", "artists.name", "-artists.name", "duration", "-duration", "title", "-title" ],
+              "default" : "-addedAt",
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "ArtistsNameAsc", "ArtistsNameDesc", "DurationAsc", "DurationDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -22743,8 +23065,8 @@
             "items" : {
               "type" : "string",
               "example" : "albums.addedAt",
-              "default" : "-albums.addedAt",
               "enum" : [ "albums.addedAt", "-albums.addedAt", "albums.artists.name", "-albums.artists.name", "albums.releaseDate", "-albums.releaseDate", "albums.title", "-albums.title" ],
+              "default" : "-albums.addedAt",
               "x-enum-varnames" : [ "AlbumsAddedAtAsc", "AlbumsAddedAtDesc", "AlbumsArtistsNameAsc", "AlbumsArtistsNameDesc", "AlbumsReleaseDateAsc", "AlbumsReleaseDateDesc", "AlbumsTitleAsc", "AlbumsTitleDesc" ]
             }
           }
@@ -22979,8 +23301,8 @@
             "items" : {
               "type" : "string",
               "example" : "artists.addedAt",
-              "default" : "-artists.addedAt",
               "enum" : [ "artists.addedAt", "-artists.addedAt", "artists.name", "-artists.name" ],
+              "default" : "-artists.addedAt",
               "x-enum-varnames" : [ "ArtistsAddedAtAsc", "ArtistsAddedAtDesc", "ArtistsNameAsc", "ArtistsNameDesc" ]
             }
           }
@@ -23303,8 +23625,8 @@
             "items" : {
               "type" : "string",
               "example" : "playlists.addedAt",
-              "default" : "-playlists.addedAt",
               "enum" : [ "playlists.addedAt", "-playlists.addedAt", "playlists.lastUpdatedAt", "-playlists.lastUpdatedAt", "playlists.name", "-playlists.name" ],
+              "default" : "-playlists.addedAt",
               "x-enum-varnames" : [ "PlaylistsAddedAtAsc", "PlaylistsAddedAtDesc", "PlaylistsLastUpdatedAtAsc", "PlaylistsLastUpdatedAtDesc", "PlaylistsNameAsc", "PlaylistsNameDesc" ]
             }
           }
@@ -23529,8 +23851,8 @@
             "items" : {
               "type" : "string",
               "example" : "tracks.addedAt",
-              "default" : "-tracks.addedAt",
               "enum" : [ "tracks.addedAt", "-tracks.addedAt", "tracks.albums.title", "-tracks.albums.title", "tracks.artists.name", "-tracks.artists.name", "tracks.duration", "-tracks.duration", "tracks.title", "-tracks.title" ],
+              "default" : "-tracks.addedAt",
               "x-enum-varnames" : [ "TracksAddedAtAsc", "TracksAddedAtDesc", "TracksAlbumsTitleAsc", "TracksAlbumsTitleDesc", "TracksArtistsNameAsc", "TracksArtistsNameDesc", "TracksDurationAsc", "TracksDurationDesc", "TracksTitleAsc", "TracksTitleDesc" ]
             }
           }
@@ -23765,8 +24087,8 @@
             "items" : {
               "type" : "string",
               "example" : "videos.addedAt",
-              "default" : "-videos.addedAt",
               "enum" : [ "videos.addedAt", "-videos.addedAt", "videos.artists.name", "-videos.artists.name", "videos.duration", "-videos.duration", "videos.title", "-videos.title" ],
+              "default" : "-videos.addedAt",
               "x-enum-varnames" : [ "VideosAddedAtAsc", "VideosAddedAtDesc", "VideosArtistsNameAsc", "VideosArtistsNameDesc", "VideosDurationAsc", "VideosDurationDesc", "VideosTitleAsc", "VideosTitleDesc" ]
             }
           }
@@ -27218,6 +27540,16 @@
         },
         "description" : "Idempotency key was already used with a different request payload"
       },
+      "SquareConnectionsUpdateSingleDataRelationship409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareConnectionsUpdateSingleDataRelationship409ResponseBody"
+            }
+          }
+        },
+        "description" : "The Square credential is missing the OAuth scopes required by the Square Online sites feature (ONLINE_STORE_SITE_READ, CHANNELS_READ). Re-run Square onboarding to grant them.; A request with this idempotency key is currently being processed"
+      },
       "TrackFilesReadById403Response" : {
         "content" : {
           "application/vnd.api+json" : {
@@ -27507,7 +27839,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -28211,7 +28549,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -29401,7 +29745,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -29476,7 +29826,7 @@
         }
       },
       "Artwork_File" : {
-        "required" : [ "href" ],
+        "required" : [ "href", "meta" ],
         "type" : "object",
         "properties" : {
           "href" : {
@@ -30185,7 +30535,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -30265,10 +30621,17 @@
         }
       },
       "CommentsCreateOperation_Payload_Data_Relationships_ParentComment" : {
+        "required" : [ "data" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           }
         }
       },
@@ -30474,7 +30837,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -30693,7 +31062,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -30802,7 +31177,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -31241,7 +31622,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -31267,7 +31654,7 @@
         }
       },
       "DynamicModules_Attributes" : {
-        "required" : [ "icons", "moduleKind", "previewPresentation", "viewAllPresentation" ],
+        "required" : [ "icons", "previewPresentation", "viewAllPresentation" ],
         "type" : "object",
         "properties" : {
           "icons" : {
@@ -31281,17 +31668,11 @@
               "enum" : [ "SPOTLIGHT_INFO", "UNKNOWN" ]
             }
           },
-          "moduleKind" : {
-            "type" : "string",
-            "description" : "Semantic kind of the module, describing its product purpose and expected item domain.",
-            "example" : "ALBUM_RELATED_ALBUMS",
-            "enum" : [ "ALBUM_RECOMMENDATIONS", "BECAUSE_YOU_LISTENED_TO_ALBUM", "BECAUSE_YOU_ADDED_ALBUM", "BECAUSE_YOU_ADDED_ARTIST", "CONTINUE_LISTEN_TO", "DAILY_MIXES", "FORGOTTEN_FAVORITES", "GENRE_MIXES", "HISTORY_MIXES", "LOCAL_PLAYLISTS", "MY_PLAYLISTS", "NEW_ALBUM_SUGGESTIONS", "NEW_TRACK_SUGGESTIONS", "NEW_ALBUMS", "NEW_TRACKS", "POPULAR_PLAYLISTS", "RECENTLY_UPDATED_FAVORITED_PLAYLIST", "RECOMMENDED_USERS_PLAYLISTS", "SUGGESTED_ESSENTIAL_PLAYLISTS", "SUGGESTED_RADIOS_MIXES", "WELCOME_MIX", "YOUR_FAVORITE_ARTISTS", "UPLOADS_FOR_YOU", "LATEST_SPOTLIGHTED_TRACKS", "SHORTCUTS", "ARTIST_TOP_TRACKS", "ARTIST_SPOTLIGHTED_TRACKS", "ARTIST_ALBUMS", "ARTIST_TOP_SINGLES", "ARTIST_COMPILATIONS", "ARTIST_LIVE_ALBUMS", "ARTIST_APPEARS_ON", "ARTIST_PLAYLIST", "ARTIST_PUBLIC_PLAYLIST", "ARTIST_SIMILAR_ARTISTS", "ARTIST_TRACK_UPLOADS", "ARTIST_LINKS", "ARTIST_VIDEOS", "ARTIST_CREDITS", "ARTIST_DISCOGRAPHY", "ALBUM_ITEMS", "ALBUM_MORE_BY_ARTIST", "ALBUM_OTHER_VERSIONS", "ALBUM_RELATED_ALBUMS", "ALBUM_RELATED_ARTISTS", "COLLECTION_ITEMS", "ALBUM_ANNIVERSARY", "ARTIST_BIRTHDAY", "ARTIST_MEMORIAM", "DJ_TOOLS", "DJ_ARTIST_CURATED", "THE_HITS", "FROM_OUR_EDITORS", "TOP_PLAYLISTS", "FEATURED_TOP_TRACKS", "FEATURED_TOP_ALBUMS", "TOP_ARTISTS_ESSENTIALS", "FEATURED_RECOMMENDED_PLAYLISTS", "HOME_3_FEATURED_PLAYLISTS", "HOME_3_FEATURED_UPLOAD_TRACKS", "HOME_3_FEATURED_ALBUMS", "POPULAR_ALBUMS", "POPULAR_ARTISTS", "POPULAR_MIXES", "FEATURED_RECOMMENDED_TRACKS", "FEATURED_RECOMMENDED_ALBUMS", "FEATURED_RECOMMENDED_CLASSIC_ALBUMS", "BACK_TO_SCHOOL_MUSIC_101", "BACK_TO_SCHOOL_GENRES_FOR_BEGINNERS", "HEADLINERS_2026", "HOME_3_0_GENERIC_PLAYLISTS_1", "HOME_3_0_GENERIC_PLAYLISTS_2", "HOME_3_0_GENERIC_ALBUMS_1", "HOME_3_0_GENERIC_TRACKS_1", "HOME_3_0_GENERIC_ARTISTS_1", "HOME_3_0_GENERIC_VIDEOS_1", "STAFF_PICKS_PAGE_ALBUMS_WE_LOVE", "STAFF_PICKS_PAGE_EXPLORE", "STAFF_PICKS_PAGE_FAVORITE_SONGS", "STAFF_PICKS_PAGE_RECENTLY_UPDATED_PLAYLISTS", "STAFF_PICKS_PAGE_TIDAL_NEWS_MAGAZINE", "STAFF_PICKS_PAGE_WHAT_LISTENING_TO", "BASED_ON_YOUR_INTERESTS_1", "BASED_ON_YOUR_INTERESTS_2", "UPLOAD_PAGE_SPOTLIGHTED_PLAYLISTS", "UPLOAD_PAGE_PAYGATED_ALBUMS", "UPLOAD_PAGE_ALBUMS", "TOP_UPLOADERS", "UPLOAD_PAGE_ARTISTS", "UPLOAD_PAGE_FEATURED_MAGAZINE", "EXPLORE_DECADES", "EXPLORE_GENRES", "EXPLORE_MOODS", "ARTIST_POPULAR_RELEASES", "PURCHASES_FOR_YOU", "UNKNOWN" ]
-          },
           "previewPresentation" : {
             "type" : "string",
             "description" : "Presentation used when rendering the module preview on a dynamic page.",
             "example" : "HORIZONTAL_LIST",
-            "enum" : [ "ARTIST_LIST", "COMPACT_GRID_CARD", "COMPACT_HORIZONTAL_LIST", "COMPACT_HORIZONTAL_LIST_WITH_CONTEXT", "FEATURED_CARD", "GRID_CARD", "GRID_CARD_WITH_CONTEXT", "GRID_HIGHLIGHT_CARD", "ANNIVERSARY_CARD", "ARTIST_BIRTHDAY_CARD", "ARTIST_MEMORIAM_CARD", "ARTIST_TRACK_CREDITS_CARD", "PILL_LIST", "VERTICAL_LIST", "DISCOGRAPHY_TABS", "MAGAZINE_LIST", "HORIZONTAL_LIST", "HORIZONTAL_LIST_WITH_CONTEXT", "SHORTCUT_LIST", "TRACK_LIST", "VERTICAL_LIST_CARD", "TEXT_CARD", "LINKS_LIST", "PUBLIC_PLAYLIST_LIST" ]
+            "enum" : [ "ARTIST_LIST", "COMPACT_GRID_CARD", "COMPACT_HORIZONTAL_LIST", "COMPACT_HORIZONTAL_LIST_WITH_CONTEXT", "FEATURED_CARD", "GRID_CARD", "GRID_CARD_WITH_CONTEXT", "GRID_HIGHLIGHT_CARD", "ANNIVERSARY_CARD", "ARTIST_BIRTHDAY_CARD", "ARTIST_MEMORIAM_CARD", "ARTIST_TRACK_CREDITS_CARD", "PILL_LIST", "VERTICAL_LIST", "DISCOGRAPHY_TABS", "MAGAZINE_LIST", "HORIZONTAL_LIST", "HORIZONTAL_LIST_WITH_CONTEXT", "SHORTCUT_LIST", "TRACK_LIST", "VERTICAL_LIST_CARD", "TEXT_CARD", "LINKS_LIST", "PUBLIC_PLAYLIST_LIST", "UNKNOWN" ]
           },
           "subtitle" : {
             "type" : "string",
@@ -31497,7 +31878,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -31620,6 +32007,11 @@
         "required" : [ "moderationFileStatus", "technicalFileStatus" ],
         "type" : "object",
         "properties" : {
+          "aiScanningFileStatus" : {
+            "type" : "string",
+            "description" : "Status of scanning the file for being AI-generated. Only present for file types that support AI scanning (e.g. track source files) and when a scanning status is available for the file; absent otherwise.",
+            "enum" : [ "NOT_SCANNED", "SCANNING", "IS_AI", "NOT_AI", "ERROR" ]
+          },
           "moderationFileStatus" : {
             "type" : "string",
             "description" : "Moderation status for file",
@@ -31844,6 +32236,7 @@
               "searchSuggestions" : "#/components/schemas/SearchSuggestions_Resource_Object",
               "shares" : "#/components/schemas/Shares_Resource_Object",
               "squareConnections" : "#/components/schemas/SquareConnections_Resource_Object",
+              "squareSites" : "#/components/schemas/SquareSites_Resource_Object",
               "stripeConnections" : "#/components/schemas/StripeConnections_Resource_Object",
               "stripeDashboardLinks" : "#/components/schemas/StripeDashboardLinks_Resource_Object",
               "temporaryUserTokens" : "#/components/schemas/TemporaryUserTokens_Resource_Object",
@@ -31957,6 +32350,8 @@
             "$ref" : "#/components/schemas/Shares_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/SquareConnections_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/SquareSites_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/StripeConnections_Resource_Object"
           }, {
@@ -32551,7 +32946,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -32978,7 +33379,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -33239,13 +33646,17 @@
             "type" : "string",
             "enum" : [ "NONE", "ONE", "BATCH" ]
           },
+          "shuffle" : {
+            "type" : "string",
+            "enum" : [ "OFF", "BATCH", "ALL" ]
+          },
           "shuffled" : {
             "type" : "boolean"
           }
         }
       },
       "PlayQueues_Attributes" : {
-        "required" : [ "createdAt", "lastModifiedAt", "repeat", "shuffled" ],
+        "required" : [ "createdAt", "lastModifiedAt", "repeat", "shuffle", "shuffled" ],
         "type" : "object",
         "properties" : {
           "createdAt" : {
@@ -33262,6 +33673,11 @@
             "type" : "string",
             "description" : "Queue's repeat mode",
             "enum" : [ "NONE", "ONE", "BATCH" ]
+          },
+          "shuffle" : {
+            "type" : "string",
+            "description" : "Queue's shuffle mode",
+            "enum" : [ "OFF", "BATCH", "ALL" ]
           },
           "shuffled" : {
             "type" : "boolean",
@@ -33310,7 +33726,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/PlayQueues_Current_Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/PlayQueues_Current_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -33508,7 +33930,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -34009,6 +34437,9 @@
           },
           "owners" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "suggestedCoverArts" : {
+            "$ref" : "#/components/schemas/Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document"
           }
         }
       },
@@ -34047,6 +34478,57 @@
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Playlists_SuggestedCoverArts_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Playlists_SuggestedCoverArts_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Playlists_SuggestedCoverArts_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Playlists_SuggestedCoverArts_Resource_Identifier_Meta" : {
+        "required" : [ "backgroundColor", "foregroundColor" ],
+        "type" : "object",
+        "properties" : {
+          "backgroundColor" : {
+            "type" : "string",
+            "description" : "Background color for the suggested artwork"
+          },
+          "foregroundColor" : {
+            "type" : "string",
+            "description" : "Foreground color for the suggested artwork"
           }
         }
       },
@@ -34280,7 +34762,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -34385,7 +34873,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -34564,7 +35058,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -35533,7 +36033,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
@@ -35578,10 +36084,74 @@
           }
         }
       },
+      "SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload_Data"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
+          }
+        }
+      },
+      "SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareSites" ]
+          }
+        },
+        "description" : "The site to select; null clears the selection."
+      },
+      "SquareConnectionsUpdateSingleDataRelationship409ResponseBody" : {
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "IDEMPOTENT_REQUEST_IN_PROGRESS",
+                  "enum" : [ "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_SITES_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "The Square credential is missing the OAuth scopes required by the Square Online sites feature (ONLINE_STORE_SITE_READ, CHANNELS_READ). Re-run Square onboarding to grant them."
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              },
+              "required" : [ "code", "status" ]
+            }
+          }
+        },
+        "required" : [ "errors" ]
+      },
       "SquareConnections_Attributes" : {
         "required" : [ "status" ],
         "type" : "object",
         "properties" : {
+          "capabilities" : {
+            "type" : "array",
+            "description" : "Per-feature capability statuses for this Square connection. Every capability the connection offers is listed with a status carrying more than mere presence: SITES is GRANTED when the Square Online sites scopes are granted, or REQUIRES_REAUTH when the connection exists but its credential lacks them (the seller must reconnect Square via POST /squareConnections). Because a connection always offers the sites feature, SITES is always present here. Extensible — only SITES is defined today. Absent only when the connection has no sites state (e.g. no approved Square credential). Client rule: if SITES != GRANTED prompt reconnect; else if selectedSite.data is null show the site picker; else the selected site is shown to buyers.",
+            "items" : {
+              "$ref" : "#/components/schemas/SquareConnections_Capability"
+            }
+          },
           "createdAt" : {
             "type" : "string",
             "description" : "Timestamp when the connection was created",
@@ -35607,6 +36177,40 @@
           }
         }
       },
+      "SquareConnections_Capability" : {
+        "required" : [ "name", "status" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "The capability name",
+            "enum" : [ "SITES" ]
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "The capability's current status",
+            "enum" : [ "GRANTED", "REQUIRES_REAUTH" ]
+          }
+        }
+      },
+      "SquareConnections_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "SquareConnections_Multi_Resource_Data_Document" : {
         "required" : [ "data", "links" ],
         "type" : "object",
@@ -35625,12 +36229,112 @@
           }
         }
       },
+      "SquareConnections_Relationships" : {
+        "properties" : {
+          "selectedSite" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          },
+          "sites" : {
+            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          }
+        }
+      },
       "SquareConnections_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
           "attributes" : {
             "$ref" : "#/components/schemas/SquareConnections_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/SquareConnections_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SquareConnections_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SquareConnections_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareConnections_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SquareSites_Attributes" : {
+        "type" : "object",
+        "properties" : {
+          "domain" : {
+            "type" : "string",
+            "description" : "The site's domain, if one is configured"
+          },
+          "published" : {
+            "type" : "boolean",
+            "description" : "Whether the site is published on Square Online"
+          }
+        }
+      },
+      "SquareSites_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SquareSites_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SquareSites_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SquareSites_Attributes"
           },
           "id" : {
             "type" : "string",
@@ -35645,12 +36349,12 @@
           }
         }
       },
-      "SquareConnections_Single_Resource_Data_Document" : {
+      "SquareSites_Single_Resource_Data_Document" : {
         "required" : [ "data", "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/SquareConnections_Resource_Object"
+            "$ref" : "#/components/schemas/SquareSites_Resource_Object"
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -35693,8 +36397,8 @@
             "description" : "Deprecated: use meta.integrationType instead.",
             "example" : "REDIRECT",
             "deprecated" : true,
-            "default" : "REDIRECT",
-            "enum" : [ "REDIRECT", "EMBEDDED" ]
+            "enum" : [ "REDIRECT", "EMBEDDED" ],
+            "default" : "REDIRECT"
           },
           "refreshUrl" : {
             "type" : "string",
@@ -35718,8 +36422,8 @@
             "type" : "string",
             "description" : "Integration type for Stripe onboarding",
             "example" : "REDIRECT",
-            "default" : "REDIRECT",
-            "enum" : [ "REDIRECT", "EMBEDDED" ]
+            "enum" : [ "REDIRECT", "EMBEDDED" ],
+            "default" : "REDIRECT"
           },
           "refreshUrl" : {
             "type" : "string",
@@ -37289,7 +37993,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -38131,12 +38841,6 @@
         "required" : [ "name" ],
         "type" : "object",
         "properties" : {
-          "collectionType" : {
-            "type" : "string",
-            "description" : "The type of user collection this folder belongs to. Deprecated: send the 'userCollection' relationship instead. Accepted for backward compatibility during migration and will be removed in a future version.",
-            "deprecated" : true,
-            "enum" : [ "PLAYLISTS" ]
-          },
           "name" : {
             "type" : "string"
           }
@@ -38209,7 +38913,8 @@
             "type" : "string"
           },
           "type" : {
-            "type" : "string"
+            "type" : "string",
+            "enum" : [ "playlists" ]
           }
         }
       },
@@ -38234,7 +38939,8 @@
             "type" : "string"
           },
           "type" : {
-            "type" : "string"
+            "type" : "string",
+            "enum" : [ "playlists" ]
           }
         }
       },
@@ -38275,12 +38981,6 @@
         "required" : [ "createdAt", "lastModifiedAt", "name" ],
         "type" : "object",
         "properties" : {
-          "collectionType" : {
-            "type" : "string",
-            "description" : "The type of user collection this folder belongs to. Deprecated: use the 'userCollection' relationship instead. This field will be removed in a future version, so clients should not depend on its presence.",
-            "deprecated" : true,
-            "enum" : [ "PLAYLISTS" ]
-          },
           "createdAt" : {
             "type" : "string",
             "format" : "date-time"
@@ -38422,7 +39122,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -41749,7 +42455,13 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/Resource_Identifier"
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -41777,7 +42489,7 @@
     },
     "securitySchemes" : {
       "Authorization_Code_PKCE" : {
-        "description" : "See https://developer.tidal.com/documentation/authorization/authorization-authorization-code",
+        "description" : "See https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization",
         "flows" : {
           "authorizationCode" : {
             "authorizationUrl" : "https://login.tidal.com/authorize",
@@ -41815,7 +42527,7 @@
         "type" : "oauth2"
       },
       "Client_Credentials" : {
-        "description" : "See https://developer.tidal.com/documentation/authorization/authorization-client-credentials",
+        "description" : "See https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization",
         "flows" : {
           "clientCredentials" : {
             "scopes" : { },
