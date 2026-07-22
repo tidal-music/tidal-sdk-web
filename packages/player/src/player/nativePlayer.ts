@@ -229,13 +229,26 @@ export default class NativePlayer extends BasePlayer {
    * can gather the duration data and send a media product transition.
    */
   async handleAutomaticTransitionToPreloadedMediaProduct() {
-    await this.nativeEvent('mediaduration');
+    // Capture which preloaded item the native pipeline committed to at the
+    // track boundary; a concurrent setNext() can replace
+    // this.preloadedStreamingSessionId while we await the duration and
+    // active signals below, which would attribute the audible stream to the
+    // wrong media product.
+    const committedStreamingSessionId = this.preloadedStreamingSessionId;
+
+    // Read the duration off the awaited event; the #duration field is
+    // updated by a separate listener that is not guaranteed to have run
+    // before this waiter settles.
+    const mediaDurationEvent = (await this.nativeEvent(
+      'mediaduration',
+    )) as Event & { target: number };
+    this.#duration = Number(mediaDurationEvent.target);
 
     this.#preloadedLoadPayload = undefined;
 
     const mediaProductTransition =
       streamingSessionStore.getMediaProductTransition(
-        this.preloadedStreamingSessionId,
+        committedStreamingSessionId,
       );
 
     if (!mediaProductTransition) {
@@ -254,9 +267,9 @@ export default class NativePlayer extends BasePlayer {
       actualDuration: this.#duration,
     };
 
-    if (this.preloadedStreamingSessionId) {
+    if (committedStreamingSessionId) {
       streamingSessionStore.saveMediaProductTransition(
-        this.preloadedStreamingSessionId,
+        committedStreamingSessionId,
         {
           mediaProduct,
           playbackContext: updatedPlaybackContext,
@@ -270,7 +283,7 @@ export default class NativePlayer extends BasePlayer {
       mediaProductTransitionEvent(mediaProduct, updatedPlaybackContext),
     );
 
-    this.currentStreamingSessionId = this.preloadedStreamingSessionId;
+    this.currentStreamingSessionId = committedStreamingSessionId;
 
     this.mediaProductStarted(this.currentStreamingSessionId);
   }
@@ -300,7 +313,13 @@ export default class NativePlayer extends BasePlayer {
       throw new Error('Stream format is undefined.');
     }
 
-    await mediaDurationEventPromise;
+    // Read the duration off the awaited event; the #duration field is
+    // updated by a separate listener that is not guaranteed to have run
+    // before this waiter settles.
+    const mediaDurationEvent = (await mediaDurationEventPromise) as Event & {
+      target: number;
+    };
+    this.#duration = Number(mediaDurationEvent.target);
 
     // Player was reset during load, do not continue.
     if (this.currentStreamingSessionId !== streamInfo.streamingSessionId) {
@@ -479,7 +498,31 @@ export default class NativePlayer extends BasePlayer {
       'mediastate',
       (e: Event & { target: string }) => {
         if (e.target === 'completed') {
-          this.finishCurrentMediaProduct('completed');
+          // A preloaded next item means the native pipeline transitions
+          // gaplessly on its own. Finalize seamlessly so no 'ended' event
+          // reaches the app mid-transition, and drive the transition
+          // directly since the suppressed 'ended' event no longer invokes
+          // playbackEngineEndedHandler.
+          const isSeamlessTransition = Boolean(this.hasNextItem());
+
+          if (isSeamlessTransition) {
+            timestamps.mark(
+              'streaming_metrics:playback_statistics:idealStartTimestamp',
+              playerState.preloadedStreamingSessionId,
+            );
+          }
+
+          this.finishCurrentMediaProduct('completed', isSeamlessTransition);
+
+          if (isSeamlessTransition) {
+            this.updateVolumeLevelForNextProduct();
+
+            if (this.isActivePlayer) {
+              this.handleAutomaticTransitionToPreloadedMediaProduct().catch(
+                console.error,
+              );
+            }
+          }
         } else {
           this.#handleNativePlayerStateChange(e.target);
         }
