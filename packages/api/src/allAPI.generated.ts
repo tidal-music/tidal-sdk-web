@@ -5855,8 +5855,8 @@ export interface paths {
                     include?: string[];
                     /** @description type of the page (e.g. `ARTIST`) */
                     "filter[pageType]": string[];
-                    /** @description the subject id, eg. artistId (e.g. `67890`) */
-                    "filter[subject.id]": string[];
+                    /** @description The subject resource ID. Required except for HOME_FREE, where it must be omitted. (e.g. `67890`) */
+                    "filter[subject.id]"?: string[];
                 };
                 header?: never;
                 path?: never;
