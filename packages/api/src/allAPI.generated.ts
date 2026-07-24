@@ -5728,7 +5728,7 @@ export interface paths {
         };
         /**
          * Get items relationship ("to-many").
-         * @description Retrieves items relationship.
+         * @description The resources to render, in order; may be a bounded prefix.
          */
         get: {
             parameters: {
@@ -20780,16 +20780,22 @@ export interface components {
         };
         DynamicModules_Attributes: {
             /**
-             * @description Type of icons the module should show
+             * @description Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. fullViewLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
+             * @example LIST
+             * @enum {string}
+             */
+            fullViewLayout?: "GRID" | "LIST" | "COMPACT" | "UNKNOWN";
+            /**
+             * @description Semantic icons the module should show. SPOTLIGHT_INFO identifies modules whose content was selected by TIDAL's editorial team.
              * @example SPOTLIGHT_INFO
              */
             icons: ("SPOTLIGHT_INFO" | "UNKNOWN")[];
             /**
-             * @description Presentation used when rendering the module preview on a dynamic page.
-             * @example HORIZONTAL_LIST
+             * @description Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. fullViewLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
+             * @example GRID
              * @enum {string}
              */
-            previewPresentation: "ARTIST_LIST" | "COMPACT_GRID_CARD" | "COMPACT_HORIZONTAL_LIST" | "COMPACT_HORIZONTAL_LIST_WITH_CONTEXT" | "FEATURED_CARD" | "GRID_CARD" | "GRID_CARD_WITH_CONTEXT" | "GRID_HIGHLIGHT_CARD" | "ANNIVERSARY_CARD" | "ARTIST_BIRTHDAY_CARD" | "ARTIST_MEMORIAM_CARD" | "ARTIST_TRACK_CREDITS_CARD" | "PILL_LIST" | "VERTICAL_LIST" | "DISCOGRAPHY_TABS" | "MAGAZINE_LIST" | "HORIZONTAL_LIST" | "HORIZONTAL_LIST_WITH_CONTEXT" | "SHORTCUT_LIST" | "TRACK_LIST" | "VERTICAL_LIST_CARD" | "TEXT_CARD" | "LINKS_LIST" | "PUBLIC_PLAYLIST_LIST" | "UNKNOWN";
+            previewLayout: "GRID" | "LIST" | "COMPACT" | "UNKNOWN";
             /**
              * @description Subtitle of the module
              * @example Short description of this module
@@ -20800,12 +20806,6 @@ export interface components {
              * @example Shortcuts
              */
             title?: string;
-            /**
-             * @description Presentation used when rendering the module's items in the full view-all experience.
-             * @example COMPACT
-             * @enum {string}
-             */
-            viewAllPresentation: "COMPACT" | "GRID" | "UNKNOWN";
         };
         DynamicModules_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
