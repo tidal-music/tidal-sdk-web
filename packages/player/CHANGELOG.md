@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.4] - 2026-07-27
+
+### Fixed
+
+- Native player (desktop) no longer leaks a public `ended` event at gapless
+  track boundaries. Because the boundary was not marked a seamless transition,
+  apps reacting to `ended` could force-load the next queue item while the SDK
+  was already transitioning to the preloaded track, cutting the audible stream
+  and desyncing the play queue (`currentIndex` landing on `-1`). Completed
+  boundaries are now treated as seamless when a track is preloaded
+  ([#686](https://github.com/tidal-music/tidal-sdk-web/pull/686)).
+
 ## [0.18.3] - 2026-06-23
 
 ### Fixed
