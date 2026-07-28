@@ -20625,7 +20625,7 @@ export interface components {
         };
         Default400ResponseBody: {
             errors: {
-                /** @example The request is malformed or invalid */
+                /** @example Invalid request */
                 detail?: string;
                 /** @example 400 */
                 status: string;
@@ -20633,7 +20633,7 @@ export interface components {
         };
         Default404ResponseBody: {
             errors: {
-                /** @example The requested resource was not found */
+                /** @example Resource not found */
                 detail?: string;
                 /** @example 404 */
                 status: string;
@@ -20641,7 +20641,7 @@ export interface components {
         };
         Default405ResponseBody: {
             errors: {
-                /** @example The HTTP method is not allowed for the requested resource */
+                /** @example HTTP method not allowed */
                 detail?: string;
                 /** @example 405 */
                 status: string;
@@ -20649,7 +20649,7 @@ export interface components {
         };
         Default406ResponseBody: {
             errors: {
-                /** @example A response that satisfies the content negotiation headers cannot be produced */
+                /** @example No acceptable response media type */
                 detail?: string;
                 /** @example 406 */
                 status: string;
@@ -20657,7 +20657,7 @@ export interface components {
         };
         Default415ResponseBody: {
             errors: {
-                /** @example Unsupported request payload media type or content encoding */
+                /** @example Unsupported request media type or encoding */
                 detail?: string;
                 /** @example 415 */
                 status: string;
@@ -20673,7 +20673,7 @@ export interface components {
         };
         Default500ResponseBody: {
             errors: {
-                /** @example An unexpected error was encountered */
+                /** @example Internal server error */
                 detail?: string;
                 /** @example 500 */
                 status: string;
@@ -20681,7 +20681,7 @@ export interface components {
         };
         Default503ResponseBody: {
             errors: {
-                /** @example Temporarily unavailable; please try again later */
+                /** @example Service temporarily unavailable */
                 detail?: string;
                 /** @example 503 */
                 status: string;
@@ -21021,7 +21021,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "IDEMPOTENT_REQUEST_IN_PROGRESS";
-                /** @example A request with this idempotency key is currently being processed */
+                /** @example Request already in progress for this idempotency key */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -21034,7 +21034,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "IDEMPOTENT_REQUEST_PAYLOAD_MISMATCH";
-                /** @example Idempotency key was already used with a different request payload */
+                /** @example Idempotency key reused with a different payload */
                 detail?: string;
                 /** @example 422 */
                 status: string;
@@ -22581,7 +22581,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_SITES_SCOPE";
-                /** @example The Square credential is missing the OAuth scopes required by the Square Online sites feature (ONLINE_STORE_SITE_READ, CHANNELS_READ). Re-run Square onboarding to grant them. */
+                /** @example Square credential lacks required site scopes; run Square onboarding again */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -22663,6 +22663,8 @@ export interface components {
             domain?: string;
             /** @description Whether the site is published on Square Online */
             published?: boolean;
+            /** @description The site's title as set by the seller in Square */
+            siteTitle?: string;
         };
         SquareSites_Multi_Resource_Data_Document: {
             data: components["schemas"]["SquareSites_Resource_Object"][];
@@ -22922,7 +22924,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
-                /** @example Cannot fulfill this request because required prerequisites are missing */
+                /** @example Required playback prerequisites are missing */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -22935,7 +22937,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CONTENT_NOT_FOUND";
-                /** @example The requested content does not exist or is no longer available */
+                /** @example Content does not exist or is no longer available */
                 detail?: string;
                 /** @example 404 */
                 status: string;
@@ -22993,7 +22995,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
-                /** @example Cannot fulfill this request because required prerequisites are missing */
+                /** @example Required playback prerequisites are missing */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -23006,7 +23008,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CONTENT_NOT_FOUND";
-                /** @example The requested content does not exist or is no longer available */
+                /** @example Content does not exist or is no longer available */
                 detail?: string;
                 /** @example 404 */
                 status: string;
@@ -23526,7 +23528,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -23643,7 +23645,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -23778,7 +23780,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "FOLDER_NOT_EMPTY";
-                /** @example Cannot delete folder: only empty folders owned by you can be deleted. */
+                /** @example Folder must be empty and owned by you */
                 detail?: string;
                 /** @example 400 */
                 status: string;
@@ -23889,7 +23891,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -24006,7 +24008,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -24118,7 +24120,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -24235,7 +24237,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -24352,7 +24354,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -24782,7 +24784,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MAXIMUM_NUMBER_OF_BLOCKS_EXCEEDED";
-                /** @example You have reached the maximum number of blocked recommendation items. Please remove some blocked items before adding more. */
+                /** @example Recommendation block limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -25113,7 +25115,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
-                /** @example Cannot fulfill this request because required prerequisites are missing */
+                /** @example Required playback prerequisites are missing */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -25126,7 +25128,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CONTENT_NOT_FOUND";
-                /** @example The requested content does not exist or is no longer available */
+                /** @example Content does not exist or is no longer available */
                 detail?: string;
                 /** @example 404 */
                 status: string;
@@ -25263,7 +25265,7 @@ export interface components {
         };
     };
     responses: {
-        /** @description The request is malformed or invalid */
+        /** @description Invalid request */
         Default400Response: {
             headers: {
                 [name: string]: unknown;
@@ -25272,7 +25274,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default400ResponseBody"];
             };
         };
-        /** @description The requested resource was not found */
+        /** @description Resource not found */
         Default404Response: {
             headers: {
                 [name: string]: unknown;
@@ -25281,7 +25283,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default404ResponseBody"];
             };
         };
-        /** @description The HTTP method is not allowed for the requested resource */
+        /** @description HTTP method not allowed */
         Default405Response: {
             headers: {
                 [name: string]: unknown;
@@ -25290,7 +25292,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default405ResponseBody"];
             };
         };
-        /** @description A response that satisfies the content negotiation headers cannot be produced */
+        /** @description No acceptable response media type */
         Default406Response: {
             headers: {
                 [name: string]: unknown;
@@ -25299,7 +25301,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default406ResponseBody"];
             };
         };
-        /** @description Unsupported request payload media type or content encoding */
+        /** @description Unsupported request media type or encoding */
         Default415Response: {
             headers: {
                 [name: string]: unknown;
@@ -25317,7 +25319,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default429ResponseBody"];
             };
         };
-        /** @description An unexpected error was encountered */
+        /** @description Internal server error */
         Default500Response: {
             headers: {
                 [name: string]: unknown;
@@ -25326,7 +25328,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default500ResponseBody"];
             };
         };
-        /** @description Temporarily unavailable; please try again later */
+        /** @description Service temporarily unavailable */
         Default503Response: {
             headers: {
                 [name: string]: unknown;
@@ -25335,7 +25337,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default503ResponseBody"];
             };
         };
-        /** @description A request with this idempotency key is currently being processed */
+        /** @description Request already in progress for this idempotency key */
         Idempotency409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25344,7 +25346,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Idempotency409ResponseBody"];
             };
         };
-        /** @description Idempotency key was already used with a different request payload */
+        /** @description Idempotency key reused with a different payload */
         Idempotency422Response: {
             headers: {
                 [name: string]: unknown;
@@ -25353,7 +25355,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Idempotency422ResponseBody"];
             };
         };
-        /** @description The Square credential is missing the OAuth scopes required by the Square Online sites feature (ONLINE_STORE_SITE_READ, CHANNELS_READ). Re-run Square onboarding to grant them.; A request with this idempotency key is currently being processed */
+        /** @description Square credential lacks required site scopes; run Square onboarding again; Request already in progress for this idempotency key */
         SquareConnectionsUpdateSingleDataRelationship409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25362,7 +25364,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["SquareConnectionsUpdateSingleDataRelationship409ResponseBody"];
             };
         };
-        /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
+        /** @description Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device */
         TrackFilesReadById403Response: {
             headers: {
                 [name: string]: unknown;
@@ -25371,7 +25373,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["TrackFilesReadById403ResponseBody"];
             };
         };
-        /** @description The requested content does not exist or is no longer available */
+        /** @description Content does not exist or is no longer available */
         TrackFilesReadById404Response: {
             headers: {
                 [name: string]: unknown;
@@ -25380,7 +25382,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["TrackFilesReadById404ResponseBody"];
             };
         };
-        /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
+        /** @description Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device */
         TrackManifestsReadById403Response: {
             headers: {
                 [name: string]: unknown;
@@ -25389,7 +25391,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["TrackManifestsReadById403ResponseBody"];
             };
         };
-        /** @description The requested content does not exist or is no longer available */
+        /** @description Content does not exist or is no longer available */
         TrackManifestsReadById404Response: {
             headers: {
                 [name: string]: unknown;
@@ -25398,7 +25400,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["TrackManifestsReadById404ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionAlbumsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25407,7 +25409,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionArtistsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25416,7 +25418,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionArtistsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description Cannot delete folder: only empty folders owned by you can be deleted. */
+        /** @description Folder must be empty and owned by you */
         UserCollectionFoldersDeleteResource400Response: {
             headers: {
                 [name: string]: unknown;
@@ -25425,7 +25427,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionFoldersDeleteResource400ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25434,7 +25436,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25443,7 +25445,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionTracksAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25452,7 +25454,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionTracksAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionVideosAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25461,7 +25463,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionVideosAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionsAddMultiDataRelationship409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25470,7 +25472,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionsAddMultiDataRelationship409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of blocked recommendation items. Please remove some blocked items before adding more.; A request with this idempotency key is currently being processed */
+        /** @description Recommendation block limit reached; Request already in progress for this idempotency key */
         UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25479,7 +25481,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserRecommendationBlocksAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
+        /** @description Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device */
         VideoManifestsReadById403Response: {
             headers: {
                 [name: string]: unknown;
@@ -25488,7 +25490,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["VideoManifestsReadById403ResponseBody"];
             };
         };
-        /** @description The requested content does not exist or is no longer available */
+        /** @description Content does not exist or is no longer available */
         VideoManifestsReadById404Response: {
             headers: {
                 [name: string]: unknown;
