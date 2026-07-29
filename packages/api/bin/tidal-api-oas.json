@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Working with responses\n\n- **Enums** — new values can be added to any enum at any time. Treat unknown values as forward-compatible, not as errors.\n- **IDs** are opaque strings. Never parse, construct, or infer meaning from them.\n- **Formats** — dates, times and durations are ISO 8601 (`2024-05-01T12:00:00Z`, `PT3M5S`); countries ISO 3166-1 alpha-2; languages BCP 47; currencies ISO 4217; colors six-digit hex.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: a resource's `relationships` object contains just the relationships named in [`include`](https://jsonapi.org/format/#fetching-includes) — a relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<member>]=value`](https://jsonapi.org/format/#fetching-filtering) filters collections; each endpoint documents its available filters, and most collections require at least one.\n- [`sort=<member>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<member>` descending (`sort=-addedAt`). Filter and sort members are relative to the resources being returned.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) follow JSON:API semantics: attributes omitted from the payload are left unchanged; attributes set to `null` are cleared.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Once the original request has completed, retrying with the same key and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### [DRAFT] Availability and replacements\n\nMedia resources — `tracks`, `albums`, `videos` — are licensed per territory: a resource's `usageRules` relationship describes what it may be used for (e.g. `STREAM`) in a given country, so a resource may not be streamable in the requested `countryCode`. When it isn't, it may have a streamable substitute, exposed through its to-one `replacement` relationship — empty when the resource is streamable as-is or no substitute exists.\n\nIdentifiers stored in collections never change: the primary data always shows what was originally added. To find what can be played instead, include the replacement — e.g. `include=items.replacement` on a user's track collection.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.70"
+    "version" : "1.10.77"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -147,6 +147,9 @@
     "description" : "A short-lived login link for the Stripe Express dashboard.",
     "name" : "stripeDashboardLinks"
   }, {
+    "description" : "A record of the user's decision on an announced price change.",
+    "name" : "subscriptionPriceChangeDecisions"
+  }, {
     "description" : "A short-lived temporary token used to transfer user information from an authenticatedsession to another; initially for links between TIDAL web/desktop app and TIDAL'saccount pages",
     "name" : "temporaryUserTokens"
   }, {
@@ -221,6 +224,9 @@
   }, {
     "description" : "A user-submitted report flagging inappropriate or harmful content.",
     "name" : "userReports"
+  }, {
+    "description" : "An announced subscription price increase applicable to the user.",
+    "name" : "userSubscriptionPriceChanges"
   }, {
     "description" : "A TIDAL user account.",
     "name" : "users"
@@ -559,6 +565,15 @@
             "type" : "string"
           }
         }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
           "example" : "owners",
           "in" : "query",
@@ -627,6 +642,15 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -1731,6 +1755,15 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -8130,7 +8163,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: items",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: items, seedItem",
           "example" : "items",
           "in" : "query",
           "name" : "include",
@@ -8271,7 +8304,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: items",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: items, seedItem",
           "example" : "items",
           "in" : "query",
           "name" : "include",
@@ -8334,7 +8367,7 @@
     },
     "/dynamicModules/{id}/relationships/items" : {
       "get" : {
-        "description" : "The resources to render, in order; may be a bounded prefix.",
+        "description" : "The module's items, in order — one stable collection per module, consistent for a given refreshSeed. Reads without a cursor return the first page (the slice a page shelf renders, sized for the module's previewLayout and device) with a continuation cursor; passing the cursor returns subsequent pages.",
         "parameters" : [ {
           "description" : "DynamicModules Id",
           "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
@@ -8464,6 +8497,136 @@
           "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
         "summary" : "Get items relationship (\"to-many\").",
+        "tags" : [ "dynamicModules" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/dynamicModules/{id}/relationships/seedItem" : {
+      "get" : {
+        "description" : "The item whose listen or add event seeded this module's collection (e.g. the album a BECAUSE_YOU_* module is based on); null for modules that are not seeded by an item. The seed comes from the same fetch as the module's items, so the two always agree.",
+        "parameters" : [ {
+          "description" : "DynamicModules Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Stable seed used to keep dynamic page and module results consistent across a client session.",
+          "in" : "query",
+          "name" : "refreshSeed",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
+          "example" : "en-US",
+          "in" : "query",
+          "name" : "locale",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en-US"
+          }
+        }, {
+          "description" : "The type of device making the request",
+          "example" : "PHONE",
+          "in" : "query",
+          "name" : "deviceType",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
+          }
+        }, {
+          "description" : "The system type of the device making the request",
+          "example" : "IOS",
+          "in" : "query",
+          "name" : "systemType",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANDROID", "DESKTOP", "TESLA", "IOS", "WEB" ]
+          }
+        }, {
+          "description" : "Client version number",
+          "example" : "2026.0.1",
+          "in" : "query",
+          "name" : "clientVersion",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: seedItem",
+          "example" : "seedItem",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "seedItem"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DynamicModules_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get seedItem relationship (\"to-one\").",
         "tags" : [ "dynamicModules" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -14427,6 +14590,35 @@
             "type" : "string"
           }
         }, {
+          "description" : "The type of device making the request",
+          "example" : "PHONE",
+          "in" : "query",
+          "name" : "deviceType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
+          }
+        }, {
+          "description" : "The system type of the device making the request",
+          "example" : "IOS",
+          "in" : "query",
+          "name" : "systemType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANDROID", "DESKTOP", "TESLA", "IOS", "WEB" ]
+          }
+        }, {
+          "description" : "Client version number",
+          "example" : "2026.0.1",
+          "in" : "query",
+          "name" : "clientVersion",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, playlists, topHits, tracks, videos",
           "example" : "albums",
           "in" : "query",
@@ -14524,6 +14716,35 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "The type of device making the request",
+          "example" : "PHONE",
+          "in" : "query",
+          "name" : "deviceType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
+          }
+        }, {
+          "description" : "The system type of the device making the request",
+          "example" : "IOS",
+          "in" : "query",
+          "name" : "systemType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANDROID", "DESKTOP", "TESLA", "IOS", "WEB" ]
+          }
+        }, {
+          "description" : "Client version number",
+          "example" : "2026.0.1",
+          "in" : "query",
+          "name" : "clientVersion",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -14631,6 +14852,35 @@
             "type" : "string"
           }
         }, {
+          "description" : "The type of device making the request",
+          "example" : "PHONE",
+          "in" : "query",
+          "name" : "deviceType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
+          }
+        }, {
+          "description" : "The system type of the device making the request",
+          "example" : "IOS",
+          "in" : "query",
+          "name" : "systemType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANDROID", "DESKTOP", "TESLA", "IOS", "WEB" ]
+          }
+        }, {
+          "description" : "Client version number",
+          "example" : "2026.0.1",
+          "in" : "query",
+          "name" : "clientVersion",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: artists",
           "example" : "artists",
           "in" : "query",
@@ -14728,6 +14978,35 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "The type of device making the request",
+          "example" : "PHONE",
+          "in" : "query",
+          "name" : "deviceType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
+          }
+        }, {
+          "description" : "The system type of the device making the request",
+          "example" : "IOS",
+          "in" : "query",
+          "name" : "systemType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANDROID", "DESKTOP", "TESLA", "IOS", "WEB" ]
+          }
+        }, {
+          "description" : "Client version number",
+          "example" : "2026.0.1",
+          "in" : "query",
+          "name" : "clientVersion",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -14835,6 +15114,35 @@
             "type" : "string"
           }
         }, {
+          "description" : "The type of device making the request",
+          "example" : "PHONE",
+          "in" : "query",
+          "name" : "deviceType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
+          }
+        }, {
+          "description" : "The system type of the device making the request",
+          "example" : "IOS",
+          "in" : "query",
+          "name" : "systemType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANDROID", "DESKTOP", "TESLA", "IOS", "WEB" ]
+          }
+        }, {
+          "description" : "Client version number",
+          "example" : "2026.0.1",
+          "in" : "query",
+          "name" : "clientVersion",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: topHits",
           "example" : "topHits",
           "in" : "query",
@@ -14937,6 +15245,35 @@
             "type" : "string"
           }
         }, {
+          "description" : "The type of device making the request",
+          "example" : "PHONE",
+          "in" : "query",
+          "name" : "deviceType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
+          }
+        }, {
+          "description" : "The system type of the device making the request",
+          "example" : "IOS",
+          "in" : "query",
+          "name" : "systemType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANDROID", "DESKTOP", "TESLA", "IOS", "WEB" ]
+          }
+        }, {
+          "description" : "Client version number",
+          "example" : "2026.0.1",
+          "in" : "query",
+          "name" : "clientVersion",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: tracks",
           "example" : "tracks",
           "in" : "query",
@@ -15034,6 +15371,35 @@
           "example" : "US",
           "in" : "query",
           "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "The type of device making the request",
+          "example" : "PHONE",
+          "in" : "query",
+          "name" : "deviceType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
+          }
+        }, {
+          "description" : "The system type of the device making the request",
+          "example" : "IOS",
+          "in" : "query",
+          "name" : "systemType",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANDROID", "DESKTOP", "TESLA", "IOS", "WEB" ]
+          }
+        }, {
+          "description" : "Client version number",
+          "example" : "2026.0.1",
+          "in" : "query",
+          "name" : "clientVersion",
           "required" : false,
           "schema" : {
             "type" : "string"
@@ -16532,6 +16898,293 @@
         }
       }
     },
+    "/subscriptionPriceChangeDecisions" : {
+      "get" : {
+        "description" : "Retrieves multiple subscriptionPriceChangeDecisions by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: priceChange",
+          "example" : "priceChange",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "priceChange"
+            }
+          }
+        }, {
+          "description" : "User id. Use `me` for the authenticated user",
+          "in" : "query",
+          "name" : "filter[owners.id]",
+          "required" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisions_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple subscriptionPriceChangeDecisions.",
+        "tags" : [ "subscriptionPriceChangeDecisions" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "post" : {
+        "description" : "Creates a new subscriptionPriceChangeDecision.",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisionsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisions_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single subscriptionPriceChangeDecision.",
+        "tags" : [ "subscriptionPriceChangeDecisions" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/subscriptionPriceChangeDecisions/{id}" : {
+      "patch" : {
+        "description" : "Updates existing subscriptionPriceChangeDecision.",
+        "parameters" : [ {
+          "description" : "Price change decision id",
+          "example" : "1AC1yHZWFAFVjnFOn8XoXA",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisionsUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisions_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update single subscriptionPriceChangeDecision.",
+        "tags" : [ "subscriptionPriceChangeDecisions" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/subscriptionPriceChangeDecisions/{id}/relationships/priceChange" : {
+      "get" : {
+        "description" : "Retrieves priceChange relationship.",
+        "parameters" : [ {
+          "description" : "Price change decision id",
+          "example" : "1AC1yHZWFAFVjnFOn8XoXA",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: priceChange",
+          "example" : "priceChange",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "priceChange"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisions_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get priceChange relationship (\"to-one\").",
+        "tags" : [ "subscriptionPriceChangeDecisions" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/temporaryUserTokens" : {
       "post" : {
         "description" : "Creates a new temporaryUserToken.",
@@ -17328,6 +17981,15 @@
             "type" : "string"
           }
         }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
           "example" : "owners",
           "in" : "query",
@@ -17396,6 +18058,15 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -18599,6 +19270,15 @@
           "in" : "path",
           "name" : "id",
           "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
           "schema" : {
             "type" : "string"
           }
@@ -26312,6 +26992,152 @@
         }
       }
     },
+    "/userSubscriptionPriceChanges" : {
+      "get" : {
+        "description" : "Retrieves multiple userSubscriptionPriceChanges by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: decision",
+          "example" : "decision",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "decision"
+            }
+          }
+        }, {
+          "description" : "User id. Use `me` for the authenticated user",
+          "in" : "query",
+          "name" : "filter[owners.id]",
+          "required" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserSubscriptionPriceChanges_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple userSubscriptionPriceChanges.",
+        "tags" : [ "userSubscriptionPriceChanges" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/userSubscriptionPriceChanges/{id}/relationships/decision" : {
+      "get" : {
+        "description" : "Retrieves decision relationship.",
+        "parameters" : [ {
+          "description" : "Price change id",
+          "example" : "1AC1yHZWFAFVjnFOn8XoXA",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: decision",
+          "example" : "decision",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "decision"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserSubscriptionPriceChanges_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get decision relationship (\"to-one\").",
+        "tags" : [ "userSubscriptionPriceChanges" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/users/{id}" : {
       "get" : {
         "description" : "Retrieves single user by id.",
@@ -26447,7 +27273,7 @@
         "summary" : "Get single videoManifest.",
         "tags" : [ "videoManifests" ],
         "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
+          "required-access-tier" : "THIRD_PARTY"
         }
       }
     },
@@ -27448,7 +28274,7 @@
             }
           }
         },
-        "description" : "The request is malformed or invalid"
+        "description" : "Invalid request"
       },
       "Default404Response" : {
         "content" : {
@@ -27458,7 +28284,7 @@
             }
           }
         },
-        "description" : "The requested resource was not found"
+        "description" : "Resource not found"
       },
       "Default405Response" : {
         "content" : {
@@ -27468,7 +28294,7 @@
             }
           }
         },
-        "description" : "The HTTP method is not allowed for the requested resource"
+        "description" : "HTTP method not allowed"
       },
       "Default406Response" : {
         "content" : {
@@ -27478,7 +28304,7 @@
             }
           }
         },
-        "description" : "A response that satisfies the content negotiation headers cannot be produced"
+        "description" : "No acceptable response media type"
       },
       "Default415Response" : {
         "content" : {
@@ -27488,7 +28314,7 @@
             }
           }
         },
-        "description" : "Unsupported request payload media type or content encoding"
+        "description" : "Unsupported request media type or encoding"
       },
       "Default429Response" : {
         "content" : {
@@ -27508,7 +28334,7 @@
             }
           }
         },
-        "description" : "An unexpected error was encountered"
+        "description" : "Internal server error"
       },
       "Default503Response" : {
         "content" : {
@@ -27518,7 +28344,7 @@
             }
           }
         },
-        "description" : "Temporarily unavailable; please try again later"
+        "description" : "Service temporarily unavailable"
       },
       "Idempotency409Response" : {
         "content" : {
@@ -27528,7 +28354,7 @@
             }
           }
         },
-        "description" : "A request with this idempotency key is currently being processed"
+        "description" : "Request already in progress for this idempotency key"
       },
       "Idempotency422Response" : {
         "content" : {
@@ -27538,7 +28364,7 @@
             }
           }
         },
-        "description" : "Idempotency key was already used with a different request payload"
+        "description" : "Idempotency key reused with a different payload"
       },
       "SquareConnectionsUpdateSingleDataRelationship409Response" : {
         "content" : {
@@ -27548,7 +28374,7 @@
             }
           }
         },
-        "description" : "The Square credential is missing the OAuth scopes required by the Square Online sites feature (ONLINE_STORE_SITE_READ, CHANNELS_READ). Re-run Square onboarding to grant them.; A request with this idempotency key is currently being processed"
+        "description" : "Square credential lacks required site scopes; run Square onboarding again; Request already in progress for this idempotency key"
       },
       "TrackFilesReadById403Response" : {
         "content" : {
@@ -27558,7 +28384,7 @@
             }
           }
         },
-        "description" : "Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device"
+        "description" : "Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device"
       },
       "TrackFilesReadById404Response" : {
         "content" : {
@@ -27568,7 +28394,7 @@
             }
           }
         },
-        "description" : "The requested content does not exist or is no longer available"
+        "description" : "Content does not exist or is no longer available"
       },
       "TrackManifestsReadById403Response" : {
         "content" : {
@@ -27578,7 +28404,7 @@
             }
           }
         },
-        "description" : "Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device"
+        "description" : "Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device"
       },
       "TrackManifestsReadById404Response" : {
         "content" : {
@@ -27588,7 +28414,7 @@
             }
           }
         },
-        "description" : "The requested content does not exist or is no longer available"
+        "description" : "Content does not exist or is no longer available"
       },
       "UserCollectionAlbumsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
@@ -27598,7 +28424,7 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
+        "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
       "UserCollectionArtistsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
@@ -27608,7 +28434,7 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
+        "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
       "UserCollectionFoldersDeleteResource400Response" : {
         "content" : {
@@ -27618,7 +28444,7 @@
             }
           }
         },
-        "description" : "Cannot delete folder: only empty folders owned by you can be deleted."
+        "description" : "Folder must be empty and owned by you"
       },
       "UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
@@ -27628,7 +28454,7 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
+        "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
       "UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
@@ -27638,7 +28464,7 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
+        "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
       "UserCollectionTracksAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
@@ -27648,7 +28474,7 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
+        "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
       "UserCollectionVideosAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
@@ -27658,7 +28484,7 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
+        "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
       "UserCollectionsAddMultiDataRelationship409Response" : {
         "content" : {
@@ -27668,7 +28494,7 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed"
+        "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
       "UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
@@ -27678,7 +28504,7 @@
             }
           }
         },
-        "description" : "You have reached the maximum number of blocked recommendation items. Please remove some blocked items before adding more.; A request with this idempotency key is currently being processed"
+        "description" : "Recommendation block limit reached; Request already in progress for this idempotency key"
       },
       "VideoManifestsReadById403Response" : {
         "content" : {
@@ -27688,7 +28514,7 @@
             }
           }
         },
-        "description" : "Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device"
+        "description" : "Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device"
       },
       "VideoManifestsReadById404Response" : {
         "content" : {
@@ -27698,7 +28524,7 @@
             }
           }
         },
-        "description" : "The requested content does not exist or is no longer available"
+        "description" : "Content does not exist or is no longer available"
       }
     },
     "schemas" : {
@@ -31237,7 +32063,7 @@
               "properties" : {
                 "detail" : {
                   "type" : "string",
-                  "example" : "The request is malformed or invalid"
+                  "example" : "Invalid request"
                 },
                 "status" : {
                   "type" : "string",
@@ -31260,7 +32086,7 @@
               "properties" : {
                 "detail" : {
                   "type" : "string",
-                  "example" : "The requested resource was not found"
+                  "example" : "Resource not found"
                 },
                 "status" : {
                   "type" : "string",
@@ -31283,7 +32109,7 @@
               "properties" : {
                 "detail" : {
                   "type" : "string",
-                  "example" : "The HTTP method is not allowed for the requested resource"
+                  "example" : "HTTP method not allowed"
                 },
                 "status" : {
                   "type" : "string",
@@ -31306,7 +32132,7 @@
               "properties" : {
                 "detail" : {
                   "type" : "string",
-                  "example" : "A response that satisfies the content negotiation headers cannot be produced"
+                  "example" : "No acceptable response media type"
                 },
                 "status" : {
                   "type" : "string",
@@ -31329,7 +32155,7 @@
               "properties" : {
                 "detail" : {
                   "type" : "string",
-                  "example" : "Unsupported request payload media type or content encoding"
+                  "example" : "Unsupported request media type or encoding"
                 },
                 "status" : {
                   "type" : "string",
@@ -31375,7 +32201,7 @@
               "properties" : {
                 "detail" : {
                   "type" : "string",
-                  "example" : "An unexpected error was encountered"
+                  "example" : "Internal server error"
                 },
                 "status" : {
                   "type" : "string",
@@ -31398,7 +32224,7 @@
               "properties" : {
                 "detail" : {
                   "type" : "string",
-                  "example" : "Temporarily unavailable; please try again later"
+                  "example" : "Service temporarily unavailable"
                 },
                 "status" : {
                   "type" : "string",
@@ -31657,12 +32483,6 @@
         "required" : [ "icons", "previewLayout" ],
         "type" : "object",
         "properties" : {
-          "fullViewLayout" : {
-            "type" : "string",
-            "description" : "Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. fullViewLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.",
-            "example" : "LIST",
-            "enum" : [ "GRID", "LIST", "COMPACT", "UNKNOWN" ]
-          },
           "icons" : {
             "type" : "array",
             "description" : "Semantic icons the module should show. SPOTLIGHT_INFO identifies modules whose content was selected by TIDAL's editorial team.",
@@ -31676,7 +32496,7 @@
           },
           "previewLayout" : {
             "type" : "string",
-            "description" : "Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. fullViewLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.",
+            "description" : "Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. viewAllLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.",
             "example" : "GRID",
             "enum" : [ "GRID", "LIST", "COMPACT", "UNKNOWN" ]
           },
@@ -31689,6 +32509,12 @@
             "type" : "string",
             "description" : "Title of the module",
             "example" : "Shortcuts"
+          },
+          "viewAllLayout" : {
+            "type" : "string",
+            "description" : "Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. viewAllLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.",
+            "example" : "LIST",
+            "enum" : [ "GRID", "LIST", "COMPACT", "UNKNOWN" ]
           }
         }
       },
@@ -31732,6 +32558,9 @@
         "properties" : {
           "items" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+          },
+          "seedItem" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
           }
         }
       },
@@ -31755,6 +32584,27 @@
             "type" : "string",
             "description" : "Resource type",
             "example" : "tracks"
+          }
+        }
+      },
+      "DynamicModules_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         }
       },
@@ -32150,7 +33000,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "A request with this idempotency key is currently being processed"
+                  "example" : "Request already in progress for this idempotency key"
                 },
                 "status" : {
                   "type" : "string",
@@ -32178,7 +33028,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "Idempotency key was already used with a different request payload"
+                  "example" : "Idempotency key reused with a different payload"
                 },
                 "status" : {
                   "type" : "string",
@@ -32239,6 +33089,7 @@
               "squareSites" : "#/components/schemas/SquareSites_Resource_Object",
               "stripeConnections" : "#/components/schemas/StripeConnections_Resource_Object",
               "stripeDashboardLinks" : "#/components/schemas/StripeDashboardLinks_Resource_Object",
+              "subscriptionPriceChangeDecisions" : "#/components/schemas/SubscriptionPriceChangeDecisions_Resource_Object",
               "temporaryUserTokens" : "#/components/schemas/TemporaryUserTokens_Resource_Object",
               "terms" : "#/components/schemas/Terms_Resource_Object",
               "trackFiles" : "#/components/schemas/TrackFiles_Resource_Object",
@@ -32264,6 +33115,7 @@
               "userRecommendationBlocks" : "#/components/schemas/UserRecommendationBlocks_Resource_Object",
               "userRecommendations" : "#/components/schemas/UserRecommendations_Resource_Object",
               "userReports" : "#/components/schemas/UserReports_Resource_Object",
+              "userSubscriptionPriceChanges" : "#/components/schemas/UserSubscriptionPriceChanges_Resource_Object",
               "users" : "#/components/schemas/Users_Resource_Object",
               "videoManifests" : "#/components/schemas/VideoManifests_Resource_Object",
               "videos" : "#/components/schemas/Videos_Resource_Object"
@@ -32357,6 +33209,8 @@
           }, {
             "$ref" : "#/components/schemas/StripeDashboardLinks_Resource_Object"
           }, {
+            "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisions_Resource_Object"
+          }, {
             "$ref" : "#/components/schemas/TemporaryUserTokens_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Terms_Resource_Object"
@@ -32406,6 +33260,8 @@
             "$ref" : "#/components/schemas/UserRecommendations_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/UserReports_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/UserSubscriptionPriceChanges_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Users_Resource_Object"
           }, {
@@ -36128,7 +36984,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "The Square credential is missing the OAuth scopes required by the Square Online sites feature (ONLINE_STORE_SITE_READ, CHANNELS_READ). Re-run Square onboarding to grant them."
+                  "example" : "Square credential lacks required site scopes; run Square onboarding again"
                 },
                 "status" : {
                   "type" : "string",
@@ -36308,6 +37164,10 @@
           "published" : {
             "type" : "boolean",
             "description" : "Whether the site is published on Square Online"
+          },
+          "siteTitle" : {
+            "type" : "string",
+            "description" : "The site's title as set by the seller in Square"
           }
         }
       },
@@ -36636,6 +37496,209 @@
           }
         }
       },
+      "SubscriptionPriceChangeDecisionsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Attributes"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "subscriptionPriceChangeDecisions" ]
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "description" : "The decision to record. A decision may only be created once — changing a rejection to an acceptance is a PATCH.",
+            "enum" : [ "ACCEPTED", "REJECTED" ]
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships" : {
+        "required" : [ "priceChange" ],
+        "type" : "object",
+        "properties" : {
+          "priceChange" : {
+            "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships_PriceChange"
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships_PriceChange" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships_PriceChange_Data"
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships_PriceChange_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "userSubscriptionPriceChanges" ]
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisionsUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisionsUpdateOperation_Payload_Data"
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisionsUpdateOperation_Payload_Data" : {
+        "required" : [ "attributes", "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisionsUpdateOperation_Payload_Data_Attributes"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "subscriptionPriceChangeDecisions" ]
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisionsUpdateOperation_Payload_Data_Attributes" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "description" : "The decision to record. The only allowed transition is REJECTED -> ACCEPTED; acceptance is permanent.",
+            "enum" : [ "ACCEPTED", "REJECTED" ]
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisions_Attributes" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "decidedAt" : {
+            "type" : "string",
+            "description" : "When the user decided. Absent when the consent was implicit (derived from the subscription start).",
+            "format" : "date-time"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "The user's decision. ACCEPTED is permanent; REJECTED can still be flipped to ACCEPTED before the renewal.",
+            "enum" : [ "ACCEPTED", "REJECTED" ]
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisions_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisions_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisions_Relationships" : {
+        "properties" : {
+          "priceChange" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisions_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisions_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisions_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisions_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SubscriptionPriceChangeDecisions_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SubscriptionPriceChangeDecisions_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "TemporaryUserTokensCreateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -36862,7 +37925,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "Cannot fulfill this request because required prerequisites are missing"
+                  "example" : "Required playback prerequisites are missing"
                 },
                 "status" : {
                   "type" : "string",
@@ -36890,7 +37953,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "The requested content does not exist or is no longer available"
+                  "example" : "Content does not exist or is no longer available"
                 },
                 "status" : {
                   "type" : "string",
@@ -37012,7 +38075,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "Cannot fulfill this request because required prerequisites are missing"
+                  "example" : "Required playback prerequisites are missing"
                 },
                 "status" : {
                   "type" : "string",
@@ -37040,7 +38103,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "The requested content does not exist or is no longer available"
+                  "example" : "Content does not exist or is no longer available"
                 },
                 "status" : {
                   "type" : "string",
@@ -38245,7 +39308,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more."
+                  "example" : "Collection item limit reached"
                 },
                 "status" : {
                   "type" : "string",
@@ -38536,7 +39599,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more."
+                  "example" : "Collection item limit reached"
                 },
                 "status" : {
                   "type" : "string",
@@ -38879,7 +39942,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "Cannot delete folder: only empty folders owned by you can be deleted."
+                  "example" : "Folder must be empty and owned by you"
                 },
                 "status" : {
                   "type" : "string",
@@ -39168,7 +40231,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more."
+                  "example" : "Collection item limit reached"
                 },
                 "status" : {
                   "type" : "string",
@@ -39459,7 +40522,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more."
+                  "example" : "Collection item limit reached"
                 },
                 "status" : {
                   "type" : "string",
@@ -39738,7 +40801,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more."
+                  "example" : "Collection item limit reached"
                 },
                 "status" : {
                   "type" : "string",
@@ -40029,7 +41092,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more."
+                  "example" : "Collection item limit reached"
                 },
                 "status" : {
                   "type" : "string",
@@ -40320,7 +41383,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "You have reached the maximum number of items allowed for this collection. Please remove some items before adding more."
+                  "example" : "Collection item limit reached"
                 },
                 "status" : {
                   "type" : "string",
@@ -41420,7 +42483,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "You have reached the maximum number of blocked recommendation items. Please remove some blocked items before adding more."
+                  "example" : "Recommendation block limit reached"
                 },
                 "status" : {
                   "type" : "string",
@@ -42067,6 +43130,116 @@
           }
         }
       },
+      "UserSubscriptionPriceChanges_Attributes" : {
+        "required" : [ "currency", "currentPrice", "effectiveDate", "newPrice" ],
+        "type" : "object",
+        "properties" : {
+          "currency" : {
+            "type" : "string",
+            "description" : "ISO 4217 currency code",
+            "example" : "EUR"
+          },
+          "currentPrice" : {
+            "type" : "string",
+            "description" : "Price amount with max 2 decimal places",
+            "example" : "9.99"
+          },
+          "effectiveDate" : {
+            "type" : "string",
+            "description" : "The date the new price takes effect",
+            "format" : "date"
+          },
+          "newPrice" : {
+            "type" : "string",
+            "description" : "Price amount with max 2 decimal places",
+            "example" : "9.99"
+          }
+        }
+      },
+      "UserSubscriptionPriceChanges_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserSubscriptionPriceChanges_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserSubscriptionPriceChanges_Relationships" : {
+        "properties" : {
+          "decision" : {
+            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "UserSubscriptionPriceChanges_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/UserSubscriptionPriceChanges_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/UserSubscriptionPriceChanges_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "UserSubscriptionPriceChanges_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserSubscriptionPriceChanges_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/UserSubscriptionPriceChanges_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "Users_Attributes" : {
         "required" : [ "country", "developerAccessTier", "username" ],
         "type" : "object",
@@ -42182,7 +43355,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "Cannot fulfill this request because required prerequisites are missing"
+                  "example" : "Required playback prerequisites are missing"
                 },
                 "status" : {
                   "type" : "string",
@@ -42210,7 +43383,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "The requested content does not exist or is no longer available"
+                  "example" : "Content does not exist or is no longer available"
                 },
                 "status" : {
                   "type" : "string",

@@ -238,6 +238,11 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
@@ -296,6 +301,11 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
@@ -1010,6 +1020,11 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
@@ -5593,7 +5608,7 @@ export interface paths {
                      */
                     clientVersion: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Allows the client to customize which related resources should be returned. Available options: items, seedItem
                      * @example items
                      */
                     include?: string[];
@@ -5675,7 +5690,7 @@ export interface paths {
                      */
                     clientVersion: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Allows the client to customize which related resources should be returned. Available options: items, seedItem
                      * @example items
                      */
                     include?: string[];
@@ -5728,7 +5743,7 @@ export interface paths {
         };
         /**
          * Get items relationship ("to-many").
-         * @description The resources to render, in order; may be a bounded prefix.
+         * @description The module's items, in order — one stable collection per module, consistent for a given refreshSeed. Reads without a cursor return the first page (the slice a page shelf renders, sized for the module's previewLayout and device) with a continuation cursor; passing the cursor returns subsequent pages.
          */
         get: {
             parameters: {
@@ -5787,6 +5802,92 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["DynamicModules_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dynamicModules/{id}/relationships/seedItem": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get seedItem relationship ("to-one").
+         * @description The item whose listen or add event seeded this module's collection (e.g. the album a BECAUSE_YOU_* module is based on); null for modules that are not seeded by an item. The seed comes from the same fetch as the module's items, so the two always agree.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: seedItem
+                     * @example seedItem
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description DynamicModules Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["DynamicModules_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9961,6 +10062,21 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, playlists, topHits, tracks, videos
                      * @example albums
                      */
@@ -10031,6 +10147,21 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
+                    /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums
                      * @example albums
@@ -10103,6 +10234,21 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
                      * @example artists
                      */
@@ -10173,6 +10319,21 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
+                    /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: playlists
                      * @example playlists
@@ -10245,6 +10406,21 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: topHits
                      * @example topHits
                      */
@@ -10316,6 +10492,21 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: tracks
                      * @example tracks
                      */
@@ -10386,6 +10577,21 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
+                    /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: videos
                      * @example videos
@@ -11484,6 +11690,222 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/subscriptionPriceChangeDecisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple subscriptionPriceChangeDecisions.
+         * @description Retrieves multiple subscriptionPriceChangeDecisions by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: priceChange
+                     * @example priceChange
+                     */
+                    include?: string[];
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single subscriptionPriceChangeDecision.
+         * @description Creates a new subscriptionPriceChangeDecision.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscriptionPriceChangeDecisions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update single subscriptionPriceChangeDecision.
+         * @description Updates existing subscriptionPriceChangeDecision.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Price change decision id
+                     * @example 1AC1yHZWFAFVjnFOn8XoXA
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisionsUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/subscriptionPriceChangeDecisions/{id}/relationships/priceChange": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get priceChange relationship ("to-one").
+         * @description Retrieves priceChange relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: priceChange
+                     * @example priceChange
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Price change decision id
+                     * @example 1AC1yHZWFAFVjnFOn8XoXA
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/temporaryUserTokens": {
         parameters: {
             query?: never;
@@ -12079,6 +12501,11 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
@@ -12137,6 +12564,11 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
@@ -12933,6 +13365,11 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
@@ -18284,6 +18721,120 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/userSubscriptionPriceChanges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple userSubscriptionPriceChanges.
+         * @description Retrieves multiple userSubscriptionPriceChanges by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: decision
+                     * @example decision
+                     */
+                    include?: string[];
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserSubscriptionPriceChanges_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userSubscriptionPriceChanges/{id}/relationships/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get decision relationship ("to-one").
+         * @description Retrieves decision relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: decision
+                     * @example decision
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Price change id
+                     * @example 1AC1yHZWFAFVjnFOn8XoXA
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserSubscriptionPriceChanges_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/{id}": {
         parameters: {
             query?: never;
@@ -20625,7 +21176,7 @@ export interface components {
         };
         Default400ResponseBody: {
             errors: {
-                /** @example The request is malformed or invalid */
+                /** @example Invalid request */
                 detail?: string;
                 /** @example 400 */
                 status: string;
@@ -20633,7 +21184,7 @@ export interface components {
         };
         Default404ResponseBody: {
             errors: {
-                /** @example The requested resource was not found */
+                /** @example Resource not found */
                 detail?: string;
                 /** @example 404 */
                 status: string;
@@ -20641,7 +21192,7 @@ export interface components {
         };
         Default405ResponseBody: {
             errors: {
-                /** @example The HTTP method is not allowed for the requested resource */
+                /** @example HTTP method not allowed */
                 detail?: string;
                 /** @example 405 */
                 status: string;
@@ -20649,7 +21200,7 @@ export interface components {
         };
         Default406ResponseBody: {
             errors: {
-                /** @example A response that satisfies the content negotiation headers cannot be produced */
+                /** @example No acceptable response media type */
                 detail?: string;
                 /** @example 406 */
                 status: string;
@@ -20657,7 +21208,7 @@ export interface components {
         };
         Default415ResponseBody: {
             errors: {
-                /** @example Unsupported request payload media type or content encoding */
+                /** @example Unsupported request media type or encoding */
                 detail?: string;
                 /** @example 415 */
                 status: string;
@@ -20673,7 +21224,7 @@ export interface components {
         };
         Default500ResponseBody: {
             errors: {
-                /** @example An unexpected error was encountered */
+                /** @example Internal server error */
                 detail?: string;
                 /** @example 500 */
                 status: string;
@@ -20681,7 +21232,7 @@ export interface components {
         };
         Default503ResponseBody: {
             errors: {
-                /** @example Temporarily unavailable; please try again later */
+                /** @example Service temporarily unavailable */
                 detail?: string;
                 /** @example 503 */
                 status: string;
@@ -20780,18 +21331,12 @@ export interface components {
         };
         DynamicModules_Attributes: {
             /**
-             * @description Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. fullViewLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
-             * @example LIST
-             * @enum {string}
-             */
-            fullViewLayout?: "GRID" | "LIST" | "COMPACT" | "UNKNOWN";
-            /**
              * @description Semantic icons the module should show. SPOTLIGHT_INFO identifies modules whose content was selected by TIDAL's editorial team.
              * @example SPOTLIGHT_INFO
              */
             icons: ("SPOTLIGHT_INFO" | "UNKNOWN")[];
             /**
-             * @description Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. fullViewLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
+             * @description Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. viewAllLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
              * @example GRID
              * @enum {string}
              */
@@ -20806,6 +21351,12 @@ export interface components {
              * @example Shortcuts
              */
             title?: string;
+            /**
+             * @description Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. viewAllLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
+             * @example LIST
+             * @enum {string}
+             */
+            viewAllLayout?: "GRID" | "LIST" | "COMPACT" | "UNKNOWN";
         };
         DynamicModules_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -20819,6 +21370,7 @@ export interface components {
         };
         DynamicModules_Relationships: {
             items?: components["schemas"]["Multi_Relationship_Data_Document"];
+            seedItem?: components["schemas"]["Single_Relationship_Data_Document"];
         };
         DynamicModules_Resource_Object: {
             attributes?: components["schemas"]["DynamicModules_Attributes"];
@@ -20833,6 +21385,11 @@ export interface components {
              * @enum {string}
              */
             type: "dynamicModules";
+        };
+        DynamicModules_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         DynamicModules_Single_Resource_Data_Document: {
             data: components["schemas"]["DynamicModules_Resource_Object"];
@@ -21021,7 +21578,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "IDEMPOTENT_REQUEST_IN_PROGRESS";
-                /** @example A request with this idempotency key is currently being processed */
+                /** @example Request already in progress for this idempotency key */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -21034,13 +21591,13 @@ export interface components {
                  * @enum {string}
                  */
                 code: "IDEMPOTENT_REQUEST_PAYLOAD_MISMATCH";
-                /** @example Idempotency key was already used with a different request payload */
+                /** @example Idempotency key reused with a different payload */
                 detail?: string;
                 /** @example 422 */
                 status: string;
             }[];
         };
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -22581,7 +23138,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_SITES_SCOPE";
-                /** @example The Square credential is missing the OAuth scopes required by the Square Online sites feature (ONLINE_STORE_SITE_READ, CHANNELS_READ). Re-run Square onboarding to grant them. */
+                /** @example Square credential lacks required site scopes; run Square onboarding again */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -22663,6 +23220,8 @@ export interface components {
             domain?: string;
             /** @description Whether the site is published on Square Online */
             published?: boolean;
+            /** @description The site's title as set by the seller in Square */
+            siteTitle?: string;
         };
         SquareSites_Multi_Resource_Data_Document: {
             data: components["schemas"]["SquareSites_Resource_Object"][];
@@ -22823,6 +23382,93 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SubscriptionPriceChangeDecisionsCreateOperation_Payload: {
+            data: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data"];
+        };
+        SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "subscriptionPriceChangeDecisions";
+        };
+        SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Attributes: {
+            /**
+             * @description The decision to record. A decision may only be created once — changing a rejection to an acceptance is a PATCH.
+             * @enum {string}
+             */
+            status: "ACCEPTED" | "REJECTED";
+        };
+        SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships: {
+            priceChange: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships_PriceChange"];
+        };
+        SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships_PriceChange: {
+            data: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships_PriceChange_Data"];
+        };
+        SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships_PriceChange_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "userSubscriptionPriceChanges";
+        };
+        SubscriptionPriceChangeDecisionsUpdateOperation_Payload: {
+            data: components["schemas"]["SubscriptionPriceChangeDecisionsUpdateOperation_Payload_Data"];
+        };
+        SubscriptionPriceChangeDecisionsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["SubscriptionPriceChangeDecisionsUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "subscriptionPriceChangeDecisions";
+        };
+        SubscriptionPriceChangeDecisionsUpdateOperation_Payload_Data_Attributes: {
+            /**
+             * @description The decision to record. The only allowed transition is REJECTED -> ACCEPTED; acceptance is permanent.
+             * @enum {string}
+             */
+            status: "ACCEPTED" | "REJECTED";
+        };
+        SubscriptionPriceChangeDecisions_Attributes: {
+            /**
+             * Format: date-time
+             * @description When the user decided. Absent when the consent was implicit (derived from the subscription start).
+             */
+            decidedAt?: string;
+            /**
+             * @description The user's decision. ACCEPTED is permanent; REJECTED can still be flipped to ACCEPTED before the renewal.
+             * @enum {string}
+             */
+            status: "ACCEPTED" | "REJECTED";
+        };
+        SubscriptionPriceChangeDecisions_Multi_Resource_Data_Document: {
+            data: components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SubscriptionPriceChangeDecisions_Relationships: {
+            priceChange?: components["schemas"]["Single_Relationship_Data_Document"];
+        };
+        SubscriptionPriceChangeDecisions_Resource_Object: {
+            attributes?: components["schemas"]["SubscriptionPriceChangeDecisions_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["SubscriptionPriceChangeDecisions_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "subscriptionPriceChangeDecisions";
+        };
+        SubscriptionPriceChangeDecisions_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SubscriptionPriceChangeDecisions_Single_Resource_Data_Document: {
+            data: components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         TemporaryUserTokensCreateOperation_Payload: {
             data: components["schemas"]["TemporaryUserTokensCreateOperation_Payload_Data"];
         };
@@ -22922,7 +23568,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
-                /** @example Cannot fulfill this request because required prerequisites are missing */
+                /** @example Required playback prerequisites are missing */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -22935,7 +23581,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CONTENT_NOT_FOUND";
-                /** @example The requested content does not exist or is no longer available */
+                /** @example Content does not exist or is no longer available */
                 detail?: string;
                 /** @example 404 */
                 status: string;
@@ -22993,7 +23639,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
-                /** @example Cannot fulfill this request because required prerequisites are missing */
+                /** @example Required playback prerequisites are missing */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -23006,7 +23652,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CONTENT_NOT_FOUND";
-                /** @example The requested content does not exist or is no longer available */
+                /** @example Content does not exist or is no longer available */
                 detail?: string;
                 /** @example 404 */
                 status: string;
@@ -23526,7 +24172,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -23643,7 +24289,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -23778,7 +24424,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "FOLDER_NOT_EMPTY";
-                /** @example Cannot delete folder: only empty folders owned by you can be deleted. */
+                /** @example Folder must be empty and owned by you */
                 detail?: string;
                 /** @example 400 */
                 status: string;
@@ -23889,7 +24535,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -24006,7 +24652,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -24118,7 +24764,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -24235,7 +24881,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -24352,7 +24998,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -24782,7 +25428,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MAXIMUM_NUMBER_OF_BLOCKS_EXCEEDED";
-                /** @example You have reached the maximum number of blocked recommendation items. Please remove some blocked items before adding more. */
+                /** @example Recommendation block limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -25040,6 +25686,60 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        UserSubscriptionPriceChanges_Attributes: {
+            /**
+             * @description ISO 4217 currency code
+             * @example EUR
+             */
+            currency: string;
+            /**
+             * @description Price amount with max 2 decimal places
+             * @example 9.99
+             */
+            currentPrice: string;
+            /**
+             * Format: date
+             * @description The date the new price takes effect
+             */
+            effectiveDate: string;
+            /**
+             * @description Price amount with max 2 decimal places
+             * @example 9.99
+             */
+            newPrice: string;
+        };
+        UserSubscriptionPriceChanges_Multi_Resource_Data_Document: {
+            data: components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserSubscriptionPriceChanges_Relationships: {
+            decision?: components["schemas"]["Single_Relationship_Data_Document"];
+        };
+        UserSubscriptionPriceChanges_Resource_Object: {
+            attributes?: components["schemas"]["UserSubscriptionPriceChanges_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["UserSubscriptionPriceChanges_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "userSubscriptionPriceChanges";
+        };
+        UserSubscriptionPriceChanges_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserSubscriptionPriceChanges_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Users_Attributes: {
             /**
              * @description ISO 3166-1 alpha-2 country code
@@ -25113,7 +25813,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
-                /** @example Cannot fulfill this request because required prerequisites are missing */
+                /** @example Required playback prerequisites are missing */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -25126,7 +25826,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CONTENT_NOT_FOUND";
-                /** @example The requested content does not exist or is no longer available */
+                /** @example Content does not exist or is no longer available */
                 detail?: string;
                 /** @example 404 */
                 status: string;
@@ -25263,7 +25963,7 @@ export interface components {
         };
     };
     responses: {
-        /** @description The request is malformed or invalid */
+        /** @description Invalid request */
         Default400Response: {
             headers: {
                 [name: string]: unknown;
@@ -25272,7 +25972,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default400ResponseBody"];
             };
         };
-        /** @description The requested resource was not found */
+        /** @description Resource not found */
         Default404Response: {
             headers: {
                 [name: string]: unknown;
@@ -25281,7 +25981,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default404ResponseBody"];
             };
         };
-        /** @description The HTTP method is not allowed for the requested resource */
+        /** @description HTTP method not allowed */
         Default405Response: {
             headers: {
                 [name: string]: unknown;
@@ -25290,7 +25990,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default405ResponseBody"];
             };
         };
-        /** @description A response that satisfies the content negotiation headers cannot be produced */
+        /** @description No acceptable response media type */
         Default406Response: {
             headers: {
                 [name: string]: unknown;
@@ -25299,7 +25999,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default406ResponseBody"];
             };
         };
-        /** @description Unsupported request payload media type or content encoding */
+        /** @description Unsupported request media type or encoding */
         Default415Response: {
             headers: {
                 [name: string]: unknown;
@@ -25317,7 +26017,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default429ResponseBody"];
             };
         };
-        /** @description An unexpected error was encountered */
+        /** @description Internal server error */
         Default500Response: {
             headers: {
                 [name: string]: unknown;
@@ -25326,7 +26026,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default500ResponseBody"];
             };
         };
-        /** @description Temporarily unavailable; please try again later */
+        /** @description Service temporarily unavailable */
         Default503Response: {
             headers: {
                 [name: string]: unknown;
@@ -25335,7 +26035,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default503ResponseBody"];
             };
         };
-        /** @description A request with this idempotency key is currently being processed */
+        /** @description Request already in progress for this idempotency key */
         Idempotency409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25344,7 +26044,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Idempotency409ResponseBody"];
             };
         };
-        /** @description Idempotency key was already used with a different request payload */
+        /** @description Idempotency key reused with a different payload */
         Idempotency422Response: {
             headers: {
                 [name: string]: unknown;
@@ -25353,7 +26053,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Idempotency422ResponseBody"];
             };
         };
-        /** @description The Square credential is missing the OAuth scopes required by the Square Online sites feature (ONLINE_STORE_SITE_READ, CHANNELS_READ). Re-run Square onboarding to grant them.; A request with this idempotency key is currently being processed */
+        /** @description Square credential lacks required site scopes; run Square onboarding again; Request already in progress for this idempotency key */
         SquareConnectionsUpdateSingleDataRelationship409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25362,7 +26062,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["SquareConnectionsUpdateSingleDataRelationship409ResponseBody"];
             };
         };
-        /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
+        /** @description Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device */
         TrackFilesReadById403Response: {
             headers: {
                 [name: string]: unknown;
@@ -25371,7 +26071,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["TrackFilesReadById403ResponseBody"];
             };
         };
-        /** @description The requested content does not exist or is no longer available */
+        /** @description Content does not exist or is no longer available */
         TrackFilesReadById404Response: {
             headers: {
                 [name: string]: unknown;
@@ -25380,7 +26080,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["TrackFilesReadById404ResponseBody"];
             };
         };
-        /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
+        /** @description Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device */
         TrackManifestsReadById403Response: {
             headers: {
                 [name: string]: unknown;
@@ -25389,7 +26089,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["TrackManifestsReadById403ResponseBody"];
             };
         };
-        /** @description The requested content does not exist or is no longer available */
+        /** @description Content does not exist or is no longer available */
         TrackManifestsReadById404Response: {
             headers: {
                 [name: string]: unknown;
@@ -25398,7 +26098,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["TrackManifestsReadById404ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionAlbumsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25407,7 +26107,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionArtistsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25416,7 +26116,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionArtistsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description Cannot delete folder: only empty folders owned by you can be deleted. */
+        /** @description Folder must be empty and owned by you */
         UserCollectionFoldersDeleteResource400Response: {
             headers: {
                 [name: string]: unknown;
@@ -25425,7 +26125,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionFoldersDeleteResource400ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25434,7 +26134,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25443,7 +26143,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionTracksAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25452,7 +26152,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionTracksAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionVideosAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25461,7 +26161,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionVideosAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionsAddMultiDataRelationship409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25470,7 +26170,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionsAddMultiDataRelationship409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of blocked recommendation items. Please remove some blocked items before adding more.; A request with this idempotency key is currently being processed */
+        /** @description Recommendation block limit reached; Request already in progress for this idempotency key */
         UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25479,7 +26179,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserRecommendationBlocksAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
+        /** @description Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device */
         VideoManifestsReadById403Response: {
             headers: {
                 [name: string]: unknown;
@@ -25488,7 +26188,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["VideoManifestsReadById403ResponseBody"];
             };
         };
-        /** @description The requested content does not exist or is no longer available */
+        /** @description Content does not exist or is no longer available */
         VideoManifestsReadById404Response: {
             headers: {
                 [name: string]: unknown;
