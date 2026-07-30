@@ -5,10 +5,10 @@
       "name" : "TIDAL Developer - Discussions",
       "url" : "https://github.com/orgs/tidal-music/discussions"
     },
-    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Working with responses\n\n- **Enums** — new values can be added to any enum at any time. Treat unknown values as forward-compatible, not as errors.\n- **IDs** are opaque strings. Never parse, construct, or infer meaning from them.\n- **Formats** — dates, times and durations are ISO 8601 (`2024-05-01T12:00:00Z`, `PT3M5S`); countries ISO 3166-1 alpha-2; languages BCP 47; currencies ISO 4217; colors six-digit hex.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: a resource's `relationships` object contains just the relationships named in [`include`](https://jsonapi.org/format/#fetching-includes) — a relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<member>]=value`](https://jsonapi.org/format/#fetching-filtering) filters collections; each endpoint documents its available filters, and most collections require at least one.\n- [`sort=<member>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<member>` descending (`sort=-addedAt`). Filter and sort members are relative to the resources being returned.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) follow JSON:API semantics: attributes omitted from the payload are left unchanged; attributes set to `null` are cleared.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Once the original request has completed, retrying with the same key and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### [DRAFT] Availability and replacements\n\nMedia resources — `tracks`, `albums`, `videos` — are licensed per territory: a resource's `usageRules` relationship describes what it may be used for (e.g. `STREAM`) in a given country, so a resource may not be streamable in the requested `countryCode`. When it isn't, it may have a streamable substitute, exposed through its to-one `replacement` relationship — empty when the resource is streamable as-is or no substitute exists.\n\nIdentifiers stored in collections never change: the primary data always shows what was originally added. To find what can be played instead, include the replacement — e.g. `include=items.replacement` on a user's track collection.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
+    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Working with responses\n\n- **Enums** — new values can be added to any enum at any time. Treat unknown values as forward-compatible, not as errors.\n- **IDs** are opaque strings. Never parse, construct, or infer meaning from them.\n- **Formats** — dates, times and durations are ISO 8601 (`2024-05-01T12:00:00Z`, `PT3M5S`); countries ISO 3166-1 alpha-2; languages BCP 47; currencies ISO 4217; colors six-digit hex.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: a resource's `relationships` object contains just the relationships named in [`include`](https://jsonapi.org/format/#fetching-includes) — a relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<member>]=value`](https://jsonapi.org/format/#fetching-filtering) filters collections; each endpoint documents its available filters, and most collections require at least one.\n- [`sort=<member>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<member>` descending (`sort=-addedAt`). Filter and sort members are relative to the resources being returned.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) follow JSON:API semantics: attributes omitted from the payload are left unchanged; attributes set to `null` are cleared.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Once the original request has completed, retrying with the same key and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.77"
+    "version" : "1.10.79"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -759,7 +759,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules",
-          "example" : "albumStatistics",
+          "example" : "artists.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -767,7 +767,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "albumStatistics"
+              "example" : "artists.albums"
             }
           }
         }, {
@@ -802,6 +802,16 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums",
+          "example" : "artists.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artists.albums"
           }
         }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
@@ -1004,7 +1014,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules",
-          "example" : "albumStatistics",
+          "example" : "artists.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -1012,8 +1022,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "albumStatistics"
+              "example" : "artists.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums",
+          "example" : "artists.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artists.albums"
           }
         }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
@@ -1249,7 +1269,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: artists",
-          "example" : "artists",
+          "example" : "artists.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -1257,8 +1277,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "artists"
+              "example" : "artists.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums",
+          "example" : "artists.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artists.albums"
           }
         }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
@@ -1623,6 +1653,16 @@
               "type" : "string",
               "example" : "items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
           }
         }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
@@ -2073,6 +2113,16 @@
             }
           }
         }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: replacement",
+          "example" : "replacement",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "replacement"
+          }
+        }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
           "in" : "query",
           "name" : "shareCode",
@@ -2144,7 +2194,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: shares",
-          "example" : "shares",
+          "example" : "shares.sharedResources",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -2152,7 +2202,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "shares"
+              "example" : "shares.sharedResources"
             }
           }
         }, {
@@ -2162,6 +2212,16 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: shares.sharedResources",
+          "example" : "shares.sharedResources",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "shares.sharedResources"
           }
         }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
@@ -2260,6 +2320,16 @@
               "type" : "string",
               "example" : "similarAlbums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarAlbums",
+          "example" : "similarAlbums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "similarAlbums"
           }
         }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
@@ -2862,7 +2932,7 @@
         "description" : "Retrieves multiple artistClaims by available filters, or without if applicable.",
         "parameters" : [ {
           "description" : "Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists",
-          "example" : "acceptedArtists",
+          "example" : "acceptedArtists.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -2870,7 +2940,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "acceptedArtists"
+              "example" : "acceptedArtists.albums"
             }
           }
         }, {
@@ -2883,6 +2953,16 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: acceptedArtists.albums",
+          "example" : "acceptedArtists.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "acceptedArtists.albums"
           }
         } ],
         "responses" : {
@@ -3074,7 +3154,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists",
-          "example" : "acceptedArtists",
+          "example" : "acceptedArtists.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -3082,8 +3162,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "acceptedArtists"
+              "example" : "acceptedArtists.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: acceptedArtists.albums",
+          "example" : "acceptedArtists.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "acceptedArtists.albums"
           }
         } ],
         "responses" : {
@@ -3219,7 +3309,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: acceptedArtists",
-          "example" : "acceptedArtists",
+          "example" : "acceptedArtists.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -3227,7 +3317,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "acceptedArtists"
+              "example" : "acceptedArtists.albums"
             }
           }
         }, {
@@ -3237,6 +3327,16 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: acceptedArtists.albums",
+          "example" : "acceptedArtists.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "acceptedArtists.albums"
           }
         } ],
         "responses" : {
@@ -3452,7 +3552,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: recommendedArtists",
-          "example" : "recommendedArtists",
+          "example" : "recommendedArtists.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -3460,7 +3560,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "recommendedArtists"
+              "example" : "recommendedArtists.albums"
             }
           }
         }, {
@@ -3470,6 +3570,16 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: recommendedArtists.albums",
+          "example" : "recommendedArtists.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "recommendedArtists.albums"
           }
         } ],
         "responses" : {
@@ -3637,6 +3747,16 @@
               "type" : "string"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "albums"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -3784,6 +3904,16 @@
               "type" : "string",
               "example" : "albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "albums"
           }
         } ],
         "responses" : {
@@ -3939,6 +4069,16 @@
               "type" : "string",
               "example" : "albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "albums"
           }
         } ],
         "responses" : {
@@ -4173,7 +4313,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: followers",
-          "example" : "followers",
+          "example" : "followers.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -4181,8 +4321,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "followers"
+              "example" : "followers.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: followers.albums",
+          "example" : "followers.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "followers.albums"
           }
         } ],
         "responses" : {
@@ -4324,7 +4474,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: following",
-          "example" : "following",
+          "example" : "following.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -4332,8 +4482,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "following"
+              "example" : "following.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: following.albums",
+          "example" : "following.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "following.albums"
           }
         } ],
         "responses" : {
@@ -4723,7 +4883,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: radio",
-          "example" : "radio",
+          "example" : "radio.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -4731,8 +4891,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "radio"
+              "example" : "radio.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: radio.items",
+          "example" : "radio.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "radio.items"
           }
         } ],
         "responses" : {
@@ -4896,7 +5066,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: similarArtists",
-          "example" : "similarArtists",
+          "example" : "similarArtists.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -4904,8 +5074,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "similarArtists"
+              "example" : "similarArtists.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarArtists.albums",
+          "example" : "similarArtists.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "similarArtists.albums"
           }
         } ],
         "responses" : {
@@ -5090,6 +5270,16 @@
               "example" : "tracks"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks",
+          "example" : "tracks",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "tracks"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -5180,6 +5370,16 @@
               "type" : "string",
               "example" : "videos"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos",
+          "example" : "videos",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "videos"
           }
         } ],
         "responses" : {
@@ -6037,7 +6237,7 @@
         "description" : "Retrieves multiple collaborationInvites by available filters, or without if applicable.",
         "parameters" : [ {
           "description" : "Allows the client to customize which related resources should be returned. Available options: owners, subject",
-          "example" : "owners",
+          "example" : "subject.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -6045,7 +6245,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "owners"
+              "example" : "subject.items"
             }
           }
         }, {
@@ -6058,6 +6258,16 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.items",
+          "example" : "subject.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.items"
           }
         } ],
         "responses" : {
@@ -6240,7 +6450,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: owners, subject",
-          "example" : "owners",
+          "example" : "subject.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -6248,8 +6458,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "owners"
+              "example" : "subject.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.items",
+          "example" : "subject.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.items"
           }
         } ],
         "responses" : {
@@ -6392,7 +6612,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: subject",
-          "example" : "subject",
+          "example" : "subject.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -6400,8 +6620,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "subject"
+              "example" : "subject.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.items",
+          "example" : "subject.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.items"
           }
         } ],
         "responses" : {
@@ -7085,6 +7315,16 @@
               "type" : "string"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimedResource",
+          "example" : "claimedResource",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "claimedResource"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -7222,6 +7462,16 @@
               "example" : "claimedResource"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimedResource",
+          "example" : "claimedResource",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "claimedResource"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -7294,6 +7544,16 @@
               "example" : "claimedResource"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimedResource",
+          "example" : "claimedResource",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "claimedResource"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -7355,7 +7615,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: claimingArtist",
-          "example" : "claimingArtist",
+          "example" : "claimingArtist.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -7363,8 +7623,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "claimingArtist"
+              "example" : "claimingArtist.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimingArtist.albums",
+          "example" : "claimingArtist.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "claimingArtist.albums"
           }
         } ],
         "responses" : {
@@ -7507,7 +7777,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: artist, category",
-          "example" : "artist",
+          "example" : "artist.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -7515,8 +7785,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "artist"
+              "example" : "artist.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums",
+          "example" : "artist.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artist.albums"
           }
         } ],
         "responses" : {
@@ -7581,7 +7861,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: artist",
-          "example" : "artist",
+          "example" : "artist.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -7589,8 +7869,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "artist"
+              "example" : "artist.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums",
+          "example" : "artist.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artist.albums"
           }
         } ],
         "responses" : {
@@ -7980,6 +8270,16 @@
               "enum" : [ "tracks", "albums", "artists" ]
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -8053,6 +8353,16 @@
               "type" : "string",
               "example" : "subject"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject"
           }
         } ],
         "responses" : {
@@ -8186,6 +8496,16 @@
               "type" : "string"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -8315,6 +8635,16 @@
               "type" : "string",
               "example" : "items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
           }
         } ],
         "responses" : {
@@ -8454,6 +8784,16 @@
               "example" : "items"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -8505,7 +8845,7 @@
     },
     "/dynamicModules/{id}/relationships/seedItem" : {
       "get" : {
-        "description" : "The item whose listen or add event seeded this module's collection (e.g. the album a BECAUSE_YOU_* module is based on); null for modules that are not seeded by an item. The seed comes from the same fetch as the module's items, so the two always agree.",
+        "description" : "The item whose listen or add event seeded this module's collection (e.g. the album a BECAUSE_YOU_* module is based on); null for modules that are not seeded by an item.",
         "parameters" : [ {
           "description" : "DynamicModules Id",
           "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
@@ -8583,6 +8923,16 @@
               "type" : "string",
               "example" : "seedItem"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: seedItem",
+          "example" : "seedItem",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "seedItem"
           }
         } ],
         "responses" : {
@@ -8694,7 +9044,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: modules, subject",
-          "example" : "modules",
+          "example" : "modules.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -8702,7 +9052,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "modules"
+              "example" : "modules.items"
             }
           }
         }, {
@@ -8726,6 +9076,16 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: modules.items",
+          "example" : "modules.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "modules.items"
           }
         } ],
         "responses" : {
@@ -8854,7 +9214,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: modules",
-          "example" : "modules",
+          "example" : "modules.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -8862,8 +9222,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "modules"
+              "example" : "modules.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: modules.items",
+          "example" : "modules.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "modules.items"
           }
         } ],
         "responses" : {
@@ -8938,6 +9308,16 @@
               "type" : "string",
               "example" : "subject"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject"
           }
         } ],
         "responses" : {
@@ -9186,6 +9566,16 @@
               "type" : "string"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory",
+          "example" : "offlineInventory",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "offlineInventory"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -9322,6 +9712,16 @@
               "type" : "string",
               "example" : "offlineInventory"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory",
+          "example" : "offlineInventory",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "offlineInventory"
           }
         } ],
         "responses" : {
@@ -9501,6 +9901,16 @@
               "type" : "string",
               "enum" : [ "tracks", "videos", "albums", "playlists", "userCollectionTracks" ]
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory",
+          "example" : "offlineInventory",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "offlineInventory"
           }
         } ],
         "responses" : {
@@ -9829,7 +10239,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: owners, track",
-          "example" : "owners",
+          "example" : "track",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -9837,8 +10247,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "owners"
+              "example" : "track"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: track",
+          "example" : "track",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "track"
           }
         } ],
         "responses" : {
@@ -10078,6 +10498,16 @@
               "example" : "track"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: track",
+          "example" : "track",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "track"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -10229,6 +10659,16 @@
               "type" : "string"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection",
+          "example" : "collection",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "collection"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -10300,6 +10740,16 @@
               "type" : "string",
               "example" : "collection"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection",
+          "example" : "collection",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "collection"
           }
         } ],
         "responses" : {
@@ -10437,6 +10887,16 @@
               "example" : "collection"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection",
+          "example" : "collection",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "collection"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -10508,6 +10968,16 @@
               "type" : "string",
               "example" : "item"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: item",
+          "example" : "item",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "item"
           }
         } ],
         "responses" : {
@@ -10670,6 +11140,16 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current",
+          "example" : "current",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "current"
           }
         } ],
         "responses" : {
@@ -10863,6 +11343,16 @@
               "example" : "current"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current",
+          "example" : "current",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "current"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -10998,6 +11488,16 @@
               "type" : "string",
               "example" : "current"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current",
+          "example" : "current",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "current"
           }
         } ],
         "responses" : {
@@ -11206,6 +11706,16 @@
               "type" : "string",
               "example" : "future"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: future",
+          "example" : "future",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "future"
           }
         } ],
         "responses" : {
@@ -11495,6 +12005,16 @@
               "example" : "past"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: past",
+          "example" : "past",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "past"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -11579,7 +12099,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts",
-          "example" : "collaboratorProfiles",
+          "example" : "items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -11587,7 +12107,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "collaboratorProfiles"
+              "example" : "items"
             }
           }
         }, {
@@ -11611,6 +12131,16 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
           }
         } ],
         "responses" : {
@@ -11813,7 +12343,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts",
-          "example" : "collaboratorProfiles",
+          "example" : "items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -11821,8 +12351,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "collaboratorProfiles"
+              "example" : "items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
           }
         } ],
         "responses" : {
@@ -12527,6 +13067,16 @@
               "type" : "string",
               "example" : "items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
           }
         } ],
         "responses" : {
@@ -13413,7 +13963,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: provider, subject",
-          "example" : "provider",
+          "example" : "subject",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -13421,7 +13971,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "provider"
+              "example" : "subject"
             }
           }
         }, {
@@ -13456,6 +14006,16 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject"
           }
         } ],
         "responses" : {
@@ -13608,6 +14168,16 @@
               "example" : "subject"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -13729,7 +14299,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: owners, subject",
-          "example" : "owners",
+          "example" : "subject",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -13737,7 +14307,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "owners"
+              "example" : "subject"
             }
           }
         }, {
@@ -13762,6 +14332,16 @@
               "type" : "string",
               "enum" : [ "albums", "tracks" ]
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject"
           }
         } ],
         "responses" : {
@@ -13914,6 +14494,16 @@
               "type" : "string",
               "example" : "subject"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject"
           }
         } ],
         "responses" : {
@@ -14631,6 +15221,16 @@
               "example" : "albums"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "albums"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -14761,6 +15361,16 @@
               "type" : "string",
               "example" : "albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "albums"
           }
         } ],
         "responses" : {
@@ -14893,6 +15503,16 @@
               "example" : "artists"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists",
+          "example" : "artists",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artists"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -15023,6 +15643,16 @@
               "type" : "string",
               "example" : "playlists"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlists",
+          "example" : "playlists",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "playlists"
           }
         } ],
         "responses" : {
@@ -15155,6 +15785,16 @@
               "example" : "topHits"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: topHits",
+          "example" : "topHits",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "topHits"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -15285,6 +15925,16 @@
               "type" : "string",
               "example" : "tracks"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks",
+          "example" : "tracks",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "tracks"
           }
         } ],
         "responses" : {
@@ -15417,6 +16067,16 @@
               "example" : "videos"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos",
+          "example" : "videos",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "videos"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -15510,6 +16170,16 @@
               "type" : "string",
               "example" : "directHits"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: directHits",
+          "example" : "directHits",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "directHits"
           }
         } ],
         "responses" : {
@@ -15612,6 +16282,16 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: directHits",
+          "example" : "directHits",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "directHits"
           }
         } ],
         "responses" : {
@@ -15767,7 +16447,7 @@
         "description" : "Retrieves multiple shares by available filters, or without if applicable.",
         "parameters" : [ {
           "description" : "Allows the client to customize which related resources should be returned. Available options: owners, sharedResources",
-          "example" : "owners",
+          "example" : "sharedResources",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -15775,7 +16455,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "owners"
+              "example" : "sharedResources"
             }
           }
         }, {
@@ -15788,6 +16468,16 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources",
+          "example" : "sharedResources",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "sharedResources"
           }
         } ],
         "responses" : {
@@ -15917,7 +16607,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: owners, sharedResources",
-          "example" : "owners",
+          "example" : "sharedResources",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -15925,8 +16615,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "owners"
+              "example" : "sharedResources"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources",
+          "example" : "sharedResources",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "sharedResources"
           }
         } ],
         "responses" : {
@@ -16091,6 +16791,16 @@
               "type" : "string",
               "example" : "sharedResources"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources",
+          "example" : "sharedResources",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "sharedResources"
           }
         } ],
         "responses" : {
@@ -18220,6 +18930,16 @@
             }
           }
         }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "albums"
+          }
+        }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
           "in" : "query",
           "name" : "shareCode",
@@ -18432,6 +19152,16 @@
             }
           }
         }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "albums"
+          }
+        }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
           "in" : "query",
           "name" : "shareCode",
@@ -18596,6 +19326,16 @@
             "type" : "string"
           }
         }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "albums"
+          }
+        }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
           "in" : "query",
           "name" : "shareCode",
@@ -18748,7 +19488,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: artists",
-          "example" : "artists",
+          "example" : "artists.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -18756,8 +19496,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "artists"
+              "example" : "artists.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums",
+          "example" : "artists.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artists.albums"
           }
         }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
@@ -18839,7 +19589,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: credits",
-          "example" : "credits",
+          "example" : "credits.artist.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -18847,8 +19597,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "credits"
+              "example" : "credits.artist.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: credits.artist.albums",
+          "example" : "credits.artist.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "credits.artist.albums"
           }
         }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
@@ -19103,7 +19863,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: lyrics",
-          "example" : "lyrics",
+          "example" : "lyrics.track",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -19111,7 +19871,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "lyrics"
+              "example" : "lyrics.track"
             }
           }
         }, {
@@ -19121,6 +19881,16 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: lyrics.track",
+          "example" : "lyrics.track",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "lyrics.track"
           }
         }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
@@ -19567,7 +20337,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: radio",
-          "example" : "radio",
+          "example" : "radio.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -19575,7 +20345,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "radio"
+              "example" : "radio.items"
             }
           }
         }, {
@@ -19585,6 +20355,16 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: radio.items",
+          "example" : "radio.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "radio.items"
           }
         }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
@@ -19679,6 +20459,16 @@
             }
           }
         }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: replacement",
+          "example" : "replacement",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "replacement"
+          }
+        }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
           "in" : "query",
           "name" : "shareCode",
@@ -19750,7 +20540,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: shares",
-          "example" : "shares",
+          "example" : "shares.sharedResources",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -19758,7 +20548,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "shares"
+              "example" : "shares.sharedResources"
             }
           }
         }, {
@@ -19768,6 +20558,16 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: shares.sharedResources",
+          "example" : "shares.sharedResources",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "shares.sharedResources"
           }
         }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
@@ -19866,6 +20666,16 @@
               "type" : "string",
               "example" : "similarTracks"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarTracks",
+          "example" : "similarTracks",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "similarTracks"
           }
         }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
@@ -20049,6 +20859,16 @@
               "type" : "string",
               "example" : "suggestedTracks"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: suggestedTracks",
+          "example" : "suggestedTracks",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "suggestedTracks"
           }
         }, {
           "description" : "Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted.",
@@ -20503,6 +21323,16 @@
               "example" : "items"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -20671,6 +21501,16 @@
               "type" : "string",
               "example" : "items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
           }
         } ],
         "responses" : {
@@ -20897,7 +21737,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items, owners",
-          "example" : "items",
+          "example" : "items.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -20905,8 +21745,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.albums",
+          "example" : "items.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.albums"
           }
         } ],
         "responses" : {
@@ -21066,7 +21916,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items",
-          "example" : "items",
+          "example" : "items.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -21074,8 +21924,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.albums",
+          "example" : "items.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.albums"
           }
         } ],
         "responses" : {
@@ -21283,7 +22143,7 @@
         "description" : "Retrieves multiple userCollectionFolders by available filters, or without if applicable.",
         "parameters" : [ {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection",
-          "example" : "items",
+          "example" : "items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -21291,7 +22151,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.items"
             }
           }
         }, {
@@ -21304,6 +22164,16 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items",
+          "example" : "items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.items"
           }
         } ],
         "responses" : {
@@ -21486,7 +22356,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection",
-          "example" : "items",
+          "example" : "items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -21494,8 +22364,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items",
+          "example" : "items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.items"
           }
         } ],
         "responses" : {
@@ -21709,7 +22589,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items",
-          "example" : "items",
+          "example" : "items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -21717,8 +22597,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items",
+          "example" : "items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.items"
           }
         } ],
         "responses" : {
@@ -21925,7 +22815,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: userCollection",
-          "example" : "userCollection",
+          "example" : "userCollection.items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -21933,8 +22823,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "userCollection"
+              "example" : "userCollection.items.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: userCollection.items.items",
+          "example" : "userCollection.items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "userCollection.items.items"
           }
         } ],
         "responses" : {
@@ -22007,7 +22907,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items, owners",
-          "example" : "items",
+          "example" : "items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -22015,8 +22915,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items",
+          "example" : "items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.items"
           }
         } ],
         "responses" : {
@@ -22174,7 +23084,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items",
-          "example" : "items",
+          "example" : "items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -22182,8 +23092,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items",
+          "example" : "items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.items"
           }
         } ],
         "responses" : {
@@ -22411,6 +23331,16 @@
               "example" : "items"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -22554,6 +23484,16 @@
               "type" : "string",
               "example" : "items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
           }
         } ],
         "responses" : {
@@ -22791,6 +23731,16 @@
               "example" : "items"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -22959,6 +23909,16 @@
               "type" : "string",
               "example" : "items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
           }
         } ],
         "responses" : {
@@ -23196,6 +24156,16 @@
               "example" : "items"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -23364,6 +24334,16 @@
               "type" : "string",
               "example" : "items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items"
           }
         } ],
         "responses" : {
@@ -23602,6 +24582,16 @@
               "example" : "albums"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "albums"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -23772,6 +24762,16 @@
               "type" : "string",
               "example" : "albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "albums"
           }
         } ],
         "responses" : {
@@ -23998,7 +24998,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: artists",
-          "example" : "artists",
+          "example" : "artists.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -24006,8 +25006,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "artists"
+              "example" : "artists.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums",
+          "example" : "artists.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artists.albums"
           }
         } ],
         "responses" : {
@@ -24312,7 +25322,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: playlists",
-          "example" : "playlists",
+          "example" : "playlists.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -24320,8 +25330,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "playlists"
+              "example" : "playlists.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlists.items",
+          "example" : "playlists.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "playlists.items"
           }
         } ],
         "responses" : {
@@ -24559,6 +25579,16 @@
               "example" : "tracks"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks",
+          "example" : "tracks",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "tracks"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -24795,6 +25825,16 @@
               "example" : "videos"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos",
+          "example" : "videos",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "videos"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -24931,7 +25971,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items",
-          "example" : "items",
+          "example" : "items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -24939,8 +25979,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items",
+          "example" : "items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.items"
           }
         } ],
         "responses" : {
@@ -25021,7 +26071,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items",
-          "example" : "items",
+          "example" : "items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -25029,8 +26079,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items",
+          "example" : "items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.items"
           }
         } ],
         "responses" : {
@@ -25170,7 +26230,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items",
-          "example" : "items",
+          "example" : "items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -25178,8 +26238,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items",
+          "example" : "items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.items"
           }
         } ],
         "responses" : {
@@ -25260,7 +26330,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items",
-          "example" : "items",
+          "example" : "items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -25268,8 +26338,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items",
+          "example" : "items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.items"
           }
         } ],
         "responses" : {
@@ -25342,7 +26422,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items",
-          "example" : "items",
+          "example" : "items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -25350,8 +26430,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items",
+          "example" : "items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.items"
           }
         } ],
         "responses" : {
@@ -25432,7 +26522,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items",
-          "example" : "items",
+          "example" : "items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -25440,8 +26530,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items",
+          "example" : "items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.items"
           }
         } ],
         "responses" : {
@@ -25514,7 +26614,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items",
-          "example" : "items",
+          "example" : "items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -25522,8 +26622,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items",
+          "example" : "items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.items"
           }
         } ],
         "responses" : {
@@ -25604,7 +26714,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: items",
-          "example" : "items",
+          "example" : "items.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -25612,8 +26722,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "items"
+              "example" : "items.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items",
+          "example" : "items.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "items.items"
           }
         } ],
         "responses" : {
@@ -25686,7 +26806,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: artists, owners, tracks, videos",
-          "example" : "artists",
+          "example" : "artists.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -25694,8 +26814,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "artists"
+              "example" : "artists.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums",
+          "example" : "artists.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artists.albums"
           }
         } ],
         "responses" : {
@@ -25830,7 +26960,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: artists",
-          "example" : "artists",
+          "example" : "artists.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -25838,8 +26968,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "artists"
+              "example" : "artists.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums",
+          "example" : "artists.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artists.albums"
           }
         } ],
         "responses" : {
@@ -26139,6 +27279,16 @@
               "example" : "tracks"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks",
+          "example" : "tracks",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "tracks"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -26357,6 +27507,16 @@
               "example" : "videos"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos",
+          "example" : "videos",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "videos"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -26503,7 +27663,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes, offlineMixes",
-          "example" : "discoveryMixes",
+          "example" : "discoveryMixes.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -26511,8 +27671,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "discoveryMixes"
+              "example" : "discoveryMixes.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: discoveryMixes.items",
+          "example" : "discoveryMixes.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "discoveryMixes.items"
           }
         } ],
         "responses" : {
@@ -26594,7 +27764,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: discoveryMixes",
-          "example" : "discoveryMixes",
+          "example" : "discoveryMixes.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -26602,8 +27772,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "discoveryMixes"
+              "example" : "discoveryMixes.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: discoveryMixes.items",
+          "example" : "discoveryMixes.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "discoveryMixes.items"
           }
         } ],
         "responses" : {
@@ -26685,7 +27865,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: myMixes",
-          "example" : "myMixes",
+          "example" : "myMixes.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -26693,8 +27873,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "myMixes"
+              "example" : "myMixes.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: myMixes.items",
+          "example" : "myMixes.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "myMixes.items"
           }
         } ],
         "responses" : {
@@ -26776,7 +27966,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: newArrivalMixes",
-          "example" : "newArrivalMixes",
+          "example" : "newArrivalMixes.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -26784,8 +27974,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "newArrivalMixes"
+              "example" : "newArrivalMixes.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: newArrivalMixes.items",
+          "example" : "newArrivalMixes.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "newArrivalMixes.items"
           }
         } ],
         "responses" : {
@@ -26867,7 +28067,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: offlineMixes",
-          "example" : "offlineMixes",
+          "example" : "offlineMixes.items",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -26875,8 +28075,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "offlineMixes"
+              "example" : "offlineMixes.items"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineMixes.items",
+          "example" : "offlineMixes.items",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "offlineMixes.items"
           }
         } ],
         "responses" : {
@@ -27324,6 +28534,16 @@
               "type" : "string"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "albums"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -27406,6 +28626,16 @@
               "type" : "string",
               "example" : "albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "albums"
           }
         } ],
         "responses" : {
@@ -27498,6 +28728,16 @@
               "example" : "albums"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
+          "example" : "albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "albums"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -27578,7 +28818,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: artists",
-          "example" : "artists",
+          "example" : "artists.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -27586,8 +28826,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "artists"
+              "example" : "artists.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums",
+          "example" : "artists.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artists.albums"
           }
         } ],
         "responses" : {
@@ -27660,7 +28910,7 @@
           }
         }, {
           "description" : "Allows the client to customize which related resources should be returned. Available options: credits",
-          "example" : "credits",
+          "example" : "credits.artist.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -27668,8 +28918,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "credits"
+              "example" : "credits.artist.albums"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: credits.artist.albums",
+          "example" : "credits.artist.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "credits.artist.albums"
           }
         } ],
         "responses" : {
@@ -27845,6 +29105,16 @@
               "example" : "replacement"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: replacement",
+          "example" : "replacement",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "replacement"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -27936,6 +29206,16 @@
               "example" : "similarVideos"
             }
           }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarVideos",
+          "example" : "similarVideos",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "similarVideos"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -28026,6 +29306,16 @@
               "type" : "string",
               "example" : "suggestedVideos"
             }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: suggestedVideos",
+          "example" : "suggestedVideos",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "suggestedVideos"
           }
         } ],
         "responses" : {
@@ -29254,6 +30544,9 @@
           "itemCursor" : {
             "type" : "string"
           },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          },
           "trackNumber" : {
             "type" : "integer",
             "description" : "track number",
@@ -29331,19 +30624,67 @@
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "replacement" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Albums_Replacement_Single_Relationship_Data_Document"
           },
           "shares" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "similarAlbums" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Albums_SimilarAlbums_Multi_Relationship_Data_Document"
           },
           "suggestedCoverArts" : {
             "$ref" : "#/components/schemas/Albums_SuggestedCoverArts_Multi_Relationship_Data_Document"
           },
           "usageRules" : {
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "Albums_Replacement_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Albums_Replacement_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Albums_Replacement_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "Albums_Replacement_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Albums_Replacement_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         }
       },
@@ -29367,6 +30708,51 @@
             "type" : "string",
             "description" : "Resource type",
             "example" : "tracks"
+          }
+        }
+      },
+      "Albums_SimilarAlbums_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Albums_SimilarAlbums_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Albums_SimilarAlbums_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Albums_SimilarAlbums_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Albums_SimilarAlbums_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -30309,6 +31695,51 @@
           }
         }
       },
+      "Artists_Albums_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Artists_Albums_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Artists_Albums_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Artists_Albums_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Artists_Albums_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
       "Artists_Attributes" : {
         "required" : [ "name", "popularity" ],
         "type" : "object",
@@ -30503,7 +31934,7 @@
       "Artists_Relationships" : {
         "properties" : {
           "albums" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Artists_Albums_Multi_Relationship_Data_Document"
           },
           "biography" : {
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
@@ -30536,10 +31967,10 @@
             "$ref" : "#/components/schemas/Artists_TrackProviders_Multi_Relationship_Data_Document"
           },
           "tracks" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Artists_Tracks_Multi_Relationship_Data_Document"
           },
           "videos" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Artists_Videos_Multi_Relationship_Data_Document"
           }
         }
       },
@@ -30648,6 +32079,96 @@
             "description" : "Total number of tracks released together with the provider",
             "format" : "int64",
             "example" : 14
+          }
+        }
+      },
+      "Artists_Tracks_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Artists_Tracks_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Artists_Tracks_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Artists_Tracks_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Artists_Tracks_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "Artists_Videos_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Artists_Videos_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Artists_Videos_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Artists_Videos_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Artists_Videos_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -31811,6 +33332,54 @@
           }
         }
       },
+      "ContentClaims_ClaimedResource_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/ContentClaims_ClaimedResource_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ContentClaims_ClaimedResource_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "ContentClaims_ClaimedResource_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/ContentClaims_ClaimedResource_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "ContentClaims_Multi_Relationship_Data_Document" : {
         "required" : [ "links" ],
         "type" : "object",
@@ -31850,7 +33419,7 @@
       "ContentClaims_Relationships" : {
         "properties" : {
           "claimedResource" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/ContentClaims_ClaimedResource_Single_Relationship_Data_Document"
           },
           "claimingArtist" : {
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
@@ -32416,7 +33985,7 @@
       "DspSharingLinks_Relationships" : {
         "properties" : {
           "subject" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/DspSharingLinks_Subject_Single_Relationship_Data_Document"
           }
         }
       },
@@ -32479,6 +34048,54 @@
           }
         }
       },
+      "DspSharingLinks_Subject_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/DspSharingLinks_Subject_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "DspSharingLinks_Subject_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "DspSharingLinks_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DspSharingLinks_Subject_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "DynamicModules_Attributes" : {
         "required" : [ "icons", "previewLayout" ],
         "type" : "object",
@@ -32515,6 +34132,51 @@
             "description" : "Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. viewAllLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.",
             "example" : "LIST",
             "enum" : [ "GRID", "LIST", "COMPACT", "UNKNOWN" ]
+          }
+        }
+      },
+      "DynamicModules_Items_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DynamicModules_Items_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "DynamicModules_Items_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/DynamicModules_Items_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "DynamicModules_Items_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -32557,10 +34219,10 @@
       "DynamicModules_Relationships" : {
         "properties" : {
           "items" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/DynamicModules_Items_Multi_Relationship_Data_Document"
           },
           "seedItem" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/DynamicModules_SeedItem_Single_Relationship_Data_Document"
           }
         }
       },
@@ -32584,6 +34246,54 @@
             "type" : "string",
             "description" : "Resource type",
             "example" : "tracks"
+          }
+        }
+      },
+      "DynamicModules_SeedItem_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/DynamicModules_SeedItem_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "DynamicModules_SeedItem_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "DynamicModules_SeedItem_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DynamicModules_SeedItem_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         }
       },
@@ -32683,7 +34393,7 @@
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "subject" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/DynamicPages_Subject_Single_Relationship_Data_Document"
           }
         }
       },
@@ -32750,6 +34460,54 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/DynamicPages_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "DynamicPages_Subject_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/DynamicPages_Subject_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "DynamicPages_Subject_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "DynamicPages_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/DynamicPages_Subject_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -33447,6 +35205,9 @@
           "addedAt" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -33770,7 +35531,7 @@
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "track" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Lyrics_Track_Single_Relationship_Data_Document"
           }
         }
       },
@@ -33824,6 +35585,54 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/Lyrics_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Lyrics_Track_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Lyrics_Track_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Lyrics_Track_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "Lyrics_Track_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Lyrics_Track_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -34158,6 +35967,102 @@
           }
         }
       },
+      "OfflineTasks_Collection_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/OfflineTasks_Collection_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "OfflineTasks_Collection_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "OfflineTasks_Collection_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/OfflineTasks_Collection_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "OfflineTasks_Item_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/OfflineTasks_Item_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "OfflineTasks_Item_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "OfflineTasks_Item_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/OfflineTasks_Item_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "OfflineTasks_Multi_Relationship_Data_Document" : {
         "required" : [ "links" ],
         "type" : "object",
@@ -34197,10 +36102,10 @@
       "OfflineTasks_Relationships" : {
         "properties" : {
           "collection" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/OfflineTasks_Collection_Single_Relationship_Data_Document"
           },
           "item" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/OfflineTasks_Item_Single_Relationship_Data_Document"
           },
           "owners" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -34574,6 +36479,9 @@
           },
           "legacySource" : {
             "$ref" : "#/components/schemas/LegacySource"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -34649,6 +36557,9 @@
           },
           "legacySource" : {
             "$ref" : "#/components/schemas/LegacySource"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -34739,6 +36650,9 @@
           },
           "legacySource" : {
             "$ref" : "#/components/schemas/LegacySource"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -35235,6 +37149,9 @@
           },
           "itemId" : {
             "type" : "string"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -35697,7 +37614,7 @@
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
           },
           "subject" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/ProviderProductInfos_Subject_Single_Relationship_Data_Document"
           }
         }
       },
@@ -35751,6 +37668,54 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/ProviderProductInfos_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ProviderProductInfos_Subject_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/ProviderProductInfos_Subject_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ProviderProductInfos_Subject_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "ProviderProductInfos_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/ProviderProductInfos_Subject_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -35882,7 +37847,7 @@
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "subject" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Purchases_Subject_Single_Relationship_Data_Document"
           }
         }
       },
@@ -35936,6 +37901,54 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/Purchases_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Purchases_Subject_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Purchases_Subject_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Purchases_Subject_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "Purchases_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Purchases_Subject_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
@@ -36144,6 +38157,35 @@
             "$ref" : "#/components/schemas/Links"
           }
         }
+      },
+      "Replacement_Original_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "example" : "12345"
+          },
+          "type" : {
+            "type" : "string",
+            "example" : "tracks"
+          }
+        },
+        "description" : "Relationship identifier before contextual replacement projection."
+      },
+      "Replacement_Provenance" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "original" : {
+            "$ref" : "#/components/schemas/Replacement_Original_Identifier"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "ORIGINAL", "REPLACED", "NOT_REPLACED" ]
+          }
+        },
+        "description" : "Relationship replacement projection provenance. ORIGINAL retains the requested identifier as the applicable resource, REPLACED projects another identifier, and NOT_REPLACED retains the requested identifier because no applicable replacement exists."
       },
       "Resource_Identifier" : {
         "required" : [ "id", "type" ],
@@ -36450,6 +38492,96 @@
           }
         }
       },
+      "SearchResults_Albums_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SearchResults_Albums_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SearchResults_Albums_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SearchResults_Albums_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SearchResults_Albums_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "SearchResults_Artists_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SearchResults_Artists_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SearchResults_Artists_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SearchResults_Artists_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SearchResults_Artists_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
       "SearchResults_Attributes" : {
         "required" : [ "trackingId" ],
         "type" : "object",
@@ -36502,25 +38634,70 @@
           }
         }
       },
+      "SearchResults_Playlists_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SearchResults_Playlists_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SearchResults_Playlists_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SearchResults_Playlists_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SearchResults_Playlists_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
       "SearchResults_Relationships" : {
         "properties" : {
           "albums" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/SearchResults_Albums_Multi_Relationship_Data_Document"
           },
           "artists" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/SearchResults_Artists_Multi_Relationship_Data_Document"
           },
           "playlists" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/SearchResults_Playlists_Multi_Relationship_Data_Document"
           },
           "topHits" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/SearchResults_TopHits_Multi_Relationship_Data_Document"
           },
           "tracks" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/SearchResults_Tracks_Multi_Relationship_Data_Document"
           },
           "videos" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/SearchResults_Videos_Multi_Relationship_Data_Document"
           }
         }
       },
@@ -36562,6 +38739,141 @@
           }
         }
       },
+      "SearchResults_TopHits_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SearchResults_TopHits_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SearchResults_TopHits_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SearchResults_TopHits_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SearchResults_TopHits_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "SearchResults_Tracks_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SearchResults_Tracks_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SearchResults_Tracks_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SearchResults_Tracks_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SearchResults_Tracks_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "SearchResults_Videos_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SearchResults_Videos_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SearchResults_Videos_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SearchResults_Videos_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SearchResults_Videos_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
       "SearchSuggestions_Attributes" : {
         "required" : [ "trackingId" ],
         "type" : "object",
@@ -36585,6 +38897,51 @@
             "minLength" : 1,
             "type" : "string",
             "description" : "Unique tracking id"
+          }
+        }
+      },
+      "SearchSuggestions_DirectHits_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SearchSuggestions_DirectHits_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SearchSuggestions_DirectHits_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SearchSuggestions_DirectHits_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SearchSuggestions_DirectHits_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -36658,7 +39015,7 @@
       "SearchSuggestions_Relationships" : {
         "properties" : {
           "directHits" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/SearchSuggestions_DirectHits_Multi_Relationship_Data_Document"
           },
           "history" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -36842,7 +39199,7 @@
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "sharedResources" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Shares_SharedResources_Multi_Relationship_Data_Document"
           }
         }
       },
@@ -36866,6 +39223,51 @@
             "type" : "string",
             "description" : "Resource type",
             "example" : "tracks"
+          }
+        }
+      },
+      "Shares_SharedResources_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Shares_SharedResources_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Shares_SharedResources_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Shares_SharedResources_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Shares_SharedResources_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -38824,6 +41226,51 @@
           }
         }
       },
+      "Tracks_Albums_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Tracks_Albums_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Tracks_Albums_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Tracks_Albums_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Tracks_Albums_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
       "Tracks_Attributes" : {
         "required" : [ "duration", "explicit", "isrc", "key", "keyScale", "mediaTags", "popularity", "title" ],
         "type" : "object",
@@ -38973,7 +41420,7 @@
       "Tracks_Relationships" : {
         "properties" : {
           "albums" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Tracks_Albums_Multi_Relationship_Data_Document"
           },
           "artists" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -39006,25 +41453,73 @@
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "replacement" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Tracks_Replacement_Single_Relationship_Data_Document"
           },
           "shares" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "similarTracks" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Tracks_SimilarTracks_Multi_Relationship_Data_Document"
           },
           "sourceFile" : {
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
           },
           "suggestedTracks" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Tracks_SuggestedTracks_Multi_Relationship_Data_Document"
           },
           "trackStatistics" : {
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
           },
           "usageRules" : {
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "Tracks_Replacement_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Tracks_Replacement_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Tracks_Replacement_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "Tracks_Replacement_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Tracks_Replacement_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         }
       },
@@ -39048,6 +41543,51 @@
             "type" : "string",
             "description" : "Resource type",
             "example" : "tracks"
+          }
+        }
+      },
+      "Tracks_SimilarTracks_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Tracks_SimilarTracks_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Tracks_SimilarTracks_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Tracks_SimilarTracks_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Tracks_SimilarTracks_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -39084,6 +41624,51 @@
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Tracks_SuggestedTracks_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Tracks_SuggestedTracks_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Tracks_SuggestedTracks_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Tracks_SuggestedTracks_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Tracks_SuggestedTracks_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -39497,6 +42082,9 @@
           "addedAt" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -40699,6 +43287,9 @@
           "addedAt" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -40990,6 +43581,9 @@
           "addedAt" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -41281,6 +43875,9 @@
           "addedAt" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -41746,6 +44343,9 @@
           "addedAt" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -41986,6 +44586,9 @@
           "addedAt" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -42033,6 +44636,9 @@
           "addedAt" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -42844,6 +45450,9 @@
             "type" : "string",
             "description" : "When the item was blocked",
             "format" : "date-time"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -42892,6 +45501,9 @@
             "type" : "string",
             "description" : "When the item was blocked",
             "format" : "date-time"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -43470,6 +46082,51 @@
           }
         }
       },
+      "Videos_Albums_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Videos_Albums_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Videos_Albums_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Videos_Albums_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Videos_Albums_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
       "Videos_Attributes" : {
         "required" : [ "duration", "explicit", "isrc", "popularity", "title" ],
         "type" : "object",
@@ -43572,7 +46229,7 @@
       "Videos_Relationships" : {
         "properties" : {
           "albums" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Videos_Albums_Multi_Relationship_Data_Document"
           },
           "artists" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
@@ -43584,19 +46241,67 @@
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "replacement" : {
-            "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Videos_Replacement_Single_Relationship_Data_Document"
           },
           "similarVideos" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Videos_SimilarVideos_Multi_Relationship_Data_Document"
           },
           "suggestedVideos" : {
-            "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
+            "$ref" : "#/components/schemas/Videos_SuggestedVideos_Multi_Relationship_Data_Document"
           },
           "thumbnailArt" : {
             "$ref" : "#/components/schemas/Multi_Relationship_Data_Document"
           },
           "usageRules" : {
             "$ref" : "#/components/schemas/Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "Videos_Replacement_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Videos_Replacement_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Videos_Replacement_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "Videos_Replacement_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Videos_Replacement_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "enum" : [ null ],
+              "nullable" : true
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         }
       },
@@ -43620,6 +46325,51 @@
             "type" : "string",
             "description" : "Resource type",
             "example" : "tracks"
+          }
+        }
+      },
+      "Videos_SimilarVideos_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Videos_SimilarVideos_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Videos_SimilarVideos_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Videos_SimilarVideos_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Videos_SimilarVideos_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -43656,6 +46406,51 @@
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Videos_SuggestedVideos_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Videos_SuggestedVideos_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Videos_SuggestedVideos_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/Videos_SuggestedVideos_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "Videos_SuggestedVideos_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       }
