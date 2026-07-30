@@ -378,7 +378,7 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
-                     * @example albumStatistics
+                     * @example artists.albums
                      */
                     include?: string[];
                     /** @description List of barcode IDs (EAN-13 or UPC-A). NOTE: Supplying more than one barcode ID will currently only return one album per barcode ID. (e.g. `196589525444`) */
@@ -387,6 +387,11 @@ export interface paths {
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -484,9 +489,14 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
-                     * @example albumStatistics
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -683,9 +693,14 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
-                     * @example artists
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -927,6 +942,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -1232,6 +1252,11 @@ export interface paths {
                      * @example replacement
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: replacement
+                     * @example replacement
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -1290,11 +1315,16 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: shares
-                     * @example shares
+                     * @example shares.sharedResources
                      */
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: shares.sharedResources
+                     * @example shares.sharedResources
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -1363,6 +1393,11 @@ export interface paths {
                      * @example similarAlbums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarAlbums
+                     * @example similarAlbums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -1818,11 +1853,16 @@ export interface paths {
                 query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists
-                     * @example acceptedArtists
+                     * @example acceptedArtists.albums
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: acceptedArtists.albums
+                     * @example acceptedArtists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -1919,9 +1959,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists
-                     * @example acceptedArtists
+                     * @example acceptedArtists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: acceptedArtists.albums
+                     * @example acceptedArtists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -2054,11 +2099,16 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists
-                     * @example acceptedArtists
+                     * @example acceptedArtists.albums
                      */
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: acceptedArtists.albums
+                     * @example acceptedArtists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -2219,11 +2269,16 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: recommendedArtists
-                     * @example recommendedArtists
+                     * @example recommendedArtists.albums
                      */
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: recommendedArtists.albums
+                     * @example recommendedArtists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -2347,6 +2402,11 @@ export interface paths {
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -2445,6 +2505,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -2548,6 +2613,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -2730,9 +2800,14 @@ export interface paths {
                     "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: followers
-                     * @example followers
+                     * @example followers.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: followers.albums
+                     * @example followers.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -2792,9 +2867,14 @@ export interface paths {
                     "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: following
-                     * @example following
+                     * @example following.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: following.albums
+                     * @example following.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -3102,9 +3182,14 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: radio
-                     * @example radio
+                     * @example radio.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: radio.items
+                     * @example radio.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -3229,9 +3314,14 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: similarArtists
-                     * @example similarArtists
+                     * @example similarArtists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarArtists.albums
+                     * @example similarArtists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -3364,6 +3454,11 @@ export interface paths {
                      * @example tracks
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
+                     * @example tracks
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -3430,6 +3525,11 @@ export interface paths {
                      * @example videos
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
+                     * @example videos
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -4061,11 +4161,16 @@ export interface paths {
                 query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
-                     * @example owners
+                     * @example subject.items
                      */
                     include?: string[];
                     /** @description Invite code */
                     "filter[code]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.items
+                     * @example subject.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -4156,9 +4261,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
-                     * @example owners
+                     * @example subject.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.items
+                     * @example subject.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -4309,9 +4419,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: subject
-                     * @example subject
+                     * @example subject.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.items
+                     * @example subject.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -4786,6 +4901,11 @@ export interface paths {
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimedResource
+                     * @example claimedResource
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -4879,6 +4999,11 @@ export interface paths {
                      * @example claimedResource
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimedResource
+                     * @example claimedResource
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -4938,6 +5063,11 @@ export interface paths {
                      * @example claimedResource
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimedResource
+                     * @example claimedResource
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -4994,9 +5124,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: claimingArtist
-                     * @example claimingArtist
+                     * @example claimingArtist.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimingArtist.albums
+                     * @example claimingArtist.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5114,9 +5249,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artist, category
-                     * @example artist
+                     * @example artist.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5173,9 +5313,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artist
-                     * @example artist
+                     * @example artist.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5473,6 +5618,11 @@ export interface paths {
                     "filter[subject.id]": string[];
                     /** @description The type of the subject resource (e.g., albums, tracks, artists) (e.g. `tracks`) */
                     "filter[subject.type]": ("tracks" | "albums" | "artists")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -5526,6 +5676,11 @@ export interface paths {
                      * @example subject
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5614,6 +5769,11 @@ export interface paths {
                     include?: string[];
                     /** @description DynamicModules Id (e.g. `nejMcAhh5N8S3EQ4LaqysVdI0cZZ`) */
                     "filter[id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -5694,6 +5854,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5782,6 +5947,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5831,7 +6001,7 @@ export interface paths {
         };
         /**
          * Get seedItem relationship ("to-one").
-         * @description The item whose listen or add event seeded this module's collection (e.g. the album a BECAUSE_YOU_* module is based on); null for modules that are not seeded by an item. The seed comes from the same fetch as the module's items, so the two always agree.
+         * @description The item whose listen or add event seeded this module's collection (e.g. the album a BECAUSE_YOU_* module is based on); null for modules that are not seeded by an item.
          */
         get: {
             parameters: {
@@ -5868,6 +6038,11 @@ export interface paths {
                      * @example seedItem
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: seedItem
+                     * @example seedItem
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5951,13 +6126,18 @@ export interface paths {
                     clientVersion: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: modules, subject
-                     * @example modules
+                     * @example modules.items
                      */
                     include?: string[];
                     /** @description type of the page (e.g. `ARTIST`) */
                     "filter[pageType]": string[];
                     /** @description The subject resource ID. Required except for HOME_FREE, where it must be omitted. (e.g. `67890`) */
                     "filter[subject.id]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: modules.items
+                     * @example modules.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -6037,9 +6217,14 @@ export interface paths {
                     clientVersion: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: modules
-                     * @example modules
+                     * @example modules.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: modules.items
+                     * @example modules.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -6099,6 +6284,11 @@ export interface paths {
                      * @example subject
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -6280,6 +6470,11 @@ export interface paths {
                     "filter[clientProvidedInstallationId]"?: string[];
                     /** @description User ID to filter by. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
+                     * @example offlineInventory
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -6373,6 +6568,11 @@ export interface paths {
                      * @example offlineInventory
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
+                     * @example offlineInventory
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -6440,6 +6640,11 @@ export interface paths {
                     "filter[state]"?: ("PENDING" | "STORED")[];
                     /** @description One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`) */
                     "filter[type]": ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
+                     * @example offlineInventory
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -6687,9 +6892,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, track
-                     * @example owners
+                     * @example track
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: track
+                     * @example track
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -6890,6 +7100,11 @@ export interface paths {
                      * @example track
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: track
+                     * @example track
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7009,6 +7224,11 @@ export interface paths {
                     include?: string[];
                     /** @description List of offline task IDs (e.g. `a468bee88def`) */
                     "filter[installation.id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection
+                     * @example collection
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -7062,6 +7282,11 @@ export interface paths {
                      * @example collection
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection
+                     * @example collection
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7158,6 +7383,11 @@ export interface paths {
                      * @example collection
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection
+                     * @example collection
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7217,6 +7447,11 @@ export interface paths {
                      * @example item
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: item
+                     * @example item
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7341,6 +7576,11 @@ export interface paths {
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current
+                     * @example current
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -7434,6 +7674,11 @@ export interface paths {
                      * @example current
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current
+                     * @example current
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7563,6 +7808,11 @@ export interface paths {
                      * @example current
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current
+                     * @example current
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7661,6 +7911,11 @@ export interface paths {
                      * @example future
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: future
+                     * @example future
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7894,6 +8149,11 @@ export interface paths {
                      * @example past
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: past
+                     * @example past
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7959,13 +8219,18 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts
-                     * @example collaboratorProfiles
+                     * @example items
                      */
                     include?: string[];
                     /** @description List of playlist IDs (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -8067,9 +8332,14 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts
-                     * @example collaboratorProfiles
+                     * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -8523,6 +8793,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -9215,7 +9490,7 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: provider, subject
-                     * @example provider
+                     * @example subject
                      */
                     include?: string[];
                     /** @description List of barcode IDs (EAN-13 or UPC-A) (e.g. `00602527336510`) */
@@ -9224,6 +9499,11 @@ export interface paths {
                     "filter[grid]"?: string[];
                     /** @description Content provider ID (e.g. `50`) */
                     "filter[provider.id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -9338,6 +9618,11 @@ export interface paths {
                      * @example subject
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -9446,13 +9731,18 @@ export interface paths {
                     "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
-                     * @example owners
+                     * @example subject
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
                     /** @description The type of purchased content (e.g. `albums`) */
                     "filter[subject.type]": ("albums" | "tracks")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -9567,6 +9857,11 @@ export interface paths {
                      * @example subject
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10081,6 +10376,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10167,6 +10467,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10253,6 +10558,11 @@ export interface paths {
                      * @example artists
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists
+                     * @example artists
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10339,6 +10649,11 @@ export interface paths {
                      * @example playlists
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlists
+                     * @example playlists
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10425,6 +10740,11 @@ export interface paths {
                      * @example topHits
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: topHits
+                     * @example topHits
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10511,6 +10831,11 @@ export interface paths {
                      * @example tracks
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
+                     * @example tracks
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10597,6 +10922,11 @@ export interface paths {
                      * @example videos
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
+                     * @example videos
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10666,6 +10996,11 @@ export interface paths {
                      * @example directHits
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: directHits
+                     * @example directHits
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10737,6 +11072,11 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: directHits
+                     * @example directHits
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10864,11 +11204,16 @@ export interface paths {
                 query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, sharedResources
-                     * @example owners
+                     * @example sharedResources
                      */
                     include?: string[];
                     /** @description A share code (e.g. `xyz`) */
                     "filter[code]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources
+                     * @example sharedResources
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -10959,9 +11304,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, sharedResources
-                     * @example owners
+                     * @example sharedResources
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources
+                     * @example sharedResources
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -11084,6 +11434,11 @@ export interface paths {
                      * @example sharedResources
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources
+                     * @example sharedResources
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -12650,6 +13005,11 @@ export interface paths {
                     "filter[isrc]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -12750,6 +13110,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -12888,6 +13253,11 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -12990,9 +13360,14 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
-                     * @example artists
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -13053,9 +13428,14 @@ export interface paths {
                     "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: credits
-                     * @example credits
+                     * @example credits.artist.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: credits.artist.albums
+                     * @example credits.artist.albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -13243,11 +13623,16 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: lyrics
-                     * @example lyrics
+                     * @example lyrics.track
                      */
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: lyrics.track
+                     * @example lyrics.track
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -13569,11 +13954,16 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: radio
-                     * @example radio
+                     * @example radio.items
                      */
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: radio.items
+                     * @example radio.items
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -13640,6 +14030,11 @@ export interface paths {
                      * @example replacement
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: replacement
+                     * @example replacement
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -13698,11 +14093,16 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: shares
-                     * @example shares
+                     * @example shares.sharedResources
                      */
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: shares.sharedResources
+                     * @example shares.sharedResources
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -13771,6 +14171,11 @@ export interface paths {
                      * @example similarTracks
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarTracks
+                     * @example similarTracks
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -13900,6 +14305,11 @@ export interface paths {
                      * @example suggestedTracks
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: suggestedTracks
+                     * @example suggestedTracks
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -14255,6 +14665,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -14323,6 +14738,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -14528,9 +14948,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, owners
-                     * @example items
+                     * @example items.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.albums
+                     * @example items.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -14596,9 +15021,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.albums
+                     * @example items.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -14799,11 +15229,16 @@ export interface paths {
                 query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
                     /** @description Folder Id (e.g. `CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX`) */
                     "filter[id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -14894,9 +15329,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15027,9 +15467,14 @@ export interface paths {
                     sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15221,9 +15666,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: userCollection
-                     * @example userCollection
+                     * @example userCollection.items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: userCollection.items.items
+                     * @example userCollection.items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15285,9 +15735,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, owners
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15349,9 +15804,14 @@ export interface paths {
                     sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15555,6 +16015,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15616,6 +16081,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15824,6 +16294,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15892,6 +16367,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16100,6 +16580,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16168,6 +16653,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16377,6 +16867,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16446,6 +16941,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16588,9 +17088,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
-                     * @example artists
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16790,9 +17295,14 @@ export interface paths {
                     sort?: ("playlists.addedAt" | "-playlists.addedAt" | "playlists.lastUpdatedAt" | "-playlists.lastUpdatedAt" | "playlists.name" | "-playlists.name")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: playlists
-                     * @example playlists
+                     * @example playlists.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlists.items
+                     * @example playlists.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16938,6 +17448,11 @@ export interface paths {
                      * @example tracks
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
+                     * @example tracks
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17083,6 +17598,11 @@ export interface paths {
                      * @example videos
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
+                     * @example videos
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17220,9 +17740,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17286,9 +17811,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17406,9 +17936,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17472,9 +18007,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17536,9 +18076,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17602,9 +18147,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17666,9 +18216,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17732,9 +18287,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17796,9 +18356,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists, owners, tracks, videos
-                     * @example artists
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17857,9 +18422,14 @@ export interface paths {
                     "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
-                     * @example artists
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18065,6 +18635,11 @@ export interface paths {
                      * @example tracks
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
+                     * @example tracks
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18209,6 +18784,11 @@ export interface paths {
                      * @example videos
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
+                     * @example videos
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18354,9 +18934,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes, offlineMixes
-                     * @example discoveryMixes
+                     * @example discoveryMixes.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: discoveryMixes.items
+                     * @example discoveryMixes.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18421,9 +19006,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: discoveryMixes
-                     * @example discoveryMixes
+                     * @example discoveryMixes.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: discoveryMixes.items
+                     * @example discoveryMixes.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18488,9 +19078,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: myMixes
-                     * @example myMixes
+                     * @example myMixes.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: myMixes.items
+                     * @example myMixes.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18555,9 +19150,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: newArrivalMixes
-                     * @example newArrivalMixes
+                     * @example newArrivalMixes.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: newArrivalMixes.items
+                     * @example newArrivalMixes.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18622,9 +19222,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: offlineMixes
-                     * @example offlineMixes
+                     * @example offlineMixes.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineMixes.items
+                     * @example offlineMixes.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18973,6 +19578,11 @@ export interface paths {
                     "filter[id]"?: string[];
                     /** @description List of ISRCs (e.g. `QMJMT1701237`) */
                     "filter[isrc]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -19031,6 +19641,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -19097,6 +19712,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -19160,9 +19780,14 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
-                     * @example artists
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -19221,9 +19846,14 @@ export interface paths {
                     "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: credits
-                     * @example credits
+                     * @example credits.artist.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: credits.artist.albums
+                     * @example credits.artist.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -19354,6 +19984,11 @@ export interface paths {
                      * @example replacement
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: replacement
+                     * @example replacement
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -19420,6 +20055,11 @@ export interface paths {
                      * @example similarVideos
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarVideos
+                     * @example similarVideos
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -19486,6 +20126,11 @@ export interface paths {
                      * @example suggestedVideos
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: suggestedVideos
+                     * @example suggestedVideos
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -19992,6 +20637,7 @@ export interface components {
         };
         Albums_Items_Resource_Identifier_Meta: {
             itemCursor?: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
             /**
              * Format: int32
              * @description track number
@@ -20024,11 +20670,32 @@ export interface components {
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
             priceConfig?: components["schemas"]["Single_Relationship_Data_Document"];
             providers?: components["schemas"]["Multi_Relationship_Data_Document"];
-            replacement?: components["schemas"]["Single_Relationship_Data_Document"];
+            replacement?: components["schemas"]["Albums_Replacement_Single_Relationship_Data_Document"];
             shares?: components["schemas"]["Multi_Relationship_Data_Document"];
-            similarAlbums?: components["schemas"]["Multi_Relationship_Data_Document"];
+            similarAlbums?: components["schemas"]["Albums_SimilarAlbums_Multi_Relationship_Data_Document"];
             suggestedCoverArts?: components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Data_Document"];
             usageRules?: components["schemas"]["Single_Relationship_Data_Document"];
+        };
+        Albums_Replacement_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Albums_Replacement_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Albums_Replacement_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Albums_Replacement_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Albums_Replacement_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Albums_Resource_Object: {
             attributes?: components["schemas"]["Albums_Attributes"];
@@ -20043,6 +20710,27 @@ export interface components {
              * @enum {string}
              */
             type: "albums";
+        };
+        Albums_SimilarAlbums_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Albums_SimilarAlbums_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Albums_SimilarAlbums_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Albums_SimilarAlbums_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Albums_SimilarAlbums_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         Albums_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
@@ -20416,6 +21104,27 @@ export interface components {
         ArtistsUpdateOperation_Payload_Meta: {
             dryRun?: boolean;
         };
+        Artists_Albums_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Artists_Albums_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Artists_Albums_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Artists_Albums_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Artists_Albums_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         Artists_Attributes: {
             /**
              * @description Is the artist enabled for contributions?
@@ -20522,7 +21231,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Artists_Relationships: {
-            albums?: components["schemas"]["Multi_Relationship_Data_Document"];
+            albums?: components["schemas"]["Artists_Albums_Multi_Relationship_Data_Document"];
             biography?: components["schemas"]["Single_Relationship_Data_Document"];
             claimStatus?: components["schemas"]["Single_Relationship_Data_Document"];
             followers?: components["schemas"]["Artists_Followers_Multi_Relationship_Data_Document"];
@@ -20533,8 +21242,8 @@ export interface components {
             roles?: components["schemas"]["Multi_Relationship_Data_Document"];
             similarArtists?: components["schemas"]["Multi_Relationship_Data_Document"];
             trackProviders?: components["schemas"]["Artists_TrackProviders_Multi_Relationship_Data_Document"];
-            tracks?: components["schemas"]["Multi_Relationship_Data_Document"];
-            videos?: components["schemas"]["Multi_Relationship_Data_Document"];
+            tracks?: components["schemas"]["Artists_Tracks_Multi_Relationship_Data_Document"];
+            videos?: components["schemas"]["Artists_Videos_Multi_Relationship_Data_Document"];
         };
         Artists_Resource_Object: {
             attributes?: components["schemas"]["Artists_Attributes"];
@@ -20585,6 +21294,48 @@ export interface components {
              * @example 14
              */
             numberOfTracks: number;
+        };
+        Artists_Tracks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Artists_Tracks_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Artists_Tracks_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Artists_Tracks_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Artists_Tracks_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Artists_Videos_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Artists_Videos_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Artists_Videos_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Artists_Videos_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Artists_Videos_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         /** @description Artwork files */
         Artwork_File: {
@@ -21074,6 +21825,27 @@ export interface components {
              */
             status: "OPEN" | "IN_PROGRESS" | "RESOLVED" | "REJECTED";
         };
+        ContentClaims_ClaimedResource_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["ContentClaims_ClaimedResource_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        ContentClaims_ClaimedResource_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        ContentClaims_ClaimedResource_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["ContentClaims_ClaimedResource_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         ContentClaims_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21085,7 +21857,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         ContentClaims_Relationships: {
-            claimedResource?: components["schemas"]["Single_Relationship_Data_Document"];
+            claimedResource?: components["schemas"]["ContentClaims_ClaimedResource_Single_Relationship_Data_Document"];
             claimingArtist?: components["schemas"]["Single_Relationship_Data_Document"];
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
@@ -21303,7 +22075,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         DspSharingLinks_Relationships: {
-            subject?: components["schemas"]["Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["DspSharingLinks_Subject_Single_Relationship_Data_Document"];
         };
         DspSharingLinks_Resource_Object: {
             attributes?: components["schemas"]["DspSharingLinks_Attributes"];
@@ -21326,6 +22098,27 @@ export interface components {
         };
         DspSharingLinks_Single_Resource_Data_Document: {
             data: components["schemas"]["DspSharingLinks_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        DspSharingLinks_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["DspSharingLinks_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        DspSharingLinks_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        DspSharingLinks_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["DspSharingLinks_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21358,6 +22151,27 @@ export interface components {
              */
             viewAllLayout?: "GRID" | "LIST" | "COMPACT" | "UNKNOWN";
         };
+        DynamicModules_Items_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["DynamicModules_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        DynamicModules_Items_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["DynamicModules_Items_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        DynamicModules_Items_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         DynamicModules_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21369,8 +22183,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         DynamicModules_Relationships: {
-            items?: components["schemas"]["Multi_Relationship_Data_Document"];
-            seedItem?: components["schemas"]["Single_Relationship_Data_Document"];
+            items?: components["schemas"]["DynamicModules_Items_Multi_Relationship_Data_Document"];
+            seedItem?: components["schemas"]["DynamicModules_SeedItem_Single_Relationship_Data_Document"];
         };
         DynamicModules_Resource_Object: {
             attributes?: components["schemas"]["DynamicModules_Attributes"];
@@ -21385,6 +22199,27 @@ export interface components {
              * @enum {string}
              */
             type: "dynamicModules";
+        };
+        DynamicModules_SeedItem_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["DynamicModules_SeedItem_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        DynamicModules_SeedItem_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        DynamicModules_SeedItem_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["DynamicModules_SeedItem_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         DynamicModules_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
@@ -21422,7 +22257,7 @@ export interface components {
         };
         DynamicPages_Relationships: {
             modules?: components["schemas"]["Multi_Relationship_Data_Document"];
-            subject?: components["schemas"]["Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["DynamicPages_Subject_Single_Relationship_Data_Document"];
         };
         DynamicPages_Resource_Object: {
             attributes?: components["schemas"]["DynamicPages_Attributes"];
@@ -21453,6 +22288,27 @@ export interface components {
         };
         DynamicPages_Single_Resource_Data_Document: {
             data: components["schemas"]["DynamicPages_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        DynamicPages_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["DynamicPages_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        DynamicPages_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        DynamicPages_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["DynamicPages_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21667,6 +22523,7 @@ export interface components {
         Installations_OfflineInventory_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         Installations_Relationships: {
             offlineInventory?: components["schemas"]["Installations_OfflineInventory_Multi_Relationship_Data_Document"];
@@ -21797,7 +22654,7 @@ export interface components {
         };
         Lyrics_Relationships: {
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            track?: components["schemas"]["Single_Relationship_Data_Document"];
+            track?: components["schemas"]["Lyrics_Track_Single_Relationship_Data_Document"];
         };
         Lyrics_Resource_Object: {
             attributes?: components["schemas"]["Lyrics_Attributes"];
@@ -21820,6 +22677,27 @@ export interface components {
         };
         Lyrics_Single_Resource_Data_Document: {
             data: components["schemas"]["Lyrics_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Lyrics_Track_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Lyrics_Track_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Lyrics_Track_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Lyrics_Track_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Lyrics_Track_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21966,6 +22844,48 @@ export interface components {
              */
             volume: number;
         };
+        OfflineTasks_Collection_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["OfflineTasks_Collection_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        OfflineTasks_Collection_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        OfflineTasks_Collection_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["OfflineTasks_Collection_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        OfflineTasks_Item_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["OfflineTasks_Item_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        OfflineTasks_Item_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        OfflineTasks_Item_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["OfflineTasks_Item_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         OfflineTasks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21977,8 +22897,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         OfflineTasks_Relationships: {
-            collection?: components["schemas"]["Single_Relationship_Data_Document"];
-            item?: components["schemas"]["Single_Relationship_Data_Document"];
+            collection?: components["schemas"]["OfflineTasks_Collection_Single_Relationship_Data_Document"];
+            item?: components["schemas"]["OfflineTasks_Item_Single_Relationship_Data_Document"];
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         OfflineTasks_Resource_Object: {
@@ -22131,6 +23051,7 @@ export interface components {
             batchId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         PlayQueues_Current_Single_Relationship_Data_Document: {
             data?: components["schemas"]["PlayQueues_Current_Resource_Identifier"] | (never | null);
@@ -22160,6 +23081,7 @@ export interface components {
             batchId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         PlayQueues_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -22194,6 +23116,7 @@ export interface components {
             batchId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         PlayQueues_Relationships: {
             current?: components["schemas"]["PlayQueues_Current_Single_Relationship_Data_Document"];
@@ -22401,6 +23324,7 @@ export interface components {
             addedAt?: string;
             itemCursor?: string;
             itemId?: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         Playlists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -22588,7 +23512,7 @@ export interface components {
         };
         ProviderProductInfos_Relationships: {
             provider?: components["schemas"]["Single_Relationship_Data_Document"];
-            subject?: components["schemas"]["Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["ProviderProductInfos_Subject_Single_Relationship_Data_Document"];
         };
         ProviderProductInfos_Resource_Object: {
             attributes?: components["schemas"]["ProviderProductInfos_Attributes"];
@@ -22611,6 +23535,27 @@ export interface components {
         };
         ProviderProductInfos_Single_Resource_Data_Document: {
             data: components["schemas"]["ProviderProductInfos_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ProviderProductInfos_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["ProviderProductInfos_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        ProviderProductInfos_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        ProviderProductInfos_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["ProviderProductInfos_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -22668,7 +23613,7 @@ export interface components {
         };
         Purchases_Relationships: {
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            subject?: components["schemas"]["Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["Purchases_Subject_Single_Relationship_Data_Document"];
         };
         Purchases_Resource_Object: {
             attributes?: components["schemas"]["Purchases_Attributes"];
@@ -22691,6 +23636,27 @@ export interface components {
         };
         Purchases_Single_Resource_Data_Document: {
             data: components["schemas"]["Purchases_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Purchases_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Purchases_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Purchases_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Purchases_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Purchases_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -22777,6 +23743,19 @@ export interface components {
             data: components["schemas"]["Reactions_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        /** @description Relationship identifier before contextual replacement projection. */
+        Replacement_Original_Identifier: {
+            /** @example 12345 */
+            id: string;
+            /** @example tracks */
+            type: string;
+        };
+        /** @description Relationship replacement projection provenance. ORIGINAL retains the requested identifier as the applicable resource, REPLACED projects another identifier, and NOT_REPLACED retains the requested identifier because no applicable replacement exists. */
+        Replacement_Provenance: {
+            original?: components["schemas"]["Replacement_Original_Identifier"];
+            /** @enum {string} */
+            status: "ORIGINAL" | "REPLACED" | "NOT_REPLACED";
         };
         Resource_Identifier: {
             /**
@@ -22926,6 +23905,48 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SearchResults_Albums_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchResults_Albums_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchResults_Albums_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchResults_Albums_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchResults_Albums_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        SearchResults_Artists_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchResults_Artists_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchResults_Artists_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchResults_Artists_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchResults_Artists_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         SearchResults_Attributes: {
             /**
              * @description 'did you mean' prompt
@@ -22948,13 +23969,34 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SearchResults_Playlists_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchResults_Playlists_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchResults_Playlists_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchResults_Playlists_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchResults_Playlists_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         SearchResults_Relationships: {
-            albums?: components["schemas"]["Multi_Relationship_Data_Document"];
-            artists?: components["schemas"]["Multi_Relationship_Data_Document"];
-            playlists?: components["schemas"]["Multi_Relationship_Data_Document"];
-            topHits?: components["schemas"]["Multi_Relationship_Data_Document"];
-            tracks?: components["schemas"]["Multi_Relationship_Data_Document"];
-            videos?: components["schemas"]["Multi_Relationship_Data_Document"];
+            albums?: components["schemas"]["SearchResults_Albums_Multi_Relationship_Data_Document"];
+            artists?: components["schemas"]["SearchResults_Artists_Multi_Relationship_Data_Document"];
+            playlists?: components["schemas"]["SearchResults_Playlists_Multi_Relationship_Data_Document"];
+            topHits?: components["schemas"]["SearchResults_TopHits_Multi_Relationship_Data_Document"];
+            tracks?: components["schemas"]["SearchResults_Tracks_Multi_Relationship_Data_Document"];
+            videos?: components["schemas"]["SearchResults_Videos_Multi_Relationship_Data_Document"];
         };
         SearchResults_Resource_Object: {
             attributes?: components["schemas"]["SearchResults_Attributes"];
@@ -22975,6 +24017,69 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SearchResults_TopHits_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchResults_TopHits_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchResults_TopHits_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchResults_TopHits_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchResults_TopHits_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        SearchResults_Tracks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchResults_Tracks_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchResults_Tracks_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchResults_Tracks_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchResults_Tracks_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        SearchResults_Videos_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchResults_Videos_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchResults_Videos_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchResults_Videos_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchResults_Videos_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         SearchSuggestions_Attributes: {
             /**
              * @deprecated
@@ -22985,6 +24090,27 @@ export interface components {
             suggestions?: components["schemas"]["SearchSuggestions_Suggestions"][];
             /** @description Unique tracking id */
             trackingId: string;
+        };
+        SearchSuggestions_DirectHits_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchSuggestions_DirectHits_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchSuggestions_DirectHits_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchSuggestions_DirectHits_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchSuggestions_DirectHits_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         SearchSuggestions_Highlights: {
             /** Format: int32 */
@@ -23008,7 +24134,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         SearchSuggestions_Relationships: {
-            directHits?: components["schemas"]["Multi_Relationship_Data_Document"];
+            directHits?: components["schemas"]["SearchSuggestions_DirectHits_Multi_Relationship_Data_Document"];
             history?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         SearchSuggestions_Resource_Object: {
@@ -23077,7 +24203,7 @@ export interface components {
         };
         Shares_Relationships: {
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            sharedResources?: components["schemas"]["Multi_Relationship_Data_Document"];
+            sharedResources?: components["schemas"]["Shares_SharedResources_Multi_Relationship_Data_Document"];
         };
         Shares_Resource_Object: {
             attributes?: components["schemas"]["Shares_Attributes"];
@@ -23092,6 +24218,27 @@ export interface components {
              * @enum {string}
              */
             type: "shares";
+        };
+        Shares_SharedResources_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Shares_SharedResources_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Shares_SharedResources_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Shares_SharedResources_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Shares_SharedResources_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         Shares_Single_Resource_Data_Document: {
             data: components["schemas"]["Shares_Resource_Object"];
@@ -23953,6 +25100,27 @@ export interface components {
             /** @enum {string} */
             type: "genres";
         };
+        Tracks_Albums_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Tracks_Albums_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_Albums_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Tracks_Albums_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Tracks_Albums_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         Tracks_Attributes: {
             /**
              * @description Access type
@@ -24044,7 +25212,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Tracks_Relationships: {
-            albums?: components["schemas"]["Multi_Relationship_Data_Document"];
+            albums?: components["schemas"]["Tracks_Albums_Multi_Relationship_Data_Document"];
             artists?: components["schemas"]["Multi_Relationship_Data_Document"];
             credits?: components["schemas"]["Multi_Relationship_Data_Document"];
             download?: components["schemas"]["Single_Relationship_Data_Document"];
@@ -24055,13 +25223,34 @@ export interface components {
             priceConfig?: components["schemas"]["Single_Relationship_Data_Document"];
             providers?: components["schemas"]["Multi_Relationship_Data_Document"];
             radio?: components["schemas"]["Multi_Relationship_Data_Document"];
-            replacement?: components["schemas"]["Single_Relationship_Data_Document"];
+            replacement?: components["schemas"]["Tracks_Replacement_Single_Relationship_Data_Document"];
             shares?: components["schemas"]["Multi_Relationship_Data_Document"];
-            similarTracks?: components["schemas"]["Multi_Relationship_Data_Document"];
+            similarTracks?: components["schemas"]["Tracks_SimilarTracks_Multi_Relationship_Data_Document"];
             sourceFile?: components["schemas"]["Single_Relationship_Data_Document"];
-            suggestedTracks?: components["schemas"]["Multi_Relationship_Data_Document"];
+            suggestedTracks?: components["schemas"]["Tracks_SuggestedTracks_Multi_Relationship_Data_Document"];
             trackStatistics?: components["schemas"]["Single_Relationship_Data_Document"];
             usageRules?: components["schemas"]["Single_Relationship_Data_Document"];
+        };
+        Tracks_Replacement_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Tracks_Replacement_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Tracks_Replacement_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Tracks_Replacement_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Tracks_Replacement_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Tracks_Resource_Object: {
             attributes?: components["schemas"]["Tracks_Attributes"];
@@ -24077,6 +25266,27 @@ export interface components {
              */
             type: "tracks";
         };
+        Tracks_SimilarTracks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Tracks_SimilarTracks_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_SimilarTracks_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Tracks_SimilarTracks_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Tracks_SimilarTracks_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         Tracks_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -24086,6 +25296,27 @@ export interface components {
             data: components["schemas"]["Tracks_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        Tracks_SuggestedTracks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Tracks_SuggestedTracks_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_SuggestedTracks_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Tracks_SuggestedTracks_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Tracks_SuggestedTracks_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UsageRulesCreateOperation_Payload: {
             data: components["schemas"]["UsageRulesCreateOperation_Payload_Data"];
@@ -24248,6 +25479,7 @@ export interface components {
         UserCollectionAlbums_Items_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserCollectionAlbums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -24723,6 +25955,7 @@ export interface components {
         UserCollectionSaveForLaters_Items_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserCollectionSaveForLaters_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -24840,6 +26073,7 @@ export interface components {
         UserCollectionTracks_Items_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserCollectionTracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -24957,6 +26191,7 @@ export interface components {
         UserCollectionVideos_Items_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserCollectionVideos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -25120,6 +26355,7 @@ export interface components {
         UserCollections_Albums_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserCollections_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Artists_Resource_Identifier"][];
@@ -25224,6 +26460,7 @@ export interface components {
         UserCollections_Tracks_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserCollections_Videos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Videos_Resource_Identifier"][];
@@ -25246,6 +26483,7 @@ export interface components {
         UserCollections_Videos_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserDailyMixes_Attributes: Record<string, never>;
         UserDailyMixes_Multi_Relationship_Data_Document: {
@@ -25567,6 +26805,7 @@ export interface components {
              * @description When the item was blocked
              */
             createdAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserRecommendationBlocks_Videos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Videos_Resource_Identifier"][];
@@ -25592,6 +26831,7 @@ export interface components {
              * @description When the item was blocked
              */
             createdAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserRecommendations_Attributes: Record<string, never>;
         UserRecommendations_Multi_Relationship_Data_Document: {
@@ -25869,6 +27109,27 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Videos_Albums_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Videos_Albums_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Videos_Albums_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Videos_Albums_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Videos_Albums_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         Videos_Attributes: {
             /**
              * @deprecated
@@ -25927,15 +27188,36 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Videos_Relationships: {
-            albums?: components["schemas"]["Multi_Relationship_Data_Document"];
+            albums?: components["schemas"]["Videos_Albums_Multi_Relationship_Data_Document"];
             artists?: components["schemas"]["Multi_Relationship_Data_Document"];
             credits?: components["schemas"]["Multi_Relationship_Data_Document"];
             providers?: components["schemas"]["Multi_Relationship_Data_Document"];
-            replacement?: components["schemas"]["Single_Relationship_Data_Document"];
-            similarVideos?: components["schemas"]["Multi_Relationship_Data_Document"];
-            suggestedVideos?: components["schemas"]["Multi_Relationship_Data_Document"];
+            replacement?: components["schemas"]["Videos_Replacement_Single_Relationship_Data_Document"];
+            similarVideos?: components["schemas"]["Videos_SimilarVideos_Multi_Relationship_Data_Document"];
+            suggestedVideos?: components["schemas"]["Videos_SuggestedVideos_Multi_Relationship_Data_Document"];
             thumbnailArt?: components["schemas"]["Multi_Relationship_Data_Document"];
             usageRules?: components["schemas"]["Single_Relationship_Data_Document"];
+        };
+        Videos_Replacement_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Videos_Replacement_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Videos_Replacement_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Videos_Replacement_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Videos_Replacement_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Videos_Resource_Object: {
             attributes?: components["schemas"]["Videos_Attributes"];
@@ -25951,6 +27233,27 @@ export interface components {
              */
             type: "videos";
         };
+        Videos_SimilarVideos_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Videos_SimilarVideos_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Videos_SimilarVideos_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Videos_SimilarVideos_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Videos_SimilarVideos_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         Videos_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -25960,6 +27263,27 @@ export interface components {
             data: components["schemas"]["Videos_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        Videos_SuggestedVideos_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Videos_SuggestedVideos_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Videos_SuggestedVideos_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Videos_SuggestedVideos_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Videos_SuggestedVideos_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
     };
     responses: {
