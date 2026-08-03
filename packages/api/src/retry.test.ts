@@ -40,6 +40,46 @@ describe('fetchWithRetry', () => {
     expect(base).toHaveBeenCalledTimes(1);
   });
 
+  it('preserves UTF-8 when the runtime decodes ArrayBuffer bodies bytewise', async () => {
+    const payload = JSON.stringify({ title: 'Populära album · För dig' });
+    const source = new Response(new TextEncoder().encode(payload), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 200,
+    });
+    class BytewiseResponse extends Response {
+      readonly #bodyIsText: boolean;
+
+      constructor(body?: BodyInit | null, init?: ResponseInit) {
+        super(body, init);
+        this.#bodyIsText = typeof body === 'string';
+      }
+
+      override async text(): Promise<string> {
+        if (this.#bodyIsText) {
+          return super.text();
+        }
+        const bytes = new Uint8Array(await this.arrayBuffer());
+        return Array.from(bytes, byte => String.fromCharCode(byte)).join('');
+      }
+    }
+    vi.stubGlobal('Response', BytewiseResponse);
+
+    try {
+      const base = vi
+        .fn<(input: Request) => Promise<Response>>()
+        .mockResolvedValue(source);
+      const fetcher = fetchWithRetry(defaultRetryOptions, base);
+
+      const response = await fetcher(get());
+
+      expect(JSON.parse(await response.text())).toEqual({
+        title: 'Populära album · För dig',
+      });
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('retries a 503 then succeeds', async () => {
     const base = vi
       .fn<(input: Request) => Promise<Response>>()
@@ -79,8 +119,6 @@ describe('fetchWithRetry', () => {
   });
 
   it('gives up after maxRetries and returns the final error response', async () => {
-    // mockImplementation (not mockResolvedValue) so each attempt gets a fresh
-    // Response — the retry layer drains the body of each one.
     const base = vi
       .fn<(input: Request) => Promise<Response>>()
       .mockImplementation(() => Promise.resolve(status(503)));
