@@ -82,7 +82,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["AcceptedTerms_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["AcceptedTerms_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -447,7 +447,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Albums_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Albums_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -1604,7 +1604,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Appreciations_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Appreciations_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -1922,7 +1922,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ArtistClaims_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ArtistClaims_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -2460,7 +2460,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artists_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artists_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -2940,6 +2940,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -3649,7 +3656,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artworks_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artworks_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -3869,7 +3876,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Clients_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Clients_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4011,7 +4018,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Clients_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Clients_Update_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4124,7 +4131,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["CollaborationInviteRedemptions_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["CollaborationInviteRedemptions_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4224,7 +4231,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["CollaborationInvites_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["CollaborationInvites_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4549,7 +4556,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Comments_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Comments_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4959,7 +4966,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ContentClaims_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ContentClaims_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -6528,7 +6535,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Installations_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Installations_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -6704,6 +6711,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -6855,7 +6869,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Lyrics_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Lyrics_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -7180,7 +7194,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ManualArtistClaims_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ManualArtistClaims_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -7634,7 +7648,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["PlayQueues_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["PlayQueues_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -7975,6 +7989,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -8222,6 +8243,8 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[collaborators.id]"?: string[];
                     /** @description List of playlist IDs (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
@@ -8264,13 +8287,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -8290,7 +8307,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Playlists_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Playlists_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -8416,13 +8433,7 @@ export interface paths {
          */
         patch: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -8442,6 +8453,15 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Playlists_Update_Single_Resource_Data_Document"];
+                    };
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -8541,6 +8561,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -8837,13 +8864,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -8869,7 +8890,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Playlists_Items_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9226,7 +9247,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["PriceConfigurations_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["PriceConfigurations_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9985,7 +10006,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Reactions_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Reactions_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -10212,7 +10233,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SavedShares_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SavedShares_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11267,7 +11288,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Shares_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Shares_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11521,7 +11542,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SquareConnections_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SquareConnections_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11689,7 +11710,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SquareConnections_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SquareConnections_SelectedSite_Update_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11847,7 +11868,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["StripeConnections_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["StripeConnections_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12119,7 +12140,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12185,7 +12206,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Update_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12296,7 +12317,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["TemporaryUserTokens_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["TemporaryUserTokens_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12700,7 +12721,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13065,7 +13086,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14567,7 +14588,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UsageRules_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UsageRules_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -15292,7 +15313,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -15534,6 +15555,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -17006,6 +17034,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -17156,6 +17191,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -17221,7 +17263,8 @@ export interface paths {
         };
         /**
          * Get owners relationship ("to-many").
-         * @description Retrieves owners relationship.
+         * @deprecated
+         * @description Deprecated. Use the owners relationship on the dedicated collection resources instead: userCollectionAlbums, userCollectionArtists, userCollectionTracks, userCollectionVideos, or userCollectionPlaylists.
          */
         get: {
             parameters: {
@@ -17363,6 +17406,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -17513,6 +17563,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -17663,6 +17720,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -17894,7 +17958,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserDataExportRequests_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserDataExportRequests_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18495,7 +18559,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Artists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Artists_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18705,7 +18769,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Tracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Tracks_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18854,7 +18918,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Videos_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Videos_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -19305,7 +19369,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserReports_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserReports_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -20328,6 +20392,10 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
         };
+        AcceptedTerms_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["AcceptedTerms_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         AcceptedTerms_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -20361,11 +20429,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        AcceptedTerms_Single_Resource_Data_Document: {
-            data: components["schemas"]["AcceptedTerms_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         AlbumStatistics_Attributes: {
             /**
              * Format: int32
@@ -20385,11 +20448,6 @@ export interface components {
         };
         AlbumStatistics_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        AlbumStatistics_Multi_Resource_Data_Document: {
-            data: components["schemas"]["AlbumStatistics_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20617,6 +20675,10 @@ export interface components {
              */
             version?: string;
         };
+        Albums_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Albums_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         Albums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Albums_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -20802,9 +20864,8 @@ export interface components {
              */
             createdAt: string;
         };
-        Appreciations_Multi_Resource_Data_Document: {
-            data: components["schemas"]["Appreciations_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        Appreciations_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Appreciations_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         Appreciations_Resource_Object: {
@@ -20819,11 +20880,6 @@ export interface components {
              * @enum {string}
              */
             type: "appreciations";
-        };
-        Appreciations_Single_Resource_Data_Document: {
-            data: components["schemas"]["Appreciations_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         ArtistBiographiesUpdateOperation_Payload: {
             data: components["schemas"]["ArtistBiographiesUpdateOperation_Payload_Data"];
@@ -20857,11 +20913,6 @@ export interface components {
         };
         ArtistBiographies_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        ArtistBiographies_Multi_Resource_Data_Document: {
-            data: components["schemas"]["ArtistBiographies_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20913,11 +20964,6 @@ export interface components {
              * @enum {string}
              */
             type: "artistClaimStatuses";
-        };
-        ArtistClaimStatuses_Single_Resource_Data_Document: {
-            data: components["schemas"]["ArtistClaimStatuses_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload_Data"][];
@@ -20983,6 +21029,10 @@ export interface components {
              */
             status: "AWAITING_OAUTH" | "FETCHING_CONTENT" | "VERIFIED" | "NO_MATCHES" | "AUTHENTICATION_FAILED" | "PROCESSING" | "COMPLETED" | "FAILED" | "CANCELLED" | "NAME_MISMATCH" | "CLAIMED_ARTIST_MISMATCH";
         };
+        ArtistClaims_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["ArtistClaims_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         ArtistClaims_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21020,11 +21070,6 @@ export interface components {
         ArtistRoles_Attributes: {
             /** @description Name of the artist role */
             name: string;
-        };
-        ArtistRoles_Multi_Resource_Data_Document: {
-            data: components["schemas"]["ArtistRoles_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         ArtistRoles_Resource_Object: {
             attributes?: components["schemas"]["ArtistRoles_Attributes"];
@@ -21164,6 +21209,10 @@ export interface components {
              * @example true
              */
             spotlighted?: boolean;
+        };
+        Artists_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Artists_Resource_Object"];
+            links: components["schemas"]["Links"];
         };
         Artists_Followers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Followers_Resource_Identifier"][];
@@ -21411,6 +21460,10 @@ export interface components {
             sourceFile?: components["schemas"]["Artwork_SourceFile"];
             visualMetadata?: components["schemas"]["Artwork_VisualMetadata"];
         };
+        Artworks_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Artworks_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         Artworks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21488,6 +21541,10 @@ export interface components {
             redirectUris?: string[];
             scopes?: string[];
         };
+        Clients_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Clients_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         Clients_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21520,6 +21577,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Clients_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["Clients_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         CollaborationInviteRedemptionsCreateOperation_Payload: {
             data: components["schemas"]["CollaborationInviteRedemptionsCreateOperation_Payload_Data"];
         };
@@ -21546,9 +21607,8 @@ export interface components {
              */
             redeemedAt: string;
         };
-        CollaborationInviteRedemptions_Multi_Resource_Data_Document: {
-            data: components["schemas"]["CollaborationInviteRedemptions_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        CollaborationInviteRedemptions_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["CollaborationInviteRedemptions_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         CollaborationInviteRedemptions_Resource_Object: {
@@ -21563,11 +21623,6 @@ export interface components {
              * @enum {string}
              */
             type: "collaborationInviteRedemptions";
-        };
-        CollaborationInviteRedemptions_Single_Resource_Data_Document: {
-            data: components["schemas"]["CollaborationInviteRedemptions_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         CollaborationInvitesCreateOperation_Payload: {
             data: components["schemas"]["CollaborationInvitesCreateOperation_Payload_Data"];
@@ -21603,6 +21658,10 @@ export interface components {
             expiresAt: string;
             /** @description Whether the invite has been revoked by the subject's owner */
             revoked: boolean;
+        };
+        CollaborationInvites_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["CollaborationInvites_Resource_Object"];
+            links: components["schemas"]["Links"];
         };
         CollaborationInvites_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -21731,6 +21790,10 @@ export interface components {
              */
             startTime?: string;
         };
+        Comments_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Comments_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         Comments_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21846,6 +21909,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ContentClaims_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["ContentClaims_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         ContentClaims_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21900,11 +21967,6 @@ export interface components {
              * @example Vocals
              */
             role: string;
-        };
-        Credits_Multi_Resource_Data_Document: {
-            data: components["schemas"]["Credits_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Credits_Relationships: {
             artist?: components["schemas"]["Single_Relationship_Data_Document"];
@@ -22096,11 +22158,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        DspSharingLinks_Single_Resource_Data_Document: {
-            data: components["schemas"]["DspSharingLinks_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         DspSharingLinks_Subject_Resource_Identifier: {
             /**
              * @description Resource id
@@ -22283,11 +22340,6 @@ export interface components {
         };
         DynamicPages_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        DynamicPages_Single_Resource_Data_Document: {
-            data: components["schemas"]["DynamicPages_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -22492,6 +22544,10 @@ export interface components {
              */
             name: string;
         };
+        Installations_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Installations_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         Installations_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -22642,13 +22698,12 @@ export interface components {
             technicalStatus: "PENDING" | "PROCESSING" | "ERROR" | "OK";
             text?: string;
         };
-        Lyrics_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+        Lyrics_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Lyrics_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        Lyrics_Multi_Resource_Data_Document: {
-            data: components["schemas"]["Lyrics_Resource_Object"][];
+        Lyrics_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -22779,9 +22834,8 @@ export interface components {
             upcs?: string[];
             websiteOrSocialLink: components["schemas"]["Link_Object"];
         };
-        ManualArtistClaims_Multi_Resource_Data_Document: {
-            data: components["schemas"]["ManualArtistClaims_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        ManualArtistClaims_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["ManualArtistClaims_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         ManualArtistClaims_Resource_Object: {
@@ -22796,11 +22850,6 @@ export interface components {
              * @enum {string}
              */
             type: "manualArtistClaims";
-        };
-        ManualArtistClaims_Single_Resource_Data_Document: {
-            data: components["schemas"]["ManualArtistClaims_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -23033,6 +23082,10 @@ export interface components {
             /** @description Queue is shuffled or not */
             shuffled: boolean;
         };
+        PlayQueues_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["PlayQueues_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         PlayQueues_Current_Resource_Identifier: {
             /**
              * @description Resource id
@@ -23182,7 +23235,7 @@ export interface components {
         };
         PlaylistsCreateOperation_Payload_Data_Attributes: {
             /**
-             * @description Access type
+             * @description User-selectable playlist visibility.
              * @example PUBLIC
              * @enum {string}
              */
@@ -23248,7 +23301,7 @@ export interface components {
         };
         PlaylistsUpdateOperation_Payload_Data_Attributes: {
             /**
-             * @description Access type
+             * @description User-selectable playlist visibility.
              * @example PUBLIC
              * @enum {string}
              */
@@ -23259,10 +23312,10 @@ export interface components {
         Playlists_Attributes: {
             /**
              * @description Access type
-             * @example PUBLIC
+             * @example PRIVATE
              * @enum {string}
              */
-            accessType: "PUBLIC" | "UNLISTED";
+            accessType: "PUBLIC" | "UNLISTED" | "PRIVATE";
             /** @description Indicates if the playlist has a duration and set number of tracks */
             bounded: boolean;
             /**
@@ -23300,6 +23353,19 @@ export interface components {
              * @enum {string}
              */
             playlistType: "EDITORIAL" | "USER" | "MIX" | "ARTIST";
+        };
+        Playlists_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Playlists_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        Playlists_Items_Add_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["Playlists_Items_Add_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+        };
+        Playlists_Items_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks" | "videos";
         };
         Playlists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Playlists_Items_Resource_Identifier"][];
@@ -23388,6 +23454,10 @@ export interface components {
             /** @description Foreground color for the suggested artwork */
             foregroundColor: string;
         };
+        Playlists_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["Playlists_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         PriceConfigurationsCreateOperation_Payload: {
             data: components["schemas"]["PriceConfigurationsCreateOperation_Payload_Data"];
         };
@@ -23431,6 +23501,10 @@ export interface components {
              * @example 9.99
              */
             price: string;
+        };
+        PriceConfigurations_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["PriceConfigurations_Resource_Object"];
+            links: components["schemas"]["Links"];
         };
         PriceConfigurations_Multi_Resource_Data_Document: {
             data: components["schemas"]["PriceConfigurations_Resource_Object"][];
@@ -23492,11 +23566,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        ProviderOwners_Single_Resource_Data_Document: {
-            data: components["schemas"]["ProviderOwners_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         ProviderProductInfos_Attributes: {
             barcodeId?: string;
             broken?: boolean;
@@ -23533,11 +23602,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        ProviderProductInfos_Single_Resource_Data_Document: {
-            data: components["schemas"]["ProviderProductInfos_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         ProviderProductInfos_Subject_Resource_Identifier: {
             /**
              * @description Resource id
@@ -23565,11 +23629,6 @@ export interface components {
              * @example Columbia/Legacy
              */
             name: string;
-        };
-        Providers_Multi_Resource_Data_Document: {
-            data: components["schemas"]["Providers_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Providers_Resource_Object: {
             attributes?: components["schemas"]["Providers_Attributes"];
@@ -23631,11 +23690,6 @@ export interface components {
         };
         Purchases_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        Purchases_Single_Resource_Data_Document: {
-            data: components["schemas"]["Purchases_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -23705,6 +23759,10 @@ export interface components {
             /** @description The type of reaction representing an emoji */
             emoji: string;
         };
+        Reactions_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Reactions_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         Reactions_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -23738,11 +23796,6 @@ export interface components {
              * @enum {string}
              */
             type: "reactions";
-        };
-        Reactions_Single_Resource_Data_Document: {
-            data: components["schemas"]["Reactions_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         /** @description Relationship identifier before contextual replacement projection. */
         Replacement_Original_Identifier: {
@@ -23809,9 +23862,8 @@ export interface components {
              */
             createdAt: string;
         };
-        SavedShares_Multi_Resource_Data_Document: {
-            data: components["schemas"]["SavedShares_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        SavedShares_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["SavedShares_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         SavedShares_Resource_Object: {
@@ -23826,11 +23878,6 @@ export interface components {
              * @enum {string}
              */
             type: "savedShares";
-        };
-        SavedShares_Single_Resource_Data_Document: {
-            data: components["schemas"]["SavedShares_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Scopes_Attributes: {
             /**
@@ -23873,19 +23920,9 @@ export interface components {
              */
             type: "scopes";
         };
-        Scopes_Single_Resource_Data_Document: {
-            data: components["schemas"]["Scopes_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         SearchHistoryEntries_Attributes: {
             highlights: components["schemas"]["Highlight"][];
             query: string;
-        };
-        SearchHistoryEntries_Multi_Resource_Data_Document: {
-            data: components["schemas"]["SearchHistoryEntries_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         SearchHistoryEntries_Resource_Object: {
             attributes?: components["schemas"]["SearchHistoryEntries_Attributes"];
@@ -23899,11 +23936,6 @@ export interface components {
              * @enum {string}
              */
             type: "searchHistoryEntries";
-        };
-        SearchHistoryEntries_Single_Resource_Data_Document: {
-            data: components["schemas"]["SearchHistoryEntries_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         SearchResults_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["SearchResults_Albums_Resource_Identifier"][];
@@ -23961,11 +23993,6 @@ export interface components {
         };
         SearchResults_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        SearchResults_Multi_Resource_Data_Document: {
-            data: components["schemas"]["SearchResults_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -24128,11 +24155,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        SearchSuggestions_Multi_Resource_Data_Document: {
-            data: components["schemas"]["SearchSuggestions_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         SearchSuggestions_Relationships: {
             directHits?: components["schemas"]["SearchSuggestions_DirectHits_Multi_Relationship_Data_Document"];
             history?: components["schemas"]["Multi_Relationship_Data_Document"];
@@ -24190,6 +24212,10 @@ export interface components {
             createdAt: string;
             /** @description Links external to TIDAL API */
             externalLinks?: components["schemas"]["External_Link"][];
+        };
+        Shares_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Shares_Resource_Object"];
+            links: components["schemas"]["Links"];
         };
         Shares_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -24324,13 +24350,12 @@ export interface components {
              */
             status: "GRANTED" | "REQUIRES_REAUTH";
         };
-        SquareConnections_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+        SquareConnections_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareConnections_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        SquareConnections_Multi_Resource_Data_Document: {
-            data: components["schemas"]["SquareConnections_Resource_Object"][];
+        SquareConnections_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -24352,6 +24377,15 @@ export interface components {
              */
             type: "squareConnections";
         };
+        SquareConnections_SelectedSite_Update_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "squareSites";
+        };
+        SquareConnections_SelectedSite_Update_Single_Relationship_Data_Document: {
+            data: components["schemas"]["SquareConnections_SelectedSite_Update_Resource_Identifier"] | (never | null);
+            links: components["schemas"]["Links"];
+        };
         SquareConnections_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -24370,11 +24404,6 @@ export interface components {
             /** @description The site's title as set by the seller in Square */
             siteTitle?: string;
         };
-        SquareSites_Multi_Resource_Data_Document: {
-            data: components["schemas"]["SquareSites_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         SquareSites_Resource_Object: {
             attributes?: components["schemas"]["SquareSites_Attributes"];
             /**
@@ -24387,11 +24416,6 @@ export interface components {
              * @enum {string}
              */
             type: "squareSites";
-        };
-        SquareSites_Single_Resource_Data_Document: {
-            data: components["schemas"]["SquareSites_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         StripeConnectionsCreateOperation_Payload: {
             data: components["schemas"]["StripeConnectionsCreateOperation_Payload_Data"];
@@ -24462,6 +24486,10 @@ export interface components {
              */
             status: "PENDING_REQUIREMENTS" | "UNDER_REVIEW" | "ACCEPTED" | "REJECTED" | "SUSPENDED";
         };
+        StripeConnections_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["StripeConnections_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         StripeConnections_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24488,11 +24516,6 @@ export interface components {
              * @enum {string}
              */
             type: "stripeConnections";
-        };
-        StripeConnections_Single_Resource_Data_Document: {
-            data: components["schemas"]["StripeConnections_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         StripeDashboardLinks_Attributes: {
             dashboardLink?: components["schemas"]["Link_Object"];
@@ -24523,11 +24546,6 @@ export interface components {
              * @enum {string}
              */
             type: "stripeDashboardLinks";
-        };
-        StripeDashboardLinks_Single_Resource_Data_Document: {
-            data: components["schemas"]["StripeDashboardLinks_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         SubscriptionPriceChangeDecisionsCreateOperation_Payload: {
             data: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data"];
@@ -24584,6 +24602,10 @@ export interface components {
              */
             status: "ACCEPTED" | "REJECTED";
         };
+        SubscriptionPriceChangeDecisions_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         SubscriptionPriceChangeDecisions_Multi_Resource_Data_Document: {
             data: components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"][];
             included?: components["schemas"]["Included"];
@@ -24611,9 +24633,8 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        SubscriptionPriceChangeDecisions_Single_Resource_Data_Document: {
+        SubscriptionPriceChangeDecisions_Update_Single_Resource_Data_Document: {
             data: components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         TemporaryUserTokensCreateOperation_Payload: {
@@ -24624,13 +24645,12 @@ export interface components {
             type: "temporaryUserTokens";
         };
         TemporaryUserTokens_Attributes: Record<string, never>;
-        TemporaryUserTokens_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+        TemporaryUserTokens_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["TemporaryUserTokens_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        TemporaryUserTokens_Multi_Resource_Data_Document: {
-            data: components["schemas"]["TemporaryUserTokens_Resource_Object"][];
+        TemporaryUserTokens_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -24750,11 +24770,6 @@ export interface components {
             /** @description File URL */
             url?: string;
         };
-        TrackFiles_Multi_Resource_Data_Document: {
-            data: components["schemas"]["TrackFiles_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         TrackFiles_Resource_Object: {
             attributes?: components["schemas"]["TrackFiles_Attributes"];
             /**
@@ -24826,11 +24841,6 @@ export interface components {
             /** @description Manifest URI */
             uri?: string;
         };
-        TrackManifests_Multi_Resource_Data_Document: {
-            data: components["schemas"]["TrackManifests_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         TrackManifests_Resource_Object: {
             attributes?: components["schemas"]["TrackManifests_Attributes"];
             /**
@@ -24892,13 +24902,12 @@ export interface components {
             status: components["schemas"]["File_Status"];
             uploadLink: components["schemas"]["File_Upload_Link"];
         };
-        TrackSourceFiles_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+        TrackSourceFiles_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["TrackSourceFiles_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        TrackSourceFiles_Multi_Resource_Data_Document: {
-            data: components["schemas"]["TrackSourceFiles_Resource_Object"][];
+        TrackSourceFiles_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -24938,11 +24947,6 @@ export interface components {
         };
         TrackStatistics_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        TrackStatistics_Multi_Resource_Data_Document: {
-            data: components["schemas"]["TrackStatistics_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -25034,11 +25038,6 @@ export interface components {
              * @enum {string}
              */
             status: "PENDING" | "PROCESSING" | "ERROR" | "OK";
-        };
-        TracksMetadataStatus_Multi_Resource_Data_Document: {
-            data: components["schemas"]["TracksMetadataStatus_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         TracksMetadataStatus_Resource_Object: {
             attributes?: components["schemas"]["TracksMetadataStatus_Attributes"];
@@ -25200,6 +25199,10 @@ export interface components {
              * @example original, mix etc
              */
             version?: string;
+        };
+        Tracks_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Tracks_Resource_Object"];
+            links: components["schemas"]["Links"];
         };
         Tracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -25368,9 +25371,8 @@ export interface components {
              */
             validFrom?: string;
         };
-        UsageRules_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UsageRules_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        UsageRules_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["UsageRules_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         UsageRules_Resource_Object: {
@@ -25450,13 +25452,17 @@ export interface components {
             numberOfItems: number;
         };
         UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+            data: components["schemas"]["UserCollectionAlbums_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
             meta?: components["schemas"]["UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document_Meta"];
         };
         UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document_Meta: {
             skipped: components["schemas"]["UserCollectionAlbumsItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
+        UserCollectionAlbums_Items_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "albums";
         };
         UserCollectionAlbums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier"][];
@@ -25483,11 +25489,6 @@ export interface components {
         };
         UserCollectionAlbums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollectionAlbums_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollectionAlbums_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -25568,13 +25569,17 @@ export interface components {
             numberOfItems: number;
         };
         UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+            data: components["schemas"]["UserCollectionArtists_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
             meta?: components["schemas"]["UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document_Meta"];
         };
         UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document_Meta: {
             skipped: components["schemas"]["UserCollectionArtistsItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
+        UserCollectionArtists_Items_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "artists";
         };
         UserCollectionArtists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier"][];
@@ -25600,11 +25605,6 @@ export interface components {
         };
         UserCollectionArtists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollectionArtists_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollectionArtists_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -25698,6 +25698,10 @@ export interface components {
             name: string;
             /** Format: int32 */
             numberOfItems?: number;
+        };
+        UserCollectionFolders_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserCollectionFolders_Resource_Object"];
+            links: components["schemas"]["Links"];
         };
         UserCollectionFolders_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionFolders_Items_Resource_Identifier"][];
@@ -25814,13 +25818,17 @@ export interface components {
             numberOfItems: number;
         };
         UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollectionPlaylists_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+            data: components["schemas"]["UserCollectionPlaylists_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
             meta?: components["schemas"]["UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document_Meta"];
         };
         UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document_Meta: {
             skipped: components["schemas"]["UserCollectionPlaylistsItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
+        UserCollectionPlaylists_Items_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "playlists";
         };
         UserCollectionPlaylists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionPlaylists_Items_Resource_Identifier"][];
@@ -25846,11 +25854,6 @@ export interface components {
         };
         UserCollectionPlaylists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollectionPlaylists_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollectionPlaylists_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -25926,13 +25929,17 @@ export interface components {
             numberOfItems: number;
         };
         UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+            data: components["schemas"]["UserCollectionSaveForLaters_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
             meta?: components["schemas"]["UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document_Meta"];
         };
         UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document_Meta: {
             skipped: components["schemas"]["UserCollectionSaveForLatersItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
+        UserCollectionSaveForLaters_Items_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks" | "albums" | "artists" | "playlists" | "videos";
         };
         UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier"][];
@@ -25959,11 +25966,6 @@ export interface components {
         };
         UserCollectionSaveForLaters_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollectionSaveForLaters_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollectionSaveForLaters_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -26044,13 +26046,17 @@ export interface components {
             numberOfItems: number;
         };
         UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollectionTracks_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+            data: components["schemas"]["UserCollectionTracks_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
             meta?: components["schemas"]["UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document_Meta"];
         };
         UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document_Meta: {
             skipped: components["schemas"]["UserCollectionTracksItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
+        UserCollectionTracks_Items_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks";
         };
         UserCollectionTracks_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionTracks_Items_Resource_Identifier"][];
@@ -26077,11 +26083,6 @@ export interface components {
         };
         UserCollectionTracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollectionTracks_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollectionTracks_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -26162,13 +26163,17 @@ export interface components {
             numberOfItems: number;
         };
         UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+            data: components["schemas"]["UserCollectionVideos_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
             meta?: components["schemas"]["UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document_Meta"];
         };
         UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document_Meta: {
             skipped: components["schemas"]["UserCollectionVideosItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
+        UserCollectionVideos_Items_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "videos";
         };
         UserCollectionVideos_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier"][];
@@ -26195,11 +26200,6 @@ export interface components {
         };
         UserCollectionVideos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollectionVideos_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollectionVideos_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -26385,11 +26385,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollections_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollections_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         UserCollections_Playlists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Playlists_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26491,11 +26486,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserDailyMixes_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserDailyMixes_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         UserDailyMixes_Relationships: {
             items?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
@@ -26537,9 +26527,8 @@ export interface components {
              */
             flowType: "GDPR" | "CCPA" | "COPPA" | "ANZ_PA" | "US_PRIVACY_REGULATION" | "APPI" | "RETENTION_POLICY";
         };
-        UserDataExportRequests_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserDataExportRequests_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        UserDataExportRequests_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserDataExportRequests_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         UserDataExportRequests_Resource_Object: {
@@ -26555,19 +26544,9 @@ export interface components {
              */
             type: "userDataExportRequests";
         };
-        UserDataExportRequests_Single_Resource_Data_Document: {
-            data: components["schemas"]["UserDataExportRequests_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         UserDiscoveryMixes_Attributes: Record<string, never>;
         UserDiscoveryMixes_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserDiscoveryMixes_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserDiscoveryMixes_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -26599,11 +26578,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserNewReleaseMixes_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserNewReleaseMixes_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         UserNewReleaseMixes_Relationships: {
             items?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
@@ -26629,11 +26603,6 @@ export interface components {
         UserOfflineMixes_Attributes: Record<string, never>;
         UserOfflineMixes_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserOfflineMixes_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserOfflineMixes_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -26720,6 +26689,15 @@ export interface components {
             /** @enum {string} */
             type: "videos";
         };
+        UserRecommendationBlocks_Artists_Add_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["UserRecommendationBlocks_Artists_Add_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+        };
+        UserRecommendationBlocks_Artists_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "artists";
+        };
         UserRecommendationBlocks_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Artists_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26751,11 +26729,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserRecommendationBlocks_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserRecommendationBlocks_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         UserRecommendationBlocks_Relationships: {
             artists?: components["schemas"]["UserRecommendationBlocks_Artists_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
@@ -26780,6 +26753,15 @@ export interface components {
             data: components["schemas"]["UserRecommendationBlocks_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        UserRecommendationBlocks_Tracks_Add_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["UserRecommendationBlocks_Tracks_Add_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+        };
+        UserRecommendationBlocks_Tracks_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks";
         };
         UserRecommendationBlocks_Tracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Tracks_Resource_Identifier"][];
@@ -26806,6 +26788,15 @@ export interface components {
              */
             createdAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        UserRecommendationBlocks_Videos_Add_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["UserRecommendationBlocks_Videos_Add_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+        };
+        UserRecommendationBlocks_Videos_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "videos";
         };
         UserRecommendationBlocks_Videos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Videos_Resource_Identifier"][];
@@ -26836,11 +26827,6 @@ export interface components {
         UserRecommendations_Attributes: Record<string, never>;
         UserRecommendations_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserRecommendations_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserRecommendations_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -26903,9 +26889,8 @@ export interface components {
              */
             reason: "SEXUAL_CONTENT_OR_NUDITY" | "VIOLENT_OR_DANGEROUS_CONTENT" | "HATEFUL_OR_ABUSIVE_CONTENT" | "HARASSMENT" | "PRIVACY_VIOLATION" | "SCAMS_OR_FRAUD" | "SPAM" | "COPYRIGHT_INFRINGEMENT" | "APPEAL" | "UNKNOWN";
         };
-        UserReports_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserReports_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        UserReports_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserReports_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         UserReports_Resource_Object: {
@@ -26920,11 +26905,6 @@ export interface components {
              * @enum {string}
              */
             type: "userReports";
-        };
-        UserReports_Single_Resource_Data_Document: {
-            data: components["schemas"]["UserReports_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         UserSubscriptionPriceChanges_Attributes: {
             /**
@@ -26975,11 +26955,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserSubscriptionPriceChanges_Single_Resource_Data_Document: {
-            data: components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Users_Attributes: {
             /**
              * @description ISO 3166-1 alpha-2 country code
@@ -27022,11 +26997,6 @@ export interface components {
              * @example username
              */
             username: string;
-        };
-        Users_Multi_Resource_Data_Document: {
-            data: components["schemas"]["Users_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Users_Resource_Object: {
             attributes?: components["schemas"]["Users_Attributes"];
@@ -27085,11 +27055,6 @@ export interface components {
              * @enum {string}
              */
             videoPresentation?: "FULL" | "PREVIEW";
-        };
-        VideoManifests_Multi_Resource_Data_Document: {
-            data: components["schemas"]["VideoManifests_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         VideoManifests_Resource_Object: {
             attributes?: components["schemas"]["VideoManifests_Attributes"];
