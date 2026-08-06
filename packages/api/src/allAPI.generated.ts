@@ -23262,6 +23262,13 @@ export interface components {
         PlaylistsItemsRelationshipAddOperation_Payload_Meta: {
             positionBefore: string;
         };
+        PlaylistsItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
+            id: string;
+            /** @enum {string} */
+            reason: "NOT_FOUND";
+            /** @enum {string} */
+            type: "tracks" | "videos";
+        };
         PlaylistsItemsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["PlaylistsItemsRelationshipRemoveOperation_Payload_Data"][];
         };
@@ -23361,11 +23368,21 @@ export interface components {
         Playlists_Items_Add_Multi_Relationship_Data_Document: {
             data: components["schemas"]["Playlists_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
+            meta?: components["schemas"]["Playlists_Items_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        Playlists_Items_Add_Multi_Relationship_Data_Document_Meta: {
+            skipped: components["schemas"]["PlaylistsItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
         };
         Playlists_Items_Add_Resource_Identifier: {
             id: string;
+            meta?: components["schemas"]["Playlists_Items_Add_Resource_Identifier_Meta"];
             /** @enum {string} */
             type: "tracks" | "videos";
+        };
+        Playlists_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
+            itemId: string;
         };
         Playlists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Playlists_Items_Resource_Identifier"][];
@@ -25461,8 +25478,13 @@ export interface components {
         };
         UserCollectionAlbums_Items_Add_Resource_Identifier: {
             id: string;
+            meta?: components["schemas"]["UserCollectionAlbums_Items_Add_Resource_Identifier_Meta"];
             /** @enum {string} */
             type: "albums";
+        };
+        UserCollectionAlbums_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserCollectionAlbums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier"][];
@@ -25578,8 +25600,13 @@ export interface components {
         };
         UserCollectionArtists_Items_Add_Resource_Identifier: {
             id: string;
+            meta?: components["schemas"]["UserCollectionArtists_Items_Add_Resource_Identifier_Meta"];
             /** @enum {string} */
             type: "artists";
+        };
+        UserCollectionArtists_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserCollectionArtists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier"][];
@@ -25827,8 +25854,13 @@ export interface components {
         };
         UserCollectionPlaylists_Items_Add_Resource_Identifier: {
             id: string;
+            meta?: components["schemas"]["UserCollectionPlaylists_Items_Add_Resource_Identifier_Meta"];
             /** @enum {string} */
             type: "playlists";
+        };
+        UserCollectionPlaylists_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserCollectionPlaylists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionPlaylists_Items_Resource_Identifier"][];
@@ -25938,8 +25970,13 @@ export interface components {
         };
         UserCollectionSaveForLaters_Items_Add_Resource_Identifier: {
             id: string;
+            meta?: components["schemas"]["UserCollectionSaveForLaters_Items_Add_Resource_Identifier_Meta"];
             /** @enum {string} */
             type: "tracks" | "albums" | "artists" | "playlists" | "videos";
+        };
+        UserCollectionSaveForLaters_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier"][];
@@ -26055,8 +26092,13 @@ export interface components {
         };
         UserCollectionTracks_Items_Add_Resource_Identifier: {
             id: string;
+            meta?: components["schemas"]["UserCollectionTracks_Items_Add_Resource_Identifier_Meta"];
             /** @enum {string} */
             type: "tracks";
+        };
+        UserCollectionTracks_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserCollectionTracks_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionTracks_Items_Resource_Identifier"][];
@@ -26172,8 +26214,13 @@ export interface components {
         };
         UserCollectionVideos_Items_Add_Resource_Identifier: {
             id: string;
+            meta?: components["schemas"]["UserCollectionVideos_Items_Add_Resource_Identifier_Meta"];
             /** @enum {string} */
             type: "videos";
+        };
+        UserCollectionVideos_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserCollectionVideos_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier"][];
