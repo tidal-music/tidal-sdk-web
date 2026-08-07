@@ -27,8 +27,8 @@ export interface paths {
                     "filter[owners.id]": string[];
                     /** @description Filter by terms.isLatestVersion */
                     "filter[terms.isLatestVersion]"?: string[];
-                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE (e.g. `DEVELOPER`) */
-                    "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE")[];
+                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES (e.g. `DEVELOPER`) */
+                    "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES")[];
                 };
                 header?: never;
                 path?: never;
@@ -11605,6 +11605,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareConnectionsReadById403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -11664,6 +11665,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareConnectionsReadSingleDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -11714,6 +11716,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareConnectionsUpdateSingleDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -11771,6 +11774,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareConnectionsReadMultiDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -12476,8 +12480,8 @@ export interface paths {
                     "filter[countryCode]"?: string[];
                     /** @description Filter by isLatestVersion */
                     "filter[isLatestVersion]"?: string[];
-                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE (e.g. `DEVELOPER`) */
-                    "filter[termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE")[];
+                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES (e.g. `DEVELOPER`) */
+                    "filter[termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES")[];
                 };
                 header?: never;
                 path?: never;
@@ -24312,6 +24316,45 @@ export interface components {
              */
             redirectUrl?: string;
         };
+        SquareConnectionsReadById403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareConnectionsReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareConnectionsReadSingleDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
         SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload_Data"] | (never | null);
         };
@@ -24320,6 +24363,19 @@ export interface components {
             id: string;
             /** @enum {string} */
             type: "squareSites";
+        };
+        SquareConnectionsUpdateSingleDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
         };
         SquareConnectionsUpdateSingleDataRelationship409ResponseBody: {
             errors: {
@@ -24699,7 +24755,7 @@ export interface components {
             /** Format: date-time */
             effectiveAt: string;
             /** @enum {string} */
-            termsType: "DEVELOPER" | "UPLOAD_MARKETPLACE";
+            termsType: "DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES";
         };
         Terms_Multi_Resource_Data_Document: {
             data: components["schemas"]["Terms_Resource_Object"][];
@@ -27387,6 +27443,42 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["Idempotency422ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareConnectionsReadById403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsReadById403ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareConnectionsReadMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsReadMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareConnectionsReadSingleDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsReadSingleDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareConnectionsUpdateSingleDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsUpdateSingleDataRelationship403ResponseBody"];
             };
         };
         /** @description Square credential lacks required site scopes; run Square onboarding again; Request already in progress for this idempotency key */
