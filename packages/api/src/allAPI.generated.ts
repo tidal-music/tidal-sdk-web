@@ -22873,7 +22873,7 @@ export interface components {
              * @description New state for the offline task
              * @enum {string}
              */
-            state: "IN_PROGRESS" | "FAILED" | "COMPLETED";
+            state: "PENDING" | "IN_PROGRESS" | "FAILED" | "COMPLETED";
         };
         OfflineTasks_Attributes: {
             /**
