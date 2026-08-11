@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Lint
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/build-projects
       - name: Run Lint Checks
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Type Check
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/build-projects
       - name: Run Type Checks
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Published Types Resolution
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
       - uses: ./.github/actions/build-projects
       - name: Verify published types resolve under node10/node16/bundler
