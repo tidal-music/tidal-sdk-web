@@ -401,25 +401,32 @@ export class BasePlayer {
   ) {
     const endTimestamp = trueTime.now();
 
+    // Enqueue playback_session before the auxiliary streaming metrics: the
+    // event sender caps each dispatch batch at 10 events, so the relative
+    // enqueue order decides which events make the earliest batch. The
+    // play_log event is the consumption-relevant one and must not risk being
+    // bumped to a later batch by its own session's metrics events.
     PlayLog.commit([
       PlayLog.playbackSession({
         endAssetPosition,
         endTimestamp,
         streamingSessionId,
       }),
-    ]).catch(console.error);
-
-    StreamingMetrics.commit([
-      StreamingMetrics.playbackStatistics({
-        endReason: playbackStatisticsEndReason(endReason),
-        endTimestamp,
-        streamingSessionId,
-      }),
-      StreamingMetrics.streamingSessionEnd({
-        streamingSessionId,
-        timestamp: endTimestamp,
-      }),
-    ]).catch(console.error);
+    ])
+      .catch(console.error)
+      .finally(() => {
+        StreamingMetrics.commit([
+          StreamingMetrics.playbackStatistics({
+            endReason: playbackStatisticsEndReason(endReason),
+            endTimestamp,
+            streamingSessionId,
+          }),
+          StreamingMetrics.streamingSessionEnd({
+            streamingSessionId,
+            timestamp: endTimestamp,
+          }),
+        ]).catch(console.error);
+      });
   }
 
   eventTrackingStreamingStarted(streamingSessionId: string) {

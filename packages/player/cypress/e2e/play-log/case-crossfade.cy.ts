@@ -32,21 +32,28 @@ it('Crossfade Playback Test - 5s crossfade between tracks', () => {
     timeout: SDK_BATCH_INTERVAL + 1000,
   });
 
+  // The event sender dispatches at most 10 events per request, so the two
+  // playback_session events can end up in different batches. Aggregate all
+  // intercepted requests and retry until the second batch (sent one batch
+  // interval later) has arrived if needed.
   // @ts-expect-error - Wrong type from Cypress
-  cy.get('@playerSdkEventsRequest').should(({ request }) => {
-    const formData = new URLSearchParams(request.body);
+  cy.get('@playerSdkEventsRequest.all', { timeout: SDK_BATCH_INTERVAL + 10000 }).should((interceptions) => {
     const events = [];
 
-    for (const [key, value] of formData.entries()) {
-      if (key.includes('MessageBody')) {
-        const event = JSON.parse(decodeURIComponent(value));
-        events.push(event);
+    for (const { request } of interceptions) {
+      const formData = new URLSearchParams(request.body);
+
+      for (const [key, value] of formData.entries()) {
+        if (key.includes('MessageBody')) {
+          const event = JSON.parse(decodeURIComponent(value));
+          events.push(event);
+        }
       }
     }
 
     const playbackSessions = events.filter(({ name }) => name === 'playback_session');
 
-    expect(playbackSessions).to.have.lengthOf(2);
+    expect(playbackSessions, `events seen: ${events.map(({ name }) => name).join(', ')}`).to.have.lengthOf(2);
 
     const firstSession = playbackSessions[0];
     const secondSession = playbackSessions[1];

@@ -48,25 +48,31 @@ it('Gapless Playback Test - Pink Floyd Album Transition', () => {
     timeout: SDK_BATCH_INTERVAL + 1000,
   });
 
-  // Assert on event batch
+  // Assert on aggregated event batches. The event sender dispatches at most
+  // 10 events per request, so the two playback_session events can end up in
+  // different batches. Aggregate all intercepted requests and retry until
+  // the second batch (sent one batch interval later) has arrived if needed.
   // @ts-expect-error - Wrong type from Cypress
-  cy.get('@playerSdkEventsRequest').should(({ request }) => {
-    // Parse the form data to get all message bodies
-    const formData = new URLSearchParams(request.body);
+  cy.get('@playerSdkEventsRequest.all', { timeout: SDK_BATCH_INTERVAL + 10000 }).should((interceptions) => {
     const events = [];
 
-    // Iterate through all entries to find MessageBody parameters
-    for (const [key, value] of formData.entries()) {
-      if (key.includes('MessageBody')) {
-        const event = JSON.parse(decodeURIComponent(value));
-        events.push(event);
+    for (const { request } of interceptions) {
+      // Parse the form data to get all message bodies
+      const formData = new URLSearchParams(request.body);
+
+      // Iterate through all entries to find MessageBody parameters
+      for (const [key, value] of formData.entries()) {
+        if (key.includes('MessageBody')) {
+          const event = JSON.parse(decodeURIComponent(value));
+          events.push(event);
+        }
       }
     }
 
     const playbackSessions = events.filter(({ name }) => name === 'playback_session');
 
     // Should have two playback sessions (one for each track)
-    expect(playbackSessions).to.have.lengthOf(2);
+    expect(playbackSessions, `events seen: ${events.map(({ name }) => name).join(', ')}`).to.have.lengthOf(2);
 
     const firstSession = playbackSessions[0];
     const secondSession = playbackSessions[1];
