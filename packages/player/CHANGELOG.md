@@ -40,6 +40,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the same event racing in the same tick could previously drop one update's
   fields (the same class of bug as the `playback_info_fetch` error reporting
   fix above).
+- `playback_session` is now enqueued before the session's own
+  `playback_statistics`/`streaming_session_end` events when a session ends.
+  The event sender dispatches at most 10 events per batch, so the enqueue
+  order decides which events make the earliest batch; the consumption-relevant
+  play_log event should not risk being bumped to a later batch by its own
+  session's metrics events.
 
 ## [0.18.4] - 2026-07-27
 
