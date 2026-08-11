@@ -234,7 +234,11 @@ describe('playbackInfoResolver', () => {
 
     type SentEvent = {
       name: string;
-      payload: { endReason?: string; errorCode?: string | null };
+      payload: {
+        endReason?: string;
+        errorCode?: string | null;
+        streamingSessionId?: string;
+      };
     };
     const sentEvents: Array<SentEvent> = [];
     const originalEventSender = eventSenderStore.eventSender;
@@ -248,6 +252,9 @@ describe('playbackInfoResolver', () => {
 
     try {
       let thrownError: unknown;
+
+      // eslint-disable-next-line no-restricted-syntax
+      const streamingSessionId = `tidal-player-js-test-${Date.now()}`;
 
       try {
         await fetchPlaybackInfo({
@@ -264,8 +271,7 @@ describe('playbackInfoResolver', () => {
           },
           playerType: 'shaka',
           prefetch: false,
-          // eslint-disable-next-line no-restricted-syntax
-          streamingSessionId: `tidal-player-js-test-${Date.now()}`,
+          streamingSessionId,
         });
       } catch (e) {
         thrownError = e;
@@ -276,10 +282,15 @@ describe('playbackInfoResolver', () => {
       );
 
       // The event is committed in a fire-and-forget fashion, poll for it.
+      // Scope the lookup to this test's session; telemetry from earlier
+      // tests is also fire-and-forget and can arrive after our sender stub
+      // is installed.
       let playbackInfoFetchEvent: SentEvent | undefined;
       for (let i = 0; i < 40 && !playbackInfoFetchEvent; i++) {
         playbackInfoFetchEvent = sentEvents.find(
-          event => event.name === 'playback_info_fetch',
+          event =>
+            event.name === 'playback_info_fetch' &&
+            event.payload.streamingSessionId === streamingSessionId,
         );
         if (!playbackInfoFetchEvent) {
           await waitFor(50);
@@ -290,9 +301,19 @@ describe('playbackInfoResolver', () => {
         throw new Error('No playback_info_fetch event was sent.');
       }
 
+      // The reported errorCode should be the structured PlayerError code
+      // (falling back to the error message for plain errors), not just any
+      // non-empty value.
+      const expectedErrorCode =
+        (thrownError as { errorCode?: string }).errorCode ??
+        (thrownError as Error).message;
+
       expect(playbackInfoFetchEvent.payload.endReason).to.equal('ERROR');
-      expect(playbackInfoFetchEvent.payload.errorCode).to.not.equal(null);
-      expect(playbackInfoFetchEvent.payload.errorCode).to.not.equal(undefined);
+      expect(playbackInfoFetchEvent.payload.errorCode).to.equal(
+        expectedErrorCode,
+      );
+      expect(playbackInfoFetchEvent.payload.errorCode).to.be.a('string');
+      expect(playbackInfoFetchEvent.payload.errorCode).to.have.length.above(0);
     } finally {
       eventSenderStore.eventSender = originalEventSender;
     }
