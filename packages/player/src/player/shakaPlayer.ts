@@ -420,7 +420,20 @@ export default class ShakaPlayer extends BasePlayer {
       errorHandler,
       pauseHandler: setNotPlaying,
       playHandler: setPlaying,
-      playingHandler: setPlaying,
+      playingHandler: (e: Event) => {
+        setPlaying(e);
+
+        // 'playing' (unlike 'play') only fires when the element actually
+        // starts advancing, so this is the strict "playback actually
+        // started" signal. Only the first event per session is reported.
+        if (
+          !shouldIgnoreEvent(e) &&
+          this.mediaElement &&
+          !this.mediaElement.paused
+        ) {
+          this.mediaProductActuallyStarted(this.currentStreamingSessionId);
+        }
+      },
       seekedHandler,
       stalledHandler: setStalled,
       timeUpdateHandler,
@@ -558,6 +571,18 @@ export default class ShakaPlayer extends BasePlayer {
       'streaming_metrics:playback_statistics:idealStartTimestamp',
       nextPayload.streamInfo.streamingSessionId,
     );
+
+    // During a crossfade/gapless swap the incoming element has been playing
+    // since the fade started and fires no further 'playing' event when it
+    // becomes the active element, so report the actual start here.
+    // skipToPreloadedMediaProduct() funnels into this method with a paused
+    // element; in that case the 'playing' handler reports the actual start
+    // once play() is called.
+    if (!nextMediaElement.paused) {
+      this.mediaProductActuallyStarted(
+        nextPayload.streamInfo.streamingSessionId,
+      );
+    }
 
     this.mediaProductStarted(nextPayload.streamInfo.streamingSessionId);
 

@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   started (e.g. the session errored out before the first frame/sample).
   Never-started sessions previously reported both timestamps as `0`, which
   skewed startup time metrics towards zero whenever error rates rose.
+- Strict `actualStartTimestamp` semantics: the timestamp is now captured when
+  the media element actually starts producing output (first `playing` event,
+  or the native player's `active` state) instead of when `play()` is invoked.
+  Sessions that request playback but never produce audio (e.g. stuck
+  buffering, error mid-startup) now report `actualStartTimestamp: null`
+  instead of the `play()` invocation time, and startup time now includes the
+  initial buffering period. Seamless transitions (gapless/crossfade) are
+  still stamped at the transition swap, as before.
 
 ### Fixed
 
@@ -24,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `endReason: 'COMPLETE'` and errors were never reported. The error code now
   also uses the structured `PlayerError` code (e.g. `NPBI0`, `A4033`) when
   available instead of the free-form error message.
+- Event reducers now serialize their read-merge-write cycles. Two updates to
+  the same event racing in the same tick could previously drop one update's
+  fields (the same class of bug as the `playback_info_fetch` error reporting
+  fix above).
 
 ## [0.18.4] - 2026-07-27
 

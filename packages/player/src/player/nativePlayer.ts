@@ -138,6 +138,10 @@ export default class NativePlayer extends BasePlayer {
     switch (state) {
       case 'active':
         this.playbackState = 'PLAYING';
+        // 'active' means the native pipeline is actually producing output,
+        // so this is the strict "playback actually started" signal. Only
+        // the first call per session is reported.
+        this.mediaProductActuallyStarted(this.currentStreamingSessionId);
         break;
       case 'idle':
       case 'seeking':
@@ -286,6 +290,13 @@ export default class NativePlayer extends BasePlayer {
     this.currentStreamingSessionId = committedStreamingSessionId;
 
     this.mediaProductStarted(this.currentStreamingSessionId);
+
+    // The 'active' media state was awaited above, before
+    // currentStreamingSessionId switched to the committed session, so the
+    // state-change handler attributed it to the outgoing session. Playback
+    // is known to be active here; report the actual start for the new
+    // session.
+    this.mediaProductActuallyStarted(this.currentStreamingSessionId);
   }
 
   async load(payload: LoadPayload, transition: 'explicit' | 'implicit') {

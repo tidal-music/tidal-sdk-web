@@ -13,7 +13,9 @@ export async function createReducer<P, N extends string>(
       Promise.resolve(undefined);
   }
 
-  return async (newData: Partial<P> & { streamingSessionId: string }) => {
+  const reduce = async (
+    newData: Partial<P> & { streamingSessionId: string },
+  ) => {
     try {
       const savedEvent = await db.get<P>({
         name,
@@ -53,5 +55,21 @@ export async function createReducer<P, N extends string>(
     } catch (e) {
       console.error(e);
     }
+  };
+
+  /*
+    Serialize invocations. Each call does an async read-merge-write against
+    the same stored event, so two calls in flight at the same time would both
+    read the stored state before either has written, and the last write would
+    silently drop the other call's fields. Chaining every invocation on the
+    previous one guarantees the merge sees all earlier writes.
+  */
+  let lastInvocation: Promise<unknown> = Promise.resolve();
+
+  return (newData: Partial<P> & { streamingSessionId: string }) => {
+    // reduce() never rejects (errors are caught and logged inside).
+    const invocation = lastInvocation.then(() => reduce(newData));
+    lastInvocation = invocation;
+    return invocation;
   };
 }

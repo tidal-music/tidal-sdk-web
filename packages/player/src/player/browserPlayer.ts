@@ -127,7 +127,16 @@ export default class BrowserPlayer extends BasePlayer {
       errorHandler,
       pauseHandler: setNotPlaying,
       playHandler: setPlaying,
-      playingHandler: setPlaying,
+      playingHandler: () => {
+        setPlaying();
+
+        // 'playing' (unlike 'play') only fires when the element actually
+        // starts advancing, so this is the strict "playback actually
+        // started" signal. Only the first event per session is reported.
+        if (this.mediaElement && !this.mediaElement.paused) {
+          this.mediaProductActuallyStarted(this.currentStreamingSessionId);
+        }
+      },
       seekedHandler,
       stalledHandler: setStalled,
       timeUpdateHandler,
