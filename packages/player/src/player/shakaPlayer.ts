@@ -421,11 +421,12 @@ export default class ShakaPlayer extends BasePlayer {
       pauseHandler: setNotPlaying,
       playHandler: setPlaying,
       playingHandler: (e: Event) => {
-        setPlaying(e);
-
         // 'playing' (unlike 'play') only fires when the element actually
         // starts advancing, so this is the strict "playback actually
         // started" signal. Only the first event per session is reported.
+        // Sample the timestamp before setPlaying(): the playbackState setter
+        // synchronously notifies consumer listeners, whose work should not
+        // be included in the startup time.
         if (
           !shouldIgnoreEvent(e) &&
           this.mediaElement &&
@@ -433,6 +434,8 @@ export default class ShakaPlayer extends BasePlayer {
         ) {
           this.mediaProductActuallyStarted(this.currentStreamingSessionId);
         }
+
+        setPlaying(e);
       },
       seekedHandler,
       stalledHandler: setStalled,

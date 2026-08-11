@@ -431,9 +431,9 @@ export class BasePlayer {
       Start filling in playbackStatistics. actualStartTimestamp is deliberately
       not reported here: this method runs when playback is requested (play()),
       not when audio actually starts. mediaProductActuallyStarted() reports it
-      from the media element's 'playing' signal (or the seamless transition
-      swap), so sessions that never produce audio keep actualStartTimestamp
-      as null.
+      from the media element's 'playing' signal -- or, for crossfade/gapless
+      transitions, at fade start when the incoming element begins playing --
+      so sessions that never produce audio keep actualStartTimestamp as null.
     */
     StreamingMetrics.playbackStatistics({
       idealStartTimestamp:
