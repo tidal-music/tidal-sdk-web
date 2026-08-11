@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `playback_statistics` now reports `actualStartTimestamp` and
+  `idealStartTimestamp` as `null` instead of `0` when playback never actually
+  started (e.g. the session errored out before the first frame/sample).
+  Never-started sessions previously reported both timestamps as `0`, which
+  skewed startup time metrics towards zero whenever error rates rose.
+
+### Fixed
+
+- `playback_info_fetch` events now correctly report `endReason: 'ERROR'` and
+  the error code/message when fetching playback info fails. The error fields
+  were previously written in a separate reducer call that raced with the
+  final one, so the committed event always ended up with the default
+  `endReason: 'COMPLETE'` and errors were never reported. The error code now
+  also uses the structured `PlayerError` code (e.g. `NPBI0`, `A4033`) when
+  available instead of the free-form error message.
+
 ## [0.18.4] - 2026-07-27
 
 ### Fixed

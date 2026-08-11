@@ -31,7 +31,12 @@ export type BasePayload = {
   actualAssetPresentation: 'FULL' | 'PREVIEW';
   actualAudioMode: 'DOLBY_ATMOS' | 'SONY_360RA' | 'STEREO';
   actualProductId: string | null;
-  actualStartTimestamp: number;
+  /**
+   * Null when playback never actually started (e.g. the session ended in an
+   * error before the first frame/sample was played). Consumers use this to
+   * exclude never-started sessions from startup time metrics.
+   */
+  actualStartTimestamp: number | null;
   actualStreamType: 'LIVE' | 'ON_DEMAND';
   adaptations: Array<Adaptation>;
   cdm: 'FAIR_PLAY' | 'NONE' | 'WIDEVINE';
@@ -41,7 +46,10 @@ export type BasePayload = {
   errorCode: string | null;
   errorMessage: string | null;
   hasAds: boolean;
-  idealStartTimestamp: number;
+  /**
+   * Null when playback never actually started, see actualStartTimestamp.
+   */
+  idealStartTimestamp: number | null;
   outputDevice: StatisticsOutputType | null;
   productType: 'TRACK' | 'VIDEO';
   stalls: Array<Stall>;
@@ -94,7 +102,7 @@ const defaultPayload: Payload = {
   actualAudioMode: 'STEREO',
   actualProductId: null,
   actualQuality: 'LOSSLESS',
-  actualStartTimestamp: 0,
+  actualStartTimestamp: null,
   actualStreamType: 'ON_DEMAND',
   adaptations: [],
   cdm: 'WIDEVINE',
@@ -104,7 +112,7 @@ const defaultPayload: Payload = {
   errorCode: null,
   errorMessage: null,
   hasAds: false,
-  idealStartTimestamp: 0,
+  idealStartTimestamp: null,
   outputDevice: null,
   productType: 'TRACK',
   stalls: [],
