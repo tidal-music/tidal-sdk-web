@@ -49,6 +49,6 @@
     "@tidal-music/common": "workspace:^",
     "@tidal-music/true-time": "workspace:^",
     "localforage": "1.10.0",
-    "nanoid": "5.1.11"
+    "nanoid": "5.1.16"
   }
 }
