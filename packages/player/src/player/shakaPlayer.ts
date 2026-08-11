@@ -420,7 +420,23 @@ export default class ShakaPlayer extends BasePlayer {
       errorHandler,
       pauseHandler: setNotPlaying,
       playHandler: setPlaying,
-      playingHandler: setPlaying,
+      playingHandler: (e: Event) => {
+        // 'playing' (unlike 'play') only fires when the element actually
+        // starts advancing, so this is the strict "playback actually
+        // started" signal. Only the first event per session is reported.
+        // Sample the timestamp before setPlaying(): the playbackState setter
+        // synchronously notifies consumer listeners, whose work should not
+        // be included in the startup time.
+        if (
+          !shouldIgnoreEvent(e) &&
+          this.mediaElement &&
+          !this.mediaElement.paused
+        ) {
+          this.mediaProductActuallyStarted(this.currentStreamingSessionId);
+        }
+
+        setPlaying(e);
+      },
       seekedHandler,
       stalledHandler: setStalled,
       timeUpdateHandler,
@@ -554,10 +570,32 @@ export default class ShakaPlayer extends BasePlayer {
       mediaProductTransitionEvent(nextPayload.mediaProduct, playbackContext),
     );
 
-    timestamps.mark(
-      'streaming_metrics:playback_statistics:idealStartTimestamp',
-      nextPayload.streamInfo.streamingSessionId,
-    );
+    // First mark wins: for crossfade/gapless transitions the ideal start was
+    // already marked when the transition was triggered (#startTransition),
+    // and for skipToPreloadedMediaProduct() it was marked by the explicit
+    // load. Only fall back to "now" if no earlier intent timestamp exists.
+    if (
+      timestamps.get(
+        'streaming_metrics:playback_statistics:idealStartTimestamp',
+        nextPayload.streamInfo.streamingSessionId,
+      ) === undefined
+    ) {
+      timestamps.mark(
+        'streaming_metrics:playback_statistics:idealStartTimestamp',
+        nextPayload.streamInfo.streamingSessionId,
+      );
+    }
+
+    // Fallback only: for crossfade/gapless the actual start was already
+    // reported at fade start (and mediaProductActuallyStarted is guarded to
+    // first-call-wins). skipToPreloadedMediaProduct() funnels into this
+    // method with a paused element; in that case the 'playing' handler
+    // reports the actual start once play() is called.
+    if (!nextMediaElement.paused) {
+      this.mediaProductActuallyStarted(
+        nextPayload.streamInfo.streamingSessionId,
+      );
+    }
 
     this.mediaProductStarted(nextPayload.streamInfo.streamingSessionId);
 
@@ -1374,6 +1412,15 @@ export default class ShakaPlayer extends BasePlayer {
       nextMediaElement.volume = 0.001;
       await nextMediaElement.play();
       nextMediaElement.volume = 0;
+
+      // The incoming track starts playing (and fading in) right here, at
+      // fade start -- this is its actual start, even though it only becomes
+      // the active element when the fade completes. The outgoing track keeps
+      // reporting until it stops at fade end, so the two sessions overlap in
+      // wall-clock time by design.
+      this.mediaProductActuallyStarted(
+        nextPayload.streamInfo.streamingSessionId,
+      );
     } catch (error) {
       this.debugLog('Error while starting crossfade', error);
       try {
@@ -1484,6 +1531,12 @@ export default class ShakaPlayer extends BasePlayer {
       nextMediaElement.currentTime = 0;
       nextMediaElement.volume = nextTrackTargetVolume;
       await nextMediaElement.play();
+
+      // See #startCrossfadeTransition: the incoming track's actual start is
+      // when it starts playing, not when the swap completes.
+      this.mediaProductActuallyStarted(
+        nextPayload.streamInfo.streamingSessionId,
+      );
     } catch (error) {
       this.debugLog('Error while starting instant transition', error);
       this.#crossfadeInProgress = false;
@@ -1510,6 +1563,14 @@ export default class ShakaPlayer extends BasePlayer {
     }
 
     this.#crossfadeInProgress = true;
+
+    // The incoming track's ideal start is the moment we decide to start the
+    // transition ("start crossfading now"), not when the fade completes.
+    // eventTrackingStreamingStarted picks this up at the transition swap.
+    timestamps.mark(
+      'streaming_metrics:playback_statistics:idealStartTimestamp',
+      this.#preloadedPayload.streamInfo.streamingSessionId,
+    );
 
     if (instant) {
       // Old track already silent (e.g. natural end fired before our timeupdate

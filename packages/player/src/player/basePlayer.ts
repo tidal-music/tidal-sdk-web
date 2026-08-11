@@ -427,18 +427,15 @@ export class BasePlayer {
       return;
     }
 
-    timestamps.mark(
-      'streaming_metrics:playback_statistics:actualStartTimestamp',
-      streamingSessionId,
-    );
-
-    // Start filling in playbackStatistics
+    /*
+      Start filling in playbackStatistics. actualStartTimestamp is deliberately
+      not reported here: this method runs when playback is requested (play()),
+      not when audio actually starts. mediaProductActuallyStarted() reports it
+      from the media element's 'playing' signal -- or, for crossfade/gapless
+      transitions, at fade start when the incoming element begins playing --
+      so sessions that never produce audio keep actualStartTimestamp as null.
+    */
     StreamingMetrics.playbackStatistics({
-      actualStartTimestamp:
-        timestamps.get(
-          'streaming_metrics:playback_statistics:actualStartTimestamp',
-          streamingSessionId,
-        ) ?? null,
       idealStartTimestamp:
         timestamps.get(
           'streaming_metrics:playback_statistics:idealStartTimestamp',
@@ -448,10 +445,6 @@ export class BasePlayer {
       streamingSessionId,
     }).catch(console.error);
 
-    timestamps.clear(
-      'streaming_metrics:playback_statistics:actualStartTimestamp',
-      streamingSessionId,
-    );
     timestamps.clear(
       'streaming_metrics:playback_statistics:idealStartTimestamp',
       streamingSessionId,
@@ -612,6 +605,37 @@ export class BasePlayer {
     }
 
     return false;
+  }
+
+  /**
+   * This method should be called when playback measurably starts producing
+   * output for a session: the media element's first 'playing' event or the
+   * equivalent player signal. This is stricter than mediaProductStarted,
+   * which runs when playback is requested.
+   *
+   * Only the first call per session takes effect, so later 'playing' events
+   * (resume from pause or stall) don't overwrite the reported value. Sessions
+   * that never reach this point keep actualStartTimestamp as null in
+   * playback_statistics.
+   *
+   * @param streamingSessionId
+   */
+  mediaProductActuallyStarted(streamingSessionId: string | undefined) {
+    if (
+      !streamingSessionId ||
+      streamingSessionStore.hasReportedActualStart(streamingSessionId)
+    ) {
+      return;
+    }
+
+    this.debugLog('mediaProductActuallyStarted');
+
+    streamingSessionStore.setReportedActualStart(streamingSessionId);
+
+    StreamingMetrics.playbackStatistics({
+      actualStartTimestamp: trueTime.now(),
+      streamingSessionId,
+    }).catch(console.error);
   }
 
   /**
