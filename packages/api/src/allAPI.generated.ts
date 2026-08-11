@@ -8820,6 +8820,8 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /** @description Filter playlist items by a free-text query (e.g. `halo`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
