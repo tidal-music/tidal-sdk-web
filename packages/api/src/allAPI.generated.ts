@@ -238,6 +238,11 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
@@ -296,6 +301,11 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
@@ -368,7 +378,7 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
-                     * @example albumStatistics
+                     * @example artists.albums
                      */
                     include?: string[];
                     /** @description List of barcode IDs (EAN-13 or UPC-A). NOTE: Supplying more than one barcode ID will currently only return one album per barcode ID. (e.g. `196589525444`) */
@@ -377,6 +387,11 @@ export interface paths {
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -474,9 +489,14 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
-                     * @example albumStatistics
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -673,9 +693,14 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
-                     * @example artists
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -917,6 +942,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -1010,6 +1040,11 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
@@ -1217,6 +1252,11 @@ export interface paths {
                      * @example replacement
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: replacement
+                     * @example replacement
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -1275,11 +1315,16 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: shares
-                     * @example shares
+                     * @example shares.sharedResources
                      */
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: shares.sharedResources
+                     * @example shares.sharedResources
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -1348,6 +1393,11 @@ export interface paths {
                      * @example similarAlbums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarAlbums
+                     * @example similarAlbums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -1803,11 +1853,16 @@ export interface paths {
                 query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists
-                     * @example acceptedArtists
+                     * @example acceptedArtists.albums
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: acceptedArtists.albums
+                     * @example acceptedArtists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -1904,9 +1959,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists
-                     * @example acceptedArtists
+                     * @example acceptedArtists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: acceptedArtists.albums
+                     * @example acceptedArtists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -2039,11 +2099,16 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists
-                     * @example acceptedArtists
+                     * @example acceptedArtists.albums
                      */
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: acceptedArtists.albums
+                     * @example acceptedArtists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -2204,11 +2269,16 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: recommendedArtists
-                     * @example recommendedArtists
+                     * @example recommendedArtists.albums
                      */
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: recommendedArtists.albums
+                     * @example recommendedArtists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -2332,6 +2402,11 @@ export interface paths {
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -2430,6 +2505,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -2533,6 +2613,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -2715,9 +2800,14 @@ export interface paths {
                     "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: followers
-                     * @example followers
+                     * @example followers.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: followers.albums
+                     * @example followers.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -2777,9 +2867,14 @@ export interface paths {
                     "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: following
-                     * @example following
+                     * @example following.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: following.albums
+                     * @example following.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -3087,9 +3182,14 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: radio
-                     * @example radio
+                     * @example radio.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: radio.items
+                     * @example radio.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -3214,9 +3314,14 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: similarArtists
-                     * @example similarArtists
+                     * @example similarArtists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarArtists.albums
+                     * @example similarArtists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -3349,6 +3454,11 @@ export interface paths {
                      * @example tracks
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
+                     * @example tracks
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -3415,6 +3525,11 @@ export interface paths {
                      * @example videos
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
+                     * @example videos
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -4046,11 +4161,16 @@ export interface paths {
                 query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
-                     * @example owners
+                     * @example subject.items
                      */
                     include?: string[];
                     /** @description Invite code */
                     "filter[code]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.items
+                     * @example subject.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -4141,9 +4261,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
-                     * @example owners
+                     * @example subject.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.items
+                     * @example subject.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -4294,9 +4419,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: subject
-                     * @example subject
+                     * @example subject.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.items
+                     * @example subject.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -4771,6 +4901,11 @@ export interface paths {
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimedResource
+                     * @example claimedResource
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -4864,6 +4999,11 @@ export interface paths {
                      * @example claimedResource
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimedResource
+                     * @example claimedResource
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -4923,6 +5063,11 @@ export interface paths {
                      * @example claimedResource
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimedResource
+                     * @example claimedResource
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -4979,9 +5124,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: claimingArtist
-                     * @example claimingArtist
+                     * @example claimingArtist.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimingArtist.albums
+                     * @example claimingArtist.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5099,9 +5249,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artist, category
-                     * @example artist
+                     * @example artist.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5158,9 +5313,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artist
-                     * @example artist
+                     * @example artist.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5458,6 +5618,11 @@ export interface paths {
                     "filter[subject.id]": string[];
                     /** @description The type of the subject resource (e.g., albums, tracks, artists) (e.g. `tracks`) */
                     "filter[subject.type]": ("tracks" | "albums" | "artists")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -5511,6 +5676,11 @@ export interface paths {
                      * @example subject
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5593,12 +5763,17 @@ export interface paths {
                      */
                     clientVersion: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Allows the client to customize which related resources should be returned. Available options: items, seedItem
                      * @example items
                      */
                     include?: string[];
                     /** @description DynamicModules Id (e.g. `nejMcAhh5N8S3EQ4LaqysVdI0cZZ`) */
                     "filter[id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -5675,10 +5850,15 @@ export interface paths {
                      */
                     clientVersion: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Allows the client to customize which related resources should be returned. Available options: items, seedItem
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5728,7 +5908,7 @@ export interface paths {
         };
         /**
          * Get items relationship ("to-many").
-         * @description Retrieves items relationship.
+         * @description The module's items, in order — one stable collection per module, consistent for a given refreshSeed. Reads without a cursor return the first page (the slice a page shelf renders, sized for the module's previewLayout and device) with a continuation cursor; passing the cursor returns subsequent pages.
          */
         get: {
             parameters: {
@@ -5767,6 +5947,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5787,6 +5972,97 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["DynamicModules_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dynamicModules/{id}/relationships/seedItem": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get seedItem relationship ("to-one").
+         * @description The item whose listen or add event seeded this module's collection (e.g. the album a BECAUSE_YOU_* module is based on); null for modules that are not seeded by an item.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: seedItem
+                     * @example seedItem
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: seedItem
+                     * @example seedItem
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description DynamicModules Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["DynamicModules_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -5850,13 +6126,18 @@ export interface paths {
                     clientVersion: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: modules, subject
-                     * @example modules
+                     * @example modules.items
                      */
                     include?: string[];
                     /** @description type of the page (e.g. `ARTIST`) */
                     "filter[pageType]": string[];
-                    /** @description the subject id, eg. artistId (e.g. `67890`) */
-                    "filter[subject.id]": string[];
+                    /** @description The subject resource ID. Required except for HOME_FREE, where it must be omitted. (e.g. `67890`) */
+                    "filter[subject.id]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: modules.items
+                     * @example modules.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -5936,9 +6217,14 @@ export interface paths {
                     clientVersion: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: modules
-                     * @example modules
+                     * @example modules.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: modules.items
+                     * @example modules.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -5998,6 +6284,11 @@ export interface paths {
                      * @example subject
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -6179,6 +6470,11 @@ export interface paths {
                     "filter[clientProvidedInstallationId]"?: string[];
                     /** @description User ID to filter by. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
+                     * @example offlineInventory
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -6272,6 +6568,11 @@ export interface paths {
                      * @example offlineInventory
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
+                     * @example offlineInventory
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -6339,6 +6640,11 @@ export interface paths {
                     "filter[state]"?: ("PENDING" | "STORED")[];
                     /** @description One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`) */
                     "filter[type]": ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
+                     * @example offlineInventory
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -6586,9 +6892,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, track
-                     * @example owners
+                     * @example track
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: track
+                     * @example track
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -6789,6 +7100,11 @@ export interface paths {
                      * @example track
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: track
+                     * @example track
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -6908,6 +7224,11 @@ export interface paths {
                     include?: string[];
                     /** @description List of offline task IDs (e.g. `a468bee88def`) */
                     "filter[installation.id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection
+                     * @example collection
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -6961,6 +7282,11 @@ export interface paths {
                      * @example collection
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection
+                     * @example collection
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7057,6 +7383,11 @@ export interface paths {
                      * @example collection
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection
+                     * @example collection
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7116,6 +7447,11 @@ export interface paths {
                      * @example item
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: item
+                     * @example item
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7240,6 +7576,11 @@ export interface paths {
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current
+                     * @example current
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -7333,6 +7674,11 @@ export interface paths {
                      * @example current
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current
+                     * @example current
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7462,6 +7808,11 @@ export interface paths {
                      * @example current
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current
+                     * @example current
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7560,6 +7911,11 @@ export interface paths {
                      * @example future
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: future
+                     * @example future
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7793,6 +8149,11 @@ export interface paths {
                      * @example past
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: past
+                     * @example past
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -7857,14 +8218,19 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners
-                     * @example collaboratorProfiles
+                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts
+                     * @example items
                      */
                     include?: string[];
                     /** @description List of playlist IDs (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -7965,10 +8331,15 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners
-                     * @example collaboratorProfiles
+                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts
+                     * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -8422,6 +8793,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -8700,6 +9076,67 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Playlists_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/playlists/{id}/relationships/suggestedCoverArts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get suggestedCoverArts relationship ("to-many").
+         * @description Retrieves suggestedCoverArts relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: suggestedCoverArts
+                     * @example suggestedCoverArts
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Playlist id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9053,7 +9490,7 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: provider, subject
-                     * @example provider
+                     * @example subject
                      */
                     include?: string[];
                     /** @description List of barcode IDs (EAN-13 or UPC-A) (e.g. `00602527336510`) */
@@ -9062,6 +9499,11 @@ export interface paths {
                     "filter[grid]"?: string[];
                     /** @description Content provider ID (e.g. `50`) */
                     "filter[provider.id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -9176,6 +9618,11 @@ export interface paths {
                      * @example subject
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -9284,13 +9731,18 @@ export interface paths {
                     "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
-                     * @example owners
+                     * @example subject
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
                     /** @description The type of purchased content (e.g. `albums`) */
                     "filter[subject.type]": ("albums" | "tracks")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -9405,6 +9857,11 @@ export interface paths {
                      * @example subject
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -9900,10 +10357,30 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, playlists, topHits, tracks, videos
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -9971,10 +10448,30 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: albums
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10042,10 +10539,30 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
                      * @example artists
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists
+                     * @example artists
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10113,10 +10630,30 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: playlists
                      * @example playlists
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlists
+                     * @example playlists
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10184,10 +10721,30 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: topHits
                      * @example topHits
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: topHits
+                     * @example topHits
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10255,10 +10812,30 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: tracks
                      * @example tracks
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
+                     * @example tracks
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10326,10 +10903,30 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: videos
                      * @example videos
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
+                     * @example videos
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10399,6 +10996,11 @@ export interface paths {
                      * @example directHits
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: directHits
+                     * @example directHits
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10470,6 +11072,11 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: directHits
+                     * @example directHits
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10597,11 +11204,16 @@ export interface paths {
                 query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, sharedResources
-                     * @example owners
+                     * @example sharedResources
                      */
                     include?: string[];
                     /** @description A share code (e.g. `xyz`) */
                     "filter[code]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources
+                     * @example sharedResources
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -10692,9 +11304,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, sharedResources
-                     * @example owners
+                     * @example sharedResources
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources
+                     * @example sharedResources
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10817,6 +11434,11 @@ export interface paths {
                      * @example sharedResources
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources
+                     * @example sharedResources
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10933,7 +11555,13 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: selectedSite, sites
+                     * @example selectedSite
+                     */
+                    include?: string[];
+                };
                 header?: never;
                 path: {
                     /**
@@ -10953,6 +11581,172 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["SquareConnections_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/squareConnections/{id}/relationships/selectedSite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get selectedSite relationship ("to-one").
+         * @description Retrieves selectedSite relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: selectedSite
+                     * @example selectedSite
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square connection id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareConnections_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update selectedSite relationship ("to-one").
+         * @description Updates selectedSite relationship.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Square connection id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareConnections_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareConnectionsUpdateSingleDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/squareConnections/{id}/relationships/sites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get sites relationship ("to-many").
+         * @description Retrieves sites relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: sites
+                     * @example sites
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square connection id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareConnections_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11231,6 +12025,222 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["StripeDashboardLinks_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscriptionPriceChangeDecisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple subscriptionPriceChangeDecisions.
+         * @description Retrieves multiple subscriptionPriceChangeDecisions by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: priceChange
+                     * @example priceChange
+                     */
+                    include?: string[];
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single subscriptionPriceChangeDecision.
+         * @description Creates a new subscriptionPriceChangeDecision.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscriptionPriceChangeDecisions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update single subscriptionPriceChangeDecision.
+         * @description Updates existing subscriptionPriceChangeDecision.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Price change decision id
+                     * @example 1AC1yHZWFAFVjnFOn8XoXA
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisionsUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/subscriptionPriceChangeDecisions/{id}/relationships/priceChange": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get priceChange relationship ("to-one").
+         * @description Retrieves priceChange relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: priceChange
+                     * @example priceChange
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Price change decision id
+                     * @example 1AC1yHZWFAFVjnFOn8XoXA
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11846,6 +12856,11 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
@@ -11904,6 +12919,11 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
@@ -11985,6 +13005,11 @@ export interface paths {
                     "filter[isrc]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -12085,6 +13110,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -12223,6 +13253,11 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -12325,9 +13360,14 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
-                     * @example artists
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -12388,9 +13428,14 @@ export interface paths {
                     "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: credits
-                     * @example credits
+                     * @example credits.artist.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: credits.artist.albums
+                     * @example credits.artist.albums
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -12578,11 +13623,16 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: lyrics
-                     * @example lyrics
+                     * @example lyrics.track
                      */
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: lyrics.track
+                     * @example lyrics.track
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -12700,6 +13750,11 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
@@ -12899,11 +13954,16 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: radio
-                     * @example radio
+                     * @example radio.items
                      */
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: radio.items
+                     * @example radio.items
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -12970,6 +14030,11 @@ export interface paths {
                      * @example replacement
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: replacement
+                     * @example replacement
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -13028,11 +14093,16 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: shares
-                     * @example shares
+                     * @example shares.sharedResources
                      */
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: shares.sharedResources
+                     * @example shares.sharedResources
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -13101,6 +14171,11 @@ export interface paths {
                      * @example similarTracks
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarTracks
+                     * @example similarTracks
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -13230,6 +14305,11 @@ export interface paths {
                      * @example suggestedTracks
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: suggestedTracks
+                     * @example suggestedTracks
+                     */
+                    replaceMedia?: string;
                     /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
                     shareCode?: string;
                 };
@@ -13585,6 +14665,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -13653,6 +14738,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -13858,9 +14948,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, owners
-                     * @example items
+                     * @example items.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.albums
+                     * @example items.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -13926,9 +15021,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.albums
+                     * @example items.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -14129,11 +15229,16 @@ export interface paths {
                 query: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
                     /** @description Folder Id (e.g. `CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX`) */
                     "filter[id]": string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -14224,9 +15329,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -14357,9 +15467,14 @@ export interface paths {
                     sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -14551,9 +15666,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: userCollection
-                     * @example userCollection
+                     * @example userCollection.items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: userCollection.items.items
+                     * @example userCollection.items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -14615,9 +15735,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, owners
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -14679,9 +15804,14 @@ export interface paths {
                     sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -14885,6 +16015,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -14946,6 +16081,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15154,6 +16294,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15222,6 +16367,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15430,6 +16580,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15498,6 +16653,11 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
+                     * @example items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15707,6 +16867,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15776,6 +16941,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -15918,9 +17088,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
-                     * @example artists
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16120,9 +17295,14 @@ export interface paths {
                     sort?: ("playlists.addedAt" | "-playlists.addedAt" | "playlists.lastUpdatedAt" | "-playlists.lastUpdatedAt" | "playlists.name" | "-playlists.name")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: playlists
-                     * @example playlists
+                     * @example playlists.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlists.items
+                     * @example playlists.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16268,6 +17448,11 @@ export interface paths {
                      * @example tracks
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
+                     * @example tracks
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16413,6 +17598,11 @@ export interface paths {
                      * @example videos
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
+                     * @example videos
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16550,9 +17740,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16616,9 +17811,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16736,9 +17936,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16802,9 +18007,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16866,9 +18076,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16932,9 +18147,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -16996,9 +18216,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17062,9 +18287,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
-                     * @example items
+                     * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
+                     * @example items.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17126,9 +18356,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists, owners, tracks, videos
-                     * @example artists
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17187,9 +18422,14 @@ export interface paths {
                     "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
-                     * @example artists
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17395,6 +18635,11 @@ export interface paths {
                      * @example tracks
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
+                     * @example tracks
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17539,6 +18784,11 @@ export interface paths {
                      * @example videos
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
+                     * @example videos
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17684,9 +18934,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes, offlineMixes
-                     * @example discoveryMixes
+                     * @example discoveryMixes.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: discoveryMixes.items
+                     * @example discoveryMixes.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17751,9 +19006,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: discoveryMixes
-                     * @example discoveryMixes
+                     * @example discoveryMixes.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: discoveryMixes.items
+                     * @example discoveryMixes.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17818,9 +19078,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: myMixes
-                     * @example myMixes
+                     * @example myMixes.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: myMixes.items
+                     * @example myMixes.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17885,9 +19150,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: newArrivalMixes
-                     * @example newArrivalMixes
+                     * @example newArrivalMixes.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: newArrivalMixes.items
+                     * @example newArrivalMixes.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -17952,9 +19222,14 @@ export interface paths {
                     locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: offlineMixes
-                     * @example offlineMixes
+                     * @example offlineMixes.items
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineMixes.items
+                     * @example offlineMixes.items
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18045,6 +19320,120 @@ export interface paths {
                 503: components["responses"]["Default503Response"];
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userSubscriptionPriceChanges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple userSubscriptionPriceChanges.
+         * @description Retrieves multiple userSubscriptionPriceChanges by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: decision
+                     * @example decision
+                     */
+                    include?: string[];
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserSubscriptionPriceChanges_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userSubscriptionPriceChanges/{id}/relationships/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get decision relationship ("to-one").
+         * @description Retrieves decision relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: decision
+                     * @example decision
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Price change id
+                     * @example 1AC1yHZWFAFVjnFOn8XoXA
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserSubscriptionPriceChanges_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -18189,6 +19578,11 @@ export interface paths {
                     "filter[id]"?: string[];
                     /** @description List of ISRCs (e.g. `QMJMT1701237`) */
                     "filter[isrc]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -18247,6 +19641,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18313,6 +19712,11 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18376,9 +19780,14 @@ export interface paths {
                     countryCode?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: artists
-                     * @example artists
+                     * @example artists.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18437,9 +19846,14 @@ export interface paths {
                     "page[cursor]"?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: credits
-                     * @example credits
+                     * @example credits.artist.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: credits.artist.albums
+                     * @example credits.artist.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18570,6 +19984,11 @@ export interface paths {
                      * @example replacement
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: replacement
+                     * @example replacement
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18636,6 +20055,11 @@ export interface paths {
                      * @example similarVideos
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarVideos
+                     * @example similarVideos
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18702,6 +20126,11 @@ export interface paths {
                      * @example suggestedVideos
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: suggestedVideos
+                     * @example suggestedVideos
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -18928,7 +20357,7 @@ export interface components {
             type: "acceptedTerms";
         };
         AcceptedTerms_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -19208,6 +20637,7 @@ export interface components {
         };
         Albums_Items_Resource_Identifier_Meta: {
             itemCursor?: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
             /**
              * Format: int32
              * @description track number
@@ -19240,11 +20670,32 @@ export interface components {
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
             priceConfig?: components["schemas"]["Single_Relationship_Data_Document"];
             providers?: components["schemas"]["Multi_Relationship_Data_Document"];
-            replacement?: components["schemas"]["Single_Relationship_Data_Document"];
+            replacement?: components["schemas"]["Albums_Replacement_Single_Relationship_Data_Document"];
             shares?: components["schemas"]["Multi_Relationship_Data_Document"];
-            similarAlbums?: components["schemas"]["Multi_Relationship_Data_Document"];
+            similarAlbums?: components["schemas"]["Albums_SimilarAlbums_Multi_Relationship_Data_Document"];
             suggestedCoverArts?: components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Data_Document"];
             usageRules?: components["schemas"]["Single_Relationship_Data_Document"];
+        };
+        Albums_Replacement_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Albums_Replacement_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Albums_Replacement_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Albums_Replacement_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Albums_Replacement_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Albums_Resource_Object: {
             attributes?: components["schemas"]["Albums_Attributes"];
@@ -19260,8 +20711,29 @@ export interface components {
              */
             type: "albums";
         };
+        Albums_SimilarAlbums_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Albums_SimilarAlbums_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Albums_SimilarAlbums_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Albums_SimilarAlbums_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Albums_SimilarAlbums_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         Albums_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -19632,6 +21104,27 @@ export interface components {
         ArtistsUpdateOperation_Payload_Meta: {
             dryRun?: boolean;
         };
+        Artists_Albums_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Artists_Albums_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Artists_Albums_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Artists_Albums_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Artists_Albums_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         Artists_Attributes: {
             /**
              * @description Is the artist enabled for contributions?
@@ -19738,7 +21231,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Artists_Relationships: {
-            albums?: components["schemas"]["Multi_Relationship_Data_Document"];
+            albums?: components["schemas"]["Artists_Albums_Multi_Relationship_Data_Document"];
             biography?: components["schemas"]["Single_Relationship_Data_Document"];
             claimStatus?: components["schemas"]["Single_Relationship_Data_Document"];
             followers?: components["schemas"]["Artists_Followers_Multi_Relationship_Data_Document"];
@@ -19749,8 +21242,8 @@ export interface components {
             roles?: components["schemas"]["Multi_Relationship_Data_Document"];
             similarArtists?: components["schemas"]["Multi_Relationship_Data_Document"];
             trackProviders?: components["schemas"]["Artists_TrackProviders_Multi_Relationship_Data_Document"];
-            tracks?: components["schemas"]["Multi_Relationship_Data_Document"];
-            videos?: components["schemas"]["Multi_Relationship_Data_Document"];
+            tracks?: components["schemas"]["Artists_Tracks_Multi_Relationship_Data_Document"];
+            videos?: components["schemas"]["Artists_Videos_Multi_Relationship_Data_Document"];
         };
         Artists_Resource_Object: {
             attributes?: components["schemas"]["Artists_Attributes"];
@@ -19767,7 +21260,7 @@ export interface components {
             type: "artists";
         };
         Artists_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -19802,11 +21295,53 @@ export interface components {
              */
             numberOfTracks: number;
         };
+        Artists_Tracks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Artists_Tracks_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Artists_Tracks_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Artists_Tracks_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Artists_Tracks_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Artists_Videos_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Artists_Videos_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Artists_Videos_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Artists_Videos_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Artists_Videos_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         /** @description Artwork files */
         Artwork_File: {
             /** @description Artwork file href */
             href: string;
-            meta?: components["schemas"]["Artwork_File_Meta"];
+            meta: components["schemas"]["Artwork_File_Meta"];
         };
         /** @description Metadata about an artwork file */
         Artwork_File_Meta: {
@@ -20098,7 +21633,7 @@ export interface components {
             type: "collaborationInvites";
         };
         CollaborationInvites_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20126,7 +21661,7 @@ export interface components {
             subject: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_Subject"];
         };
         CommentsCreateOperation_Payload_Data_Relationships_ParentComment: {
-            data?: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data"];
+            data: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data"] | (never | null);
         };
         CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data: {
             id: string;
@@ -20226,7 +21761,7 @@ export interface components {
             type: "comments";
         };
         Comments_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20290,6 +21825,27 @@ export interface components {
              */
             status: "OPEN" | "IN_PROGRESS" | "RESOLVED" | "REJECTED";
         };
+        ContentClaims_ClaimedResource_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["ContentClaims_ClaimedResource_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        ContentClaims_ClaimedResource_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        ContentClaims_ClaimedResource_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["ContentClaims_ClaimedResource_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         ContentClaims_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -20301,7 +21857,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         ContentClaims_Relationships: {
-            claimedResource?: components["schemas"]["Single_Relationship_Data_Document"];
+            claimedResource?: components["schemas"]["ContentClaims_ClaimedResource_Single_Relationship_Data_Document"];
             claimingArtist?: components["schemas"]["Single_Relationship_Data_Document"];
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
@@ -20320,7 +21876,7 @@ export interface components {
             type: "contentClaims";
         };
         ContentClaims_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20369,7 +21925,7 @@ export interface components {
             type: "credits";
         };
         Credits_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20392,7 +21948,7 @@ export interface components {
         };
         Default400ResponseBody: {
             errors: {
-                /** @example The request is malformed or invalid */
+                /** @example Invalid request */
                 detail?: string;
                 /** @example 400 */
                 status: string;
@@ -20400,7 +21956,7 @@ export interface components {
         };
         Default404ResponseBody: {
             errors: {
-                /** @example The requested resource was not found */
+                /** @example Resource not found */
                 detail?: string;
                 /** @example 404 */
                 status: string;
@@ -20408,7 +21964,7 @@ export interface components {
         };
         Default405ResponseBody: {
             errors: {
-                /** @example The HTTP method is not allowed for the requested resource */
+                /** @example HTTP method not allowed */
                 detail?: string;
                 /** @example 405 */
                 status: string;
@@ -20416,7 +21972,7 @@ export interface components {
         };
         Default406ResponseBody: {
             errors: {
-                /** @example A response that satisfies the content negotiation headers cannot be produced */
+                /** @example No acceptable response media type */
                 detail?: string;
                 /** @example 406 */
                 status: string;
@@ -20424,7 +21980,7 @@ export interface components {
         };
         Default415ResponseBody: {
             errors: {
-                /** @example Unsupported request payload media type or content encoding */
+                /** @example Unsupported request media type or encoding */
                 detail?: string;
                 /** @example 415 */
                 status: string;
@@ -20440,7 +21996,7 @@ export interface components {
         };
         Default500ResponseBody: {
             errors: {
-                /** @example An unexpected error was encountered */
+                /** @example Internal server error */
                 detail?: string;
                 /** @example 500 */
                 status: string;
@@ -20448,7 +22004,7 @@ export interface components {
         };
         Default503ResponseBody: {
             errors: {
-                /** @example Temporarily unavailable; please try again later */
+                /** @example Service temporarily unavailable */
                 detail?: string;
                 /** @example 503 */
                 status: string;
@@ -20519,7 +22075,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         DspSharingLinks_Relationships: {
-            subject?: components["schemas"]["Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["DspSharingLinks_Subject_Single_Relationship_Data_Document"];
         };
         DspSharingLinks_Resource_Object: {
             attributes?: components["schemas"]["DspSharingLinks_Attributes"];
@@ -20536,7 +22092,7 @@ export interface components {
             type: "dspSharingLinks";
         };
         DspSharingLinks_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20545,24 +22101,39 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        DspSharingLinks_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["DspSharingLinks_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        DspSharingLinks_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        DspSharingLinks_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["DspSharingLinks_Subject_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         DynamicModules_Attributes: {
             /**
-             * @description Type of icons the module should show
+             * @description Semantic icons the module should show. SPOTLIGHT_INFO identifies modules whose content was selected by TIDAL's editorial team.
              * @example SPOTLIGHT_INFO
              */
             icons: ("SPOTLIGHT_INFO" | "UNKNOWN")[];
             /**
-             * @description Semantic kind of the module, describing its product purpose and expected item domain.
-             * @example ALBUM_RELATED_ALBUMS
+             * @description Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. viewAllLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
+             * @example GRID
              * @enum {string}
              */
-            moduleKind: "ALBUM_RECOMMENDATIONS" | "BECAUSE_YOU_LISTENED_TO_ALBUM" | "BECAUSE_YOU_ADDED_ALBUM" | "BECAUSE_YOU_ADDED_ARTIST" | "CONTINUE_LISTEN_TO" | "DAILY_MIXES" | "FORGOTTEN_FAVORITES" | "GENRE_MIXES" | "HISTORY_MIXES" | "LOCAL_PLAYLISTS" | "MY_PLAYLISTS" | "NEW_ALBUM_SUGGESTIONS" | "NEW_TRACK_SUGGESTIONS" | "NEW_ALBUMS" | "NEW_TRACKS" | "POPULAR_PLAYLISTS" | "RECENTLY_UPDATED_FAVORITED_PLAYLIST" | "RECOMMENDED_USERS_PLAYLISTS" | "SUGGESTED_ESSENTIAL_PLAYLISTS" | "SUGGESTED_RADIOS_MIXES" | "WELCOME_MIX" | "YOUR_FAVORITE_ARTISTS" | "UPLOADS_FOR_YOU" | "LATEST_SPOTLIGHTED_TRACKS" | "SHORTCUTS" | "ARTIST_TOP_TRACKS" | "ARTIST_SPOTLIGHTED_TRACKS" | "ARTIST_ALBUMS" | "ARTIST_TOP_SINGLES" | "ARTIST_COMPILATIONS" | "ARTIST_LIVE_ALBUMS" | "ARTIST_APPEARS_ON" | "ARTIST_PLAYLIST" | "ARTIST_PUBLIC_PLAYLIST" | "ARTIST_SIMILAR_ARTISTS" | "ARTIST_TRACK_UPLOADS" | "ARTIST_LINKS" | "ARTIST_VIDEOS" | "ARTIST_CREDITS" | "ARTIST_DISCOGRAPHY" | "ALBUM_ITEMS" | "ALBUM_MORE_BY_ARTIST" | "ALBUM_OTHER_VERSIONS" | "ALBUM_RELATED_ALBUMS" | "ALBUM_RELATED_ARTISTS" | "COLLECTION_ITEMS" | "ALBUM_ANNIVERSARY" | "ARTIST_BIRTHDAY" | "ARTIST_MEMORIAM" | "DJ_TOOLS" | "DJ_ARTIST_CURATED" | "THE_HITS" | "FROM_OUR_EDITORS" | "TOP_PLAYLISTS" | "FEATURED_TOP_TRACKS" | "FEATURED_TOP_ALBUMS" | "TOP_ARTISTS_ESSENTIALS" | "FEATURED_RECOMMENDED_PLAYLISTS" | "HOME_3_FEATURED_PLAYLISTS" | "HOME_3_FEATURED_UPLOAD_TRACKS" | "HOME_3_FEATURED_ALBUMS" | "POPULAR_ALBUMS" | "POPULAR_ARTISTS" | "POPULAR_MIXES" | "FEATURED_RECOMMENDED_TRACKS" | "FEATURED_RECOMMENDED_ALBUMS" | "FEATURED_RECOMMENDED_CLASSIC_ALBUMS" | "BACK_TO_SCHOOL_MUSIC_101" | "BACK_TO_SCHOOL_GENRES_FOR_BEGINNERS" | "HEADLINERS_2026" | "HOME_3_0_GENERIC_PLAYLISTS_1" | "HOME_3_0_GENERIC_PLAYLISTS_2" | "HOME_3_0_GENERIC_ALBUMS_1" | "HOME_3_0_GENERIC_TRACKS_1" | "HOME_3_0_GENERIC_ARTISTS_1" | "HOME_3_0_GENERIC_VIDEOS_1" | "STAFF_PICKS_PAGE_ALBUMS_WE_LOVE" | "STAFF_PICKS_PAGE_EXPLORE" | "STAFF_PICKS_PAGE_FAVORITE_SONGS" | "STAFF_PICKS_PAGE_RECENTLY_UPDATED_PLAYLISTS" | "STAFF_PICKS_PAGE_TIDAL_NEWS_MAGAZINE" | "STAFF_PICKS_PAGE_WHAT_LISTENING_TO" | "BASED_ON_YOUR_INTERESTS_1" | "BASED_ON_YOUR_INTERESTS_2" | "UPLOAD_PAGE_SPOTLIGHTED_PLAYLISTS" | "UPLOAD_PAGE_PAYGATED_ALBUMS" | "UPLOAD_PAGE_ALBUMS" | "TOP_UPLOADERS" | "UPLOAD_PAGE_ARTISTS" | "UPLOAD_PAGE_FEATURED_MAGAZINE" | "EXPLORE_DECADES" | "EXPLORE_GENRES" | "EXPLORE_MOODS" | "ARTIST_POPULAR_RELEASES" | "PURCHASES_FOR_YOU" | "UNKNOWN";
-            /**
-             * @description Presentation used when rendering the module preview on a dynamic page.
-             * @example HORIZONTAL_LIST
-             * @enum {string}
-             */
-            previewPresentation: "ARTIST_LIST" | "COMPACT_GRID_CARD" | "COMPACT_HORIZONTAL_LIST" | "COMPACT_HORIZONTAL_LIST_WITH_CONTEXT" | "FEATURED_CARD" | "GRID_CARD" | "GRID_CARD_WITH_CONTEXT" | "GRID_HIGHLIGHT_CARD" | "ANNIVERSARY_CARD" | "ARTIST_BIRTHDAY_CARD" | "ARTIST_MEMORIAM_CARD" | "ARTIST_TRACK_CREDITS_CARD" | "PILL_LIST" | "VERTICAL_LIST" | "DISCOGRAPHY_TABS" | "MAGAZINE_LIST" | "HORIZONTAL_LIST" | "HORIZONTAL_LIST_WITH_CONTEXT" | "SHORTCUT_LIST" | "TRACK_LIST" | "VERTICAL_LIST_CARD" | "TEXT_CARD" | "LINKS_LIST" | "PUBLIC_PLAYLIST_LIST";
+            previewLayout: "GRID" | "LIST" | "COMPACT" | "UNKNOWN";
             /**
              * @description Subtitle of the module
              * @example Short description of this module
@@ -20574,11 +22145,32 @@ export interface components {
              */
             title?: string;
             /**
-             * @description Presentation used when rendering the module's items in the full view-all experience.
-             * @example COMPACT
+             * @description Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. viewAllLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
+             * @example LIST
              * @enum {string}
              */
-            viewAllPresentation: "COMPACT" | "GRID" | "UNKNOWN";
+            viewAllLayout?: "GRID" | "LIST" | "COMPACT" | "UNKNOWN";
+        };
+        DynamicModules_Items_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["DynamicModules_Items_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        DynamicModules_Items_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["DynamicModules_Items_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        DynamicModules_Items_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         DynamicModules_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -20591,7 +22183,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         DynamicModules_Relationships: {
-            items?: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["DynamicModules_Items_Multi_Relationship_Data_Document"];
+            seedItem?: components["schemas"]["DynamicModules_SeedItem_Single_Relationship_Data_Document"];
         };
         DynamicModules_Resource_Object: {
             attributes?: components["schemas"]["DynamicModules_Attributes"];
@@ -20606,6 +22199,32 @@ export interface components {
              * @enum {string}
              */
             type: "dynamicModules";
+        };
+        DynamicModules_SeedItem_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["DynamicModules_SeedItem_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        DynamicModules_SeedItem_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        DynamicModules_SeedItem_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["DynamicModules_SeedItem_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        DynamicModules_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         DynamicModules_Single_Resource_Data_Document: {
             data: components["schemas"]["DynamicModules_Resource_Object"];
@@ -20638,7 +22257,7 @@ export interface components {
         };
         DynamicPages_Relationships: {
             modules?: components["schemas"]["Multi_Relationship_Data_Document"];
-            subject?: components["schemas"]["Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["DynamicPages_Subject_Single_Relationship_Data_Document"];
         };
         DynamicPages_Resource_Object: {
             attributes?: components["schemas"]["DynamicPages_Attributes"];
@@ -20663,12 +22282,33 @@ export interface components {
             redactionReason?: "NO_BIRTHDAY" | "MINOR";
         };
         DynamicPages_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         DynamicPages_Single_Resource_Data_Document: {
             data: components["schemas"]["DynamicPages_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        DynamicPages_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["DynamicPages_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        DynamicPages_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        DynamicPages_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["DynamicPages_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20720,6 +22360,11 @@ export interface components {
         };
         /** @description File status */
         File_Status: {
+            /**
+             * @description Status of scanning the file for being AI-generated. Only present for file types that support AI scanning (e.g. track source files) and when a scanning status is available for the file; absent otherwise.
+             * @enum {string}
+             */
+            aiScanningFileStatus?: "NOT_SCANNED" | "SCANNING" | "IS_AI" | "NOT_AI" | "ERROR";
             /**
              * @description Moderation status for file
              * @enum {string}
@@ -20789,7 +22434,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "IDEMPOTENT_REQUEST_IN_PROGRESS";
-                /** @example A request with this idempotency key is currently being processed */
+                /** @example Request already in progress for this idempotency key */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -20802,13 +22447,13 @@ export interface components {
                  * @enum {string}
                  */
                 code: "IDEMPOTENT_REQUEST_PAYLOAD_MISMATCH";
-                /** @example Idempotency key was already used with a different request payload */
+                /** @example Idempotency key reused with a different payload */
                 detail?: string;
                 /** @example 422 */
                 status: string;
             }[];
         };
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -20878,6 +22523,7 @@ export interface components {
         Installations_OfflineInventory_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         Installations_Relationships: {
             offlineInventory?: components["schemas"]["Installations_OfflineInventory_Multi_Relationship_Data_Document"];
@@ -21008,7 +22654,7 @@ export interface components {
         };
         Lyrics_Relationships: {
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            track?: components["schemas"]["Single_Relationship_Data_Document"];
+            track?: components["schemas"]["Lyrics_Track_Single_Relationship_Data_Document"];
         };
         Lyrics_Resource_Object: {
             attributes?: components["schemas"]["Lyrics_Attributes"];
@@ -21025,12 +22671,33 @@ export interface components {
             type: "lyrics";
         };
         Lyrics_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Lyrics_Single_Resource_Data_Document: {
             data: components["schemas"]["Lyrics_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Lyrics_Track_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Lyrics_Track_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Lyrics_Track_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Lyrics_Track_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Lyrics_Track_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21177,6 +22844,48 @@ export interface components {
              */
             volume: number;
         };
+        OfflineTasks_Collection_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["OfflineTasks_Collection_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        OfflineTasks_Collection_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        OfflineTasks_Collection_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["OfflineTasks_Collection_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        OfflineTasks_Item_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["OfflineTasks_Item_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        OfflineTasks_Item_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        OfflineTasks_Item_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["OfflineTasks_Item_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         OfflineTasks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21188,8 +22897,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         OfflineTasks_Relationships: {
-            collection?: components["schemas"]["Single_Relationship_Data_Document"];
-            item?: components["schemas"]["Single_Relationship_Data_Document"];
+            collection?: components["schemas"]["OfflineTasks_Collection_Single_Relationship_Data_Document"];
+            item?: components["schemas"]["OfflineTasks_Item_Single_Relationship_Data_Document"];
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         OfflineTasks_Resource_Object: {
@@ -21207,7 +22916,7 @@ export interface components {
             type: "offlineTasks";
         };
         OfflineTasks_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21296,6 +23005,8 @@ export interface components {
         PlayQueuesUpdateOperation_Payload_Data_Attributes: {
             /** @enum {string} */
             repeat?: "NONE" | "ONE" | "BATCH";
+            /** @enum {string} */
+            shuffle?: "OFF" | "BATCH" | "ALL";
             shuffled?: boolean;
         };
         PlayQueues_Attributes: {
@@ -21314,6 +23025,11 @@ export interface components {
              * @enum {string}
              */
             repeat: "NONE" | "ONE" | "BATCH";
+            /**
+             * @description Queue's shuffle mode
+             * @enum {string}
+             */
+            shuffle: "OFF" | "BATCH" | "ALL";
             /** @description Queue is shuffled or not */
             shuffled: boolean;
         };
@@ -21335,9 +23051,10 @@ export interface components {
             batchId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         PlayQueues_Current_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["PlayQueues_Current_Resource_Identifier"];
+            data?: components["schemas"]["PlayQueues_Current_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21364,6 +23081,7 @@ export interface components {
             batchId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         PlayQueues_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -21398,6 +23116,7 @@ export interface components {
             batchId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         PlayQueues_Relationships: {
             current?: components["schemas"]["PlayQueues_Current_Single_Relationship_Data_Document"];
@@ -21420,7 +23139,7 @@ export interface components {
             type: "playQueues";
         };
         PlayQueues_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21605,6 +23324,7 @@ export interface components {
             addedAt?: string;
             itemCursor?: string;
             itemId?: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         Playlists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -21623,6 +23343,7 @@ export interface components {
             items?: components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
             ownerProfiles?: components["schemas"]["Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            suggestedCoverArts?: components["schemas"]["Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document"];
         };
         Playlists_Resource_Object: {
             attributes?: components["schemas"]["Playlists_Attributes"];
@@ -21642,6 +23363,30 @@ export interface components {
             data: components["schemas"]["Playlists_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Playlists_SuggestedCoverArts_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Playlists_SuggestedCoverArts_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Playlists_SuggestedCoverArts_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Playlists_SuggestedCoverArts_Resource_Identifier_Meta: {
+            /** @description Background color for the suggested artwork */
+            backgroundColor: string;
+            /** @description Foreground color for the suggested artwork */
+            foregroundColor: string;
         };
         PriceConfigurationsCreateOperation_Payload: {
             data: components["schemas"]["PriceConfigurationsCreateOperation_Payload_Data"];
@@ -21743,7 +23488,7 @@ export interface components {
             type: "providerOwners";
         };
         ProviderOwners_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21767,7 +23512,7 @@ export interface components {
         };
         ProviderProductInfos_Relationships: {
             provider?: components["schemas"]["Single_Relationship_Data_Document"];
-            subject?: components["schemas"]["Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["ProviderProductInfos_Subject_Single_Relationship_Data_Document"];
         };
         ProviderProductInfos_Resource_Object: {
             attributes?: components["schemas"]["ProviderProductInfos_Attributes"];
@@ -21784,12 +23529,33 @@ export interface components {
             type: "providerProductInfos";
         };
         ProviderProductInfos_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ProviderProductInfos_Single_Resource_Data_Document: {
             data: components["schemas"]["ProviderProductInfos_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ProviderProductInfos_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["ProviderProductInfos_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        ProviderProductInfos_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        ProviderProductInfos_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["ProviderProductInfos_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21847,7 +23613,7 @@ export interface components {
         };
         Purchases_Relationships: {
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            subject?: components["schemas"]["Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["Purchases_Subject_Single_Relationship_Data_Document"];
         };
         Purchases_Resource_Object: {
             attributes?: components["schemas"]["Purchases_Attributes"];
@@ -21864,12 +23630,33 @@ export interface components {
             type: "purchases";
         };
         Purchases_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Purchases_Single_Resource_Data_Document: {
             data: components["schemas"]["Purchases_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Purchases_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Purchases_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Purchases_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Purchases_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Purchases_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21956,6 +23743,19 @@ export interface components {
             data: components["schemas"]["Reactions_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        /** @description Relationship identifier before contextual replacement projection. */
+        Replacement_Original_Identifier: {
+            /** @example 12345 */
+            id: string;
+            /** @example tracks */
+            type: string;
+        };
+        /** @description Relationship replacement projection provenance. ORIGINAL retains the requested identifier as the applicable resource, REPLACED projects another identifier, and NOT_REPLACED retains the requested identifier because no applicable replacement exists. */
+        Replacement_Provenance: {
+            original?: components["schemas"]["Replacement_Original_Identifier"];
+            /** @enum {string} */
+            status: "ORIGINAL" | "REPLACED" | "NOT_REPLACED";
         };
         Resource_Identifier: {
             /**
@@ -22105,6 +23905,48 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SearchResults_Albums_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchResults_Albums_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchResults_Albums_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchResults_Albums_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchResults_Albums_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        SearchResults_Artists_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchResults_Artists_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchResults_Artists_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchResults_Artists_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchResults_Artists_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         SearchResults_Attributes: {
             /**
              * @description 'did you mean' prompt
@@ -22127,13 +23969,34 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SearchResults_Playlists_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchResults_Playlists_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchResults_Playlists_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchResults_Playlists_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchResults_Playlists_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         SearchResults_Relationships: {
-            albums?: components["schemas"]["Multi_Relationship_Data_Document"];
-            artists?: components["schemas"]["Multi_Relationship_Data_Document"];
-            playlists?: components["schemas"]["Multi_Relationship_Data_Document"];
-            topHits?: components["schemas"]["Multi_Relationship_Data_Document"];
-            tracks?: components["schemas"]["Multi_Relationship_Data_Document"];
-            videos?: components["schemas"]["Multi_Relationship_Data_Document"];
+            albums?: components["schemas"]["SearchResults_Albums_Multi_Relationship_Data_Document"];
+            artists?: components["schemas"]["SearchResults_Artists_Multi_Relationship_Data_Document"];
+            playlists?: components["schemas"]["SearchResults_Playlists_Multi_Relationship_Data_Document"];
+            topHits?: components["schemas"]["SearchResults_TopHits_Multi_Relationship_Data_Document"];
+            tracks?: components["schemas"]["SearchResults_Tracks_Multi_Relationship_Data_Document"];
+            videos?: components["schemas"]["SearchResults_Videos_Multi_Relationship_Data_Document"];
         };
         SearchResults_Resource_Object: {
             attributes?: components["schemas"]["SearchResults_Attributes"];
@@ -22154,6 +24017,69 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SearchResults_TopHits_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchResults_TopHits_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchResults_TopHits_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchResults_TopHits_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchResults_TopHits_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        SearchResults_Tracks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchResults_Tracks_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchResults_Tracks_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchResults_Tracks_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchResults_Tracks_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        SearchResults_Videos_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchResults_Videos_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchResults_Videos_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchResults_Videos_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchResults_Videos_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         SearchSuggestions_Attributes: {
             /**
              * @deprecated
@@ -22164,6 +24090,27 @@ export interface components {
             suggestions?: components["schemas"]["SearchSuggestions_Suggestions"][];
             /** @description Unique tracking id */
             trackingId: string;
+        };
+        SearchSuggestions_DirectHits_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["SearchSuggestions_DirectHits_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchSuggestions_DirectHits_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["SearchSuggestions_DirectHits_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        SearchSuggestions_DirectHits_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         SearchSuggestions_Highlights: {
             /** Format: int32 */
@@ -22187,7 +24134,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         SearchSuggestions_Relationships: {
-            directHits?: components["schemas"]["Multi_Relationship_Data_Document"];
+            directHits?: components["schemas"]["SearchSuggestions_DirectHits_Multi_Relationship_Data_Document"];
             history?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
         SearchSuggestions_Resource_Object: {
@@ -22256,7 +24203,7 @@ export interface components {
         };
         Shares_Relationships: {
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            sharedResources?: components["schemas"]["Multi_Relationship_Data_Document"];
+            sharedResources?: components["schemas"]["Shares_SharedResources_Multi_Relationship_Data_Document"];
         };
         Shares_Resource_Object: {
             attributes?: components["schemas"]["Shares_Attributes"];
@@ -22272,13 +24219,34 @@ export interface components {
              */
             type: "shares";
         };
+        Shares_SharedResources_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Shares_SharedResources_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Shares_SharedResources_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Shares_SharedResources_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Shares_SharedResources_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         Shares_Single_Resource_Data_Document: {
             data: components["schemas"]["Shares_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             links: components["schemas"]["Links"];
         };
         SquareConnectionsCreateOperation_Payload: {
@@ -22301,7 +24269,31 @@ export interface components {
              */
             redirectUrl?: string;
         };
+        SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload_Data"] | (never | null);
+        };
+        /** @description The site to select; null clears the selection. */
+        SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "squareSites";
+        };
+        SquareConnectionsUpdateSingleDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example IDEMPOTENT_REQUEST_IN_PROGRESS
+                 * @enum {string}
+                 */
+                code: "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_SITES_SCOPE";
+                /** @example Square credential lacks required site scopes; run Square onboarding again */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
         SquareConnections_Attributes: {
+            /** @description Per-feature capability statuses for this Square connection. Every capability the connection offers is listed with a status carrying more than mere presence: SITES is GRANTED when the Square Online sites scopes are granted, or REQUIRES_REAUTH when the connection exists but its credential lacks them (the seller must reconnect Square via POST /squareConnections). Because a connection always offers the sites feature, SITES is always present here. Extensible — only SITES is defined today. Absent only when the connection has no sites state (e.g. no approved Square credential). Client rule: if SITES != GRANTED prompt reconnect; else if selectedSite.data is null show the site picker; else the selected site is shown to buyers. */
+            capabilities?: components["schemas"]["SquareConnections_Capability"][];
             /**
              * Format: date-time
              * @description Timestamp when the connection was created
@@ -22320,13 +24312,71 @@ export interface components {
              */
             status: "DRAFT" | "PENDING_REQUIREMENTS" | "KYC_PENDING" | "ACCEPTED" | "REJECTED" | "SUSPENDED";
         };
+        SquareConnections_Capability: {
+            /**
+             * @description The capability name
+             * @enum {string}
+             */
+            name: "SITES";
+            /**
+             * @description The capability's current status
+             * @enum {string}
+             */
+            status: "GRANTED" | "REQUIRES_REAUTH";
+        };
+        SquareConnections_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         SquareConnections_Multi_Resource_Data_Document: {
             data: components["schemas"]["SquareConnections_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SquareConnections_Relationships: {
+            selectedSite?: components["schemas"]["Single_Relationship_Data_Document"];
+            sites?: components["schemas"]["Multi_Relationship_Data_Document"];
+        };
         SquareConnections_Resource_Object: {
             attributes?: components["schemas"]["SquareConnections_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["SquareConnections_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "squareConnections";
+        };
+        SquareConnections_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareConnections_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareConnections_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareSites_Attributes: {
+            /** @description The site's domain, if one is configured */
+            domain?: string;
+            /** @description Whether the site is published on Square Online */
+            published?: boolean;
+            /** @description The site's title as set by the seller in Square */
+            siteTitle?: string;
+        };
+        SquareSites_Multi_Resource_Data_Document: {
+            data: components["schemas"]["SquareSites_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareSites_Resource_Object: {
+            attributes?: components["schemas"]["SquareSites_Attributes"];
             /**
              * @description Resource id
              * @example 12345
@@ -22336,10 +24386,10 @@ export interface components {
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
              */
-            type: "squareConnections";
+            type: "squareSites";
         };
-        SquareConnections_Single_Resource_Data_Document: {
-            data: components["schemas"]["SquareConnections_Resource_Object"];
+        SquareSites_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareSites_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -22479,6 +24529,93 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SubscriptionPriceChangeDecisionsCreateOperation_Payload: {
+            data: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data"];
+        };
+        SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "subscriptionPriceChangeDecisions";
+        };
+        SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Attributes: {
+            /**
+             * @description The decision to record. A decision may only be created once — changing a rejection to an acceptance is a PATCH.
+             * @enum {string}
+             */
+            status: "ACCEPTED" | "REJECTED";
+        };
+        SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships: {
+            priceChange: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships_PriceChange"];
+        };
+        SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships_PriceChange: {
+            data: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships_PriceChange_Data"];
+        };
+        SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data_Relationships_PriceChange_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "userSubscriptionPriceChanges";
+        };
+        SubscriptionPriceChangeDecisionsUpdateOperation_Payload: {
+            data: components["schemas"]["SubscriptionPriceChangeDecisionsUpdateOperation_Payload_Data"];
+        };
+        SubscriptionPriceChangeDecisionsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["SubscriptionPriceChangeDecisionsUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "subscriptionPriceChangeDecisions";
+        };
+        SubscriptionPriceChangeDecisionsUpdateOperation_Payload_Data_Attributes: {
+            /**
+             * @description The decision to record. The only allowed transition is REJECTED -> ACCEPTED; acceptance is permanent.
+             * @enum {string}
+             */
+            status: "ACCEPTED" | "REJECTED";
+        };
+        SubscriptionPriceChangeDecisions_Attributes: {
+            /**
+             * Format: date-time
+             * @description When the user decided. Absent when the consent was implicit (derived from the subscription start).
+             */
+            decidedAt?: string;
+            /**
+             * @description The user's decision. ACCEPTED is permanent; REJECTED can still be flipped to ACCEPTED before the renewal.
+             * @enum {string}
+             */
+            status: "ACCEPTED" | "REJECTED";
+        };
+        SubscriptionPriceChangeDecisions_Multi_Resource_Data_Document: {
+            data: components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SubscriptionPriceChangeDecisions_Relationships: {
+            priceChange?: components["schemas"]["Single_Relationship_Data_Document"];
+        };
+        SubscriptionPriceChangeDecisions_Resource_Object: {
+            attributes?: components["schemas"]["SubscriptionPriceChangeDecisions_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["SubscriptionPriceChangeDecisions_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "subscriptionPriceChangeDecisions";
+        };
+        SubscriptionPriceChangeDecisions_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SubscriptionPriceChangeDecisions_Single_Resource_Data_Document: {
+            data: components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         TemporaryUserTokensCreateOperation_Payload: {
             data: components["schemas"]["TemporaryUserTokensCreateOperation_Payload_Data"];
         };
@@ -22578,7 +24715,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
-                /** @example Cannot fulfill this request because required prerequisites are missing */
+                /** @example Required playback prerequisites are missing */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -22591,7 +24728,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CONTENT_NOT_FOUND";
-                /** @example The requested content does not exist or is no longer available */
+                /** @example Content does not exist or is no longer available */
                 detail?: string;
                 /** @example 404 */
                 status: string;
@@ -22649,7 +24786,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
-                /** @example Cannot fulfill this request because required prerequisites are missing */
+                /** @example Required playback prerequisites are missing */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -22662,7 +24799,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CONTENT_NOT_FOUND";
-                /** @example The requested content does not exist or is no longer available */
+                /** @example Content does not exist or is no longer available */
                 detail?: string;
                 /** @example 404 */
                 status: string;
@@ -22963,6 +25100,27 @@ export interface components {
             /** @enum {string} */
             type: "genres";
         };
+        Tracks_Albums_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Tracks_Albums_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_Albums_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Tracks_Albums_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Tracks_Albums_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         Tracks_Attributes: {
             /**
              * @description Access type
@@ -23054,7 +25212,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Tracks_Relationships: {
-            albums?: components["schemas"]["Multi_Relationship_Data_Document"];
+            albums?: components["schemas"]["Tracks_Albums_Multi_Relationship_Data_Document"];
             artists?: components["schemas"]["Multi_Relationship_Data_Document"];
             credits?: components["schemas"]["Multi_Relationship_Data_Document"];
             download?: components["schemas"]["Single_Relationship_Data_Document"];
@@ -23065,13 +25223,34 @@ export interface components {
             priceConfig?: components["schemas"]["Single_Relationship_Data_Document"];
             providers?: components["schemas"]["Multi_Relationship_Data_Document"];
             radio?: components["schemas"]["Multi_Relationship_Data_Document"];
-            replacement?: components["schemas"]["Single_Relationship_Data_Document"];
+            replacement?: components["schemas"]["Tracks_Replacement_Single_Relationship_Data_Document"];
             shares?: components["schemas"]["Multi_Relationship_Data_Document"];
-            similarTracks?: components["schemas"]["Multi_Relationship_Data_Document"];
+            similarTracks?: components["schemas"]["Tracks_SimilarTracks_Multi_Relationship_Data_Document"];
             sourceFile?: components["schemas"]["Single_Relationship_Data_Document"];
-            suggestedTracks?: components["schemas"]["Multi_Relationship_Data_Document"];
+            suggestedTracks?: components["schemas"]["Tracks_SuggestedTracks_Multi_Relationship_Data_Document"];
             trackStatistics?: components["schemas"]["Single_Relationship_Data_Document"];
             usageRules?: components["schemas"]["Single_Relationship_Data_Document"];
+        };
+        Tracks_Replacement_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Tracks_Replacement_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Tracks_Replacement_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Tracks_Replacement_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Tracks_Replacement_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Tracks_Resource_Object: {
             attributes?: components["schemas"]["Tracks_Attributes"];
@@ -23087,8 +25266,29 @@ export interface components {
              */
             type: "tracks";
         };
+        Tracks_SimilarTracks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Tracks_SimilarTracks_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_SimilarTracks_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Tracks_SimilarTracks_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Tracks_SimilarTracks_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         Tracks_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -23096,6 +25296,27 @@ export interface components {
             data: components["schemas"]["Tracks_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        Tracks_SuggestedTracks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Tracks_SuggestedTracks_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_SuggestedTracks_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Tracks_SuggestedTracks_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Tracks_SuggestedTracks_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UsageRulesCreateOperation_Payload: {
             data: components["schemas"]["UsageRulesCreateOperation_Payload_Data"];
@@ -23182,7 +25403,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -23258,6 +25479,7 @@ export interface components {
         UserCollectionAlbums_Items_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserCollectionAlbums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -23299,7 +25521,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -23419,12 +25641,6 @@ export interface components {
             type: "userCollectionFolders";
         };
         UserCollectionFoldersCreateOperation_Payload_Data_Attributes: {
-            /**
-             * @deprecated
-             * @description The type of user collection this folder belongs to. Deprecated: send the 'userCollection' relationship instead. Accepted for backward compatibility during migration and will be removed in a future version.
-             * @enum {string}
-             */
-            collectionType?: "PLAYLISTS";
             name: string;
         };
         UserCollectionFoldersCreateOperation_Payload_Data_Relationships: {
@@ -23440,7 +25656,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "FOLDER_NOT_EMPTY";
-                /** @example Cannot delete folder: only empty folders owned by you can be deleted. */
+                /** @example Folder must be empty and owned by you */
                 detail?: string;
                 /** @example 400 */
                 status: string;
@@ -23451,14 +25667,16 @@ export interface components {
         };
         UserCollectionFoldersItemsRelationshipAddOperation_Payload_Data: {
             id: string;
-            type: string;
+            /** @enum {string} */
+            type: "playlists";
         };
         UserCollectionFoldersItemsRelationshipRemoveOperation_Payload: {
             data?: components["schemas"]["UserCollectionFoldersItemsRelationshipRemoveOperation_Payload_Data"][];
         };
         UserCollectionFoldersItemsRelationshipRemoveOperation_Payload_Data: {
             id: string;
-            type: string;
+            /** @enum {string} */
+            type: "playlists";
         };
         UserCollectionFoldersUpdateOperation_Payload: {
             data: components["schemas"]["UserCollectionFoldersUpdateOperation_Payload_Data"];
@@ -23473,12 +25691,6 @@ export interface components {
             name?: string;
         };
         UserCollectionFolders_Attributes: {
-            /**
-             * @deprecated
-             * @description The type of user collection this folder belongs to. Deprecated: use the 'userCollection' relationship instead. This field will be removed in a future version, so clients should not depend on its presence.
-             * @enum {string}
-             */
-            collectionType?: "PLAYLISTS";
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -23539,7 +25751,7 @@ export interface components {
             type: "userCollectionFolders";
         };
         UserCollectionFolders_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -23555,7 +25767,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -23672,7 +25884,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -23743,6 +25955,7 @@ export interface components {
         UserCollectionSaveForLaters_Items_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserCollectionSaveForLaters_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -23784,7 +25997,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -23860,6 +26073,7 @@ export interface components {
         UserCollectionTracks_Items_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserCollectionTracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -23901,7 +26115,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -23977,6 +26191,7 @@ export interface components {
         UserCollectionVideos_Items_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserCollectionVideos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -24018,7 +26233,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example You have reached the maximum number of items allowed for this collection. Please remove some items before adding more. */
+                /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -24140,6 +26355,7 @@ export interface components {
         UserCollections_Albums_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserCollections_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Artists_Resource_Identifier"][];
@@ -24244,6 +26460,7 @@ export interface components {
         UserCollections_Tracks_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserCollections_Videos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Videos_Resource_Identifier"][];
@@ -24266,6 +26483,7 @@ export interface components {
         UserCollections_Videos_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserDailyMixes_Attributes: Record<string, never>;
         UserDailyMixes_Multi_Relationship_Data_Document: {
@@ -24448,7 +26666,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MAXIMUM_NUMBER_OF_BLOCKS_EXCEEDED";
-                /** @example You have reached the maximum number of blocked recommendation items. Please remove some blocked items before adding more. */
+                /** @example Recommendation block limit reached */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -24587,6 +26805,7 @@ export interface components {
              * @description When the item was blocked
              */
             createdAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserRecommendationBlocks_Videos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Videos_Resource_Identifier"][];
@@ -24612,6 +26831,7 @@ export interface components {
              * @description When the item was blocked
              */
             createdAt: string;
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         UserRecommendations_Attributes: Record<string, never>;
         UserRecommendations_Multi_Relationship_Data_Document: {
@@ -24706,6 +26926,60 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        UserSubscriptionPriceChanges_Attributes: {
+            /**
+             * @description ISO 4217 currency code
+             * @example EUR
+             */
+            currency: string;
+            /**
+             * @description Price amount with max 2 decimal places
+             * @example 9.99
+             */
+            currentPrice: string;
+            /**
+             * Format: date
+             * @description The date the new price takes effect
+             */
+            effectiveDate: string;
+            /**
+             * @description Price amount with max 2 decimal places
+             * @example 9.99
+             */
+            newPrice: string;
+        };
+        UserSubscriptionPriceChanges_Multi_Resource_Data_Document: {
+            data: components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserSubscriptionPriceChanges_Relationships: {
+            decision?: components["schemas"]["Single_Relationship_Data_Document"];
+        };
+        UserSubscriptionPriceChanges_Resource_Object: {
+            attributes?: components["schemas"]["UserSubscriptionPriceChanges_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["UserSubscriptionPriceChanges_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "userSubscriptionPriceChanges";
+        };
+        UserSubscriptionPriceChanges_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserSubscriptionPriceChanges_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Users_Attributes: {
             /**
              * @description ISO 3166-1 alpha-2 country code
@@ -24779,7 +27053,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CLIENT_NOT_ENTITLED" | "CONCURRENT_PLAYBACK" | "GEO_RESTRICTED" | "PREREQUISITE_MISSING" | "PURCHASE_REQUIRED";
-                /** @example Cannot fulfill this request because required prerequisites are missing */
+                /** @example Required playback prerequisites are missing */
                 detail?: string;
                 /** @example 403 */
                 status: string;
@@ -24792,7 +27066,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "CONTENT_NOT_FOUND";
-                /** @example The requested content does not exist or is no longer available */
+                /** @example Content does not exist or is no longer available */
                 detail?: string;
                 /** @example 404 */
                 status: string;
@@ -24834,6 +27108,27 @@ export interface components {
             data: components["schemas"]["VideoManifests_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        Videos_Albums_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Videos_Albums_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Videos_Albums_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Videos_Albums_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Videos_Albums_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         Videos_Attributes: {
             /**
@@ -24893,15 +27188,36 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Videos_Relationships: {
-            albums?: components["schemas"]["Multi_Relationship_Data_Document"];
+            albums?: components["schemas"]["Videos_Albums_Multi_Relationship_Data_Document"];
             artists?: components["schemas"]["Multi_Relationship_Data_Document"];
             credits?: components["schemas"]["Multi_Relationship_Data_Document"];
             providers?: components["schemas"]["Multi_Relationship_Data_Document"];
-            replacement?: components["schemas"]["Single_Relationship_Data_Document"];
-            similarVideos?: components["schemas"]["Multi_Relationship_Data_Document"];
-            suggestedVideos?: components["schemas"]["Multi_Relationship_Data_Document"];
+            replacement?: components["schemas"]["Videos_Replacement_Single_Relationship_Data_Document"];
+            similarVideos?: components["schemas"]["Videos_SimilarVideos_Multi_Relationship_Data_Document"];
+            suggestedVideos?: components["schemas"]["Videos_SuggestedVideos_Multi_Relationship_Data_Document"];
             thumbnailArt?: components["schemas"]["Multi_Relationship_Data_Document"];
             usageRules?: components["schemas"]["Single_Relationship_Data_Document"];
+        };
+        Videos_Replacement_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Videos_Replacement_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Videos_Replacement_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Videos_Replacement_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Videos_Replacement_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Videos_Resource_Object: {
             attributes?: components["schemas"]["Videos_Attributes"];
@@ -24917,8 +27233,29 @@ export interface components {
              */
             type: "videos";
         };
+        Videos_SimilarVideos_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Videos_SimilarVideos_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Videos_SimilarVideos_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Videos_SimilarVideos_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Videos_SimilarVideos_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         Videos_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"];
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -24927,9 +27264,30 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Videos_SuggestedVideos_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Videos_SuggestedVideos_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Videos_SuggestedVideos_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["Videos_SuggestedVideos_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        Videos_SuggestedVideos_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
     };
     responses: {
-        /** @description The request is malformed or invalid */
+        /** @description Invalid request */
         Default400Response: {
             headers: {
                 [name: string]: unknown;
@@ -24938,7 +27296,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default400ResponseBody"];
             };
         };
-        /** @description The requested resource was not found */
+        /** @description Resource not found */
         Default404Response: {
             headers: {
                 [name: string]: unknown;
@@ -24947,7 +27305,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default404ResponseBody"];
             };
         };
-        /** @description The HTTP method is not allowed for the requested resource */
+        /** @description HTTP method not allowed */
         Default405Response: {
             headers: {
                 [name: string]: unknown;
@@ -24956,7 +27314,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default405ResponseBody"];
             };
         };
-        /** @description A response that satisfies the content negotiation headers cannot be produced */
+        /** @description No acceptable response media type */
         Default406Response: {
             headers: {
                 [name: string]: unknown;
@@ -24965,7 +27323,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default406ResponseBody"];
             };
         };
-        /** @description Unsupported request payload media type or content encoding */
+        /** @description Unsupported request media type or encoding */
         Default415Response: {
             headers: {
                 [name: string]: unknown;
@@ -24983,7 +27341,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default429ResponseBody"];
             };
         };
-        /** @description An unexpected error was encountered */
+        /** @description Internal server error */
         Default500Response: {
             headers: {
                 [name: string]: unknown;
@@ -24992,7 +27350,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default500ResponseBody"];
             };
         };
-        /** @description Temporarily unavailable; please try again later */
+        /** @description Service temporarily unavailable */
         Default503Response: {
             headers: {
                 [name: string]: unknown;
@@ -25001,7 +27359,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Default503ResponseBody"];
             };
         };
-        /** @description A request with this idempotency key is currently being processed */
+        /** @description Request already in progress for this idempotency key */
         Idempotency409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25010,7 +27368,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Idempotency409ResponseBody"];
             };
         };
-        /** @description Idempotency key was already used with a different request payload */
+        /** @description Idempotency key reused with a different payload */
         Idempotency422Response: {
             headers: {
                 [name: string]: unknown;
@@ -25019,7 +27377,16 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Idempotency422ResponseBody"];
             };
         };
-        /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
+        /** @description Square credential lacks required site scopes; run Square onboarding again; Request already in progress for this idempotency key */
+        SquareConnectionsUpdateSingleDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsUpdateSingleDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device */
         TrackFilesReadById403Response: {
             headers: {
                 [name: string]: unknown;
@@ -25028,7 +27395,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["TrackFilesReadById403ResponseBody"];
             };
         };
-        /** @description The requested content does not exist or is no longer available */
+        /** @description Content does not exist or is no longer available */
         TrackFilesReadById404Response: {
             headers: {
                 [name: string]: unknown;
@@ -25037,7 +27404,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["TrackFilesReadById404ResponseBody"];
             };
         };
-        /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
+        /** @description Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device */
         TrackManifestsReadById403Response: {
             headers: {
                 [name: string]: unknown;
@@ -25046,7 +27413,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["TrackManifestsReadById403ResponseBody"];
             };
         };
-        /** @description The requested content does not exist or is no longer available */
+        /** @description Content does not exist or is no longer available */
         TrackManifestsReadById404Response: {
             headers: {
                 [name: string]: unknown;
@@ -25055,7 +27422,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["TrackManifestsReadById404ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionAlbumsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25064,7 +27431,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionArtistsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25073,7 +27440,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionArtistsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description Cannot delete folder: only empty folders owned by you can be deleted. */
+        /** @description Folder must be empty and owned by you */
         UserCollectionFoldersDeleteResource400Response: {
             headers: {
                 [name: string]: unknown;
@@ -25082,7 +27449,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionFoldersDeleteResource400ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25091,7 +27458,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25100,7 +27467,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionTracksAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25109,7 +27476,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionTracksAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionVideosAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25118,7 +27485,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionVideosAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of items allowed for this collection. Please remove some items before adding more.; One or more items you are trying to add are already in your favorites.; A request with this idempotency key is currently being processed */
+        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionsAddMultiDataRelationship409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25127,7 +27494,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionsAddMultiDataRelationship409ResponseBody"];
             };
         };
-        /** @description You have reached the maximum number of blocked recommendation items. Please remove some blocked items before adding more.; A request with this idempotency key is currently being processed */
+        /** @description Recommendation block limit reached; Request already in progress for this idempotency key */
         UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -25136,7 +27503,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserRecommendationBlocksAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description Cannot fulfill this request because required prerequisites are missing; The requested content is not available in your location; The requested content must be purchased to be accessed; Client is not allowed to access this content; This account is playing on another app or device */
+        /** @description Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device */
         VideoManifestsReadById403Response: {
             headers: {
                 [name: string]: unknown;
@@ -25145,7 +27512,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["VideoManifestsReadById403ResponseBody"];
             };
         };
-        /** @description The requested content does not exist or is no longer available */
+        /** @description Content does not exist or is no longer available */
         VideoManifestsReadById404Response: {
             headers: {
                 [name: string]: unknown;

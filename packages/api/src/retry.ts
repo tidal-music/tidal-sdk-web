@@ -219,15 +219,14 @@ async function runAttempt(
 }
 
 /**
- * Read the response body fully into memory and return an equivalent response
- * backed by those bytes. The rebuilt response drops `Response.url`/`redirected`,
- * which this client does not rely on.
+ * Read the response body fully through its platform implementation, then
+ * return an equivalent response backed by the decoded text.
  */
 async function bufferBody(response: Response): Promise<Response> {
   if (!response.body) {
     return response;
   }
-  const body = await response.arrayBuffer();
+  const body = await response.text();
   return new Response(body, {
     headers: response.headers,
     status: response.status,

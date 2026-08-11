@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.39.1] - 2026-08-03
+
+### Fixed
+
+- Decode response bodies through the runtime's `Response` implementation before
+  buffering them, preventing UTF-8 text corruption in React Native clients.
+
+## [0.39.0] - 2026-07-30
+
+### Changed
+
+- Sync to new API definitions (version: 1.10.79)
+
+## [0.38.0] - 2026-07-29
+
+### Changed
+
+- Sync to new API definitions (version: 1.10.77)
+## [0.37.0] - 2026-07-24
+
+### Changed
+
+- Sync to new API definitions (version: 1.10.70)
+
+## [0.36.0] - 2026-07-22
+
+### Changed
+
+- Sync to new API definitions (version: 1.10.69)
+
+## [0.35.0] - 2026-07-20
+
+### Changed
+
+- Sync to new API definitions (version: 1.10.67)
 ## [0.34.0] - 2026-06-26
 
 ### Changed

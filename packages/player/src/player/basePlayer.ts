@@ -636,9 +636,16 @@ export class BasePlayer {
     this.updateVolumeLevel();
     this.#hasEmittedPreloadRequest = false;
 
-    this.preloadedStreamingSessionId = undefined;
+    // Only clear the preload bookkeeping if it still refers to the session
+    // that just started. A replacement preload registered while the
+    // transition settled must stay tracked, otherwise it can never be
+    // cancelled and plays unannounced at the next boundary.
+    if (this.preloadedStreamingSessionId === streamingSessionId) {
+      this.preloadedStreamingSessionId = undefined;
 
-    this.unloadPreloadedMediaProduct().catch(console.error);
+      this.unloadPreloadedMediaProduct().catch(console.error);
+    }
+
     this.attachPlaybackEngineEndedHandler();
   }
 
