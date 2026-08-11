@@ -20,8 +20,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Sessions that request playback but never produce audio (e.g. stuck
   buffering, error mid-startup) now report `actualStartTimestamp: null`
   instead of the `play()` invocation time, and startup time now includes the
-  initial buffering period. Seamless transitions (gapless/crossfade) are
-  still stamped at the transition swap, as before.
+  initial buffering period.
+- Crossfade/gapless transitions now stamp the incoming track at fade start
+  instead of fade end: `idealStartTimestamp` is set when the transition is
+  triggered and `actualStartTimestamp` when the incoming element starts
+  playing. The outgoing track still reports until it stops at fade end, so
+  the two sessions intentionally overlap in wall-clock time.
 
 ### Fixed
 
