@@ -434,14 +434,16 @@ export class BasePlayer {
 
     // Start filling in playbackStatistics
     StreamingMetrics.playbackStatistics({
-      actualStartTimestamp: timestamps.get(
-        'streaming_metrics:playback_statistics:actualStartTimestamp',
-        streamingSessionId,
-      ),
-      idealStartTimestamp: timestamps.get(
-        'streaming_metrics:playback_statistics:idealStartTimestamp',
-        streamingSessionId,
-      ),
+      actualStartTimestamp:
+        timestamps.get(
+          'streaming_metrics:playback_statistics:actualStartTimestamp',
+          streamingSessionId,
+        ) ?? null,
+      idealStartTimestamp:
+        timestamps.get(
+          'streaming_metrics:playback_statistics:idealStartTimestamp',
+          streamingSessionId,
+        ) ?? null,
       outputDevice: this.#outputDeviceType,
       streamingSessionId,
     }).catch(console.error);

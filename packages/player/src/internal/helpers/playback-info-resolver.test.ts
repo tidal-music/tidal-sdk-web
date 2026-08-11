@@ -1,6 +1,11 @@
 import { expect } from 'chai';
 
-import { authAndEvents, credentialsProvider } from '../../test-helpers.js';
+import {
+  authAndEvents,
+  credentialsProvider,
+  waitFor,
+} from '../../test-helpers.js';
+import { eventSenderStore } from '../index.js';
 
 import { fetchPlaybackInfo } from './playback-info-resolver.js';
 
@@ -218,5 +223,78 @@ describe('playbackInfoResolver', () => {
       representationCount,
       'Non-ABR manifest should contain exactly one quality representation',
     ).to.equal(1);
+  });
+
+  it('commits playback_info_fetch with endReason ERROR when the fetch fails', async () => {
+    const { clientId, token } = await credentialsProvider.getCredentials();
+
+    if (!token) {
+      throw new Error('No access token, cannot fulfill test.');
+    }
+
+    type SentEvent = {
+      name: string;
+      payload: { endReason?: string; errorCode?: string | null };
+    };
+    const sentEvents: Array<SentEvent> = [];
+    const originalEventSender = eventSenderStore.eventSender;
+
+    eventSenderStore.eventSender = {
+      ...originalEventSender,
+      sendEvent(event: Parameters<typeof originalEventSender.sendEvent>[0]) {
+        sentEvents.push(event as SentEvent);
+      },
+    };
+
+    try {
+      let thrownError: unknown;
+
+      try {
+        await fetchPlaybackInfo({
+          accessToken: token,
+          audioAdaptiveBitrateStreaming: true,
+          audioQuality: 'LOSSLESS',
+          clientId,
+          mediaProduct: {
+            // Nonexistent track id, the manifest fetch responds with an error
+            productId: '0',
+            productType: 'track',
+            sourceId: '',
+            sourceType: '',
+          },
+          playerType: 'shaka',
+          prefetch: false,
+          // eslint-disable-next-line no-restricted-syntax
+          streamingSessionId: `tidal-player-js-test-${Date.now()}`,
+        });
+      } catch (e) {
+        thrownError = e;
+      }
+
+      expect(thrownError, 'fetchPlaybackInfo should throw').to.not.equal(
+        undefined,
+      );
+
+      // The event is committed in a fire-and-forget fashion, poll for it.
+      let playbackInfoFetchEvent: SentEvent | undefined;
+      for (let i = 0; i < 40 && !playbackInfoFetchEvent; i++) {
+        playbackInfoFetchEvent = sentEvents.find(
+          event => event.name === 'playback_info_fetch',
+        );
+        if (!playbackInfoFetchEvent) {
+          await waitFor(50);
+        }
+      }
+
+      if (!playbackInfoFetchEvent) {
+        throw new Error('No playback_info_fetch event was sent.');
+      }
+
+      expect(playbackInfoFetchEvent.payload.endReason).to.equal('ERROR');
+      expect(playbackInfoFetchEvent.payload.errorCode).to.not.equal(null);
+      expect(playbackInfoFetchEvent.payload.errorCode).to.not.equal(undefined);
+    } finally {
+      eventSenderStore.eventSender = originalEventSender;
+    }
   });
 });
