@@ -18,17 +18,17 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
+                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES (e.g. `DEVELOPER`) */
+                    "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, terms
                      * @example owners
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                     /** @description Filter by terms.isLatestVersion */
                     "filter[terms.isLatestVersion]"?: string[];
-                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES (e.g. `DEVELOPER`) */
-                    "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES")[];
                 };
                 header?: never;
                 path?: never;
@@ -1851,13 +1851,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists
                      * @example acceptedArtists.albums
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: acceptedArtists.albums
                      * @example acceptedArtists.albums
@@ -3591,6 +3591,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Artwork id (e.g. `a468bee88def`) */
+                    "filter[id]": string[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -3601,8 +3603,6 @@ export interface paths {
                      * @example owners
                      */
                     include?: string[];
-                    /** @description Artwork id (e.g. `a468bee88def`) */
-                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -3816,13 +3816,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -4166,13 +4166,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Invite code */
+                    "filter[code]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
                      * @example subject.items
                      */
                     include?: string[];
-                    /** @description Invite code */
-                    "filter[code]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.items
                      * @example subject.items
@@ -4488,6 +4488,10 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Filter by subject resource ID (e.g. `12345`) */
+                    "filter[subject.id]": string[];
+                    /** @description Filter by subject resource type (e.g. `albums`) */
+                    "filter[subject.type]": ("albums" | "tracks")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
@@ -4499,10 +4503,6 @@ export interface paths {
                     include?: string[];
                     /** @description Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[parentComment.id]"?: string[];
-                    /** @description Filter by subject resource ID (e.g. `12345`) */
-                    "filter[subject.id]": string[];
-                    /** @description Filter by subject resource type (e.g. `albums`) */
-                    "filter[subject.type]": ("albums" | "tracks")[];
                 };
                 header?: never;
                 path?: never;
@@ -4901,13 +4901,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: claimedResource, claimingArtist, owners
                      * @example claimedResource
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimedResource
                      * @example claimedResource
@@ -5441,13 +5441,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Download id (e.g. `VFJBQ0tTOjEyMzQ1`) */
+                    "filter[id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
-                    /** @description Download id (e.g. `VFJBQ0tTOjEyMzQ1`) */
-                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -5616,15 +5616,15 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description The id of the subject resource */
+                    "filter[subject.id]": string[];
+                    /** @description The type of the subject resource (e.g., albums, tracks, artists) (e.g. `tracks`) */
+                    "filter[subject.type]": ("tracks" | "albums" | "artists")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: subject
                      * @example subject
                      */
                     include?: string[];
-                    /** @description The id of the subject resource */
-                    "filter[subject.id]": string[];
-                    /** @description The type of the subject resource (e.g., albums, tracks, artists) (e.g. `tracks`) */
-                    "filter[subject.type]": ("tracks" | "albums" | "artists")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
                      * @example subject
@@ -5742,18 +5742,6 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description The type of device making the request
                      * @example PHONE
@@ -5769,13 +5757,25 @@ export interface paths {
                      * @example 2026.0.1
                      */
                     clientVersion: string;
+                    /** @description DynamicModules Id (e.g. `nejMcAhh5N8S3EQ4LaqysVdI0cZZ`) */
+                    "filter[id]": string[];
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, seedItem
                      * @example items
                      */
                     include?: string[];
-                    /** @description DynamicModules Id (e.g. `nejMcAhh5N8S3EQ4LaqysVdI0cZZ`) */
-                    "filter[id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -5829,18 +5829,6 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description The type of device making the request
                      * @example PHONE
@@ -5856,6 +5844,18 @@ export interface paths {
                      * @example 2026.0.1
                      */
                     clientVersion: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, seedItem
                      * @example items
@@ -5920,20 +5920,6 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description The type of device making the request
                      * @example PHONE
@@ -5949,6 +5935,20 @@ export interface paths {
                      * @example 2026.0.1
                      */
                     clientVersion: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
                      * @example items
@@ -6013,18 +6013,6 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description The type of device making the request
                      * @example PHONE
@@ -6040,6 +6028,18 @@ export interface paths {
                      * @example 2026.0.1
                      */
                     clientVersion: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: seedItem
                      * @example seedItem
@@ -6104,18 +6104,6 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description The type of device making the request
                      * @example PHONE
@@ -6131,13 +6119,25 @@ export interface paths {
                      * @example 2026.0.1
                      */
                     clientVersion: string;
+                    /** @description type of the page (e.g. `ARTIST`) */
+                    "filter[pageType]": string[];
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: modules, subject
                      * @example modules.items
                      */
                     include?: string[];
-                    /** @description type of the page (e.g. `ARTIST`) */
-                    "filter[pageType]": string[];
                     /** @description The subject resource ID. Required except for HOME_FREE, where it must be omitted. (e.g. `67890`) */
                     "filter[subject.id]"?: string[];
                     /**
@@ -6193,20 +6193,6 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description The type of device making the request
                      * @example PHONE
@@ -6222,6 +6208,20 @@ export interface paths {
                      * @example 2026.0.1
                      */
                     clientVersion: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: modules
                      * @example modules.items
@@ -6350,6 +6350,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from (e.g. `'1,2,3' or 'USER_SELECTABLE'`) */
+                    "filter[id]": string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -6357,8 +6359,6 @@ export interface paths {
                      * @example en-US
                      */
                     locale?: string;
-                    /** @description Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from (e.g. `'1,2,3' or 'USER_SELECTABLE'`) */
-                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -6634,6 +6634,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`) */
+                    "filter[type]": ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -6645,8 +6647,6 @@ export interface paths {
                     "filter[id]"?: string[];
                     /** @description One of: PENDING, STORED (e.g. `PENDING`) */
                     "filter[state]"?: ("PENDING" | "STORED")[];
-                    /** @description One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`) */
-                    "filter[type]": ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
                      * @example offlineInventory
@@ -7229,6 +7229,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description List of offline task IDs (e.g. `a468bee88def`) */
+                    "filter[installation.id]": string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -7236,8 +7238,6 @@ export interface paths {
                      * @example collection
                      */
                     include?: string[];
-                    /** @description List of offline task IDs (e.g. `a468bee88def`) */
-                    "filter[installation.id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection
                      * @example collection
@@ -7581,6 +7581,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -7588,8 +7590,6 @@ export interface paths {
                      * @example current
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current
                      * @example current
@@ -9337,13 +9337,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, provider
                      * @example owners
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -9506,6 +9506,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Content provider ID (e.g. `50`) */
+                    "filter[provider.id]": string[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -9520,8 +9522,6 @@ export interface paths {
                     "filter[barcodeId]"?: string[];
                     /** @description List of GRIDs (Global Release Identifier, ISO 7064) (e.g. `A10302B0013941653J`) */
                     "filter[grid]"?: string[];
-                    /** @description Content provider ID (e.g. `50`) */
-                    "filter[provider.id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
                      * @example subject
@@ -9750,6 +9750,10 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
+                    /** @description The type of purchased content (e.g. `albums`) */
+                    "filter[subject.type]": ("albums" | "tracks")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -9757,10 +9761,6 @@ export interface paths {
                      * @example subject
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
-                    /** @description The type of purchased content (e.g. `albums`) */
-                    "filter[subject.type]": ("albums" | "tracks")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
                      * @example subject
@@ -9939,6 +9939,10 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Filter by subject resource ID (e.g. `12345`) */
+                    "filter[subject.id]": string[];
+                    /** @description Filter by subject resource type (e.g. `albums`) */
+                    "filter[subject.type]": ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments")[];
                     stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
                     statsOnly?: boolean;
                     viewerContext?: string;
@@ -9951,10 +9955,6 @@ export interface paths {
                     include?: string[];
                     /** @description Filter by emoji (e.g. `👍`) */
                     "filter[emoji]"?: string[];
-                    /** @description Filter by subject resource ID (e.g. `12345`) */
-                    "filter[subject.id]": string[];
-                    /** @description Filter by subject resource type (e.g. `albums`) */
-                    "filter[subject.type]": ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments")[];
                 };
                 header?: never;
                 path?: never;
@@ -10355,6 +10355,91 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/searchResults": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get search results by query.
+         * @description Searches for a query and returns a collection containing exactly one search results resource.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Search query (e.g. `hello`) */
+                    "filter[query]": string;
+                    /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, playlists, topHits, tracks, videos
+                     * @example albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/searchResults/{id}": {
         parameters: {
             query?: never;
@@ -10364,7 +10449,8 @@ export interface paths {
         };
         /**
          * Get single searchResult.
-         * @description Retrieves single searchResult by id.
+         * @deprecated
+         * @description Deprecated. Use GET /searchResults?filter[query]=... to search instead. Opaque identifiers returned by that operation remain valid for searchResults relationship operations.
          */
         get: {
             parameters: {
@@ -10407,10 +10493,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10498,10 +10581,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10589,10 +10669,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10680,10 +10757,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10771,10 +10845,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10862,10 +10933,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10953,10 +11021,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10990,6 +11055,76 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/searchSuggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get search suggestions by query.
+         * @description Searches for a query and returns a collection containing exactly one search suggestions resource.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Search query (e.g. `hello`) */
+                    "filter[query]": string;
+                    /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: directHits, history
+                     * @example directHits
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: directHits
+                     * @example directHits
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SearchSuggestions_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/searchSuggestions/{id}": {
         parameters: {
             query?: never;
@@ -10999,7 +11134,8 @@ export interface paths {
         };
         /**
          * Get single searchSuggestion.
-         * @description Retrieves single searchSuggestion by id.
+         * @deprecated
+         * @description Deprecated. Use GET /searchSuggestions?filter[query]=... to search instead. Opaque identifiers returned by that operation remain valid for searchSuggestions relationship operations.
          */
         get: {
             parameters: {
@@ -11027,10 +11163,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search suggestions identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -11103,10 +11236,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search suggestions identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -11174,10 +11304,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search suggestions identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -11225,13 +11352,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description A share code (e.g. `xyz`) */
+                    "filter[code]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, sharedResources
                      * @example sharedResources
                      */
                     include?: string[];
-                    /** @description A share code (e.g. `xyz`) */
-                    "filter[code]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources
                      * @example sharedResources
@@ -11808,13 +11935,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -11970,13 +12097,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -12086,13 +12213,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: priceChange
                      * @example priceChange
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -12478,12 +12605,12 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES (e.g. `DEVELOPER`) */
+                    "filter[termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES")[];
                     /** @description Filter by countryCode */
                     "filter[countryCode]"?: string[];
                     /** @description Filter by isLatestVersion */
                     "filter[isLatestVersion]"?: string[];
-                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES (e.g. `DEVELOPER`) */
-                    "filter[termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES")[];
                 };
                 header?: never;
                 path?: never;
@@ -15254,13 +15381,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Folder Id (e.g. `CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX`) */
+                    "filter[id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection
                      * @example items.items
                      */
                     include?: string[];
-                    /** @description Folder Id (e.g. `CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX`) */
-                    "filter[id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -19410,13 +19537,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: decision
                      * @example decision
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -24009,6 +24136,11 @@ export interface components {
              */
             didYouMean?: string;
             /**
+             * @description The search query represented by this resource
+             * @example hello
+             */
+            query: string;
+            /**
              * @description search request unique tracking number
              * @example 5896e37d-e847-4ca6-9629-ef8001719f7f
              */
@@ -24016,6 +24148,11 @@ export interface components {
         };
         SearchResults_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchResults_Multi_Resource_Data_Document: {
+            data: components["schemas"]["SearchResults_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -24132,10 +24269,10 @@ export interface components {
         };
         SearchSuggestions_Attributes: {
             /**
-             * @deprecated
-             * @description Suggestions from search history. Deprecated — use the history relationship instead. Will be deleted shortly.
+             * @description The search query represented by this resource
+             * @example hello
              */
-            history?: components["schemas"]["SearchSuggestions_History"][];
+            query: string;
             /** @description Suggested search queries */
             suggestions?: components["schemas"]["SearchSuggestions_Suggestions"][];
             /** @description Unique tracking id */
@@ -24168,13 +24305,13 @@ export interface components {
             /** Format: int32 */
             start: number;
         };
-        /** @description Suggestions from search history. Deprecated — use the history relationship instead. Will be deleted shortly. */
-        SearchSuggestions_History: {
-            highlights?: components["schemas"]["SearchSuggestions_Highlights"][];
-            query: string;
-        };
         SearchSuggestions_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SearchSuggestions_Multi_Resource_Data_Document: {
+            data: components["schemas"]["SearchSuggestions_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
