@@ -18,17 +18,17 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
+                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES (e.g. `DEVELOPER`) */
+                    "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, terms
                      * @example owners
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                     /** @description Filter by terms.isLatestVersion */
                     "filter[terms.isLatestVersion]"?: string[];
-                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE (e.g. `DEVELOPER`) */
-                    "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE")[];
                 };
                 header?: never;
                 path?: never;
@@ -82,7 +82,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["AcceptedTerms_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["AcceptedTerms_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -447,7 +447,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Albums_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Albums_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -1604,7 +1604,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Appreciations_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Appreciations_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -1851,13 +1851,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists
                      * @example acceptedArtists.albums
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: acceptedArtists.albums
                      * @example acceptedArtists.albums
@@ -1922,7 +1922,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ArtistClaims_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ArtistClaims_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -2460,7 +2460,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artists_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artists_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -2940,6 +2940,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -3584,6 +3591,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Artwork id (e.g. `a468bee88def`) */
+                    "filter[id]": string[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -3594,8 +3603,6 @@ export interface paths {
                      * @example owners
                      */
                     include?: string[];
-                    /** @description Artwork id (e.g. `a468bee88def`) */
-                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -3649,7 +3656,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artworks_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artworks_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -3809,13 +3816,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -3869,7 +3876,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Clients_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Clients_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4011,7 +4018,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Clients_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Clients_Update_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4124,7 +4131,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["CollaborationInviteRedemptions_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["CollaborationInviteRedemptions_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4159,13 +4166,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Invite code */
+                    "filter[code]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
                      * @example subject.items
                      */
                     include?: string[];
-                    /** @description Invite code */
-                    "filter[code]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.items
                      * @example subject.items
@@ -4224,7 +4231,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["CollaborationInvites_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["CollaborationInvites_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4481,6 +4488,10 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Filter by subject resource ID (e.g. `12345`) */
+                    "filter[subject.id]": string[];
+                    /** @description Filter by subject resource type (e.g. `albums`) */
+                    "filter[subject.type]": ("albums" | "tracks")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
@@ -4492,10 +4503,6 @@ export interface paths {
                     include?: string[];
                     /** @description Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[parentComment.id]"?: string[];
-                    /** @description Filter by subject resource ID (e.g. `12345`) */
-                    "filter[subject.id]": string[];
-                    /** @description Filter by subject resource type (e.g. `albums`) */
-                    "filter[subject.type]": ("albums" | "tracks")[];
                 };
                 header?: never;
                 path?: never;
@@ -4549,7 +4556,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Comments_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Comments_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4894,13 +4901,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: claimedResource, claimingArtist, owners
                      * @example claimedResource
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimedResource
                      * @example claimedResource
@@ -4959,7 +4966,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ContentClaims_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ContentClaims_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -5434,13 +5441,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Download id (e.g. `VFJBQ0tTOjEyMzQ1`) */
+                    "filter[id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
-                    /** @description Download id (e.g. `VFJBQ0tTOjEyMzQ1`) */
-                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -5609,15 +5616,15 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description The id of the subject resource */
+                    "filter[subject.id]": string[];
+                    /** @description The type of the subject resource (e.g., albums, tracks, artists) (e.g. `tracks`) */
+                    "filter[subject.type]": ("tracks" | "albums" | "artists")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: subject
                      * @example subject
                      */
                     include?: string[];
-                    /** @description The id of the subject resource */
-                    "filter[subject.id]": string[];
-                    /** @description The type of the subject resource (e.g., albums, tracks, artists) (e.g. `tracks`) */
-                    "filter[subject.type]": ("tracks" | "albums" | "artists")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
                      * @example subject
@@ -5735,18 +5742,6 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description The type of device making the request
                      * @example PHONE
@@ -5762,13 +5757,25 @@ export interface paths {
                      * @example 2026.0.1
                      */
                     clientVersion: string;
+                    /** @description DynamicModules Id (e.g. `nejMcAhh5N8S3EQ4LaqysVdI0cZZ`) */
+                    "filter[id]": string[];
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, seedItem
                      * @example items
                      */
                     include?: string[];
-                    /** @description DynamicModules Id (e.g. `nejMcAhh5N8S3EQ4LaqysVdI0cZZ`) */
-                    "filter[id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -5822,18 +5829,6 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description The type of device making the request
                      * @example PHONE
@@ -5849,6 +5844,18 @@ export interface paths {
                      * @example 2026.0.1
                      */
                     clientVersion: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, seedItem
                      * @example items
@@ -5913,20 +5920,6 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description The type of device making the request
                      * @example PHONE
@@ -5942,6 +5935,20 @@ export interface paths {
                      * @example 2026.0.1
                      */
                     clientVersion: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items
                      * @example items
@@ -6006,18 +6013,6 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description The type of device making the request
                      * @example PHONE
@@ -6033,6 +6028,18 @@ export interface paths {
                      * @example 2026.0.1
                      */
                     clientVersion: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: seedItem
                      * @example seedItem
@@ -6097,18 +6104,6 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description The type of device making the request
                      * @example PHONE
@@ -6124,13 +6119,25 @@ export interface paths {
                      * @example 2026.0.1
                      */
                     clientVersion: string;
+                    /** @description type of the page (e.g. `ARTIST`) */
+                    "filter[pageType]": string[];
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: modules, subject
                      * @example modules.items
                      */
                     include?: string[];
-                    /** @description type of the page (e.g. `ARTIST`) */
-                    "filter[pageType]": string[];
                     /** @description The subject resource ID. Required except for HOME_FREE, where it must be omitted. (e.g. `67890`) */
                     "filter[subject.id]"?: string[];
                     /**
@@ -6186,20 +6193,6 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description The type of device making the request
                      * @example PHONE
@@ -6215,6 +6208,20 @@ export interface paths {
                      * @example 2026.0.1
                      */
                     clientVersion: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: modules
                      * @example modules.items
@@ -6343,6 +6350,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from (e.g. `'1,2,3' or 'USER_SELECTABLE'`) */
+                    "filter[id]": string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -6350,8 +6359,6 @@ export interface paths {
                      * @example en-US
                      */
                     locale?: string;
-                    /** @description Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from (e.g. `'1,2,3' or 'USER_SELECTABLE'`) */
-                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -6528,7 +6535,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Installations_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Installations_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -6627,6 +6634,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`) */
+                    "filter[type]": ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -6638,8 +6647,6 @@ export interface paths {
                     "filter[id]"?: string[];
                     /** @description One of: PENDING, STORED (e.g. `PENDING`) */
                     "filter[state]"?: ("PENDING" | "STORED")[];
-                    /** @description One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`) */
-                    "filter[type]": ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
                      * @example offlineInventory
@@ -6704,6 +6711,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -6855,7 +6869,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Lyrics_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Lyrics_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -7180,7 +7194,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ManualArtistClaims_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ManualArtistClaims_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -7215,6 +7229,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description List of offline task IDs (e.g. `a468bee88def`) */
+                    "filter[installation.id]": string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -7222,8 +7238,6 @@ export interface paths {
                      * @example collection
                      */
                     include?: string[];
-                    /** @description List of offline task IDs (e.g. `a468bee88def`) */
-                    "filter[installation.id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection
                      * @example collection
@@ -7567,6 +7581,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -7574,8 +7590,6 @@ export interface paths {
                      * @example current
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current
                      * @example current
@@ -7634,7 +7648,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["PlayQueues_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["PlayQueues_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -7975,6 +7989,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -8222,6 +8243,8 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[collaborators.id]"?: string[];
                     /** @description List of playlist IDs (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
@@ -8264,13 +8287,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -8290,7 +8307,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Playlists_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Playlists_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -8416,13 +8433,7 @@ export interface paths {
          */
         patch: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -8442,6 +8453,15 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Playlists_Update_Single_Resource_Data_Document"];
+                    };
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -8541,6 +8561,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -8793,6 +8820,8 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /** @description Filter playlist items by a free-text query (e.g. `halo`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -8837,13 +8866,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -8869,7 +8892,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Playlists_Items_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9226,7 +9249,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["PriceConfigurations_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["PriceConfigurations_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9314,13 +9337,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, provider
                      * @example owners
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -9483,6 +9506,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Content provider ID (e.g. `50`) */
+                    "filter[provider.id]": string[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -9497,8 +9522,6 @@ export interface paths {
                     "filter[barcodeId]"?: string[];
                     /** @description List of GRIDs (Global Release Identifier, ISO 7064) (e.g. `A10302B0013941653J`) */
                     "filter[grid]"?: string[];
-                    /** @description Content provider ID (e.g. `50`) */
-                    "filter[provider.id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
                      * @example subject
@@ -9727,6 +9750,10 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
+                    /** @description The type of purchased content (e.g. `albums`) */
+                    "filter[subject.type]": ("albums" | "tracks")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -9734,10 +9761,6 @@ export interface paths {
                      * @example subject
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
-                    /** @description The type of purchased content (e.g. `albums`) */
-                    "filter[subject.type]": ("albums" | "tracks")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
                      * @example subject
@@ -9916,6 +9939,10 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Filter by subject resource ID (e.g. `12345`) */
+                    "filter[subject.id]": string[];
+                    /** @description Filter by subject resource type (e.g. `albums`) */
+                    "filter[subject.type]": ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments")[];
                     stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
                     statsOnly?: boolean;
                     viewerContext?: string;
@@ -9928,10 +9955,6 @@ export interface paths {
                     include?: string[];
                     /** @description Filter by emoji (e.g. `👍`) */
                     "filter[emoji]"?: string[];
-                    /** @description Filter by subject resource ID (e.g. `12345`) */
-                    "filter[subject.id]": string[];
-                    /** @description Filter by subject resource type (e.g. `albums`) */
-                    "filter[subject.type]": ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments")[];
                 };
                 header?: never;
                 path?: never;
@@ -9985,7 +10008,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Reactions_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Reactions_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -10212,7 +10235,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SavedShares_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SavedShares_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -10332,6 +10355,91 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/searchResults": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get search results by query.
+         * @description Searches for a query and returns a collection containing exactly one search results resource.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Search query (e.g. `hello`) */
+                    "filter[query]": string;
+                    /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description The type of device making the request
+                     * @example PHONE
+                     */
+                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, playlists, topHits, tracks, videos
+                     * @example albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
+                     * @example albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/searchResults/{id}": {
         parameters: {
             query?: never;
@@ -10341,7 +10449,8 @@ export interface paths {
         };
         /**
          * Get single searchResult.
-         * @description Retrieves single searchResult by id.
+         * @deprecated
+         * @description Deprecated. Use GET /searchResults?filter[query]=... to search instead. Opaque identifiers returned by that operation remain valid for searchResults relationship operations.
          */
         get: {
             parameters: {
@@ -10384,10 +10493,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10475,10 +10581,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10566,10 +10669,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10657,10 +10757,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10748,10 +10845,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10839,10 +10933,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10930,10 +11021,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search results identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -10967,6 +11055,76 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/searchSuggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get search suggestions by query.
+         * @description Searches for a query and returns a collection containing exactly one search suggestions resource.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Search query (e.g. `hello`) */
+                    "filter[query]": string;
+                    /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: directHits, history
+                     * @example directHits
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: directHits
+                     * @example directHits
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SearchSuggestions_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/searchSuggestions/{id}": {
         parameters: {
             query?: never;
@@ -10976,7 +11134,8 @@ export interface paths {
         };
         /**
          * Get single searchSuggestion.
-         * @description Retrieves single searchSuggestion by id.
+         * @deprecated
+         * @description Deprecated. Use GET /searchSuggestions?filter[query]=... to search instead. Opaque identifiers returned by that operation remain valid for searchSuggestions relationship operations.
          */
         get: {
             parameters: {
@@ -11004,10 +11163,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search suggestions identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -11080,10 +11236,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search suggestions identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -11151,10 +11304,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Search query string used as the resource identifier
-                     * @example hello
-                     */
+                    /** @description An opaque search suggestions identifier */
                     id: string;
                 };
                 cookie?: never;
@@ -11202,13 +11352,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description A share code (e.g. `xyz`) */
+                    "filter[code]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, sharedResources
                      * @example sharedResources
                      */
                     include?: string[];
-                    /** @description A share code (e.g. `xyz`) */
-                    "filter[code]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources
                      * @example sharedResources
@@ -11267,7 +11417,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Shares_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Shares_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11521,7 +11671,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SquareConnections_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SquareConnections_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11584,6 +11734,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareConnectionsReadById403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -11643,6 +11794,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareConnectionsReadSingleDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -11689,10 +11841,11 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SquareConnections_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SquareConnections_SelectedSite_Update_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareConnectionsUpdateSingleDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -11750,6 +11903,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareConnectionsReadMultiDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -11781,13 +11935,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -11847,7 +12001,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["StripeConnections_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["StripeConnections_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11943,13 +12097,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners
                      * @example owners
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -12059,13 +12213,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: priceChange
                      * @example priceChange
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -12119,7 +12273,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12185,7 +12339,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Update_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12296,7 +12450,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["TemporaryUserTokens_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["TemporaryUserTokens_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12451,12 +12605,12 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES (e.g. `DEVELOPER`) */
+                    "filter[termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES")[];
                     /** @description Filter by countryCode */
                     "filter[countryCode]"?: string[];
                     /** @description Filter by isLatestVersion */
                     "filter[isLatestVersion]"?: string[];
-                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE (e.g. `DEVELOPER`) */
-                    "filter[termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE")[];
                 };
                 header?: never;
                 path?: never;
@@ -12700,7 +12854,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13065,7 +13219,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14567,7 +14721,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UsageRules_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UsageRules_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -15227,13 +15381,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description Folder Id (e.g. `CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX`) */
+                    "filter[id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection
                      * @example items.items
                      */
                     include?: string[];
-                    /** @description Folder Id (e.g. `CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX`) */
-                    "filter[id]": string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -15292,7 +15446,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -15534,6 +15688,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -17006,6 +17167,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -17156,6 +17324,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -17221,7 +17396,8 @@ export interface paths {
         };
         /**
          * Get owners relationship ("to-many").
-         * @description Retrieves owners relationship.
+         * @deprecated
+         * @description Deprecated. Use the owners relationship on the dedicated collection resources instead: userCollectionAlbums, userCollectionArtists, userCollectionTracks, userCollectionVideos, or userCollectionPlaylists.
          */
         get: {
             parameters: {
@@ -17363,6 +17539,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -17513,6 +17696,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -17663,6 +17853,13 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 400: components["responses"]["Default400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
@@ -17894,7 +18091,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserDataExportRequests_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserDataExportRequests_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18495,7 +18692,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Artists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Artists_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18705,7 +18902,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Tracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Tracks_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18854,7 +19051,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Videos_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Videos_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -19305,7 +19502,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserReports_Single_Resource_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserReports_Create_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -19340,13 +19537,13 @@ export interface paths {
         get: {
             parameters: {
                 query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: decision
                      * @example decision
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -20328,6 +20525,10 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
         };
+        AcceptedTerms_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["AcceptedTerms_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         AcceptedTerms_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -20361,11 +20562,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        AcceptedTerms_Single_Resource_Data_Document: {
-            data: components["schemas"]["AcceptedTerms_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         AlbumStatistics_Attributes: {
             /**
              * Format: int32
@@ -20385,11 +20581,6 @@ export interface components {
         };
         AlbumStatistics_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        AlbumStatistics_Multi_Resource_Data_Document: {
-            data: components["schemas"]["AlbumStatistics_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20617,6 +20808,10 @@ export interface components {
              */
             version?: string;
         };
+        Albums_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Albums_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         Albums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Albums_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -20802,9 +20997,8 @@ export interface components {
              */
             createdAt: string;
         };
-        Appreciations_Multi_Resource_Data_Document: {
-            data: components["schemas"]["Appreciations_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        Appreciations_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Appreciations_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         Appreciations_Resource_Object: {
@@ -20819,11 +21013,6 @@ export interface components {
              * @enum {string}
              */
             type: "appreciations";
-        };
-        Appreciations_Single_Resource_Data_Document: {
-            data: components["schemas"]["Appreciations_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         ArtistBiographiesUpdateOperation_Payload: {
             data: components["schemas"]["ArtistBiographiesUpdateOperation_Payload_Data"];
@@ -20857,11 +21046,6 @@ export interface components {
         };
         ArtistBiographies_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        ArtistBiographies_Multi_Resource_Data_Document: {
-            data: components["schemas"]["ArtistBiographies_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -20913,11 +21097,6 @@ export interface components {
              * @enum {string}
              */
             type: "artistClaimStatuses";
-        };
-        ArtistClaimStatuses_Single_Resource_Data_Document: {
-            data: components["schemas"]["ArtistClaimStatuses_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload_Data"][];
@@ -20983,6 +21162,10 @@ export interface components {
              */
             status: "AWAITING_OAUTH" | "FETCHING_CONTENT" | "VERIFIED" | "NO_MATCHES" | "AUTHENTICATION_FAILED" | "PROCESSING" | "COMPLETED" | "FAILED" | "CANCELLED" | "NAME_MISMATCH" | "CLAIMED_ARTIST_MISMATCH";
         };
+        ArtistClaims_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["ArtistClaims_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         ArtistClaims_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21020,11 +21203,6 @@ export interface components {
         ArtistRoles_Attributes: {
             /** @description Name of the artist role */
             name: string;
-        };
-        ArtistRoles_Multi_Resource_Data_Document: {
-            data: components["schemas"]["ArtistRoles_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         ArtistRoles_Resource_Object: {
             attributes?: components["schemas"]["ArtistRoles_Attributes"];
@@ -21164,6 +21342,10 @@ export interface components {
              * @example true
              */
             spotlighted?: boolean;
+        };
+        Artists_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Artists_Resource_Object"];
+            links: components["schemas"]["Links"];
         };
         Artists_Followers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Followers_Resource_Identifier"][];
@@ -21411,6 +21593,10 @@ export interface components {
             sourceFile?: components["schemas"]["Artwork_SourceFile"];
             visualMetadata?: components["schemas"]["Artwork_VisualMetadata"];
         };
+        Artworks_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Artworks_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         Artworks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21488,6 +21674,10 @@ export interface components {
             redirectUris?: string[];
             scopes?: string[];
         };
+        Clients_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Clients_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         Clients_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21520,6 +21710,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Clients_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["Clients_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         CollaborationInviteRedemptionsCreateOperation_Payload: {
             data: components["schemas"]["CollaborationInviteRedemptionsCreateOperation_Payload_Data"];
         };
@@ -21546,9 +21740,8 @@ export interface components {
              */
             redeemedAt: string;
         };
-        CollaborationInviteRedemptions_Multi_Resource_Data_Document: {
-            data: components["schemas"]["CollaborationInviteRedemptions_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        CollaborationInviteRedemptions_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["CollaborationInviteRedemptions_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         CollaborationInviteRedemptions_Resource_Object: {
@@ -21563,11 +21756,6 @@ export interface components {
              * @enum {string}
              */
             type: "collaborationInviteRedemptions";
-        };
-        CollaborationInviteRedemptions_Single_Resource_Data_Document: {
-            data: components["schemas"]["CollaborationInviteRedemptions_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         CollaborationInvitesCreateOperation_Payload: {
             data: components["schemas"]["CollaborationInvitesCreateOperation_Payload_Data"];
@@ -21603,6 +21791,10 @@ export interface components {
             expiresAt: string;
             /** @description Whether the invite has been revoked by the subject's owner */
             revoked: boolean;
+        };
+        CollaborationInvites_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["CollaborationInvites_Resource_Object"];
+            links: components["schemas"]["Links"];
         };
         CollaborationInvites_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -21731,6 +21923,10 @@ export interface components {
              */
             startTime?: string;
         };
+        Comments_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Comments_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         Comments_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21846,6 +22042,10 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ContentClaims_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["ContentClaims_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         ContentClaims_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21900,11 +22100,6 @@ export interface components {
              * @example Vocals
              */
             role: string;
-        };
-        Credits_Multi_Resource_Data_Document: {
-            data: components["schemas"]["Credits_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Credits_Relationships: {
             artist?: components["schemas"]["Single_Relationship_Data_Document"];
@@ -22096,11 +22291,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        DspSharingLinks_Single_Resource_Data_Document: {
-            data: components["schemas"]["DspSharingLinks_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         DspSharingLinks_Subject_Resource_Identifier: {
             /**
              * @description Resource id
@@ -22283,11 +22473,6 @@ export interface components {
         };
         DynamicPages_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        DynamicPages_Single_Resource_Data_Document: {
-            data: components["schemas"]["DynamicPages_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -22492,6 +22677,10 @@ export interface components {
              */
             name: string;
         };
+        Installations_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Installations_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         Installations_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -22642,13 +22831,12 @@ export interface components {
             technicalStatus: "PENDING" | "PROCESSING" | "ERROR" | "OK";
             text?: string;
         };
-        Lyrics_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+        Lyrics_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Lyrics_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        Lyrics_Multi_Resource_Data_Document: {
-            data: components["schemas"]["Lyrics_Resource_Object"][];
+        Lyrics_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -22779,9 +22967,8 @@ export interface components {
             upcs?: string[];
             websiteOrSocialLink: components["schemas"]["Link_Object"];
         };
-        ManualArtistClaims_Multi_Resource_Data_Document: {
-            data: components["schemas"]["ManualArtistClaims_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        ManualArtistClaims_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["ManualArtistClaims_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         ManualArtistClaims_Resource_Object: {
@@ -22796,11 +22983,6 @@ export interface components {
              * @enum {string}
              */
             type: "manualArtistClaims";
-        };
-        ManualArtistClaims_Single_Resource_Data_Document: {
-            data: components["schemas"]["ManualArtistClaims_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -22820,7 +23002,7 @@ export interface components {
              * @description New state for the offline task
              * @enum {string}
              */
-            state: "IN_PROGRESS" | "FAILED" | "COMPLETED";
+            state: "PENDING" | "IN_PROGRESS" | "FAILED" | "COMPLETED";
         };
         OfflineTasks_Attributes: {
             /**
@@ -23033,6 +23215,10 @@ export interface components {
             /** @description Queue is shuffled or not */
             shuffled: boolean;
         };
+        PlayQueues_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["PlayQueues_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         PlayQueues_Current_Resource_Identifier: {
             /**
              * @description Resource id
@@ -23182,7 +23368,7 @@ export interface components {
         };
         PlaylistsCreateOperation_Payload_Data_Attributes: {
             /**
-             * @description Access type
+             * @description User-selectable playlist visibility.
              * @example PUBLIC
              * @enum {string}
              */
@@ -23208,6 +23394,13 @@ export interface components {
         };
         PlaylistsItemsRelationshipAddOperation_Payload_Meta: {
             positionBefore: string;
+        };
+        PlaylistsItemsRelationshipAddOperation_Response_Meta_SkippedItem: {
+            id: string;
+            /** @enum {string} */
+            reason: "NOT_FOUND";
+            /** @enum {string} */
+            type: "tracks" | "videos";
         };
         PlaylistsItemsRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["PlaylistsItemsRelationshipRemoveOperation_Payload_Data"][];
@@ -23248,7 +23441,7 @@ export interface components {
         };
         PlaylistsUpdateOperation_Payload_Data_Attributes: {
             /**
-             * @description Access type
+             * @description User-selectable playlist visibility.
              * @example PUBLIC
              * @enum {string}
              */
@@ -23259,10 +23452,10 @@ export interface components {
         Playlists_Attributes: {
             /**
              * @description Access type
-             * @example PUBLIC
+             * @example PRIVATE
              * @enum {string}
              */
-            accessType: "PUBLIC" | "UNLISTED";
+            accessType: "PUBLIC" | "UNLISTED" | "PRIVATE";
             /** @description Indicates if the playlist has a duration and set number of tracks */
             bounded: boolean;
             /**
@@ -23300,6 +23493,29 @@ export interface components {
              * @enum {string}
              */
             playlistType: "EDITORIAL" | "USER" | "MIX" | "ARTIST";
+        };
+        Playlists_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Playlists_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        Playlists_Items_Add_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["Playlists_Items_Add_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["Playlists_Items_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        Playlists_Items_Add_Multi_Relationship_Data_Document_Meta: {
+            skipped: components["schemas"]["PlaylistsItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
+        Playlists_Items_Add_Resource_Identifier: {
+            id: string;
+            meta?: components["schemas"]["Playlists_Items_Add_Resource_Identifier_Meta"];
+            /** @enum {string} */
+            type: "tracks" | "videos";
+        };
+        Playlists_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
+            itemId: string;
         };
         Playlists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Playlists_Items_Resource_Identifier"][];
@@ -23388,6 +23604,10 @@ export interface components {
             /** @description Foreground color for the suggested artwork */
             foregroundColor: string;
         };
+        Playlists_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["Playlists_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         PriceConfigurationsCreateOperation_Payload: {
             data: components["schemas"]["PriceConfigurationsCreateOperation_Payload_Data"];
         };
@@ -23431,6 +23651,10 @@ export interface components {
              * @example 9.99
              */
             price: string;
+        };
+        PriceConfigurations_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["PriceConfigurations_Resource_Object"];
+            links: components["schemas"]["Links"];
         };
         PriceConfigurations_Multi_Resource_Data_Document: {
             data: components["schemas"]["PriceConfigurations_Resource_Object"][];
@@ -23492,11 +23716,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        ProviderOwners_Single_Resource_Data_Document: {
-            data: components["schemas"]["ProviderOwners_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         ProviderProductInfos_Attributes: {
             barcodeId?: string;
             broken?: boolean;
@@ -23533,11 +23752,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        ProviderProductInfos_Single_Resource_Data_Document: {
-            data: components["schemas"]["ProviderProductInfos_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         ProviderProductInfos_Subject_Resource_Identifier: {
             /**
              * @description Resource id
@@ -23565,11 +23779,6 @@ export interface components {
              * @example Columbia/Legacy
              */
             name: string;
-        };
-        Providers_Multi_Resource_Data_Document: {
-            data: components["schemas"]["Providers_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Providers_Resource_Object: {
             attributes?: components["schemas"]["Providers_Attributes"];
@@ -23631,11 +23840,6 @@ export interface components {
         };
         Purchases_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        Purchases_Single_Resource_Data_Document: {
-            data: components["schemas"]["Purchases_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -23705,6 +23909,10 @@ export interface components {
             /** @description The type of reaction representing an emoji */
             emoji: string;
         };
+        Reactions_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Reactions_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         Reactions_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -23738,11 +23946,6 @@ export interface components {
              * @enum {string}
              */
             type: "reactions";
-        };
-        Reactions_Single_Resource_Data_Document: {
-            data: components["schemas"]["Reactions_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         /** @description Relationship identifier before contextual replacement projection. */
         Replacement_Original_Identifier: {
@@ -23809,9 +24012,8 @@ export interface components {
              */
             createdAt: string;
         };
-        SavedShares_Multi_Resource_Data_Document: {
-            data: components["schemas"]["SavedShares_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        SavedShares_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["SavedShares_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         SavedShares_Resource_Object: {
@@ -23826,11 +24028,6 @@ export interface components {
              * @enum {string}
              */
             type: "savedShares";
-        };
-        SavedShares_Single_Resource_Data_Document: {
-            data: components["schemas"]["SavedShares_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Scopes_Attributes: {
             /**
@@ -23873,19 +24070,9 @@ export interface components {
              */
             type: "scopes";
         };
-        Scopes_Single_Resource_Data_Document: {
-            data: components["schemas"]["Scopes_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         SearchHistoryEntries_Attributes: {
             highlights: components["schemas"]["Highlight"][];
             query: string;
-        };
-        SearchHistoryEntries_Multi_Resource_Data_Document: {
-            data: components["schemas"]["SearchHistoryEntries_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         SearchHistoryEntries_Resource_Object: {
             attributes?: components["schemas"]["SearchHistoryEntries_Attributes"];
@@ -23899,11 +24086,6 @@ export interface components {
              * @enum {string}
              */
             type: "searchHistoryEntries";
-        };
-        SearchHistoryEntries_Single_Resource_Data_Document: {
-            data: components["schemas"]["SearchHistoryEntries_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         SearchResults_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["SearchResults_Albums_Resource_Identifier"][];
@@ -23953,6 +24135,11 @@ export interface components {
              * @example beatles
              */
             didYouMean?: string;
+            /**
+             * @description The search query represented by this resource
+             * @example hello
+             */
+            query: string;
             /**
              * @description search request unique tracking number
              * @example 5896e37d-e847-4ca6-9629-ef8001719f7f
@@ -24082,10 +24269,10 @@ export interface components {
         };
         SearchSuggestions_Attributes: {
             /**
-             * @deprecated
-             * @description Suggestions from search history. Deprecated — use the history relationship instead. Will be deleted shortly.
+             * @description The search query represented by this resource
+             * @example hello
              */
-            history?: components["schemas"]["SearchSuggestions_History"][];
+            query: string;
             /** @description Suggested search queries */
             suggestions?: components["schemas"]["SearchSuggestions_Suggestions"][];
             /** @description Unique tracking id */
@@ -24117,11 +24304,6 @@ export interface components {
             length: number;
             /** Format: int32 */
             start: number;
-        };
-        /** @description Suggestions from search history. Deprecated — use the history relationship instead. Will be deleted shortly. */
-        SearchSuggestions_History: {
-            highlights?: components["schemas"]["SearchSuggestions_Highlights"][];
-            query: string;
         };
         SearchSuggestions_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -24190,6 +24372,10 @@ export interface components {
             createdAt: string;
             /** @description Links external to TIDAL API */
             externalLinks?: components["schemas"]["External_Link"][];
+        };
+        Shares_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Shares_Resource_Object"];
+            links: components["schemas"]["Links"];
         };
         Shares_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -24269,6 +24455,45 @@ export interface components {
              */
             redirectUrl?: string;
         };
+        SquareConnectionsReadById403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareConnectionsReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareConnectionsReadSingleDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
         SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["SquareConnectionsSelectedSiteRelationshipUpdateOperation_Payload_Data"] | (never | null);
         };
@@ -24277,6 +24502,19 @@ export interface components {
             id: string;
             /** @enum {string} */
             type: "squareSites";
+        };
+        SquareConnectionsUpdateSingleDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
         };
         SquareConnectionsUpdateSingleDataRelationship409ResponseBody: {
             errors: {
@@ -24324,13 +24562,12 @@ export interface components {
              */
             status: "GRANTED" | "REQUIRES_REAUTH";
         };
-        SquareConnections_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+        SquareConnections_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareConnections_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        SquareConnections_Multi_Resource_Data_Document: {
-            data: components["schemas"]["SquareConnections_Resource_Object"][];
+        SquareConnections_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -24352,6 +24589,15 @@ export interface components {
              */
             type: "squareConnections";
         };
+        SquareConnections_SelectedSite_Update_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "squareSites";
+        };
+        SquareConnections_SelectedSite_Update_Single_Relationship_Data_Document: {
+            data: components["schemas"]["SquareConnections_SelectedSite_Update_Resource_Identifier"] | (never | null);
+            links: components["schemas"]["Links"];
+        };
         SquareConnections_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -24370,11 +24616,6 @@ export interface components {
             /** @description The site's title as set by the seller in Square */
             siteTitle?: string;
         };
-        SquareSites_Multi_Resource_Data_Document: {
-            data: components["schemas"]["SquareSites_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         SquareSites_Resource_Object: {
             attributes?: components["schemas"]["SquareSites_Attributes"];
             /**
@@ -24387,11 +24628,6 @@ export interface components {
              * @enum {string}
              */
             type: "squareSites";
-        };
-        SquareSites_Single_Resource_Data_Document: {
-            data: components["schemas"]["SquareSites_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         StripeConnectionsCreateOperation_Payload: {
             data: components["schemas"]["StripeConnectionsCreateOperation_Payload_Data"];
@@ -24462,6 +24698,10 @@ export interface components {
              */
             status: "PENDING_REQUIREMENTS" | "UNDER_REVIEW" | "ACCEPTED" | "REJECTED" | "SUSPENDED";
         };
+        StripeConnections_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["StripeConnections_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         StripeConnections_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24488,11 +24728,6 @@ export interface components {
              * @enum {string}
              */
             type: "stripeConnections";
-        };
-        StripeConnections_Single_Resource_Data_Document: {
-            data: components["schemas"]["StripeConnections_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         StripeDashboardLinks_Attributes: {
             dashboardLink?: components["schemas"]["Link_Object"];
@@ -24523,11 +24758,6 @@ export interface components {
              * @enum {string}
              */
             type: "stripeDashboardLinks";
-        };
-        StripeDashboardLinks_Single_Resource_Data_Document: {
-            data: components["schemas"]["StripeDashboardLinks_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         SubscriptionPriceChangeDecisionsCreateOperation_Payload: {
             data: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data"];
@@ -24584,6 +24814,10 @@ export interface components {
              */
             status: "ACCEPTED" | "REJECTED";
         };
+        SubscriptionPriceChangeDecisions_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         SubscriptionPriceChangeDecisions_Multi_Resource_Data_Document: {
             data: components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"][];
             included?: components["schemas"]["Included"];
@@ -24611,9 +24845,8 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        SubscriptionPriceChangeDecisions_Single_Resource_Data_Document: {
+        SubscriptionPriceChangeDecisions_Update_Single_Resource_Data_Document: {
             data: components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"];
-            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         TemporaryUserTokensCreateOperation_Payload: {
@@ -24624,13 +24857,12 @@ export interface components {
             type: "temporaryUserTokens";
         };
         TemporaryUserTokens_Attributes: Record<string, never>;
-        TemporaryUserTokens_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+        TemporaryUserTokens_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["TemporaryUserTokens_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        TemporaryUserTokens_Multi_Resource_Data_Document: {
-            data: components["schemas"]["TemporaryUserTokens_Resource_Object"][];
+        TemporaryUserTokens_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -24662,7 +24894,7 @@ export interface components {
             /** Format: date-time */
             effectiveAt: string;
             /** @enum {string} */
-            termsType: "DEVELOPER" | "UPLOAD_MARKETPLACE";
+            termsType: "DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES";
         };
         Terms_Multi_Resource_Data_Document: {
             data: components["schemas"]["Terms_Resource_Object"][];
@@ -24750,11 +24982,6 @@ export interface components {
             /** @description File URL */
             url?: string;
         };
-        TrackFiles_Multi_Resource_Data_Document: {
-            data: components["schemas"]["TrackFiles_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         TrackFiles_Resource_Object: {
             attributes?: components["schemas"]["TrackFiles_Attributes"];
             /**
@@ -24826,11 +25053,6 @@ export interface components {
             /** @description Manifest URI */
             uri?: string;
         };
-        TrackManifests_Multi_Resource_Data_Document: {
-            data: components["schemas"]["TrackManifests_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         TrackManifests_Resource_Object: {
             attributes?: components["schemas"]["TrackManifests_Attributes"];
             /**
@@ -24892,13 +25114,12 @@ export interface components {
             status: components["schemas"]["File_Status"];
             uploadLink: components["schemas"]["File_Upload_Link"];
         };
-        TrackSourceFiles_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+        TrackSourceFiles_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["TrackSourceFiles_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        TrackSourceFiles_Multi_Resource_Data_Document: {
-            data: components["schemas"]["TrackSourceFiles_Resource_Object"][];
+        TrackSourceFiles_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -24938,11 +25159,6 @@ export interface components {
         };
         TrackStatistics_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        TrackStatistics_Multi_Resource_Data_Document: {
-            data: components["schemas"]["TrackStatistics_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -25034,11 +25250,6 @@ export interface components {
              * @enum {string}
              */
             status: "PENDING" | "PROCESSING" | "ERROR" | "OK";
-        };
-        TracksMetadataStatus_Multi_Resource_Data_Document: {
-            data: components["schemas"]["TracksMetadataStatus_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         TracksMetadataStatus_Resource_Object: {
             attributes?: components["schemas"]["TracksMetadataStatus_Attributes"];
@@ -25200,6 +25411,10 @@ export interface components {
              * @example original, mix etc
              */
             version?: string;
+        };
+        Tracks_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["Tracks_Resource_Object"];
+            links: components["schemas"]["Links"];
         };
         Tracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -25368,9 +25583,8 @@ export interface components {
              */
             validFrom?: string;
         };
-        UsageRules_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UsageRules_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        UsageRules_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["UsageRules_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         UsageRules_Resource_Object: {
@@ -25450,13 +25664,22 @@ export interface components {
             numberOfItems: number;
         };
         UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+            data: components["schemas"]["UserCollectionAlbums_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
             meta?: components["schemas"]["UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document_Meta"];
         };
         UserCollectionAlbums_Items_Add_Multi_Relationship_Data_Document_Meta: {
             skipped: components["schemas"]["UserCollectionAlbumsItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
+        UserCollectionAlbums_Items_Add_Resource_Identifier: {
+            id: string;
+            meta?: components["schemas"]["UserCollectionAlbums_Items_Add_Resource_Identifier_Meta"];
+            /** @enum {string} */
+            type: "albums";
+        };
+        UserCollectionAlbums_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserCollectionAlbums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier"][];
@@ -25483,11 +25706,6 @@ export interface components {
         };
         UserCollectionAlbums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollectionAlbums_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollectionAlbums_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -25568,13 +25786,22 @@ export interface components {
             numberOfItems: number;
         };
         UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+            data: components["schemas"]["UserCollectionArtists_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
             meta?: components["schemas"]["UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document_Meta"];
         };
         UserCollectionArtists_Items_Add_Multi_Relationship_Data_Document_Meta: {
             skipped: components["schemas"]["UserCollectionArtistsItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
+        UserCollectionArtists_Items_Add_Resource_Identifier: {
+            id: string;
+            meta?: components["schemas"]["UserCollectionArtists_Items_Add_Resource_Identifier_Meta"];
+            /** @enum {string} */
+            type: "artists";
+        };
+        UserCollectionArtists_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserCollectionArtists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier"][];
@@ -25600,11 +25827,6 @@ export interface components {
         };
         UserCollectionArtists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollectionArtists_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollectionArtists_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -25698,6 +25920,10 @@ export interface components {
             name: string;
             /** Format: int32 */
             numberOfItems?: number;
+        };
+        UserCollectionFolders_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserCollectionFolders_Resource_Object"];
+            links: components["schemas"]["Links"];
         };
         UserCollectionFolders_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionFolders_Items_Resource_Identifier"][];
@@ -25814,13 +26040,22 @@ export interface components {
             numberOfItems: number;
         };
         UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollectionPlaylists_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+            data: components["schemas"]["UserCollectionPlaylists_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
             meta?: components["schemas"]["UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document_Meta"];
         };
         UserCollectionPlaylists_Items_Add_Multi_Relationship_Data_Document_Meta: {
             skipped: components["schemas"]["UserCollectionPlaylistsItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
+        UserCollectionPlaylists_Items_Add_Resource_Identifier: {
+            id: string;
+            meta?: components["schemas"]["UserCollectionPlaylists_Items_Add_Resource_Identifier_Meta"];
+            /** @enum {string} */
+            type: "playlists";
+        };
+        UserCollectionPlaylists_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserCollectionPlaylists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionPlaylists_Items_Resource_Identifier"][];
@@ -25846,11 +26081,6 @@ export interface components {
         };
         UserCollectionPlaylists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollectionPlaylists_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollectionPlaylists_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -25926,13 +26156,22 @@ export interface components {
             numberOfItems: number;
         };
         UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+            data: components["schemas"]["UserCollectionSaveForLaters_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
             meta?: components["schemas"]["UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document_Meta"];
         };
         UserCollectionSaveForLaters_Items_Add_Multi_Relationship_Data_Document_Meta: {
             skipped: components["schemas"]["UserCollectionSaveForLatersItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
+        UserCollectionSaveForLaters_Items_Add_Resource_Identifier: {
+            id: string;
+            meta?: components["schemas"]["UserCollectionSaveForLaters_Items_Add_Resource_Identifier_Meta"];
+            /** @enum {string} */
+            type: "tracks" | "albums" | "artists" | "playlists" | "videos";
+        };
+        UserCollectionSaveForLaters_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier"][];
@@ -25959,11 +26198,6 @@ export interface components {
         };
         UserCollectionSaveForLaters_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollectionSaveForLaters_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollectionSaveForLaters_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -26044,13 +26278,22 @@ export interface components {
             numberOfItems: number;
         };
         UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollectionTracks_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+            data: components["schemas"]["UserCollectionTracks_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
             meta?: components["schemas"]["UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document_Meta"];
         };
         UserCollectionTracks_Items_Add_Multi_Relationship_Data_Document_Meta: {
             skipped: components["schemas"]["UserCollectionTracksItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
+        UserCollectionTracks_Items_Add_Resource_Identifier: {
+            id: string;
+            meta?: components["schemas"]["UserCollectionTracks_Items_Add_Resource_Identifier_Meta"];
+            /** @enum {string} */
+            type: "tracks";
+        };
+        UserCollectionTracks_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserCollectionTracks_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionTracks_Items_Resource_Identifier"][];
@@ -26077,11 +26320,6 @@ export interface components {
         };
         UserCollectionTracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollectionTracks_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollectionTracks_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -26162,13 +26400,22 @@ export interface components {
             numberOfItems: number;
         };
         UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+            data: components["schemas"]["UserCollectionVideos_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
             meta?: components["schemas"]["UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document_Meta"];
         };
         UserCollectionVideos_Items_Add_Multi_Relationship_Data_Document_Meta: {
             skipped: components["schemas"]["UserCollectionVideosItemsRelationshipAddOperation_Response_Meta_SkippedItem"][];
+        };
+        UserCollectionVideos_Items_Add_Resource_Identifier: {
+            id: string;
+            meta?: components["schemas"]["UserCollectionVideos_Items_Add_Resource_Identifier_Meta"];
+            /** @enum {string} */
+            type: "videos";
+        };
+        UserCollectionVideos_Items_Add_Resource_Identifier_Meta: {
+            /** Format: date-time */
+            addedAt: string;
         };
         UserCollectionVideos_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier"][];
@@ -26195,11 +26442,6 @@ export interface components {
         };
         UserCollectionVideos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollectionVideos_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollectionVideos_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -26385,11 +26627,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollections_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserCollections_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         UserCollections_Playlists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollections_Playlists_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26491,11 +26728,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserDailyMixes_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserDailyMixes_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         UserDailyMixes_Relationships: {
             items?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
@@ -26537,9 +26769,8 @@ export interface components {
              */
             flowType: "GDPR" | "CCPA" | "COPPA" | "ANZ_PA" | "US_PRIVACY_REGULATION" | "APPI" | "RETENTION_POLICY";
         };
-        UserDataExportRequests_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserDataExportRequests_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        UserDataExportRequests_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserDataExportRequests_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         UserDataExportRequests_Resource_Object: {
@@ -26555,19 +26786,9 @@ export interface components {
              */
             type: "userDataExportRequests";
         };
-        UserDataExportRequests_Single_Resource_Data_Document: {
-            data: components["schemas"]["UserDataExportRequests_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         UserDiscoveryMixes_Attributes: Record<string, never>;
         UserDiscoveryMixes_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserDiscoveryMixes_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserDiscoveryMixes_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -26599,11 +26820,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserNewReleaseMixes_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserNewReleaseMixes_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         UserNewReleaseMixes_Relationships: {
             items?: components["schemas"]["Multi_Relationship_Data_Document"];
         };
@@ -26629,11 +26845,6 @@ export interface components {
         UserOfflineMixes_Attributes: Record<string, never>;
         UserOfflineMixes_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserOfflineMixes_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserOfflineMixes_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -26720,6 +26931,15 @@ export interface components {
             /** @enum {string} */
             type: "videos";
         };
+        UserRecommendationBlocks_Artists_Add_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["UserRecommendationBlocks_Artists_Add_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+        };
+        UserRecommendationBlocks_Artists_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "artists";
+        };
         UserRecommendationBlocks_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Artists_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26751,11 +26971,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserRecommendationBlocks_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserRecommendationBlocks_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         UserRecommendationBlocks_Relationships: {
             artists?: components["schemas"]["UserRecommendationBlocks_Artists_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Multi_Relationship_Data_Document"];
@@ -26780,6 +26995,15 @@ export interface components {
             data: components["schemas"]["UserRecommendationBlocks_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        UserRecommendationBlocks_Tracks_Add_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["UserRecommendationBlocks_Tracks_Add_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+        };
+        UserRecommendationBlocks_Tracks_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks";
         };
         UserRecommendationBlocks_Tracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Tracks_Resource_Identifier"][];
@@ -26806,6 +27030,15 @@ export interface components {
              */
             createdAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        UserRecommendationBlocks_Videos_Add_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["UserRecommendationBlocks_Videos_Add_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+        };
+        UserRecommendationBlocks_Videos_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "videos";
         };
         UserRecommendationBlocks_Videos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Videos_Resource_Identifier"][];
@@ -26836,11 +27069,6 @@ export interface components {
         UserRecommendations_Attributes: Record<string, never>;
         UserRecommendations_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserRecommendations_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserRecommendations_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -26903,9 +27131,8 @@ export interface components {
              */
             reason: "SEXUAL_CONTENT_OR_NUDITY" | "VIOLENT_OR_DANGEROUS_CONTENT" | "HATEFUL_OR_ABUSIVE_CONTENT" | "HARASSMENT" | "PRIVACY_VIOLATION" | "SCAMS_OR_FRAUD" | "SPAM" | "COPYRIGHT_INFRINGEMENT" | "APPEAL" | "UNKNOWN";
         };
-        UserReports_Multi_Resource_Data_Document: {
-            data: components["schemas"]["UserReports_Resource_Object"][];
-            included?: components["schemas"]["Included"];
+        UserReports_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserReports_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         UserReports_Resource_Object: {
@@ -26920,11 +27147,6 @@ export interface components {
              * @enum {string}
              */
             type: "userReports";
-        };
-        UserReports_Single_Resource_Data_Document: {
-            data: components["schemas"]["UserReports_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         UserSubscriptionPriceChanges_Attributes: {
             /**
@@ -26975,11 +27197,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserSubscriptionPriceChanges_Single_Resource_Data_Document: {
-            data: components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Users_Attributes: {
             /**
              * @description ISO 3166-1 alpha-2 country code
@@ -27022,11 +27239,6 @@ export interface components {
              * @example username
              */
             username: string;
-        };
-        Users_Multi_Resource_Data_Document: {
-            data: components["schemas"]["Users_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Users_Resource_Object: {
             attributes?: components["schemas"]["Users_Attributes"];
@@ -27085,11 +27297,6 @@ export interface components {
              * @enum {string}
              */
             videoPresentation?: "FULL" | "PREVIEW";
-        };
-        VideoManifests_Multi_Resource_Data_Document: {
-            data: components["schemas"]["VideoManifests_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         VideoManifests_Resource_Object: {
             attributes?: components["schemas"]["VideoManifests_Attributes"];
@@ -27375,6 +27582,42 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["Idempotency422ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareConnectionsReadById403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsReadById403ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareConnectionsReadMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsReadMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareConnectionsReadSingleDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsReadSingleDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareConnectionsUpdateSingleDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsUpdateSingleDataRelationship403ResponseBody"];
             };
         };
         /** @description Square credential lacks required site scopes; run Square onboarding again; Request already in progress for this idempotency key */
