@@ -228,14 +228,17 @@ async function runExample(clientId, clientSecret, searchTerm, playlistId) {
   /**
    * Do a search for a term
    *
-   * @param {string} id The search term.
+   * @param {string} term The search term.
    */
-  async function doSearch(id) {
+  async function doSearch(term) {
     // First page of results
-    const { data, error } = await apiClient.GET('/searchResults/{id}', {
+    const { data, error } = await apiClient.GET('/searchResults', {
       params: {
-        path: { id },
-        query: { countryCode: 'NO', include: 'topHits' },
+        query: {
+          countryCode: 'NO',
+          'filter[query]': term,
+          include: ['topHits'],
+        },
       },
     });
 
@@ -246,8 +249,15 @@ async function runExample(clientId, clientSecret, searchTerm, playlistId) {
       return;
     }
 
+    const [searchResult] = data.data;
+    const topHits = searchResult?.relationships?.topHits;
+    if (!searchResult || !topHits?.data) {
+      results.innerHTML += '<p>No search results available</p>';
+      return;
+    }
+
     results.innerHTML += '<h2>Search:</h2><h3>Page 1 Results:</h3>';
-    data.data.relationships.topHits.data.forEach(hit => {
+    topHits.data.forEach(hit => {
       const item = data.included?.find(i => i.id === hit.id);
       if (item) {
         const text = item.attributes.title || item.attributes.name;
@@ -256,7 +266,7 @@ async function runExample(clientId, clientSecret, searchTerm, playlistId) {
     });
 
     // Get cursor for next page
-    const cursor = data.data.relationships.topHits.links.meta?.nextCursor;
+    const cursor = topHits.links.meta?.nextCursor;
     if (!cursor) {
       results.innerHTML += '<p>No more results available</p>';
       return;
@@ -267,10 +277,10 @@ async function runExample(clientId, clientSecret, searchTerm, playlistId) {
       '/searchResults/{id}/relationships/topHits',
       {
         params: {
-          path: { id },
+          path: { id: searchResult.id },
           query: {
             countryCode: 'NO',
-            include: 'topHits',
+            include: ['topHits'],
             'page[cursor]': cursor,
           },
         },
@@ -283,7 +293,7 @@ async function runExample(clientId, clientSecret, searchTerm, playlistId) {
       );
     } else {
       results.innerHTML += '<h3>Page 2 Results:</h3>';
-      data2.data.forEach(hit => {
+      data2.data?.forEach(hit => {
         const item = data2.included?.find(i => i.id === hit.id);
         if (item) {
           const text = item.attributes.title || item.attributes.name;
