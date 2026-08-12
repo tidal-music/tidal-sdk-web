@@ -10440,93 +10440,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/searchResults/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get single searchResult.
-         * @deprecated
-         * @description Deprecated. Use GET /searchResults?filter[query]=... to search instead. Opaque identifiers returned by that operation remain valid for searchResults relationship operations.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
-                     */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description The type of device making the request
-                     * @example PHONE
-                     */
-                    deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
-                    /**
-                     * @description The system type of the device making the request
-                     * @example IOS
-                     */
-                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, playlists, topHits, tracks, videos
-                     * @example albums
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
-                     * @example albums
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /** @description An opaque search results identifier */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["SearchResults_Single_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/searchResults/{id}/relationships/albums": {
         parameters: {
             query?: never;
@@ -11105,78 +11018,6 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["SearchSuggestions_Multi_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/searchSuggestions/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get single searchSuggestion.
-         * @deprecated
-         * @description Deprecated. Use GET /searchSuggestions?filter[query]=... to search instead. Opaque identifiers returned by that operation remain valid for searchSuggestions relationship operations.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
-                     */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: directHits, history
-                     * @example directHits
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: directHits
-                     * @example directHits
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /** @description An opaque search suggestions identifier */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["SearchSuggestions_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -24199,11 +24040,6 @@ export interface components {
              */
             type: "searchResults";
         };
-        SearchResults_Single_Resource_Data_Document: {
-            data: components["schemas"]["SearchResults_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         SearchResults_TopHits_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["SearchResults_TopHits_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24332,11 +24168,6 @@ export interface components {
              * @enum {string}
              */
             type: "searchSuggestions";
-        };
-        SearchSuggestions_Single_Resource_Data_Document: {
-            data: components["schemas"]["SearchSuggestions_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         /** @description Suggested search queries */
         SearchSuggestions_Suggestions: {
