@@ -1,6 +1,11 @@
 import { expect } from 'chai';
 
-import { authAndEvents, credentialsProvider } from '../../test-helpers.js';
+import {
+  authAndEvents,
+  credentialsProvider,
+  waitFor,
+} from '../../test-helpers.js';
+import { eventSenderStore } from '../index.js';
 
 import { fetchPlaybackInfo } from './playback-info-resolver.js';
 
@@ -218,5 +223,99 @@ describe('playbackInfoResolver', () => {
       representationCount,
       'Non-ABR manifest should contain exactly one quality representation',
     ).to.equal(1);
+  });
+
+  it('commits playback_info_fetch with endReason ERROR when the fetch fails', async () => {
+    const { clientId, token } = await credentialsProvider.getCredentials();
+
+    if (!token) {
+      throw new Error('No access token, cannot fulfill test.');
+    }
+
+    type SentEvent = {
+      name: string;
+      payload: {
+        endReason?: string;
+        errorCode?: string | null;
+        streamingSessionId?: string;
+      };
+    };
+    const sentEvents: Array<SentEvent> = [];
+    const originalEventSender = eventSenderStore.eventSender;
+
+    eventSenderStore.eventSender = {
+      ...originalEventSender,
+      sendEvent(event: Parameters<typeof originalEventSender.sendEvent>[0]) {
+        sentEvents.push(event as SentEvent);
+      },
+    };
+
+    try {
+      let thrownError: unknown;
+
+      // eslint-disable-next-line no-restricted-syntax
+      const streamingSessionId = `tidal-player-js-test-${Date.now()}`;
+
+      try {
+        await fetchPlaybackInfo({
+          accessToken: token,
+          audioAdaptiveBitrateStreaming: true,
+          audioQuality: 'LOSSLESS',
+          clientId,
+          mediaProduct: {
+            // Nonexistent track id, the manifest fetch responds with an error
+            productId: '0',
+            productType: 'track',
+            sourceId: '',
+            sourceType: '',
+          },
+          playerType: 'shaka',
+          prefetch: false,
+          streamingSessionId,
+        });
+      } catch (e) {
+        thrownError = e;
+      }
+
+      expect(thrownError, 'fetchPlaybackInfo should throw').to.not.equal(
+        undefined,
+      );
+
+      // The event is committed in a fire-and-forget fashion, poll for it.
+      // Scope the lookup to this test's session; telemetry from earlier
+      // tests is also fire-and-forget and can arrive after our sender stub
+      // is installed.
+      let playbackInfoFetchEvent: SentEvent | undefined;
+      for (let i = 0; i < 40 && !playbackInfoFetchEvent; i++) {
+        playbackInfoFetchEvent = sentEvents.find(
+          event =>
+            event.name === 'playback_info_fetch' &&
+            event.payload.streamingSessionId === streamingSessionId,
+        );
+        if (!playbackInfoFetchEvent) {
+          await waitFor(50);
+        }
+      }
+
+      if (!playbackInfoFetchEvent) {
+        throw new Error('No playback_info_fetch event was sent.');
+      }
+
+      // The reported errorCode should be the structured PlayerError code
+      // (falling back to the error message for plain errors), not just any
+      // non-empty value.
+      const expectedErrorCode =
+        (thrownError as { errorCode?: string }).errorCode ??
+        (thrownError as Error).message;
+
+      expect(playbackInfoFetchEvent.payload.endReason).to.equal('ERROR');
+      expect(playbackInfoFetchEvent.payload.errorCode).to.equal(
+        expectedErrorCode,
+      );
+      expect(playbackInfoFetchEvent.payload.errorCode).to.be.a('string');
+      expect(playbackInfoFetchEvent.payload.errorCode).to.have.length.above(0);
+    } finally {
+      eventSenderStore.eventSender = originalEventSender;
+    }
   });
 });

@@ -29,9 +29,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Restore Cypress binary cache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
@@ -54,7 +54,7 @@ jobs:
           encoded_json=$(printf '%s' "$fixed_json" | base64 | tr -d '\n')
           echo "encoded=\"$encoded_json\"" >> $GITHUB_OUTPUT
       - name: Cypress run
-        uses: cypress-io/github-action@948d67d3074f1bbb6379c8bdbb04e95d2f8e593f # v7.4.0
+        uses: cypress-io/github-action@fa4a118725a8f001170d49631ea89e5d66fee626 # v7.4.1
         env:
           CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
           # wait-on uses Node's https stack and would otherwise reject the
@@ -69,7 +69,7 @@ jobs:
           command: pnpm --dir packages/player/ internal:cypress:run
       - name: Save Cypress binary cache
         if: always()
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}

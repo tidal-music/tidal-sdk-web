@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `playback_statistics` now reports `actualStartTimestamp` and
+  `idealStartTimestamp` as `null` instead of `0` when playback never actually
+  started (e.g. the session errored out before the first frame/sample).
+  Never-started sessions previously reported both timestamps as `0`, which
+  skewed startup time metrics towards zero whenever error rates rose.
+- Strict `actualStartTimestamp` semantics: the timestamp is now captured when
+  the media element actually starts producing output (first `playing` event,
+  or the native player's `active` state) instead of when `play()` is invoked.
+  Sessions that request playback but never produce audio (e.g. stuck
+  buffering, error mid-startup) now report `actualStartTimestamp: null`
+  instead of the `play()` invocation time, and startup time now includes the
+  initial buffering period.
+- Crossfade/gapless transitions now stamp the incoming track at fade start
+  instead of fade end: `idealStartTimestamp` is set when the transition is
+  triggered and `actualStartTimestamp` when the incoming element starts
+  playing. The outgoing track still reports until it stops at fade end, so
+  the two sessions intentionally overlap in wall-clock time.
+
+### Fixed
+
+- `playback_info_fetch` events now correctly report `endReason: 'ERROR'` and
+  the error code/message when fetching playback info fails. The error fields
+  were previously written in a separate reducer call that raced with the
+  final one, so the committed event always ended up with the default
+  `endReason: 'COMPLETE'` and errors were never reported. The error code now
+  also uses the structured `PlayerError` code (e.g. `NPBI0`, `A4033`) when
+  available instead of the free-form error message.
+- Event reducers now serialize their read-merge-write cycles. Two updates to
+  the same event racing in the same tick could previously drop one update's
+  fields (the same class of bug as the `playback_info_fetch` error reporting
+  fix above).
+- `playback_session` is now enqueued before the session's own
+  `playback_statistics`/`streaming_session_end` events when a session ends.
+  The event sender dispatches at most 10 events per batch, so the enqueue
+  order decides which events make the earliest batch; the consumption-relevant
+  play_log event should not risk being bumped to a later batch by its own
+  session's metrics events.
+
 ## [0.18.4] - 2026-07-27
 
 ### Fixed

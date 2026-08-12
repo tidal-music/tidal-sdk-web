@@ -8,6 +8,10 @@ class StreamingSessionStore {
 
   #playbackInfos = new Map<string, PlaybackInfo>();
 
+  // Sessions that have had their actual playback start reported, see
+  // BasePlayer.mediaProductActuallyStarted.
+  #reportedActualStarts = new Set<string>();
+
   #startedStreamInfos = new Map<string, boolean>();
 
   #streamInfos = new Map<string, StreamInfo>();
@@ -59,6 +63,7 @@ class StreamingSessionStore {
   deleteSession(streamingSessionId: string) {
     this.deleteMediaProductTransition(streamingSessionId);
     this.#playbackInfos.delete(streamingSessionId);
+    this.#reportedActualStarts.delete(streamingSessionId);
     this.#startedStreamInfos.delete(streamingSessionId);
     this.deleteStreamInfo(streamingSessionId);
   }
@@ -103,6 +108,10 @@ class StreamingSessionStore {
     return this.#playbackInfos.has(streamingSessionId);
   }
 
+  hasReportedActualStart(streamingSessionId: string) {
+    return this.#reportedActualStarts.has(streamingSessionId);
+  }
+
   hasStartedStreamInfo(streamingSessionId: string) {
     return this.#startedStreamInfos.has(streamingSessionId);
   }
@@ -143,6 +152,10 @@ class StreamingSessionStore {
 
   saveStreamInfo(streamingSessionId: string, streamInfo: StreamInfo) {
     this.#streamInfos.set(streamingSessionId, streamInfo);
+  }
+
+  setReportedActualStart(streamingSessionId: string) {
+    this.#reportedActualStarts.add(streamingSessionId);
   }
 
   setStartedStreamInfo(streamingSessionId: string) {

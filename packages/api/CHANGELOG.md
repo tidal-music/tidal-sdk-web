@@ -9,7 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Sync to new API definitions (version: 1.10.95)
+- Sync to new API definitions (version: 1.10.96)
+
+## [0.39.1] - 2026-08-03
+
+### Fixed
+
+- Decode response bodies through the runtime's `Response` implementation before
+  buffering them, preventing UTF-8 text corruption in React Native clients.
+
 ## [0.39.0] - 2026-07-30
 
 ### Changed

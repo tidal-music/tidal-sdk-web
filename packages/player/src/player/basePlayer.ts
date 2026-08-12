@@ -401,25 +401,32 @@ export class BasePlayer {
   ) {
     const endTimestamp = trueTime.now();
 
+    // Enqueue playback_session before the auxiliary streaming metrics: the
+    // event sender caps each dispatch batch at 10 events, so the relative
+    // enqueue order decides which events make the earliest batch. The
+    // play_log event is the consumption-relevant one and must not risk being
+    // bumped to a later batch by its own session's metrics events.
     PlayLog.commit([
       PlayLog.playbackSession({
         endAssetPosition,
         endTimestamp,
         streamingSessionId,
       }),
-    ]).catch(console.error);
-
-    StreamingMetrics.commit([
-      StreamingMetrics.playbackStatistics({
-        endReason: playbackStatisticsEndReason(endReason),
-        endTimestamp,
-        streamingSessionId,
-      }),
-      StreamingMetrics.streamingSessionEnd({
-        streamingSessionId,
-        timestamp: endTimestamp,
-      }),
-    ]).catch(console.error);
+    ])
+      .catch(console.error)
+      .finally(() => {
+        StreamingMetrics.commit([
+          StreamingMetrics.playbackStatistics({
+            endReason: playbackStatisticsEndReason(endReason),
+            endTimestamp,
+            streamingSessionId,
+          }),
+          StreamingMetrics.streamingSessionEnd({
+            streamingSessionId,
+            timestamp: endTimestamp,
+          }),
+        ]).catch(console.error);
+      });
   }
 
   eventTrackingStreamingStarted(streamingSessionId: string) {
@@ -427,29 +434,24 @@ export class BasePlayer {
       return;
     }
 
-    timestamps.mark(
-      'streaming_metrics:playback_statistics:actualStartTimestamp',
-      streamingSessionId,
-    );
-
-    // Start filling in playbackStatistics
+    /*
+      Start filling in playbackStatistics. actualStartTimestamp is deliberately
+      not reported here: this method runs when playback is requested (play()),
+      not when audio actually starts. mediaProductActuallyStarted() reports it
+      from the media element's 'playing' signal -- or, for crossfade/gapless
+      transitions, at fade start when the incoming element begins playing --
+      so sessions that never produce audio keep actualStartTimestamp as null.
+    */
     StreamingMetrics.playbackStatistics({
-      actualStartTimestamp: timestamps.get(
-        'streaming_metrics:playback_statistics:actualStartTimestamp',
-        streamingSessionId,
-      ),
-      idealStartTimestamp: timestamps.get(
-        'streaming_metrics:playback_statistics:idealStartTimestamp',
-        streamingSessionId,
-      ),
+      idealStartTimestamp:
+        timestamps.get(
+          'streaming_metrics:playback_statistics:idealStartTimestamp',
+          streamingSessionId,
+        ) ?? null,
       outputDevice: this.#outputDeviceType,
       streamingSessionId,
     }).catch(console.error);
 
-    timestamps.clear(
-      'streaming_metrics:playback_statistics:actualStartTimestamp',
-      streamingSessionId,
-    );
     timestamps.clear(
       'streaming_metrics:playback_statistics:idealStartTimestamp',
       streamingSessionId,
@@ -610,6 +612,37 @@ export class BasePlayer {
     }
 
     return false;
+  }
+
+  /**
+   * This method should be called when playback measurably starts producing
+   * output for a session: the media element's first 'playing' event or the
+   * equivalent player signal. This is stricter than mediaProductStarted,
+   * which runs when playback is requested.
+   *
+   * Only the first call per session takes effect, so later 'playing' events
+   * (resume from pause or stall) don't overwrite the reported value. Sessions
+   * that never reach this point keep actualStartTimestamp as null in
+   * playback_statistics.
+   *
+   * @param streamingSessionId
+   */
+  mediaProductActuallyStarted(streamingSessionId: string | undefined) {
+    if (
+      !streamingSessionId ||
+      streamingSessionStore.hasReportedActualStart(streamingSessionId)
+    ) {
+      return;
+    }
+
+    this.debugLog('mediaProductActuallyStarted');
+
+    streamingSessionStore.setReportedActualStart(streamingSessionId);
+
+    StreamingMetrics.playbackStatistics({
+      actualStartTimestamp: trueTime.now(),
+      streamingSessionId,
+    }).catch(console.error);
   }
 
   /**
