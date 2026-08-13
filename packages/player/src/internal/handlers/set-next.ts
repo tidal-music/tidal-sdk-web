@@ -179,7 +179,7 @@ async function _setNext(
       playbackInfo,
       streamInfo,
     });
-  } else if (activePlayer && playerState.preloadPlayer) {
+  } else if (activePlayer) {
     await playerState.preloadPlayer.next({
       assetPosition: 0,
       mediaProduct,

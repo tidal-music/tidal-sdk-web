@@ -97,10 +97,7 @@ export function cancelQueuedOnendedHandler() {
 }
 
 export function maybeSwitchPlayerOnEnd(preloadPlayer: Player | undefined) {
-  if (
-    !preloadPlayer ||
-    preloadPlayer.name === playerState.activePlayer?.name
-  ) {
+  if (!preloadPlayer || preloadPlayer.name === playerState.activePlayer?.name) {
     return;
   }
 
