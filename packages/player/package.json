@@ -4,12 +4,12 @@
   "description": "Player logic for TIDAL",
   "type": "module",
   "exports": {
-    "types": "./dist/src/index.d.ts",
+    "types": "./dist/index.d.ts",
     "import": "./dist/index.js",
     "default": "./dist/index.js"
   },
   "module": "./dist/index.js",
-  "types": "./dist/src/index.d.ts",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "wtr": "web-test-runner",
     "test": "bash ./scripts/test.sh",
@@ -75,7 +75,7 @@
     "esbuild": "0.28.2",
     "js-levenshtein": "1.1.6",
     "rollup": "4.62.4",
-    "shaka-player": "5.2.4",
+    "shaka-player": "5.1.8",
     "sinon": "22.1.0",
     "typescript": "6.0.3",
     "vite": "8.2.1",

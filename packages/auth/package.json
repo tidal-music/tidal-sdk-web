@@ -12,11 +12,11 @@
   "license": "Apache-2.0",
   "module": "dist/index.js",
   "exports": {
-    "types": "./dist/src/index.d.ts",
+    "types": "./dist/index.d.ts",
     "import": "./dist/index.js",
     "default": "./dist/index.js"
   },
-  "types": "./dist/src/index.d.ts",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "vite build",
     "build:dev": "vite build -m development",

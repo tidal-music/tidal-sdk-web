@@ -274,8 +274,8 @@ importers:
         specifier: 4.62.4
         version: 4.62.4
       shaka-player:
-        specifier: 5.2.4
-        version: 5.2.4
+        specifier: 5.1.8
+        version: 5.1.8
       sinon:
         specifier: 22.1.0
         version: 22.1.0
@@ -2002,9 +2002,6 @@ packages:
 
   '@types/mocha@10.0.10':
     resolution: {integrity: sha512-xPyYSz1cMPnJQhl0CLMH68j3gprKZaTjG3s5Vi+fDgx+uhG9NOXwbVt52eFS8ECyXhyKcjDLCBEqBExKuiZb7Q==}
-
-  '@types/node@24.13.2':
-    resolution: {integrity: sha512-fRa09kZTgu8o71KFcDjUFuc7F+dEbZYZmkI0mg5YBTRs0yMKjYHsq/c0urDKeDb+D5qVgXOdFcuu+DZPKOITwA==}
 
   '@types/node@24.13.3':
     resolution: {integrity: sha512-Dh8vAsV36ig5wa9OX4pXvMc9D3Veibfw2wix0CUwYODLD8nkj9UsLjASr49nPg+2eKzxhBV+v7L8pXvT4e639Q==}
@@ -4861,8 +4858,8 @@ packages:
   setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
 
-  shaka-player@5.2.4:
-    resolution: {integrity: sha512-vf81av2EIcb03jRpeeZBhrPT3PMyggXnZA9k4sxGBxpr/H6v0iEL6b51T2Kwz5YNrQG/yDYoadgBW+oW40LeoA==}
+  shaka-player@5.1.8:
+    resolution: {integrity: sha512-nYD+9Z/DJzYkwQ/GhBDtKE4ew/rClUE8oeAzCVsMNOwdC816jBz4FxPFy4XpOoKuEZ7Z3Ltday/m55+MJ5puTw==}
     engines: {node: '>=18'}
 
   shebang-command@2.0.0:
@@ -5696,7 +5693,7 @@ packages:
     engines: {node: '>=18'}
 
   wrappy@1.0.2:
-    resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
+    resolution: {integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=}
 
   ws@7.5.10:
     resolution: {integrity: sha512-+dbF1tHwZpXcbOJdVOkzLDxZP1ailvSxM6ZweXTegylPny803bFhA+vqBYw4s31NSAk4S2Qz+AKXK9a4wkdjcQ==}
@@ -7376,10 +7373,6 @@ snapshots:
 
   '@types/mocha@10.0.10': {}
 
-  '@types/node@24.13.2':
-    dependencies:
-      undici-types: 7.18.2
-
   '@types/node@24.13.3':
     dependencies:
       undici-types: 7.18.2
@@ -7428,7 +7421,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 24.13.2
+      '@types/node': 24.13.3
 
   '@types/yauzl@2.10.3':
     dependencies:
@@ -8226,7 +8219,7 @@ snapshots:
 
   buffer-image-size@0.6.4:
     dependencies:
-      '@types/node': 24.13.2
+      '@types/node': 24.13.3
 
   buffer@5.7.1:
     dependencies:
@@ -9449,7 +9442,7 @@ snapshots:
 
   happy-dom@20.11.2:
     dependencies:
-      '@types/node': 24.13.2
+      '@types/node': 24.13.3
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.1
       buffer-image-size: 0.6.4
@@ -10066,7 +10059,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.8.2
+      semver: 7.8.5
 
   markdown-it@14.3.0:
     dependencies:
@@ -10768,7 +10761,7 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  shaka-player@5.2.4: {}
+  shaka-player@5.1.8: {}
 
   shebang-command@2.0.0:
     dependencies:
@@ -10937,7 +10930,7 @@ snapshots:
       esbuild: 0.27.4
       open: 10.2.0
       recast: 0.23.11
-      semver: 7.8.2
+      semver: 7.8.5
       use-sync-external-store: 1.6.0(react@19.2.4)
       ws: 8.21.0
     optionalDependencies:
