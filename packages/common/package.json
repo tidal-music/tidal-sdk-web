@@ -11,9 +11,9 @@
   },
   "license": "Apache-2.0",
   "module": "dist/index.js",
-  "types": "./dist/src/index.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
-    "types": "./dist/src/index.d.ts",
+    "types": "./dist/index.d.ts",
     "import": "./dist/index.js",
     "default": "./dist/index.js"
   },
@@ -34,11 +34,11 @@
     "check:types-resolution": "attw --pack . --ignore-rules=cjs-resolves-to-esm"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "4.1.8",
-    "@vitest/ui": "4.1.8",
+    "@vitest/coverage-v8": "4.1.10",
+    "@vitest/ui": "4.1.10",
     "typescript": "6.0.3",
-    "vite": "8.0.16",
-    "vite-plugin-dts": "5.0.2",
-    "vitest": "4.1.8"
+    "vite": "8.2.1",
+    "vite-plugin-dts": "5.0.3",
+    "vitest": "4.1.10"
   }
 }
