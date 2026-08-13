@@ -6,6 +6,7 @@ import { mountVideoElements } from './audio-context-store.js';
 
 import {
   getAppropriatePlayer,
+  maybeSwitchPlayerOnEnd,
   resetAllPlayers,
   setPlayerConfig,
 } from './index.js';
@@ -40,6 +41,12 @@ function mockNativePlayer() {
     Player: () => new NativePlayerMock(),
   };
 }
+
+describe('maybeSwitchPlayerOnEnd', () => {
+  it('does not throw when preloadPlayer is undefined', () => {
+    expect(() => maybeSwitchPlayerOnEnd(undefined)).to.not.throw();
+  });
+});
 
 describe('getAppropriatePlayer', () => {
   before(async () => {
