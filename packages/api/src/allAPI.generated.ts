@@ -6645,8 +6645,8 @@ export interface paths {
                     include?: string[];
                     /** @description Offline item id (e.g. `1234`) */
                     "filter[id]"?: string[];
-                    /** @description One of: PENDING, STORED (e.g. `PENDING`) */
-                    "filter[state]"?: ("PENDING" | "STORED")[];
+                    /** @description One of: PENDING, STORED, FAILED (e.g. `PENDING`) */
+                    "filter[state]"?: ("PENDING" | "STORED" | "FAILED")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
                      * @example offlineInventory
@@ -10329,8 +10329,8 @@ export interface paths {
                 };
                 path: {
                     /**
-                     * @description Opaque identifier for a search history entry
-                     * @example MjcyNjg5OTAjamF5
+                     * @description Canonical opaque identifier for a user's exact saved history query.
+                     * @example 24HkRueBIeyGHPttoaQetVx4SwUxlzp3da06bqbwjF1t4dNXV
                      */
                     id: string;
                 };
@@ -22447,12 +22447,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        Highlight: {
-            /** Format: int32 */
-            length?: number;
-            /** Format: int32 */
-            start?: number;
-        };
         Idempotency409ResponseBody: {
             errors: {
                 /**
@@ -23912,7 +23906,6 @@ export interface components {
             type: "scopes";
         };
         SearchHistoryEntries_Attributes: {
-            highlights: components["schemas"]["Highlight"][];
             query: string;
         };
         SearchHistoryEntries_Resource_Object: {
