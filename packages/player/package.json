@@ -68,7 +68,7 @@
     "@types/sinon": "22.0.0",
     "@web/dev-server-esbuild": "2.0.0",
     "@web/dev-server-rollup": "1.0.0",
-    "@web/test-runner": "0.20.2",
+    "@web/test-runner": "1.0.0",
     "bowser": "2.14.1",
     "chai": "6.2.2",
     "cypress": "15.20.1",
