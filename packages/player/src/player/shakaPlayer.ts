@@ -145,6 +145,11 @@ export default class ShakaPlayer extends BasePlayer {
     waitingHandler: EventListener;
   };
 
+  // True while a seek initiated through seek() awaits its 'seeked' event.
+  // Shaka also seeks the media element internally (startup/stall gap jumps),
+  // and those 'seeked' events must not produce play-log seek actions.
+  #pendingSeekEnd = false;
+
   // Track which session is on which player for proper ended event handling
   #playerOneSessionId: string | undefined;
 
@@ -411,7 +416,15 @@ export default class ShakaPlayer extends BasePlayer {
         return;
       }
       this.currentTime = this.mediaElement ? this.mediaElement.currentTime : 0;
-      this.seekEnd(this.currentTime);
+
+      // Only pair seekEnd with seeks initiated through seek(). Shaka's
+      // internal micro-seeks (e.g. the startup gap jump to the first
+      // buffered range) also fire 'seeked' and would otherwise log an
+      // unpaired PLAYBACK_START action.
+      if (this.#pendingSeekEnd) {
+        this.#pendingSeekEnd = false;
+        this.seekEnd(this.currentTime);
+      }
     };
 
     this.#mediaElementEventHandlers = {
@@ -2056,6 +2069,7 @@ export default class ShakaPlayer extends BasePlayer {
     this.detachPlaybackEngineEndedHandler();
 
     this.currentStreamingSessionId = undefined;
+    this.#pendingSeekEnd = false;
 
     if (!keepPreload) {
       this.preloadedStreamingSessionId = undefined;
@@ -2125,6 +2139,7 @@ export default class ShakaPlayer extends BasePlayer {
     }
 
     this.seekStart(this.currentTime);
+    this.#pendingSeekEnd = true;
 
     this.currentTime = currentTime;
 
