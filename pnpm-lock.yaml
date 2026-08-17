@@ -250,8 +250,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0(supports-color@8.1.1)
       '@web/dev-server-rollup':
-        specifier: 0.6.4
-        version: 0.6.4(supports-color@8.1.1)
+        specifier: 1.0.0
+        version: 1.0.0(supports-color@8.1.1)
       '@web/test-runner':
         specifier: 0.20.2
         version: 0.20.2(supports-color@8.1.1)
@@ -2347,10 +2347,6 @@ packages:
     resolution: {integrity: sha512-IYjHXUgSGGNpO3YJQ9foLcazbJlAWDdJGRe9be7aOhon0Nd6Na5JIOJAej7jsMu76fKHr4b4w2LfIdNQ4fJ8pA==}
     engines: {node: '>=18.0.0'}
 
-  '@web/dev-server-core@0.7.2':
-    resolution: {integrity: sha512-Q/0jpF13Ipk+qGGQ+Yx/FW1TQBYazpkfgYHHo96HBE7qv4V4KKHqHglZcSUxti/zd4bToxX1cFTz8dmbTlb8JA==}
-    engines: {node: '>=18.0.0'}
-
   '@web/dev-server-core@0.7.4':
     resolution: {integrity: sha512-nHSNrJ1J9GjmSceKNHpWRMjvpfE2NTV9EYUffPIr7j0sIV59gK7NI/4+9slotJ/ODXw0+e1gSeJshTOhjjVNxQ==}
     engines: {node: '>=18.0.0'}
@@ -2366,6 +2362,10 @@ packages:
   '@web/dev-server-rollup@0.6.4':
     resolution: {integrity: sha512-sJZfTGCCrdku5xYnQQG51odGI092hKY9YFM0X3Z0tRY3iXKXcYRaLZrErw5KfCxr6g0JRuhe4BBhqXTA5Q2I3Q==}
     engines: {node: '>=18.0.0'}
+
+  '@web/dev-server-rollup@1.0.0':
+    resolution: {integrity: sha512-73eZNb5IA/ecrxZKZQq+lRFlPNl75XQ+hltVoWgsP3vQa5aTGWppBc/uuYLc74tGT7jp5WCdpsno7u5uX6GkcQ==}
+    engines: {node: '>=22.0.0'}
 
   '@web/dev-server@0.4.5':
     resolution: {integrity: sha512-R11sODOLFcm51f2uir51KE4QXRSYakDaeBeJdrUutPCmYUDEk86GjYBR3R1wslimnwGPIjhFDsXNMfASxYfgAQ==}
@@ -7076,7 +7076,7 @@ snapshots:
       '@types/resolve': 1.20.2
       deepmerge: 4.3.1
       is-module: 1.0.0
-      resolve: 1.22.10
+      resolve: 1.22.11
     optionalDependencies:
       rollup: 4.62.4
 
@@ -7755,31 +7755,6 @@ snapshots:
 
   '@web/config-loader@0.3.1': {}
 
-  '@web/dev-server-core@0.7.2(supports-color@8.1.1)':
-    dependencies:
-      '@types/koa': 2.15.0
-      '@types/ws': 7.4.7
-      '@web/parse5-utils': 2.1.0
-      chokidar: 3.6.0
-      clone: 2.1.2
-      es-module-lexer: 1.7.0
-      get-stream: 6.0.1
-      is-stream: 2.0.1
-      isbinaryfile: 5.0.2
-      koa: 3.2.1
-      koa-etag: 4.0.0
-      koa-send: 5.0.1(supports-color@8.1.1)
-      koa-static: 5.0.0(supports-color@8.1.1)
-      lru-cache: 8.0.5
-      mime-types: 2.1.35
-      parse5: 6.0.1
-      picomatch: 2.3.1
-      ws: 7.5.10
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-
   '@web/dev-server-core@0.7.4(supports-color@8.1.1)':
     dependencies:
       '@types/koa': 2.15.0
@@ -7845,7 +7820,20 @@ snapshots:
   '@web/dev-server-rollup@0.6.4(supports-color@8.1.1)':
     dependencies:
       '@rollup/plugin-node-resolve': 15.3.1(rollup@4.62.4)
-      '@web/dev-server-core': 0.7.2(supports-color@8.1.1)
+      '@web/dev-server-core': 0.7.4(supports-color@8.1.1)
+      nanocolors: 0.2.13
+      parse5: 6.0.1
+      rollup: 4.62.4
+      whatwg-url: 14.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+
+  '@web/dev-server-rollup@1.0.0(supports-color@8.1.1)':
+    dependencies:
+      '@rollup/plugin-node-resolve': 15.3.1(rollup@4.62.4)
+      '@web/dev-server-core': 1.0.1(supports-color@8.1.1)
       nanocolors: 0.2.13
       parse5: 6.0.1
       rollup: 4.62.4

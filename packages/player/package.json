@@ -67,7 +67,7 @@
     "@types/node": "24.13.3",
     "@types/sinon": "22.0.0",
     "@web/dev-server-esbuild": "2.0.0",
-    "@web/dev-server-rollup": "0.6.4",
+    "@web/dev-server-rollup": "1.0.0",
     "@web/test-runner": "0.20.2",
     "bowser": "2.14.1",
     "chai": "6.2.2",
