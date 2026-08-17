@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.20.0] - 2026-08-17
+
+### Changed
+
+- Upgraded the bundled shaka-player from 5.1.8 to 5.2.5, picking up upstream
+  improvements to gap jumping and stall breaking
+  ([#706](https://github.com/tidal-music/tidal-sdk-web/pull/706)).
+
+### Fixed
+
+- Play-log seek actions (`PLAYBACK_STOP`/`PLAYBACK_START`) are now only
+  reported for seeks initiated through the SDK's `seek()`. shaka performs
+  internal micro-seeks on the media element (e.g. the startup gap jump to the
+  first buffered range, stall-breaking skips), and these previously logged an
+  unpaired `PLAYBACK_START` action — with shaka 5.2 this happened on every
+  session for assets whose first buffered range starts slightly after 0
+  ([#706](https://github.com/tidal-music/tidal-sdk-web/pull/706)).
+- `maybeSwitchPlayerOnEnd` no longer throws a `TypeError` when a preload
+  player is missing (e.g. after a failed or absent preload during playlist
+  transitions); the player-switch registration is skipped instead
+  ([#702](https://github.com/tidal-music/tidal-sdk-web/pull/702)).
+
 ## [0.19.0] - 2026-08-12
 
 ### Changed
