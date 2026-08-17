@@ -7,7 +7,7 @@ runs:
     - name: Install package manager
       uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
     - name: Set up Node.js w/ version from .nvmrc
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       with:
         node-version-file: '.nvmrc'
         registry-url: 'https://registry.npmjs.org'
