@@ -67,7 +67,7 @@ it('Client Test Case 1', () => {
     expect(playbackSession.payload.endAssetPosition).to.be.closeTo(93, 1);
 
     // Includes seek action (PLAYBACK_STOP near 0, PLAYBACK_START at 88)
-    expect(playbackSession.payload.actions).to.have.lengthOf(2);
+    expect(playbackSession.payload.actions, `actions: ${JSON.stringify(playbackSession.payload.actions)}`).to.have.lengthOf(2);
     expect(playbackSession.payload.actions[0]).to.include({ actionType: 'PLAYBACK_STOP' });
     expect(playbackSession.payload.actions[0].assetPosition).to.be.closeTo(0, 1);
     expect(playbackSession.payload.actions[1]).to.include({ actionType: 'PLAYBACK_START' });

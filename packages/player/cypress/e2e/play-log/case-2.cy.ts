@@ -66,7 +66,7 @@ it('Client Test Case 2', () => {
     const duration = 93;
     expect(playbackSession.payload.endAssetPosition).to.be.closeTo(duration, 1);
 
-    expect(playbackSession.payload.actions).to.have.lengthOf(2);
+    expect(playbackSession.payload.actions, `actions: ${JSON.stringify(playbackSession.payload.actions)}`).to.have.lengthOf(2);
     expect(playbackSession.payload.actions[0]).to.include({
       actionType: 'PLAYBACK_STOP',
     });
