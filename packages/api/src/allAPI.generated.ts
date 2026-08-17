@@ -21117,7 +21117,7 @@ export interface components {
             contributionsEnabled?: boolean;
             contributionsSalesPitch?: string;
             externalLinks?: components["schemas"]["External_Link_Payload"][];
-            handle?: string;
+            handle?: string | (never | null);
             name?: string;
         };
         ArtistsUpdateOperation_Payload_Meta: {
