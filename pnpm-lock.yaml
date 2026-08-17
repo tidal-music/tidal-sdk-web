@@ -274,8 +274,8 @@ importers:
         specifier: 4.62.4
         version: 4.62.4
       shaka-player:
-        specifier: 5.1.8
-        version: 5.1.8
+        specifier: 5.2.5
+        version: 5.2.5
       sinon:
         specifier: 22.1.0
         version: 22.1.0
@@ -4762,8 +4762,8 @@ packages:
   setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
 
-  shaka-player@5.1.8:
-    resolution: {integrity: sha512-nYD+9Z/DJzYkwQ/GhBDtKE4ew/rClUE8oeAzCVsMNOwdC816jBz4FxPFy4XpOoKuEZ7Z3Ltday/m55+MJ5puTw==}
+  shaka-player@5.2.5:
+    resolution: {integrity: sha512-vCh2NXt5p+5fGBz+BGpWCVp2dFrIf6DjTwgSkEXc2I7HNt9QEybpWSxp1bqo/DFzQQuud6C1tg0qJ3VZNoJEGQ==}
     engines: {node: '>=18'}
 
   shebang-command@2.0.0:
@@ -5581,18 +5581,6 @@ packages:
     peerDependencies:
       bufferutil: ^4.0.1
       utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-
-  ws@8.21.0:
-    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
     peerDependenciesMeta:
       bufferutil:
         optional: true
@@ -9223,7 +9211,7 @@ snapshots:
       buffer-image-size: 0.6.4
       entities: 7.0.1
       whatwg-mimetype: 3.0.0
-      ws: 8.21.0
+      ws: 8.21.3
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -10493,7 +10481,7 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  shaka-player@5.1.8: {}
+  shaka-player@5.2.5: {}
 
   shebang-command@2.0.0:
     dependencies:
@@ -10647,7 +10635,7 @@ snapshots:
       recast: 0.23.11
       semver: 7.8.5
       use-sync-external-store: 1.6.0(react@19.2.4)
-      ws: 8.21.0
+      ws: 8.21.3
     optionalDependencies:
       prettier: 3.8.1
     transitivePeerDependencies:
@@ -11330,8 +11318,6 @@ snapshots:
   wrappy@1.0.2: {}
 
   ws@7.5.10: {}
-
-  ws@8.21.0: {}
 
   ws@8.21.3: {}
 
