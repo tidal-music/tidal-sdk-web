@@ -52,6 +52,21 @@ describe('createAPIClient', () => {
     );
   });
 
+  it('sends no request when the provider has no token', async () => {
+    const provider = mockCredentialsProvider();
+    // what a logged out (or anonymous, clientId only) provider hands out
+    provider.getCredentials.mockResolvedValue({
+      clientId: 'test-client',
+      requestedScopes: [],
+    });
+    const client = createAPIClient(provider);
+
+    await expect(client.GET('/albums')).rejects.toThrow(
+      'No access token available',
+    );
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
   it('uses custom baseUrl when provided', async () => {
     const provider = mockCredentialsProvider();
     const client = createAPIClient(provider, 'https://custom.api.example/');
