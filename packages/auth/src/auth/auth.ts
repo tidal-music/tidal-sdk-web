@@ -379,7 +379,8 @@ export const finalizeDeviceLogin = async () => {
 
 /**
  * Log the user out and clear the user session, both in memory and in the
- * secure storage. Call this method only when the user actively want to log out.
+ * secure storage. Call this method only when the user actively wants to log
+ * out.
  *
  * The client configuration passed to {@link init} is kept, so the module stays
  * initialized and does not need to be initialized again after a logout.
