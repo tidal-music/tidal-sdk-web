@@ -25,6 +25,33 @@ class EventSenderStore extends EventTarget {
   }
 }
 
+/**
+ * The code `@tidal-music/auth` rejects with when it has no credentials to hand
+ * out at all: it was never initialized, or the user logged out while the
+ * request was in flight.
+ */
+const AUTH_NO_CREDENTIALS_ERROR_CODE = 'A0001';
+
+/**
+ * Turns "the provider has no credentials for us" into `undefined`, i.e. an
+ * unauthenticated user, and rethrows everything else -- a failed refresh or a
+ * network problem is a real error and must not be reported as a logged out
+ * user.
+ *
+ * Matched on the error code instead of `instanceof TidalError` because the auth
+ * module and the player do not share a copy of that class.
+ */
+const asUnauthenticated = (error: unknown) => {
+  if (
+    (error as { errorCode?: unknown } | null)?.errorCode ===
+    AUTH_NO_CREDENTIALS_ERROR_CODE
+  ) {
+    return undefined;
+  }
+
+  throw error;
+};
+
 class CredentialsProviderStore extends EventTarget {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore - Setter
@@ -62,7 +89,9 @@ class CredentialsProviderStore extends EventTarget {
   }
 
   async dispatchAuthorized(subscriptionId?: number) {
-    const credentials = await this.#credentialsProvider.getCredentials();
+    const credentials = await this.#credentialsProvider
+      .getCredentials()
+      .catch(asUnauthenticated);
 
     // The provider may have been swapped while getCredentials() was in
     // flight. If a subscriptionId was supplied (i.e. caller observed a
@@ -279,10 +308,11 @@ export class PlayerError extends Error {
  */
 export async function isAuthorizedWithUser() {
   if (credentialsProviderStore.credentialsProvider) {
-    const credentials =
-      await credentialsProviderStore.credentialsProvider.getCredentials();
+    const credentials = await credentialsProviderStore.credentialsProvider
+      .getCredentials()
+      .catch(asUnauthenticated);
 
-    return Boolean(credentials.token && credentials.userId);
+    return Boolean(credentials?.token && credentials.userId);
   }
 
   await waitForEvent(credentialsProviderStore, 'authorized');
