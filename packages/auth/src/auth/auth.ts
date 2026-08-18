@@ -378,17 +378,49 @@ export const finalizeDeviceLogin = async () => {
 };
 
 /**
- * Log the user out and clear all local state and the secure storage.
- * Call this method only when the user actively want to log out.
+ * Log the user out and clear the user session, both in memory and in the
+ * secure storage. Call this method only when the user actively want to log out.
+ *
+ * The client configuration passed to {@link init} is kept, so the module stays
+ * initialized and does not need to be initialized again after a logout.
+ * {@link getCredentials} keeps working and falls back to client credentials.
  */
 export const logout = () => {
-  dispatchEvent({ type: messageTypes.credentialsUpdated });
   if (state.credentials?.credentialsStorageKey) {
     deleteCredentials(state.credentials.credentialsStorageKey);
   }
-  // clear in memory data as well
-  delete state.credentials;
+
+  if (state.credentials) {
+    // Allow list on purpose: everything that came from `init` is kept, and
+    // anything belonging to the logged in user (tokens, PKCE challenge,
+    // redirect uri) is dropped.
+    const {
+      clientId,
+      clientSecret,
+      clientUniqueKey,
+      credentialsStorageKey,
+      scopes,
+      tidalAuthServiceBaseUri,
+      tidalLoginServiceBaseUri,
+    } = state.credentials;
+
+    state.credentials = {
+      clientId,
+      ...(clientSecret && { clientSecret }),
+      clientUniqueKey,
+      credentialsStorageKey,
+      scopes,
+      tidalAuthServiceBaseUri,
+      tidalLoginServiceBaseUri,
+    };
+  }
+
   delete state.limitedDeviceResponse;
+
+  // Announce the change only once the state is cleared, so that a listener
+  // reacting to this event can never read the credentials we just logged out
+  // of.
+  dispatchEvent({ type: messageTypes.credentialsUpdated });
 };
 
 const refreshAccessToken = async () => {
