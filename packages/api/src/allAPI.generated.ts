@@ -20467,8 +20467,6 @@ export interface components {
         AlbumsCreateOperation_Payload_Data_Attributes: {
             /** @enum {string} */
             albumType?: "ALBUM" | "EP" | "SINGLE";
-            /** @description Barcode id (EAN-13 or UPC-A) */
-            barcodeId?: string;
             copyright?: components["schemas"]["Copyright"];
             /** @description Explicit content */
             explicit?: boolean;
@@ -20480,11 +20478,6 @@ export interface components {
             /** Format: date */
             releaseDate?: string;
             title: string;
-            /**
-             * @deprecated
-             * @description Barcode id (EAN-13 or UPC-A). Deprecated: use 'barcodeId' instead. This field will be removed in a future version.
-             */
-            upc?: string;
             version?: string;
         };
         AlbumsCreateOperation_Payload_Data_Relationships: {
