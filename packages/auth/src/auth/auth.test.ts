@@ -737,6 +737,88 @@ describe.sequential('auth', () => {
       });
     });
 
+    // The storage write is asynchronous while `logout` deletes synchronously,
+    // so a logout landing mid-write would otherwise leave the token we just
+    // wrote behind for the next `loadCredentials` to pick up.
+    it('undoes the storage write when a logout lands in the middle of it', async () => {
+      vi.mocked(storage.loadCredentials).mockResolvedValue({
+        ...fixtures.storage,
+        accessToken: {
+          ...fixtures.storage.accessToken,
+          expires: 0,
+        },
+      });
+      vi.spyOn(trueTime, 'now').mockReturnValue(fixtures.expiresTimerMock);
+      vi.mocked(fetchHandling.handleTokenFetch).mockResolvedValue(
+        new Response(JSON.stringify(fixtures.userJsonResponse)),
+      );
+
+      await init(initConfig);
+
+      let finishWrite: () => void = () => {};
+      vi.mocked(storage.saveCredentialsToStorage).mockReturnValue(
+        new Promise<void>(resolve => {
+          finishWrite = () => resolve();
+        }),
+      );
+      // `init` wrote too, and the wait below has to see the refresh's write
+      vi.mocked(storage.saveCredentialsToStorage).mockClear();
+      vi.mocked(storage.deleteCredentials).mockClear();
+
+      const refreshing = getCredentials();
+      await vi.waitFor(() =>
+        expect(storage.saveCredentialsToStorage).toHaveBeenCalled(),
+      );
+
+      logout();
+      finishWrite();
+
+      await expect(refreshing).rejects.toThrow(authErrorCodeMap.initError);
+      // once by `logout` itself, once to undo the write that raced it
+      expect(storage.deleteCredentials).toHaveBeenCalledTimes(2);
+      expect(storage.deleteCredentials).toHaveBeenLastCalledWith(
+        initConfig.credentialsStorageKey,
+      );
+    });
+
+    // A logout removes the key material the write needs, so the storage error
+    // it causes has to reach the caller as the logout it really is.
+    it('reports a write that a logout made fail as a logout', async () => {
+      vi.mocked(storage.loadCredentials).mockResolvedValue({
+        ...fixtures.storage,
+        accessToken: {
+          ...fixtures.storage.accessToken,
+          expires: 0,
+        },
+      });
+      vi.spyOn(trueTime, 'now').mockReturnValue(fixtures.expiresTimerMock);
+      vi.mocked(fetchHandling.handleTokenFetch).mockResolvedValue(
+        new Response(JSON.stringify(fixtures.userJsonResponse)),
+      );
+
+      await init(initConfig);
+
+      let failWrite: () => void = () => {};
+      vi.mocked(storage.saveCredentialsToStorage).mockReturnValue(
+        new Promise<void>((_, reject) => {
+          failWrite = () =>
+            reject(new TidalError(authErrorCodeMap.storageError));
+        }),
+      );
+      // `init` wrote too, and the wait below has to see the refresh's write
+      vi.mocked(storage.saveCredentialsToStorage).mockClear();
+
+      const refreshing = getCredentials();
+      await vi.waitFor(() =>
+        expect(storage.saveCredentialsToStorage).toHaveBeenCalled(),
+      );
+
+      logout();
+      failWrite();
+
+      await expect(refreshing).rejects.toThrow(authErrorCodeMap.initError);
+    });
+
     it('refresh token based on api subStatus', async () => {
       vi.mocked(storage.loadCredentials).mockResolvedValue(fixtures.storage);
       vi.spyOn(trueTime, 'now').mockReturnValue(0); // make sure token isn't expired

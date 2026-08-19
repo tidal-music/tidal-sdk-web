@@ -727,7 +727,8 @@ const persistToken = async (
     throw new TidalError(authErrorCodeMap.initError);
   }
 
-  const { clientId, clientUniqueKey, scopes } = state.credentials;
+  const { clientId, clientUniqueKey, credentialsStorageKey, scopes } =
+    state.credentials;
 
   const grantedScopes = jsonResponse.scope?.length
     ? jsonResponse.scope?.split(' ')
@@ -746,14 +747,33 @@ const persistToken = async (
     }),
   };
 
-  await persistCredentials({
-    ...state.credentials,
-    accessToken,
-    // there is no refreshToken when renewing the accessToken
-    ...(jsonResponse.refresh_token && {
-      refreshToken: jsonResponse.refresh_token,
-    }),
-  });
+  try {
+    await persistCredentials({
+      ...state.credentials,
+      accessToken,
+      // there is no refreshToken when renewing the accessToken
+      ...(jsonResponse.refresh_token && {
+        refreshToken: jsonResponse.refresh_token,
+      }),
+    });
+  } catch (error) {
+    // A logout removes the key material the write needs, so a storage failure
+    // here is that logout and not a broken storage. Report it as such.
+    if (sessionId !== state.sessionId) {
+      throw new TidalError(authErrorCodeMap.initError);
+    }
+
+    throw error;
+  }
+
+  // The storage write is asynchronous, so a logout can land in the middle of
+  // it and have its (synchronous) delete complete first. That leaves the token
+  // we just wrote behind for the next `loadCredentials` to pick up, so undo it.
+  if (sessionId !== state.sessionId) {
+    deleteCredentials(credentialsStorageKey);
+
+    throw new TidalError(authErrorCodeMap.initError);
+  }
 
   return accessToken;
 };
