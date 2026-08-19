@@ -50,9 +50,17 @@ const state: {
   limitedDeviceResponse?: DeviceAuthorizationResponse;
   pending: boolean;
   pendingPromises: Array<(value?: unknown) => void>;
+  /**
+   * Identifies the current session, bumped by {@link logout}. Token requests
+   * remember the id they were started with, which lets {@link persistToken}
+   * drop a response that belongs to a session the user has left in the
+   * meantime.
+   */
+  sessionId: number;
 } = {
   pending: false,
   pendingPromises: [],
+  sessionId: 0,
 };
 
 const TIDAL_LOGIN_SERVICE_BASE_URI = 'https://login.tidal.com/';
@@ -255,6 +263,7 @@ export const finalizeLogin = async (loginResponseQuery: string) => {
     redirectUri,
     scopes,
   } = state.credentials;
+  const { sessionId } = state;
 
   const params = Object.fromEntries(new URLSearchParams(loginResponseQuery));
 
@@ -288,7 +297,7 @@ export const finalizeLogin = async (loginResponseQuery: string) => {
 
   const jsonResponse = (await response.json()) as TokenJSONResponse;
 
-  await persistToken(jsonResponse);
+  await persistToken(jsonResponse, sessionId);
 
   return;
 };
@@ -311,6 +320,7 @@ export const finalizeDeviceLogin = async () => {
 
   const { clientId, clientSecret, clientUniqueKey, scopes } = state.credentials;
   const { deviceCode, expiresIn, interval } = state.limitedDeviceResponse;
+  const { sessionId } = state;
 
   const body = {
     client_id: clientId,
@@ -344,7 +354,7 @@ export const finalizeDeviceLogin = async () => {
 
     if (response.ok) {
       const jsonResponse = (await response.json()) as TokenJSONResponse;
-      await persistToken(jsonResponse);
+      await persistToken(jsonResponse, sessionId);
       return;
     }
 
@@ -359,7 +369,7 @@ export const finalizeDeviceLogin = async () => {
       if (retriedResponse.ok) {
         const jsonResponse =
           (await retriedResponse.json()) as TokenJSONResponse;
-        await persistToken(jsonResponse);
+        await persistToken(jsonResponse, sessionId);
         return;
       }
 
@@ -418,6 +428,11 @@ export const logout = () => {
 
   delete state.limitedDeviceResponse;
 
+  // Invalidate every token request that is still in flight: its response was
+  // fetched for the session we just left, so persisting it would log the user
+  // right back in.
+  state.sessionId += 1;
+
   // Announce the change only once the state is cleared, so that a listener
   // reacting to this event can never read the credentials we just logged out
   // of.
@@ -435,6 +450,7 @@ const refreshAccessToken = async () => {
       refresh_token: state.credentials.refreshToken,
       scope: state.credentials.scopes.join(' '),
     };
+    const { sessionId } = state;
 
     const response = await handleTokenFetch({
       body,
@@ -446,7 +462,7 @@ const refreshAccessToken = async () => {
     }
 
     const jsonResponse = (await response.json()) as TokenJSONResponse;
-    return persistToken(jsonResponse);
+    return persistToken(jsonResponse, sessionId);
   } else {
     return getTokenThroughClientCredentials();
   }
@@ -469,6 +485,7 @@ const upgradeToken = async () => {
       credentials: state.credentials,
       path: 'oauth2/token',
     });
+    const { sessionId } = state;
 
     const response = await exponentialBackoff({
       request: () => globalThis.fetch(url, options),
@@ -484,7 +501,7 @@ const upgradeToken = async () => {
     }
 
     const jsonResponse = (await response.json()) as TokenJSONResponse;
-    return persistToken(jsonResponse);
+    return persistToken(jsonResponse, sessionId);
   } else {
     if (state.credentials) {
       const accessTokenResponse = await getTokenThroughClientCredentials();
@@ -507,6 +524,7 @@ const getTokenThroughClientCredentials = async () => {
       client_secret: state.credentials.clientSecret,
       grant_type: 'client_credentials',
     };
+    const { sessionId } = state;
 
     const response = await handleTokenFetch({
       body,
@@ -518,7 +536,7 @@ const getTokenThroughClientCredentials = async () => {
     }
 
     const jsonResponse = (await response.json()) as TokenJSONResponse;
-    return persistToken(jsonResponse);
+    return persistToken(jsonResponse, sessionId);
   }
 };
 
@@ -694,12 +712,23 @@ const persistCredentials = (updatedCredentials: UserCredentials) => {
   return saveCredentialsToStorage(state.credentials);
 };
 
-const persistToken = async (jsonResponse: TokenJSONResponse) => {
-  if (!state.credentials) {
+/**
+ * Store a freshly fetched token as the current credentials.
+ *
+ * @param sessionId - the value of `state.sessionId` from before the token was
+ * requested. A mismatch means the user logged out while the request was in
+ * flight, in which case the token is dropped instead of persisted.
+ */
+const persistToken = async (
+  jsonResponse: TokenJSONResponse,
+  sessionId: number,
+) => {
+  if (!state.credentials || sessionId !== state.sessionId) {
     throw new TidalError(authErrorCodeMap.initError);
   }
 
-  const { clientId, clientUniqueKey, scopes } = state.credentials;
+  const { clientId, clientUniqueKey, credentialsStorageKey, scopes } =
+    state.credentials;
 
   const grantedScopes = jsonResponse.scope?.length
     ? jsonResponse.scope?.split(' ')
@@ -718,14 +747,33 @@ const persistToken = async (jsonResponse: TokenJSONResponse) => {
     }),
   };
 
-  await persistCredentials({
-    ...state.credentials,
-    accessToken,
-    // there is no refreshToken when renewing the accessToken
-    ...(jsonResponse.refresh_token && {
-      refreshToken: jsonResponse.refresh_token,
-    }),
-  });
+  try {
+    await persistCredentials({
+      ...state.credentials,
+      accessToken,
+      // there is no refreshToken when renewing the accessToken
+      ...(jsonResponse.refresh_token && {
+        refreshToken: jsonResponse.refresh_token,
+      }),
+    });
+  } catch (error) {
+    // A logout removes the key material the write needs, so a storage failure
+    // here is that logout and not a broken storage. Report it as such.
+    if (sessionId !== state.sessionId) {
+      throw new TidalError(authErrorCodeMap.initError);
+    }
+
+    throw error;
+  }
+
+  // The storage write is asynchronous, so a logout can land in the middle of
+  // it and have its (synchronous) delete complete first. That leaves the token
+  // we just wrote behind for the next `loadCredentials` to pick up, so undo it.
+  if (sessionId !== state.sessionId) {
+    deleteCredentials(credentialsStorageKey);
+
+    throw new TidalError(authErrorCodeMap.initError);
+  }
 
   return accessToken;
 };
