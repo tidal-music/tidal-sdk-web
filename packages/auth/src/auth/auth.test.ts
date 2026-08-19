@@ -694,6 +694,49 @@ describe.sequential('auth', () => {
       expect(accessToken).toEqual(fixtures.storage.accessToken);
     });
 
+    // Regression test: `logout` keeps `state.credentials` around, so a refresh
+    // that was already in flight would happily write its user token back into
+    // memory and into the storage, silently logging the user in again.
+    it('drops a refreshed token that arrives after a logout', async () => {
+      vi.mocked(storage.loadCredentials).mockResolvedValue({
+        ...fixtures.storage,
+        accessToken: {
+          ...fixtures.storage.accessToken,
+          expires: 0,
+        },
+      });
+      vi.spyOn(trueTime, 'now').mockReturnValue(fixtures.expiresTimerMock);
+
+      let respond: (response: Response) => void = () => {};
+      vi.mocked(fetchHandling.handleTokenFetch).mockReturnValue(
+        new Promise<Response>(resolve => {
+          respond = resolve;
+        }),
+      );
+
+      await init(initConfig);
+      vi.mocked(storage.saveCredentialsToStorage).mockClear();
+
+      const refreshing = getCredentials();
+      logout();
+      respond(new Response(JSON.stringify(fixtures.userJsonResponse)));
+
+      await expect(refreshing).rejects.toThrow(authErrorCodeMap.initError);
+      expect(storage.saveCredentialsToStorage).not.toHaveBeenCalled();
+
+      // still logged out: the next call falls back to client credentials
+      // instead of handing out the user token that was in flight
+      vi.mocked(fetchHandling.handleTokenFetch).mockResolvedValue(
+        new Response(JSON.stringify(fixtures.clientCredentialsJsonResponse)),
+      );
+
+      expect(await getCredentials()).toEqual({
+        ...fixtures.storageClientCredentials.accessToken,
+        clientUniqueKey: 'CLIENT_UNIQUE_KEY',
+        requestedScopes: ['READ', 'WRITE'],
+      });
+    });
+
     it('refresh token based on api subStatus', async () => {
       vi.mocked(storage.loadCredentials).mockResolvedValue(fixtures.storage);
       vi.spyOn(trueTime, 'now').mockReturnValue(0); // make sure token isn't expired
