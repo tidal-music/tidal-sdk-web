@@ -1,4 +1,5 @@
 import {
+  type Credentials,
   IllegalArgumentError,
   RetryableError,
   TidalError,
@@ -36,6 +37,17 @@ const initConfig = {
   clientUniqueKey: 'CLIENT_UNIQUE_KEY',
   credentialsStorageKey: 'CREDENTIALS_STORAGE_KEY',
   scopes: ['READ', 'WRITE'],
+};
+
+/**
+ * A pristine copy of the module, i.e. one where `init` has never been called.
+ * `logout` keeps the client configuration around, so tests that need a truly
+ * uninitialized module have to re-import it.
+ */
+const uninitializedAuth = async () => {
+  vi.resetModules();
+
+  return import('./auth.js');
 };
 
 const prepareFetchMock = {
@@ -166,11 +178,10 @@ describe.sequential('auth', () => {
 
   describe('initializeLogin', () => {
     it("exits early when `init` hasn't been called before", async () => {
-      // clear local state
-      logout();
+      const auth = await uninitializedAuth();
 
       await expect(
-        initializeLogin({ redirectUri: 'https://foo.com/auth' }),
+        auth.initializeLogin({ redirectUri: 'https://foo.com/auth' }),
       ).rejects.toThrow(authErrorCodeMap.initError);
     });
 
@@ -242,10 +253,9 @@ describe.sequential('auth', () => {
     });
 
     it('exits early when credentials are not present', async () => {
-      // clear local state
-      logout();
+      const auth = await uninitializedAuth();
 
-      await expect(initializeDeviceLogin()).rejects.toThrow(
+      await expect(auth.initializeDeviceLogin()).rejects.toThrow(
         authErrorCodeMap.initError,
       );
     });
@@ -253,10 +263,9 @@ describe.sequential('auth', () => {
 
   describe('finalizeLogin', () => {
     it("exits early when `init` hasn't been called before", async () => {
-      // clear local state
-      logout();
+      const auth = await uninitializedAuth();
 
-      await expect(finalizeLogin('loginQueryResponse')).rejects.toThrow(
+      await expect(auth.finalizeLogin('loginQueryResponse')).rejects.toThrow(
         authErrorCodeMap.initError,
       );
     });
@@ -505,37 +514,101 @@ describe.sequential('auth', () => {
   });
 
   describe('logout', () => {
-    it('logs the user out by deleting credentials', async () => {
+    const loginAUser = async () => {
       vi.mocked(storage.loadCredentials).mockResolvedValue(undefined);
+      // make sure the token we set below isn't expired
+      vi.spyOn(trueTime, 'now').mockReturnValue(fixtures.expiresTimerMock);
 
       await init(initConfig);
+      await setCredentials({
+        accessToken: fixtures.storage.accessToken,
+        refreshToken: 'REFRESH_TOKEN',
+      });
+    };
+
+    it('logs the user out by deleting credentials', async () => {
+      await loginAUser();
 
       logout();
 
       expect(storage.deleteCredentials).toHaveBeenCalledWith(
         'CREDENTIALS_STORAGE_KEY',
       );
-      await expect(initializeLogin({ redirectUri: 'test' })).rejects.toThrow(
-        authErrorCodeMap.initError,
-      );
+      // the user token is gone, only the client configuration is left
+      await expect(getCredentials()).resolves.toEqual({
+        clientId: initConfig.clientId,
+        requestedScopes: initConfig.scopes,
+      });
+    });
+
+    it('keeps the module initialized, so `init` is not needed again', async () => {
+      await loginAUser();
+
+      logout();
+
+      await expect(
+        initializeLogin({ redirectUri: 'https://foo.com/auth' }),
+      ).resolves.toContain('authorize');
+    });
+
+    // Regression test: `logout` used to announce `credentialsUpdated` while the
+    // credentials it was about to delete were still readable. A listener acting
+    // on that event got a live token back, and the follow up read it made based
+    // on it then threw `initError` — the `A0001` that @tidal-music/player
+    // logged on every logout.
+    it('has cleared the credentials by the time the bus is notified', async () => {
+      await loginAUser();
+
+      let listening = true;
+      const reads: Array<Credentials> = [];
+
+      // mirrors what @tidal-music/player does with the event: it reads the
+      // credentials, dispatches `authorized`/`unauthenticated` based on them,
+      // and the handler of that event reads the credentials once more
+      bus(() => {
+        if (!listening) {
+          return;
+        }
+
+        void getCredentials().then(async credentials => {
+          reads.push(credentials, await getCredentials());
+        });
+      });
+
+      logout();
+
+      await vi.waitFor(() => expect(reads).toHaveLength(2));
+      listening = false;
+
+      expect(reads.map(({ token }) => token)).toEqual([undefined, undefined]);
     });
   });
 
   describe('getAccessToken/refreshAccessToken/upgradeToken', () => {
-    it('should exit early if logout was called', async () => {
+    it('falls back to client credentials after a logout', async () => {
       vi.mocked(storage.loadCredentials).mockResolvedValue(undefined);
+      vi.spyOn(trueTime, 'now').mockReturnValue(fixtures.expiresTimerMock);
+      vi.mocked(fetchHandling.handleTokenFetch).mockResolvedValue(
+        new Response(JSON.stringify(fixtures.clientCredentialsJsonResponse)),
+      );
       vi.mocked(fetchHandling.prepareFetch).mockReturnValue(prepareFetchMock);
 
-      await init(initConfig);
+      await init({
+        ...initConfig,
+        clientSecret: 'CLIENT_SECRET',
+      });
 
       logout();
 
       expect(storage.deleteCredentials).toHaveBeenCalledWith(
         'CREDENTIALS_STORAGE_KEY',
       );
-      await expect(getCredentials()).rejects.toThrow(
-        authErrorCodeMap.initError,
-      );
+      // an anonymous token, not the user's one, and not an `initError`
+      expect(await getCredentials()).toEqual({
+        ...fixtures.storageClientCredentials.accessToken,
+        clientUniqueKey: 'CLIENT_UNIQUE_KEY',
+        requestedScopes: ['READ', 'WRITE'],
+      });
     });
 
     it('return accessToken only with basic credentials (no token)', async () => {
@@ -952,11 +1025,10 @@ describe.sequential('auth', () => {
     });
 
     it("throws because module wasn't init", async () => {
-      // clean up state
-      logout();
+      const auth = await uninitializedAuth();
 
       await expect(
-        setCredentials({ accessToken: fixtures.storage.accessToken }),
+        auth.setCredentials({ accessToken: fixtures.storage.accessToken }),
       ).rejects.toEqual(new TidalError(authErrorCodeMap.initError));
     });
   });

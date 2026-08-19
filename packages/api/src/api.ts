@@ -20,10 +20,20 @@ export function createAPIClient(
 ) {
   const authMiddleware: Middleware = {
     async onRequest({ request }) {
-      const credentials = await credentialsProvider.getCredentials();
+      const { token } = await credentialsProvider.getCredentials();
+
+      // A provider without a token has nothing to authenticate with: it is
+      // logged out, or was only ever given a clientId. Sending the request
+      // regardless would put the string "undefined" in the header and come
+      // back as an opaque 401, so fail before the round trip instead.
+      if (!token) {
+        throw new Error(
+          'No access token available from the credentials provider',
+        );
+      }
 
       // Add Authorization header to every request
-      request.headers.set('Authorization', `Bearer ${credentials.token}`);
+      request.headers.set('Authorization', `Bearer ${token}`);
 
       // Set JsonAPI Content-Type header for requests with data
       if (
