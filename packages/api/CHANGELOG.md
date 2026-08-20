@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Sync to new API definitions (version: 1.10.104)
 
+### Fixed
+
+- The auth middleware no longer sends `Authorization: Bearer undefined` when the
+  credentials provider has no token (logged out, or anonymous with only a
+  `clientId`). The request now fails before the round trip rather than coming
+  back as an opaque 401
+  ([#718](https://github.com/tidal-music/tidal-sdk-web/pull/718)).
+
 ## [0.43.0] - 2026-08-15
 
 ### Changed

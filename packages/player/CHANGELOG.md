@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.20.1] - 2026-08-20
+
+### Fixed
+
+- An auth module that has been logged out, or was never initialized, is now
+  treated as an unauthenticated user instead of surfacing a `console.error`'d
+  `A0001`. `handleAuthorized` no longer aborts halfway, so
+  `Config.update({ gatherEvents })` and `Pushkin.refresh()` still run. Only the
+  "no credentials at all" case is swallowed — a failed refresh or a network
+  problem still rejects
+  ([#718](https://github.com/tidal-music/tidal-sdk-web/pull/718)).
+
 ## [0.20.0] - 2026-08-17
 
 ### Changed
