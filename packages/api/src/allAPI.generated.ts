@@ -23799,9 +23799,19 @@ export interface components {
             numberOfFollowers: number;
             /**
              * Format: int32
-             * @description Number of items in the playlist
+             * @description Number of items in the items relationship
              */
             numberOfItems?: number;
+            /**
+             * Format: int32
+             * @description Number of track items in the items relationship
+             */
+            numberOfTrackItems?: number;
+            /**
+             * Format: int32
+             * @description Number of video items in the items relationship
+             */
+            numberOfVideoItems?: number;
             /**
              * @description The type of the playlist
              * @enum {string}
