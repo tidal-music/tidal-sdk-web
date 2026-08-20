@@ -11,10 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - An auth module that has been logged out, or was never initialized, is now
   treated as an unauthenticated user instead of surfacing a `console.error`'d
-  `A0001`. `handleAuthorized` no longer aborts halfway, so
-  `Config.update({ gatherEvents })` and `Pushkin.refresh()` still run. Only the
-  "no credentials at all" case is swallowed — a failed refresh or a network
-  problem still rejects
+  `A0001`. The credentials store dispatches `unauthenticated` rather than
+  letting the rejection escape, so event gathering is configured for a logged
+  out user instead of the handler aborting part way through. Only the "no
+  credentials at all" case is swallowed — a failed refresh or a network problem
+  still rejects
   ([#718](https://github.com/tidal-music/tidal-sdk-web/pull/718)).
 
 ## [0.20.0] - 2026-08-17
