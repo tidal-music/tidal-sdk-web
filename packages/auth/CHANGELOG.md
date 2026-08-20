@@ -21,7 +21,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   carries a `sessionId` that `logout()` bumps, and a token response whose id no
   longer matches is rejected with `initError`; a storage write that a logout
   races is undone rather than left behind for the next `loadCredentials()`
-  ([#719](https://github.com/tidal-music/tidal-sdk-web/pull/719)).
+  ([#719](https://github.com/tidal-music/tidal-sdk-web/pull/719)). Note that the
+  undo is only synchronous on the default encrypted-`localStorage` backend. A
+  custom `StorageAdapter`'s `remove()` is dispatched without being awaited, so
+  with one installed the removal can still be outrun by an immediate `init()`,
+  or interrupted by a shutdown.
 
 ## [1.6.1] - 2026-05-13
 
