@@ -1634,6 +1634,15 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful dry run */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
                 /** @description Successful response */
                 201: {
                     headers: {
@@ -2526,6 +2535,15 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful dry run */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
                 /** @description Successful response */
                 201: {
                     headers: {
