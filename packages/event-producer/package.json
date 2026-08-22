@@ -35,14 +35,14 @@
     "check:types-resolution": "attw --pack . --ignore-rules=cjs-resolves-to-esm"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "4.1.10",
-    "@vitest/ui": "4.1.10",
-    "@vitest/web-worker": "4.1.10",
-    "happy-dom": "20.11.2",
+    "@vitest/coverage-v8": "4.1.11",
+    "@vitest/ui": "4.1.11",
+    "@vitest/web-worker": "4.1.11",
+    "happy-dom": "20.11.6",
     "typescript": "6.0.3",
-    "vite": "8.2.1",
+    "vite": "8.2.2",
     "vite-plugin-dts": "5.0.3",
-    "vitest": "4.1.10",
+    "vitest": "4.1.11",
     "xml-js": "1.6.11"
   },
   "dependencies": {
