@@ -5,10 +5,10 @@
       "name" : "TIDAL Developer - Discussions",
       "url" : "https://github.com/orgs/tidal-music/discussions"
     },
-    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Working with responses\n\n- **Enums** — new values can be added to any enum at any time. Treat unknown values as forward-compatible, not as errors.\n- **IDs** are opaque strings. Never parse, construct, or infer meaning from them.\n- **Formats** — dates, times and durations are ISO 8601 (`2024-05-01T12:00:00Z`, `PT3M5S`); countries ISO 3166-1 alpha-2; languages BCP 47; currencies ISO 4217; colors six-digit hex.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: a resource's `relationships` object contains just the relationships named in [`include`](https://jsonapi.org/format/#fetching-includes) — a relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<member>]=value`](https://jsonapi.org/format/#fetching-filtering) filters collections; each endpoint documents its available filters, and most collections require at least one.\n- [`sort=<member>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<member>` descending (`sort=-addedAt`). Filter and sort members are relative to the resources being returned.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Once the original request has completed, retrying with the same key and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
+    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Working with responses\n\n- **Enums** — new values can be added to any enum at any time. Treat unknown values as forward-compatible, not as errors.\n- **IDs** are opaque strings. Never parse, construct, or infer meaning from them.\n- **Formats** — dates, times and durations are ISO 8601 (`2024-05-01T12:00:00Z`, `PT3M5S`); countries ISO 3166-1 alpha-2; languages BCP 47; currencies ISO 4217; colors three- or six-digit hex (`#RGB` or `#RRGGBB`).\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: a resource's `relationships` object contains just the relationships named in [`include`](https://jsonapi.org/format/#fetching-includes) — a relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<member>]=value`](https://jsonapi.org/format/#fetching-filtering) filters collections; each endpoint documents its available filters, and most collections require at least one.\n- [`sort=<member>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<member>` descending (`sort=-addedAt`). Filter and sort members are relative to the resources being returned.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Once the original request has completed, retrying with the same key and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.104"
+    "version" : "1.10.106"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -249,6 +249,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -776,8 +777,11 @@
           "name" : "filter[barcodeId]",
           "required" : false,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -787,8 +791,11 @@
           "name" : "filter[id]",
           "required" : false,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -798,8 +805,11 @@
           "name" : "filter[owners.id]",
           "required" : false,
           "schema" : {
+            "maxItems" : 1,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -2626,6 +2636,16 @@
           }
         },
         "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mutation_Response_Document"
+                }
+              }
+            },
+            "description" : "Successful dry run"
+          },
           "201" : {
             "content" : {
               "application/vnd.api+json" : {
@@ -2925,8 +2945,11 @@
           "name" : "filter[id]",
           "required" : true,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -2986,8 +3009,11 @@
           "name" : "filter[owners.id]",
           "required" : true,
           "schema" : {
+            "maxItems" : 1,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -3802,6 +3828,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -3811,8 +3838,11 @@
           "name" : "filter[id]",
           "required" : false,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -3822,8 +3852,11 @@
           "name" : "filter[owners.id]",
           "required" : false,
           "schema" : {
+            "maxItems" : 1,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -3900,6 +3933,16 @@
           }
         },
         "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mutation_Response_Document"
+                }
+              }
+            },
+            "description" : "Successful dry run"
+          },
           "201" : {
             "content" : {
               "application/vnd.api+json" : {
@@ -5561,6 +5604,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -5876,6 +5920,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -6373,6 +6418,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -6890,6 +6936,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -7457,8 +7504,11 @@
           "name" : "filter[owners.id]",
           "required" : true,
           "schema" : {
+            "maxItems" : 1,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -8176,6 +8226,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -8611,6 +8662,8 @@
           "name" : "filter[id]",
           "required" : true,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string"
@@ -9712,6 +9765,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -9723,6 +9777,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -10057,6 +10112,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -11327,6 +11383,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -12388,6 +12445,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -12397,8 +12455,11 @@
           "name" : "filter[id]",
           "required" : false,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -12410,6 +12471,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -13882,8 +13944,11 @@
           "name" : "filter[id]",
           "required" : true,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -14073,6 +14138,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -14297,6 +14363,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -14328,8 +14395,11 @@
           "name" : "filter[barcodeId]",
           "required" : false,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -14339,8 +14409,12 @@
           "name" : "filter[grid]",
           "required" : false,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
+              "pattern" : "^[A-Z0-9-]{1,32}$",
               "type" : "string"
             }
           }
@@ -14632,8 +14706,11 @@
           "name" : "filter[owners.id]",
           "required" : true,
           "schema" : {
+            "maxItems" : 1,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -14966,6 +15043,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -15384,6 +15462,8 @@
           "name" : "filter[requiredAccessTier]",
           "required" : true,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -15514,6 +15594,7 @@
           "required" : true,
           "schema" : {
             "maxLength" : 256,
+            "minLength" : 1,
             "type" : "string"
           }
         }, {
@@ -16487,6 +16568,7 @@
           "required" : true,
           "schema" : {
             "maxLength" : 256,
+            "minLength" : 1,
             "type" : "string"
           }
         }, {
@@ -16802,6 +16884,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -17598,6 +17681,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -17826,6 +17910,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -17980,6 +18065,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -19263,8 +19349,11 @@
           "name" : "filter[id]",
           "required" : false,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -19274,8 +19363,11 @@
           "name" : "filter[isrc]",
           "required" : false,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -19285,8 +19377,11 @@
           "name" : "filter[owners.id]",
           "required" : false,
           "schema" : {
+            "maxItems" : 1,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -22558,6 +22653,8 @@
           "name" : "filter[id]",
           "required" : true,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
               "type" : "string"
@@ -28835,6 +28932,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -29140,8 +29238,11 @@
           "name" : "filter[id]",
           "required" : false,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -29151,8 +29252,11 @@
           "name" : "filter[isrc]",
           "required" : false,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
+              "minLength" : 1,
               "type" : "string"
             }
           }
@@ -30525,6 +30629,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -30748,6 +30853,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -30806,9 +30912,12 @@
             "format" : "date"
           },
           "title" : {
+            "maxLength" : 255,
+            "minLength" : 1,
             "type" : "string"
           },
           "version" : {
+            "maxLength" : 255,
             "type" : "string"
           }
         }
@@ -30844,6 +30953,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -30871,6 +30981,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -30901,6 +31012,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -30914,6 +31026,7 @@
         "type" : "object",
         "properties" : {
           "positionIndex" : {
+            "minimum" : 1,
             "type" : "integer",
             "description" : "1-based index",
             "format" : "int32"
@@ -30937,6 +31050,7 @@
             "$ref" : "#/components/schemas/AlbumsUpdateOperation_Payload_Data_Attributes"
           },
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "relationships" : {
@@ -30978,9 +31092,12 @@
             "format" : "date"
           },
           "title" : {
+            "maxLength" : 255,
+            "minLength" : 1,
             "type" : "string"
           },
           "version" : {
+            "maxLength" : 255,
             "type" : "string"
           }
         }
@@ -31012,6 +31129,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -31051,6 +31169,7 @@
             }
           },
           "barcodeId" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "copyright" : {
@@ -31111,6 +31230,8 @@
             "example" : "2017-06-30"
           },
           "title" : {
+            "maxLength" : 255,
+            "minLength" : 1,
             "type" : "string",
             "description" : "Album title",
             "example" : "4:44"
@@ -31122,6 +31243,7 @@
             "enum" : [ "ALBUM", "EP", "SINGLE" ]
           },
           "version" : {
+            "maxLength" : 255,
             "type" : "string",
             "description" : "Album version",
             "example" : "remix"
@@ -31486,10 +31608,14 @@
         "type" : "object",
         "properties" : {
           "backgroundColor" : {
+            "minLength" : 1,
+            "pattern" : "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
             "type" : "string",
             "description" : "Background color for the suggested artwork"
           },
           "foregroundColor" : {
+            "minLength" : 1,
+            "pattern" : "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
             "type" : "string",
             "description" : "Foreground color for the suggested artwork"
           }
@@ -31625,6 +31751,7 @@
             "$ref" : "#/components/schemas/ArtistBiographiesUpdateOperation_Payload_Data_Attributes"
           },
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -31637,6 +31764,7 @@
         "type" : "object",
         "properties" : {
           "text" : {
+            "maxLength" : 5000,
             "type" : "string"
           }
         }
@@ -31802,6 +31930,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -31840,6 +31969,7 @@
         "type" : "object",
         "properties" : {
           "artistId" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "provider" : {
@@ -31908,6 +32038,7 @@
         "type" : "object",
         "properties" : {
           "artistId" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The artist id which is being claimed"
           },
@@ -31919,7 +32050,6 @@
             }
           },
           "provider" : {
-            "minLength" : 1,
             "type" : "string",
             "description" : "The DSP used for authentication",
             "enum" : [ "DISTROKID", "CDBABY", "TUNECORE" ]
@@ -31937,7 +32067,6 @@
             }
           },
           "status" : {
-            "minLength" : 1,
             "type" : "string",
             "description" : "Current status of this claim",
             "enum" : [ "AWAITING_OAUTH", "FETCHING_CONTENT", "VERIFIED", "NO_MATCHES", "AUTHENTICATION_FAILED", "PROCESSING", "COMPLETED", "FAILED", "CANCELLED", "NAME_MISMATCH", "CLAIMED_ARTIST_MISMATCH" ]
@@ -32118,6 +32247,7 @@
         "type" : "object",
         "properties" : {
           "handle" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "name" : {
@@ -32153,6 +32283,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -32180,6 +32311,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -32207,6 +32339,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -32235,6 +32368,7 @@
             "$ref" : "#/components/schemas/ArtistsUpdateOperation_Payload_Data_Attributes"
           },
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -32348,6 +32482,7 @@
             }
           },
           "handle" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Artist handle",
             "example" : "jayz"
@@ -32775,6 +32910,7 @@
         "type" : "object",
         "properties" : {
           "href" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Artwork file href"
           },
@@ -32789,12 +32925,14 @@
         "type" : "object",
         "properties" : {
           "height" : {
+            "minimum" : 1,
             "type" : "integer",
             "description" : "Height (in pixels)",
             "format" : "int32",
             "example" : 80
           },
           "width" : {
+            "minimum" : 1,
             "type" : "integer",
             "description" : "Width (in pixels)",
             "format" : "int32",
@@ -32808,10 +32946,13 @@
         "type" : "object",
         "properties" : {
           "md5Hash" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "MD5 hash of file to be uploaded"
           },
           "size" : {
+            "maximum" : 20000000,
+            "minimum" : 1,
             "type" : "integer",
             "description" : "File size of the artwork in bytes",
             "format" : "int64"
@@ -32833,6 +32974,8 @@
             "description" : "BlurHash representation of the artwork for placeholder display"
           },
           "selectedPaletteColor" : {
+            "minLength" : 1,
+            "pattern" : "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
             "type" : "string",
             "description" : "Selected color from the extracted artwork palette"
           },
@@ -32884,9 +33027,12 @@
         "type" : "object",
         "properties" : {
           "md5Hash" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "size" : {
+            "maximum" : 20000000,
+            "minimum" : 1,
             "type" : "integer",
             "format" : "int64"
           }
@@ -32904,7 +33050,6 @@
             }
           },
           "mediaType" : {
-            "minLength" : 1,
             "type" : "string",
             "description" : "Media type of artwork files",
             "enum" : [ "IMAGE", "VIDEO" ]
@@ -33075,6 +33220,7 @@
             "$ref" : "#/components/schemas/ClientsUpdateOperation_Payload_Data_Attributes"
           },
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -33293,6 +33439,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -33389,6 +33536,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -33573,7 +33721,8 @@
           "message" : {
             "maxLength" : 2000,
             "minLength" : 1,
-            "type" : "string"
+            "type" : "string",
+            "description" : "The comment message content"
           },
           "startTime" : {
             "type" : "string"
@@ -33612,6 +33761,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -33659,6 +33809,7 @@
             "$ref" : "#/components/schemas/CommentsUpdateOperation_Payload_Data_Attributes"
           },
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -33676,7 +33827,8 @@
           "message" : {
             "maxLength" : 2000,
             "minLength" : 1,
-            "type" : "string"
+            "type" : "string",
+            "description" : "The comment message content"
           },
           "startTime" : {
             "type" : "string"
@@ -33935,6 +34087,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -34243,6 +34396,7 @@
             "format" : "date-time"
           },
           "emoji" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "User's emoji reaction"
           },
@@ -34442,6 +34596,7 @@
         "type" : "object",
         "properties" : {
           "href" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "URL to download the content from"
           },
@@ -35182,6 +35337,7 @@
         "type" : "object",
         "properties" : {
           "href" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -35205,6 +35361,7 @@
         "type" : "object",
         "properties" : {
           "href" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -35239,6 +35396,7 @@
         "type" : "object",
         "properties" : {
           "href" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Href to upload actual file to"
           },
@@ -35689,6 +35847,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The item id. Use \"me\" when the type is userCollectionTracks to resolve to the authenticated user's collection."
           },
@@ -35953,7 +36112,6 @@
         "properties" : {
           "text" : {
             "maxLength" : 10000,
-            "minLength" : 0,
             "type" : "string"
           }
         }
@@ -35974,6 +36132,7 @@
             "$ref" : "#/components/schemas/LyricsCreateOperation_Payload_Data_Relationships_Track_Data"
           },
           "id" : {
+            "minLength" : 1,
             "type" : "string",
             "deprecated" : true
           },
@@ -35989,6 +36148,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -36057,7 +36217,6 @@
           },
           "text" : {
             "maxLength" : 10000,
-            "minLength" : 0,
             "type" : "string"
           }
         }
@@ -36266,6 +36425,7 @@
             "type" : "boolean"
           },
           "artistId" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "distributorName" : {
@@ -36335,6 +36495,7 @@
             "description" : "Accepted terms and conditions"
           },
           "artistId" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Artist ID being claimed"
           },
@@ -36791,6 +36952,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -36891,6 +37053,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -36933,6 +37096,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -36979,6 +37143,7 @@
             "$ref" : "#/components/schemas/PlayQueuesUpdateOperation_Payload_Data_Attributes"
           },
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -37349,6 +37514,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -37376,6 +37542,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -37403,6 +37570,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -37448,9 +37616,12 @@
             "format" : "date-time"
           },
           "description" : {
+            "maxLength" : 500,
             "type" : "string"
           },
           "name" : {
+            "maxLength" : 250,
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -37477,6 +37648,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -37502,6 +37674,8 @@
         "type" : "object",
         "properties" : {
           "positionBefore" : {
+            "maxLength" : 36,
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -37511,6 +37685,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "reason" : {
@@ -37542,6 +37717,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -37558,6 +37734,8 @@
         "type" : "object",
         "properties" : {
           "itemId" : {
+            "maxLength" : 36,
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -37584,6 +37762,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -37600,6 +37779,8 @@
         "type" : "object",
         "properties" : {
           "itemId" : {
+            "maxLength" : 36,
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -37609,6 +37790,8 @@
         "type" : "object",
         "properties" : {
           "positionBefore" : {
+            "maxLength" : 36,
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -37630,6 +37813,7 @@
             "$ref" : "#/components/schemas/PlaylistsUpdateOperation_Payload_Data_Attributes"
           },
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -37648,9 +37832,12 @@
             "enum" : [ "PUBLIC", "UNLISTED" ]
           },
           "description" : {
+            "maxLength" : 500,
             "type" : "string"
           },
           "name" : {
+            "maxLength" : 250,
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -37675,6 +37862,7 @@
             "format" : "date-time"
           },
           "description" : {
+            "maxLength" : 500,
             "type" : "string",
             "description" : "Playlist description"
           },
@@ -37695,6 +37883,7 @@
             "format" : "date-time"
           },
           "name" : {
+            "maxLength" : 250,
             "minLength" : 1,
             "type" : "string",
             "description" : "Playlist name"
@@ -37773,6 +37962,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -37793,6 +37983,8 @@
             "format" : "date-time"
           },
           "itemId" : {
+            "maxLength" : 36,
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -37993,10 +38185,14 @@
         "type" : "object",
         "properties" : {
           "backgroundColor" : {
+            "minLength" : 1,
+            "pattern" : "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
             "type" : "string",
             "description" : "Background color for the suggested artwork"
           },
           "foregroundColor" : {
+            "minLength" : 1,
+            "pattern" : "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
             "type" : "string",
             "description" : "Foreground color for the suggested artwork"
           }
@@ -38276,6 +38472,7 @@
         "type" : "object",
         "properties" : {
           "barcodeId" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "broken" : {
@@ -38286,6 +38483,8 @@
             "format" : "int32"
           },
           "grid" : {
+            "minLength" : 1,
+            "pattern" : "^[A-Z0-9-]{1,32}$",
             "type" : "string"
           },
           "tracks" : {
@@ -38666,6 +38865,7 @@
         "type" : "object",
         "properties" : {
           "emoji" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -38712,6 +38912,7 @@
             "example" : "2025-11-17T12:54:48.60606Z"
           },
           "emoji" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "The type of reaction representing an emoji"
           }
@@ -38926,6 +39127,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -39172,6 +39374,8 @@
             "example" : "beatles"
           },
           "query" : {
+            "maxLength" : 256,
+            "minLength" : 1,
             "type" : "string",
             "description" : "The search query represented by this resource",
             "example" : "hello"
@@ -39445,10 +39649,12 @@
         }
       },
       "SearchSuggestions_Attributes" : {
-        "required" : [ "query", "trackingId" ],
+        "required" : [ "query", "suggestions", "trackingId" ],
         "type" : "object",
         "properties" : {
           "query" : {
+            "maxLength" : 256,
+            "minLength" : 1,
             "type" : "string",
             "description" : "The search query represented by this resource",
             "example" : "hello"
@@ -39517,12 +39723,18 @@
         "type" : "object",
         "properties" : {
           "length" : {
+            "minimum" : 1,
             "type" : "integer",
-            "format" : "int32"
+            "description" : "Length of the highlight range, measured in UTF-16 code units",
+            "format" : "int32",
+            "example" : 3
           },
           "start" : {
+            "minimum" : 0,
             "type" : "integer",
-            "format" : "int32"
+            "description" : "Zero-based start offset in the suggested query, measured in UTF-16 code units",
+            "format" : "int32",
+            "example" : 0
           }
         }
       },
@@ -39596,18 +39808,20 @@
         }
       },
       "SearchSuggestions_Suggestions" : {
-        "required" : [ "query" ],
+        "required" : [ "highlights", "query" ],
         "type" : "object",
         "properties" : {
           "highlights" : {
             "type" : "array",
+            "description" : "Ranges in `query` that clients should highlight as matches for the requested search query",
             "items" : {
               "$ref" : "#/components/schemas/SearchSuggestions_Highlights"
             }
           },
           "query" : {
             "minLength" : 1,
-            "type" : "string"
+            "type" : "string",
+            "description" : "The suggested search query"
           }
         },
         "description" : "Suggested search queries"
@@ -39675,6 +39889,7 @@
         "type" : "object",
         "properties" : {
           "code" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "Share code"
           },
@@ -39993,6 +40208,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -40087,7 +40303,6 @@
             "format" : "date-time"
           },
           "status" : {
-            "minLength" : 1,
             "type" : "string",
             "description" : "Current status of this Square connection",
             "enum" : [ "DRAFT", "PENDING_REQUIREMENTS", "KYC_PENDING", "ACCEPTED", "REJECTED", "SUSPENDED" ]
@@ -40178,6 +40393,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -40372,7 +40588,6 @@
             "format" : "date-time"
           },
           "status" : {
-            "minLength" : 1,
             "type" : "string",
             "description" : "Current status of this Stripe connection",
             "enum" : [ "PENDING_REQUIREMENTS", "UNDER_REVIEW", "ACCEPTED", "REJECTED", "SUSPENDED" ]
@@ -41076,6 +41291,7 @@
             "format" : "int32"
           },
           "trackId" : {
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -41242,9 +41458,12 @@
         "type" : "object",
         "properties" : {
           "md5Hash" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "size" : {
+            "maximum" : 5000000000,
+            "minimum" : 1,
             "type" : "integer",
             "format" : "int64"
           }
@@ -41266,6 +41485,7 @@
             "$ref" : "#/components/schemas/TrackSourceFilesCreateOperation_Payload_Data_Relationships_Track_Data"
           },
           "id" : {
+            "minLength" : 1,
             "type" : "string",
             "deprecated" : true
           },
@@ -41281,6 +41501,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -41294,10 +41515,13 @@
         "type" : "object",
         "properties" : {
           "md5Hash" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "MD5 hash of file to be uploaded"
           },
           "size" : {
+            "maximum" : 5000000000,
+            "minimum" : 1,
             "type" : "integer",
             "description" : "File size of the track in bytes",
             "format" : "int64"
@@ -41483,6 +41707,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -41532,6 +41757,8 @@
             "example" : false
           },
           "title" : {
+            "maxLength" : 255,
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -41570,6 +41797,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -41597,6 +41825,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -41624,6 +41853,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -41695,6 +41925,7 @@
             "$ref" : "#/components/schemas/TracksUpdateOperation_Payload_Data_Attributes"
           },
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "relationships" : {
@@ -41716,6 +41947,7 @@
             "enum" : [ "PUBLIC", "UNLISTED", "PRIVATE" ]
           },
           "bpm" : {
+            "minimum" : 0,
             "type" : "number",
             "format" : "float"
           },
@@ -41733,6 +41965,8 @@
             "enum" : [ "UNKNOWN", "MAJOR", "MINOR", "AEOLIAN", "BLUES", "DORIAN", "HARMONIC_MINOR", "LOCRIAN", "LYDIAN", "MIXOLYDIAN", "PENTATONIC_MAJOR", "PHRYGIAN", "MELODIC_MINOR", "PENTATONIC_MINOR" ]
           },
           "title" : {
+            "maxLength" : 255,
+            "minLength" : 1,
             "type" : "string"
           },
           "toneTags" : {
@@ -41776,6 +42010,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -41886,6 +42121,7 @@
             }
           },
           "isrc" : {
+            "minLength" : 1,
             "type" : "string",
             "description" : "International Standard Recording Code (ISRC)",
             "example" : "QMJMT1701229"
@@ -41920,6 +42156,8 @@
             "example" : true
           },
           "title" : {
+            "maxLength" : 255,
+            "minLength" : 1,
             "type" : "string",
             "description" : "Track title",
             "example" : "Kill Jay Z"
@@ -41933,6 +42171,7 @@
             }
           },
           "version" : {
+            "maxLength" : 255,
             "type" : "string",
             "description" : "Track version, complements title",
             "example" : "original, mix etc"
@@ -42271,6 +42510,7 @@
         "type" : "object",
         "properties" : {
           "countryCode" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "free" : {
@@ -42434,6 +42674,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -42489,6 +42730,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -42514,6 +42756,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "reason" : {
@@ -42545,6 +42788,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -42604,6 +42848,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -42788,6 +43033,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -42813,6 +43059,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "reason" : {
@@ -42844,6 +43091,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -42903,6 +43151,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -43067,6 +43316,8 @@
         "type" : "object",
         "properties" : {
           "name" : {
+            "maxLength" : 255,
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -43135,6 +43386,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -43161,6 +43413,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -43198,6 +43451,8 @@
         "type" : "object",
         "properties" : {
           "name" : {
+            "maxLength" : 255,
+            "minLength" : 1,
             "type" : "string"
           }
         }
@@ -43215,6 +43470,8 @@
             "format" : "date-time"
           },
           "name" : {
+            "maxLength" : 255,
+            "minLength" : 1,
             "type" : "string"
           },
           "numberOfItems" : {
@@ -43437,6 +43694,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -43462,6 +43720,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "reason" : {
@@ -43493,6 +43752,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -43552,6 +43812,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -44020,6 +44281,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -44045,6 +44307,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "reason" : {
@@ -44076,6 +44339,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -44135,6 +44399,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -44319,6 +44584,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -44344,6 +44610,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "reason" : {
@@ -44375,6 +44642,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -44434,6 +44702,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -44618,6 +44887,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -44657,6 +44927,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -44684,6 +44955,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -44723,6 +44995,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -44750,6 +45023,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -44777,6 +45051,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -44804,6 +45079,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "meta" : {
@@ -44843,6 +45119,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -44870,6 +45147,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -44897,6 +45175,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -45616,6 +45895,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -45643,6 +45923,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -45670,6 +45951,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -45697,6 +45979,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -45724,6 +46007,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -45751,6 +46035,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -45779,6 +46064,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -45930,6 +46216,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -46009,6 +46296,7 @@
         "type" : "object",
         "properties" : {
           "id" : {
+            "minLength" : 1,
             "type" : "string"
           },
           "type" : {
@@ -46173,6 +46461,8 @@
         "type" : "object",
         "properties" : {
           "description" : {
+            "maxLength" : 500,
+            "minLength" : 1,
             "type" : "string"
           },
           "reason" : {
@@ -46222,6 +46512,8 @@
         "type" : "object",
         "properties" : {
           "description" : {
+            "maxLength" : 500,
+            "minLength" : 1,
             "type" : "string",
             "description" : "Description"
           },

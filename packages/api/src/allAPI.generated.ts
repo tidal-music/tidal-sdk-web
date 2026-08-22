@@ -1634,6 +1634,15 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful dry run */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
                 /** @description Successful response */
                 201: {
                     headers: {
@@ -2526,6 +2535,15 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful dry run */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
                 /** @description Successful response */
                 201: {
                     headers: {
@@ -22158,6 +22176,7 @@ export interface components {
         };
         CommentsCreateOperation_Payload_Data_Attributes: {
             endTime?: string;
+            /** @description The comment message content */
             message: string;
             startTime?: string;
         };
@@ -22192,6 +22211,7 @@ export interface components {
         };
         CommentsUpdateOperation_Payload_Data_Attributes: {
             endTime?: string;
+            /** @description The comment message content */
             message?: string;
             startTime?: string;
         };
@@ -24592,7 +24612,7 @@ export interface components {
              */
             query: string;
             /** @description Suggested search queries */
-            suggestions?: components["schemas"]["SearchSuggestions_Suggestions"][];
+            suggestions: components["schemas"]["SearchSuggestions_Suggestions"][];
             /** @description Unique tracking id */
             trackingId: string;
         };
@@ -24618,9 +24638,17 @@ export interface components {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
         SearchSuggestions_Highlights: {
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Length of the highlight range, measured in UTF-16 code units
+             * @example 3
+             */
             length: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Zero-based start offset in the suggested query, measured in UTF-16 code units
+             * @example 0
+             */
             start: number;
         };
         SearchSuggestions_Multi_Relationship_Data_Document: {
@@ -24653,7 +24681,9 @@ export interface components {
         };
         /** @description Suggested search queries */
         SearchSuggestions_Suggestions: {
-            highlights?: components["schemas"]["SearchSuggestions_Highlights"][];
+            /** @description Ranges in `query` that clients should highlight as matches for the requested search query */
+            highlights: components["schemas"]["SearchSuggestions_Highlights"][];
+            /** @description The suggested search query */
             query: string;
         };
         SharesCreateOperation_Payload: {
