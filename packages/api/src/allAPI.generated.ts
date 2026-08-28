@@ -21225,7 +21225,7 @@ export interface components {
              * @description Available usage for this album. Deprecated: use 'usageRules' instead. This field will be removed in a future version.
              */
             availability?: ("STREAM" | "DJ" | "STEM")[];
-            barcodeId: string;
+            barcodeId: string | null;
             copyright?: components["schemas"]["Copyright"];
             /**
              * Format: date-time
@@ -22799,7 +22799,7 @@ export interface components {
              */
             icons: ("SPOTLIGHT_INFO" | "UNKNOWN")[];
             /**
-             * @description Rendering layout for a dynamic module on a dynamic page. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. SHORTCUT selects a quick-access shortcut-bank renderer; clients own responsive rows and columns and chip styling. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
+             * @description Presentation family for items in a dynamic module preview. The API selects the semantic presentation intent while clients own platform-specific geometry. A layout does not prescribe scroll direction, row or column count, dimensions, spacing, breakpoints, or visible item count; clients preserve the server-provided item order. GRID means artwork-forward tiles or cards. LIST means detail-forward row cells, which clients may arrange in one or more columns. SHORTCUT means compact quick-access items, which clients may arrange as a responsive grid or rail. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
              * @example GRID
              * @enum {string}
              */
@@ -22815,7 +22815,7 @@ export interface components {
              */
             title?: string;
             /**
-             * @description Rendering layout for a dynamic module's view-all screen. When viewAllLayout is omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
+             * @description Presentation family for items on a dynamic module's view-all screen. The API selects the semantic presentation intent while clients own platform-specific geometry. A layout does not prescribe scroll direction, row or column count, dimensions, spacing, or breakpoints; clients preserve the server-provided item order. When viewAllLayout is omitted, the module has no view-all screen. GRID means artwork-forward tiles or cards. LIST means detail-forward row cells, which clients may arrange in one or more columns or as a table. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
              * @example LIST
              * @enum {string}
              */
@@ -23815,6 +23815,23 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Recoverable AI playlist generation progress snapshot */
+        PlaylistGenerationProgress: {
+            /** Format: int32 */
+            committedTrackCount?: number;
+            /** @enum {string} */
+            coverArtStatus: "PENDING" | "PROCESSING" | "ERROR" | "OK" | "SKIPPED" | "UNKNOWN";
+            failureCode?: string;
+            /** Format: date-time */
+            lastModifiedAt?: string;
+            playlistReady: boolean;
+            /** Format: int32 */
+            selectedTrackCount?: number;
+            /** @enum {string} */
+            stage?: "PLANNING" | "SEARCHING" | "CHOOSING" | "COMMITTING" | "UNKNOWN";
+            /** Format: int32 */
+            targetTrackCount?: number;
+        };
         PlaylistGenerationsCreateOperation_Payload: {
             data: components["schemas"]["PlaylistGenerationsCreateOperation_Payload_Data"];
         };
@@ -23839,6 +23856,7 @@ export interface components {
             type: "playlists";
         };
         PlaylistGenerations_Attributes: {
+            progress: components["schemas"]["PlaylistGenerationProgress"];
             /** @description Prompt used to create the generation; omitted for legacy generations */
             prompt?: string;
             /**
@@ -25932,7 +25950,7 @@ export interface components {
              * @description International Standard Recording Code (ISRC)
              * @example QMJMT1701229
              */
-            isrc: string;
+            isrc: string | null;
             /**
              * @description Key
              * @enum {string}
@@ -26465,7 +26483,7 @@ export interface components {
             type: "userCollectionFolders";
         };
         UserCollectionFoldersUpdateOperation_Payload_Data_Attributes: {
-            name?: string;
+            name: string;
         };
         UserCollectionFolders_Attributes: {
             /** Format: date-time */
