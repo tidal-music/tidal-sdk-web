@@ -19991,6 +19991,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["UserReportsCreateResource403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -27695,6 +27696,19 @@ export interface components {
             /** @enum {string} */
             type: "tracks" | "artists" | "playlists";
         };
+        UserReportsCreateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example QUOTA_EXCEEDED
+                 * @enum {string}
+                 */
+                code: "QUOTA_EXCEEDED";
+                /** @example Active report limit reached */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
         UserReports_Attributes: {
             /** @description Description */
             description: string;
@@ -28317,6 +28331,15 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["UserRecommendationBlocksAddMultiDataRelationshipWithResponse409ResponseBody"];
+            };
+        };
+        /** @description Active report limit reached */
+        UserReportsCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserReportsCreateResource403ResponseBody"];
             };
         };
         /** @description Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device */
