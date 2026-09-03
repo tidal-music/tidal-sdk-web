@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. Never parse, construct, or infer meaning from an `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes; a property's enum may narrow the supported set. Monetary amounts using the standard price type are positive decimal strings with at most two fractional digits, such as `\"9.99\"`.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: a resource's `relationships` object contains just the relationships named in [`include`](https://jsonapi.org/format/#fetching-includes) — a relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<member>]=value`](https://jsonapi.org/format/#fetching-filtering) filters collections; each endpoint documents its available filters, and most collections require at least one.\n- [`sort=<member>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<member>` descending (`sort=-addedAt`). Filter and sort members are relative to the resources being returned.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Once the original request has completed, retrying with the same key and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.120"
+    "version" : "1.10.123"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -203,9 +203,6 @@
   }, {
     "description" : "A user's collection of favorited videos.",
     "name" : "userCollectionVideos"
-  }, {
-    "description" : "Deprecated. Use the dedicated collection resources instead: userCollectionAlbums, userCollectionArtists, userCollectionTracks, userCollectionVideos, or userCollectionPlaylists.",
-    "name" : "userCollections"
   }, {
     "description" : "A user's daily mixes.",
     "name" : "userDailyMixes"
@@ -25770,1508 +25767,6 @@
         }
       }
     },
-    "/userCollections/{id}" : {
-      "get" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the dedicated collection resources instead: userCollectionAlbums, userCollectionArtists, userCollectionTracks, userCollectionVideos, or userCollectionPlaylists.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
-          "example" : "en-US",
-          "in" : "query",
-          "name" : "locale",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : "en-US"
-          }
-        }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums, artists, owners, playlists, tracks, videos",
-          "example" : "albums",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "albums"
-            }
-          }
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
-          "example" : "albums",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "albums"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/UserCollections_Single_Resource_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
-        } ],
-        "summary" : "Get single userCollection.",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      }
-    },
-    "/userCollections/{id}/relationships/albums" : {
-      "delete" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionAlbums resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "$ref" : "#/components/parameters/IdempotencyKey"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/vnd.api+json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UserCollectionsAlbumsRelationshipRemoveOperation_Payload"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Mutation_Response_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "409" : {
-            "$ref" : "#/components/responses/Idempotency409Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/Idempotency422Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.write", "w_usr" ]
-        } ],
-        "summary" : "Delete from albums relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      },
-      "get" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionAlbums resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Values prefixed with \"-\" are sorted descending; values without it are sorted ascending.",
-          "in" : "query",
-          "name" : "sort",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "albums.addedAt",
-              "enum" : [ "albums.addedAt", "-albums.addedAt", "albums.artists.name", "-albums.artists.name", "albums.releaseDate", "-albums.releaseDate", "albums.title", "-albums.title" ],
-              "default" : "-albums.addedAt",
-              "x-enum-varnames" : [ "AlbumsAddedAtAsc", "AlbumsAddedAtDesc", "AlbumsArtistsNameAsc", "AlbumsArtistsNameDesc", "AlbumsReleaseDateAsc", "AlbumsReleaseDateDesc", "AlbumsTitleAsc", "AlbumsTitleDesc" ]
-            }
-          }
-        }, {
-          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
-          "example" : "en-US",
-          "in" : "query",
-          "name" : "locale",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : "en-US"
-          }
-        }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: albums",
-          "example" : "albums",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "albums"
-            }
-          }
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums",
-          "example" : "albums",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "albums"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/UserCollections_Albums_Multi_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
-        } ],
-        "summary" : "Get albums relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      },
-      "post" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionAlbums resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "$ref" : "#/components/parameters/IdempotencyKey"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/vnd.api+json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UserCollectionsAlbumsRelationshipAddOperation_Payload"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Mutation_Response_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "409" : {
-            "$ref" : "#/components/responses/UserCollectionsAddMultiDataRelationship409Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/Idempotency422Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.write", "w_usr" ]
-        } ],
-        "summary" : "Add to albums relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      }
-    },
-    "/userCollections/{id}/relationships/artists" : {
-      "delete" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionArtists resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "$ref" : "#/components/parameters/IdempotencyKey"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/vnd.api+json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UserCollectionsArtistsRelationshipRemoveOperation_Payload"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Mutation_Response_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "409" : {
-            "$ref" : "#/components/responses/Idempotency409Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/Idempotency422Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.write", "w_usr" ]
-        } ],
-        "summary" : "Delete from artists relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      },
-      "get" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionArtists resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Values prefixed with \"-\" are sorted descending; values without it are sorted ascending.",
-          "in" : "query",
-          "name" : "sort",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "artists.addedAt",
-              "enum" : [ "artists.addedAt", "-artists.addedAt", "artists.name", "-artists.name" ],
-              "default" : "-artists.addedAt",
-              "x-enum-varnames" : [ "ArtistsAddedAtAsc", "ArtistsAddedAtDesc", "ArtistsNameAsc", "ArtistsNameDesc" ]
-            }
-          }
-        }, {
-          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
-          "example" : "en-US",
-          "in" : "query",
-          "name" : "locale",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : "en-US"
-          }
-        }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: artists",
-          "example" : "artists.albums",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "artists.albums"
-            }
-          }
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums",
-          "example" : "artists.albums",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "artists.albums"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/UserCollections_Artists_Multi_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
-        } ],
-        "summary" : "Get artists relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      },
-      "post" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionArtists resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "$ref" : "#/components/parameters/IdempotencyKey"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/vnd.api+json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UserCollectionsArtistsRelationshipAddOperation_Payload"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Mutation_Response_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "409" : {
-            "$ref" : "#/components/responses/UserCollectionsAddMultiDataRelationship409Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/Idempotency422Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.write", "w_usr" ]
-        } ],
-        "summary" : "Add to artists relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      }
-    },
-    "/userCollections/{id}/relationships/owners" : {
-      "get" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the owners relationship on the dedicated collection resources instead: userCollectionAlbums, userCollectionArtists, userCollectionTracks, userCollectionVideos, or userCollectionPlaylists.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: owners",
-          "example" : "owners",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "owners"
-            }
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/UserCollections_Owners_Multi_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
-        } ],
-        "summary" : "Get owners relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      }
-    },
-    "/userCollections/{id}/relationships/playlists" : {
-      "delete" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionPlaylists resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "$ref" : "#/components/parameters/IdempotencyKey"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/vnd.api+json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UserCollectionsPlaylistsRelationshipRemoveOperation_Payload"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Mutation_Response_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "409" : {
-            "$ref" : "#/components/responses/Idempotency409Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/Idempotency422Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.write", "w_usr" ]
-        } ],
-        "summary" : "Delete from playlists relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      },
-      "get" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionPlaylists resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "query",
-          "name" : "collectionView",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "FOLDERS" ]
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Values prefixed with \"-\" are sorted descending; values without it are sorted ascending.",
-          "in" : "query",
-          "name" : "sort",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "playlists.addedAt",
-              "enum" : [ "playlists.addedAt", "-playlists.addedAt", "playlists.lastUpdatedAt", "-playlists.lastUpdatedAt", "playlists.name", "-playlists.name" ],
-              "default" : "-playlists.addedAt",
-              "x-enum-varnames" : [ "PlaylistsAddedAtAsc", "PlaylistsAddedAtDesc", "PlaylistsLastUpdatedAtAsc", "PlaylistsLastUpdatedAtDesc", "PlaylistsNameAsc", "PlaylistsNameDesc" ]
-            }
-          }
-        }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: playlists",
-          "example" : "playlists.items",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "playlists.items"
-            }
-          }
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlists.items",
-          "example" : "playlists.items",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "playlists.items"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/UserCollections_Playlists_Multi_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
-        } ],
-        "summary" : "Get playlists relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      },
-      "post" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionPlaylists resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "$ref" : "#/components/parameters/IdempotencyKey"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/vnd.api+json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UserCollectionsPlaylistsRelationshipAddOperation_Payload"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Mutation_Response_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "409" : {
-            "$ref" : "#/components/responses/UserCollectionsAddMultiDataRelationship409Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/Idempotency422Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.write", "w_usr" ]
-        } ],
-        "summary" : "Add to playlists relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      }
-    },
-    "/userCollections/{id}/relationships/tracks" : {
-      "delete" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionTracks resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "$ref" : "#/components/parameters/IdempotencyKey"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/vnd.api+json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UserCollectionsTracksRelationshipRemoveOperation_Payload"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Mutation_Response_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "409" : {
-            "$ref" : "#/components/responses/Idempotency409Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/Idempotency422Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.write", "w_usr" ]
-        } ],
-        "summary" : "Delete from tracks relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      },
-      "get" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionTracks resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Values prefixed with \"-\" are sorted descending; values without it are sorted ascending.",
-          "in" : "query",
-          "name" : "sort",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "tracks.addedAt",
-              "enum" : [ "tracks.addedAt", "-tracks.addedAt", "tracks.albums.title", "-tracks.albums.title", "tracks.artists.name", "-tracks.artists.name", "tracks.duration", "-tracks.duration", "tracks.title", "-tracks.title" ],
-              "default" : "-tracks.addedAt",
-              "x-enum-varnames" : [ "TracksAddedAtAsc", "TracksAddedAtDesc", "TracksAlbumsTitleAsc", "TracksAlbumsTitleDesc", "TracksArtistsNameAsc", "TracksArtistsNameDesc", "TracksDurationAsc", "TracksDurationDesc", "TracksTitleAsc", "TracksTitleDesc" ]
-            }
-          }
-        }, {
-          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
-          "example" : "en-US",
-          "in" : "query",
-          "name" : "locale",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : "en-US"
-          }
-        }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: tracks",
-          "example" : "tracks",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "tracks"
-            }
-          }
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks",
-          "example" : "tracks",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "tracks"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/UserCollections_Tracks_Multi_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
-        } ],
-        "summary" : "Get tracks relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      },
-      "post" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionTracks resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "$ref" : "#/components/parameters/IdempotencyKey"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/vnd.api+json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UserCollectionsTracksRelationshipAddOperation_Payload"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Mutation_Response_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "409" : {
-            "$ref" : "#/components/responses/UserCollectionsAddMultiDataRelationship409Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/Idempotency422Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.write", "w_usr" ]
-        } ],
-        "summary" : "Add to tracks relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      }
-    },
-    "/userCollections/{id}/relationships/videos" : {
-      "delete" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionVideos resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "$ref" : "#/components/parameters/IdempotencyKey"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/vnd.api+json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UserCollectionsVideosRelationshipRemoveOperation_Payload"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Mutation_Response_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "409" : {
-            "$ref" : "#/components/responses/Idempotency409Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/Idempotency422Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.write", "w_usr" ]
-        } ],
-        "summary" : "Delete from videos relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      },
-      "get" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionVideos resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Values prefixed with \"-\" are sorted descending; values without it are sorted ascending.",
-          "in" : "query",
-          "name" : "sort",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "videos.addedAt",
-              "enum" : [ "videos.addedAt", "-videos.addedAt", "videos.artists.name", "-videos.artists.name", "videos.duration", "-videos.duration", "videos.title", "-videos.title" ],
-              "default" : "-videos.addedAt",
-              "x-enum-varnames" : [ "VideosAddedAtAsc", "VideosAddedAtDesc", "VideosArtistsNameAsc", "VideosArtistsNameDesc", "VideosDurationAsc", "VideosDurationDesc", "VideosTitleAsc", "VideosTitleDesc" ]
-            }
-          }
-        }, {
-          "description" : "BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.",
-          "example" : "en-US",
-          "in" : "query",
-          "name" : "locale",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : "en-US"
-          }
-        }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: videos",
-          "example" : "videos",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "videos"
-            }
-          }
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos",
-          "example" : "videos",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "videos"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/UserCollections_Videos_Multi_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
-        } ],
-        "summary" : "Get videos relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      },
-      "post" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use the userCollectionVideos resource and its items relationship instead.",
-        "parameters" : [ {
-          "description" : "User collection id",
-          "example" : "123456",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "$ref" : "#/components/parameters/IdempotencyKey"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/vnd.api+json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UserCollectionsVideosRelationshipAddOperation_Payload"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Mutation_Response_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "409" : {
-            "$ref" : "#/components/responses/UserCollectionsAddMultiDataRelationship409Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/Idempotency422Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.write", "w_usr" ]
-        } ],
-        "summary" : "Add to videos relationship (\"to-many\").",
-        "tags" : [ "userCollections" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "THIRD_PARTY"
-        }
-      }
-    },
     "/userDailyMixes/{id}" : {
       "get" : {
         "description" : "Retrieves single userDailyMixe by id.",
@@ -28120,8 +26615,8 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: installations, playQueue, player",
-          "example" : "installations.offlineInventory",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: activePlayer, availablePlayers, playQueue",
+          "example" : "activePlayer.offlineInventory",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -28129,18 +26624,18 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "installations.offlineInventory"
+              "example" : "activePlayer.offlineInventory"
             }
           }
         }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: installations.offlineInventory",
-          "example" : "installations.offlineInventory",
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: activePlayer.offlineInventory",
+          "example" : "activePlayer.offlineInventory",
           "in" : "query",
           "name" : "replaceMedia",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "example" : "installations.offlineInventory"
+            "example" : "activePlayer.offlineInventory"
           }
         } ],
         "responses" : {
@@ -28263,9 +26758,89 @@
         }
       }
     },
-    "/userPlaybackStates/{id}/relationships/installations" : {
-      "delete" : {
-        "description" : "Deletes item(s) from installations relationship.",
+    "/userPlaybackStates/{id}/relationships/activePlayer" : {
+      "get" : {
+        "description" : "Retrieves activePlayer relationship.",
+        "parameters" : [ {
+          "description" : "User playback session id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Allows the client to customize which related resources should be returned. Available options: activePlayer",
+          "example" : "activePlayer.offlineInventory",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "activePlayer.offlineInventory"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: activePlayer.offlineInventory",
+          "example" : "activePlayer.offlineInventory",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "activePlayer.offlineInventory"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserPlaybackStates_ActivePlayer_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get activePlayer relationship (\"to-one\").",
+        "tags" : [ "userPlaybackStates" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Updates activePlayer relationship.",
         "parameters" : [ {
           "description" : "User playback session id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -28282,7 +26857,83 @@
           "content" : {
             "application/vnd.api+json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/UserPlaybackStatesInstallationsRelationshipRemoveOperation_Payload"
+                "$ref" : "#/components/schemas/UserPlaybackStatesActivePlayerRelationshipUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserPlaybackStates_ActivePlayer_Update_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update activePlayer relationship (\"to-one\").",
+        "tags" : [ "userPlaybackStates" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/userPlaybackStates/{id}/relationships/availablePlayers" : {
+      "delete" : {
+        "description" : "Deletes item(s) from availablePlayers relationship.",
+        "parameters" : [ {
+          "description" : "User playback session id. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UserPlaybackStatesAvailablePlayersRelationshipRemoveOperation_Payload"
               }
             }
           }
@@ -28332,14 +26983,14 @@
         "security" : [ {
           "Authorization_Code_PKCE" : [ "w_usr" ]
         } ],
-        "summary" : "Delete from installations relationship (\"to-many\").",
+        "summary" : "Delete from availablePlayers relationship (\"to-many\").",
         "tags" : [ "userPlaybackStates" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
         }
       },
       "get" : {
-        "description" : "Retrieves installations relationship.",
+        "description" : "Retrieves availablePlayers relationship.",
         "parameters" : [ {
           "description" : "User playback session id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -28350,8 +27001,8 @@
             "type" : "string"
           }
         }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: installations",
-          "example" : "installations.offlineInventory",
+          "description" : "Allows the client to customize which related resources should be returned. Available options: availablePlayers",
+          "example" : "availablePlayers.offlineInventory",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -28359,7 +27010,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "installations.offlineInventory"
+              "example" : "availablePlayers.offlineInventory"
             }
           }
         }, {
@@ -28371,14 +27022,14 @@
             "type" : "string"
           }
         }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: installations.offlineInventory",
-          "example" : "installations.offlineInventory",
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: availablePlayers.offlineInventory",
+          "example" : "availablePlayers.offlineInventory",
           "in" : "query",
           "name" : "replaceMedia",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "example" : "installations.offlineInventory"
+            "example" : "availablePlayers.offlineInventory"
           }
         } ],
         "responses" : {
@@ -28386,7 +27037,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserPlaybackStates_Installations_Multi_Relationship_Data_Document"
+                  "$ref" : "#/components/schemas/UserPlaybackStates_AvailablePlayers_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -28420,14 +27071,14 @@
         "security" : [ {
           "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
-        "summary" : "Get installations relationship (\"to-many\").",
+        "summary" : "Get availablePlayers relationship (\"to-many\").",
         "tags" : [ "userPlaybackStates" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
         }
       },
       "post" : {
-        "description" : "Adds item(s) to installations relationship.",
+        "description" : "Adds item(s) to availablePlayers relationship.",
         "parameters" : [ {
           "description" : "User playback session id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -28444,7 +27095,7 @@
           "content" : {
             "application/vnd.api+json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/UserPlaybackStatesInstallationsRelationshipAddOperation_Payload"
+                "$ref" : "#/components/schemas/UserPlaybackStatesAvailablePlayersRelationshipAddOperation_Payload"
               }
             }
           }
@@ -28454,7 +27105,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UserPlaybackStates_Installations_Add_Multi_Relationship_Data_Document"
+                  "$ref" : "#/components/schemas/UserPlaybackStates_AvailablePlayers_Add_Multi_Relationship_Data_Document"
                 }
               }
             },
@@ -28494,7 +27145,7 @@
         "security" : [ {
           "Authorization_Code_PKCE" : [ "w_usr" ]
         } ],
-        "summary" : "Add to installations relationship (\"to-many\").",
+        "summary" : "Add to availablePlayers relationship (\"to-many\").",
         "tags" : [ "userPlaybackStates" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -28651,162 +27302,6 @@
           "Authorization_Code_PKCE" : [ "w_usr" ]
         } ],
         "summary" : "Update playQueue relationship (\"to-one\").",
-        "tags" : [ "userPlaybackStates" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
-        }
-      }
-    },
-    "/userPlaybackStates/{id}/relationships/player" : {
-      "get" : {
-        "description" : "Retrieves player relationship.",
-        "parameters" : [ {
-          "description" : "User playback session id. Use `me` for the authenticated user's resource",
-          "example" : "me",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Allows the client to customize which related resources should be returned. Available options: player",
-          "example" : "player.offlineInventory",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "player.offlineInventory"
-            }
-          }
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: player.offlineInventory",
-          "example" : "player.offlineInventory",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "player.offlineInventory"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/UserPlaybackStates_Player_Single_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "r_usr" ]
-        } ],
-        "summary" : "Get player relationship (\"to-one\").",
-        "tags" : [ "userPlaybackStates" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
-        }
-      },
-      "patch" : {
-        "description" : "Updates player relationship.",
-        "parameters" : [ {
-          "description" : "User playback session id. Use `me` for the authenticated user's resource",
-          "example" : "me",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "$ref" : "#/components/parameters/IdempotencyKey"
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/vnd.api+json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UserPlaybackStatesPlayerRelationshipUpdateOperation_Payload"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/UserPlaybackStates_Player_Update_Single_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "409" : {
-            "$ref" : "#/components/responses/Idempotency409Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/Idempotency422Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "w_usr" ]
-        } ],
-        "summary" : "Update player relationship (\"to-one\").",
         "tags" : [ "userPlaybackStates" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -31390,16 +29885,6 @@
         },
         "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
-      "UserCollectionsAddMultiDataRelationship409Response" : {
-        "content" : {
-          "application/vnd.api+json" : {
-            "schema" : {
-              "$ref" : "#/components/schemas/UserCollectionsAddMultiDataRelationship409ResponseBody"
-            }
-          }
-        },
-        "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
-      },
       "UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
           "application/vnd.api+json" : {
@@ -31932,6 +30417,14 @@
           "albumType" : {
             "type" : "string",
             "enum" : [ "ALBUM", "EP", "SINGLE" ]
+          },
+          "barcodeId" : {
+            "maxLength" : 13,
+            "minLength" : 12,
+            "pattern" : "^[0-9]+$",
+            "type" : "string",
+            "description" : "A barcode the rights holder already owns: a GTIN-12 or GTIN-13 (UPC-A or EAN-13) with a valid GS1 check digit. It can only be set while the album has no barcode of its own: the barcode TIDAL assigns at the album's first sale is permanent. Omit the field, and TIDAL assigns one then.",
+            "example" : "9780306406157"
           },
           "copyright" : {
             "$ref" : "#/components/schemas/Copyright"
@@ -36691,7 +35184,6 @@
               "userCollectionSaveForLaters" : "#/components/schemas/UserCollectionSaveForLaters_Resource_Object",
               "userCollectionTracks" : "#/components/schemas/UserCollectionTracks_Resource_Object",
               "userCollectionVideos" : "#/components/schemas/UserCollectionVideos_Resource_Object",
-              "userCollections" : "#/components/schemas/UserCollections_Resource_Object",
               "userDailyMixes" : "#/components/schemas/UserDailyMixes_Resource_Object",
               "userDataExportRequests" : "#/components/schemas/UserDataExportRequests_Resource_Object",
               "userDiscoveryMixes" : "#/components/schemas/UserDiscoveryMixes_Resource_Object",
@@ -36831,8 +35323,6 @@
             "$ref" : "#/components/schemas/UserCollectionTracks_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/UserCollectionVideos_Resource_Object"
-          }, {
-            "$ref" : "#/components/schemas/UserCollections_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/UserDailyMixes_Resource_Object"
           }, {
@@ -43493,6 +41983,14 @@
             "description" : "Explicit content",
             "example" : false
           },
+          "isrc" : {
+            "maxLength" : 12,
+            "minLength" : 12,
+            "pattern" : "^[A-Z]{2}[A-Z0-9]{3}[0-9]{2}[0-9]{5}$",
+            "type" : "string",
+            "description" : "An ISRC the rights holder already owns: the 12 characters ISO 3901 defines, without the hyphens of the display form. It can only be set while the track has no ISRC of its own: the ISRC TIDAL assigns at the track's first sale is permanent. Omit the field, and TIDAL assigns one then.",
+            "example" : "QMJMT1701237"
+          },
           "key" : {
             "type" : "string",
             "enum" : [ "UNKNOWN", "C", "CSharp", "D", "Eb", "E", "F", "FSharp", "G", "Ab", "A", "Bb", "B" ]
@@ -46610,675 +45108,6 @@
           }
         }
       },
-      "UserCollectionsAddMultiDataRelationship409ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "DUPLICATE_ITEMS_IN_COLLECTION",
-                  "enum" : [ "DUPLICATE_ITEMS_IN_COLLECTION", "IDEMPOTENT_REQUEST_IN_PROGRESS", "TOO_MANY_ITEMS_IN_COLLECTION" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "Collection item limit reached"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "409"
-                }
-              }
-            }
-          }
-        }
-      },
-      "UserCollectionsAlbumsRelationshipAddOperation_Payload" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "maxItems" : 50,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollectionsAlbumsRelationshipAddOperation_Payload_Data"
-            }
-          }
-        }
-      },
-      "UserCollectionsAlbumsRelationshipAddOperation_Payload_Data" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "meta" : {
-            "$ref" : "#/components/schemas/UserCollectionsAlbumsRelationshipAddOperation_Payload_Data_Meta"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "albums" ]
-          }
-        }
-      },
-      "UserCollectionsAlbumsRelationshipAddOperation_Payload_Data_Meta" : {
-        "type" : "object",
-        "properties" : {
-          "addedAt" : {
-            "type" : "string",
-            "format" : "date-time"
-          }
-        }
-      },
-      "UserCollectionsAlbumsRelationshipRemoveOperation_Payload" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "maxItems" : 50,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollectionsAlbumsRelationshipRemoveOperation_Payload_Data"
-            }
-          }
-        }
-      },
-      "UserCollectionsAlbumsRelationshipRemoveOperation_Payload_Data" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "albums" ]
-          }
-        }
-      },
-      "UserCollectionsArtistsRelationshipAddOperation_Payload" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "maxItems" : 50,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollectionsArtistsRelationshipAddOperation_Payload_Data"
-            }
-          }
-        }
-      },
-      "UserCollectionsArtistsRelationshipAddOperation_Payload_Data" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "meta" : {
-            "$ref" : "#/components/schemas/UserCollectionsArtistsRelationshipAddOperation_Payload_Data_Meta"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "artists" ]
-          }
-        }
-      },
-      "UserCollectionsArtistsRelationshipAddOperation_Payload_Data_Meta" : {
-        "type" : "object",
-        "properties" : {
-          "addedAt" : {
-            "type" : "string",
-            "format" : "date-time"
-          }
-        }
-      },
-      "UserCollectionsArtistsRelationshipRemoveOperation_Payload" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "maxItems" : 50,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollectionsArtistsRelationshipRemoveOperation_Payload_Data"
-            }
-          }
-        }
-      },
-      "UserCollectionsArtistsRelationshipRemoveOperation_Payload_Data" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "artists" ]
-          }
-        }
-      },
-      "UserCollectionsPlaylistsRelationshipAddOperation_Payload" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "maxItems" : 50,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollectionsPlaylistsRelationshipAddOperation_Payload_Data"
-            }
-          }
-        }
-      },
-      "UserCollectionsPlaylistsRelationshipAddOperation_Payload_Data" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "playlists" ]
-          }
-        }
-      },
-      "UserCollectionsPlaylistsRelationshipRemoveOperation_Payload" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "maxItems" : 50,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollectionsPlaylistsRelationshipRemoveOperation_Payload_Data"
-            }
-          }
-        }
-      },
-      "UserCollectionsPlaylistsRelationshipRemoveOperation_Payload_Data" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "playlists" ]
-          }
-        }
-      },
-      "UserCollectionsTracksRelationshipAddOperation_Payload" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "maxItems" : 50,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollectionsTracksRelationshipAddOperation_Payload_Data"
-            }
-          }
-        }
-      },
-      "UserCollectionsTracksRelationshipAddOperation_Payload_Data" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "meta" : {
-            "$ref" : "#/components/schemas/UserCollectionsTracksRelationshipAddOperation_Payload_Data_Meta"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "tracks" ]
-          }
-        }
-      },
-      "UserCollectionsTracksRelationshipAddOperation_Payload_Data_Meta" : {
-        "type" : "object",
-        "properties" : {
-          "addedAt" : {
-            "type" : "string",
-            "format" : "date-time"
-          }
-        }
-      },
-      "UserCollectionsTracksRelationshipRemoveOperation_Payload" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "maxItems" : 50,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollectionsTracksRelationshipRemoveOperation_Payload_Data"
-            }
-          }
-        }
-      },
-      "UserCollectionsTracksRelationshipRemoveOperation_Payload_Data" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "tracks" ]
-          }
-        }
-      },
-      "UserCollectionsVideosRelationshipAddOperation_Payload" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "maxItems" : 50,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollectionsVideosRelationshipAddOperation_Payload_Data"
-            }
-          }
-        }
-      },
-      "UserCollectionsVideosRelationshipAddOperation_Payload_Data" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "videos" ]
-          }
-        }
-      },
-      "UserCollectionsVideosRelationshipRemoveOperation_Payload" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "maxItems" : 50,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollectionsVideosRelationshipRemoveOperation_Payload_Data"
-            }
-          }
-        }
-      },
-      "UserCollectionsVideosRelationshipRemoveOperation_Payload_Data" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "videos" ]
-          }
-        }
-      },
-      "UserCollections_Albums_Multi_Relationship_Data_Document" : {
-        "required" : [ "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollections_Albums_Resource_Identifier"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "UserCollections_Albums_Resource_Identifier" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Resource id",
-            "example" : "12345"
-          },
-          "meta" : {
-            "$ref" : "#/components/schemas/UserCollections_Albums_Resource_Identifier_Meta"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Resource type",
-            "example" : "tracks"
-          }
-        }
-      },
-      "UserCollections_Albums_Resource_Identifier_Meta" : {
-        "required" : [ "addedAt" ],
-        "type" : "object",
-        "properties" : {
-          "addedAt" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "replacement" : {
-            "$ref" : "#/components/schemas/Replacement_Provenance"
-          }
-        }
-      },
-      "UserCollections_Artists_Multi_Relationship_Data_Document" : {
-        "required" : [ "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollections_Artists_Resource_Identifier"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "UserCollections_Artists_Resource_Identifier" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Resource id",
-            "example" : "12345"
-          },
-          "meta" : {
-            "$ref" : "#/components/schemas/UserCollections_Artists_Resource_Identifier_Meta"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Resource type",
-            "example" : "tracks"
-          }
-        }
-      },
-      "UserCollections_Artists_Resource_Identifier_Meta" : {
-        "required" : [ "addedAt" ],
-        "type" : "object",
-        "properties" : {
-          "addedAt" : {
-            "type" : "string",
-            "format" : "date-time"
-          }
-        }
-      },
-      "UserCollections_Attributes" : {
-        "type" : "object"
-      },
-      "UserCollections_Owners_Multi_Relationship_Data_Document" : {
-        "required" : [ "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Resource_Identifier"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "UserCollections_Playlists_Multi_Relationship_Data_Document" : {
-        "required" : [ "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollections_Playlists_Resource_Identifier"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "UserCollections_Playlists_Resource_Identifier" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Resource id",
-            "example" : "12345"
-          },
-          "meta" : {
-            "$ref" : "#/components/schemas/UserCollections_Playlists_Resource_Identifier_Meta"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Resource type",
-            "example" : "tracks"
-          }
-        }
-      },
-      "UserCollections_Playlists_Resource_Identifier_Meta" : {
-        "required" : [ "addedAt" ],
-        "type" : "object",
-        "properties" : {
-          "addedAt" : {
-            "type" : "string",
-            "format" : "date-time"
-          }
-        }
-      },
-      "UserCollections_Relationships" : {
-        "properties" : {
-          "albums" : {
-            "$ref" : "#/components/schemas/UserCollections_Albums_Multi_Relationship_Data_Document"
-          },
-          "artists" : {
-            "$ref" : "#/components/schemas/UserCollections_Artists_Multi_Relationship_Data_Document"
-          },
-          "owners" : {
-            "$ref" : "#/components/schemas/UserCollections_Owners_Multi_Relationship_Data_Document"
-          },
-          "playlists" : {
-            "$ref" : "#/components/schemas/UserCollections_Playlists_Multi_Relationship_Data_Document"
-          },
-          "tracks" : {
-            "$ref" : "#/components/schemas/UserCollections_Tracks_Multi_Relationship_Data_Document"
-          },
-          "videos" : {
-            "$ref" : "#/components/schemas/UserCollections_Videos_Multi_Relationship_Data_Document"
-          }
-        }
-      },
-      "UserCollections_Resource_Object" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "attributes" : {
-            "$ref" : "#/components/schemas/UserCollections_Attributes"
-          },
-          "id" : {
-            "type" : "string",
-            "description" : "Resource id",
-            "example" : "12345"
-          },
-          "relationships" : {
-            "$ref" : "#/components/schemas/UserCollections_Relationships"
-          },
-          "type" : {
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "Resource type",
-            "example" : "tracks"
-          }
-        }
-      },
-      "UserCollections_Single_Resource_Data_Document" : {
-        "required" : [ "data", "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "$ref" : "#/components/schemas/UserCollections_Resource_Object"
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "UserCollections_Tracks_Multi_Relationship_Data_Document" : {
-        "required" : [ "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollections_Tracks_Resource_Identifier"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "UserCollections_Tracks_Resource_Identifier" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Resource id",
-            "example" : "12345"
-          },
-          "meta" : {
-            "$ref" : "#/components/schemas/UserCollections_Tracks_Resource_Identifier_Meta"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Resource type",
-            "example" : "tracks"
-          }
-        }
-      },
-      "UserCollections_Tracks_Resource_Identifier_Meta" : {
-        "required" : [ "addedAt" ],
-        "type" : "object",
-        "properties" : {
-          "addedAt" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "replacement" : {
-            "$ref" : "#/components/schemas/Replacement_Provenance"
-          }
-        }
-      },
-      "UserCollections_Videos_Multi_Relationship_Data_Document" : {
-        "required" : [ "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserCollections_Videos_Resource_Identifier"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "UserCollections_Videos_Resource_Identifier" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Resource id",
-            "example" : "12345"
-          },
-          "meta" : {
-            "$ref" : "#/components/schemas/UserCollections_Videos_Resource_Identifier_Meta"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Resource type",
-            "example" : "tracks"
-          }
-        }
-      },
-      "UserCollections_Videos_Resource_Identifier_Meta" : {
-        "required" : [ "addedAt" ],
-        "type" : "object",
-        "properties" : {
-          "addedAt" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "replacement" : {
-            "$ref" : "#/components/schemas/Replacement_Provenance"
-          }
-        }
-      },
       "UserDailyMixes_Attributes" : {
         "type" : "object"
       },
@@ -47618,21 +45447,22 @@
           }
         }
       },
-      "UserPlaybackStatesInstallationsRelationshipAddOperation_Payload" : {
+      "UserPlaybackStatesActivePlayerRelationshipUpdateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 1,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserPlaybackStatesInstallationsRelationshipOperation_Payload_Data"
-            }
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/UserPlaybackStatesActivePlayerRelationshipUpdateOperation_Payload_Data"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
           }
         }
       },
-      "UserPlaybackStatesInstallationsRelationshipOperation_Payload_Data" : {
+      "UserPlaybackStatesActivePlayerRelationshipUpdateOperation_Payload_Data" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -47645,7 +45475,7 @@
           }
         }
       },
-      "UserPlaybackStatesInstallationsRelationshipRemoveOperation_Payload" : {
+      "UserPlaybackStatesAvailablePlayersRelationshipAddOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
         "properties" : {
@@ -47654,7 +45484,34 @@
             "minItems" : 1,
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/UserPlaybackStatesInstallationsRelationshipOperation_Payload_Data"
+              "$ref" : "#/components/schemas/UserPlaybackStatesAvailablePlayersRelationshipOperation_Payload_Data"
+            }
+          }
+        }
+      },
+      "UserPlaybackStatesAvailablePlayersRelationshipOperation_Payload_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "installations" ]
+          }
+        }
+      },
+      "UserPlaybackStatesAvailablePlayersRelationshipRemoveOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 1,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserPlaybackStatesAvailablePlayersRelationshipOperation_Payload_Data"
             }
           }
         }
@@ -47685,34 +45542,6 @@
           "type" : {
             "type" : "string",
             "enum" : [ "playQueues" ]
-          }
-        }
-      },
-      "UserPlaybackStatesPlayerRelationshipUpdateOperation_Payload" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/UserPlaybackStatesPlayerRelationshipUpdateOperation_Payload_Data"
-            }, {
-              "type" : "object",
-              "nullable" : true,
-              "enum" : [ null ]
-            } ]
-          }
-        }
-      },
-      "UserPlaybackStatesPlayerRelationshipUpdateOperation_Payload_Data" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "installations" ]
           }
         }
       },
@@ -47751,32 +45580,28 @@
           }
         }
       },
-      "UserPlaybackStates_Attributes" : {
-        "required" : [ "playbackStatus" ],
-        "type" : "object",
-        "properties" : {
-          "playbackStatus" : {
-            "type" : "string",
-            "enum" : [ "IDLE", "PLAYING", "PAUSED" ]
-          }
-        }
-      },
-      "UserPlaybackStates_Installations_Add_Multi_Relationship_Data_Document" : {
-        "required" : [ "data", "links" ],
+      "UserPlaybackStates_ActivePlayer_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UserPlaybackStates_Installations_Add_Resource_Identifier"
-            }
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
           }
         }
       },
-      "UserPlaybackStates_Installations_Add_Resource_Identifier" : {
+      "UserPlaybackStates_ActivePlayer_Update_Resource_Identifier" : {
         "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
@@ -47789,7 +45614,63 @@
           }
         }
       },
-      "UserPlaybackStates_Installations_Multi_Relationship_Data_Document" : {
+      "UserPlaybackStates_ActivePlayer_Update_Single_Relationship_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/UserPlaybackStates_ActivePlayer_Update_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserPlaybackStates_Attributes" : {
+        "required" : [ "playbackStatus" ],
+        "type" : "object",
+        "properties" : {
+          "playbackStatus" : {
+            "type" : "string",
+            "enum" : [ "IDLE", "PLAYING", "PAUSED" ]
+          }
+        }
+      },
+      "UserPlaybackStates_AvailablePlayers_Add_Multi_Relationship_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserPlaybackStates_AvailablePlayers_Add_Resource_Identifier"
+            }
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserPlaybackStates_AvailablePlayers_Add_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "installations" ]
+          }
+        }
+      },
+      "UserPlaybackStates_AvailablePlayers_Multi_Relationship_Data_Document" : {
         "required" : [ "links" ],
         "type" : "object",
         "properties" : {
@@ -47860,68 +45741,16 @@
           }
         }
       },
-      "UserPlaybackStates_Player_Single_Relationship_Data_Document" : {
-        "required" : [ "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/Resource_Identifier"
-            }, {
-              "type" : "object",
-              "nullable" : true,
-              "enum" : [ null ]
-            } ]
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "UserPlaybackStates_Player_Update_Resource_Identifier" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "installations" ]
-          }
-        }
-      },
-      "UserPlaybackStates_Player_Update_Single_Relationship_Data_Document" : {
-        "required" : [ "data", "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/UserPlaybackStates_Player_Update_Resource_Identifier"
-            }, {
-              "type" : "object",
-              "nullable" : true,
-              "enum" : [ null ]
-            } ]
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
       "UserPlaybackStates_Relationships" : {
         "properties" : {
-          "installations" : {
-            "$ref" : "#/components/schemas/UserPlaybackStates_Installations_Multi_Relationship_Data_Document"
+          "activePlayer" : {
+            "$ref" : "#/components/schemas/UserPlaybackStates_ActivePlayer_Single_Relationship_Data_Document"
+          },
+          "availablePlayers" : {
+            "$ref" : "#/components/schemas/UserPlaybackStates_AvailablePlayers_Multi_Relationship_Data_Document"
           },
           "playQueue" : {
             "$ref" : "#/components/schemas/UserPlaybackStates_PlayQueue_Single_Relationship_Data_Document"
-          },
-          "player" : {
-            "$ref" : "#/components/schemas/UserPlaybackStates_Player_Single_Relationship_Data_Document"
           }
         }
       },
