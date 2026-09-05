@@ -8569,6 +8569,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["PlaylistGenerationSchedulesCreateResource403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -8793,7 +8794,51 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Get multiple playlistGenerations.
+         * @description Retrieves multiple playlistGenerations by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Playlist id (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
+                    "filter[playlist.id]": string[];
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: playlist
+                     * @example playlist.items
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlist.items
+                     * @example playlist.items
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerations_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
         put?: never;
         /**
          * Create single playlistGeneration.
@@ -23508,6 +23553,19 @@ export interface components {
             /** @enum {string} */
             type: "playlists";
         };
+        PlaylistGenerationSchedulesCreateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example QUOTA_EXCEEDED
+                 * @enum {string}
+                 */
+                code: "QUOTA_EXCEEDED";
+                /** @example Active playlist schedule limit reached */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
         PlaylistGenerationSchedulesUpdateOperation_Payload: {
             data: components["schemas"]["PlaylistGenerationSchedulesUpdateOperation_Payload_Data"];
         };
@@ -23613,6 +23671,12 @@ export interface components {
             type: "playlists";
         };
         PlaylistGenerations_Attributes: {
+            /**
+             * Format: date-time
+             * @description Datetime the playlist content this generation produced was committed (ISO 8601). Unlike progress.lastModifiedAt, which any write moves, this only moves when a generation succeeds. Omitted while a generation is still running, when it failed, and for playlists generated before generation history was recorded
+             * @example 2026-09-04T09:12:44Z
+             */
+            lastGeneratedAt?: string;
             progress: components["schemas"]["PlaylistGenerationProgress"];
             /** @description Prompt used to create the generation; omitted for legacy generations */
             prompt?: string;
@@ -23624,6 +23688,11 @@ export interface components {
         };
         PlaylistGenerations_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["PlaylistGenerations_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        PlaylistGenerations_Multi_Resource_Data_Document: {
+            data: components["schemas"]["PlaylistGenerations_Resource_Object"][];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         PlaylistGenerations_Playlist_Single_Relationship_Data_Document: {
@@ -27851,6 +27920,15 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["Idempotency422ResponseBody"];
+            };
+        };
+        /** @description Active playlist schedule limit reached */
+        PlaylistGenerationSchedulesCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["PlaylistGenerationSchedulesCreateResource403ResponseBody"];
             };
         };
         /** @description Latest terms and conditions must be accepted */
