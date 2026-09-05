@@ -143,7 +143,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["AcceptedTerms_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["AcceptedTerms_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -202,7 +202,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["AcceptedTerms_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["AcceptedTerms_Terms_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -332,7 +332,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["AlbumStatistics_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["AlbumStatistics_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -667,7 +667,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Albums_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Albums_AlbumStatistics_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -740,7 +740,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Albums_Artists_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -808,7 +808,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Albums_CoverArt_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -922,7 +922,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Albums_Genres_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -1109,7 +1109,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Albums_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -1175,7 +1175,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Albums_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Albums_PriceConfig_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -1243,7 +1243,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Albums_Providers_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -1314,7 +1314,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Albums_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Albums_Replacement_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -1382,7 +1382,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Albums_Shares_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -1455,7 +1455,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Albums_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Albums_SimilarAlbums_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -1584,7 +1584,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Albums_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Albums_UsageRules_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -1634,6 +1634,15 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful dry run */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
                 /** @description Successful response */
                 201: {
                     headers: {
@@ -1811,7 +1820,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ArtistBiographies_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ArtistBiographies_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -1941,13 +1950,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -2097,13 +2100,7 @@ export interface paths {
          */
         patch: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -2191,7 +2188,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ArtistClaims_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ArtistClaims_AcceptedArtists_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -2215,13 +2212,7 @@ export interface paths {
          */
         patch: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -2304,7 +2295,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ArtistClaims_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ArtistClaims_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -2370,7 +2361,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ArtistClaims_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ArtistClaims_RecommendedArtists_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -2526,6 +2517,15 @@ export interface paths {
                 };
             };
             responses: {
+                /** @description Successful dry run */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
                 /** @description Successful response */
                 201: {
                     headers: {
@@ -2718,7 +2718,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artists_Albums_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -2782,7 +2782,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artists_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artists_Biography_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -2841,7 +2841,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artists_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artists_ClaimStatus_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -2995,13 +2995,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -3134,7 +3128,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artists_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -3200,7 +3194,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artists_ProfileArt_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -3317,7 +3311,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artists_Radio_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -3378,7 +3372,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artists_Roles_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -3449,7 +3443,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artists_SimilarArtists_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -3586,7 +3580,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artists_Tracks_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -3657,7 +3651,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artists_Videos_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -3882,7 +3876,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Artworks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Artworks_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4185,7 +4179,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Clients_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Clients_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4508,7 +4502,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["CollaborationInvites_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["CollaborationInvites_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4572,7 +4566,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["CollaborationInvites_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["CollaborationInvites_Subject_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4883,7 +4877,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Comments_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Comments_OwnerProfiles_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4944,7 +4938,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Comments_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Comments_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -5003,7 +4997,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Comments_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Comments_ParentComment_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -5231,7 +5225,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ContentClaims_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ContentClaims_ClaimedResource_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -5295,7 +5289,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ContentClaims_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ContentClaims_ClaimingArtist_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -5356,7 +5350,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ContentClaims_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ContentClaims_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -5484,7 +5478,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Credits_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Credits_Artist_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -5543,7 +5537,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Credits_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Credits_Category_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -5718,7 +5712,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Downloads_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Downloads_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -5844,7 +5838,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["DspSharingLinks_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["DspSharingLinks_Subject_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -6115,7 +6109,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["DynamicModules_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["DynamicModules_Items_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -6206,7 +6200,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["DynamicModules_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["DynamicModules_SeedItem_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -6388,7 +6382,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["DynamicPages_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["DynamicPages_Modules_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -6452,7 +6446,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["DynamicPages_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["DynamicPages_Subject_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -6961,7 +6955,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Installations_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Installations_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -7235,7 +7229,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Lyrics_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Lyrics_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -7304,7 +7298,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Lyrics_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Lyrics_Track_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -7596,7 +7590,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["OfflineTasks_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["OfflineTasks_Collection_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -7660,7 +7654,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["OfflineTasks_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["OfflineTasks_Item_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -7721,7 +7715,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["OfflineTasks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["OfflineTasks_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -7761,7 +7755,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: current, future, owners, past
+                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventTopic, current, future, owners, past
                      * @example current
                      */
                     include?: string[];
@@ -7859,7 +7853,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: current, future, owners, past
+                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventTopic, current, future, owners, past
                      * @example current
                      */
                     include?: string[];
@@ -7994,6 +7988,61 @@ export interface paths {
                 503: components["responses"]["Default503Response"];
             };
         };
+        trace?: never;
+    };
+    "/playQueues/{id}/relationships/changeEventTopic": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get changeEventTopic relationship ("to-one").
+         * @description Retrieves changeEventTopic relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventTopic
+                     * @example changeEventTopic
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlayQueues_ChangeEventTopic_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/playQueues/{id}/relationships/current": {
@@ -8350,7 +8399,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["PlayQueues_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["PlayQueues_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -8417,6 +8466,535 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["PlayQueues_Past_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/playlistGenerationSchedules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple playlistGenerationSchedules.
+         * @description Retrieves multiple playlistGenerationSchedules by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Playlist id (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
+                    "filter[playlist.id]": string[];
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: playlist
+                     * @example playlist.items
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlist.items
+                     * @example playlist.items
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerationSchedules_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single playlistGenerationSchedule.
+         * @description Creates a new playlistGenerationSchedule.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["PlaylistGenerationSchedulesCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerationSchedules_Create_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["PlaylistGenerationSchedulesCreateResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/playlistGenerationSchedules/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single playlistGenerationSchedule.
+         * @description Retrieves single playlistGenerationSchedule by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: playlist
+                     * @example playlist.items
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlist.items
+                     * @example playlist.items
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerationSchedules_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Delete single playlistGenerationSchedule.
+         * @description Deletes existing playlistGenerationSchedule.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Update single playlistGenerationSchedule.
+         * @description Updates existing playlistGenerationSchedule.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["PlaylistGenerationSchedulesUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerationSchedules_Update_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/playlistGenerationSchedules/{id}/relationships/playlist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get playlist relationship ("to-one").
+         * @description Retrieves playlist relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: playlist
+                     * @example playlist.items
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlist.items
+                     * @example playlist.items
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerationSchedules_Playlist_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/playlistGenerations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple playlistGenerations.
+         * @description Retrieves multiple playlistGenerations by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Playlist id (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
+                    "filter[playlist.id]": string[];
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: playlist
+                     * @example playlist.items
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlist.items
+                     * @example playlist.items
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerations_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single playlistGeneration.
+         * @description Creates a new playlistGeneration.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["PlaylistGenerationsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerations_Create_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/playlistGenerations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single playlistGeneration.
+         * @description Retrieves single playlistGeneration by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: playlist
+                     * @example playlist.items
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlist.items
+                     * @example playlist.items
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Playlist generation id
+                     * @example 10TwTjJ5EVfyMaTFh1evzyxi0cuSjcbzClSQBtDDX4CXQ7GVg
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerations_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/playlistGenerations/{id}/relationships/playlist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get playlist relationship ("to-one").
+         * @description Retrieves playlist relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: playlist
+                     * @example playlist.items
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlist.items
+                     * @example playlist.items
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Playlist generation id
+                     * @example 10TwTjJ5EVfyMaTFh1evzyxi0cuSjcbzClSQBtDDX4CXQ7GVg
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerations_Playlist_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -8752,7 +9330,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Playlists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Playlists_CollaboratorProfiles_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -8910,7 +9488,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Playlists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Playlists_Collaborators_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -8976,7 +9554,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Playlists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Playlists_CoverArt_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9301,7 +9879,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Playlists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Playlists_OwnerProfiles_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9367,7 +9945,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Playlists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Playlists_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9684,7 +10262,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ProviderOwners_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ProviderOwners_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9740,7 +10318,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ProviderOwners_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ProviderOwners_Provider_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9865,7 +10443,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ProviderProductInfos_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ProviderProductInfos_Provider_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9931,7 +10509,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["ProviderProductInfos_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["ProviderProductInfos_Subject_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -10109,7 +10687,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Purchases_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Purchases_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -10173,7 +10751,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Purchases_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Purchases_Subject_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -10396,7 +10974,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Reactions_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Reactions_OwnerProfiles_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -10457,7 +11035,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Reactions_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Reactions_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -10794,7 +11372,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SearchResults_Albums_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -10882,7 +11460,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SearchResults_Artists_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -10970,7 +11548,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SearchResults_Playlists_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11058,7 +11636,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SearchResults_TopHits_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11146,7 +11724,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SearchResults_Tracks_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11234,7 +11812,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SearchResults_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SearchResults_Videos_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11377,7 +11955,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SearchSuggestions_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SearchSuggestions_DirectHits_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11445,7 +12023,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SearchSuggestions_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SearchSuggestions_History_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11670,7 +12248,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Shares_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Shares_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11736,7 +12314,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Shares_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Shares_SharedResources_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -11772,14 +12350,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @deprecated
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -11918,7 +12489,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SquareConnections_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SquareConnections_SelectedSite_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12027,7 +12598,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SquareConnections_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SquareConnections_Sites_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12103,13 +12674,7 @@ export interface paths {
          */
         post: {
             parameters: {
-                query?: {
-                    /**
-                     * @description ISO 3166-1 alpha-2 country code
-                     * @example US
-                     */
-                    countryCode?: string;
-                };
+                query?: never;
                 header?: {
                     /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
@@ -12190,7 +12755,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["StripeConnections_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["StripeConnections_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12306,7 +12871,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["StripeDashboardLinks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["StripeDashboardLinks_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12522,7 +13087,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["SubscriptionPriceChangeDecisions_PriceChange_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12698,7 +13263,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["TemporaryUserTokens_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["TemporaryUserTokens_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -12735,7 +13300,7 @@ export interface paths {
                 query: {
                     /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES (e.g. `DEVELOPER`) */
                     "filter[termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES")[];
-                    /** @description Filter by countryCode */
+                    /** @description Selects the country-specific terms variant when it has an effective version; otherwise falls back to the worldwide (WW) variant. Combine with `filter[isLatestVersion]=true` to return the currently acceptable terms. (e.g. `US`) */
                     "filter[countryCode]"?: string[];
                     /** @description Filter by isLatestVersion */
                     "filter[isLatestVersion]"?: string[];
@@ -13102,7 +13667,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13232,7 +13797,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["TrackStatistics_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["TrackStatistics_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13579,7 +14144,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_Albums_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13698,7 +14263,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_Artists_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13766,7 +14331,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_Credits_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13827,7 +14392,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_Download_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13895,7 +14460,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_Genres_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13963,7 +14528,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_Lyrics_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14024,7 +14589,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_MetadataStatus_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14092,7 +14657,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14158,7 +14723,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_PriceConfig_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14226,7 +14791,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_Providers_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14294,7 +14859,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_Radio_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14365,7 +14930,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_Replacement_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14433,7 +14998,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_Shares_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14506,7 +15071,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_SimilarTracks_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14567,7 +15132,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_SourceFile_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14640,7 +15205,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_SuggestedTracks_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14701,7 +15266,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_TrackStatistics_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14767,7 +15332,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Tracks_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Tracks_UsageRules_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -15224,7 +15789,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionAlbums_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionAlbums_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -15519,7 +16084,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionArtists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionArtists_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -15992,7 +16557,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -16056,7 +16621,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionFolders_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionFolders_UserCollection_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -16347,7 +16912,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionPlaylists_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionPlaylists_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -16630,7 +17195,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLaters_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLaters_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -16925,7 +17490,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionTracks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionTracks_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -17220,7 +17785,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollectionVideos_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserCollectionVideos_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -17236,974 +17801,6 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/userCollections/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get single userCollection.
-         * @deprecated
-         * @description Deprecated. Use the dedicated collection resources instead: userCollectionAlbums, userCollectionArtists, userCollectionTracks, userCollectionVideos, or userCollectionPlaylists.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, owners, playlists, tracks, videos
-                     * @example albums
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
-                     * @example albums
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollections_Single_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/userCollections/{id}/relationships/albums": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get albums relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionAlbums resource and its items relationship instead.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("albums.addedAt" | "-albums.addedAt" | "albums.artists.name" | "-albums.artists.name" | "albums.releaseDate" | "-albums.releaseDate" | "albums.title" | "-albums.title")[];
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums
-                     * @example albums
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
-                     * @example albums
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollections_Albums_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        /**
-         * Add to albums relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionAlbums resource and its items relationship instead.
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
-                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                };
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionsAlbumsRelationshipAddOperation_Payload"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionsAddMultiDataRelationship409Response"];
-                415: components["responses"]["Default415Response"];
-                422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        /**
-         * Delete from albums relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionAlbums resource and its items relationship instead.
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
-                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                };
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionsAlbumsRelationshipRemoveOperation_Payload"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                409: components["responses"]["Idempotency409Response"];
-                415: components["responses"]["Default415Response"];
-                422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/userCollections/{id}/relationships/artists": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get artists relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionArtists resource and its items relationship instead.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("artists.addedAt" | "-artists.addedAt" | "artists.name" | "-artists.name")[];
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artists
-                     * @example artists.albums
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
-                     * @example artists.albums
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollections_Artists_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        /**
-         * Add to artists relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionArtists resource and its items relationship instead.
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
-                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                };
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionsArtistsRelationshipAddOperation_Payload"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionsAddMultiDataRelationship409Response"];
-                415: components["responses"]["Default415Response"];
-                422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        /**
-         * Delete from artists relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionArtists resource and its items relationship instead.
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
-                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                };
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionsArtistsRelationshipRemoveOperation_Payload"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                409: components["responses"]["Idempotency409Response"];
-                415: components["responses"]["Default415Response"];
-                422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/userCollections/{id}/relationships/owners": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get owners relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the owners relationship on the dedicated collection resources instead: userCollectionAlbums, userCollectionArtists, userCollectionTracks, userCollectionVideos, or userCollectionPlaylists.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
-                    include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollections_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/userCollections/{id}/relationships/playlists": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get playlists relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionPlaylists resource and its items relationship instead.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    collectionView?: "FOLDERS";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("playlists.addedAt" | "-playlists.addedAt" | "playlists.lastUpdatedAt" | "-playlists.lastUpdatedAt" | "playlists.name" | "-playlists.name")[];
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: playlists
-                     * @example playlists.items
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlists.items
-                     * @example playlists.items
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollections_Playlists_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        /**
-         * Add to playlists relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionPlaylists resource and its items relationship instead.
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
-                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                };
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionsPlaylistsRelationshipAddOperation_Payload"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionsAddMultiDataRelationship409Response"];
-                415: components["responses"]["Default415Response"];
-                422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        /**
-         * Delete from playlists relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionPlaylists resource and its items relationship instead.
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
-                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                };
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionsPlaylistsRelationshipRemoveOperation_Payload"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                409: components["responses"]["Idempotency409Response"];
-                415: components["responses"]["Default415Response"];
-                422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/userCollections/{id}/relationships/tracks": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get tracks relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionTracks resource and its items relationship instead.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("tracks.addedAt" | "-tracks.addedAt" | "tracks.albums.title" | "-tracks.albums.title" | "tracks.artists.name" | "-tracks.artists.name" | "tracks.duration" | "-tracks.duration" | "tracks.title" | "-tracks.title")[];
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: tracks
-                     * @example tracks
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
-                     * @example tracks
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollections_Tracks_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        /**
-         * Add to tracks relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionTracks resource and its items relationship instead.
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
-                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                };
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionsTracksRelationshipAddOperation_Payload"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionsAddMultiDataRelationship409Response"];
-                415: components["responses"]["Default415Response"];
-                422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        /**
-         * Delete from tracks relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionTracks resource and its items relationship instead.
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
-                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                };
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionsTracksRelationshipRemoveOperation_Payload"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                409: components["responses"]["Idempotency409Response"];
-                415: components["responses"]["Default415Response"];
-                422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/userCollections/{id}/relationships/videos": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get videos relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionVideos resource and its items relationship instead.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("videos.addedAt" | "-videos.addedAt" | "videos.artists.name" | "-videos.artists.name" | "videos.duration" | "-videos.duration" | "videos.title" | "-videos.title")[];
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: videos
-                     * @example videos
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
-                     * @example videos
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserCollections_Videos_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        /**
-         * Add to videos relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionVideos resource and its items relationship instead.
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
-                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                };
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionsVideosRelationshipAddOperation_Payload"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionsAddMultiDataRelationship409Response"];
-                415: components["responses"]["Default415Response"];
-                422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        /**
-         * Delete from videos relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userCollectionVideos resource and its items relationship instead.
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
-                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                };
-                path: {
-                    /**
-                     * @description User collection id
-                     * @example 123456
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/vnd.api+json": components["schemas"]["UserCollectionsVideosRelationshipRemoveOperation_Payload"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                409: components["responses"]["Idempotency409Response"];
-                415: components["responses"]["Default415Response"];
-                422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
         options?: never;
         head?: never;
         patch?: never;
@@ -18328,7 +17925,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserDailyMixes_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserDailyMixes_Items_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18524,7 +18121,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserDiscoveryMixes_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserDiscoveryMixes_Items_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18664,7 +18261,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserNewReleaseMixes_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserNewReleaseMixes_Items_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18804,7 +18401,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserOfflineMixes_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserOfflineMixes_Items_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18823,6 +18420,549 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/userPlaybackStates/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single userPlaybackState.
+         * @description Retrieves single userPlaybackState by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: activePlayer, availablePlayers, changeEventTopic, playQueue
+                     * @example activePlayer.offlineInventory
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: activePlayer.offlineInventory
+                     * @example activePlayer.offlineInventory
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User playback session id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserPlaybackStates_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update single userPlaybackState.
+         * @description Updates existing userPlaybackState.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description User playback session id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserPlaybackStatesUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserPlaybackStates_Update_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/userPlaybackStates/{id}/relationships/activePlayer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get activePlayer relationship ("to-one").
+         * @description Retrieves activePlayer relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: activePlayer
+                     * @example activePlayer.offlineInventory
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: activePlayer.offlineInventory
+                     * @example activePlayer.offlineInventory
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User playback session id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserPlaybackStates_ActivePlayer_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update activePlayer relationship ("to-one").
+         * @description Updates activePlayer relationship.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description User playback session id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserPlaybackStatesActivePlayerRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserPlaybackStates_ActivePlayer_Update_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/userPlaybackStates/{id}/relationships/availablePlayers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get availablePlayers relationship ("to-many").
+         * @description Retrieves availablePlayers relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: availablePlayers
+                     * @example availablePlayers.offlineInventory
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: availablePlayers.offlineInventory
+                     * @example availablePlayers.offlineInventory
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User playback session id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserPlaybackStates_AvailablePlayers_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Add to availablePlayers relationship ("to-many").
+         * @description Adds item(s) to availablePlayers relationship.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description User playback session id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserPlaybackStatesAvailablePlayersRelationshipAddOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserPlaybackStates_AvailablePlayers_Add_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        /**
+         * Delete from availablePlayers relationship ("to-many").
+         * @description Deletes item(s) from availablePlayers relationship.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description User playback session id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserPlaybackStatesAvailablePlayersRelationshipRemoveOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userPlaybackStates/{id}/relationships/changeEventTopic": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get changeEventTopic relationship ("to-one").
+         * @description Retrieves changeEventTopic relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventTopic
+                     * @example changeEventTopic
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserPlaybackStates_ChangeEventTopic_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userPlaybackStates/{id}/relationships/playQueue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get playQueue relationship ("to-one").
+         * @description Retrieves playQueue relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: playQueue
+                     * @example playQueue.current
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playQueue.current
+                     * @example playQueue.current
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User playback session id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserPlaybackStates_PlayQueue_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update playQueue relationship ("to-one").
+         * @description Updates playQueue relationship.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description User playback session id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserPlaybackStatesPlayQueueRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserPlaybackStates_PlayQueue_Update_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
         trace?: never;
     };
     "/userRecommendationBlocks/{id}": {
@@ -19092,7 +19232,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserRecommendationBlocks_Owners_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -19429,364 +19569,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/userRecommendations/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get single userRecommendation.
-         * @deprecated
-         * @description Deprecated. Use the dedicated mix resources instead: userDiscoveryMixes, userDailyMixes, userNewReleaseMixes, or userOfflineMixes.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: discoveryMixes, myMixes, newArrivalMixes, offlineMixes
-                     * @example discoveryMixes.items
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: discoveryMixes.items
-                     * @example discoveryMixes.items
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description User recommendations id. Use `me` for the authenticated user's resource
-                     * @example me
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserRecommendations_Single_Resource_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/userRecommendations/{id}/relationships/discoveryMixes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get discoveryMixes relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userDiscoveryMixes resource and its items relationship instead.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: discoveryMixes
-                     * @example discoveryMixes.items
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: discoveryMixes.items
-                     * @example discoveryMixes.items
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description User recommendations id. Use `me` for the authenticated user's resource
-                     * @example me
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserRecommendations_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/userRecommendations/{id}/relationships/myMixes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get myMixes relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userDailyMixes resource and its items relationship instead.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: myMixes
-                     * @example myMixes.items
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: myMixes.items
-                     * @example myMixes.items
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description User recommendations id. Use `me` for the authenticated user's resource
-                     * @example me
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserRecommendations_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/userRecommendations/{id}/relationships/newArrivalMixes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get newArrivalMixes relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userNewReleaseMixes resource and its items relationship instead.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: newArrivalMixes
-                     * @example newArrivalMixes.items
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: newArrivalMixes.items
-                     * @example newArrivalMixes.items
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description User recommendations id. Use `me` for the authenticated user's resource
-                     * @example me
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserRecommendations_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/userRecommendations/{id}/relationships/offlineMixes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get offlineMixes relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use the userOfflineMixes resource and its items relationship instead.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: offlineMixes
-                     * @example offlineMixes.items
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineMixes.items
-                     * @example offlineMixes.items
-                     */
-                    replaceMedia?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description User recommendations id. Use `me` for the authenticated user's resource
-                     * @example me
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["UserRecommendations_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/userReports": {
         parameters: {
             query?: never;
@@ -19826,6 +19608,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["UserReportsCreateResource403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -19936,7 +19719,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserSubscriptionPriceChanges_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserSubscriptionPriceChanges_Decision_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -20253,7 +20036,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Videos_Albums_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -20324,7 +20107,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Videos_Artists_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -20390,7 +20173,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Videos_Credits_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -20456,7 +20239,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Videos_Providers_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -20525,7 +20308,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Videos_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Videos_Replacement_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -20596,7 +20379,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Videos_SimilarVideos_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -20667,7 +20450,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Videos_SuggestedVideos_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -20733,7 +20516,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Videos_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Videos_ThumbnailArt_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -20797,7 +20580,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Videos_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Videos_UsageRules_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -20849,19 +20632,19 @@ export interface components {
             data: components["schemas"]["AcceptedTerms_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        AcceptedTerms_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         AcceptedTerms_Multi_Resource_Data_Document: {
             data: components["schemas"]["AcceptedTerms_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        AcceptedTerms_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         AcceptedTerms_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            terms?: components["schemas"]["Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["AcceptedTerms_Owners_Multi_Relationship_Data_Document"];
+            terms?: components["schemas"]["AcceptedTerms_Terms_Single_Relationship_Data_Document"];
         };
         AcceptedTerms_Resource_Object: {
             attributes?: components["schemas"]["AcceptedTerms_Attributes"];
@@ -20877,7 +20660,7 @@ export interface components {
              */
             type: "acceptedTerms";
         };
-        AcceptedTerms_Single_Relationship_Data_Document: {
+        AcceptedTerms_Terms_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
@@ -20899,13 +20682,13 @@ export interface components {
              */
             uniqueListeners: number;
         };
-        AlbumStatistics_Multi_Relationship_Data_Document: {
+        AlbumStatistics_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         AlbumStatistics_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["AlbumStatistics_Owners_Multi_Relationship_Data_Document"];
         };
         AlbumStatistics_Resource_Object: {
             attributes?: components["schemas"]["AlbumStatistics_Attributes"];
@@ -21014,6 +20797,11 @@ export interface components {
             accessType?: "PUBLIC" | "UNLISTED" | "PRIVATE";
             /** @enum {string} */
             albumType?: "ALBUM" | "EP" | "SINGLE";
+            /**
+             * @description A barcode the rights holder already owns: a GTIN-12 or GTIN-13 (UPC-A or EAN-13) with a valid GS1 check digit. It can only be set while the album has no barcode of its own: the barcode TIDAL assigns at the album's first sale is permanent. Omit the field, and TIDAL assigns one then.
+             * @example 9780306406157
+             */
+            barcodeId?: string;
             copyright?: components["schemas"]["Copyright"];
             /** @description Explicit content */
             explicit?: boolean;
@@ -21038,6 +20826,16 @@ export interface components {
             /** @enum {string} */
             type: "genres";
         };
+        Albums_AlbumStatistics_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Albums_Artists_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Albums_Attributes: {
             /**
              * @description Access type
@@ -21060,7 +20858,7 @@ export interface components {
              * @description Available usage for this album. Deprecated: use 'usageRules' instead. This field will be removed in a future version.
              */
             availability?: ("STREAM" | "DJ" | "STEM")[];
-            barcodeId: string;
+            barcodeId: string | null;
             copyright?: components["schemas"]["Copyright"];
             /**
              * Format: date-time
@@ -21121,8 +20919,18 @@ export interface components {
              */
             version?: string;
         };
+        Albums_CoverArt_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Albums_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["Albums_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        Albums_Genres_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Albums_Items_Multi_Relationship_Data_Document: {
@@ -21159,30 +20967,40 @@ export interface components {
              */
             volumeNumber: number;
         };
-        Albums_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Albums_Multi_Resource_Data_Document: {
             data: components["schemas"]["Albums_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Albums_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Albums_PriceConfig_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Albums_Providers_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Albums_Relationships: {
-            albumStatistics?: components["schemas"]["Single_Relationship_Data_Document"];
-            artists?: components["schemas"]["Multi_Relationship_Data_Document"];
-            coverArt?: components["schemas"]["Multi_Relationship_Data_Document"];
-            genres?: components["schemas"]["Multi_Relationship_Data_Document"];
+            albumStatistics?: components["schemas"]["Albums_AlbumStatistics_Single_Relationship_Data_Document"];
+            artists?: components["schemas"]["Albums_Artists_Multi_Relationship_Data_Document"];
+            coverArt?: components["schemas"]["Albums_CoverArt_Multi_Relationship_Data_Document"];
+            genres?: components["schemas"]["Albums_Genres_Multi_Relationship_Data_Document"];
             items?: components["schemas"]["Albums_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            priceConfig?: components["schemas"]["Single_Relationship_Data_Document"];
-            providers?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Albums_Owners_Multi_Relationship_Data_Document"];
+            priceConfig?: components["schemas"]["Albums_PriceConfig_Single_Relationship_Data_Document"];
+            providers?: components["schemas"]["Albums_Providers_Multi_Relationship_Data_Document"];
             replacement?: components["schemas"]["Albums_Replacement_Single_Relationship_Data_Document"];
-            shares?: components["schemas"]["Multi_Relationship_Data_Document"];
+            shares?: components["schemas"]["Albums_Shares_Multi_Relationship_Data_Document"];
             similarAlbums?: components["schemas"]["Albums_SimilarAlbums_Multi_Relationship_Data_Document"];
             suggestedCoverArts?: components["schemas"]["Albums_SuggestedCoverArts_Multi_Relationship_Data_Document"];
-            usageRules?: components["schemas"]["Single_Relationship_Data_Document"];
+            usageRules?: components["schemas"]["Albums_UsageRules_Single_Relationship_Data_Document"];
         };
         Albums_Replacement_Resource_Identifier: {
             /**
@@ -21219,6 +21037,11 @@ export interface components {
              */
             type: "albums";
         };
+        Albums_Shares_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Albums_SimilarAlbums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Albums_SimilarAlbums_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -21239,11 +21062,6 @@ export interface components {
         };
         Albums_SimilarAlbums_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
-        };
-        Albums_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Albums_Single_Resource_Data_Document: {
             data: components["schemas"]["Albums_Resource_Object"];
@@ -21278,6 +21096,11 @@ export interface components {
             backgroundColor: string;
             /** @description Foreground color for the suggested artwork */
             foregroundColor: string;
+        };
+        Albums_UsageRules_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         AppreciationsCreateOperation_Payload: {
             data: components["schemas"]["AppreciationsCreateOperation_Payload_Data"];
@@ -21357,13 +21180,13 @@ export interface components {
              */
             text: string;
         };
-        ArtistBiographies_Multi_Relationship_Data_Document: {
+        ArtistBiographies_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         ArtistBiographies_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["ArtistBiographies_Owners_Multi_Relationship_Data_Document"];
         };
         ArtistBiographies_Resource_Object: {
             attributes?: components["schemas"]["ArtistBiographies_Attributes"];
@@ -21452,6 +21275,11 @@ export interface components {
             authorizationCode: string;
             redirectUri: string;
         };
+        ArtistClaims_AcceptedArtists_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         ArtistClaims_Attributes: {
             /** @description The artist id which is being claimed */
             artistId: string;
@@ -21479,20 +21307,25 @@ export interface components {
             data: components["schemas"]["ArtistClaims_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        ArtistClaims_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         ArtistClaims_Multi_Resource_Data_Document: {
             data: components["schemas"]["ArtistClaims_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ArtistClaims_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ArtistClaims_RecommendedArtists_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         ArtistClaims_Relationships: {
-            acceptedArtists?: components["schemas"]["Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            recommendedArtists?: components["schemas"]["Multi_Relationship_Data_Document"];
+            acceptedArtists?: components["schemas"]["ArtistClaims_AcceptedArtists_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["ArtistClaims_Owners_Multi_Relationship_Data_Document"];
+            recommendedArtists?: components["schemas"]["ArtistClaims_RecommendedArtists_Multi_Relationship_Data_Document"];
         };
         ArtistClaims_Resource_Object: {
             attributes?: components["schemas"]["ArtistClaims_Attributes"];
@@ -21656,6 +21489,16 @@ export interface components {
              */
             spotlighted?: boolean;
         };
+        Artists_Biography_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Artists_ClaimStatus_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Artists_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["Artists_Resource_Object"];
             links: components["schemas"]["Links"];
@@ -21715,27 +21558,37 @@ export interface components {
         Artists_Following_Resource_Identifier_Meta: {
             viewer?: components["schemas"]["Artists_Followers_Resource_Meta_ViewerContext"];
         };
-        Artists_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Artists_Multi_Resource_Data_Document: {
             data: components["schemas"]["Artists_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Artists_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Artists_ProfileArt_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Artists_Radio_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Artists_Relationships: {
             albums?: components["schemas"]["Artists_Albums_Multi_Relationship_Data_Document"];
-            biography?: components["schemas"]["Single_Relationship_Data_Document"];
-            claimStatus?: components["schemas"]["Single_Relationship_Data_Document"];
+            biography?: components["schemas"]["Artists_Biography_Single_Relationship_Data_Document"];
+            claimStatus?: components["schemas"]["Artists_ClaimStatus_Single_Relationship_Data_Document"];
             followers?: components["schemas"]["Artists_Followers_Multi_Relationship_Data_Document"];
             following?: components["schemas"]["Artists_Following_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            profileArt?: components["schemas"]["Multi_Relationship_Data_Document"];
-            radio?: components["schemas"]["Multi_Relationship_Data_Document"];
-            roles?: components["schemas"]["Multi_Relationship_Data_Document"];
-            similarArtists?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Artists_Owners_Multi_Relationship_Data_Document"];
+            profileArt?: components["schemas"]["Artists_ProfileArt_Multi_Relationship_Data_Document"];
+            radio?: components["schemas"]["Artists_Radio_Multi_Relationship_Data_Document"];
+            roles?: components["schemas"]["Artists_Roles_Multi_Relationship_Data_Document"];
+            similarArtists?: components["schemas"]["Artists_SimilarArtists_Multi_Relationship_Data_Document"];
             trackProviders?: components["schemas"]["Artists_TrackProviders_Multi_Relationship_Data_Document"];
             tracks?: components["schemas"]["Artists_Tracks_Multi_Relationship_Data_Document"];
             videos?: components["schemas"]["Artists_Videos_Multi_Relationship_Data_Document"];
@@ -21754,8 +21607,13 @@ export interface components {
              */
             type: "artists";
         };
-        Artists_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+        Artists_Roles_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Artists_SimilarArtists_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -21910,18 +21768,18 @@ export interface components {
             data: components["schemas"]["Artworks_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        Artworks_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Artworks_Multi_Resource_Data_Document: {
             data: components["schemas"]["Artworks_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Artworks_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Artworks_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Artworks_Owners_Multi_Relationship_Data_Document"];
         };
         Artworks_Resource_Object: {
             attributes?: components["schemas"]["Artworks_Attributes"];
@@ -21948,6 +21806,22 @@ export interface components {
             peakAmplitude?: number;
             /** Format: float */
             replayGain?: number;
+        };
+        ChangeEventTopics_Attributes: {
+            topic: string;
+        };
+        ChangeEventTopics_Resource_Object: {
+            attributes?: components["schemas"]["ChangeEventTopics_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "changeEventTopics";
         };
         ClientsCreateOperation_Payload: {
             data: components["schemas"]["ClientsCreateOperation_Payload_Data"];
@@ -21991,18 +21865,18 @@ export interface components {
             data: components["schemas"]["Clients_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        Clients_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Clients_Multi_Resource_Data_Document: {
             data: components["schemas"]["Clients_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Clients_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Clients_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Clients_Owners_Multi_Relationship_Data_Document"];
         };
         Clients_Resource_Object: {
             attributes?: components["schemas"]["Clients_Attributes"];
@@ -22109,19 +21983,19 @@ export interface components {
             data: components["schemas"]["CollaborationInvites_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        CollaborationInvites_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         CollaborationInvites_Multi_Resource_Data_Document: {
             data: components["schemas"]["CollaborationInvites_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        CollaborationInvites_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         CollaborationInvites_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            subject?: components["schemas"]["Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["CollaborationInvites_Owners_Multi_Relationship_Data_Document"];
+            subject?: components["schemas"]["CollaborationInvites_Subject_Single_Relationship_Data_Document"];
         };
         CollaborationInvites_Resource_Object: {
             attributes?: components["schemas"]["CollaborationInvites_Attributes"];
@@ -22137,13 +22011,13 @@ export interface components {
              */
             type: "collaborationInvites";
         };
-        CollaborationInvites_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+        CollaborationInvites_Single_Resource_Data_Document: {
+            data: components["schemas"]["CollaborationInvites_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        CollaborationInvites_Single_Resource_Data_Document: {
-            data: components["schemas"]["CollaborationInvites_Resource_Object"];
+        CollaborationInvites_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -22158,6 +22032,7 @@ export interface components {
         };
         CommentsCreateOperation_Payload_Data_Attributes: {
             endTime?: string;
+            /** @description The comment message content */
             message: string;
             startTime?: string;
         };
@@ -22192,6 +22067,7 @@ export interface components {
         };
         CommentsUpdateOperation_Payload_Data_Attributes: {
             endTime?: string;
+            /** @description The comment message content */
             message?: string;
             startTime?: string;
         };
@@ -22240,20 +22116,30 @@ export interface components {
             data: components["schemas"]["Comments_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        Comments_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Comments_Multi_Resource_Data_Document: {
             data: components["schemas"]["Comments_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Comments_OwnerProfiles_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Comments_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Comments_ParentComment_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Comments_Relationships: {
-            ownerProfiles?: components["schemas"]["Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            parentComment?: components["schemas"]["Single_Relationship_Data_Document"];
+            ownerProfiles?: components["schemas"]["Comments_OwnerProfiles_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Comments_Owners_Multi_Relationship_Data_Document"];
+            parentComment?: components["schemas"]["Comments_ParentComment_Single_Relationship_Data_Document"];
         };
         Comments_Resource_Object: {
             attributes?: components["schemas"]["Comments_Attributes"];
@@ -22268,11 +22154,6 @@ export interface components {
              * @enum {string}
              */
             type: "comments";
-        };
-        Comments_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Comments_Single_Resource_Data_Document: {
             data: components["schemas"]["Comments_Resource_Object"];
@@ -22355,13 +22236,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        ContentClaims_Create_Single_Resource_Data_Document: {
-            data: components["schemas"]["ContentClaims_Resource_Object"];
+        ContentClaims_ClaimingArtist_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        ContentClaims_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
+        ContentClaims_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["ContentClaims_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         ContentClaims_Multi_Resource_Data_Document: {
@@ -22369,10 +22250,15 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ContentClaims_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         ContentClaims_Relationships: {
             claimedResource?: components["schemas"]["ContentClaims_ClaimedResource_Single_Relationship_Data_Document"];
-            claimingArtist?: components["schemas"]["Single_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            claimingArtist?: components["schemas"]["ContentClaims_ClaimingArtist_Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["ContentClaims_Owners_Multi_Relationship_Data_Document"];
         };
         ContentClaims_Resource_Object: {
             attributes?: components["schemas"]["ContentClaims_Attributes"];
@@ -22388,11 +22274,6 @@ export interface components {
              */
             type: "contentClaims";
         };
-        ContentClaims_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         ContentClaims_Single_Resource_Data_Document: {
             data: components["schemas"]["ContentClaims_Resource_Object"];
             included?: components["schemas"]["Included"];
@@ -22401,6 +22282,11 @@ export interface components {
         /** @description Copyright information */
         Copyright: {
             text: string;
+        };
+        Credits_Artist_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Credits_Attributes: {
             /**
@@ -22414,9 +22300,14 @@ export interface components {
              */
             role: string;
         };
+        Credits_Category_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Credits_Relationships: {
-            artist?: components["schemas"]["Single_Relationship_Data_Document"];
-            category?: components["schemas"]["Single_Relationship_Data_Document"];
+            artist?: components["schemas"]["Credits_Artist_Single_Relationship_Data_Document"];
+            category?: components["schemas"]["Credits_Category_Single_Relationship_Data_Document"];
         };
         Credits_Resource_Object: {
             attributes?: components["schemas"]["Credits_Attributes"];
@@ -22431,11 +22322,6 @@ export interface components {
              * @enum {string}
              */
             type: "credits";
-        };
-        Credits_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Credits_Single_Resource_Data_Document: {
             data: components["schemas"]["Credits_Resource_Object"];
@@ -22531,18 +22417,18 @@ export interface components {
         Downloads_Attributes: {
             downloadLinks?: components["schemas"]["Download_Link"][];
         };
-        Downloads_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Downloads_Multi_Resource_Data_Document: {
             data: components["schemas"]["Downloads_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Downloads_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Downloads_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Downloads_Owners_Multi_Relationship_Data_Document"];
         };
         Downloads_Resource_Object: {
             attributes?: components["schemas"]["Downloads_Attributes"];
@@ -22599,11 +22485,6 @@ export interface components {
              */
             type: "dspSharingLinks";
         };
-        DspSharingLinks_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         DspSharingLinks_Subject_Resource_Identifier: {
             /**
              * @description Resource id
@@ -22632,11 +22513,11 @@ export interface components {
              */
             icons: ("SPOTLIGHT_INFO" | "UNKNOWN")[];
             /**
-             * @description Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. viewAllLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
+             * @description Presentation family for items in a dynamic module preview. The API selects the semantic presentation intent while clients own platform-specific geometry. A layout does not prescribe scroll direction, row or column count, dimensions, spacing, breakpoints, or visible item count; clients preserve the server-provided item order. GRID means artwork-forward tiles or cards. LIST means detail-forward row cells, which clients may arrange in one or more columns. SHORTCUT means compact quick-access items, which clients may arrange as a responsive grid or rail. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
              * @example GRID
              * @enum {string}
              */
-            previewLayout: "GRID" | "LIST" | "COMPACT" | "UNKNOWN";
+            previewLayout: "GRID" | "LIST" | "SHORTCUT" | "UNKNOWN";
             /**
              * @description Subtitle of the module
              * @example Short description of this module
@@ -22648,11 +22529,11 @@ export interface components {
              */
             title?: string;
             /**
-             * @description Rendering layout for a dynamic module. previewLayout controls the module on a dynamic page. viewAllLayout controls its view-all screen; when omitted, the module has no view-all screen. GRID means artwork-forward tiles; the client owns scroll axis and column count. LIST means detailed text-forward rows in a single column and may be a table on wide screens. COMPACT means dense rows the client may pack into multiple columns; clients should treat it as LIST in a full view. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
+             * @description Presentation family for items on a dynamic module's view-all screen. The API selects the semantic presentation intent while clients own platform-specific geometry. A layout does not prescribe scroll direction, row or column count, dimensions, spacing, or breakpoints; clients preserve the server-provided item order. When viewAllLayout is omitted, the module has no view-all screen. GRID means artwork-forward tiles or cards. LIST means detail-forward row cells, which clients may arrange in one or more columns or as a table. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
              * @example LIST
              * @enum {string}
              */
-            viewAllLayout?: "GRID" | "LIST" | "COMPACT" | "UNKNOWN";
+            viewAllLayout?: "GRID" | "LIST" | "UNKNOWN";
         };
         DynamicModules_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["DynamicModules_Items_Resource_Identifier"][];
@@ -22674,11 +22555,6 @@ export interface components {
         };
         DynamicModules_Items_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
-        };
-        DynamicModules_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         DynamicModules_Multi_Resource_Data_Document: {
             data: components["schemas"]["DynamicModules_Resource_Object"][];
@@ -22724,11 +22600,6 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        DynamicModules_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         DynamicModules_Single_Resource_Data_Document: {
             data: components["schemas"]["DynamicModules_Resource_Object"];
             included?: components["schemas"]["Included"];
@@ -22748,7 +22619,7 @@ export interface components {
              */
             reportingId: string;
         };
-        DynamicPages_Multi_Relationship_Data_Document: {
+        DynamicPages_Modules_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
@@ -22759,7 +22630,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         DynamicPages_Relationships: {
-            modules?: components["schemas"]["Multi_Relationship_Data_Document"];
+            modules?: components["schemas"]["DynamicPages_Modules_Multi_Relationship_Data_Document"];
             subject?: components["schemas"]["DynamicPages_Subject_Single_Relationship_Data_Document"];
         };
         DynamicPages_Resource_Object: {
@@ -22783,11 +22654,6 @@ export interface components {
              * @enum {string}
              */
             redactionReason?: "NO_BIRTHDAY" | "MINOR";
-        };
-        DynamicPages_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         DynamicPages_Subject_Resource_Identifier: {
             /**
@@ -22945,7 +22811,7 @@ export interface components {
                 status: string;
             }[];
         };
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserCollections_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserRecommendations_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventTopics_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -22988,11 +22854,6 @@ export interface components {
             data: components["schemas"]["Installations_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        Installations_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Installations_Multi_Resource_Data_Document: {
             data: components["schemas"]["Installations_Resource_Object"][];
             included?: components["schemas"]["Included"];
@@ -23021,9 +22882,14 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        Installations_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Installations_Relationships: {
             offlineInventory?: components["schemas"]["Installations_OfflineInventory_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Installations_Owners_Multi_Relationship_Data_Document"];
         };
         Installations_Resource_Object: {
             attributes?: components["schemas"]["Installations_Attributes"];
@@ -23142,13 +23008,13 @@ export interface components {
             data: components["schemas"]["Lyrics_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        Lyrics_Multi_Relationship_Data_Document: {
+        Lyrics_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Lyrics_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Lyrics_Owners_Multi_Relationship_Data_Document"];
             track?: components["schemas"]["Lyrics_Track_Single_Relationship_Data_Document"];
         };
         Lyrics_Resource_Object: {
@@ -23164,11 +23030,6 @@ export interface components {
              * @enum {string}
              */
             type: "lyrics";
-        };
-        Lyrics_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Lyrics_Single_Resource_Data_Document: {
             data: components["schemas"]["Lyrics_Resource_Object"];
@@ -23291,10 +23152,6 @@ export interface components {
              */
             type: "manualArtistClaims";
         };
-        Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            links: components["schemas"]["Links"];
-        };
         Mutation_Response_Document: {
             links: components["schemas"]["Links"];
             /** @description Non-standard meta information */
@@ -23382,20 +23239,20 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        OfflineTasks_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
+        OfflineTasks_Multi_Resource_Data_Document: {
+            data: components["schemas"]["OfflineTasks_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        OfflineTasks_Multi_Resource_Data_Document: {
-            data: components["schemas"]["OfflineTasks_Resource_Object"][];
+        OfflineTasks_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         OfflineTasks_Relationships: {
             collection?: components["schemas"]["OfflineTasks_Collection_Single_Relationship_Data_Document"];
             item?: components["schemas"]["OfflineTasks_Item_Single_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["OfflineTasks_Owners_Multi_Relationship_Data_Document"];
         };
         OfflineTasks_Resource_Object: {
             attributes?: components["schemas"]["OfflineTasks_Attributes"];
@@ -23410,11 +23267,6 @@ export interface components {
              * @enum {string}
              */
             type: "offlineTasks";
-        };
-        OfflineTasks_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         OfflineTasks_Single_Resource_Data_Document: {
             data: components["schemas"]["OfflineTasks_Resource_Object"];
@@ -23439,6 +23291,8 @@ export interface components {
         };
         PlayQueuesCurrentRelationshipUpdateOperation_Payload_Data_Meta: {
             itemId: string;
+            position?: (string | null) | (never | null);
+            updatedByInstallationId?: string;
         };
         PlayQueuesFutureRelationshipAddOperation_Payload: {
             data: components["schemas"]["PlayQueuesFutureRelationshipAddOperation_Payload_Data"][];
@@ -23529,6 +23383,11 @@ export interface components {
             /** @description Queue is shuffled or not */
             shuffled: boolean;
         };
+        PlayQueues_ChangeEventTopic_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         PlayQueues_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["PlayQueues_Resource_Object"];
             links: components["schemas"]["Links"];
@@ -23551,7 +23410,11 @@ export interface components {
             batchId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
+            position?: string;
+            /** Format: date-time */
+            positionUpdatedAt?: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
+            updatedByInstallationId?: string;
         };
         PlayQueues_Current_Single_Relationship_Data_Document: {
             data?: components["schemas"]["PlayQueues_Current_Resource_Identifier"] | (never | null);
@@ -23583,13 +23446,13 @@ export interface components {
             legacySource?: components["schemas"]["LegacySource"];
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
-        PlayQueues_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
+        PlayQueues_Multi_Resource_Data_Document: {
+            data: components["schemas"]["PlayQueues_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        PlayQueues_Multi_Resource_Data_Document: {
-            data: components["schemas"]["PlayQueues_Resource_Object"][];
+        PlayQueues_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -23619,9 +23482,10 @@ export interface components {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
         PlayQueues_Relationships: {
+            changeEventTopic?: components["schemas"]["PlayQueues_ChangeEventTopic_Single_Relationship_Data_Document"];
             current?: components["schemas"]["PlayQueues_Current_Single_Relationship_Data_Document"];
             future?: components["schemas"]["PlayQueues_Future_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["PlayQueues_Owners_Multi_Relationship_Data_Document"];
             past?: components["schemas"]["PlayQueues_Past_Multi_Relationship_Data_Document"];
         };
         PlayQueues_Resource_Object: {
@@ -23638,13 +23502,223 @@ export interface components {
              */
             type: "playQueues";
         };
-        PlayQueues_Single_Relationship_Data_Document: {
+        PlayQueues_Single_Resource_Data_Document: {
+            data: components["schemas"]["PlayQueues_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Recoverable AI playlist generation progress snapshot */
+        PlaylistGenerationProgress: {
+            /** Format: int32 */
+            committedTrackCount?: number;
+            /** @enum {string} */
+            coverArtStatus: "PENDING" | "PROCESSING" | "ERROR" | "OK" | "SKIPPED" | "UNKNOWN";
+            failureCode?: string;
+            /** Format: date-time */
+            lastModifiedAt?: string;
+            playlistReady: boolean;
+            /** Format: int32 */
+            selectedTrackCount?: number;
+            /** @enum {string} */
+            stage?: "PLANNING" | "SEARCHING" | "CHOOSING" | "COMMITTING" | "UNKNOWN";
+            /** Format: int32 */
+            targetTrackCount?: number;
+        };
+        PlaylistGenerationSchedulesCreateOperation_Payload: {
+            data: components["schemas"]["PlaylistGenerationSchedulesCreateOperation_Payload_Data"];
+        };
+        PlaylistGenerationSchedulesCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["PlaylistGenerationSchedulesCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["PlaylistGenerationSchedulesCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "playlistGenerationSchedules";
+        };
+        PlaylistGenerationSchedulesCreateOperation_Payload_Data_Attributes: {
+            /**
+             * @description IANA Time Zone Database identifier used to evaluate local civil time.
+             * @example Europe/Stockholm
+             */
+            timeZone: string;
+            /** @enum {string} */
+            weekday: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
+        };
+        PlaylistGenerationSchedulesCreateOperation_Payload_Data_Relationships: {
+            playlist: components["schemas"]["PlaylistGenerationSchedulesCreateOperation_Payload_Data_Relationships_Playlist"];
+        };
+        PlaylistGenerationSchedulesCreateOperation_Payload_Data_Relationships_Playlist: {
+            data: components["schemas"]["PlaylistGenerationSchedulesCreateOperation_Payload_Data_Relationships_Playlist_Data"];
+        };
+        PlaylistGenerationSchedulesCreateOperation_Payload_Data_Relationships_Playlist_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "playlists";
+        };
+        PlaylistGenerationSchedulesCreateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example QUOTA_EXCEEDED
+                 * @enum {string}
+                 */
+                code: "QUOTA_EXCEEDED";
+                /** @example Active playlist schedule limit reached */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        PlaylistGenerationSchedulesUpdateOperation_Payload: {
+            data: components["schemas"]["PlaylistGenerationSchedulesUpdateOperation_Payload_Data"];
+        };
+        PlaylistGenerationSchedulesUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["PlaylistGenerationSchedulesUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "playlistGenerationSchedules";
+        };
+        PlaylistGenerationSchedulesUpdateOperation_Payload_Data_Attributes: {
+            /**
+             * @description IANA Time Zone Database identifier used to evaluate local civil time.
+             * @example Europe/Stockholm
+             */
+            timeZone?: string;
+            /** @enum {string} */
+            weekday?: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
+        };
+        PlaylistGenerationSchedules_Attributes: {
+            /** Format: int32 */
+            configurationVersion: number;
+            /** Format: date-time */
+            createdAt: string;
+            /**
+             * @description Recurrence frequency defined by RFC 5545
+             * @example WEEKLY
+             * @enum {string}
+             */
+            frequency: "WEEKLY";
+            /** Format: date-time */
+            lastModifiedAt: string;
+            /** @enum {string} */
+            status: "ACTIVE" | "DISABLED" | "DELETING" | "PROVISIONING" | "UPDATING" | "ERROR" | "UNKNOWN";
+            /**
+             * @description IANA Time Zone Database identifier used to evaluate local civil time.
+             * @example Europe/Stockholm
+             */
+            timeZone: string;
+            /** @enum {string} */
+            weekday: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
+        };
+        PlaylistGenerationSchedules_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["PlaylistGenerationSchedules_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        PlaylistGenerationSchedules_Multi_Resource_Data_Document: {
+            data: components["schemas"]["PlaylistGenerationSchedules_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        PlaylistGenerationSchedules_Playlist_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        PlayQueues_Single_Resource_Data_Document: {
-            data: components["schemas"]["PlayQueues_Resource_Object"];
+        PlaylistGenerationSchedules_Relationships: {
+            playlist?: components["schemas"]["PlaylistGenerationSchedules_Playlist_Single_Relationship_Data_Document"];
+        };
+        PlaylistGenerationSchedules_Resource_Object: {
+            attributes?: components["schemas"]["PlaylistGenerationSchedules_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["PlaylistGenerationSchedules_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "playlistGenerationSchedules";
+        };
+        PlaylistGenerationSchedules_Single_Resource_Data_Document: {
+            data: components["schemas"]["PlaylistGenerationSchedules_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        PlaylistGenerationSchedules_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["PlaylistGenerationSchedules_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        PlaylistGenerationsCreateOperation_Payload: {
+            data: components["schemas"]["PlaylistGenerationsCreateOperation_Payload_Data"];
+        };
+        PlaylistGenerationsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["PlaylistGenerationsCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["PlaylistGenerationsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "playlistGenerations";
+        };
+        PlaylistGenerationsCreateOperation_Payload_Data_Attributes: {
+            prompt: string;
+        };
+        PlaylistGenerationsCreateOperation_Payload_Data_Relationships: {
+            playlist: components["schemas"]["PlaylistGenerationsCreateOperation_Payload_Data_Relationships_Playlist"];
+        };
+        PlaylistGenerationsCreateOperation_Payload_Data_Relationships_Playlist: {
+            data: components["schemas"]["PlaylistGenerationsCreateOperation_Payload_Data_Relationships_Playlist_Data"];
+        };
+        PlaylistGenerationsCreateOperation_Payload_Data_Relationships_Playlist_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "playlists";
+        };
+        PlaylistGenerations_Attributes: {
+            /**
+             * Format: date-time
+             * @description Datetime the playlist content this generation produced was committed (ISO 8601). Unlike progress.lastModifiedAt, which any write moves, this only moves when a generation succeeds. Omitted while a generation is still running, when it failed, and for playlists generated before generation history was recorded
+             * @example 2026-09-04T09:12:44Z
+             */
+            lastGeneratedAt?: string;
+            progress: components["schemas"]["PlaylistGenerationProgress"];
+            /** @description Prompt used to create the generation; omitted for legacy generations */
+            prompt?: string;
+            /**
+             * @description Current prompted-playlist generation status
+             * @enum {string}
+             */
+            status: "PENDING" | "PROCESSING" | "ERROR" | "OK";
+        };
+        PlaylistGenerations_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["PlaylistGenerations_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        PlaylistGenerations_Multi_Resource_Data_Document: {
+            data: components["schemas"]["PlaylistGenerations_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        PlaylistGenerations_Playlist_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        PlaylistGenerations_Relationships: {
+            playlist?: components["schemas"]["PlaylistGenerations_Playlist_Single_Relationship_Data_Document"];
+        };
+        PlaylistGenerations_Resource_Object: {
+            attributes?: components["schemas"]["PlaylistGenerations_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["PlaylistGenerations_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "playlistGenerations";
+        };
+        PlaylistGenerations_Single_Resource_Data_Document: {
+            data: components["schemas"]["PlaylistGenerations_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -23781,10 +23855,12 @@ export interface components {
             description?: string;
             /**
              * @description Duration of playlist (ISO 8601)
-             * @example P30M5S
+             * @example PT30M5S
              */
             duration?: string;
             externalLinks: components["schemas"]["External_Link"][];
+            /** @description Whether the playlist has AI generations */
+            hasGenerations?: boolean;
             /**
              * Format: date-time
              * @description Datetime of last modification of the playlist (ISO 8601)
@@ -23817,6 +23893,21 @@ export interface components {
              * @enum {string}
              */
             playlistType: "EDITORIAL" | "USER" | "MIX" | "ARTIST";
+        };
+        Playlists_CollaboratorProfiles_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Playlists_Collaborators_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Playlists_CoverArt_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Playlists_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["Playlists_Resource_Object"];
@@ -23866,23 +23957,28 @@ export interface components {
             itemId?: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
-        Playlists_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Playlists_Multi_Resource_Data_Document: {
             data: components["schemas"]["Playlists_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Playlists_OwnerProfiles_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Playlists_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Playlists_Relationships: {
-            collaboratorProfiles?: components["schemas"]["Multi_Relationship_Data_Document"];
-            collaborators?: components["schemas"]["Multi_Relationship_Data_Document"];
-            coverArt?: components["schemas"]["Multi_Relationship_Data_Document"];
+            collaboratorProfiles?: components["schemas"]["Playlists_CollaboratorProfiles_Multi_Relationship_Data_Document"];
+            collaborators?: components["schemas"]["Playlists_Collaborators_Multi_Relationship_Data_Document"];
+            coverArt?: components["schemas"]["Playlists_CoverArt_Multi_Relationship_Data_Document"];
             items?: components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
-            ownerProfiles?: components["schemas"]["Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            ownerProfiles?: components["schemas"]["Playlists_OwnerProfiles_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Playlists_Owners_Multi_Relationship_Data_Document"];
             suggestedCoverArts?: components["schemas"]["Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document"];
         };
         Playlists_Resource_Object: {
@@ -24007,19 +24103,24 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
         };
-        ProviderOwners_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         ProviderOwners_Multi_Resource_Data_Document: {
             data: components["schemas"]["ProviderOwners_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ProviderOwners_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ProviderOwners_Provider_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         ProviderOwners_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            provider?: components["schemas"]["Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["ProviderOwners_Owners_Multi_Relationship_Data_Document"];
+            provider?: components["schemas"]["ProviderOwners_Provider_Single_Relationship_Data_Document"];
         };
         ProviderOwners_Resource_Object: {
             attributes?: components["schemas"]["ProviderOwners_Attributes"];
@@ -24035,11 +24136,6 @@ export interface components {
              */
             type: "providerOwners";
         };
-        ProviderOwners_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         ProviderProductInfos_Attributes: {
             barcodeId?: string;
             broken?: boolean;
@@ -24053,8 +24149,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ProviderProductInfos_Provider_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         ProviderProductInfos_Relationships: {
-            provider?: components["schemas"]["Single_Relationship_Data_Document"];
+            provider?: components["schemas"]["ProviderProductInfos_Provider_Single_Relationship_Data_Document"];
             subject?: components["schemas"]["ProviderProductInfos_Subject_Single_Relationship_Data_Document"];
         };
         ProviderProductInfos_Resource_Object: {
@@ -24070,11 +24171,6 @@ export interface components {
              * @enum {string}
              */
             type: "providerProductInfos";
-        };
-        ProviderProductInfos_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         ProviderProductInfos_Subject_Resource_Identifier: {
             /**
@@ -24134,18 +24230,18 @@ export interface components {
              */
             status: "ACTIVE";
         };
-        Purchases_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Purchases_Multi_Resource_Data_Document: {
             data: components["schemas"]["Purchases_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Purchases_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Purchases_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Purchases_Owners_Multi_Relationship_Data_Document"];
             subject?: components["schemas"]["Purchases_Subject_Single_Relationship_Data_Document"];
         };
         Purchases_Resource_Object: {
@@ -24161,11 +24257,6 @@ export interface components {
              * @enum {string}
              */
             type: "purchases";
-        };
-        Purchases_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Purchases_Subject_Resource_Identifier: {
             /**
@@ -24237,11 +24328,6 @@ export interface components {
             data: components["schemas"]["Reactions_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        Reactions_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Reactions_Multi_Resource_Data_Document: {
             data: components["schemas"]["Reactions_Resource_Object"][];
             included?: components["schemas"]["Included"];
@@ -24253,9 +24339,19 @@ export interface components {
             currentUserReaction?: components["schemas"]["CurrentUserReaction"];
             stats?: components["schemas"]["ReactionStats"];
         };
+        Reactions_OwnerProfiles_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Reactions_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Reactions_Relationships: {
-            ownerProfiles?: components["schemas"]["Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            ownerProfiles?: components["schemas"]["Reactions_OwnerProfiles_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Reactions_Owners_Multi_Relationship_Data_Document"];
         };
         Reactions_Resource_Object: {
             attributes?: components["schemas"]["Reactions_Attributes"];
@@ -24469,11 +24565,6 @@ export interface components {
              */
             trackingId: string;
         };
-        SearchResults_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         SearchResults_Multi_Resource_Data_Document: {
             data: components["schemas"]["SearchResults_Resource_Object"][];
             included?: components["schemas"]["Included"];
@@ -24592,7 +24683,7 @@ export interface components {
              */
             query: string;
             /** @description Suggested search queries */
-            suggestions?: components["schemas"]["SearchSuggestions_Suggestions"][];
+            suggestions: components["schemas"]["SearchSuggestions_Suggestions"][];
             /** @description Unique tracking id */
             trackingId: string;
         };
@@ -24618,12 +24709,20 @@ export interface components {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
         SearchSuggestions_Highlights: {
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Length of the highlight range, measured in UTF-16 code units
+             * @example 3
+             */
             length: number;
-            /** Format: int32 */
+            /**
+             * Format: int32
+             * @description Zero-based start offset in the suggested query, measured in UTF-16 code units
+             * @example 0
+             */
             start: number;
         };
-        SearchSuggestions_Multi_Relationship_Data_Document: {
+        SearchSuggestions_History_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
@@ -24635,7 +24734,7 @@ export interface components {
         };
         SearchSuggestions_Relationships: {
             directHits?: components["schemas"]["SearchSuggestions_DirectHits_Multi_Relationship_Data_Document"];
-            history?: components["schemas"]["Multi_Relationship_Data_Document"];
+            history?: components["schemas"]["SearchSuggestions_History_Multi_Relationship_Data_Document"];
         };
         SearchSuggestions_Resource_Object: {
             attributes?: components["schemas"]["SearchSuggestions_Attributes"];
@@ -24653,7 +24752,9 @@ export interface components {
         };
         /** @description Suggested search queries */
         SearchSuggestions_Suggestions: {
-            highlights?: components["schemas"]["SearchSuggestions_Highlights"][];
+            /** @description Ranges in `query` that clients should highlight as matches for the requested search query */
+            highlights: components["schemas"]["SearchSuggestions_Highlights"][];
+            /** @description The suggested search query */
             query: string;
         };
         SharesCreateOperation_Payload: {
@@ -24690,18 +24791,18 @@ export interface components {
             data: components["schemas"]["Shares_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        Shares_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Shares_Multi_Resource_Data_Document: {
             data: components["schemas"]["Shares_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Shares_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Shares_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["Shares_Owners_Multi_Relationship_Data_Document"];
             sharedResources?: components["schemas"]["Shares_SharedResources_Multi_Relationship_Data_Document"];
         };
         Shares_Resource_Object: {
@@ -24742,10 +24843,6 @@ export interface components {
         Shares_Single_Resource_Data_Document: {
             data: components["schemas"]["Shares_Resource_Object"];
             included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             links: components["schemas"]["Links"];
         };
         SquareConnectionsCreateOperation_Payload: {
@@ -24879,14 +24976,9 @@ export interface components {
             data: components["schemas"]["SquareConnections_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        SquareConnections_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         SquareConnections_Relationships: {
-            selectedSite?: components["schemas"]["Single_Relationship_Data_Document"];
-            sites?: components["schemas"]["Multi_Relationship_Data_Document"];
+            selectedSite?: components["schemas"]["SquareConnections_SelectedSite_Single_Relationship_Data_Document"];
+            sites?: components["schemas"]["SquareConnections_Sites_Multi_Relationship_Data_Document"];
         };
         SquareConnections_Resource_Object: {
             attributes?: components["schemas"]["SquareConnections_Attributes"];
@@ -24902,6 +24994,11 @@ export interface components {
              */
             type: "squareConnections";
         };
+        SquareConnections_SelectedSite_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         SquareConnections_SelectedSite_Update_Resource_Identifier: {
             id: string;
             /** @enum {string} */
@@ -24911,13 +25008,13 @@ export interface components {
             data: components["schemas"]["SquareConnections_SelectedSite_Update_Resource_Identifier"] | (never | null);
             links: components["schemas"]["Links"];
         };
-        SquareConnections_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+        SquareConnections_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareConnections_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        SquareConnections_Single_Resource_Data_Document: {
-            data: components["schemas"]["SquareConnections_Resource_Object"];
+        SquareConnections_Sites_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -25015,18 +25112,18 @@ export interface components {
             data: components["schemas"]["StripeConnections_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        StripeConnections_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         StripeConnections_Multi_Resource_Data_Document: {
             data: components["schemas"]["StripeConnections_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        StripeConnections_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         StripeConnections_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["StripeConnections_Owners_Multi_Relationship_Data_Document"];
         };
         StripeConnections_Resource_Object: {
             attributes?: components["schemas"]["StripeConnections_Attributes"];
@@ -25045,18 +25142,18 @@ export interface components {
         StripeDashboardLinks_Attributes: {
             dashboardLink?: components["schemas"]["Link_Object"];
         };
-        StripeDashboardLinks_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         StripeDashboardLinks_Multi_Resource_Data_Document: {
             data: components["schemas"]["StripeDashboardLinks_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        StripeDashboardLinks_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         StripeDashboardLinks_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["StripeDashboardLinks_Owners_Multi_Relationship_Data_Document"];
         };
         StripeDashboardLinks_Resource_Object: {
             attributes?: components["schemas"]["StripeDashboardLinks_Attributes"];
@@ -25136,8 +25233,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SubscriptionPriceChangeDecisions_PriceChange_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         SubscriptionPriceChangeDecisions_Relationships: {
-            priceChange?: components["schemas"]["Single_Relationship_Data_Document"];
+            priceChange?: components["schemas"]["SubscriptionPriceChangeDecisions_PriceChange_Single_Relationship_Data_Document"];
         };
         SubscriptionPriceChangeDecisions_Resource_Object: {
             attributes?: components["schemas"]["SubscriptionPriceChangeDecisions_Attributes"];
@@ -25152,11 +25254,6 @@ export interface components {
              * @enum {string}
              */
             type: "subscriptionPriceChangeDecisions";
-        };
-        SubscriptionPriceChangeDecisions_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         SubscriptionPriceChangeDecisions_Update_Single_Resource_Data_Document: {
             data: components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"];
@@ -25174,13 +25271,13 @@ export interface components {
             data: components["schemas"]["TemporaryUserTokens_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        TemporaryUserTokens_Multi_Relationship_Data_Document: {
+        TemporaryUserTokens_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         TemporaryUserTokens_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["TemporaryUserTokens_Owners_Multi_Relationship_Data_Document"];
         };
         TemporaryUserTokens_Resource_Object: {
             attributes?: components["schemas"]["TemporaryUserTokens_Attributes"];
@@ -25431,13 +25528,13 @@ export interface components {
             data: components["schemas"]["TrackSourceFiles_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        TrackSourceFiles_Multi_Relationship_Data_Document: {
+        TrackSourceFiles_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         TrackSourceFiles_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["TrackSourceFiles_Owners_Multi_Relationship_Data_Document"];
         };
         TrackSourceFiles_Resource_Object: {
             attributes?: components["schemas"]["TrackSourceFiles_Attributes"];
@@ -25470,13 +25567,13 @@ export interface components {
              */
             uniqueListeners: number;
         };
-        TrackStatistics_Multi_Relationship_Data_Document: {
+        TrackStatistics_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         TrackStatistics_Relationships: {
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["TrackStatistics_Owners_Multi_Relationship_Data_Document"];
         };
         TrackStatistics_Resource_Object: {
             attributes?: components["schemas"]["TrackStatistics_Attributes"];
@@ -25606,6 +25703,11 @@ export interface components {
              * @example false
              */
             explicit?: boolean;
+            /**
+             * @description An ISRC the rights holder already owns: the 12 characters ISO 3901 defines, without the hyphens of the display form. It can only be set while the track has no ISRC of its own: the ISRC TIDAL assigns at the track's first sale is permanent. Omit the field, and TIDAL assigns one then.
+             * @example QMJMT1701237
+             */
+            isrc?: string;
             /** @enum {string} */
             key?: "UNKNOWN" | "C" | "CSharp" | "D" | "Eb" | "E" | "F" | "FSharp" | "G" | "Ab" | "A" | "Bb" | "B";
             /** @enum {string} */
@@ -25644,6 +25746,11 @@ export interface components {
         };
         Tracks_Albums_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Tracks_Artists_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Tracks_Attributes: {
             /**
@@ -25690,7 +25797,7 @@ export interface components {
              * @description International Standard Recording Code (ISRC)
              * @example QMJMT1701229
              */
-            isrc: string;
+            isrc: string | null;
             /**
              * @description Key
              * @enum {string}
@@ -25729,8 +25836,28 @@ export interface components {
             data: components["schemas"]["Tracks_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        Tracks_Multi_Relationship_Data_Document: {
+        Tracks_Credits_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_Download_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_Genres_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_Lyrics_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_MetadataStatus_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -25739,25 +25866,45 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Tracks_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_PriceConfig_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_Providers_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_Radio_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Tracks_Relationships: {
             albums?: components["schemas"]["Tracks_Albums_Multi_Relationship_Data_Document"];
-            artists?: components["schemas"]["Multi_Relationship_Data_Document"];
-            credits?: components["schemas"]["Multi_Relationship_Data_Document"];
-            download?: components["schemas"]["Single_Relationship_Data_Document"];
-            genres?: components["schemas"]["Multi_Relationship_Data_Document"];
-            lyrics?: components["schemas"]["Multi_Relationship_Data_Document"];
-            metadataStatus?: components["schemas"]["Single_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            priceConfig?: components["schemas"]["Single_Relationship_Data_Document"];
-            providers?: components["schemas"]["Multi_Relationship_Data_Document"];
-            radio?: components["schemas"]["Multi_Relationship_Data_Document"];
+            artists?: components["schemas"]["Tracks_Artists_Multi_Relationship_Data_Document"];
+            credits?: components["schemas"]["Tracks_Credits_Multi_Relationship_Data_Document"];
+            download?: components["schemas"]["Tracks_Download_Single_Relationship_Data_Document"];
+            genres?: components["schemas"]["Tracks_Genres_Multi_Relationship_Data_Document"];
+            lyrics?: components["schemas"]["Tracks_Lyrics_Multi_Relationship_Data_Document"];
+            metadataStatus?: components["schemas"]["Tracks_MetadataStatus_Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["Tracks_Owners_Multi_Relationship_Data_Document"];
+            priceConfig?: components["schemas"]["Tracks_PriceConfig_Single_Relationship_Data_Document"];
+            providers?: components["schemas"]["Tracks_Providers_Multi_Relationship_Data_Document"];
+            radio?: components["schemas"]["Tracks_Radio_Multi_Relationship_Data_Document"];
             replacement?: components["schemas"]["Tracks_Replacement_Single_Relationship_Data_Document"];
-            shares?: components["schemas"]["Multi_Relationship_Data_Document"];
+            shares?: components["schemas"]["Tracks_Shares_Multi_Relationship_Data_Document"];
             similarTracks?: components["schemas"]["Tracks_SimilarTracks_Multi_Relationship_Data_Document"];
-            sourceFile?: components["schemas"]["Single_Relationship_Data_Document"];
+            sourceFile?: components["schemas"]["Tracks_SourceFile_Single_Relationship_Data_Document"];
             suggestedTracks?: components["schemas"]["Tracks_SuggestedTracks_Multi_Relationship_Data_Document"];
-            trackStatistics?: components["schemas"]["Single_Relationship_Data_Document"];
-            usageRules?: components["schemas"]["Single_Relationship_Data_Document"];
+            trackStatistics?: components["schemas"]["Tracks_TrackStatistics_Single_Relationship_Data_Document"];
+            usageRules?: components["schemas"]["Tracks_UsageRules_Single_Relationship_Data_Document"];
         };
         Tracks_Replacement_Resource_Identifier: {
             /**
@@ -25794,6 +25941,11 @@ export interface components {
              */
             type: "tracks";
         };
+        Tracks_Shares_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Tracks_SimilarTracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Tracks_SimilarTracks_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25815,13 +25967,13 @@ export interface components {
         Tracks_SimilarTracks_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
-        Tracks_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+        Tracks_Single_Resource_Data_Document: {
+            data: components["schemas"]["Tracks_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        Tracks_Single_Resource_Data_Document: {
-            data: components["schemas"]["Tracks_Resource_Object"];
+        Tracks_SourceFile_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -25845,6 +25997,16 @@ export interface components {
         };
         Tracks_SuggestedTracks_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Tracks_TrackStatistics_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Tracks_UsageRules_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         UsageRulesCreateOperation_Payload: {
             data: components["schemas"]["UsageRulesCreateOperation_Payload_Data"];
@@ -26017,14 +26179,14 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
-        UserCollectionAlbums_Multi_Relationship_Data_Document: {
+        UserCollectionAlbums_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionAlbums_Relationships: {
             items?: components["schemas"]["UserCollectionAlbums_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["UserCollectionAlbums_Owners_Multi_Relationship_Data_Document"];
         };
         UserCollectionAlbums_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionAlbums_Attributes"];
@@ -26138,14 +26300,14 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
-        UserCollectionArtists_Multi_Relationship_Data_Document: {
+        UserCollectionArtists_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionArtists_Relationships: {
             items?: components["schemas"]["UserCollectionArtists_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["UserCollectionArtists_Owners_Multi_Relationship_Data_Document"];
         };
         UserCollectionArtists_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionArtists_Attributes"];
@@ -26223,7 +26385,7 @@ export interface components {
             type: "userCollectionFolders";
         };
         UserCollectionFoldersUpdateOperation_Payload_Data_Attributes: {
-            name?: string;
+            name: string;
         };
         UserCollectionFolders_Attributes: {
             /** Format: date-time */
@@ -26260,20 +26422,20 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
-        UserCollectionFolders_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         UserCollectionFolders_Multi_Resource_Data_Document: {
             data: components["schemas"]["UserCollectionFolders_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        UserCollectionFolders_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         UserCollectionFolders_Relationships: {
             items?: components["schemas"]["UserCollectionFolders_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            userCollection?: components["schemas"]["Single_Relationship_Data_Document"];
+            owners?: components["schemas"]["UserCollectionFolders_Owners_Multi_Relationship_Data_Document"];
+            userCollection?: components["schemas"]["UserCollectionFolders_UserCollection_Single_Relationship_Data_Document"];
         };
         UserCollectionFolders_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionFolders_Attributes"];
@@ -26289,13 +26451,13 @@ export interface components {
              */
             type: "userCollectionFolders";
         };
-        UserCollectionFolders_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+        UserCollectionFolders_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserCollectionFolders_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionFolders_Single_Resource_Data_Document: {
-            data: components["schemas"]["UserCollectionFolders_Resource_Object"];
+        UserCollectionFolders_UserCollection_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -26392,14 +26554,14 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
-        UserCollectionPlaylists_Multi_Relationship_Data_Document: {
+        UserCollectionPlaylists_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionPlaylists_Relationships: {
             items?: components["schemas"]["UserCollectionPlaylists_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["UserCollectionPlaylists_Owners_Multi_Relationship_Data_Document"];
         };
         UserCollectionPlaylists_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionPlaylists_Attributes"];
@@ -26509,14 +26671,14 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
-        UserCollectionSaveForLaters_Multi_Relationship_Data_Document: {
+        UserCollectionSaveForLaters_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionSaveForLaters_Relationships: {
             items?: components["schemas"]["UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["UserCollectionSaveForLaters_Owners_Multi_Relationship_Data_Document"];
         };
         UserCollectionSaveForLaters_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionSaveForLaters_Attributes"];
@@ -26631,14 +26793,14 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
-        UserCollectionTracks_Multi_Relationship_Data_Document: {
+        UserCollectionTracks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionTracks_Relationships: {
             items?: components["schemas"]["UserCollectionTracks_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["UserCollectionTracks_Owners_Multi_Relationship_Data_Document"];
         };
         UserCollectionTracks_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionTracks_Attributes"];
@@ -26753,14 +26915,14 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
-        UserCollectionVideos_Multi_Relationship_Data_Document: {
+        UserCollectionVideos_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserCollectionVideos_Relationships: {
             items?: components["schemas"]["UserCollectionVideos_Items_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["UserCollectionVideos_Owners_Multi_Relationship_Data_Document"];
         };
         UserCollectionVideos_Resource_Object: {
             attributes?: components["schemas"]["UserCollectionVideos_Attributes"];
@@ -26781,268 +26943,14 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionsAddMultiDataRelationship409ResponseBody: {
-            errors: {
-                /**
-                 * @example DUPLICATE_ITEMS_IN_COLLECTION
-                 * @enum {string}
-                 */
-                code: "DUPLICATE_ITEMS_IN_COLLECTION" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_COLLECTION";
-                /** @example Collection item limit reached */
-                detail?: string;
-                /** @example 409 */
-                status: string;
-            }[];
-        };
-        UserCollectionsAlbumsRelationshipAddOperation_Payload: {
-            data: components["schemas"]["UserCollectionsAlbumsRelationshipAddOperation_Payload_Data"][];
-        };
-        UserCollectionsAlbumsRelationshipAddOperation_Payload_Data: {
-            id: string;
-            meta?: components["schemas"]["UserCollectionsAlbumsRelationshipAddOperation_Payload_Data_Meta"];
-            /** @enum {string} */
-            type: "albums";
-        };
-        UserCollectionsAlbumsRelationshipAddOperation_Payload_Data_Meta: {
-            /** Format: date-time */
-            addedAt?: string;
-        };
-        UserCollectionsAlbumsRelationshipRemoveOperation_Payload: {
-            data: components["schemas"]["UserCollectionsAlbumsRelationshipRemoveOperation_Payload_Data"][];
-        };
-        UserCollectionsAlbumsRelationshipRemoveOperation_Payload_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "albums";
-        };
-        UserCollectionsArtistsRelationshipAddOperation_Payload: {
-            data: components["schemas"]["UserCollectionsArtistsRelationshipAddOperation_Payload_Data"][];
-        };
-        UserCollectionsArtistsRelationshipAddOperation_Payload_Data: {
-            id: string;
-            meta?: components["schemas"]["UserCollectionsArtistsRelationshipAddOperation_Payload_Data_Meta"];
-            /** @enum {string} */
-            type: "artists";
-        };
-        UserCollectionsArtistsRelationshipAddOperation_Payload_Data_Meta: {
-            /** Format: date-time */
-            addedAt?: string;
-        };
-        UserCollectionsArtistsRelationshipRemoveOperation_Payload: {
-            data: components["schemas"]["UserCollectionsArtistsRelationshipRemoveOperation_Payload_Data"][];
-        };
-        UserCollectionsArtistsRelationshipRemoveOperation_Payload_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "artists";
-        };
-        UserCollectionsPlaylistsRelationshipAddOperation_Payload: {
-            data: components["schemas"]["UserCollectionsPlaylistsRelationshipAddOperation_Payload_Data"][];
-        };
-        UserCollectionsPlaylistsRelationshipAddOperation_Payload_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "playlists";
-        };
-        UserCollectionsPlaylistsRelationshipRemoveOperation_Payload: {
-            data: components["schemas"]["UserCollectionsPlaylistsRelationshipRemoveOperation_Payload_Data"][];
-        };
-        UserCollectionsPlaylistsRelationshipRemoveOperation_Payload_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "playlists";
-        };
-        UserCollectionsTracksRelationshipAddOperation_Payload: {
-            data: components["schemas"]["UserCollectionsTracksRelationshipAddOperation_Payload_Data"][];
-        };
-        UserCollectionsTracksRelationshipAddOperation_Payload_Data: {
-            id: string;
-            meta?: components["schemas"]["UserCollectionsTracksRelationshipAddOperation_Payload_Data_Meta"];
-            /** @enum {string} */
-            type: "tracks";
-        };
-        UserCollectionsTracksRelationshipAddOperation_Payload_Data_Meta: {
-            /** Format: date-time */
-            addedAt?: string;
-        };
-        UserCollectionsTracksRelationshipRemoveOperation_Payload: {
-            data: components["schemas"]["UserCollectionsTracksRelationshipRemoveOperation_Payload_Data"][];
-        };
-        UserCollectionsTracksRelationshipRemoveOperation_Payload_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "tracks";
-        };
-        UserCollectionsVideosRelationshipAddOperation_Payload: {
-            data: components["schemas"]["UserCollectionsVideosRelationshipAddOperation_Payload_Data"][];
-        };
-        UserCollectionsVideosRelationshipAddOperation_Payload_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "videos";
-        };
-        UserCollectionsVideosRelationshipRemoveOperation_Payload: {
-            data: components["schemas"]["UserCollectionsVideosRelationshipRemoveOperation_Payload_Data"][];
-        };
-        UserCollectionsVideosRelationshipRemoveOperation_Payload_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "videos";
-        };
-        UserCollections_Albums_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollections_Albums_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollections_Albums_Resource_Identifier: {
-            /**
-             * @description Resource id
-             * @example 12345
-             */
-            id: string;
-            meta?: components["schemas"]["UserCollections_Albums_Resource_Identifier_Meta"];
-            /**
-             * @description Resource type
-             * @example tracks
-             */
-            type: string;
-        };
-        UserCollections_Albums_Resource_Identifier_Meta: {
-            /** Format: date-time */
-            addedAt: string;
-            replacement?: components["schemas"]["Replacement_Provenance"];
-        };
-        UserCollections_Artists_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollections_Artists_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollections_Artists_Resource_Identifier: {
-            /**
-             * @description Resource id
-             * @example 12345
-             */
-            id: string;
-            meta?: components["schemas"]["UserCollections_Artists_Resource_Identifier_Meta"];
-            /**
-             * @description Resource type
-             * @example tracks
-             */
-            type: string;
-        };
-        UserCollections_Artists_Resource_Identifier_Meta: {
-            /** Format: date-time */
-            addedAt: string;
-        };
-        UserCollections_Attributes: Record<string, never>;
-        UserCollections_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollections_Playlists_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollections_Playlists_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollections_Playlists_Resource_Identifier: {
-            /**
-             * @description Resource id
-             * @example 12345
-             */
-            id: string;
-            meta?: components["schemas"]["UserCollections_Playlists_Resource_Identifier_Meta"];
-            /**
-             * @description Resource type
-             * @example tracks
-             */
-            type: string;
-        };
-        UserCollections_Playlists_Resource_Identifier_Meta: {
-            /** Format: date-time */
-            addedAt: string;
-        };
-        UserCollections_Relationships: {
-            albums?: components["schemas"]["UserCollections_Albums_Multi_Relationship_Data_Document"];
-            artists?: components["schemas"]["UserCollections_Artists_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
-            playlists?: components["schemas"]["UserCollections_Playlists_Multi_Relationship_Data_Document"];
-            tracks?: components["schemas"]["UserCollections_Tracks_Multi_Relationship_Data_Document"];
-            videos?: components["schemas"]["UserCollections_Videos_Multi_Relationship_Data_Document"];
-        };
-        UserCollections_Resource_Object: {
-            attributes?: components["schemas"]["UserCollections_Attributes"];
-            /**
-             * @description Resource id
-             * @example 12345
-             */
-            id: string;
-            relationships?: components["schemas"]["UserCollections_Relationships"];
-            /**
-             * @description Resource type (enum property replaced by openapi-typescript)
-             * @enum {string}
-             */
-            type: "userCollections";
-        };
-        UserCollections_Single_Resource_Data_Document: {
-            data: components["schemas"]["UserCollections_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollections_Tracks_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollections_Tracks_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollections_Tracks_Resource_Identifier: {
-            /**
-             * @description Resource id
-             * @example 12345
-             */
-            id: string;
-            meta?: components["schemas"]["UserCollections_Tracks_Resource_Identifier_Meta"];
-            /**
-             * @description Resource type
-             * @example tracks
-             */
-            type: string;
-        };
-        UserCollections_Tracks_Resource_Identifier_Meta: {
-            /** Format: date-time */
-            addedAt: string;
-            replacement?: components["schemas"]["Replacement_Provenance"];
-        };
-        UserCollections_Videos_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["UserCollections_Videos_Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserCollections_Videos_Resource_Identifier: {
-            /**
-             * @description Resource id
-             * @example 12345
-             */
-            id: string;
-            meta?: components["schemas"]["UserCollections_Videos_Resource_Identifier_Meta"];
-            /**
-             * @description Resource type
-             * @example tracks
-             */
-            type: string;
-        };
-        UserCollections_Videos_Resource_Identifier_Meta: {
-            /** Format: date-time */
-            addedAt: string;
-            replacement?: components["schemas"]["Replacement_Provenance"];
-        };
         UserDailyMixes_Attributes: Record<string, never>;
-        UserDailyMixes_Multi_Relationship_Data_Document: {
+        UserDailyMixes_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserDailyMixes_Relationships: {
-            items?: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserDailyMixes_Items_Multi_Relationship_Data_Document"];
         };
         UserDailyMixes_Resource_Object: {
             attributes?: components["schemas"]["UserDailyMixes_Attributes"];
@@ -27100,13 +27008,13 @@ export interface components {
             type: "userDataExportRequests";
         };
         UserDiscoveryMixes_Attributes: Record<string, never>;
-        UserDiscoveryMixes_Multi_Relationship_Data_Document: {
+        UserDiscoveryMixes_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserDiscoveryMixes_Relationships: {
-            items?: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserDiscoveryMixes_Items_Multi_Relationship_Data_Document"];
         };
         UserDiscoveryMixes_Resource_Object: {
             attributes?: components["schemas"]["UserDiscoveryMixes_Attributes"];
@@ -27128,13 +27036,13 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserNewReleaseMixes_Attributes: Record<string, never>;
-        UserNewReleaseMixes_Multi_Relationship_Data_Document: {
+        UserNewReleaseMixes_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserNewReleaseMixes_Relationships: {
-            items?: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserNewReleaseMixes_Items_Multi_Relationship_Data_Document"];
         };
         UserNewReleaseMixes_Resource_Object: {
             attributes?: components["schemas"]["UserNewReleaseMixes_Attributes"];
@@ -27156,13 +27064,13 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserOfflineMixes_Attributes: Record<string, never>;
-        UserOfflineMixes_Multi_Relationship_Data_Document: {
+        UserOfflineMixes_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserOfflineMixes_Relationships: {
-            items?: components["schemas"]["Multi_Relationship_Data_Document"];
+            items?: components["schemas"]["UserOfflineMixes_Items_Multi_Relationship_Data_Document"];
         };
         UserOfflineMixes_Resource_Object: {
             attributes?: components["schemas"]["UserOfflineMixes_Attributes"];
@@ -27181,6 +27089,126 @@ export interface components {
         UserOfflineMixes_Single_Resource_Data_Document: {
             data: components["schemas"]["UserOfflineMixes_Resource_Object"];
             included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserPlaybackStatesActivePlayerRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["UserPlaybackStatesActivePlayerRelationshipUpdateOperation_Payload_Data"] | (never | null);
+        };
+        UserPlaybackStatesActivePlayerRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "installations";
+        };
+        UserPlaybackStatesAvailablePlayersRelationshipAddOperation_Payload: {
+            data: components["schemas"]["UserPlaybackStatesAvailablePlayersRelationshipOperation_Payload_Data"][];
+        };
+        UserPlaybackStatesAvailablePlayersRelationshipOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "installations";
+        };
+        UserPlaybackStatesAvailablePlayersRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["UserPlaybackStatesAvailablePlayersRelationshipOperation_Payload_Data"][];
+        };
+        UserPlaybackStatesPlayQueueRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["UserPlaybackStatesPlayQueueRelationshipUpdateOperation_Payload_Data"] | (never | null);
+        };
+        UserPlaybackStatesPlayQueueRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "playQueues";
+        };
+        UserPlaybackStatesUpdateOperation_Payload: {
+            data: components["schemas"]["UserPlaybackStatesUpdateOperation_Payload_Data"];
+        };
+        UserPlaybackStatesUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["UserPlaybackStatesUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "userPlaybackStates";
+        };
+        UserPlaybackStatesUpdateOperation_Payload_Data_Attributes: {
+            /** @enum {string} */
+            playbackStatus?: "PLAYING" | "PAUSED";
+        };
+        UserPlaybackStates_ActivePlayer_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserPlaybackStates_ActivePlayer_Update_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "installations";
+        };
+        UserPlaybackStates_ActivePlayer_Update_Single_Relationship_Data_Document: {
+            data: components["schemas"]["UserPlaybackStates_ActivePlayer_Update_Resource_Identifier"] | (never | null);
+            links: components["schemas"]["Links"];
+        };
+        UserPlaybackStates_Attributes: {
+            /** @enum {string} */
+            playbackStatus: "IDLE" | "PLAYING" | "PAUSED";
+        };
+        UserPlaybackStates_AvailablePlayers_Add_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["UserPlaybackStates_AvailablePlayers_Add_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+        };
+        UserPlaybackStates_AvailablePlayers_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "installations";
+        };
+        UserPlaybackStates_AvailablePlayers_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserPlaybackStates_ChangeEventTopic_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserPlaybackStates_PlayQueue_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserPlaybackStates_PlayQueue_Update_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "playQueues";
+        };
+        UserPlaybackStates_PlayQueue_Update_Single_Relationship_Data_Document: {
+            data: components["schemas"]["UserPlaybackStates_PlayQueue_Update_Resource_Identifier"] | (never | null);
+            links: components["schemas"]["Links"];
+        };
+        UserPlaybackStates_Relationships: {
+            activePlayer?: components["schemas"]["UserPlaybackStates_ActivePlayer_Single_Relationship_Data_Document"];
+            availablePlayers?: components["schemas"]["UserPlaybackStates_AvailablePlayers_Multi_Relationship_Data_Document"];
+            changeEventTopic?: components["schemas"]["UserPlaybackStates_ChangeEventTopic_Single_Relationship_Data_Document"];
+            playQueue?: components["schemas"]["UserPlaybackStates_PlayQueue_Single_Relationship_Data_Document"];
+        };
+        UserPlaybackStates_Resource_Object: {
+            attributes?: components["schemas"]["UserPlaybackStates_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["UserPlaybackStates_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "userPlaybackStates";
+        };
+        UserPlaybackStates_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserPlaybackStates_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserPlaybackStates_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserPlaybackStates_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         UserRecommendationBlocksAddMultiDataRelationshipWithResponse409ResponseBody: {
@@ -27279,14 +27307,14 @@ export interface components {
             createdAt: string;
         };
         UserRecommendationBlocks_Attributes: Record<string, never>;
-        UserRecommendationBlocks_Multi_Relationship_Data_Document: {
+        UserRecommendationBlocks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserRecommendationBlocks_Relationships: {
             artists?: components["schemas"]["UserRecommendationBlocks_Artists_Multi_Relationship_Data_Document"];
-            owners?: components["schemas"]["Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["UserRecommendationBlocks_Owners_Multi_Relationship_Data_Document"];
             tracks?: components["schemas"]["UserRecommendationBlocks_Tracks_Multi_Relationship_Data_Document"];
             videos?: components["schemas"]["UserRecommendationBlocks_Videos_Multi_Relationship_Data_Document"];
         };
@@ -27379,37 +27407,6 @@ export interface components {
             createdAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
-        UserRecommendations_Attributes: Record<string, never>;
-        UserRecommendations_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        UserRecommendations_Relationships: {
-            discoveryMixes?: components["schemas"]["Multi_Relationship_Data_Document"];
-            myMixes?: components["schemas"]["Multi_Relationship_Data_Document"];
-            newArrivalMixes?: components["schemas"]["Multi_Relationship_Data_Document"];
-            offlineMixes?: components["schemas"]["Multi_Relationship_Data_Document"];
-        };
-        UserRecommendations_Resource_Object: {
-            attributes?: components["schemas"]["UserRecommendations_Attributes"];
-            /**
-             * @description Resource id
-             * @example 12345
-             */
-            id: string;
-            relationships?: components["schemas"]["UserRecommendations_Relationships"];
-            /**
-             * @description Resource type (enum property replaced by openapi-typescript)
-             * @enum {string}
-             */
-            type: "userRecommendations";
-        };
-        UserRecommendations_Single_Resource_Data_Document: {
-            data: components["schemas"]["UserRecommendations_Resource_Object"];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         UserReportsCreateOperation_Payload: {
             data: components["schemas"]["UserReportsCreateOperation_Payload_Data"];
         };
@@ -27434,6 +27431,19 @@ export interface components {
             id: string;
             /** @enum {string} */
             type: "tracks" | "artists" | "playlists";
+        };
+        UserReportsCreateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example QUOTA_EXCEEDED
+                 * @enum {string}
+                 */
+                code: "QUOTA_EXCEEDED";
+                /** @example Active report limit reached */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
         };
         UserReports_Attributes: {
             /** @description Description */
@@ -27483,13 +27493,18 @@ export interface components {
              */
             newPrice: string;
         };
+        UserSubscriptionPriceChanges_Decision_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         UserSubscriptionPriceChanges_Multi_Resource_Data_Document: {
             data: components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         UserSubscriptionPriceChanges_Relationships: {
-            decision?: components["schemas"]["Single_Relationship_Data_Document"];
+            decision?: components["schemas"]["UserSubscriptionPriceChanges_Decision_Single_Relationship_Data_Document"];
         };
         UserSubscriptionPriceChanges_Resource_Object: {
             attributes?: components["schemas"]["UserSubscriptionPriceChanges_Attributes"];
@@ -27504,11 +27519,6 @@ export interface components {
              * @enum {string}
              */
             type: "userSubscriptionPriceChanges";
-        };
-        UserSubscriptionPriceChanges_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         Users_Attributes: {
             /**
@@ -27650,6 +27660,11 @@ export interface components {
         Videos_Albums_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        Videos_Artists_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Videos_Attributes: {
             /**
              * @deprecated
@@ -27697,7 +27712,7 @@ export interface components {
              */
             version?: string;
         };
-        Videos_Multi_Relationship_Data_Document: {
+        Videos_Credits_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
@@ -27707,16 +27722,21 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        Videos_Providers_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Videos_Relationships: {
             albums?: components["schemas"]["Videos_Albums_Multi_Relationship_Data_Document"];
-            artists?: components["schemas"]["Multi_Relationship_Data_Document"];
-            credits?: components["schemas"]["Multi_Relationship_Data_Document"];
-            providers?: components["schemas"]["Multi_Relationship_Data_Document"];
+            artists?: components["schemas"]["Videos_Artists_Multi_Relationship_Data_Document"];
+            credits?: components["schemas"]["Videos_Credits_Multi_Relationship_Data_Document"];
+            providers?: components["schemas"]["Videos_Providers_Multi_Relationship_Data_Document"];
             replacement?: components["schemas"]["Videos_Replacement_Single_Relationship_Data_Document"];
             similarVideos?: components["schemas"]["Videos_SimilarVideos_Multi_Relationship_Data_Document"];
             suggestedVideos?: components["schemas"]["Videos_SuggestedVideos_Multi_Relationship_Data_Document"];
-            thumbnailArt?: components["schemas"]["Multi_Relationship_Data_Document"];
-            usageRules?: components["schemas"]["Single_Relationship_Data_Document"];
+            thumbnailArt?: components["schemas"]["Videos_ThumbnailArt_Multi_Relationship_Data_Document"];
+            usageRules?: components["schemas"]["Videos_UsageRules_Single_Relationship_Data_Document"];
         };
         Videos_Replacement_Resource_Identifier: {
             /**
@@ -27774,11 +27794,6 @@ export interface components {
         Videos_SimilarVideos_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
-        Videos_Single_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"] | (never | null);
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
         Videos_Single_Resource_Data_Document: {
             data: components["schemas"]["Videos_Resource_Object"];
             included?: components["schemas"]["Included"];
@@ -27804,6 +27819,16 @@ export interface components {
         };
         Videos_SuggestedVideos_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        Videos_ThumbnailArt_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Videos_UsageRules_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
     };
     responses: {
@@ -27895,6 +27920,15 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["Idempotency422ResponseBody"];
+            };
+        };
+        /** @description Active playlist schedule limit reached */
+        PlaylistGenerationSchedulesCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["PlaylistGenerationSchedulesCreateResource403ResponseBody"];
             };
         };
         /** @description Latest terms and conditions must be accepted */
@@ -28041,15 +28075,6 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionVideosAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
-        /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
-        UserCollectionsAddMultiDataRelationship409Response: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionsAddMultiDataRelationship409ResponseBody"];
-            };
-        };
         /** @description Recommendation block limit reached; Request already in progress for this idempotency key */
         UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response: {
             headers: {
@@ -28057,6 +28082,15 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["UserRecommendationBlocksAddMultiDataRelationshipWithResponse409ResponseBody"];
+            };
+        };
+        /** @description Active report limit reached */
+        UserReportsCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserReportsCreateResource403ResponseBody"];
             };
         };
         /** @description Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device */
