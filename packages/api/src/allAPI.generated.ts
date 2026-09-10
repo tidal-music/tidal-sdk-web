@@ -4604,7 +4604,7 @@ export interface paths {
                     /** @description Filter by subject resource ID (e.g. `12345`) */
                     "filter[subject.id]": string[];
                     /** @description Filter by subject resource type (e.g. `albums`) */
-                    "filter[subject.type]": ("albums" | "tracks")[];
+                    "filter[subject.type]": ("albums" | "tracks" | "trackSourceFiles")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
@@ -10789,7 +10789,7 @@ export interface paths {
                     /** @description Filter by subject resource ID (e.g. `12345`) */
                     "filter[subject.id]": string[];
                     /** @description Filter by subject resource type (e.g. `albums`) */
-                    "filter[subject.type]": ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments")[];
+                    "filter[subject.type]": ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments" | "trackSourceFiles")[];
                     stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
                     statsOnly?: boolean;
                     viewerContext?: string;
@@ -22054,7 +22054,7 @@ export interface components {
         CommentsCreateOperation_Payload_Data_Relationships_Subject_Data: {
             id: string;
             /** @enum {string} */
-            type: "albums" | "tracks";
+            type: "albums" | "tracks" | "trackSourceFiles";
         };
         CommentsUpdateOperation_Payload: {
             data: components["schemas"]["CommentsUpdateOperation_Payload_Data"];
@@ -24312,7 +24312,7 @@ export interface components {
         ReactionsCreateOperation_Payload_Data_Relationships_Subject_Data: {
             id: string;
             /** @enum {string} */
-            type: "albums" | "tracks" | "artists" | "videos" | "playlists" | "comments";
+            type: "albums" | "tracks" | "artists" | "videos" | "playlists" | "comments" | "trackSourceFiles";
         };
         Reactions_Attributes: {
             /**
