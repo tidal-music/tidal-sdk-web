@@ -7755,7 +7755,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventTopic, current, future, owners, past
+                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventStream, current, future, owners, past
                      * @example current
                      */
                     include?: string[];
@@ -7853,7 +7853,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventTopic, current, future, owners, past
+                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventStream, current, future, owners, past
                      * @example current
                      */
                     include?: string[];
@@ -7990,7 +7990,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/playQueues/{id}/relationships/changeEventTopic": {
+    "/playQueues/{id}/relationships/changeEventStream": {
         parameters: {
             query?: never;
             header?: never;
@@ -7998,15 +7998,15 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get changeEventTopic relationship ("to-one").
-         * @description Retrieves changeEventTopic relationship.
+         * Get changeEventStream relationship ("to-one").
+         * @description Retrieves changeEventStream relationship.
          */
         get: {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventTopic
-                     * @example changeEventTopic
+                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventStream
+                     * @example changeEventStream
                      */
                     include?: string[];
                 };
@@ -8024,7 +8024,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["PlayQueues_ChangeEventTopic_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["PlayQueues_ChangeEventStream_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18437,7 +18437,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: activePlayer, availablePlayers, changeEventTopic, playQueue
+                     * @description Allows the client to customize which related resources should be returned. Available options: activePlayer, availablePlayers, changeEventStream, playQueue
                      * @example activePlayer.offlineInventory
                      */
                     include?: string[];
@@ -18800,7 +18800,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/userPlaybackStates/{id}/relationships/changeEventTopic": {
+    "/userPlaybackStates/{id}/relationships/changeEventStream": {
         parameters: {
             query?: never;
             header?: never;
@@ -18808,15 +18808,15 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get changeEventTopic relationship ("to-one").
-         * @description Retrieves changeEventTopic relationship.
+         * Get changeEventStream relationship ("to-one").
+         * @description Retrieves changeEventStream relationship.
          */
         get: {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventTopic
-                     * @example changeEventTopic
+                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventStream
+                     * @example changeEventStream
                      */
                     include?: string[];
                 };
@@ -18834,7 +18834,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["UserPlaybackStates_ChangeEventTopic_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["UserPlaybackStates_ChangeEventStream_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -21807,11 +21807,11 @@ export interface components {
             /** Format: float */
             replayGain?: number;
         };
-        ChangeEventTopics_Attributes: {
-            topic: string;
+        ChangeEventStreams_Attributes: {
+            eventStreamLink: components["schemas"]["Link_Object"];
         };
-        ChangeEventTopics_Resource_Object: {
-            attributes?: components["schemas"]["ChangeEventTopics_Attributes"];
+        ChangeEventStreams_Resource_Object: {
+            attributes?: components["schemas"]["ChangeEventStreams_Attributes"];
             /**
              * @description Resource id
              * @example 12345
@@ -21821,7 +21821,7 @@ export interface components {
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
              */
-            type: "changeEventTopics";
+            type: "changeEventStreams";
         };
         ClientsCreateOperation_Payload: {
             data: components["schemas"]["ClientsCreateOperation_Payload_Data"];
@@ -22811,7 +22811,7 @@ export interface components {
                 status: string;
             }[];
         };
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventTopics_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -22920,7 +22920,7 @@ export interface components {
         };
         /** @description A JSON:API link object */
         Link_Object: {
-            href?: string;
+            href: string;
         };
         Links: {
             meta?: components["schemas"]["Links_Meta"];
@@ -23383,7 +23383,7 @@ export interface components {
             /** @description Queue is shuffled or not */
             shuffled: boolean;
         };
-        PlayQueues_ChangeEventTopic_Single_Relationship_Data_Document: {
+        PlayQueues_ChangeEventStream_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
@@ -23482,7 +23482,7 @@ export interface components {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
         PlayQueues_Relationships: {
-            changeEventTopic?: components["schemas"]["PlayQueues_ChangeEventTopic_Single_Relationship_Data_Document"];
+            changeEventStream?: components["schemas"]["PlayQueues_ChangeEventStream_Single_Relationship_Data_Document"];
             current?: components["schemas"]["PlayQueues_Current_Single_Relationship_Data_Document"];
             future?: components["schemas"]["PlayQueues_Future_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["PlayQueues_Owners_Multi_Relationship_Data_Document"];
@@ -27163,7 +27163,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserPlaybackStates_ChangeEventTopic_Single_Relationship_Data_Document: {
+        UserPlaybackStates_ChangeEventStream_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
@@ -27185,7 +27185,7 @@ export interface components {
         UserPlaybackStates_Relationships: {
             activePlayer?: components["schemas"]["UserPlaybackStates_ActivePlayer_Single_Relationship_Data_Document"];
             availablePlayers?: components["schemas"]["UserPlaybackStates_AvailablePlayers_Multi_Relationship_Data_Document"];
-            changeEventTopic?: components["schemas"]["UserPlaybackStates_ChangeEventTopic_Single_Relationship_Data_Document"];
+            changeEventStream?: components["schemas"]["UserPlaybackStates_ChangeEventStream_Single_Relationship_Data_Document"];
             playQueue?: components["schemas"]["UserPlaybackStates_PlayQueue_Single_Relationship_Data_Document"];
         };
         UserPlaybackStates_Resource_Object: {
