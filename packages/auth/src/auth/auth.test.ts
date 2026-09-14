@@ -61,7 +61,7 @@ const prepareFetchMock = {
   url: 'https://foo.baz',
 };
 
-describe.sequential('auth', () => {
+describe('auth', { concurrent: false }, () => {
   afterEach(() => {
     vi.clearAllMocks();
     vi.resetAllMocks();

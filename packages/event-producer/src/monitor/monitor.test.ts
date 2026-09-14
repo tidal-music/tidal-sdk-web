@@ -7,7 +7,7 @@ import * as sqsParamsConverter from '../utils/sqsParamsConverter.js';
 
 import * as monitor from './index.js';
 
-describe.sequential('monitor', () => {
+describe('monitor', { concurrent: false }, () => {
   beforeEach(() => {
     init(config);
     monitor.resetMonitoringState();

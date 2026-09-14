@@ -15,7 +15,7 @@ vi.mock('@tidal-music/true-time', () => ({
   trueTime: { now: vi.fn(() => 1337) },
 }));
 
-describe.sequential('sendEvent', () => {
+describe('sendEvent', { concurrent: false }, () => {
   beforeEach(async () => {
     await uuid.init();
   });
