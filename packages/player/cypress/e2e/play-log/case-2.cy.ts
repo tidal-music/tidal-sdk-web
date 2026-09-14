@@ -2,21 +2,21 @@ import { expect } from 'chai';
 import { INTERCEPT_OPTIONS, SDK_BATCH_INTERVAL } from '../../helpers.js';
 
 it('Client Test Case 2', () => {
-  const credentials = JSON.parse(atob(Cypress.env().TEST_USER.substring(1, Cypress.env().TEST_USER.length - 1)));
-
-  // Pass env to test app
-  Cypress.env('credentials', credentials);
-
   // Load test case that logins in and plays a track
-  cy.visit('/demo/test-case-2.html', {
-    onBeforeLoad (win) {
-      // Clear IndexedDB to prevent cached data from previous tests
-      win.indexedDB.deleteDatabase('EventProducerDB');
-      
-      // start spying
-      win.document.addEventListener('player-sdk:ended', cy.stub().as('playerSdkEnded'));
-      win.document.addEventListener('player-sdk:media-product-transition', cy.stub().as('playerSdkMediaProductTransition'));
-    }
+  cy.env('TEST_USER').then((testUser) => {
+    const credentials = JSON.parse(atob(testUser.substring(1, testUser.length - 1)));
+
+    cy.visit('/demo/test-case-2.html', {
+      onBeforeLoad (win) {
+        Object.assign(win, { __testUserCredentials: credentials });
+        // Clear IndexedDB to prevent cached data from previous tests
+        win.indexedDB.deleteDatabase('EventProducerDB');
+
+        // start spying
+        win.document.addEventListener('player-sdk:ended', cy.stub().as('playerSdkEnded'));
+        win.document.addEventListener('player-sdk:media-product-transition', cy.stub().as('playerSdkMediaProductTransition'));
+      }
+    });
   });
 
   // Wait for media product transition

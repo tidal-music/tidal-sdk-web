@@ -2,22 +2,22 @@ import { expect } from 'chai';
 import { INTERCEPT_OPTIONS, SDK_BATCH_INTERVAL } from '../../helpers.js';
 
 it('Gapless Playback Test - Pink Floyd Album Transition', () => {
-  const credentials = JSON.parse(atob(Cypress.env().TEST_USER.substring(1, Cypress.env().TEST_USER.length - 1)));
-
-  // Pass env to test app
-  Cypress.env('credentials', credentials);
-
   // Load test case that tests gapless transition between two consecutive album tracks
-  cy.visit('/demo/test-case-gapless.html?crossfadeInMs=0', {
-    onBeforeLoad (win) {
-      // Clear IndexedDB to prevent cached data from previous tests
-      win.indexedDB.deleteDatabase('EventProducerDB');
+  cy.env('TEST_USER').then((testUser) => {
+    const credentials = JSON.parse(atob(testUser.substring(1, testUser.length - 1)));
 
-      // start spying
-      win.document.addEventListener('player-sdk:ended', cy.stub().as('playerSdkEnded'));
-      win.document.addEventListener('player-sdk:media-product-transition', cy.stub().as('playerSdkMediaProductTransition'));
-      win.document.addEventListener('player-sdk:preload-request', cy.stub().as('playerSdkPreloadRequest'));
-    }
+    cy.visit('/demo/test-case-gapless.html?crossfadeInMs=0', {
+      onBeforeLoad (win) {
+        Object.assign(win, { __testUserCredentials: credentials });
+        // Clear IndexedDB to prevent cached data from previous tests
+        win.indexedDB.deleteDatabase('EventProducerDB');
+
+        // start spying
+        win.document.addEventListener('player-sdk:ended', cy.stub().as('playerSdkEnded'));
+        win.document.addEventListener('player-sdk:media-product-transition', cy.stub().as('playerSdkMediaProductTransition'));
+        win.document.addEventListener('player-sdk:preload-request', cy.stub().as('playerSdkPreloadRequest'));
+      }
+    });
   });
 
   // Start intercepting events endpoint BEFORE any analytics are sent

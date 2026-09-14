@@ -45,7 +45,7 @@ async function performLogin() {
   // Get test user credentials from Cypress (in Cypress tests) or from env (in dev mode)
   let testUser;
   if (window.Cypress) {
-    testUser = window.Cypress.env('credentials');
+    testUser = window.__testUserCredentials;
   } else {
     // Parse TEST_USER from environment variable (available via vite config)
     const testUserEnv = import.meta.env.TEST_USER;

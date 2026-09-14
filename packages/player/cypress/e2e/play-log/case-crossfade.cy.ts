@@ -2,18 +2,19 @@ import { expect } from 'chai';
 import { INTERCEPT_OPTIONS, SDK_BATCH_INTERVAL } from '../../helpers.js';
 
 it('Crossfade Playback Test - 5s crossfade between tracks', () => {
-  const credentials = JSON.parse(atob(Cypress.env().TEST_USER.substring(1, Cypress.env().TEST_USER.length - 1)));
+  cy.env('TEST_USER').then((testUser) => {
+    const credentials = JSON.parse(atob(testUser.substring(1, testUser.length - 1)));
 
-  Cypress.env('credentials', credentials);
+    cy.visit('/demo/test-case-gapless.html?crossfadeInMs=5000', {
+      onBeforeLoad (win) {
+        Object.assign(win, { __testUserCredentials: credentials });
+        win.indexedDB.deleteDatabase('EventProducerDB');
 
-  cy.visit('/demo/test-case-gapless.html?crossfadeInMs=5000', {
-    onBeforeLoad (win) {
-      win.indexedDB.deleteDatabase('EventProducerDB');
-
-      win.document.addEventListener('player-sdk:ended', cy.stub().as('playerSdkEnded'));
-      win.document.addEventListener('player-sdk:media-product-transition', cy.stub().as('playerSdkMediaProductTransition'));
-      win.document.addEventListener('player-sdk:preload-request', cy.stub().as('playerSdkPreloadRequest'));
-    }
+        win.document.addEventListener('player-sdk:ended', cy.stub().as('playerSdkEnded'));
+        win.document.addEventListener('player-sdk:media-product-transition', cy.stub().as('playerSdkMediaProductTransition'));
+        win.document.addEventListener('player-sdk:preload-request', cy.stub().as('playerSdkPreloadRequest'));
+      }
+    });
   });
 
   cy.intercept(INTERCEPT_OPTIONS).as('playerSdkEventsRequest');
