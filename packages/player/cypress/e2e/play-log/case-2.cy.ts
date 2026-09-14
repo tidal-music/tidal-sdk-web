@@ -3,7 +3,7 @@ import { INTERCEPT_OPTIONS, SDK_BATCH_INTERVAL } from '../../helpers.js';
 
 it('Client Test Case 2', () => {
   // Load test case that logins in and plays a track
-  cy.env('TEST_USER').then((testUser) => {
+  cy.env(['TEST_USER']).then(({ TEST_USER: testUser }) => {
     const credentials = JSON.parse(atob(testUser.substring(1, testUser.length - 1)));
 
     cy.visit('/demo/test-case-2.html', {
