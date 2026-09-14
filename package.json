@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/tidal-sdk-web",
-  "packageManager": "pnpm@12.4.1",
+  "packageManager": "pnpm@11.24.0",
   "private": true,
   "type": "module",
   "scripts": {
