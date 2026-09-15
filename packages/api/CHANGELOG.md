@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.46.0] - 2026-09-15
+
+### Added
+
+- Expose the optional artist `numberOfFollowers` attribute, including zero counts.
+
+### Changed
+
+- Sync to API definitions version 1.10.132, including folders and folder items,
+  playlist duplicate handling, and removal of the unused `countryCode` parameter
+  from owner and collaborator relationship endpoints.
+- Consumers passing those removed query parameters must omit them. Exhaustive
+  handling of included resources and playlist skipped-item reasons must account
+  for folders, folder items, and `ALREADY_PRESENT`.
+- Playlist item insertion metadata now requires `onDuplicates` in the generated
+  types because the API schema supplies a default. Existing callers supplying
+  metadata should pass `onDuplicates: 'ADD'` to preserve the default behaviour.
+
 ## [0.45.1] - 2026-09-14
 
 ### Changed
