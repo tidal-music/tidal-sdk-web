@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `submitEvents` is now single-flight: a scheduler tick (or `flush()`) that arrives while a submit loop is still draining the queue awaits that loop instead of starting a second one, which could post the same batch twice.
 - A failure while reading the batch response body is now treated like a network failure (outage, events stay queued) instead of surfacing as a rejection.
+- A batch whose only outcome is a retryable `BatchResultErrorEntry` no longer triggers an immediate resubmit loop; the event is left for the next scheduled run.
 - `initDB` no longer leaks a worker `message` listener per call, and rejects instead of hanging forever if the worker fails to open the database.
 
 ## [2.4.2] - 2026-05-22

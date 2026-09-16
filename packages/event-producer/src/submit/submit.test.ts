@@ -285,6 +285,28 @@ describe.sequential('submit', () => {
     expect(queue.removeEvents).toHaveBeenCalledWith([]);
   });
 
+  it('does not loop on a batch that made no progress (retryable BatchResultErrorEntry)', async () => {
+    vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
+    // the retryable event stays in the queue after the batch
+    vi.mocked(queue).getEvents.mockReturnValue([epEvent1]);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        text: vi
+          .fn()
+          .mockResolvedValue(
+            `<?xml version="1.0"?><SendMessageBatchResponse><SendMessageBatchResult><BatchResultErrorEntry><Id>${epEvent1.id}</Id><SenderFault>false</SenderFault></BatchResultErrorEntry></SendMessageBatchResult></SendMessageBatchResponse>`,
+          ),
+      }),
+    );
+
+    await submitEvents({ config });
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(queue.removeEvents).toHaveBeenCalledWith([]);
+  });
+
   it('error response with AWS.SimpleQueueService.BatchEntryIdsNotDistinct removes duplicates', async () => {
     vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1, epEvent1]);
     vi.mocked(queue).getEvents.mockReturnValue([epEvent1, epEvent1]);

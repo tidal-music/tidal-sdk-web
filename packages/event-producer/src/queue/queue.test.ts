@@ -65,6 +65,20 @@ describe.sequential('Queue', () => {
     expect(queue.getEvents()).toEqual([]);
   });
 
+  it('initDB: overlapping calls share one worker request and restore once', async () => {
+    db.getItem.mockResolvedValueOnce([epEvent1]);
+    const postMessageSpy = vi.spyOn(queue.worker, 'postMessage');
+
+    const first = queue.initDB();
+    const second = queue.initDB();
+
+    expect(second).toBe(first);
+    await Promise.all([first, second]);
+
+    expect(postMessageSpy).toHaveBeenCalledTimes(1);
+    expect(queue.getEvents()).toEqual([epEvent1]);
+  });
+
   it('initDB: does not leak a worker message listener per call', async () => {
     db.getItem.mockResolvedValue(undefined);
     const addSpy = vi.spyOn(queue.worker, 'addEventListener');

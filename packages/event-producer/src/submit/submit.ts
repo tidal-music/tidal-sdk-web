@@ -98,7 +98,11 @@ const submitBatchLoop = async ({
         }
       });
     queue.removeEvents(idsToRemove);
-    if (queue.getEvents().length > 0) {
+    // Only continue while the batch made progress. A retryable per-entry error
+    // (SenderFault=false) keeps its event at the head of the queue; recursing
+    // on it would hammer the endpoint in a tight loop, so leave it for the
+    // next scheduled run instead.
+    if (idsToRemove.length > 0 && queue.getEvents().length > 0) {
       return submitBatchLoop({ config });
     }
   } else {
