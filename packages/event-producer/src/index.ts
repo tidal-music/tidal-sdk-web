@@ -19,6 +19,13 @@ export {
 export type * from './types.js';
 
 /**
+ * Events handed to sendEvent that have not yet reached the queue (sendEvent
+ * awaits getCredentials() before enqueueing). flush() waits for these so an
+ * event produced right before a flush is included in it.
+ */
+const pendingSends = new Set<Promise<unknown>>();
+
+/**
  * This is the user exposed function that wraps sendEvent with the config and credentialsProvider.
  *
  * @param {SentEvent} event The event to add to the queue
@@ -28,13 +35,17 @@ export const sendEvent = (event: SentEvent) => {
   const config = getConfig();
   const { credentialsProvider } = config;
   if (credentialsProvider) {
-    send
+    const pending = send
       .sendEvent({
         config,
         credentialsProvider,
         event,
       })
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => {
+        pendingSends.delete(pending);
+      });
+    pendingSends.add(pending);
   } else {
     // TODO: Is this the right error to throw?
     throw new IllegalArgumentError('CredentialsProvider not set');
@@ -49,16 +60,24 @@ export const init = (config: Config) => _init(config);
  * Call this before logging out or switching user so the active user's queued
  * events are delivered while their credentials are still available.
  *
- * Resolves when the queue is empty or a batch fails (outage / non-OK response);
- * in the failure case the remaining events stay queued and are retried by the
- * scheduler. Rejects if no credentialsProvider is set or getCredentials() rejects.
+ * Waits for any sendEvent() calls that have not yet reached the queue, then
+ * submits. Resolves when the queue is empty or a batch fails (outage / non-OK
+ * response); in the failure case the remaining events stay queued and are
+ * retried by the scheduler. Rejects if no credentialsProvider is set or
+ * getCredentials() rejects.
  *
  * If a scheduled submit is already running, this awaits that run instead of
  * starting a second one.
  *
  * @returns {Promise<void>}
  */
-export const flush = (): Promise<void> => submitEvents({ config: getConfig() });
+export const flush = async (): Promise<void> => {
+  // Loop: a send that settles may have been queued behind another one.
+  while (pendingSends.size > 0) {
+    await Promise.allSettled(Array.from(pendingSends));
+  }
+  return submitEvents({ config: getConfig() });
+};
 
 export { bus };
 

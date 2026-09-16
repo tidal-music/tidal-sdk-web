@@ -59,8 +59,9 @@ export const initDB = (options?: {
   feralEventTypes: Config['feralEventTypes'];
 }): Promise<void> =>
   new Promise<void>((resolve, reject) => {
-    // The worker replies exactly once per init request, so the listener is
-    // removed after the first message to avoid leaking one per initDB call.
+    // The worker replies exactly once per init request (initSuccess or
+    // initFailed), so the listener is removed after the first message to
+    // avoid leaking one per initDB call.
     const onMessage = (message: WorkerMessages) => {
       const { data } = message;
       switch (data.action) {
@@ -77,6 +78,9 @@ export const initDB = (options?: {
           resolve();
           break;
         }
+        case 'initFailed':
+          reject(new Error('Failed to initialize queue db'));
+          break;
         default:
           console.error('Unknown action:', message);
           reject(new Error('Unknown action'));

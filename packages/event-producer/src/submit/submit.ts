@@ -42,6 +42,7 @@ const submitBatchLoop = async ({
   const timeoutId = setTimeout(() => controller.abort(), 10000);
 
   let res: Response;
+  let respStr: string;
   try {
     res = await fetch(uri, {
       body,
@@ -49,6 +50,9 @@ const submitBatchLoop = async ({
       method: 'post',
       signal: controller.signal,
     });
+    // Reading the body can fail like the request itself (stream error, abort);
+    // treat both as a transport failure and keep the batch queued.
+    respStr = await res.text();
   } catch {
     clearTimeout(timeoutId);
     setOutage(true);
@@ -60,7 +64,6 @@ const submitBatchLoop = async ({
     if (isOutage()) {
       setOutage(false);
     }
-    const respStr = await res.text();
     const xml = new window.DOMParser().parseFromString(respStr, 'text/xml');
     const idsToRemove: Array<string> = [];
     xml
@@ -99,7 +102,6 @@ const submitBatchLoop = async ({
       return submitBatchLoop({ config });
     }
   } else {
-    const respStr = await res.text();
     console.error('Error sending event batch:', respStr);
     setOutage(true);
 

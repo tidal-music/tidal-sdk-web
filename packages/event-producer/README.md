@@ -108,6 +108,7 @@ that is queued while the current credentials are still available:
 import { flush } from '@tidal-music/event-producer';
 
 async function logout() {
+  // Waits for any sendEvent() calls still being prepared, then submits.
   // Best effort: resolves when the queue is empty or a batch fails.
   // Rejects only if no credentialsProvider is set or getCredentials() rejects.
   await flush().catch(console.error);

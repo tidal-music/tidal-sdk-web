@@ -9,12 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `flush()` submits all queued events on demand using the current credentials. Call it before logging out or switching user so the active user's queued events are delivered while their credentials are still available, instead of waiting in the queue until the next login.
+- `flush()` waits for any `sendEvent()` calls still being prepared and then submits all queued events using the current credentials. Call it before logging out or switching user so the active user's queued events are delivered while their credentials are still available, instead of waiting in the queue until the next login.
 
 ### Fixed
 
 - `submitEvents` is now single-flight: a scheduler tick (or `flush()`) that arrives while a submit loop is still draining the queue awaits that loop instead of starting a second one, which could post the same batch twice.
-- `initDB` no longer leaks a worker `message` listener per call.
+- A failure while reading the batch response body is now treated like a network failure (outage, events stay queued) instead of surfacing as a rejection.
+- `initDB` no longer leaks a worker `message` listener per call, and rejects instead of hanging forever if the worker fails to open the database.
 
 ## [2.4.2] - 2026-05-22
 

@@ -55,6 +55,16 @@ describe.sequential('Queue', () => {
     });
   });
 
+  it('initDB: rejects when the worker fails to initialize', async () => {
+    vi.stubGlobal('console', { error: vi.fn() });
+    db.getItem.mockRejectedValueOnce(new Error('idb unavailable'));
+
+    await expect(queue.initDB()).rejects.toThrow(
+      'Failed to initialize queue db',
+    );
+    expect(queue.getEvents()).toEqual([]);
+  });
+
   it('initDB: does not leak a worker message listener per call', async () => {
     db.getItem.mockResolvedValue(undefined);
     const addSpy = vi.spyOn(queue.worker, 'addEventListener');

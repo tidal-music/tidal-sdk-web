@@ -79,6 +79,43 @@ describe('flush', () => {
     });
   });
 
+  it('waits for sendEvent calls that have not reached the queue yet', async () => {
+    vi.mocked(submit.submitEvents).mockResolvedValue(undefined);
+    let resolveSend: () => void = () => {};
+    vi.mocked(send.sendEvent).mockReturnValue(
+      new Promise(resolve => {
+        resolveSend = () => resolve(undefined);
+      }),
+    );
+
+    sendEvent({ consentCategory: 'NECESSARY', name: 'late', payload: {} });
+    let flushed = false;
+    const flushing = flush().then(() => {
+      flushed = true;
+    });
+
+    await Promise.resolve();
+    expect(submit.submitEvents).not.toHaveBeenCalled();
+    expect(flushed).toBe(false);
+
+    resolveSend();
+    await flushing;
+
+    expect(submit.submitEvents).toHaveBeenCalledTimes(1);
+  });
+
+  it('is not blocked by a sendEvent that fails', async () => {
+    vi.stubGlobal('console', { error: vi.fn() });
+    vi.mocked(submit.submitEvents).mockResolvedValue(undefined);
+    vi.mocked(send.sendEvent).mockRejectedValue(new Error('bad event'));
+
+    sendEvent({ consentCategory: 'NECESSARY', name: 'bad', payload: {} });
+    await flush();
+
+    expect(submit.submitEvents).toHaveBeenCalledTimes(1);
+    expect(console.error).toHaveBeenCalledWith(new Error('bad event'));
+  });
+
   it('propagates submit rejections to the caller', async () => {
     const error = new Error('CredentialsProvider not set');
     vi.mocked(submit.submitEvents).mockRejectedValue(error);

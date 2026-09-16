@@ -398,6 +398,23 @@ describe.sequential('submit', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 
+  it('treats a failing response body read as an outage and keeps events queued', async () => {
+    vi.spyOn(outage, 'setOutage');
+    vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        text: vi.fn().mockRejectedValue(new TypeError('body stream error')),
+      }),
+    );
+
+    await expect(submitEvents({ config })).resolves.toBeUndefined();
+
+    expect(outage.setOutage).toHaveBeenCalledWith(true);
+    expect(queue.removeEvents).not.toHaveBeenCalled();
+  });
+
   it('triggers outage on network error and does not remove events', async () => {
     vi.spyOn(outage, 'setOutage');
     vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
