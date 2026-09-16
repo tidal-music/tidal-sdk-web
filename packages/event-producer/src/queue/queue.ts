@@ -65,6 +65,9 @@ export const initDB = (options?: {
     const onMessage = (message: WorkerMessages) => {
       const { data } = message;
       switch (data.action) {
+        case 'initFailed':
+          reject(new Error('Failed to initialize queue db'));
+          break;
         case 'initSuccess': {
           if (data.events) {
             const feralEvents = options?.feralEventTypes ?? [];
@@ -78,9 +81,6 @@ export const initDB = (options?: {
           resolve();
           break;
         }
-        case 'initFailed':
-          reject(new Error('Failed to initialize queue db'));
-          break;
         default:
           console.error('Unknown action:', message);
           reject(new Error('Unknown action'));
