@@ -40,7 +40,7 @@ class EventDemo extends HTMLElement {
             `<span>${name}</span><button role="remove" evId="${id}">Remove</button>`,
         )
         .join('</li><li>')}</li>
-      </ul><button id="submitEvents">Submit queue</button></div>`;
+      </ul><button id="submitEvents">Flush queue</button></div>`;
     if (this.shadowRoot) {
       const sendEventBtn = this.shadowRoot.querySelector('#sendEventBtn');
       const setCredentialsTokenBtn =

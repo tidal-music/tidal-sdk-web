@@ -7,17 +7,15 @@ import * as queue from '../queue/index.js';
 import type { EPEvent } from '../types.js';
 import { eventsToSqsRequestParameters } from '../utils/sqsParamsConverter.js';
 
+type SubmitEventsParams = { config: Config };
+
 /**
- * Takes the first 10 events from the queue and sends them to backend.
- * Successful events are then removed from the queue.
- * Unsuccessful events are kept in the queue for later retry.
- *
- * If the backend service is not available we trigger an outage.
+ * Takes the first 10 events from the queue and sends them to backend, then
+ * recurses until the queue is empty or a batch fails. See submitEvents.
  *
  * @param {SubmitEventsParams} params
  */
-type SubmitEventsParams = { config: Config };
-export const submitEvents = async ({
+const submitBatchLoop = async ({
   config,
 }: SubmitEventsParams): Promise<void> => {
   const eventsBatch = queue.getEventBatch();
@@ -98,7 +96,7 @@ export const submitEvents = async ({
       });
     queue.removeEvents(idsToRemove);
     if (queue.getEvents().length > 0) {
-      return submitEvents({ config });
+      return submitBatchLoop({ config });
     }
   } else {
     const respStr = await res.text();
@@ -131,4 +129,33 @@ export const submitEvents = async ({
     }
   }
   return Promise.resolve();
+};
+
+/**
+ * The currently running submit loop, if any. Makes submitEvents single-flight:
+ * a scheduler tick or a flush() that arrives while a loop is already draining
+ * the queue awaits that loop instead of starting a second one, which would
+ * post the same batch twice.
+ */
+let inFlight: Promise<void> | null = null;
+
+/**
+ * Drains the queue in batches of 10, sending them to backend.
+ * Successful events are removed from the queue.
+ * Unsuccessful events are kept in the queue for later retry.
+ *
+ * If the backend service is not available we trigger an outage.
+ *
+ * Only one submit loop runs at a time; concurrent callers share the same promise.
+ *
+ * @param {SubmitEventsParams} params
+ */
+export const submitEvents = ({ config }: SubmitEventsParams): Promise<void> => {
+  if (inFlight) {
+    return inFlight;
+  }
+  inFlight = submitBatchLoop({ config }).finally(() => {
+    inFlight = null;
+  });
+  return inFlight;
 };

@@ -43,6 +43,23 @@ export const sendEvent = (event: SentEvent) => {
 
 export const init = (config: Config) => _init(config);
 
+/**
+ * Submits all queued events now, batch by batch, using the current credentials.
+ *
+ * Call this before logging out or switching user so the active user's queued
+ * events are delivered while their credentials are still available.
+ *
+ * Resolves when the queue is empty or a batch fails (outage / non-OK response);
+ * in the failure case the remaining events stay queued and are retried by the
+ * scheduler. Rejects if no credentialsProvider is set or getCredentials() rejects.
+ *
+ * If a scheduled submit is already running, this awaits that run instead of
+ * starting a second one.
+ *
+ * @returns {Promise<void>}
+ */
+export const flush = (): Promise<void> => submitEvents({ config: getConfig() });
+
 export { bus };
 
 /* c8 ignore start debug only */
@@ -57,8 +74,7 @@ if (import.meta.env.DEV) {
       });
     },
     dumpConfig: () => getConfig(),
-    flushEvents: () =>
-      submitEvents({ config: getConfig() }).catch(console.error),
+    flushEvents: () => flush().catch(console.error),
     flushMonitoring: monitor.sendMonitoringInfo,
     getEvents: queue.getEvents,
     killQueue: async () => {

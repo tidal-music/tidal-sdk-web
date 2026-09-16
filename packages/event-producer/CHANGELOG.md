@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-09-16
+
+### Added
+
+- `flush()` submits all queued events on demand using the current credentials. Call it before logging out or switching user so the active user's queued events are delivered while their credentials are still available, instead of waiting in the queue until the next login.
+
+### Fixed
+
+- `submitEvents` is now single-flight: a scheduler tick (or `flush()`) that arrives while a submit loop is still draining the queue awaits that loop instead of starting a second one, which could post the same batch twice.
+- `initDB` no longer leaks a worker `message` listener per call.
+
 ## [2.4.2] - 2026-05-22
 
 ### Fixed

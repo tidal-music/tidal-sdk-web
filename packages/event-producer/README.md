@@ -94,3 +94,34 @@ async function main() {
 
 
 ```
+
+### Draining the queue (logout / profile switch)
+
+Queued events are only sent on the scheduler's interval, so events produced right
+before a user logs out can be left in the queue. If the credentials provider then
+throws because nobody is logged in, they stay there until the next login.
+
+Call `flush()` before signing out or switching the active user to submit everything
+that is queued while the current credentials are still available:
+
+```typescript
+import { flush } from '@tidal-music/event-producer';
+
+async function logout() {
+  // Best effort: resolves when the queue is empty or a batch fails.
+  // Rejects only if no credentialsProvider is set or getCredentials() rejects.
+  await flush().catch(console.error);
+  // ...now swap the credentials provider / sign out
+}
+```
+
+Notes:
+
+- Each event carries its own authorization header and user payload from the moment
+  it was produced, and the backend attributes events from that record. Events left
+  over after a failed `flush()` are still attributed to the user who produced them,
+  so it is safe for them to be sent later.
+- A credentials provider that returns client credentials (no user token) when nobody
+  is logged in lets the queue drain through `tlPublicConsumerUri` instead of stalling.
+- `flush()` shares the in-flight submit with the scheduler: if a scheduled submit is
+  already running, `flush()` awaits that run rather than starting a second one.

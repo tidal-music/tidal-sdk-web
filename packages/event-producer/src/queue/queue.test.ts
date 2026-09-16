@@ -55,6 +55,27 @@ describe.sequential('Queue', () => {
     });
   });
 
+  it('initDB: does not leak a worker message listener per call', async () => {
+    db.getItem.mockResolvedValue(undefined);
+    const addSpy = vi.spyOn(queue.worker, 'addEventListener');
+
+    await queue.initDB();
+    await queue.initDB();
+
+    expect(addSpy).toHaveBeenCalledTimes(2);
+    addSpy.mock.calls.forEach(([, , options]) => {
+      expect(options).toEqual({ once: true });
+    });
+    // a later worker message must not reach the listeners from earlier calls
+    const eventsBefore = queue.getEvents();
+    queue.worker.dispatchEvent(
+      new MessageEvent('message', {
+        data: { action: 'initSuccess', events: [epEvent1] },
+      }),
+    );
+    expect(queue.getEvents()).toEqual(eventsBefore);
+  });
+
   it('init: filters out designated event types', async () => {
     db.getItem.mockResolvedValueOnce([epEvent1, epEvent2]);
     await queue.initDB({ feralEventTypes: [epEvent2.name] });

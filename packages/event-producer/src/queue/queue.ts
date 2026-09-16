@@ -59,7 +59,9 @@ export const initDB = (options?: {
   feralEventTypes: Config['feralEventTypes'];
 }): Promise<void> =>
   new Promise<void>((resolve, reject) => {
-    worker.addEventListener('message', (message: WorkerMessages) => {
+    // The worker replies exactly once per init request, so the listener is
+    // removed after the first message to avoid leaking one per initDB call.
+    const onMessage = (message: WorkerMessages) => {
       const { data } = message;
       switch (data.action) {
         case 'initSuccess': {
@@ -79,7 +81,8 @@ export const initDB = (options?: {
           console.error('Unknown action:', message);
           reject(new Error('Unknown action'));
       }
-    });
+    };
+    worker.addEventListener('message', onMessage, { once: true });
 
     worker.postMessage({ action: 'init' });
   });

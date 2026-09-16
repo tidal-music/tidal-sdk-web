@@ -322,6 +322,82 @@ describe.sequential('submit', () => {
     expect(queue.removeEvents).not.toHaveBeenCalled();
   });
 
+  it('is single-flight: concurrent calls share one run and one fetch', async () => {
+    vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
+    let resolveFetch: (value: unknown) => void = () => {};
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockReturnValue(
+        new Promise(resolve => {
+          resolveFetch = resolve;
+        }),
+      ),
+    );
+
+    const first = submitEvents({ config });
+    const second = submitEvents({ config });
+
+    expect(second).toBe(first);
+    await vi.waitFor(() => expect(fetch).toHaveBeenCalledTimes(1));
+
+    resolveFetch({
+      ok: true,
+      text: vi
+        .fn()
+        .mockResolvedValue(
+          `<?xml version="1.0"?><SendMessageBatchResponse><SendMessageBatchResult><SendMessageBatchResultEntry><Id>${epEvent1.id}</Id></SendMessageBatchResultEntry></SendMessageBatchResult></SendMessageBatchResponse>`,
+        ),
+    });
+    await Promise.all([first, second]);
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(queue.removeEvents).toHaveBeenCalledTimes(1);
+  });
+
+  it('is single-flight: a call after the previous run finished starts a new run', async () => {
+    vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        text: vi.fn().mockResolvedValue(''),
+      }),
+    );
+
+    await submitEvents({ config });
+    await submitEvents({ config });
+
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('is single-flight: a rejected run does not block the next one', async () => {
+    vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
+    vi.spyOn(globalThis, 'fetch');
+    const rejectingConfig = {
+      ...config,
+      credentialsProvider: {
+        bus: () => {},
+        getCredentials: vi.fn().mockRejectedValue(new Error('not logged in')),
+      },
+    };
+
+    await expect(submitEvents({ config: rejectingConfig })).rejects.toThrow(
+      'not logged in',
+    );
+    expect(fetch).not.toHaveBeenCalled();
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        text: vi.fn().mockResolvedValue(''),
+      }),
+    );
+    await submitEvents({ config });
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
   it('triggers outage on network error and does not remove events', async () => {
     vi.spyOn(outage, 'setOutage');
     vi.mocked(queue).getEventBatch.mockReturnValue([epEvent1]);
