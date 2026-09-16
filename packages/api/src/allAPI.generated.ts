@@ -10056,53 +10056,7 @@ export interface paths {
             };
         };
         put?: never;
-        /**
-         * Add to collaboratorProfiles relationship ("to-many").
-         * @description Adds item(s) to collaboratorProfiles relationship.
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
-                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                };
-                path: {
-                    /**
-                     * @description Playlist id
-                     * @example 550e8400-e29b-41d4-a716-446655440000
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/vnd.api+json": components["schemas"]["PlaylistsCollaboratorProfilesRelationshipAddOperation_Payload"];
-                };
-            };
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                409: components["responses"]["Idempotency409Response"];
-                415: components["responses"]["Default415Response"];
-                422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
+        post?: never;
         /**
          * Delete from collaboratorProfiles relationship ("to-many").
          * @description Deletes item(s) from collaboratorProfiles relationship.
@@ -24651,14 +24605,6 @@ export interface components {
                 /** @example 409 */
                 status: string;
             }[];
-        };
-        PlaylistsCollaboratorProfilesRelationshipAddOperation_Payload: {
-            data: components["schemas"]["PlaylistsCollaboratorProfilesRelationshipAddOperation_Payload_Data"][];
-        };
-        PlaylistsCollaboratorProfilesRelationshipAddOperation_Payload_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "artists";
         };
         PlaylistsCollaboratorProfilesRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["PlaylistsCollaboratorProfilesRelationshipRemoveOperation_Payload_Data"][];
