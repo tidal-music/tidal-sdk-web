@@ -55,6 +55,51 @@ describe('Queue', { concurrent: false }, () => {
     });
   });
 
+  it('initDB: rejects when the worker fails to initialize', async () => {
+    vi.stubGlobal('console', { error: vi.fn() });
+    db.getItem.mockRejectedValueOnce(new Error('idb unavailable'));
+
+    await expect(queue.initDB()).rejects.toThrow(
+      'Failed to initialize queue db',
+    );
+    expect(queue.getEvents()).toEqual([]);
+  });
+
+  it('initDB: overlapping calls share one worker request and restore once', async () => {
+    db.getItem.mockResolvedValueOnce([epEvent1]);
+    const postMessageSpy = vi.spyOn(queue.worker, 'postMessage');
+
+    const first = queue.initDB();
+    const second = queue.initDB();
+
+    expect(second).toBe(first);
+    await Promise.all([first, second]);
+
+    expect(postMessageSpy).toHaveBeenCalledTimes(1);
+    expect(queue.getEvents()).toEqual([epEvent1]);
+  });
+
+  it('initDB: does not leak a worker message listener per call', async () => {
+    db.getItem.mockResolvedValue(undefined);
+    const addSpy = vi.spyOn(queue.worker, 'addEventListener');
+
+    await queue.initDB();
+    await queue.initDB();
+
+    expect(addSpy).toHaveBeenCalledTimes(2);
+    addSpy.mock.calls.forEach(([, , options]) => {
+      expect(options).toEqual({ once: true });
+    });
+    // a later worker message must not reach the listeners from earlier calls
+    const eventsBefore = queue.getEvents();
+    queue.worker.dispatchEvent(
+      new MessageEvent('message', {
+        data: { action: 'initSuccess', events: [epEvent1] },
+      }),
+    );
+    expect(queue.getEvents()).toEqual(eventsBefore);
+  });
+
   it('init: filters out designated event types', async () => {
     db.getItem.mockResolvedValueOnce([epEvent1, epEvent2]);
     await queue.initDB({ feralEventTypes: [epEvent2.name] });

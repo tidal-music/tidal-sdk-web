@@ -50,18 +50,26 @@ export function setEvents(newEvents: Array<EPEvent>) {
   _events = newEvents;
 }
 
+type InitDBOptions = {
+  feralEventTypes: Config['feralEventTypes'];
+};
+
 /**
- * Inits workers localforage database and loads stored events into memory.
+ * Sends one init request to the worker and settles on its reply.
  *
  * @returns {Promise<void>}
  */
-export const initDB = (options?: {
-  feralEventTypes: Config['feralEventTypes'];
-}): Promise<void> =>
+const requestInit = (options?: InitDBOptions): Promise<void> =>
   new Promise<void>((resolve, reject) => {
-    worker.addEventListener('message', (message: WorkerMessages) => {
+    // The worker replies exactly once per init request (initSuccess or
+    // initFailed), so the listener is removed after the first message to
+    // avoid leaking one per initDB call.
+    const onMessage = (message: WorkerMessages) => {
       const { data } = message;
       switch (data.action) {
+        case 'initFailed':
+          reject(new Error('Failed to initialize queue db'));
+          break;
         case 'initSuccess': {
           if (data.events) {
             const feralEvents = options?.feralEventTypes ?? [];
@@ -79,10 +87,35 @@ export const initDB = (options?: {
           console.error('Unknown action:', message);
           reject(new Error('Unknown action'));
       }
-    });
+    };
+    worker.addEventListener('message', onMessage, { once: true });
 
     worker.postMessage({ action: 'init' });
   });
+
+/**
+ * The init request currently awaiting a worker reply, if any. Replies are not
+ * correlated with requests, so overlapping initDB calls share one request
+ * instead of both consuming the first reply.
+ */
+let initInFlight: Promise<void> | null = null;
+
+/**
+ * Inits workers localforage database and loads stored events into memory.
+ *
+ * Only one init request is in flight at a time; concurrent callers share it.
+ *
+ * @returns {Promise<void>}
+ */
+export const initDB = (options?: InitDBOptions): Promise<void> => {
+  if (initInFlight) {
+    return initInFlight;
+  }
+  initInFlight = requestInit(options).finally(() => {
+    initInFlight = null;
+  });
+  return initInFlight;
+};
 
 /**
  * Persists events in db.

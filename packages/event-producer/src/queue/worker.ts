@@ -50,10 +50,17 @@ self.onmessage = async (message: MessageParams) => {
   const { data } = message;
   switch (data.action) {
     case 'init': {
-      await initDB();
-      const events = await getStoredEvents();
-      // eslint-disable-next-line no-restricted-globals
-      self.postMessage({ action: 'initSuccess', events });
+      try {
+        await initDB();
+        const events = await getStoredEvents();
+        // eslint-disable-next-line no-restricted-globals
+        self.postMessage({ action: 'initSuccess', events });
+      } catch (error) {
+        console.error('Error initializing queue db:', error);
+        // Always reply so the main thread's initDB() settles.
+        // eslint-disable-next-line no-restricted-globals
+        self.postMessage({ action: 'initFailed' });
+      }
       break;
     }
     case 'persist':
