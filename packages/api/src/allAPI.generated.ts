@@ -24,7 +24,7 @@ export interface paths {
                     "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, terms
-                     * @example owners
+                     * @example terms
                      */
                     include?: string[];
                     /** @description Filter by terms.isLatestVersion */
@@ -242,10 +242,7 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -1679,10 +1676,7 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -3683,10 +3677,7 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -3781,10 +3772,7 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -3903,10 +3891,7 @@ export interface paths {
                 query: {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -3996,10 +3981,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -4601,7 +4583,7 @@ export interface paths {
                     sort?: ("createdAt" | "-createdAt" | "likeCount" | "-likeCount" | "replyCount" | "-replyCount" | "startTime" | "-startTime")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles, owners, parentComment
-                     * @example ownerProfiles
+                     * @example parentComment
                      */
                     include?: string[];
                     /** @description Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
@@ -4696,7 +4678,7 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles, owners, parentComment
-                     * @example ownerProfiles
+                     * @example parentComment
                      */
                     include?: string[];
                 };
@@ -5564,10 +5546,7 @@ export interface paths {
                 query: {
                     /** @description Download id (e.g. `VFJBQ0tTOjEyMzQ1`) */
                     "filter[id]": string[];
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -5617,10 +5596,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -11107,7 +11083,7 @@ export interface paths {
                     "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, provider
-                     * @example owners
+                     * @example provider
                      */
                     include?: string[];
                 };
@@ -11714,10 +11690,7 @@ export interface paths {
                     viewerContext?: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles, owners
-                     * @example ownerProfiles
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles, owners */
                     include?: string[];
                     /** @description Filter by emoji (e.g. `👍`) */
                     "filter[emoji]"?: string[];
@@ -13555,10 +13528,7 @@ export interface paths {
                 query: {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -13711,10 +13681,7 @@ export interface paths {
                 query: {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -14097,10 +14064,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -14501,10 +14465,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -14626,10 +14587,7 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -20662,7 +20620,18 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: artist
+                     * @example artist.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
+                };
                 header?: never;
                 path: {
                     /**
@@ -20682,6 +20651,70 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Users_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/relationships/artist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artist relationship ("to-one").
+         * @description Retrieves artist relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: artist
+                     * @example artist.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Users_Artist_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -28849,6 +28882,11 @@ export interface components {
              */
             type: "userSubscriptionPriceChanges";
         };
+        Users_Artist_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Users_Attributes: {
             /**
              * @description ISO 3166-1 alpha-2 country code
@@ -28892,6 +28930,9 @@ export interface components {
              */
             username: string;
         };
+        Users_Relationships: {
+            artist?: components["schemas"]["Users_Artist_Single_Relationship_Data_Document"];
+        };
         Users_Resource_Object: {
             attributes?: components["schemas"]["Users_Attributes"];
             /**
@@ -28899,6 +28940,7 @@ export interface components {
              * @example 12345
              */
             id: string;
+            relationships?: components["schemas"]["Users_Relationships"];
             /**
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
