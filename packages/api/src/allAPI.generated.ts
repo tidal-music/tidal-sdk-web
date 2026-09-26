@@ -24,7 +24,7 @@ export interface paths {
                     "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, terms
-                     * @example owners
+                     * @example terms
                      */
                     include?: string[];
                     /** @description Filter by terms.isLatestVersion */
@@ -242,10 +242,7 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -1679,10 +1676,7 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -3683,10 +3677,7 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -3781,10 +3772,7 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -3903,10 +3891,7 @@ export interface paths {
                 query: {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -3996,10 +3981,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -4601,7 +4583,7 @@ export interface paths {
                     sort?: ("createdAt" | "-createdAt" | "likeCount" | "-likeCount" | "replyCount" | "-replyCount" | "startTime" | "-startTime")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles, owners, parentComment
-                     * @example ownerProfiles
+                     * @example parentComment
                      */
                     include?: string[];
                     /** @description Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
@@ -4696,7 +4678,7 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles, owners, parentComment
-                     * @example ownerProfiles
+                     * @example parentComment
                      */
                     include?: string[];
                 };
@@ -5564,10 +5546,7 @@ export interface paths {
                 query: {
                     /** @description Download id (e.g. `VFJBQ0tTOjEyMzQ1`) */
                     "filter[id]": string[];
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -5617,10 +5596,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -9521,13 +9497,13 @@ export interface paths {
                     /** @description Playlist id (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[playlist.id]": string[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: playlist
-                     * @example playlist.items
+                     * @description Allows the client to customize which related resources should be returned. Available options: baseGeneration, playlist, trackPreferences
+                     * @example baseGeneration.trackPreferences
                      */
                     include?: string[];
                     /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlist.items
-                     * @example playlist.items
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: baseGeneration.trackPreferences
+                     * @example baseGeneration.trackPreferences
                      */
                     replaceMedia?: string;
                 };
@@ -9590,7 +9566,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["Idempotency409Response"];
+                409: components["responses"]["PlaylistGenerationsCreateResource409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -9619,13 +9595,13 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: playlist
-                     * @example playlist.items
+                     * @description Allows the client to customize which related resources should be returned. Available options: baseGeneration, playlist, trackPreferences
+                     * @example baseGeneration.trackPreferences
                      */
                     include?: string[];
                     /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlist.items
-                     * @example playlist.items
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: baseGeneration.trackPreferences
+                     * @example baseGeneration.trackPreferences
                      */
                     replaceMedia?: string;
                 };
@@ -9648,6 +9624,70 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["PlaylistGenerations_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/playlistGenerations/{id}/relationships/baseGeneration": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get baseGeneration relationship ("to-one").
+         * @description Retrieves baseGeneration relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: baseGeneration
+                     * @example baseGeneration.trackPreferences
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: baseGeneration.trackPreferences
+                     * @example baseGeneration.trackPreferences
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Playlist generation id
+                     * @example 10TwTjJ5EVfyMaTFh1evzyxi0cuSjcbzClSQBtDDX4CXQ7GVg
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerations_BaseGeneration_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9730,6 +9770,210 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/playlistGenerations/{id}/relationships/trackPreferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get trackPreferences relationship ("to-many").
+         * @description Retrieves trackPreferences relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: trackPreferences
+                     * @example trackPreferences
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: trackPreferences
+                     * @example trackPreferences
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Playlist generation id
+                     * @example 10TwTjJ5EVfyMaTFh1evzyxi0cuSjcbzClSQBtDDX4CXQ7GVg
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerations_TrackPreferences_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Add to trackPreferences relationship ("to-many").
+         * @description Adds feedback for one track. An existing entry is unchanged, including its preference. Returns the complete preference snapshot. All writes require the current meta.preferenceVersion as meta.expectedPreferenceVersion; stale versions return 409.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Playlist generation id
+                     * @example 10TwTjJ5EVfyMaTFh1evzyxi0cuSjcbzClSQBtDDX4CXQ7GVg
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["PlaylistGenerationsTrackPreferencesRelationshipAddOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerations_TrackPreferences_Add_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["PlaylistGenerationsAddMultiDataRelationshipWithResponse409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        /**
+         * Delete from trackPreferences relationship ("to-many").
+         * @description Removes feedback for one track without removing the track from the playlist. An absent entry is unchanged. Returns an acknowledgement; read the relationship again for its current preference version. Requires the current meta.preferenceVersion as meta.expectedPreferenceVersion; stale versions return 409.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Playlist generation id
+                     * @example 10TwTjJ5EVfyMaTFh1evzyxi0cuSjcbzClSQBtDDX4CXQ7GVg
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["PlaylistGenerationsTrackPreferencesRelationshipRemoveOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["PlaylistGenerationsRemoveMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Update trackPreferences relationship ("to-many").
+         * @description Updates feedback for one existing track preference, leaving other entries unchanged. A missing entry returns 409. Returns the complete preference snapshot. Requires the current meta.preferenceVersion as meta.expectedPreferenceVersion; stale versions return 409.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Playlist generation id
+                     * @example 10TwTjJ5EVfyMaTFh1evzyxi0cuSjcbzClSQBtDDX4CXQ7GVg
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["PlaylistGenerationsTrackPreferencesRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["PlaylistGenerations_TrackPreferences_Update_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["PlaylistGenerationsUpdateMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
         trace?: never;
     };
     "/playlists": {
@@ -10839,7 +11083,7 @@ export interface paths {
                     "filter[owners.id]": string[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, provider
-                     * @example owners
+                     * @example provider
                      */
                     include?: string[];
                 };
@@ -11446,10 +11690,7 @@ export interface paths {
                     viewerContext?: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles, owners
-                     * @example ownerProfiles
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles, owners */
                     include?: string[];
                     /** @description Filter by emoji (e.g. `👍`) */
                     "filter[emoji]"?: string[];
@@ -13287,10 +13528,7 @@ export interface paths {
                 query: {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -13443,10 +13681,7 @@ export interface paths {
                 query: {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -13829,10 +14064,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -14233,10 +14465,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -14358,10 +14587,7 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
-                     * @example owners
-                     */
+                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
                     include?: string[];
                 };
                 header?: never;
@@ -20394,7 +20620,18 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: artist
+                     * @example artist.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
+                };
                 header?: never;
                 path: {
                     /**
@@ -20414,6 +20651,70 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Users_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{id}/relationships/artist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artist relationship ("to-one").
+         * @description Retrieves artist relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: artist
+                     * @example artist.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description User id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Users_Artist_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -24518,6 +24819,19 @@ export interface components {
             data: components["schemas"]["PlaylistGenerationSchedules_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        PlaylistGenerationsAddMultiDataRelationshipWithResponse409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS";
+                /** @example The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying. */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
         PlaylistGenerationsCreateOperation_Payload: {
             data: components["schemas"]["PlaylistGenerationsCreateOperation_Payload_Data"];
         };
@@ -24528,10 +24842,25 @@ export interface components {
             type: "playlistGenerations";
         };
         PlaylistGenerationsCreateOperation_Payload_Data_Attributes: {
+            /**
+             * Format: int32
+             * @description Current track-preference version
+             * @example 3
+             */
+            preferenceVersion?: number;
             prompt: string;
         };
         PlaylistGenerationsCreateOperation_Payload_Data_Relationships: {
+            baseGeneration?: components["schemas"]["PlaylistGenerationsCreateOperation_Payload_Data_Relationships_BaseGeneration"];
             playlist: components["schemas"]["PlaylistGenerationsCreateOperation_Payload_Data_Relationships_Playlist"];
+        };
+        PlaylistGenerationsCreateOperation_Payload_Data_Relationships_BaseGeneration: {
+            data: components["schemas"]["PlaylistGenerationsCreateOperation_Payload_Data_Relationships_BaseGeneration_Data"];
+        };
+        PlaylistGenerationsCreateOperation_Payload_Data_Relationships_BaseGeneration_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "playlistGenerations";
         };
         PlaylistGenerationsCreateOperation_Payload_Data_Relationships_Playlist: {
             data: components["schemas"]["PlaylistGenerationsCreateOperation_Payload_Data_Relationships_Playlist_Data"];
@@ -24541,6 +24870,76 @@ export interface components {
             /** @enum {string} */
             type: "playlists";
         };
+        PlaylistGenerationsCreateResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS";
+                /** @example The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying. */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        PlaylistGenerationsRemoveMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS";
+                /** @example The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying. */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        PlaylistGenerationsTrackPreferencesRelationshipAddOperation_Payload: {
+            data: components["schemas"]["PlaylistGenerationsTrackPreferencesRelationship_Payload_Data"][];
+            meta: components["schemas"]["PlaylistGenerationsTrackPreferencesRelationship_Payload_Meta"];
+        };
+        PlaylistGenerationsTrackPreferencesRelationshipRemoveOperation_Payload: {
+            data: components["schemas"]["PlaylistGenerationsTrackPreferencesRelationshipRemoveOperation_Payload_Data"][];
+            meta: components["schemas"]["PlaylistGenerationsTrackPreferencesRelationship_Payload_Meta"];
+        };
+        PlaylistGenerationsTrackPreferencesRelationshipRemoveOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks";
+        };
+        PlaylistGenerationsTrackPreferencesRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["PlaylistGenerationsTrackPreferencesRelationship_Payload_Data"][];
+            meta: components["schemas"]["PlaylistGenerationsTrackPreferencesRelationship_Payload_Meta"];
+        };
+        PlaylistGenerationsTrackPreferencesRelationship_Payload_Data: {
+            id: string;
+            meta: components["schemas"]["PlaylistGenerationsTrackPreferencesRelationship_Payload_Data_Meta"];
+            /** @enum {string} */
+            type: "tracks";
+        };
+        PlaylistGenerationsTrackPreferencesRelationship_Payload_Data_Meta: {
+            /** @enum {string} */
+            preference: "KEEP" | "REMOVE" | "MORE_LIKE_THIS";
+        };
+        PlaylistGenerationsTrackPreferencesRelationship_Payload_Meta: {
+            /** Format: int32 */
+            expectedPreferenceVersion: number;
+        };
+        PlaylistGenerationsUpdateMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS";
+                /** @example The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying. */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
         PlaylistGenerations_Attributes: {
             /**
              * Format: date-time
@@ -24548,6 +24947,11 @@ export interface components {
              * @example 2026-09-04T09:12:44Z
              */
             lastGeneratedAt?: string;
+            /**
+             * Format: int32
+             * @description Track-preference version snapshotted by this generation
+             */
+            preferenceVersion: number;
             progress: components["schemas"]["PlaylistGenerationProgress"];
             /** @description Prompt used to create the generation; omitted for legacy generations */
             prompt?: string;
@@ -24556,6 +24960,11 @@ export interface components {
              * @enum {string}
              */
             status: "PENDING" | "PROCESSING" | "ERROR" | "OK";
+        };
+        PlaylistGenerations_BaseGeneration_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         PlaylistGenerations_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["PlaylistGenerations_Resource_Object"];
@@ -24572,7 +24981,9 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         PlaylistGenerations_Relationships: {
+            baseGeneration?: components["schemas"]["PlaylistGenerations_BaseGeneration_Single_Relationship_Data_Document"];
             playlist?: components["schemas"]["PlaylistGenerations_Playlist_Single_Relationship_Data_Document"];
+            trackPreferences?: components["schemas"]["PlaylistGenerations_TrackPreferences_Multi_Relationship_Data_Document"];
         };
         PlaylistGenerations_Resource_Object: {
             attributes?: components["schemas"]["PlaylistGenerations_Attributes"];
@@ -24592,6 +25003,72 @@ export interface components {
             data: components["schemas"]["PlaylistGenerations_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        PlaylistGenerations_TrackPreferences_Add_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["PlaylistGenerations_TrackPreferences_Add_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["PlaylistGenerations_TrackPreferences_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        PlaylistGenerations_TrackPreferences_Add_Multi_Relationship_Data_Document_Meta: {
+            /** Format: int32 */
+            preferenceVersion: number;
+        };
+        PlaylistGenerations_TrackPreferences_Add_Resource_Identifier: {
+            id: string;
+            meta?: components["schemas"]["PlaylistGenerations_TrackPreferences_Add_Resource_Identifier_Meta"];
+            /** @enum {string} */
+            type: "tracks";
+        };
+        PlaylistGenerations_TrackPreferences_Add_Resource_Identifier_Meta: {
+            /** @enum {string} */
+            preference: "KEEP" | "REMOVE" | "MORE_LIKE_THIS" | "UNKNOWN";
+        };
+        PlaylistGenerations_TrackPreferences_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["PlaylistGenerations_TrackPreferences_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["PlaylistGenerations_TrackPreferences_Multi_Relationship_Data_Document_Meta"];
+        };
+        PlaylistGenerations_TrackPreferences_Multi_Relationship_Data_Document_Meta: {
+            /** Format: int32 */
+            preferenceVersion: number;
+        };
+        PlaylistGenerations_TrackPreferences_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["PlaylistGenerations_TrackPreferences_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        PlaylistGenerations_TrackPreferences_Resource_Identifier_Meta: {
+            /** @enum {string} */
+            preference: "KEEP" | "REMOVE" | "MORE_LIKE_THIS" | "UNKNOWN";
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        PlaylistGenerations_TrackPreferences_Update_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["PlaylistGenerations_TrackPreferences_Update_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["PlaylistGenerations_TrackPreferences_Update_Multi_Relationship_Data_Document_Meta"];
+        };
+        PlaylistGenerations_TrackPreferences_Update_Multi_Relationship_Data_Document_Meta: {
+            /** Format: int32 */
+            preferenceVersion: number;
+        };
+        PlaylistGenerations_TrackPreferences_Update_Resource_Identifier: {
+            id: string;
+            meta?: components["schemas"]["PlaylistGenerations_TrackPreferences_Update_Resource_Identifier_Meta"];
+            /** @enum {string} */
+            type: "tracks";
+        };
+        PlaylistGenerations_TrackPreferences_Update_Resource_Identifier_Meta: {
+            /** @enum {string} */
+            preference: "KEEP" | "REMOVE" | "MORE_LIKE_THIS" | "UNKNOWN";
         };
         PlaylistsAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
@@ -28405,6 +28882,11 @@ export interface components {
              */
             type: "userSubscriptionPriceChanges";
         };
+        Users_Artist_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Users_Attributes: {
             /**
              * @description ISO 3166-1 alpha-2 country code
@@ -28448,6 +28930,9 @@ export interface components {
              */
             username: string;
         };
+        Users_Relationships: {
+            artist?: components["schemas"]["Users_Artist_Single_Relationship_Data_Document"];
+        };
         Users_Resource_Object: {
             attributes?: components["schemas"]["Users_Attributes"];
             /**
@@ -28455,6 +28940,7 @@ export interface components {
              * @example 12345
              */
             id: string;
+            relationships?: components["schemas"]["Users_Relationships"];
             /**
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
@@ -28850,6 +29336,42 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["PlaylistGenerationSchedulesCreateResource403ResponseBody"];
+            };
+        };
+        /** @description The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key */
+        PlaylistGenerationsAddMultiDataRelationshipWithResponse409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["PlaylistGenerationsAddMultiDataRelationshipWithResponse409ResponseBody"];
+            };
+        };
+        /** @description The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key */
+        PlaylistGenerationsCreateResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["PlaylistGenerationsCreateResource409ResponseBody"];
+            };
+        };
+        /** @description The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key */
+        PlaylistGenerationsRemoveMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["PlaylistGenerationsRemoveMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key */
+        PlaylistGenerationsUpdateMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["PlaylistGenerationsUpdateMultiDataRelationship409ResponseBody"];
             };
         };
         /** @description Playlist already contains one or more requested items; Request already in progress for this idempotency key */
