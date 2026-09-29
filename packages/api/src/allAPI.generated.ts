@@ -4582,12 +4582,17 @@ export interface paths {
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("createdAt" | "-createdAt" | "likeCount" | "-likeCount" | "replyCount" | "-replyCount" | "startTime" | "-startTime")[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles, owners, parentComment
-                     * @example parentComment
+                     * @description Allows the client to customize which related resources should be returned. Available options: author, owners, parentComment
+                     * @example author.albums
                      */
                     include?: string[];
                     /** @description Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[parentComment.id]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
+                     * @example author.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -4677,10 +4682,15 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles, owners, parentComment
-                     * @example parentComment
+                     * @description Allows the client to customize which related resources should be returned. Available options: author, owners, parentComment
+                     * @example author.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
+                     * @example author.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -4809,7 +4819,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/comments/{id}/relationships/ownerProfiles": {
+    "/comments/{id}/relationships/author": {
         parameters: {
             query?: never;
             header?: never;
@@ -4817,19 +4827,22 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get ownerProfiles relationship ("to-many").
-         * @description Retrieves ownerProfiles relationship.
+         * Get author relationship ("to-one").
+         * @description The artist who wrote the comment.
          */
         get: {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles
-                     * @example ownerProfiles
+                     * @description Allows the client to customize which related resources should be returned. Available options: author
+                     * @example author.albums
                      */
                     include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
+                     * @example author.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -4849,7 +4862,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Comments_OwnerProfiles_Multi_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Comments_Author_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -4947,9 +4960,14 @@ export interface paths {
                 query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: parentComment
-                     * @example parentComment
+                     * @example parentComment.author.albums
                      */
                     include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: parentComment.author.albums
+                     * @example parentComment.author.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -10000,8 +10018,8 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts
-                     * @example items
+                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, curators, items, ownerProfiles, owners, suggestedCoverArts
+                     * @example curators.albums
                      */
                     include?: string[];
                     /** @description User id. Use `me` for the authenticated user */
@@ -10011,8 +10029,8 @@ export interface paths {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
                     /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
-                     * @example items
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: curators.albums
+                     * @example curators.albums
                      */
                     replaceMedia?: string;
                 };
@@ -10109,13 +10127,13 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, items, ownerProfiles, owners, suggestedCoverArts
-                     * @example items
+                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, curators, items, ownerProfiles, owners, suggestedCoverArts
+                     * @example curators.albums
                      */
                     include?: string[];
                     /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
-                     * @example items
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: curators.albums
+                     * @example curators.albums
                      */
                     replaceMedia?: string;
                 };
@@ -10255,7 +10273,8 @@ export interface paths {
         };
         /**
          * Get collaboratorProfiles relationship ("to-many").
-         * @description Retrieves collaboratorProfiles relationship.
+         * @deprecated
+         * @description Deprecated. Use curators for attribution.
          */
         get: {
             parameters: {
@@ -10303,6 +10322,7 @@ export interface paths {
         post?: never;
         /**
          * Delete from collaboratorProfiles relationship ("to-many").
+         * @deprecated
          * @description Deletes item(s) from collaboratorProfiles relationship.
          */
         delete: {
@@ -10524,6 +10544,72 @@ export interface paths {
                 503: components["responses"]["Default503Response"];
             };
         };
+        trace?: never;
+    };
+    "/playlists/{id}/relationships/curators": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get curators relationship ("to-many").
+         * @description Artist profiles credited for the playlist
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: curators
+                     * @example curators.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: curators.albums
+                     * @example curators.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Playlist id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Playlists_Curators_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/playlists/{id}/relationships/items": {
@@ -10748,7 +10834,8 @@ export interface paths {
         };
         /**
          * Get ownerProfiles relationship ("to-many").
-         * @description Retrieves ownerProfiles relationship.
+         * @deprecated
+         * @description Deprecated. Use curators for attribution.
          */
         get: {
             parameters: {
@@ -11690,10 +11777,18 @@ export interface paths {
                     viewerContext?: string;
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /** @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles, owners */
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: author, ownerProfiles, owners
+                     * @example author.albums
+                     */
                     include?: string[];
                     /** @description Filter by emoji (e.g. `👍`) */
                     "filter[emoji]"?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
+                     * @example author.albums
+                     */
+                    replaceMedia?: string;
                 };
                 header?: never;
                 path?: never;
@@ -11826,6 +11921,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/reactions/{id}/relationships/author": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get author relationship ("to-one").
+         * @description The artist who left the reaction.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Allows the client to customize which related resources should be returned. Available options: author
+                     * @example author.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
+                     * @example author.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Reaction Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Reactions_Author_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/reactions/{id}/relationships/ownerProfiles": {
         parameters: {
             query?: never;
@@ -11835,7 +11994,8 @@ export interface paths {
         };
         /**
          * Get ownerProfiles relationship ("to-many").
-         * @description Retrieves ownerProfiles relationship.
+         * @deprecated
+         * @description Deprecated. Use author for attribution.
          */
         get: {
             parameters: {
@@ -23060,17 +23220,17 @@ export interface components {
              */
             startTime?: string;
         };
+        Comments_Author_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Comments_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["Comments_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         Comments_Multi_Resource_Data_Document: {
             data: components["schemas"]["Comments_Resource_Object"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
-        };
-        Comments_OwnerProfiles_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -23085,7 +23245,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Comments_Relationships: {
-            ownerProfiles?: components["schemas"]["Comments_OwnerProfiles_Multi_Relationship_Data_Document"];
+            author?: components["schemas"]["Comments_Author_Single_Relationship_Data_Document"];
             owners?: components["schemas"]["Comments_Owners_Multi_Relationship_Data_Document"];
             parentComment?: components["schemas"]["Comments_ParentComment_Single_Relationship_Data_Document"];
         };
@@ -25275,6 +25435,11 @@ export interface components {
             data: components["schemas"]["Playlists_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        Playlists_Curators_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Playlists_Items_Add_Multi_Relationship_Data_Document: {
             data: components["schemas"]["Playlists_Items_Add_Resource_Identifier"][];
             links: components["schemas"]["Links"];
@@ -25335,10 +25500,13 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Playlists_Relationships: {
+            /** @deprecated */
             collaboratorProfiles?: components["schemas"]["Playlists_CollaboratorProfiles_Multi_Relationship_Data_Document"];
             collaborators?: components["schemas"]["Playlists_Collaborators_Multi_Relationship_Data_Document"];
             coverArt?: components["schemas"]["Playlists_CoverArt_Multi_Relationship_Data_Document"];
+            curators?: components["schemas"]["Playlists_Curators_Multi_Relationship_Data_Document"];
             items?: components["schemas"]["Playlists_Items_Multi_Relationship_Data_Document"];
+            /** @deprecated */
             ownerProfiles?: components["schemas"]["Playlists_OwnerProfiles_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Playlists_Owners_Multi_Relationship_Data_Document"];
             suggestedCoverArts?: components["schemas"]["Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document"];
@@ -25686,6 +25854,11 @@ export interface components {
             /** @description The type of reaction representing an emoji */
             emoji: string;
         };
+        Reactions_Author_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Reactions_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["Reactions_Resource_Object"];
             links: components["schemas"]["Links"];
@@ -25712,6 +25885,8 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         Reactions_Relationships: {
+            author?: components["schemas"]["Reactions_Author_Single_Relationship_Data_Document"];
+            /** @deprecated */
             ownerProfiles?: components["schemas"]["Reactions_OwnerProfiles_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Reactions_Owners_Multi_Relationship_Data_Document"];
         };
