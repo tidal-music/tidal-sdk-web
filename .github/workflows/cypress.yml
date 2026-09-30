@@ -57,15 +57,16 @@ jobs:
         uses: cypress-io/github-action@01e3b659a495b41649cdd0aa82e1d1624e26520b # v7.4.4
         env:
           CYPRESS_TEST_USER: ${{ steps.json.outputs.encoded }}
-          # wait-on uses Node's https stack and would otherwise reject the
-          # locally-generated cert; Chromium itself ignores cert errors via
-          # cypress.config.js.
-          NODE_TLS_REJECT_UNAUTHORIZED: '0'
         with:
           install: false
           browser: chrome
           start: pnpm --dir packages/player/ dev
-          wait-on: 'https://dev.tidal.com:5173/demo/test-case-1.html'
+          # A URL is pinged by the action with got 16, which sets
+          # rejectUnauthorized and ignores NODE_TLS_REJECT_UNAUTHORIZED, so
+          # the mkcert dev server never looks ready. A non-URL is executed
+          # as a command. curl -k accepts that cert; Chromium does the same
+          # via --ignore-certificate-errors in cypress.config.js.
+          wait-on: 'curl --retry 90 --retry-delay 1 --retry-all-errors --retry-connrefused -fsSko /dev/null https://dev.tidal.com:5173/demo/test-case-1.html'
           command: pnpm --dir packages/player/ internal:cypress:run
       - name: Save Cypress binary cache
         if: always()
