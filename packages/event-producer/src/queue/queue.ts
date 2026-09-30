@@ -10,6 +10,12 @@ export const worker = new QueueWebWorker();
 
 type WorkerMessages = MessageEvent<
   | {
+      action: 'clearFailed';
+    }
+  | {
+      action: 'clearSuccess';
+    }
+  | {
       action: 'init';
       events: Array<EPEvent>;
     }
@@ -50,6 +56,33 @@ export function setEvents(newEvents: Array<EPEvent>) {
   _events = newEvents;
 }
 
+type WorkerReply = WorkerMessages['data'];
+
+/**
+ * Posts a request to the worker and resolves with the first reply whose
+ * action is one of `replyActions`. Replies for other requests (e.g. a clear
+ * reply while an init is pending) are ignored by this listener. The listener
+ * is removed once a matching reply arrives, so nothing leaks per request.
+ *
+ * @returns {Promise<WorkerReply>}
+ */
+const requestFromWorker = (
+  request: { action: 'clear' | 'init' },
+  replyActions: Array<WorkerReply['action']>,
+): Promise<WorkerReply> =>
+  new Promise<WorkerReply>(resolve => {
+    const onMessage = (message: WorkerMessages) => {
+      if (!replyActions.includes(message.data.action)) {
+        return;
+      }
+      worker.removeEventListener('message', onMessage);
+      resolve(message.data);
+    };
+    worker.addEventListener('message', onMessage);
+
+    worker.postMessage(request);
+  });
+
 type InitDBOptions = {
   feralEventTypes: Config['feralEventTypes'];
 };
@@ -59,39 +92,24 @@ type InitDBOptions = {
  *
  * @returns {Promise<void>}
  */
-const requestInit = (options?: InitDBOptions): Promise<void> =>
-  new Promise<void>((resolve, reject) => {
-    // The worker replies exactly once per init request (initSuccess or
-    // initFailed), so the listener is removed after the first message to
-    // avoid leaking one per initDB call.
-    const onMessage = (message: WorkerMessages) => {
-      const { data } = message;
-      switch (data.action) {
-        case 'initFailed':
-          reject(new Error('Failed to initialize queue db'));
-          break;
-        case 'initSuccess': {
-          if (data.events) {
-            const feralEvents = options?.feralEventTypes ?? [];
-            // remove events in the wild that might be jamming the queue
-            const events =
-              feralEvents.length > 0
-                ? data.events.filter(event => !feralEvents.includes(event.name))
-                : data.events;
-            setEvents(getEvents().concat(events));
-          }
-          resolve();
-          break;
-        }
-        default:
-          console.error('Unknown action:', message);
-          reject(new Error('Unknown action'));
-      }
-    };
-    worker.addEventListener('message', onMessage, { once: true });
-
-    worker.postMessage({ action: 'init' });
-  });
+const requestInit = async (options?: InitDBOptions): Promise<void> => {
+  const reply = await requestFromWorker({ action: 'init' }, [
+    'initSuccess',
+    'initFailed',
+  ]);
+  if (reply.action !== 'initSuccess') {
+    throw new Error('Failed to initialize queue db');
+  }
+  if (reply.events) {
+    const feralEvents = options?.feralEventTypes ?? [];
+    // remove events in the wild that might be jamming the queue
+    const events =
+      feralEvents.length > 0
+        ? reply.events.filter(event => !feralEvents.includes(event.name))
+        : reply.events;
+    setEvents(getEvents().concat(events));
+  }
+};
 
 /**
  * The init request currently awaiting a worker reply, if any. Replies are not
@@ -115,6 +133,42 @@ export const initDB = (options?: InitDBOptions): Promise<void> => {
     initInFlight = null;
   });
   return initInFlight;
+};
+
+/**
+ * The clear request currently awaiting a worker reply, if any.
+ */
+let clearInFlight: Promise<number> | null = null;
+
+/**
+ * Drops all queued events from memory and from the db.
+ *
+ * Resolves with the number of events dropped once the worker has confirmed the
+ * db is cleared. Rejects if the db could not be cleared (memory is still
+ * emptied in that case). Concurrent callers share one request.
+ *
+ * @returns {Promise<number>}
+ */
+export const clearEvents = (): Promise<number> => {
+  if (clearInFlight) {
+    return clearInFlight;
+  }
+  const dropped = _events.length;
+  _events = [];
+  clearInFlight = requestFromWorker({ action: 'clear' }, [
+    'clearSuccess',
+    'clearFailed',
+  ])
+    .then(reply => {
+      if (reply.action !== 'clearSuccess') {
+        throw new Error('Failed to clear queue db');
+      }
+      return dropped;
+    })
+    .finally(() => {
+      clearInFlight = null;
+    });
+  return clearInFlight;
 };
 
 /**

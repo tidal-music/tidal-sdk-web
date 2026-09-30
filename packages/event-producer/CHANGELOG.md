@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2026-09-30
+
+### Added
+
+- `flush({ discardUnsent: true })` submits what it can and then drops whatever is still queued from memory and IndexedDB, resolving once the store is confirmed empty. Only for cases where the outgoing user's data must not remain on the device, i.e. signing out on a shared or untrusted device; on a personal device prefer a plain `flush()`. `flush()` now resolves with `{ discarded: number }` so callers can see how many events were lost; without the option this is always `0`.
+
+### Fixed
+
+- Worker replies are now matched to the request that is waiting for them, so an `init` and a `clear` in flight at the same time cannot consume each other's reply.
+
 ## [2.5.0] - 2026-09-16
 
 ### Added

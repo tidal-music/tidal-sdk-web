@@ -82,14 +82,13 @@ describe('Queue', { concurrent: false }, () => {
   it('initDB: does not leak a worker message listener per call', async () => {
     db.getItem.mockResolvedValue(undefined);
     const addSpy = vi.spyOn(queue.worker, 'addEventListener');
+    const removeSpy = vi.spyOn(queue.worker, 'removeEventListener');
 
     await queue.initDB();
     await queue.initDB();
 
     expect(addSpy).toHaveBeenCalledTimes(2);
-    addSpy.mock.calls.forEach(([, , options]) => {
-      expect(options).toEqual({ once: true });
-    });
+    expect(removeSpy).toHaveBeenCalledTimes(2);
     // a later worker message must not reach the listeners from earlier calls
     const eventsBefore = queue.getEvents();
     queue.worker.dispatchEvent(
@@ -98,6 +97,73 @@ describe('Queue', { concurrent: false }, () => {
       }),
     );
     expect(queue.getEvents()).toEqual(eventsBefore);
+  });
+
+  it('initDB: ignores replies meant for other requests', async () => {
+    db.getItem.mockResolvedValue(undefined);
+    const removeSpy = vi.spyOn(queue.worker, 'removeEventListener');
+
+    const initializing = queue.initDB();
+    // a clear reply arriving while init is pending must not settle init
+    queue.worker.dispatchEvent(
+      new MessageEvent('message', { data: { action: 'clearSuccess' } }),
+    );
+    expect(removeSpy).not.toHaveBeenCalled();
+
+    await expect(initializing).resolves.toBeUndefined();
+    expect(removeSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('clearEvents: empties memory immediately and the db once the worker confirms', async () => {
+    db.getItem.mockResolvedValueOnce([epEvent1, epEvent2]);
+    await queue.initDB();
+    expect(queue.getEvents()).toEqual([epEvent1, epEvent2]);
+
+    const clearing = queue.clearEvents();
+    expect(queue.getEvents()).toEqual([]);
+
+    await expect(clearing).resolves.toBe(2);
+    expect(db.removeItem).toHaveBeenCalledWith('events');
+  });
+
+  it('clearEvents: rejects when the db could not be cleared, memory is still emptied', async () => {
+    vi.stubGlobal('console', { error: vi.fn() });
+    db.getItem.mockResolvedValueOnce([epEvent1]);
+    db.removeItem.mockRejectedValueOnce(new Error('idb unavailable'));
+    await queue.initDB();
+
+    await expect(queue.clearEvents()).rejects.toThrow(
+      'Failed to clear queue db',
+    );
+    expect(queue.getEvents()).toEqual([]);
+  });
+
+  it('clearEvents: overlapping calls share one worker request', async () => {
+    db.getItem.mockResolvedValueOnce([epEvent1]);
+    await queue.initDB();
+    const postMessageSpy = vi.spyOn(queue.worker, 'postMessage');
+
+    const first = queue.clearEvents();
+    const second = queue.clearEvents();
+
+    expect(second).toBe(first);
+    await expect(Promise.all([first, second])).resolves.toEqual([1, 1]);
+    expect(postMessageSpy).toHaveBeenCalledTimes(1);
+    expect(postMessageSpy).toHaveBeenCalledWith({ action: 'clear' });
+  });
+
+  it('clearEvents: a persist issued before the clear cannot resurrect events', async () => {
+    db.getItem.mockResolvedValueOnce(undefined);
+    await queue.initDB();
+    queue.addEvent(epEvent1); // posts 'persist' [epEvent1]
+
+    await queue.clearEvents(); // posts 'clear'
+
+    const [setItemOrder] = db.setItem.mock.invocationCallOrder;
+    const [removeItemOrder] = db.removeItem.mock.invocationCallOrder;
+    expect(setItemOrder).toBeDefined();
+    expect(removeItemOrder).toBeDefined();
+    expect(setItemOrder ?? 0).toBeLessThan(removeItemOrder ?? 0);
   });
 
   it('init: filters out designated event types', async () => {
