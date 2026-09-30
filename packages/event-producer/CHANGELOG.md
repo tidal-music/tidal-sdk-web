@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `flush({ discardUnsent: true })` submits what it can and then drops whatever is still queued from memory and IndexedDB, resolving once the store is confirmed empty. Only for cases where the outgoing user's data must not remain on the device, such as signing out on a shared or untrusted device or switching to another user's profile; on a personal device prefer a plain `flush()`. `flush()` now resolves with `{ discarded: number }` so callers can see how many events were lost; without the option this is always `0`.
+- `flush({ discardUnsent: true })` submits what it can and then drops whatever is still queued from memory and IndexedDB, resolving once the store is confirmed empty. Only for cases where the outgoing user's data must not remain on the device, i.e. signing out on a shared or untrusted device; on a personal device prefer a plain `flush()`. `flush()` now resolves with `{ discarded: number }` so callers can see how many events were lost; without the option this is always `0`.
 
 ### Fixed
 

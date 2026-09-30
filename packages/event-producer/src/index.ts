@@ -62,9 +62,9 @@ export type FlushOptions = {
    *
    * Discarded events are lost for good, including playback events that count
    * towards the user's listening history. Only set this when the outgoing
-   * user's data must not remain on the device: signing out on a shared,
-   * public or otherwise untrusted device, or switching to a different user's
-   * profile. On a personal device prefer a plain flush(); leftover events are
+   * user's data must not remain on the device, i.e. signing out on a shared,
+   * public or otherwise untrusted device. On a personal device prefer a
+   * plain flush(); leftover events are
    * delivered on a later run and stay attributed to the user who produced
    * them. Never call this on a schedule, at startup, on token refresh or as a
    * general clean-up.
