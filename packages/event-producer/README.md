@@ -126,3 +126,21 @@ Notes:
   is logged in lets the queue drain through `tlPublicConsumerUri` instead of stalling.
 - `flush()` shares the in-flight submit with the scheduler: if a scheduled submit is
   already running, `flush()` awaits that run rather than starting a second one.
+
+#### Leaving nothing behind
+
+If the requirement is that no data from the outgoing user remains on the device,
+pass `{ discardUnsent: true }`. `flush()` still submits everything it can first;
+whatever is left after that (for example because the network is down or nobody is
+logged in any more) is dropped from memory and from IndexedDB, and the promise
+resolves once the store is confirmed empty.
+
+```typescript
+const { discarded } = await flush({ discardUnsent: true });
+if (discarded > 0) {
+  console.warn(`${discarded} events could not be delivered and were discarded`);
+}
+```
+
+Discarded events are lost, including playback events. Only use this option at
+logout / user switch, never on a schedule or at startup.

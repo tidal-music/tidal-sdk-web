@@ -1,4 +1,4 @@
-import { init } from '../../src/index.js';
+import { flush, init } from '../../src/index.js';
 import type { EPEvent } from '../../src/index.js';
 import { sendEvent } from '../../src/send/send.js';
 import { config as configFixture } from '../fixtures/config.js';
@@ -40,7 +40,7 @@ class EventDemo extends HTMLElement {
             `<span>${name}</span><button role="remove" evId="${id}">Remove</button>`,
         )
         .join('</li><li>')}</li>
-      </ul><button id="submitEvents">Flush queue</button></div>`;
+      </ul><button id="submitEvents">Flush queue</button> <button id="discardEvents">Flush and discard unsent</button></div>`;
     if (this.shadowRoot) {
       const sendEventBtn = this.shadowRoot.querySelector('#sendEventBtn');
       const setCredentialsTokenBtn =
@@ -55,11 +55,13 @@ class EventDemo extends HTMLElement {
         this.shadowRoot.querySelector<HTMLInputElement>('#credentialsTokenInp');
       const inp = this.shadowRoot.querySelector<HTMLInputElement>('#inp');
       const submitEventsBtn = this.shadowRoot.querySelector('#submitEvents');
+      const discardEventsBtn = this.shadowRoot.querySelector('#discardEvents');
       const removeBtns = this.shadowRoot.querySelectorAll('[role="remove"]');
       if (
         sendEventBtn &&
         inp &&
         submitEventsBtn &&
+        discardEventsBtn &&
         setCredentialsTokenBtn &&
         deleteCredentialsTokenBtn &&
         credentialsTokenInp
@@ -91,6 +93,11 @@ class EventDemo extends HTMLElement {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
           globalThis.__tepDebug.flushEvents,
         );
+        discardEventsBtn.addEventListener('click', () => {
+          flush({ discardUnsent: true })
+            .then(({ discarded }) => console.warn('discarded', discarded))
+            .catch(console.error);
+        });
         removeBtns.forEach(delEl => {
           delEl.addEventListener('click', noop);
         });

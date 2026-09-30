@@ -37,6 +37,9 @@ export const initDB = async (): Promise<void> => {
 
 type MessageParams = MessageEvent<
   | {
+      action: 'clear';
+    }
+  | {
       action: 'init';
     }
   | {
@@ -49,6 +52,20 @@ type MessageParams = MessageEvent<
 self.onmessage = async (message: MessageParams) => {
   const { data } = message;
   switch (data.action) {
+    case 'clear': {
+      try {
+        await initDB();
+        await db.removeItem('events');
+        // eslint-disable-next-line no-restricted-globals
+        self.postMessage({ action: 'clearSuccess' });
+      } catch (error) {
+        console.error('Error clearing queue db:', error);
+        // Always reply so the main thread's clearEvents() settles.
+        // eslint-disable-next-line no-restricted-globals
+        self.postMessage({ action: 'clearFailed' });
+      }
+      break;
+    }
     case 'init': {
       try {
         await initDB();

@@ -3,6 +3,8 @@ import '@vitest/web-worker';
 import { config } from '../test/fixtures/config.js';
 
 import * as configModule from './config.js';
+import * as monitor from './monitor/index.js';
+import * as queue from './queue/queue.js';
 import * as send from './send/send.js';
 import * as submit from './submit/submit.js';
 
@@ -10,6 +12,8 @@ import { flush, sendEvent } from './index.js';
 
 vi.mock('./submit/submit');
 vi.mock('./send/send');
+vi.mock('./queue/queue');
+vi.mock('./monitor/index');
 
 describe('sendEvent', () => {
   const event = {
@@ -58,10 +62,11 @@ describe('flush', () => {
   it('submits the queue with the current config and resolves when done', async () => {
     vi.mocked(submit.submitEvents).mockResolvedValue(undefined);
 
-    await expect(flush()).resolves.toBeUndefined();
+    await expect(flush()).resolves.toEqual({ discarded: 0 });
 
     expect(submit.submitEvents).toHaveBeenCalledTimes(1);
     expect(submit.submitEvents).toHaveBeenCalledWith({ config });
+    expect(queue.clearEvents).not.toHaveBeenCalled();
   });
 
   it('uses the config as it is at call time', async () => {
@@ -121,5 +126,84 @@ describe('flush', () => {
     vi.mocked(submit.submitEvents).mockRejectedValue(error);
 
     await expect(flush()).rejects.toBe(error);
+    expect(queue.clearEvents).not.toHaveBeenCalled();
+  });
+});
+
+describe('flush({ discardUnsent: true })', () => {
+  beforeEach(() => {
+    configModule.init(config);
+    vi.stubGlobal('console', { error: vi.fn() });
+  });
+
+  afterEach(() => {
+    vi.resetAllMocks();
+  });
+
+  it('submits first, then discards whatever is left and reports the count', async () => {
+    const order: Array<string> = [];
+    vi.mocked(submit.submitEvents).mockImplementation(async () => {
+      order.push('submit');
+    });
+    vi.mocked(queue.clearEvents).mockImplementation(async () => {
+      order.push('clear');
+      return 3;
+    });
+
+    await expect(flush({ discardUnsent: true })).resolves.toEqual({
+      discarded: 3,
+    });
+
+    expect(order).toEqual(['submit', 'clear']);
+    expect(submit.submitEvents).toHaveBeenCalledWith({ config });
+    expect(monitor.resetMonitoringState).toHaveBeenCalledTimes(1);
+  });
+
+  it('still discards when submission fails (e.g. nobody is logged in)', async () => {
+    const error = new Error('not logged in');
+    vi.mocked(submit.submitEvents).mockRejectedValue(error);
+    vi.mocked(queue.clearEvents).mockResolvedValue(5);
+
+    await expect(flush({ discardUnsent: true })).resolves.toEqual({
+      discarded: 5,
+    });
+
+    expect(queue.clearEvents).toHaveBeenCalledTimes(1);
+    expect(console.error).toHaveBeenCalledWith(
+      'flush: could not submit queued events:',
+      error,
+    );
+  });
+
+  it('waits for in-progress sendEvent calls before submitting and discarding', async () => {
+    vi.mocked(submit.submitEvents).mockResolvedValue(undefined);
+    vi.mocked(queue.clearEvents).mockResolvedValue(0);
+    let resolveSend: () => void = () => {};
+    vi.mocked(send.sendEvent).mockReturnValue(
+      new Promise(resolve => {
+        resolveSend = () => resolve(undefined);
+      }),
+    );
+
+    sendEvent({ consentCategory: 'NECESSARY', name: 'late', payload: {} });
+    const flushing = flush({ discardUnsent: true });
+
+    await Promise.resolve();
+    expect(submit.submitEvents).not.toHaveBeenCalled();
+    expect(queue.clearEvents).not.toHaveBeenCalled();
+
+    resolveSend();
+    await flushing;
+
+    expect(submit.submitEvents).toHaveBeenCalledTimes(1);
+    expect(queue.clearEvents).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects if the persisted queue could not be cleared', async () => {
+    vi.mocked(submit.submitEvents).mockResolvedValue(undefined);
+    const error = new Error('Failed to clear queue db');
+    vi.mocked(queue.clearEvents).mockRejectedValue(error);
+
+    await expect(flush({ discardUnsent: true })).rejects.toBe(error);
   });
 });

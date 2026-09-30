@@ -54,6 +54,25 @@ export const sendEvent = (event: SentEvent) => {
 
 export const init = (config: Config) => _init(config);
 
+export type FlushOptions = {
+  /**
+   * After submitting what can be submitted, discard whatever is still queued,
+   * from memory and from IndexedDB, so nothing is left behind for the next
+   * user. Discarded events are lost, including playback events. Only use this
+   * at logout / user switch.
+   *
+   * With this option set, flush() does not reject when submission fails
+   * (e.g. no user is logged in any more); the unsent events are discarded and
+   * reported in the result instead.
+   */
+  discardUnsent?: boolean;
+};
+
+export type FlushResult = {
+  /** Number of queued events that could not be submitted and were discarded. */
+  discarded: number;
+};
+
 /**
  * Submits all queued events now, batch by batch, using the current credentials.
  *
@@ -66,17 +85,37 @@ export const init = (config: Config) => _init(config);
  * retried by the scheduler. Rejects if no credentialsProvider is set or
  * getCredentials() rejects.
  *
+ * With `{ discardUnsent: true }` whatever is still queued after the submit
+ * attempt is dropped from memory and IndexedDB, and the promise resolves once
+ * the store is confirmed empty. See FlushOptions.
+ *
  * If a scheduled submit is already running, this awaits that run instead of
  * starting a second one.
  *
- * @returns {Promise<void>}
+ * @param {FlushOptions} [options]
+ * @returns {Promise<FlushResult>}
  */
-export const flush = async (): Promise<void> => {
+export const flush = async (options?: FlushOptions): Promise<FlushResult> => {
   // Loop: a send that settles may have been queued behind another one.
   while (pendingSends.size > 0) {
     await Promise.allSettled(Array.from(pendingSends));
   }
-  return submitEvents({ config: getConfig() });
+
+  if (!options?.discardUnsent) {
+    await submitEvents({ config: getConfig() });
+    return { discarded: 0 };
+  }
+
+  try {
+    await submitEvents({ config: getConfig() });
+  } catch (error) {
+    // Typically "nobody is logged in any more". The caller asked for nothing
+    // to be left behind, so fall through to the discard instead of rejecting.
+    console.error('flush: could not submit queued events:', error);
+  }
+  const discarded = await queue.clearEvents();
+  monitor.resetMonitoringState();
+  return { discarded };
 };
 
 export { bus };
@@ -96,10 +135,7 @@ if (import.meta.env.DEV) {
     flushEvents: () => flush().catch(console.error),
     flushMonitoring: monitor.sendMonitoringInfo,
     getEvents: queue.getEvents,
-    killQueue: async () => {
-      queue.setEvents([]);
-      queue.persistEvents();
-    },
+    killQueue: () => flush({ discardUnsent: true }).catch(console.error),
     setOutage: outage.setOutage,
   };
 }
