@@ -20,8 +20,8 @@ export interface paths {
                 query: {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
-                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES (e.g. `DEVELOPER`) */
-                    "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES")[];
+                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES, TIDAL_CONNECT_DEVELOPER (e.g. `DEVELOPER`) */
+                    "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: owners, terms
                      * @example terms
@@ -4572,11 +4572,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    /** @description Filter by subject resource ID (e.g. `12345`) */
-                    "filter[subject.id]": string[];
-                    /** @description Filter by subject resource type (e.g. `albums`) */
-                    "filter[subject.type]": ("albums" | "tracks" | "trackSourceFiles")[];
+                query?: {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
@@ -4588,6 +4584,18 @@ export interface paths {
                     include?: string[];
                     /** @description Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[parentComment.id]"?: string[];
+                    /** @description The subject whose comments to return. Use either subject or the deprecated subject.id and subject.type pair. */
+                    "filter[subject]"?: string;
+                    /**
+                     * @deprecated
+                     * @description Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)
+                     */
+                    "filter[subject.id]"?: string[];
+                    /**
+                     * @deprecated
+                     * @description Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)
+                     */
+                    "filter[subject.type]"?: ("albums" | "tracks" | "trackSourceFiles")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
                      * @example author.albums
@@ -5730,16 +5738,24 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    /** @description The id of the subject resource */
-                    "filter[subject.id]": string[];
-                    /** @description The type of the subject resource (e.g., albums, tracks, artists) (e.g. `tracks`) */
-                    "filter[subject.type]": ("tracks" | "albums" | "artists")[];
+                query?: {
                     /**
                      * @description Allows the client to customize which related resources should be returned. Available options: subject
                      * @example subject
                      */
                     include?: string[];
+                    /** @description The subject whose DSP sharing links to return. Use either subject or the deprecated subject.id and subject.type pair. */
+                    "filter[subject]"?: string;
+                    /**
+                     * @deprecated
+                     * @description Deprecated: use filter[subject]. The id of the subject resource
+                     */
+                    "filter[subject.id]"?: string[];
+                    /**
+                     * @deprecated
+                     * @description Deprecated: use filter[subject]. The type of the subject resource (e.g. `tracks`)
+                     */
+                    "filter[subject.type]"?: ("tracks" | "albums" | "artists")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
                      * @example subject
@@ -6253,7 +6269,12 @@ export interface paths {
                      * @example modules.items
                      */
                     include?: string[];
-                    /** @description The subject resource ID. Required except for HOME_FREE, where it must be omitted. (e.g. `67890`) */
+                    /** @description The page subject. Its type must match pageType. Required unless subject.id is supplied; both must be omitted for HOME_FREE. Do not combine with subject.id. */
+                    "filter[subject]"?: string;
+                    /**
+                     * @deprecated
+                     * @description Deprecated alternative to filter[subject]. Omit when subject is supplied or pageType is HOME_FREE. (e.g. `67890`)
+                     */
                     "filter[subject.id]"?: string[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: modules.items
@@ -11767,11 +11788,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    /** @description Filter by subject resource ID (e.g. `12345`) */
-                    "filter[subject.id]": string[];
-                    /** @description Filter by subject resource type (e.g. `albums`) */
-                    "filter[subject.type]": ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments" | "trackSourceFiles")[];
+                query?: {
                     stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
                     statsOnly?: boolean;
                     viewerContext?: string;
@@ -11784,6 +11801,18 @@ export interface paths {
                     include?: string[];
                     /** @description Filter by emoji (e.g. `👍`) */
                     "filter[emoji]"?: string[];
+                    /** @description The subject whose reactions to return. Use either subject or the deprecated subject.id and subject.type pair. */
+                    "filter[subject]"?: string;
+                    /**
+                     * @deprecated
+                     * @description Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)
+                     */
+                    "filter[subject.id]"?: string[];
+                    /**
+                     * @deprecated
+                     * @description Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)
+                     */
+                    "filter[subject.type]"?: ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments" | "trackSourceFiles")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
                      * @example author.albums
@@ -14341,8 +14370,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES (e.g. `DEVELOPER`) */
-                    "filter[termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES")[];
+                    /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES, TIDAL_CONNECT_DEVELOPER (e.g. `DEVELOPER`) */
+                    "filter[termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
                     /** @description Selects the country-specific terms variant when it has an effective version; otherwise falls back to the worldwide (WW) variant. Combine with `filter[isLatestVersion]=true` to return the currently acceptable terms. (e.g. `US`) */
                     "filter[countryCode]"?: string[];
                     /** @description Filter by isLatestVersion */
@@ -17762,6 +17791,8 @@ export interface paths {
                      * @example items.items
                      */
                     include?: string[];
+                    /** @description Filter playlists by a free-text query. Returns matching playlists only (no mixes or folders), including playlists inside folders. Cannot be combined with collectionView=FOLDERS. Internal clients only (e.g. `summer`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -26841,7 +26872,7 @@ export interface components {
             /** Format: date-time */
             effectiveAt: string;
             /** @enum {string} */
-            termsType: "DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES";
+            termsType: "DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER";
         };
         Terms_Multi_Resource_Data_Document: {
             data: components["schemas"]["Terms_Resource_Object"][];
@@ -29073,7 +29104,7 @@ export interface components {
              * @example THIRD_PARTY
              * @enum {string}
              */
-            developerAccessTier: "THIRD_PARTY" | "THIRD_PARTY_PROD" | "PARTNER" | "INTERNAL";
+            developerAccessTier: "THIRD_PARTY" | "THIRD_PARTY_PROD" | "PARTNER" | "PARTNER_TIDAL_CONNECT" | "INTERNAL";
             /**
              * @description email address
              * @example test@test.com
