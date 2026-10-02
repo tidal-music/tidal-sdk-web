@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.49.0] - 2026-10-02
+
+### Changed
+
+- Sync to new API definitions (version: 1.10.146)
+
 ## [0.48.0] - 2026-09-30
 
 ### Changed
@@ -53,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- The auth middleware no longer sends `Authorization: Bearer undefined` when the
+- The auth middleware no longer sends an undefined bearer token when the
   credentials provider has no token (logged out, or anonymous with only a
   `clientId`). The request now fails before the round trip rather than coming
   back as an opaque 401

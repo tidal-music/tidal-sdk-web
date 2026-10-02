@@ -23,12 +23,14 @@ export interface paths {
                     /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES, TIDAL_CONNECT_DEVELOPER (e.g. `DEVELOPER`) */
                     "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners, terms
+                     * @description Include related resources. Available relationships: owners, terms
                      * @example terms
                      */
                     include?: string[];
                     /** @description Filter by terms.isLatestVersion */
                     "filter[terms.isLatestVersion]"?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("owners" | "terms")[];
                 };
                 header?: never;
                 path?: never;
@@ -118,7 +120,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -179,7 +181,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: terms
+                     * @description Include related resources. Available relationships: terms
                      * @example terms
                      */
                     include?: string[];
@@ -242,8 +244,10 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
+                    /** @description Include related resources. Available relationships: owners */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
                 };
                 header?: never;
                 path: {
@@ -299,7 +303,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -369,7 +373,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
+                     * @description Include related resources. Available relationships: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
                      * @example artists.albums
                      */
                     include?: string[];
@@ -379,6 +383,8 @@ export interface paths {
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("albumStatistics" | "artists" | "coverArt" | "genres" | "items" | "owners" | "priceConfig" | "providers" | "replacement" | "shares" | "similarAlbums" | "suggestedCoverArts" | "usageRules")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
@@ -480,10 +486,12 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
+                     * @description Include related resources. Available relationships: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
                      * @example artists.albums
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("albumStatistics" | "artists" | "coverArt" | "genres" | "items" | "owners" | "priceConfig" | "providers" | "replacement" | "shares" | "similarAlbums" | "suggestedCoverArts" | "usageRules")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
@@ -634,7 +642,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albumStatistics
+                     * @description Include related resources. Available relationships: albumStatistics
                      * @example albumStatistics
                      */
                     include?: string[];
@@ -702,7 +710,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artists
+                     * @description Include related resources. Available relationships: artists
                      * @example artists.albums
                      */
                     include?: string[];
@@ -775,7 +783,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: coverArt
+                     * @description Include related resources. Available relationships: coverArt
                      * @example coverArt
                      */
                     include?: string[];
@@ -889,7 +897,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: genres
+                     * @description Include related resources. Available relationships: genres
                      * @example genres
                      */
                     include?: string[];
@@ -957,7 +965,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
@@ -1069,7 +1077,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -1137,7 +1145,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: priceConfig
+                     * @description Include related resources. Available relationships: priceConfig
                      * @example priceConfig
                      */
                     include?: string[];
@@ -1203,7 +1211,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: providers
+                     * @description Include related resources. Available relationships: providers
                      * @example providers
                      */
                     include?: string[];
@@ -1271,7 +1279,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: replacement
+                     * @description Include related resources. Available relationships: replacement
                      * @example replacement
                      */
                     include?: string[];
@@ -1337,7 +1345,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: shares
+                     * @description Include related resources. Available relationships: shares
                      * @example shares.sharedResources
                      */
                     include?: string[];
@@ -1412,7 +1420,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: similarAlbums
+                     * @description Include related resources. Available relationships: similarAlbums
                      * @example similarAlbums
                      */
                     include?: string[];
@@ -1478,7 +1486,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: suggestedCoverArts
+                     * @description Include related resources. Available relationships: suggestedCoverArts
                      * @example suggestedCoverArts
                      */
                     include?: string[];
@@ -1546,7 +1554,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: usageRules
+                     * @description Include related resources. Available relationships: usageRules
                      * @example usageRules
                      */
                     include?: string[];
@@ -1676,8 +1684,10 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
+                    /** @description Include related resources. Available relationships: owners */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
                 };
                 header?: never;
                 path: {
@@ -1779,7 +1789,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -1892,10 +1902,12 @@ export interface paths {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists
+                     * @description Include related resources. Available relationships: acceptedArtists, owners, recommendedArtists
                      * @example acceptedArtists.albums
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("acceptedArtists" | "owners" | "recommendedArtists")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: acceptedArtists.albums
                      * @example acceptedArtists.albums
@@ -1990,10 +2002,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists, owners, recommendedArtists
+                     * @description Include related resources. Available relationships: acceptedArtists, owners, recommendedArtists
                      * @example acceptedArtists.albums
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("acceptedArtists" | "owners" | "recommendedArtists")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: acceptedArtists.albums
                      * @example acceptedArtists.albums
@@ -2142,7 +2156,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: acceptedArtists
+                     * @description Include related resources. Available relationships: acceptedArtists
                      * @example acceptedArtists.albums
                      */
                     include?: string[];
@@ -2254,7 +2268,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -2315,7 +2329,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: recommendedArtists
+                     * @description Include related resources. Available relationships: recommendedArtists
                      * @example recommendedArtists.albums
                      */
                     include?: string[];
@@ -2439,7 +2453,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
+                     * @description Include related resources. Available relationships: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
@@ -2449,6 +2463,8 @@ export interface paths {
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("albums" | "biography" | "claimStatus" | "followers" | "following" | "owners" | "profileArt" | "radio" | "roles" | "similarArtists" | "trackProviders" | "tracks" | "videos")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -2557,10 +2573,12 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
+                     * @description Include related resources. Available relationships: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("albums" | "biography" | "claimStatus" | "followers" | "following" | "owners" | "profileArt" | "radio" | "roles" | "similarArtists" | "trackProviders" | "tracks" | "videos")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -2674,7 +2692,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums
+                     * @description Include related resources. Available relationships: albums
                      * @example albums
                      */
                     include?: string[];
@@ -2743,7 +2761,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: biography
+                     * @description Include related resources. Available relationships: biography
                      * @example biography
                      */
                     include?: string[];
@@ -2802,7 +2820,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: claimStatus
+                     * @description Include related resources. Available relationships: claimStatus
                      * @example claimStatus
                      */
                     include?: string[];
@@ -2864,7 +2882,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: followers
+                     * @description Include related resources. Available relationships: followers
                      * @example followers.albums
                      */
                     include?: string[];
@@ -2931,7 +2949,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: following
+                     * @description Include related resources. Available relationships: following
                      * @example following.albums
                      */
                     include?: string[];
@@ -3087,7 +3105,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -3153,7 +3171,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: profileArt
+                     * @description Include related resources. Available relationships: profileArt
                      * @example profileArt
                      */
                     include?: string[];
@@ -3267,7 +3285,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: radio
+                     * @description Include related resources. Available relationships: radio
                      * @example radio.items
                      */
                     include?: string[];
@@ -3331,7 +3349,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: roles
+                     * @description Include related resources. Available relationships: roles
                      * @example roles
                      */
                     include?: string[];
@@ -3399,7 +3417,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: similarArtists
+                     * @description Include related resources. Available relationships: similarArtists
                      * @example similarArtists.albums
                      */
                     include?: string[];
@@ -3465,7 +3483,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: trackProviders
+                     * @description Include related resources. Available relationships: trackProviders
                      * @example trackProviders
                      */
                     include?: string[];
@@ -3536,7 +3554,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: tracks
+                     * @description Include related resources. Available relationships: tracks
                      * @example tracks
                      */
                     include?: string[];
@@ -3607,7 +3625,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: videos
+                     * @description Include related resources. Available relationships: videos
                      * @example videos
                      */
                     include?: string[];
@@ -3677,8 +3695,10 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
+                    /** @description Include related resources. Available relationships: owners */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
                 };
                 header?: never;
                 path?: never;
@@ -3772,8 +3792,10 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
+                    /** @description Include related resources. Available relationships: owners */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
                 };
                 header?: never;
                 path: {
@@ -3829,7 +3851,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -3891,8 +3913,10 @@ export interface paths {
                 query: {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
-                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
+                    /** @description Include related resources. Available relationships: owners */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
                 };
                 header?: never;
                 path?: never;
@@ -3981,8 +4005,10 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
+                    /** @description Include related resources. Available relationships: owners */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
                 };
                 header?: never;
                 path: {
@@ -4126,7 +4152,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -4245,10 +4271,12 @@ export interface paths {
                     /** @description Invite code */
                     "filter[code]": string[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
+                     * @description Include related resources. Available relationships: owners, subject
                      * @example subject.items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("owners" | "subject")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.items
                      * @example subject.items
@@ -4343,10 +4371,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
+                     * @description Include related resources. Available relationships: owners, subject
                      * @example subject.items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("owners" | "subject")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.items
                      * @example subject.items
@@ -4449,7 +4479,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -4510,7 +4540,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: subject
+                     * @description Include related resources. Available relationships: subject
                      * @example subject.items
                      */
                     include?: string[];
@@ -4578,7 +4608,7 @@ export interface paths {
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("createdAt" | "-createdAt" | "likeCount" | "-likeCount" | "replyCount" | "-replyCount" | "startTime" | "-startTime")[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: author, owners, parentComment
+                     * @description Include related resources. Available relationships: author, owners, parentComment
                      * @example author.albums
                      */
                     include?: string[];
@@ -4596,6 +4626,8 @@ export interface paths {
                      * @description Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)
                      */
                     "filter[subject.type]"?: ("albums" | "tracks" | "trackSourceFiles")[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("author" | "owners" | "parentComment")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
                      * @example author.albums
@@ -4690,10 +4722,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: author, owners, parentComment
+                     * @description Include related resources. Available relationships: author, owners, parentComment
                      * @example author.albums
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("author" | "owners" | "parentComment")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
                      * @example author.albums
@@ -4842,7 +4876,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: author
+                     * @description Include related resources. Available relationships: author
                      * @example author.albums
                      */
                     include?: string[];
@@ -4906,7 +4940,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -4967,7 +5001,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: parentComment
+                     * @description Include related resources. Available relationships: parentComment
                      * @example parentComment.author.albums
                      */
                     include?: string[];
@@ -5033,10 +5067,12 @@ export interface paths {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: claimedResource, claimingArtist, owners
+                     * @description Include related resources. Available relationships: claimedResource, claimingArtist, owners
                      * @example claimedResource
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("claimedResource" | "claimingArtist" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimedResource
                      * @example claimedResource
@@ -5131,10 +5167,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: claimedResource, claimingArtist, owners
+                     * @description Include related resources. Available relationships: claimedResource, claimingArtist, owners
                      * @example claimedResource
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("claimedResource" | "claimingArtist" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: claimedResource
                      * @example claimedResource
@@ -5195,7 +5233,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: claimedResource
+                     * @description Include related resources. Available relationships: claimedResource
                      * @example claimedResource
                      */
                     include?: string[];
@@ -5259,7 +5297,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: claimingArtist
+                     * @description Include related resources. Available relationships: claimingArtist
                      * @example claimingArtist.albums
                      */
                     include?: string[];
@@ -5323,7 +5361,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -5384,10 +5422,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artist, category
+                     * @description Include related resources. Available relationships: artist, category
                      * @example artist.albums
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("artist" | "category")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
                      * @example artist.albums
@@ -5448,7 +5488,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artist
+                     * @description Include related resources. Available relationships: artist
                      * @example artist.albums
                      */
                     include?: string[];
@@ -5512,7 +5552,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: category
+                     * @description Include related resources. Available relationships: category
                      * @example category
                      */
                     include?: string[];
@@ -5572,8 +5612,10 @@ export interface paths {
                 query: {
                     /** @description Download id (e.g. `VFJBQ0tTOjEyMzQ1`) */
                     "filter[id]": string[];
-                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
+                    /** @description Include related resources. Available relationships: owners */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
                 };
                 header?: never;
                 path?: never;
@@ -5622,8 +5664,10 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
+                    /** @description Include related resources. Available relationships: owners */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
                 };
                 header?: never;
                 path: {
@@ -5679,7 +5723,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -5740,7 +5784,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: subject
+                     * @description Include related resources. Available relationships: subject
                      * @example subject
                      */
                     include?: string[];
@@ -5756,6 +5800,8 @@ export interface paths {
                      * @description Deprecated: use filter[subject]. The type of the subject resource (e.g. `tracks`)
                      */
                     "filter[subject.type]"?: ("tracks" | "albums" | "artists")[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "subject"[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
                      * @example subject
@@ -5810,7 +5856,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: subject
+                     * @description Include related resources. Available relationships: subject
                      * @example subject
                      */
                     include?: string[];
@@ -5903,10 +5949,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, seedItem
+                     * @description Include related resources. Available relationships: items, seedItem
                      * @example items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("items" | "seedItem")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -5988,10 +6036,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, seedItem
+                     * @description Include related resources. Available relationships: items, seedItem
                      * @example items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("items" | "seedItem")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -6081,7 +6131,7 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
@@ -6172,7 +6222,7 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: seedItem
+                     * @description Include related resources. Available relationships: seedItem
                      * @example seedItem
                      */
                     include?: string[];
@@ -6265,7 +6315,7 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: modules, subject
+                     * @description Include related resources. Available relationships: modules, subject
                      * @example modules.items
                      */
                     include?: string[];
@@ -6276,6 +6326,8 @@ export interface paths {
                      * @description Deprecated alternative to filter[subject]. Omit when subject is supplied or pageType is HOME_FREE. (e.g. `67890`)
                      */
                     "filter[subject.id]"?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("modules" | "subject")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: modules.items
                      * @example modules.items
@@ -6359,7 +6411,7 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: modules
+                     * @description Include related resources. Available relationships: modules
                      * @example modules.items
                      */
                     include?: string[];
@@ -6423,7 +6475,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: subject
+                     * @description Include related resources. Available relationships: subject
                      * @example subject
                      */
                     include?: string[];
@@ -6543,10 +6595,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners, parent, subject
+                     * @description Include related resources. Available relationships: owners, parent, subject
                      * @example parent.children.subject
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("owners" | "parent" | "subject")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: parent.children.subject
                      * @example parent.children.subject
@@ -6649,7 +6703,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -6710,7 +6764,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: parent
+                     * @description Include related resources. Available relationships: parent
                      * @example parent.children.subject
                      */
                     include?: string[];
@@ -6820,7 +6874,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: subject
+                     * @description Include related resources. Available relationships: subject
                      * @example subject
                      */
                     include?: string[];
@@ -6940,10 +6994,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: children, owners
+                     * @description Include related resources. Available relationships: children, owners
                      * @example children.subject
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("children" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: children.subject
                      * @example children.subject
@@ -7094,7 +7150,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: children
+                     * @description Include related resources. Available relationships: children
                      * @example children.subject
                      */
                     include?: string[];
@@ -7158,7 +7214,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -7337,7 +7393,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: offlineInventory, owners
+                     * @description Include related resources. Available relationships: offlineInventory, owners
                      * @example offlineInventory
                      */
                     include?: string[];
@@ -7345,6 +7401,8 @@ export interface paths {
                     "filter[clientProvidedInstallationId]"?: string[];
                     /** @description User ID to filter by. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("offlineInventory" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
                      * @example offlineInventory
@@ -7439,10 +7497,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: offlineInventory, owners
+                     * @description Include related resources. Available relationships: offlineInventory, owners
                      * @example offlineInventory
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("offlineInventory" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
                      * @example offlineInventory
@@ -7507,7 +7567,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: offlineInventory
+                     * @description Include related resources. Available relationships: offlineInventory
                      * @example offlineInventory
                      */
                     include?: string[];
@@ -7667,7 +7727,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -7784,10 +7844,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners, track
+                     * @description Include related resources. Available relationships: owners, track
                      * @example track
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("owners" | "track")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: track
                      * @example track
@@ -7936,7 +7998,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -8002,7 +8064,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: track
+                     * @description Include related resources. Available relationships: track
                      * @example track
                      */
                     include?: string[];
@@ -8126,10 +8188,12 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collection, item, owners
+                     * @description Include related resources. Available relationships: collection, item, owners
                      * @example collection
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("collection" | "item" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection
                      * @example collection
@@ -8184,10 +8248,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collection, item, owners
+                     * @description Include related resources. Available relationships: collection, item, owners
                      * @example collection
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("collection" | "item" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection
                      * @example collection
@@ -8294,7 +8360,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collection
+                     * @description Include related resources. Available relationships: collection
                      * @example collection
                      */
                     include?: string[];
@@ -8358,7 +8424,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: item
+                     * @description Include related resources. Available relationships: item
                      * @example item
                      */
                     include?: string[];
@@ -8422,7 +8488,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -8487,10 +8553,12 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventStream, current, future, owners, past
+                     * @description Include related resources. Available relationships: changeEventStream, current, future, owners, past
                      * @example current
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("changeEventStream" | "current" | "future" | "owners" | "past")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current
                      * @example current
@@ -8585,10 +8653,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventStream, current, future, owners, past
+                     * @description Include related resources. Available relationships: changeEventStream, current, future, owners, past
                      * @example current
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("changeEventStream" | "current" | "future" | "owners" | "past")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current
                      * @example current
@@ -8737,7 +8807,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventStream
+                     * @description Include related resources. Available relationships: changeEventStream
                      * @example changeEventStream
                      */
                     include?: string[];
@@ -8792,7 +8862,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: current
+                     * @description Include related resources. Available relationships: current
                      * @example current
                      */
                     include?: string[];
@@ -8904,7 +8974,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: future
+                     * @description Include related resources. Available relationships: future
                      * @example future
                      */
                     include?: string[];
@@ -8948,7 +9018,7 @@ export interface paths {
         put?: never;
         /**
          * Add to future relationship ("to-many").
-         * @description Adds item(s) to future relationship.
+         * @description With meta.source, startIndex selects an entry in the first page's data before unsupported types are skipped. Tracks and videos are added in page order, retaining duplicates; other types are skipped without expansion. Reaching 1000 added items or 100 pages queues the collected prefix. Invalid sources or indexes, a suffix with no playable items, repeated pages, and read failures encountered before a cap leave the queue unchanged.
          */
         post: {
             parameters: {
@@ -9106,7 +9176,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -9169,7 +9239,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: past
+                     * @description Include related resources. Available relationships: past
                      * @example past
                      */
                     include?: string[];
@@ -9235,10 +9305,12 @@ export interface paths {
                     /** @description Playlist id (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[playlist.id]": string[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: playlist
+                     * @description Include related resources. Available relationships: playlist
                      * @example playlist.items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "playlist"[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlist.items
                      * @example playlist.items
@@ -9334,10 +9406,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: playlist
+                     * @description Include related resources. Available relationships: playlist
                      * @example playlist.items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "playlist"[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlist.items
                      * @example playlist.items
@@ -9474,7 +9548,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: playlist
+                     * @description Include related resources. Available relationships: playlist
                      * @example playlist.items
                      */
                     include?: string[];
@@ -9536,10 +9610,12 @@ export interface paths {
                     /** @description Playlist id (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[playlist.id]": string[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: baseGeneration, playlist, trackPreferences
+                     * @description Include related resources. Available relationships: baseGeneration, playlist, trackPreferences
                      * @example baseGeneration.trackPreferences
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("baseGeneration" | "playlist" | "trackPreferences")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: baseGeneration.trackPreferences
                      * @example baseGeneration.trackPreferences
@@ -9634,10 +9710,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: baseGeneration, playlist, trackPreferences
+                     * @description Include related resources. Available relationships: baseGeneration, playlist, trackPreferences
                      * @example baseGeneration.trackPreferences
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("baseGeneration" | "playlist" | "trackPreferences")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: baseGeneration.trackPreferences
                      * @example baseGeneration.trackPreferences
@@ -9698,7 +9776,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: baseGeneration
+                     * @description Include related resources. Available relationships: baseGeneration
                      * @example baseGeneration.trackPreferences
                      */
                     include?: string[];
@@ -9762,7 +9840,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: playlist
+                     * @description Include related resources. Available relationships: playlist
                      * @example playlist.items
                      */
                     include?: string[];
@@ -9828,7 +9906,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: trackPreferences
+                     * @description Include related resources. Available relationships: trackPreferences
                      * @example trackPreferences
                      */
                     include?: string[];
@@ -10039,7 +10117,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, curators, items, ownerProfiles, owners, suggestedCoverArts
+                     * @description Include related resources. Available relationships: collaboratorProfiles, collaborators, coverArt, curators, items, ownerProfiles, owners, suggestedCoverArts
                      * @example curators.albums
                      */
                     include?: string[];
@@ -10049,6 +10127,8 @@ export interface paths {
                     "filter[id]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("collaboratorProfiles" | "collaborators" | "coverArt" | "curators" | "items" | "ownerProfiles" | "owners" | "suggestedCoverArts")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: curators.albums
                      * @example curators.albums
@@ -10148,10 +10228,12 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles, collaborators, coverArt, curators, items, ownerProfiles, owners, suggestedCoverArts
+                     * @description Include related resources. Available relationships: collaboratorProfiles, collaborators, coverArt, curators, items, ownerProfiles, owners, suggestedCoverArts
                      * @example curators.albums
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("collaboratorProfiles" | "collaborators" | "coverArt" | "curators" | "items" | "ownerProfiles" | "owners" | "suggestedCoverArts")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: curators.albums
                      * @example curators.albums
@@ -10301,7 +10383,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collaboratorProfiles
+                     * @description Include related resources. Available relationships: collaboratorProfiles
                      * @example collaboratorProfiles
                      */
                     include?: string[];
@@ -10409,7 +10491,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: collaborators
+                     * @description Include related resources. Available relationships: collaborators
                      * @example collaborators
                      */
                     include?: string[];
@@ -10475,7 +10557,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: coverArt
+                     * @description Include related resources. Available relationships: coverArt
                      * @example coverArt
                      */
                     include?: string[];
@@ -10584,7 +10666,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: curators
+                     * @description Include related resources. Available relationships: curators
                      * @example curators.albums
                      */
                     include?: string[];
@@ -10657,7 +10739,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
@@ -10862,7 +10944,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles
+                     * @description Include related resources. Available relationships: ownerProfiles
                      * @example ownerProfiles
                      */
                     include?: string[];
@@ -10923,7 +11005,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -10984,7 +11066,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: suggestedCoverArts
+                     * @description Include related resources. Available relationships: suggestedCoverArts
                      * @example suggestedCoverArts
                      */
                     include?: string[];
@@ -11190,10 +11272,12 @@ export interface paths {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners, provider
+                     * @description Include related resources. Available relationships: owners, provider
                      * @example provider
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("owners" | "provider")[];
                 };
                 header?: never;
                 path?: never;
@@ -11243,7 +11327,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -11301,7 +11385,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: provider
+                     * @description Include related resources. Available relationships: provider
                      * @example provider
                      */
                     include?: string[];
@@ -11364,7 +11448,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: provider, subject
+                     * @description Include related resources. Available relationships: provider, subject
                      * @example subject
                      */
                     include?: string[];
@@ -11372,6 +11456,8 @@ export interface paths {
                     "filter[barcodeId]"?: string[];
                     /** @description List of GRIDs (Global Release Identifier, ISO 7064) (e.g. `A10302B0013941653J`) */
                     "filter[grid]"?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("provider" | "subject")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
                      * @example subject
@@ -11426,7 +11512,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: provider
+                     * @description Include related resources. Available relationships: provider
                      * @example provider
                      */
                     include?: string[];
@@ -11487,7 +11573,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: subject
+                     * @description Include related resources. Available relationships: subject
                      * @example subject
                      */
                     include?: string[];
@@ -11607,10 +11693,12 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners, subject
+                     * @description Include related resources. Available relationships: owners, subject
                      * @example subject
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("owners" | "subject")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
                      * @example subject
@@ -11665,7 +11753,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -11726,7 +11814,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: subject
+                     * @description Include related resources. Available relationships: subject
                      * @example subject
                      */
                     include?: string[];
@@ -11795,7 +11883,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: author, ownerProfiles, owners
+                     * @description Include related resources. Available relationships: author, ownerProfiles, owners
                      * @example author.albums
                      */
                     include?: string[];
@@ -11813,6 +11901,8 @@ export interface paths {
                      * @description Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)
                      */
                     "filter[subject.type]"?: ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments" | "trackSourceFiles")[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("author" | "ownerProfiles" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
                      * @example author.albums
@@ -11965,7 +12055,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: author
+                     * @description Include related resources. Available relationships: author
                      * @example author.albums
                      */
                     include?: string[];
@@ -12030,7 +12120,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: ownerProfiles
+                     * @description Include related resources. Available relationships: ownerProfiles
                      * @example ownerProfiles
                      */
                     include?: string[];
@@ -12091,7 +12181,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -12343,10 +12433,12 @@ export interface paths {
                      */
                     clientVersion?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, playlists, topHits, tracks, videos
+                     * @description Include related resources. Available relationships: albums, artists, playlists, topHits, tracks, videos
                      * @example albums
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("albums" | "artists" | "playlists" | "topHits" | "tracks" | "videos")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -12428,7 +12520,7 @@ export interface paths {
                      */
                     clientVersion?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums
+                     * @description Include related resources. Available relationships: albums
                      * @example albums
                      */
                     include?: string[];
@@ -12516,7 +12608,7 @@ export interface paths {
                      */
                     clientVersion?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artists
+                     * @description Include related resources. Available relationships: artists
                      * @example artists
                      */
                     include?: string[];
@@ -12604,7 +12696,7 @@ export interface paths {
                      */
                     clientVersion?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: playlists
+                     * @description Include related resources. Available relationships: playlists
                      * @example playlists
                      */
                     include?: string[];
@@ -12692,7 +12784,7 @@ export interface paths {
                      */
                     clientVersion?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: topHits
+                     * @description Include related resources. Available relationships: topHits
                      * @example topHits
                      */
                     include?: string[];
@@ -12780,7 +12872,7 @@ export interface paths {
                      */
                     clientVersion?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: tracks
+                     * @description Include related resources. Available relationships: tracks
                      * @example tracks
                      */
                     include?: string[];
@@ -12868,7 +12960,7 @@ export interface paths {
                      */
                     clientVersion?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: videos
+                     * @description Include related resources. Available relationships: videos
                      * @example videos
                      */
                     include?: string[];
@@ -12941,10 +13033,12 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: directHits, history
+                     * @description Include related resources. Available relationships: directHits, history
                      * @example directHits
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("directHits" | "history")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: directHits
                      * @example directHits
@@ -13009,7 +13103,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: directHits
+                     * @description Include related resources. Available relationships: directHits
                      * @example directHits
                      */
                     include?: string[];
@@ -13082,7 +13176,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: history
+                     * @description Include related resources. Available relationships: history
                      * @example history
                      */
                     include?: string[];
@@ -13142,10 +13236,12 @@ export interface paths {
                     /** @description A share code (e.g. `xyz`) */
                     "filter[code]": string[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners, sharedResources
+                     * @description Include related resources. Available relationships: owners, sharedResources
                      * @example sharedResources
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("owners" | "sharedResources")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources
                      * @example sharedResources
@@ -13240,10 +13336,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners, sharedResources
+                     * @description Include related resources. Available relationships: owners, sharedResources
                      * @example sharedResources
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("owners" | "sharedResources")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources
                      * @example sharedResources
@@ -13304,7 +13402,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -13367,7 +13465,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: sharedResources
+                     * @description Include related resources. Available relationships: sharedResources
                      * @example sharedResources
                      */
                     include?: string[];
@@ -13487,10 +13585,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: selectedSite, sites
+                     * @description Include related resources. Available relationships: selectedSite, sites
                      * @example selectedSite
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("selectedSite" | "sites")[];
                 };
                 header?: never;
                 path: {
@@ -13547,7 +13647,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: selectedSite
+                     * @description Include related resources. Available relationships: selectedSite
                      * @example selectedSite
                      */
                     include?: string[];
@@ -13654,7 +13754,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: sites
+                     * @description Include related resources. Available relationships: sites
                      * @example sites
                      */
                     include?: string[];
@@ -13717,8 +13817,10 @@ export interface paths {
                 query: {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
-                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
+                    /** @description Include related resources. Available relationships: owners */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
                 };
                 header?: never;
                 path?: never;
@@ -13808,7 +13910,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -13870,8 +13972,10 @@ export interface paths {
                 query: {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
-                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
+                    /** @description Include related resources. Available relationships: owners */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
                 };
                 header?: never;
                 path?: never;
@@ -13921,7 +14025,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -13984,10 +14088,12 @@ export interface paths {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: priceChange
+                     * @description Include related resources. Available relationships: priceChange
                      * @example priceChange
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "priceChange"[];
                 };
                 header?: never;
                 path?: never;
@@ -14139,7 +14245,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: priceChange
+                     * @description Include related resources. Available relationships: priceChange
                      * @example priceChange
                      */
                     include?: string[];
@@ -14253,8 +14359,10 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
+                    /** @description Include related resources. Available relationships: owners */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
                 };
                 header?: never;
                 path: {
@@ -14310,7 +14418,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -14654,8 +14762,10 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
+                    /** @description Include related resources. Available relationships: owners */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
                 };
                 header?: never;
                 path: {
@@ -14711,7 +14821,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -14776,8 +14886,10 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
-                    /** @description Allows the client to customize which related resources should be returned. Available options: owners */
+                    /** @description Include related resources. Available relationships: owners */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
                 };
                 header?: never;
                 path: {
@@ -14833,7 +14945,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -14903,7 +15015,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, download, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, suggestedTracks, trackStatistics, usageRules
+                     * @description Include related resources. Available relationships: albums, artists, credits, download, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, suggestedTracks, trackStatistics, usageRules
                      * @example albums
                      */
                     include?: string[];
@@ -14913,6 +15025,8 @@ export interface paths {
                     "filter[isrc]"?: string[];
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("albums" | "artists" | "credits" | "download" | "genres" | "lyrics" | "metadataStatus" | "owners" | "priceConfig" | "providers" | "radio" | "replacement" | "shares" | "similarTracks" | "sourceFile" | "suggestedTracks" | "trackStatistics" | "usageRules")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -15014,10 +15128,12 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, download, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, suggestedTracks, trackStatistics, usageRules
+                     * @description Include related resources. Available relationships: albums, artists, credits, download, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, suggestedTracks, trackStatistics, usageRules
                      * @example albums
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("albums" | "artists" | "credits" | "download" | "genres" | "lyrics" | "metadataStatus" | "owners" | "priceConfig" | "providers" | "radio" | "replacement" | "shares" | "similarTracks" | "sourceFile" | "suggestedTracks" | "trackStatistics" | "usageRules")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -15173,7 +15289,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums
+                     * @description Include related resources. Available relationships: albums
                      * @example albums
                      */
                     include?: string[];
@@ -15294,7 +15410,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artists
+                     * @description Include related resources. Available relationships: artists
                      * @example artists.albums
                      */
                     include?: string[];
@@ -15362,7 +15478,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: credits
+                     * @description Include related resources. Available relationships: credits
                      * @example credits.artist.albums
                      */
                     include?: string[];
@@ -15428,7 +15544,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: download
+                     * @description Include related resources. Available relationships: download
                      * @example download
                      */
                     include?: string[];
@@ -15494,7 +15610,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: genres
+                     * @description Include related resources. Available relationships: genres
                      * @example genres
                      */
                     include?: string[];
@@ -15557,7 +15673,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: lyrics
+                     * @description Include related resources. Available relationships: lyrics
                      * @example lyrics.track
                      */
                     include?: string[];
@@ -15625,7 +15741,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: metadataStatus
+                     * @description Include related resources. Available relationships: metadataStatus
                      * @example metadataStatus
                      */
                     include?: string[];
@@ -15686,7 +15802,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -15754,7 +15870,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: priceConfig
+                     * @description Include related resources. Available relationships: priceConfig
                      * @example priceConfig
                      */
                     include?: string[];
@@ -15820,7 +15936,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: providers
+                     * @description Include related resources. Available relationships: providers
                      * @example providers
                      */
                     include?: string[];
@@ -15883,7 +15999,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: radio
+                     * @description Include related resources. Available relationships: radio
                      * @example radio.items
                      */
                     include?: string[];
@@ -15956,7 +16072,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: replacement
+                     * @description Include related resources. Available relationships: replacement
                      * @example replacement
                      */
                     include?: string[];
@@ -16022,7 +16138,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: shares
+                     * @description Include related resources. Available relationships: shares
                      * @example shares.sharedResources
                      */
                     include?: string[];
@@ -16097,7 +16213,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: similarTracks
+                     * @description Include related resources. Available relationships: similarTracks
                      * @example similarTracks
                      */
                     include?: string[];
@@ -16163,7 +16279,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: sourceFile
+                     * @description Include related resources. Available relationships: sourceFile
                      * @example sourceFile
                      */
                     include?: string[];
@@ -16231,7 +16347,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: suggestedTracks
+                     * @description Include related resources. Available relationships: suggestedTracks
                      * @example suggestedTracks
                      */
                     include?: string[];
@@ -16297,7 +16413,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: trackStatistics
+                     * @description Include related resources. Available relationships: trackStatistics
                      * @example trackStatistics
                      */
                     include?: string[];
@@ -16363,7 +16479,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: usageRules
+                     * @description Include related resources. Available relationships: usageRules
                      * @example usageRules
                      */
                     include?: string[];
@@ -16591,10 +16707,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                     * @description Include related resources. Available relationships: items, owners
                      * @example items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("items" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -16664,10 +16782,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
+                    /** @description Filter albums by a free-text query matched against the album title and artist names. Internal clients only (e.g. `love`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -16696,6 +16816,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["UserCollectionAlbumsReadMultiDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -16820,7 +16941,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -16886,10 +17007,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                     * @description Include related resources. Available relationships: items, owners
                      * @example items.albums
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("items" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.albums
                      * @example items.albums
@@ -16959,10 +17082,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items.albums
                      */
                     include?: string[];
+                    /** @description Filter artists by a free-text query matched against the artist name. Internal clients only (e.g. `love`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.albums
                      * @example items.albums
@@ -16991,6 +17116,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["UserCollectionArtistsReadMultiDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -17115,7 +17241,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -17178,10 +17304,12 @@ export interface paths {
                     /** @description Folder Id (e.g. `CBMHXUOuJZgroV2kWpeVLL1I7xdgvF6ocDEGCXov8SZq3WVhrOcOq5pjnGawKX`) */
                     "filter[id]": string[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection
+                     * @description Include related resources. Available relationships: items, owners, userCollection
                      * @example items.items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("items" | "owners" | "userCollection")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -17276,10 +17404,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners, userCollection
+                     * @description Include related resources. Available relationships: items, owners, userCollection
                      * @example items.items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("items" | "owners" | "userCollection")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -17432,7 +17562,7 @@ export interface paths {
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
@@ -17588,7 +17718,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -17649,7 +17779,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: userCollection
+                     * @description Include related resources. Available relationships: userCollection
                      * @example userCollection.items.items
                      */
                     include?: string[];
@@ -17718,10 +17848,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                     * @description Include related resources. Available relationships: items, owners
                      * @example items.items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("items" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -17787,7 +17919,7 @@ export interface paths {
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
                     sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
@@ -17821,6 +17953,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["UserCollectionPlaylistsReadMultiDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -17945,7 +18078,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -18006,10 +18139,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                     * @description Include related resources. Available relationships: items, owners
                      * @example items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("items" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -18072,7 +18207,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
@@ -18228,7 +18363,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -18294,10 +18429,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                     * @description Include related resources. Available relationships: items, owners
                      * @example items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("items" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -18367,10 +18504,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
+                    /** @description Filter tracks by a free-text query matched against the track title, artist names and album title. Internal clients only (e.g. `love`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -18399,6 +18538,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["UserCollectionTracksReadMultiDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -18523,7 +18663,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -18589,10 +18729,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items, owners
+                     * @description Include related resources. Available relationships: items, owners
                      * @example items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("items" | "owners")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -18662,10 +18804,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
+                    /** @description Filter videos by a free-text query matched against the video title and artist names. Internal clients only (e.g. `love`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -18694,6 +18838,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["UserCollectionVideosReadMultiDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -18818,7 +18963,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -18884,10 +19029,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "items"[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -18955,7 +19102,7 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
@@ -19080,10 +19227,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "items"[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -19151,7 +19300,7 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
@@ -19220,10 +19369,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "items"[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -19291,7 +19442,7 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
@@ -19360,10 +19511,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "items"[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -19431,7 +19584,7 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: items
+                     * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
@@ -19495,10 +19648,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: activePlayer, availablePlayers, changeEventStream, playQueue
+                     * @description Include related resources. Available relationships: activePlayer, availablePlayers, changeEventStream, playQueue
                      * @example activePlayer.offlineInventory
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("activePlayer" | "availablePlayers" | "changeEventStream" | "playQueue")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: activePlayer.offlineInventory
                      * @example activePlayer.offlineInventory
@@ -19605,7 +19760,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: activePlayer
+                     * @description Include related resources. Available relationships: activePlayer
                      * @example activePlayer.offlineInventory
                      */
                     include?: string[];
@@ -19715,7 +19870,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: availablePlayers
+                     * @description Include related resources. Available relationships: availablePlayers
                      * @example availablePlayers.offlineInventory
                      */
                     include?: string[];
@@ -19873,7 +20028,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: changeEventStream
+                     * @description Include related resources. Available relationships: changeEventStream
                      * @example changeEventStream
                      */
                     include?: string[];
@@ -19928,7 +20083,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: playQueue
+                     * @description Include related resources. Available relationships: playQueue
                      * @example playQueue.current
                      */
                     include?: string[];
@@ -20043,10 +20198,12 @@ export interface paths {
                      */
                     locale?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artists, owners, tracks, videos
+                     * @description Include related resources. Available relationships: artists, owners, tracks, videos
                      * @example artists.albums
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("artists" | "owners" | "tracks" | "videos")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
@@ -20109,7 +20266,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artists
+                     * @description Include related resources. Available relationships: artists
                      * @example artists.albums
                      */
                     include?: string[];
@@ -20265,7 +20422,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: owners
+                     * @description Include related resources. Available relationships: owners
                      * @example owners
                      */
                     include?: string[];
@@ -20328,7 +20485,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: tracks
+                     * @description Include related resources. Available relationships: tracks
                      * @example tracks
                      */
                     include?: string[];
@@ -20486,7 +20643,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: videos
+                     * @description Include related resources. Available relationships: videos
                      * @example videos
                      */
                     include?: string[];
@@ -20701,10 +20858,12 @@ export interface paths {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]": string[];
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: decision
+                     * @description Include related resources. Available relationships: decision
                      * @example decision
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "decision"[];
                 };
                 header?: never;
                 path?: never;
@@ -20754,7 +20913,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: decision
+                     * @description Include related resources. Available relationships: decision
                      * @example decision
                      */
                     include?: string[];
@@ -20813,10 +20972,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artist
+                     * @description Include related resources. Available relationships: artist
                      * @example artist.albums
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "artist"[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
                      * @example artist.albums
@@ -20877,7 +21038,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artist
+                     * @description Include related resources. Available relationships: artist
                      * @example artist.albums
                      */
                     include?: string[];
@@ -21003,7 +21164,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, providers, replacement, similarVideos, suggestedVideos, thumbnailArt, usageRules
+                     * @description Include related resources. Available relationships: albums, artists, credits, providers, replacement, similarVideos, suggestedVideos, thumbnailArt, usageRules
                      * @example albums
                      */
                     include?: string[];
@@ -21011,6 +21172,8 @@ export interface paths {
                     "filter[id]"?: string[];
                     /** @description List of ISRCs (e.g. `QMJMT1701237`) */
                     "filter[isrc]"?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("albums" | "artists" | "credits" | "providers" | "replacement" | "similarVideos" | "suggestedVideos" | "thumbnailArt" | "usageRules")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -21070,10 +21233,12 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums, artists, credits, providers, replacement, similarVideos, suggestedVideos, thumbnailArt, usageRules
+                     * @description Include related resources. Available relationships: albums, artists, credits, providers, replacement, similarVideos, suggestedVideos, thumbnailArt, usageRules
                      * @example albums
                      */
                     include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("albums" | "artists" | "credits" | "providers" | "replacement" | "similarVideos" | "suggestedVideos" | "thumbnailArt" | "usageRules")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -21141,7 +21306,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: albums
+                     * @description Include related resources. Available relationships: albums
                      * @example albums
                      */
                     include?: string[];
@@ -21212,7 +21377,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: artists
+                     * @description Include related resources. Available relationships: artists
                      * @example artists.albums
                      */
                     include?: string[];
@@ -21278,7 +21443,7 @@ export interface paths {
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: credits
+                     * @description Include related resources. Available relationships: credits
                      * @example credits.artist.albums
                      */
                     include?: string[];
@@ -21349,7 +21514,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: providers
+                     * @description Include related resources. Available relationships: providers
                      * @example providers
                      */
                     include?: string[];
@@ -21413,7 +21578,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: replacement
+                     * @description Include related resources. Available relationships: replacement
                      * @example replacement
                      */
                     include?: string[];
@@ -21484,7 +21649,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: similarVideos
+                     * @description Include related resources. Available relationships: similarVideos
                      * @example similarVideos
                      */
                     include?: string[];
@@ -21555,7 +21720,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: suggestedVideos
+                     * @description Include related resources. Available relationships: suggestedVideos
                      * @example suggestedVideos
                      */
                     include?: string[];
@@ -21626,7 +21791,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: thumbnailArt
+                     * @description Include related resources. Available relationships: thumbnailArt
                      * @example thumbnailArt
                      */
                     include?: string[];
@@ -21690,7 +21855,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Allows the client to customize which related resources should be returned. Available options: usageRules
+                     * @description Include related resources. Available relationships: usageRules
                      * @example usageRules
                      */
                     include?: string[];
@@ -21714,6 +21879,253 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Videos_UsageRules_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/viewerContexts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple viewerContexts.
+         * @description Returns viewer contexts for up to 20 original subjects. Duplicate subjects are returned once.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Original subjects to look up. */
+                    "filter[subject]": string[];
+                    /**
+                     * @description Include related resources. Available relationships: subject, viewer
+                     * @example subject
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("subject" | "viewer")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ViewerContexts_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/viewerContexts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single viewerContext.
+         * @description Retrieves single viewerContext by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject, viewer
+                     * @example subject
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("subject" | "viewer")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque identifier of one authenticated viewer and original subject pair */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ViewerContexts_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/viewerContexts/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Returns the subject of this viewer context.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque identifier of one authenticated viewer and original subject pair */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ViewerContexts_Subject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/viewerContexts/{id}/relationships/viewer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get viewer relationship ("to-one").
+         * @description Returns the authenticated viewer of this context.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: viewer
+                     * @example viewer.artist.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: viewer.artist.albums
+                     * @example viewer.artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque identifier of one authenticated viewer and original subject pair */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ViewerContexts_Viewer_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -22085,7 +22497,6 @@ export interface components {
             type: string;
         };
         Albums_Items_Resource_Identifier_Meta: {
-            itemCursor?: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
             /**
              * Format: int32
@@ -22831,7 +23242,10 @@ export interface components {
         };
         /** @description Artwork files */
         Artwork_File: {
-            /** @description Artwork file href */
+            /**
+             * Format: uri
+             * @description Artwork file href
+             */
             href: string;
             meta: components["schemas"]["Artwork_File_Meta"];
         };
@@ -23160,6 +23574,8 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description The viewer has at least one existing comment on the subject; deleted historical comments do not count. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
+        Commented: Record<string, never>;
         CommentsCreateOperation_Payload: {
             data: components["schemas"]["CommentsCreateOperation_Payload_Data"];
         };
@@ -23544,7 +23960,10 @@ export interface components {
             }[];
         };
         Download_Link: {
-            /** @description URL to download the content from */
+            /**
+             * Format: uri
+             * @description URL to download the content from
+             */
             href: string;
             meta: components["schemas"]["Download_Link_Meta"];
         };
@@ -23849,6 +24268,7 @@ export interface components {
             links?: components["schemas"]["Links"];
         };
         External_Link: {
+            /** Format: uri */
             href: string;
             meta: components["schemas"]["External_Link_Meta"];
         };
@@ -23858,6 +24278,7 @@ export interface components {
             type: "TIDAL_SHARING" | "TIDAL_USER_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "OFFICIAL_HOMEPAGE" | "CASHAPP_CONTRIBUTIONS" | "ARTIST_CLAIM_PROVIDER_REDIRECT" | "STRIPE_AUTHORIZATION_REDIRECT" | "SQUARE_AUTHORIZATION_REDIRECT";
         };
         External_Link_Payload: {
+            /** Format: uri */
             href?: string;
             meta: components["schemas"]["External_Link_Meta"];
         };
@@ -23881,7 +24302,10 @@ export interface components {
         };
         /** @description Upload link */
         File_Upload_Link: {
-            /** @description Href to upload actual file to */
+            /**
+             * Format: uri
+             * @description Href to upload actual file to
+             */
             href: string;
             meta: components["schemas"]["File_Upload_Link_Meta"];
         };
@@ -24118,6 +24542,10 @@ export interface components {
             data: components["schemas"]["Folders_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description The viewer is followed by the subject. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
+        FollowedBy: Record<string, never>;
+        /** @description The viewer follows the subject. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
+        Following: Record<string, never>;
         Genres_Attributes: {
             /**
              * @description Genre name
@@ -24174,7 +24602,9 @@ export interface components {
                 status: string;
             }[];
         };
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"])[];
+        /** @description The viewer has the original subject in their normal collection. Present as an empty object when known present, otherwise omitted. Includes owned and saved playlists and saved mixes across folders; excludes Save for Later. */
+        InCollection: Record<string, never>;
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -24443,9 +24873,13 @@ export interface components {
             role?: string;
             selectedAlbums?: string[];
             selectedSingles?: string[];
-            socialLink?: components["schemas"]["Link_Object"];
+            socialLink?: components["schemas"]["ManualArtistClaimsExternalLink"];
             upcs?: string[];
-            websiteOrSocialLink: components["schemas"]["Link_Object"];
+            websiteOrSocialLink: components["schemas"]["ManualArtistClaimsExternalLink"];
+        };
+        ManualArtistClaimsExternalLink: {
+            /** Format: uri */
+            href: string;
         };
         ManualArtistClaims_Attributes: {
             /** @description Accepted terms and conditions */
@@ -24514,6 +24948,14 @@ export interface components {
              * @enum {string}
              */
             type: "manualArtistClaims";
+        };
+        /** @description The viewer has current identity-derived membership in the subject; role describes that membership and excludes raw share bearer access. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
+        Membership: {
+            /**
+             * @description Positive identity-derived membership role; NONE does not represent membership.
+             * @enum {string}
+             */
+            role: "NONE" | "VIEWER" | "COLLABORATOR" | "OWNER";
         };
         Mutation_Response_Document: {
             links: components["schemas"]["Links"];
@@ -24663,12 +25105,8 @@ export interface components {
         };
         PlayQueuesFutureRelationshipAddOperation_Payload_Data: {
             id: string;
-            meta?: components["schemas"]["PlayQueuesFutureRelationshipAddOperation_Payload_Data_Meta"];
             /** @enum {string} */
-            type: "tracks" | "videos" | "albums" | "playlists";
-        };
-        PlayQueuesFutureRelationshipAddOperation_Payload_Data_Meta: {
-            itemCursor?: string;
+            type: "tracks" | "videos";
         };
         PlayQueuesFutureRelationshipAddOperation_Payload_Meta: {
             /** Format: uuid */
@@ -24677,6 +25115,7 @@ export interface components {
             /** @enum {string} */
             mode: "ADD_TO_FRONT" | "ADD_TO_BACK" | "ADD_BEFORE" | "REPLACE_ALL" | "REPLACE_ALL_AND_CURRENT" | "ADD_TO_FRONT_REPLACE_CURRENT";
             positionBefore?: string;
+            source?: components["schemas"]["PlayQueuesFutureRelationshipSource"];
         };
         PlayQueuesFutureRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["PlayQueuesFutureRelationshipRemoveOperation_Payload_Data"][];
@@ -24689,6 +25128,19 @@ export interface components {
         };
         PlayQueuesFutureRelationshipRemoveOperation_Payload_Data_Meta: {
             itemId: string;
+        };
+        /** @description Adds up to 1000 playable items from a relationship page and subsequent pages, reading at most 100 pages. Requires empty data. */
+        PlayQueuesFutureRelationshipSource: {
+            /**
+             * Format: uri-reference
+             * @description API-relative self link of a TIDAL API to-many relationship page.
+             */
+            href: string;
+            /**
+             * Format: int32
+             * @description Zero-based index in the page's complete data array from which to start adding.
+             */
+            startIndex: number;
         };
         PlayQueuesFutureRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["PlayQueuesFutureRelationshipUpdateOperation_Payload_Data"][];
@@ -25267,7 +25719,7 @@ export interface components {
                  * @example DUPLICATE_ITEMS_IN_PLAYLIST
                  * @enum {string}
                  */
-                code: "DUPLICATE_ITEMS_IN_PLAYLIST" | "IDEMPOTENT_REQUEST_IN_PROGRESS";
+                code: "DUPLICATE_ITEMS_IN_PLAYLIST" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_PLAYLIST";
                 /** @example Playlist already contains one or more requested items */
                 detail?: string;
                 /** @example 409 */
@@ -25511,7 +25963,6 @@ export interface components {
         Playlists_Items_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt?: string;
-            itemCursor?: string;
             itemId?: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
@@ -25779,6 +26230,8 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description The viewer has a current qualifying purchase entitlement. Includes a track covered by its purchased album; excludes subscription access and free downloads. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
+        Purchased: Record<string, never>;
         Purchases_Attributes: {
             /**
              * Format: date-time
@@ -25839,6 +26292,10 @@ export interface components {
             data?: components["schemas"]["Purchases_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        /** @description The viewer has a current reaction to the subject, with its emoji. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
+        Reaction: {
+            emoji: string;
         };
         /** @description Reaction statistics */
         ReactionStats: {
@@ -25974,6 +26431,8 @@ export interface components {
              */
             type: string;
         };
+        /** @description The viewer has saved the subject for later. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
+        SavedForLater: Record<string, never>;
         SavedSharesCreateOperation_Payload: {
             data: components["schemas"]["SavedSharesCreateOperation_Payload_Data"];
         };
@@ -27694,6 +28153,19 @@ export interface components {
             /** @enum {string} */
             type: "albums";
         };
+        UserCollectionAlbumsReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example UNAUTHORIZED
+                 * @enum {string}
+                 */
+                code: "UNAUTHORIZED";
+                /** @example filter[query] requires INTERNAL access tier */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
         UserCollectionAlbums_Attributes: {
             /**
              * Format: date-time
@@ -27815,6 +28287,19 @@ export interface components {
             id: string;
             /** @enum {string} */
             type: "artists";
+        };
+        UserCollectionArtistsReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example UNAUTHORIZED
+                 * @enum {string}
+                 */
+                code: "UNAUTHORIZED";
+                /** @example filter[query] requires INTERNAL access tier */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
         };
         UserCollectionArtists_Attributes: {
             /**
@@ -28070,6 +28555,19 @@ export interface components {
             /** @enum {string} */
             type: "playlists";
         };
+        UserCollectionPlaylistsReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example UNAUTHORIZED
+                 * @enum {string}
+                 */
+                code: "UNAUTHORIZED";
+                /** @example filter[query] requires INTERNAL access tier */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
         UserCollectionPlaylists_Attributes: {
             /**
              * Format: date-time
@@ -28308,6 +28806,19 @@ export interface components {
             /** @enum {string} */
             type: "tracks";
         };
+        UserCollectionTracksReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example UNAUTHORIZED
+                 * @enum {string}
+                 */
+                code: "UNAUTHORIZED";
+                /** @example filter[query] requires INTERNAL access tier */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
         UserCollectionTracks_Attributes: {
             /**
              * Format: date-time
@@ -28429,6 +28940,19 @@ export interface components {
             id: string;
             /** @enum {string} */
             type: "videos";
+        };
+        UserCollectionVideosReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example UNAUTHORIZED
+                 * @enum {string}
+                 */
+                code: "UNAUTHORIZED";
+                /** @example filter[query] requires INTERNAL access tier */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
         };
         UserCollectionVideos_Attributes: {
             /**
@@ -29407,6 +29931,70 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ViewerContexts_Attributes: {
+            hasCommentedOn?: components["schemas"]["Commented"];
+            hasInCollection?: components["schemas"]["InCollection"];
+            hasPurchased?: components["schemas"]["Purchased"];
+            hasReactedTo?: components["schemas"]["Reaction"];
+            hasSavedForLater?: components["schemas"]["SavedForLater"];
+            isFollowedBy?: components["schemas"]["FollowedBy"];
+            isFollowing?: components["schemas"]["Following"];
+            isMemberOf?: components["schemas"]["Membership"];
+        };
+        ViewerContexts_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ViewerContexts_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ViewerContexts_Relationships: {
+            subject?: components["schemas"]["ViewerContexts_Subject_Single_Relationship_Data_Document"];
+            viewer?: components["schemas"]["ViewerContexts_Viewer_Single_Relationship_Data_Document"];
+        };
+        ViewerContexts_Resource_Object: {
+            attributes?: components["schemas"]["ViewerContexts_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["ViewerContexts_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "viewerContexts";
+        };
+        ViewerContexts_Single_Resource_Data_Document: {
+            data: components["schemas"]["ViewerContexts_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ViewerContexts_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["ViewerContexts_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        ViewerContexts_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        ViewerContexts_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["ViewerContexts_Subject_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ViewerContexts_Viewer_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
     };
     responses: {
         /** @description Invalid request */
@@ -29580,7 +30168,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["PlaylistGenerationsUpdateMultiDataRelationship409ResponseBody"];
             };
         };
-        /** @description Playlist already contains one or more requested items; Request already in progress for this idempotency key */
+        /** @description Playlist already contains one or more requested items; Playlist item limit reached; Request already in progress for this idempotency key */
         PlaylistsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
@@ -29679,6 +30267,15 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
+        /** @description filter[query] requires INTERNAL access tier */
+        UserCollectionAlbumsReadMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsReadMultiDataRelationship403ResponseBody"];
+            };
+        };
         /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionArtistsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
@@ -29686,6 +30283,15 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["UserCollectionArtistsAddMultiDataRelationshipWithResponse409ResponseBody"];
+            };
+        };
+        /** @description filter[query] requires INTERNAL access tier */
+        UserCollectionArtistsReadMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserCollectionArtistsReadMultiDataRelationship403ResponseBody"];
             };
         };
         /** @description Folder must be empty and owned by you */
@@ -29706,6 +30312,15 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
+        /** @description filter[query] requires INTERNAL access tier */
+        UserCollectionPlaylistsReadMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsReadMultiDataRelationship403ResponseBody"];
+            };
+        };
         /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409Response: {
             headers: {
@@ -29724,6 +30339,15 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["UserCollectionTracksAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
+        /** @description filter[query] requires INTERNAL access tier */
+        UserCollectionTracksReadMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserCollectionTracksReadMultiDataRelationship403ResponseBody"];
+            };
+        };
         /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
         UserCollectionVideosAddMultiDataRelationshipWithResponse409Response: {
             headers: {
@@ -29731,6 +30355,15 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["UserCollectionVideosAddMultiDataRelationshipWithResponse409ResponseBody"];
+            };
+        };
+        /** @description filter[query] requires INTERNAL access tier */
+        UserCollectionVideosReadMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserCollectionVideosReadMultiDataRelationship403ResponseBody"];
             };
         };
         /** @description Recommendation block limit reached; Request already in progress for this idempotency key */
