@@ -9018,7 +9018,7 @@ export interface paths {
         put?: never;
         /**
          * Add to future relationship ("to-many").
-         * @description Adds item(s) to future relationship.
+         * @description With meta.source, startIndex selects an entry in the first page's data before unsupported types are skipped. Tracks and videos are added in page order, retaining duplicates; other types are skipped without expansion. Reaching 1000 added items or 100 pages queues the collected prefix. Invalid sources or indexes, a suffix with no playable items, repeated pages, and read failures encountered before a cap leave the queue unchanged.
          */
         post: {
             parameters: {
@@ -22497,7 +22497,6 @@ export interface components {
             type: string;
         };
         Albums_Items_Resource_Identifier_Meta: {
-            itemCursor?: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
             /**
              * Format: int32
@@ -23243,7 +23242,10 @@ export interface components {
         };
         /** @description Artwork files */
         Artwork_File: {
-            /** @description Artwork file href */
+            /**
+             * Format: uri
+             * @description Artwork file href
+             */
             href: string;
             meta: components["schemas"]["Artwork_File_Meta"];
         };
@@ -23958,7 +23960,10 @@ export interface components {
             }[];
         };
         Download_Link: {
-            /** @description URL to download the content from */
+            /**
+             * Format: uri
+             * @description URL to download the content from
+             */
             href: string;
             meta: components["schemas"]["Download_Link_Meta"];
         };
@@ -24263,6 +24268,7 @@ export interface components {
             links?: components["schemas"]["Links"];
         };
         External_Link: {
+            /** Format: uri */
             href: string;
             meta: components["schemas"]["External_Link_Meta"];
         };
@@ -24272,6 +24278,7 @@ export interface components {
             type: "TIDAL_SHARING" | "TIDAL_USER_SHARING" | "TIDAL_AUTOPLAY_ANDROID" | "TIDAL_AUTOPLAY_IOS" | "TIDAL_AUTOPLAY_WEB" | "TWITTER" | "FACEBOOK" | "INSTAGRAM" | "TIKTOK" | "SNAPCHAT" | "OFFICIAL_HOMEPAGE" | "CASHAPP_CONTRIBUTIONS" | "ARTIST_CLAIM_PROVIDER_REDIRECT" | "STRIPE_AUTHORIZATION_REDIRECT" | "SQUARE_AUTHORIZATION_REDIRECT";
         };
         External_Link_Payload: {
+            /** Format: uri */
             href?: string;
             meta: components["schemas"]["External_Link_Meta"];
         };
@@ -24295,7 +24302,10 @@ export interface components {
         };
         /** @description Upload link */
         File_Upload_Link: {
-            /** @description Href to upload actual file to */
+            /**
+             * Format: uri
+             * @description Href to upload actual file to
+             */
             href: string;
             meta: components["schemas"]["File_Upload_Link_Meta"];
         };
@@ -24863,9 +24873,13 @@ export interface components {
             role?: string;
             selectedAlbums?: string[];
             selectedSingles?: string[];
-            socialLink?: components["schemas"]["Link_Object"];
+            socialLink?: components["schemas"]["ManualArtistClaimsExternalLink"];
             upcs?: string[];
-            websiteOrSocialLink: components["schemas"]["Link_Object"];
+            websiteOrSocialLink: components["schemas"]["ManualArtistClaimsExternalLink"];
+        };
+        ManualArtistClaimsExternalLink: {
+            /** Format: uri */
+            href: string;
         };
         ManualArtistClaims_Attributes: {
             /** @description Accepted terms and conditions */
@@ -25091,12 +25105,8 @@ export interface components {
         };
         PlayQueuesFutureRelationshipAddOperation_Payload_Data: {
             id: string;
-            meta?: components["schemas"]["PlayQueuesFutureRelationshipAddOperation_Payload_Data_Meta"];
             /** @enum {string} */
-            type: "tracks" | "videos" | "albums" | "playlists";
-        };
-        PlayQueuesFutureRelationshipAddOperation_Payload_Data_Meta: {
-            itemCursor?: string;
+            type: "tracks" | "videos";
         };
         PlayQueuesFutureRelationshipAddOperation_Payload_Meta: {
             /** Format: uuid */
@@ -25105,6 +25115,7 @@ export interface components {
             /** @enum {string} */
             mode: "ADD_TO_FRONT" | "ADD_TO_BACK" | "ADD_BEFORE" | "REPLACE_ALL" | "REPLACE_ALL_AND_CURRENT" | "ADD_TO_FRONT_REPLACE_CURRENT";
             positionBefore?: string;
+            source?: components["schemas"]["PlayQueuesFutureRelationshipSource"];
         };
         PlayQueuesFutureRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["PlayQueuesFutureRelationshipRemoveOperation_Payload_Data"][];
@@ -25117,6 +25128,19 @@ export interface components {
         };
         PlayQueuesFutureRelationshipRemoveOperation_Payload_Data_Meta: {
             itemId: string;
+        };
+        /** @description Adds up to 1000 playable items from a relationship page and subsequent pages, reading at most 100 pages. Requires empty data. */
+        PlayQueuesFutureRelationshipSource: {
+            /**
+             * Format: uri-reference
+             * @description API-relative self link of a TIDAL API to-many relationship page.
+             */
+            href: string;
+            /**
+             * Format: int32
+             * @description Zero-based index in the page's complete data array from which to start adding.
+             */
+            startIndex: number;
         };
         PlayQueuesFutureRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["PlayQueuesFutureRelationshipUpdateOperation_Payload_Data"][];
@@ -25939,7 +25963,6 @@ export interface components {
         Playlists_Items_Resource_Identifier_Meta: {
             /** Format: date-time */
             addedAt?: string;
-            itemCursor?: string;
             itemId?: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
