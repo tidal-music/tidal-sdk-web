@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/tidal-sdk-web",
-  "packageManager": "pnpm@11.28.1",
+  "packageManager": "pnpm@11.28.3",
   "private": true,
   "type": "module",
   "scripts": {
@@ -26,10 +26,10 @@
     "eslint-plugin-jsdoc": "64.5.4",
     "typedoc": "0.28.20",
     "typescript": "npm:@typescript/typescript6@6.0.2",
-    "vite": "8.3.1",
+    "vite": "8.3.2",
     "vite-plugin-dts": "5.1.1",
     "vite-plugin-mkcert": "2.1.0",
     "vite-plugin-package-version": "1.1.0",
-    "vitest": "5.0.2"
+    "vitest": "5.0.3"
   }
 }
