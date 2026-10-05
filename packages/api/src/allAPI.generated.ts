@@ -25284,10 +25284,10 @@ export interface components {
         /** @description The viewer has current identity-derived membership in the subject; role describes that membership and excludes raw share bearer access. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
         Membership: {
             /**
-             * @description Positive identity-derived membership role; NONE does not represent membership.
+             * @description Identity-derived membership role.
              * @enum {string}
              */
-            role: "NONE" | "VIEWER" | "COLLABORATOR" | "OWNER";
+            role: "VIEWER" | "COLLABORATOR" | "OWNER";
         };
         Mutation_Response_Document: {
             links: components["schemas"]["Links"];
