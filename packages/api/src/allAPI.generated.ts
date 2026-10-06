@@ -24908,6 +24908,14 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description The viewer's effective role for the subject. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
+        Grantee: {
+            /**
+             * @description Effective role.
+             * @enum {string}
+             */
+            role: "VIEWER" | "COLLABORATOR" | "OWNER";
+        };
         Idempotency409ResponseBody: {
             errors: {
                 /**
@@ -25280,14 +25288,6 @@ export interface components {
              * @enum {string}
              */
             type: "manualArtistClaims";
-        };
-        /** @description The viewer has current identity-derived membership in the subject; role describes that membership and excludes raw share bearer access. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
-        Membership: {
-            /**
-             * @description Identity-derived membership role.
-             * @enum {string}
-             */
-            role: "VIEWER" | "COLLABORATOR" | "OWNER";
         };
         Mutation_Response_Document: {
             links: components["schemas"]["Links"];
@@ -30271,7 +30271,7 @@ export interface components {
             hasSavedForLater?: components["schemas"]["SavedForLater"];
             isFollowedBy?: components["schemas"]["FollowedBy"];
             isFollowing?: components["schemas"]["Following"];
-            isMemberOf?: components["schemas"]["Membership"];
+            isGranteeOf?: components["schemas"]["Grantee"];
         };
         ViewerContexts_Multi_Resource_Data_Document: {
             data: components["schemas"]["ViewerContexts_Resource_Object"][];
