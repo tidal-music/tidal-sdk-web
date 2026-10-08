@@ -7618,6 +7618,109 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple groups.
+         * @description Retrieves multiple groups by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Exact group name (case-sensitive) (e.g. `Everyone`) */
+                    "filter[name]": string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Groups_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/groups/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single group.
+         * @description Retrieves single group by id.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Group ID
+                     * @example 5x4uRI6Lowv
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Groups_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/installations": {
         parameters: {
             query?: never;
@@ -22586,11 +22689,7 @@ export interface components {
             accessType?: "PUBLIC" | "UNLISTED" | "PRIVATE";
             /** @enum {string} */
             albumType?: "ALBUM" | "EP" | "SINGLE";
-            /**
-             * @description A barcode the rights holder already owns: a GTIN-12 or GTIN-13 (UPC-A or EAN-13) with a valid GS1 check digit. It can only be set while the album has no barcode of its own: the barcode TIDAL assigns at the album's first sale is permanent. Omit the field, and TIDAL assigns one then.
-             * @example 9780306406157
-             */
-            barcodeId?: string;
+            barcodeId?: string | (never | null);
             copyright?: components["schemas"]["Copyright"];
             /** @description Explicit content */
             explicit?: boolean;
@@ -23660,6 +23759,7 @@ export interface components {
              * @description Time when the certificate request was last modified
              */
             lastModifiedAt: string;
+            packageDownloadLink?: components["schemas"]["Link_Object"];
             /**
              * Format: date-time
              * @description Time until which the certificate package can be downloaded
@@ -24908,6 +25008,44 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description The viewer's effective role for the subject. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
+        Grantee: {
+            /**
+             * @description Effective role.
+             * @enum {string}
+             */
+            role: "VIEWER" | "COLLABORATOR" | "OWNER";
+        };
+        Groups_Attributes: {
+            /**
+             * @description Group name
+             * @example Everyone
+             */
+            name: string;
+        };
+        Groups_Multi_Resource_Data_Document: {
+            data: components["schemas"]["Groups_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Groups_Resource_Object: {
+            attributes?: components["schemas"]["Groups_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "groups";
+        };
+        Groups_Single_Resource_Data_Document: {
+            data: components["schemas"]["Groups_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Idempotency409ResponseBody: {
             errors: {
                 /**
@@ -24936,7 +25074,7 @@ export interface components {
         };
         /** @description The viewer has the original subject in their normal collection. Present as an empty object when known present, otherwise omitted. Includes owned and saved playlists and saved mixes across folders; excludes Save for Later. */
         InCollection: Record<string, never>;
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -25281,14 +25419,6 @@ export interface components {
              */
             type: "manualArtistClaims";
         };
-        /** @description The viewer has current identity-derived membership in the subject; role describes that membership and excludes raw share bearer access. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
-        Membership: {
-            /**
-             * @description Identity-derived membership role.
-             * @enum {string}
-             */
-            role: "VIEWER" | "COLLABORATOR" | "OWNER";
-        };
         Mutation_Response_Document: {
             links: components["schemas"]["Links"];
             /** @description Non-standard meta information */
@@ -25555,6 +25685,7 @@ export interface components {
         PlayQueues_Current_Resource_Identifier_Meta: {
             /** Format: uuid */
             batchId: string;
+            globalItemId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
             position?: string;
@@ -25589,6 +25720,7 @@ export interface components {
         PlayQueues_Future_Resource_Identifier_Meta: {
             /** Format: uuid */
             batchId: string;
+            globalItemId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
             replacement?: components["schemas"]["Replacement_Provenance"];
@@ -25624,6 +25756,7 @@ export interface components {
         PlayQueues_Past_Resource_Identifier_Meta: {
             /** Format: uuid */
             batchId: string;
+            globalItemId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
             replacement?: components["schemas"]["Replacement_Provenance"];
@@ -27120,9 +27253,17 @@ export interface components {
             data: components["schemas"]["SharesCreateOperation_Payload_Data"];
         };
         SharesCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["SharesCreateOperation_Payload_Data_Attributes"];
             relationships: components["schemas"]["SharesCreateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "shares";
+        };
+        SharesCreateOperation_Payload_Data_Attributes: {
+            /**
+             * @description Role offered by the share.
+             * @enum {string}
+             */
+            role: "VIEWER" | "COLLABORATOR";
         };
         SharesCreateOperation_Payload_Data_Relationships: {
             sharedResources: components["schemas"]["SharesCreateOperation_Payload_Data_Relationships_SharedResources"];
@@ -27133,7 +27274,7 @@ export interface components {
         SharesCreateOperation_Payload_Data_Relationships_SharedResources_Data: {
             id: string;
             /** @enum {string} */
-            type: "tracks" | "albums";
+            type: "tracks" | "albums" | "playlists";
         };
         Shares_Attributes: {
             /** @description Share code */
@@ -27145,6 +27286,11 @@ export interface components {
             createdAt: string;
             /** @description Links external to TIDAL API */
             externalLinks?: components["schemas"]["External_Link"][];
+            /**
+             * @description Role offered on the shared resource.
+             * @enum {string}
+             */
+            role: "VIEWER" | "COLLABORATOR";
         };
         Shares_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["Shares_Resource_Object"];
@@ -28062,11 +28208,7 @@ export interface components {
              * @example false
              */
             explicit?: boolean;
-            /**
-             * @description An ISRC the rights holder already owns: the 12 characters ISO 3901 defines, without the hyphens of the display form. It can only be set while the track has no ISRC of its own: the ISRC TIDAL assigns at the track's first sale is permanent. Omit the field, and TIDAL assigns one then.
-             * @example QMJMT1701237
-             */
-            isrc?: string;
+            isrc?: string | (never | null);
             /** @enum {string} */
             key?: "UNKNOWN" | "C" | "CSharp" | "D" | "Eb" | "E" | "F" | "FSharp" | "G" | "Ab" | "A" | "Bb" | "B";
             /** @enum {string} */
@@ -30271,7 +30413,7 @@ export interface components {
             hasSavedForLater?: components["schemas"]["SavedForLater"];
             isFollowedBy?: components["schemas"]["FollowedBy"];
             isFollowing?: components["schemas"]["Following"];
-            isMemberOf?: components["schemas"]["Membership"];
+            isGranteeOf?: components["schemas"]["Grantee"];
         };
         ViewerContexts_Multi_Resource_Data_Document: {
             data: components["schemas"]["ViewerContexts_Resource_Object"][];
