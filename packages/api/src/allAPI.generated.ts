@@ -27250,9 +27250,17 @@ export interface components {
             data: components["schemas"]["SharesCreateOperation_Payload_Data"];
         };
         SharesCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["SharesCreateOperation_Payload_Data_Attributes"];
             relationships: components["schemas"]["SharesCreateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "shares";
+        };
+        SharesCreateOperation_Payload_Data_Attributes: {
+            /**
+             * @description Role offered by the share.
+             * @enum {string}
+             */
+            role: "VIEWER" | "COLLABORATOR";
         };
         SharesCreateOperation_Payload_Data_Relationships: {
             sharedResources: components["schemas"]["SharesCreateOperation_Payload_Data_Relationships_SharedResources"];
@@ -27263,7 +27271,7 @@ export interface components {
         SharesCreateOperation_Payload_Data_Relationships_SharedResources_Data: {
             id: string;
             /** @enum {string} */
-            type: "tracks" | "albums";
+            type: "tracks" | "albums" | "playlists";
         };
         Shares_Attributes: {
             /** @description Share code */
@@ -27275,6 +27283,11 @@ export interface components {
             createdAt: string;
             /** @description Links external to TIDAL API */
             externalLinks?: components["schemas"]["External_Link"][];
+            /**
+             * @description Role offered on the shared resource.
+             * @enum {string}
+             */
+            role: "VIEWER" | "COLLABORATOR";
         };
         Shares_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["Shares_Resource_Object"];
