@@ -25685,6 +25685,7 @@ export interface components {
         PlayQueues_Current_Resource_Identifier_Meta: {
             /** Format: uuid */
             batchId: string;
+            globalItemId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
             position?: string;
@@ -25719,6 +25720,7 @@ export interface components {
         PlayQueues_Future_Resource_Identifier_Meta: {
             /** Format: uuid */
             batchId: string;
+            globalItemId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
             replacement?: components["schemas"]["Replacement_Provenance"];
@@ -25754,6 +25756,7 @@ export interface components {
         PlayQueues_Past_Resource_Identifier_Meta: {
             /** Format: uuid */
             batchId: string;
+            globalItemId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
             replacement?: components["schemas"]["Replacement_Provenance"];

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Sync to new API definitions (version: 1.10.155)
+- Sync to new API definitions (version: 1.10.156)
 ## [0.50.0] - 2026-10-05
 
 ### Changed
