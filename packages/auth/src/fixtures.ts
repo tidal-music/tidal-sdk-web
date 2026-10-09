@@ -67,3 +67,12 @@ export const deviceAuthorizationResponse = {
   verificationUri: 'link.tidal.com',
   verificationUriComplete: 'link.tidal.com/USER_CODE',
 };
+
+export const appApprovalDeviceAuthorizationResponse = {
+  deviceCode: 'DEVICE_CODE',
+  expiresIn: 300,
+  interval: 0.1,
+  userCode: 'ABCDEFGH',
+  verificationUri: 'https://tidal.com/approve',
+  verificationUriComplete: 'https://tidal.com/approve/ABCDEFGH',
+};

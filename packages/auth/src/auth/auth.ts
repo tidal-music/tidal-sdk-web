@@ -194,17 +194,24 @@ export const initializeLogin = async ({
  * In case you have a limited input device, e.g. a TV, you can use this method to start the login flow.
  * The method will return a response including a code you need to show to the user along with a url.
  *
+ * @param {Object} [options]
+ * @param {boolean} [options.appApproval] - request a code that the user approves in a TIDAL app instead of on link.tidal.com.
+ * `verificationUriComplete` then points to the approval page, e.g. `https://tidal.com/approve/ABCDEFGH`.
+ *
  * @throws {@link @tidal-music/common!TidalError} - if the auth module has not been initialized
  * @throws {@link UnexpectedError} - if the credentials are not valid (e.g. status 401)
  * @throws {@link @tidal-music/common!RetryableError} - if the server is not reachable (e.g. status 500)
  * @throws {@link @tidal-music/common!NetworkError} - if the client appears to be offline
  */
-export const initializeDeviceLogin = async () => {
+export const initializeDeviceLogin = async ({
+  appApproval = false,
+}: { appApproval?: boolean } = {}) => {
   if (!state.credentials) {
     throw new TidalError(authErrorCodeMap.initError);
   }
 
   const body = {
+    ...(appApproval && { app_approval: 'true' }),
     client_id: state.credentials.clientId,
     ...(state.credentials.clientSecret && {
       client_secret: state.credentials.clientSecret,
