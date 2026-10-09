@@ -196,7 +196,7 @@ export const initializeLogin = async ({
  *
  * @param {Object} [options]
  * @param {boolean} [options.appApproval] - request a code that the user approves in a TIDAL app instead of on link.tidal.com.
- * The response then contains no `verificationUri` or `verificationUriComplete`; the app builds its own approval link from `userCode`.
+ * `verificationUriComplete` then points to the approval page, e.g. `https://tidal.com/approve/ABCDEFGH`.
  *
  * @throws {@link @tidal-music/common!TidalError} - if the auth module has not been initialized
  * @throws {@link UnexpectedError} - if the credentials are not valid (e.g. status 401)

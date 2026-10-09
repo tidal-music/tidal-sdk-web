@@ -53,7 +53,7 @@ For devices with limited input capabilities, such as TVs, an alternative login m
 
 ### Approving in a TIDAL app
 
-Call `initializeDeviceLogin({ appApproval: true })` to get a code that the user approves in a TIDAL app instead of on `link.tidal.com`. The response has no `verificationUri` or `verificationUriComplete`, so build the approval link from `userCode` yourself (for example as a QR code). `finalizeDeviceLogin` works the same way in both modes.
+Call `initializeDeviceLogin({ appApproval: true })` to get a code that the user approves in a TIDAL app instead of on `link.tidal.com`. `verificationUriComplete` then points to the approval page (e.g. `https://tidal.com/approve/ABCDEFGH`); show it as a QR code for the user to scan with their phone. `finalizeDeviceLogin` works the same way in both modes.
 
 ## Setting Credentials
 

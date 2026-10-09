@@ -72,8 +72,6 @@ export type DeviceAuthorizationResponse = {
   expiresIn: number;
   interval: number;
   userCode: string;
-  /** Not present when the login was started with `appApproval`. */
-  verificationUri?: string;
-  /** Not present when the login was started with `appApproval`. */
-  verificationUriComplete?: string;
+  verificationUri: string;
+  verificationUriComplete: string;
 };

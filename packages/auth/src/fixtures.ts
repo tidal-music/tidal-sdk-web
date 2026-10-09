@@ -73,4 +73,6 @@ export const appApprovalDeviceAuthorizationResponse = {
   expiresIn: 300,
   interval: 0.1,
   userCode: 'ABCDEFGH',
+  verificationUri: 'https://tidal.com/approve',
+  verificationUriComplete: 'https://tidal.com/approve/ABCDEFGH',
 };
