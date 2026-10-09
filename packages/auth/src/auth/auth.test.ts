@@ -231,6 +231,35 @@ describe('auth', { concurrent: false }, () => {
 
       expect(response).toEqual(fixtures.deviceAuthorizationResponse);
       expect(fetchHandling.exponentialBackoff).toHaveBeenCalled();
+      expect(fetchHandling.prepareFetch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.not.objectContaining({
+            app_approval: expect.anything(),
+          }),
+          path: 'oauth2/device_authorization',
+        }),
+      );
+    });
+
+    it('requests an app approval code when appApproval is set', async () => {
+      vi.mocked(fetchHandling.prepareFetch).mockReturnValue(prepareFetchMock);
+
+      vi.mocked(fetchHandling.exponentialBackoff).mockResolvedValue(
+        new Response(
+          JSON.stringify(fixtures.appApprovalDeviceAuthorizationResponse),
+        ),
+      );
+
+      await init(initConfig);
+      const response = await initializeDeviceLogin({ appApproval: true });
+
+      expect(response).toEqual(fixtures.appApprovalDeviceAuthorizationResponse);
+      expect(fetchHandling.prepareFetch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({ app_approval: 'true' }),
+          path: 'oauth2/device_authorization',
+        }),
+      );
     });
 
     it('throws an error fetch returns one', async () => {

@@ -51,6 +51,10 @@ For devices with limited input capabilities, such as TVs, an alternative login m
 
 > 💡 Many modern apps feature a QR-Code for scanning, which you can also generate. Ensure it includes `verificationUriComplete`, as provided in the response.
 
+### Approving in a TIDAL app
+
+Call `initializeDeviceLogin({ appApproval: true })` to get a code that the user approves in a TIDAL app instead of on `link.tidal.com`. The response has no `verificationUri` or `verificationUriComplete`, so build the approval link from `userCode` yourself (for example as a QR code). `finalizeDeviceLogin` works the same way in both modes.
+
 ## Setting Credentials
 
 If your application was previously authenticated, you can migrate these credentials into the auth module by following these steps or checking out our example for ["setting credentials"](./examples/setting-credentials.html).
