@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-10-09
+
+### Added
+
+- `initializeDeviceLogin({ appApproval: true })` requests a device login code
+  that the user approves in a TIDAL app instead of on `link.tidal.com`. The
+  response's `verificationUriComplete` then points to the approval page (e.g.
+  `https://tidal.com/approve/ABCDEFGH`), ready to show as a QR code. Without the
+  option the request is unchanged
+  ([#761](https://github.com/tidal-music/tidal-sdk-web/pull/761)).
+
 ## [1.6.2] - 2026-08-20
 
 ### Fixed
