@@ -6837,24 +6837,21 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: owners, parent, subject
-                     * @example parent.children.subject
+                     * @description Include related resources. Available relationships: breadcrumb, owners, parent, subject
+                     * @example breadcrumb.children.subject
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("owners" | "parent" | "subject")[];
+                    includeLinkage?: ("breadcrumb" | "owners" | "parent" | "subject")[];
                     /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: parent.children.subject
-                     * @example parent.children.subject
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: breadcrumb.children.subject
+                     * @example breadcrumb.children.subject
                      */
                     replaceMedia?: string;
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Folder item id
-                     * @example 2rXZ4nCfhMEyHXeuVHyGxLTkKDrxJZmDsPmSpYAvpBqNtLKe
-                     */
+                    /** @description Folder item id */
                     id: string;
                 };
                 cookie?: never;
@@ -6894,10 +6891,7 @@ export interface paths {
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
-                    /**
-                     * @description Folder item id
-                     * @example 2rXZ4nCfhMEyHXeuVHyGxLTkKDrxJZmDsPmSpYAvpBqNtLKe
-                     */
+                    /** @description Folder item id */
                     id: string;
                 };
                 cookie?: never;
@@ -6930,6 +6924,69 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/folderItems/{id}/relationships/breadcrumb": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get breadcrumb relationship ("to-many").
+         * @description The folders from the root to this item's parent; only for the tree's owner, empty otherwise.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: breadcrumb
+                     * @example breadcrumb.children.subject
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: breadcrumb.children.subject
+                     * @example breadcrumb.children.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Folder item id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["FolderItems_Breadcrumb_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/folderItems/{id}/relationships/owners": {
         parameters: {
             query?: never;
@@ -6954,10 +7011,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Folder item id
-                     * @example 2rXZ4nCfhMEyHXeuVHyGxLTkKDrxJZmDsPmSpYAvpBqNtLKe
-                     */
+                    /** @description Folder item id */
                     id: string;
                 };
                 cookie?: never;
@@ -7018,10 +7072,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Folder item id
-                     * @example 2rXZ4nCfhMEyHXeuVHyGxLTkKDrxJZmDsPmSpYAvpBqNtLKe
-                     */
+                    /** @description Folder item id */
                     id: string;
                 };
                 cookie?: never;
@@ -7064,10 +7115,7 @@ export interface paths {
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
-                    /**
-                     * @description Folder item id
-                     * @example 2rXZ4nCfhMEyHXeuVHyGxLTkKDrxJZmDsPmSpYAvpBqNtLKe
-                     */
+                    /** @description Folder item id */
                     id: string;
                 };
                 cookie?: never;
@@ -7128,10 +7176,7 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /**
-                     * @description Folder item id
-                     * @example 2rXZ4nCfhMEyHXeuVHyGxLTkKDrxJZmDsPmSpYAvpBqNtLKe
-                     */
+                    /** @description Folder item id */
                     id: string;
                 };
                 cookie?: never;
@@ -7172,7 +7217,53 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Get multiple folders.
+         * @description Retrieves multiple folders by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Folder id */
+                    "filter[id]": string[];
+                    /**
+                     * @description Include related resources. Available relationships: children, owners, parent, preview
+                     * @example children.subject
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("children" | "owners" | "parent" | "preview")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: children.subject
+                     * @example children.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Folders_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
         put?: never;
         /**
          * Create single folder.
@@ -7236,12 +7327,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: children, owners
+                     * @description Include related resources. Available relationships: children, owners, parent, preview
                      * @example children.subject
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("children" | "owners")[];
+                    includeLinkage?: ("children" | "owners" | "parent" | "preview")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: children.subject
                      * @example children.subject
@@ -7384,7 +7475,7 @@ export interface paths {
         };
         /**
          * Get children relationship ("to-many").
-         * @description Retrieves children relationship.
+         * @description Lists folder items newest first by placement timestamp, with ID as a stable tie-breaker. Moving to another parent resets the timestamp; renaming preserves it.
          */
         get: {
             parameters: {
@@ -7482,6 +7573,136 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Folders_Owners_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/folders/{id}/relationships/parent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get parent relationship ("to-one").
+         * @description Retrieves parent relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: parent
+                     * @example parent.children.subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: parent.children.subject
+                     * @example parent.children.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Folder id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Folders_Parent_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/folders/{id}/relationships/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get preview relationship ("to-many").
+         * @description The first four items of this folder, as `children` lists them.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: preview
+                     * @example preview.subject
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: preview.subject
+                     * @example preview.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Folder id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Folders_Preview_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -24812,7 +25033,17 @@ export interface components {
                 status: string;
             }[];
         };
-        FolderItems_Attributes: Record<string, never>;
+        FolderItems_Attributes: {
+            /** @enum {string} */
+            itemStatus: "OK" | "DELETED" | "NO_ACCESS";
+            /** @description Whether this item references a subject in another owner's tree, regardless of its current availability. */
+            reference: boolean;
+        };
+        FolderItems_Breadcrumb_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         FolderItems_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["FolderItems_Resource_Object"];
             links: components["schemas"]["Links"];
@@ -24837,6 +25068,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         FolderItems_Relationships: {
+            breadcrumb?: components["schemas"]["FolderItems_Breadcrumb_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["FolderItems_Owners_Multi_Relationship_Data_Document"];
             parent?: components["schemas"]["FolderItems_Parent_Single_Relationship_Data_Document"];
             subject?: components["schemas"]["FolderItems_Subject_Single_Relationship_Data_Document"];
@@ -24886,11 +25118,18 @@ export interface components {
         };
         FoldersCreateOperation_Payload_Data: {
             attributes: components["schemas"]["FoldersCreateOperation_Payload_Data_Attributes"];
+            relationships?: components["schemas"]["FoldersCreateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "folders";
         };
         FoldersCreateOperation_Payload_Data_Attributes: {
             name: string;
+        };
+        FoldersCreateOperation_Payload_Data_Relationships: {
+            parent?: components["schemas"]["FoldersCreateOperation_Payload_Data_Relationships_Parent"];
+        };
+        FoldersCreateOperation_Payload_Data_Relationships_Parent: {
+            data: components["schemas"]["FoldersParentIdentifier"];
         };
         FoldersDeleteResource400ResponseBody: {
             errors: {
@@ -24904,6 +25143,11 @@ export interface components {
                 /** @example 400 */
                 status: string;
             }[];
+        };
+        FoldersParentIdentifier: {
+            id: string;
+            /** @enum {string} */
+            type: "folders";
         };
         FoldersUpdateOperation_Payload: {
             data: components["schemas"]["FoldersUpdateOperation_Payload_Data"];
@@ -24942,7 +25186,22 @@ export interface components {
             data: components["schemas"]["Folders_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        Folders_Multi_Resource_Data_Document: {
+            data: components["schemas"]["Folders_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Folders_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Folders_Parent_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Folders_Preview_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
@@ -24950,6 +25209,8 @@ export interface components {
         Folders_Relationships: {
             children?: components["schemas"]["Folders_Children_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Folders_Owners_Multi_Relationship_Data_Document"];
+            parent?: components["schemas"]["Folders_Parent_Single_Relationship_Data_Document"];
+            preview?: components["schemas"]["Folders_Preview_Multi_Relationship_Data_Document"];
         };
         Folders_Resource_Object: {
             attributes?: components["schemas"]["Folders_Attributes"];
