@@ -6851,7 +6851,10 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /** @description Folder item id */
+                    /**
+                     * @description Folder item id
+                     * @example e3226624-355b-48f8-aa93-db42532caa66
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -6891,7 +6894,10 @@ export interface paths {
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
-                    /** @description Folder item id */
+                    /**
+                     * @description Folder item id
+                     * @example e3226624-355b-48f8-aa93-db42532caa66
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -6953,7 +6959,10 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /** @description Folder item id */
+                    /**
+                     * @description Folder item id
+                     * @example e3226624-355b-48f8-aa93-db42532caa66
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -7011,7 +7020,10 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /** @description Folder item id */
+                    /**
+                     * @description Folder item id
+                     * @example e3226624-355b-48f8-aa93-db42532caa66
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -7072,7 +7084,10 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /** @description Folder item id */
+                    /**
+                     * @description Folder item id
+                     * @example e3226624-355b-48f8-aa93-db42532caa66
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -7115,7 +7130,10 @@ export interface paths {
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
-                    /** @description Folder item id */
+                    /**
+                     * @description Folder item id
+                     * @example e3226624-355b-48f8-aa93-db42532caa66
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -7176,7 +7194,10 @@ export interface paths {
                 };
                 header?: never;
                 path: {
-                    /** @description Folder item id */
+                    /**
+                     * @description Folder item id
+                     * @example e3226624-355b-48f8-aa93-db42532caa66
+                     */
                     id: string;
                 };
                 cookie?: never;
@@ -7224,7 +7245,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Folder id */
+                    /** @description Folder id (e.g. `e3226624-355b-48f8-aa93-db42532caa66`) */
                     "filter[id]": string[];
                     /**
                      * @description Include related resources. Available relationships: children, owners, parent, preview
@@ -9341,7 +9362,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                        "application/vnd.api+json": components["schemas"]["PlayQueues_Update_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9506,7 +9527,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                        "application/vnd.api+json": components["schemas"]["PlayQueues_Current_Update_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9584,7 +9605,7 @@ export interface paths {
         put?: never;
         /**
          * Add to future relationship ("to-many").
-         * @description With meta.source, startIndex selects an entry in the first page's data before unsupported types are skipped. Tracks and videos are added in page order, retaining duplicates; other types are skipped without expansion. Reaching 1000 added items or 100 pages queues the collected prefix. Invalid sources or indexes, a suffix with no playable items, repeated pages, and read failures encountered before a cap leave the queue unchanged.
+         * @description With meta.source, startIndex selects an entry in the first page's data before unsupported types are skipped. Tracks and videos are added in page order, retaining duplicates; other types are skipped without expansion. Reaching 1000 added items or 100 pages queues the collected prefix. Invalid sources or indexes, a suffix with no playable items, repeated pages, and read failures encountered before a cap leave the queue unchanged. Returns empty data and meta.revision as an acknowledgement.
          */
         post: {
             parameters: {
@@ -9614,7 +9635,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                        "application/vnd.api+json": components["schemas"]["PlayQueues_Future_Add_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -9680,7 +9701,7 @@ export interface paths {
         head?: never;
         /**
          * Update future relationship ("to-many").
-         * @description Updates future relationship.
+         * @description Returns empty data and meta.revision as an acknowledgement.
          */
         patch: {
             parameters: {
@@ -9710,7 +9731,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                        "application/vnd.api+json": components["schemas"]["PlayQueues_Future_Update_Multi_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13919,7 +13940,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User share id
+                     * @description Share id
                      * @example a468bee88def
                      */
                     id: string;
@@ -13949,7 +13970,52 @@ export interface paths {
         };
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete single share.
+         * @description Delete share. Effectively revokes bearer access and acceptance.
+         */
+        delete: {
+            parameters: {
+                query?: {
+                    /** @description Also revoke grants issued through this share. Defaults to false; true is currently unsupported. */
+                    revokeGrants?: boolean;
+                };
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Share id
+                     * @example a468bee88def
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
         options?: never;
         head?: never;
         patch?: never;
@@ -13980,7 +14046,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User share id
+                     * @description Share id
                      * @example a468bee88def
                      */
                     id: string;
@@ -14046,7 +14112,7 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description User share id
+                     * @description Share id
                      * @example a468bee88def
                      */
                     id: string;
@@ -23812,6 +23878,11 @@ export interface components {
              */
             href: string;
             meta: components["schemas"]["Artwork_File_Meta"];
+            /**
+             * @description Media type hint for the artwork file
+             * @example image/jpeg
+             */
+            type?: string;
         };
         /** @description Metadata about an artwork file */
         Artwork_File_Meta: {
@@ -25445,6 +25516,8 @@ export interface components {
         /** @description A JSON:API link object */
         Link_Object: {
             href: string;
+            /** @description Media type hint for the linked resource */
+            type?: string;
         };
         Links: {
             meta?: components["schemas"]["Links_Meta"];
@@ -25914,6 +25987,11 @@ export interface components {
              */
             repeat: "NONE" | "ONE" | "BATCH";
             /**
+             * Format: uuid
+             * @description Opaque queue-wide equality token.
+             */
+            revision: string;
+            /**
              * @description Queue's shuffle mode
              * @enum {string}
              */
@@ -25929,6 +26007,12 @@ export interface components {
         PlayQueues_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["PlayQueues_Resource_Object"];
             links: components["schemas"]["Links"];
+            meta?: components["schemas"]["PlayQueues_Create_Single_Resource_Data_Document_Meta"];
+        };
+        /** @description Opaque queue-wide equality token. Compare for equality only. */
+        PlayQueues_Create_Single_Resource_Data_Document_Meta: {
+            /** Format: uuid */
+            revision: string;
         };
         PlayQueues_Current_Resource_Identifier: {
             /**
@@ -25946,7 +26030,6 @@ export interface components {
         PlayQueues_Current_Resource_Identifier_Meta: {
             /** Format: uuid */
             batchId: string;
-            globalItemId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
             position?: string;
@@ -25959,6 +26042,47 @@ export interface components {
             data?: components["schemas"]["PlayQueues_Current_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        PlayQueues_Current_Update_Resource_Identifier: {
+            id: string;
+            meta?: components["schemas"]["PlayQueues_Current_Update_Resource_Identifier_Meta"];
+            /** @enum {string} */
+            type: "tracks" | "videos";
+        };
+        PlayQueues_Current_Update_Resource_Identifier_Meta: {
+            /** Format: uuid */
+            batchId: string;
+            itemId: string;
+            legacySource?: components["schemas"]["LegacySource"];
+            position?: string;
+            /** Format: date-time */
+            positionUpdatedAt?: string;
+            updatedByInstallationId?: string;
+        };
+        PlayQueues_Current_Update_Single_Relationship_Data_Document: {
+            data: components["schemas"]["PlayQueues_Current_Update_Resource_Identifier"] | (never | null);
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["PlayQueues_Current_Update_Single_Relationship_Data_Document_Meta"];
+        };
+        /** @description Opaque queue-wide equality token. Compare for equality only. */
+        PlayQueues_Current_Update_Single_Relationship_Data_Document_Meta: {
+            /** Format: uuid */
+            revision: string;
+        };
+        PlayQueues_Future_Add_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["PlayQueues_Future_Add_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["PlayQueues_Future_Add_Multi_Relationship_Data_Document_Meta"];
+        };
+        /** @description Opaque queue-wide equality token. Compare for equality only. */
+        PlayQueues_Future_Add_Multi_Relationship_Data_Document_Meta: {
+            /** Format: uuid */
+            revision: string;
+        };
+        PlayQueues_Future_Add_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks" | "videos";
         };
         PlayQueues_Future_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["PlayQueues_Future_Resource_Identifier"][];
@@ -25981,10 +26105,24 @@ export interface components {
         PlayQueues_Future_Resource_Identifier_Meta: {
             /** Format: uuid */
             batchId: string;
-            globalItemId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
             replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        PlayQueues_Future_Update_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["PlayQueues_Future_Update_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["PlayQueues_Future_Update_Multi_Relationship_Data_Document_Meta"];
+        };
+        /** @description Opaque queue-wide equality token. Compare for equality only. */
+        PlayQueues_Future_Update_Multi_Relationship_Data_Document_Meta: {
+            /** Format: uuid */
+            revision: string;
+        };
+        PlayQueues_Future_Update_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks" | "videos";
         };
         PlayQueues_Multi_Resource_Data_Document: {
             data: components["schemas"]["PlayQueues_Resource_Object"][];
@@ -26017,7 +26155,6 @@ export interface components {
         PlayQueues_Past_Resource_Identifier_Meta: {
             /** Format: uuid */
             batchId: string;
-            globalItemId: string;
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
             replacement?: components["schemas"]["Replacement_Provenance"];
@@ -26047,6 +26184,16 @@ export interface components {
             data: components["schemas"]["PlayQueues_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        PlayQueues_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["PlayQueues_Resource_Object"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["PlayQueues_Update_Single_Resource_Data_Document_Meta"];
+        };
+        /** @description Opaque queue-wide equality token. Compare for equality only. */
+        PlayQueues_Update_Single_Resource_Data_Document_Meta: {
+            /** Format: uuid */
+            revision: string;
         };
         /** @description Recoverable AI playlist generation progress snapshot */
         PlaylistGenerationProgress: {
@@ -27542,9 +27689,15 @@ export interface components {
             code: string;
             /**
              * Format: date-time
-             * @description Datetime of share creation (ISO 8601)
+             * @description Time the share was created.
+             * @example 2021-07-01T00:00:00Z
              */
             createdAt: string;
+            /**
+             * Format: date-time
+             * @description Time bearer access and acceptance expire. New shares expire seven days after creation; accepted grants remain valid.
+             */
+            expiresAt: string;
             /** @description Links external to TIDAL API */
             externalLinks?: components["schemas"]["External_Link"][];
             /**
