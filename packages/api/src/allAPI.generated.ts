@@ -2453,7 +2453,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Include related resources. Available relationships: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
+                     * @description Include related resources. Available relationships: albums, bannerArt, biography, claimStatus, followers, following, logoArt, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
@@ -2464,7 +2464,7 @@ export interface paths {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("albums" | "biography" | "claimStatus" | "followers" | "following" | "owners" | "profileArt" | "radio" | "roles" | "similarArtists" | "trackProviders" | "tracks" | "videos")[];
+                    includeLinkage?: ("albums" | "bannerArt" | "biography" | "claimStatus" | "followers" | "following" | "logoArt" | "owners" | "profileArt" | "radio" | "roles" | "similarArtists" | "trackProviders" | "tracks" | "videos")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -2573,12 +2573,12 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Include related resources. Available relationships: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
+                     * @description Include related resources. Available relationships: albums, bannerArt, biography, claimStatus, followers, following, logoArt, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("albums" | "biography" | "claimStatus" | "followers" | "following" | "owners" | "profileArt" | "radio" | "roles" | "similarArtists" | "trackProviders" | "tracks" | "videos")[];
+                    includeLinkage?: ("albums" | "bannerArt" | "biography" | "claimStatus" | "followers" | "following" | "logoArt" | "owners" | "profileArt" | "radio" | "roles" | "similarArtists" | "trackProviders" | "tracks" | "videos")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -2623,7 +2623,7 @@ export interface paths {
         head?: never;
         /**
          * Update single artist.
-         * @description Updates existing artist.
+         * @description When both profile colours are available, they must have at least 3:1 contrast.
          */
         patch: {
             parameters: {
@@ -2739,6 +2739,118 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/artists/{id}/relationships/bannerArt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get bannerArt relationship ("to-many").
+         * @description Reads the selected header banner artwork.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Include related resources. Available relationships: bannerArt
+                     * @example bannerArt
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Artists_BannerArt_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update bannerArt relationship ("to-many").
+         * @description Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Returns an acknowledgement.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ArtistsBannerArtRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
         trace?: never;
     };
     "/artists/{id}/relationships/biography": {
@@ -3090,6 +3202,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/artists/{id}/relationships/logoArt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get logoArt relationship ("to-many").
+         * @description Reads the selected logo artwork.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Include related resources. Available relationships: logoArt
+                     * @example logoArt
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Artists_LogoArt_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update logoArt relationship ("to-many").
+         * @description Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Returns an acknowledgement.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ArtistsLogoArtRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
     "/artists/{id}/relationships/owners": {
         parameters: {
             query?: never;
@@ -3160,7 +3384,7 @@ export interface paths {
         };
         /**
          * Get profileArt relationship ("to-many").
-         * @description Retrieves profileArt relationship.
+         * @description Reads the artist's avatar artwork.
          */
         get: {
             parameters: {
@@ -3216,7 +3440,7 @@ export interface paths {
         head?: never;
         /**
          * Update profileArt relationship ("to-many").
-         * @description Updates profileArt relationship.
+         * @description Updates the artist's avatar artwork.
          */
         patch: {
             parameters: {
@@ -23542,6 +23766,14 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ArtistsBannerArtRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["ArtistsBannerArtRelationshipUpdateOperation_Payload_Data"][];
+        };
+        ArtistsBannerArtRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artworks";
+        };
         ArtistsCreateOperation_Payload: {
             data: components["schemas"]["ArtistsCreateOperation_Payload_Data"];
             meta?: components["schemas"]["ArtistsCreateOperation_Payload_Meta"];
@@ -23574,6 +23806,14 @@ export interface components {
             /** @enum {string} */
             type: "artists";
         };
+        ArtistsLogoArtRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["ArtistsLogoArtRelationshipUpdateOperation_Payload_Data"][];
+        };
+        ArtistsLogoArtRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artworks";
+        };
         ArtistsProfileArtRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["ArtistsProfileArtRelationshipUpdateOperation_Payload_Data"][];
         };
@@ -23593,9 +23833,13 @@ export interface components {
             type: "artists";
         };
         ArtistsUpdateOperation_Payload_Data_Attributes: {
+            /** @description Background colour override. */
+            backgroundColor?: string;
             contributionsEnabled?: boolean;
             contributionsSalesPitch?: string;
             externalLinks?: components["schemas"]["External_Link_Payload"][];
+            /** @description Foreground colour override. */
+            foregroundColor?: string;
             handle?: string | (never | null);
             name?: string;
         };
@@ -23625,6 +23869,11 @@ export interface components {
         };
         Artists_Attributes: {
             /**
+             * @description Artist profile background colour override
+             * @example #001122
+             */
+            backgroundColor?: string;
+            /**
              * @description Is the artist enabled for contributions?
              * @example true
              */
@@ -23636,6 +23885,11 @@ export interface components {
             contributionsSalesPitch?: string;
             /** @description Artist links external to TIDAL API */
             externalLinks?: components["schemas"]["External_Link"][];
+            /**
+             * @description Artist profile foreground colour override
+             * @example #FFFFFF
+             */
+            foregroundColor?: string;
             /**
              * @description Artist handle
              * @example jayz
@@ -23668,6 +23922,11 @@ export interface components {
              * @example true
              */
             spotlighted?: boolean;
+        };
+        Artists_BannerArt_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Artists_Biography_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
@@ -23738,6 +23997,11 @@ export interface components {
         Artists_Following_Resource_Identifier_Meta: {
             viewer?: components["schemas"]["Artists_Followers_Resource_Meta_ViewerContext"];
         };
+        Artists_LogoArt_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Artists_Multi_Resource_Data_Document: {
             data: components["schemas"]["Artists_Resource_Object"][];
             included?: components["schemas"]["Included"];
@@ -23760,10 +24024,12 @@ export interface components {
         };
         Artists_Relationships: {
             albums?: components["schemas"]["Artists_Albums_Multi_Relationship_Data_Document"];
+            bannerArt?: components["schemas"]["Artists_BannerArt_Multi_Relationship_Data_Document"];
             biography?: components["schemas"]["Artists_Biography_Single_Relationship_Data_Document"];
             claimStatus?: components["schemas"]["Artists_ClaimStatus_Single_Relationship_Data_Document"];
             followers?: components["schemas"]["Artists_Followers_Multi_Relationship_Data_Document"];
             following?: components["schemas"]["Artists_Following_Multi_Relationship_Data_Document"];
+            logoArt?: components["schemas"]["Artists_LogoArt_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Artists_Owners_Multi_Relationship_Data_Document"];
             profileArt?: components["schemas"]["Artists_ProfileArt_Multi_Relationship_Data_Document"];
             radio?: components["schemas"]["Artists_Radio_Multi_Relationship_Data_Document"];
@@ -25574,11 +25840,7 @@ export interface components {
         LyricsCreateOperation_Payload_Meta: {
             generate?: boolean;
         };
-        LyricsProvider: {
-            name?: string;
-            /** @enum {string} */
-            source?: "TIDAL" | "THIRD_PARTY";
-        };
+        LyricsProvider: components["schemas"]["TidalLyricsProvider"] | components["schemas"]["ThirdPartyLyricsProvider"];
         LyricsUpdateOperation_Payload: {
             data: components["schemas"]["LyricsUpdateOperation_Payload_Data"];
         };
@@ -25596,7 +25858,7 @@ export interface components {
             /** @enum {string} */
             direction?: "LEFT_TO_RIGHT" | "RIGHT_TO_LEFT";
             lrcText?: string;
-            provider?: components["schemas"]["ThirdPartyLyricsProvider"] | components["schemas"]["TidalLyricsProvider"];
+            provider?: components["schemas"]["LyricsProvider"];
             /** @enum {string} */
             technicalStatus: "PENDING" | "PROCESSING" | "ERROR" | "OK";
             text?: string;
@@ -26929,7 +27191,7 @@ export interface components {
              */
             currency: "USD";
             /**
-             * @description Price amount with max 2 decimal places
+             * @description Amount in the currency's major units
              * @example 9.99
              */
             price: string;
@@ -26952,7 +27214,7 @@ export interface components {
              */
             currency: "USD";
             /**
-             * @description Price amount with max 2 decimal places
+             * @description Amount in the currency's major units
              * @example 9.99
              */
             price: string;
@@ -28252,17 +28514,18 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        ThirdPartyLyricsProvider: Omit<WithRequired<components["schemas"]["LyricsProvider"], "name">, "source"> & {
+        ThirdPartyLyricsProvider: {
             commonTrackId: string;
             lyricsId: string;
-        } & {
+            name: string;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             source: "THIRD_PARTY";
         };
-        TidalLyricsProvider: Omit<components["schemas"]["LyricsProvider"], "source"> & {
+        TidalLyricsProvider: {
+            name?: string;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -30458,7 +30721,7 @@ export interface components {
              */
             currency: string;
             /**
-             * @description Price amount with max 2 decimal places
+             * @description Amount in the currency's major units
              * @example 9.99
              */
             currentPrice: string;
@@ -30468,7 +30731,7 @@ export interface components {
              */
             effectiveDate: string;
             /**
-             * @description Price amount with max 2 decimal places
+             * @description Amount in the currency's major units
              * @example 9.99
              */
             newPrice: string;
@@ -31300,7 +31563,4 @@ export interface components {
     pathItems: never;
 }
 export type $defs = Record<string, never>;
-type WithRequired<T, K extends keyof T> = T & {
-    [P in K]-?: T[P];
-};
 export type operations = Record<string, never>;
