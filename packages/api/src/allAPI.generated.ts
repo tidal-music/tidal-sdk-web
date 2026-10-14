@@ -9563,7 +9563,7 @@ export interface paths {
         head?: never;
         /**
          * Update single playQueue.
-         * @description Updates existing playQueue.
+         * @description Atomically applies attributes, future items, then current selection.
          */
         patch: {
             parameters: {
@@ -25908,7 +25908,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        /** @description The viewer's effective role for the subject. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
+        /** @description The viewer's effective role for the subject. */
         Grantee: {
             /**
              * @description Effective role.
@@ -26518,12 +26518,42 @@ export interface components {
         PlayQueuesFutureRelationshipUpdateOperation_Payload_Meta: {
             positionBefore: string;
         };
+        /** @description Selects current from meta; data is ignored. */
+        PlayQueuesUpdateOperation_Current: {
+            meta: components["schemas"]["PlayQueuesUpdateOperation_Current_Meta"];
+        };
+        PlayQueuesUpdateOperation_Current_Meta: {
+            /** @description Queue item identifier; required for ITEM. */
+            itemId?: string;
+            /**
+             * @description FIRST_FUTURE_ITEM follows shuffle/repeat; no-op when future is empty.
+             * @enum {string}
+             */
+            mode: "FIRST_FUTURE_ITEM" | "ITEM";
+        };
+        PlayQueuesUpdateOperation_Future: {
+            data: components["schemas"]["PlayQueuesUpdateOperation_Future_Data"][];
+            meta: components["schemas"]["PlayQueuesUpdateOperation_Future_Meta"];
+        };
+        PlayQueuesUpdateOperation_Future_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks" | "videos";
+        };
+        PlayQueuesUpdateOperation_Future_Meta: {
+            /** @enum {string} */
+            mode: "ADD_TO_FRONT" | "ADD_TO_BACK" | "ADD_BEFORE" | "REPLACE_ALL";
+            /** @description Required for ADD_BEFORE. */
+            positionBefore?: string;
+            source?: components["schemas"]["PlayQueuesFutureRelationshipSource"];
+        };
         PlayQueuesUpdateOperation_Payload: {
             data: components["schemas"]["PlayQueuesUpdateOperation_Payload_Data"];
         };
         PlayQueuesUpdateOperation_Payload_Data: {
-            attributes: components["schemas"]["PlayQueuesUpdateOperation_Payload_Data_Attributes"];
+            attributes?: components["schemas"]["PlayQueuesUpdateOperation_Payload_Data_Attributes"];
             id: string;
+            relationships?: components["schemas"]["PlayQueuesUpdateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "playQueues";
         };
@@ -26533,6 +26563,10 @@ export interface components {
             /** @enum {string} */
             shuffle?: "OFF" | "BATCH" | "ALL";
             shuffled?: boolean;
+        };
+        PlayQueuesUpdateOperation_Payload_Data_Relationships: {
+            current?: components["schemas"]["PlayQueuesUpdateOperation_Current"];
+            future?: components["schemas"]["PlayQueuesUpdateOperation_Future"];
         };
         PlayQueues_Attributes: {
             /**
