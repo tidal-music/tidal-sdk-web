@@ -5,10 +5,10 @@
       "name" : "TIDAL Developer - Discussions",
       "url" : "https://github.com/orgs/tidal-music/discussions"
     },
-    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. Never parse, construct, or infer meaning from an `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes; a property's enum may narrow the supported set. Monetary amounts using the standard price type are positive decimal strings with at most two fractional digits, such as `\"9.99\"`.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nComma-separated identifiers match any complete pair. For to-many relationships, one related\nresource must match; filtering does not trim relationship contents. Each endpoint lists its supported filters and types.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<member>]=value`](https://jsonapi.org/format/#fetching-filtering) filters collections; each endpoint documents its available filters, and most collections require at least one.\n- [`sort=<member>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<member>` descending (`sort=-addedAt`). Filter and sort members are relative to the resources being returned.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Once the original request has completed, retrying with the same key and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
+    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. Never parse, construct, or infer meaning from an `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes. Monetary amounts are decimal strings; each field defines its sign and precision constraints.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nComma-separated identifiers match any complete pair. For to-many relationships, one related\nresource must match; filtering does not trim relationship contents. Each endpoint lists its supported filters and types.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<member>]=value`](https://jsonapi.org/format/#fetching-filtering) filters collections; each endpoint documents its available filters, and most collections require at least one.\n- [`sort=<member>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<member>` descending (`sort=-addedAt`). Filter and sort members are relative to the resources being returned.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Once the original request has completed, retrying with the same key and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.162"
+    "version" : "1.10.169"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -58,10 +58,10 @@
     "description" : "An OAuth client.",
     "name" : "clients"
   }, {
-    "description" : "Redemption of a collaboration invite. Creating one adds the caller as a collaborator on the invite's subject resource (currently only `playlists`).",
+    "description" : "Deprecated compatibility view of accepting a COLLABORATOR playlist share. Use `savedShares` instead. Creating one saves the share and adds the caller as a collaborator. The returned ID identifies the same saved share.",
     "name" : "collaborationInviteRedemptions"
   }, {
-    "description" : "A single-use, expiring invite link to add a collaborator to a subject resource (currently only `playlists`). Each invite can be redeemed exactly once; subsequent redemptions on the same invite are rejected with COLLABORATION_INVITE_ALREADY_REDEEMED. The polymorphic `subject` relationship follows the TIDAL convention used by `comments`, `reactions`, `purchases`, etc.",
+    "description" : "Deprecated compatibility view of a COLLABORATOR playlist share. Use `shares` instead. The ID and code identify the same share through either resource. Links are reusable. Expiry and revocation follow the underlying share.",
     "name" : "collaborationInvites"
   }, {
     "name" : "comments"
@@ -227,6 +227,12 @@
   }, {
     "description" : "A user's discovery mixes.",
     "name" : "userDiscoveryMixes"
+  }, {
+    "description" : "A group of activity events in the authenticated user's inbox or feed.",
+    "name" : "userFeedItems"
+  }, {
+    "description" : "The authenticated user's unread and seen state for each feed surface.",
+    "name" : "userFeeds"
   }, {
     "description" : "A user's new release mixes.",
     "name" : "userNewReleaseMixes"
@@ -3878,7 +3884,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos",
+          "description" : "Include related resources. Available relationships: albums, bannerArt, biography, claimStatus, followers, following, logoArt, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -3940,7 +3946,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "albums", "biography", "claimStatus", "followers", "following", "owners", "profileArt", "radio", "roles", "similarArtists", "trackProviders", "tracks", "videos" ]
+              "enum" : [ "albums", "bannerArt", "biography", "claimStatus", "followers", "following", "logoArt", "owners", "profileArt", "radio", "roles", "similarArtists", "trackProviders", "tracks", "videos" ]
             }
           },
           "style" : "form"
@@ -4100,7 +4106,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos",
+          "description" : "Include related resources. Available relationships: albums, bannerArt, biography, claimStatus, followers, following, logoArt, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos",
           "example" : "albums",
           "in" : "query",
           "name" : "include",
@@ -4122,7 +4128,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "albums", "biography", "claimStatus", "followers", "following", "owners", "profileArt", "radio", "roles", "similarArtists", "trackProviders", "tracks", "videos" ]
+              "enum" : [ "albums", "bannerArt", "biography", "claimStatus", "followers", "following", "logoArt", "owners", "profileArt", "radio", "roles", "similarArtists", "trackProviders", "tracks", "videos" ]
             }
           },
           "style" : "form"
@@ -4185,7 +4191,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates existing artist.",
+        "description" : "When both profile colours are available, they must have at least 3:1 contrast.",
         "parameters" : [ {
           "description" : "Artist id",
           "example" : "1566",
@@ -4357,6 +4363,171 @@
         "tags" : [ "artists" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/artists/{id}/relationships/bannerArt" : {
+      "get" : {
+        "description" : "Reads the selected header banner artwork.",
+        "parameters" : [ {
+          "description" : "Artist id",
+          "example" : "1566",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: bannerArt",
+          "example" : "bannerArt",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "bannerArt"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Artists_BannerArt_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get bannerArt relationship (\"to-many\").",
+        "tags" : [ "artists" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Returns an acknowledgement.",
+        "parameters" : [ {
+          "description" : "Artist id",
+          "example" : "1566",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ArtistsBannerArtRelationshipUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mutation_Response_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update bannerArt relationship (\"to-many\").",
+        "tags" : [ "artists" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -4857,6 +5028,171 @@
         }
       }
     },
+    "/artists/{id}/relationships/logoArt" : {
+      "get" : {
+        "description" : "Reads the selected logo artwork.",
+        "parameters" : [ {
+          "description" : "Artist id",
+          "example" : "1566",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: logoArt",
+          "example" : "logoArt",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "logoArt"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Artists_LogoArt_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get logoArt relationship (\"to-many\").",
+        "tags" : [ "artists" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Returns an acknowledgement.",
+        "parameters" : [ {
+          "description" : "Artist id",
+          "example" : "1566",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ArtistsLogoArtRelationshipUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mutation_Response_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update logoArt relationship (\"to-many\").",
+        "tags" : [ "artists" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/artists/{id}/relationships/owners" : {
       "get" : {
         "description" : "Retrieves owners relationship.",
@@ -4941,7 +5277,7 @@
     },
     "/artists/{id}/relationships/profileArt" : {
       "get" : {
-        "description" : "Retrieves profileArt relationship.",
+        "description" : "Reads the artist's avatar artwork.",
         "parameters" : [ {
           "description" : "Artist id",
           "example" : "1566",
@@ -5030,7 +5366,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates profileArt relationship.",
+        "description" : "Updates the artist's avatar artwork.",
         "parameters" : [ {
           "description" : "Artist id",
           "example" : "1566",
@@ -6794,6 +7130,7 @@
     },
     "/collaborationInviteRedemptions" : {
       "post" : {
+        "deprecated" : true,
         "description" : "Creates a new collaborationInviteRedemption.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
@@ -6861,6 +7198,7 @@
     },
     "/collaborationInvites" : {
       "get" : {
+        "deprecated" : true,
         "description" : "Retrieves multiple collaborationInvites by available filters, or without if applicable.",
         "parameters" : [ {
           "description" : "Invite code",
@@ -6958,6 +7296,7 @@
         }
       },
       "post" : {
+        "deprecated" : true,
         "description" : "Creates a new collaborationInvite.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
@@ -7025,6 +7364,7 @@
     },
     "/collaborationInvites/{id}" : {
       "delete" : {
+        "deprecated" : true,
         "description" : "Deletes existing collaborationInvite.",
         "parameters" : [ {
           "description" : "Collaboration invite id",
@@ -7090,6 +7430,7 @@
         }
       },
       "get" : {
+        "deprecated" : true,
         "description" : "Retrieves single collaborationInvite by id.",
         "parameters" : [ {
           "description" : "Collaboration invite id",
@@ -7186,6 +7527,7 @@
     },
     "/collaborationInvites/{id}/relationships/owners" : {
       "get" : {
+        "deprecated" : true,
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
           "description" : "Collaboration invite id",
@@ -7266,6 +7608,7 @@
     },
     "/collaborationInvites/{id}/relationships/subject" : {
       "get" : {
+        "deprecated" : true,
         "description" : "Retrieves subject relationship.",
         "parameters" : [ {
           "description" : "Collaboration invite id",
@@ -13960,7 +14303,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates existing playQueue.",
+        "description" : "Atomically applies attributes, future items, then current selection.",
         "parameters" : [ {
           "description" : "Play queue id",
           "example" : "550e8400-e29b-41d4-a716-446655440000",
@@ -29757,6 +30100,435 @@
         }
       }
     },
+    "/userFeedItems" : {
+      "get" : {
+        "description" : "The authenticated user's activity on the selected feed surface.",
+        "parameters" : [ {
+          "description" : "User id. Use `me` for the authenticated user",
+          "in" : "query",
+          "name" : "filter[owners.id]",
+          "required" : true,
+          "schema" : {
+            "maxItems" : 1,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "minLength" : 1,
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "Feed surface to read (e.g. `INBOX`)",
+          "in" : "query",
+          "name" : "filter[surface]",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "INBOX", "FEED" ]
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: actors, subject",
+          "example" : "actors.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "actors.albums"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "actors", "subject" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: actors.albums",
+          "example" : "actors.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "actors.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserFeedItems_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple userFeedItems.",
+        "tags" : [ "userFeedItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/userFeedItems/{id}/relationships/actors" : {
+      "get" : {
+        "description" : "Artists attributed to the activity.",
+        "parameters" : [ {
+          "description" : "Opaque identifier of a user feed item.",
+          "example" : "49XlsRIbQZSrRDe0QZhJ0y9nGzecOTVBOUN8MUUeD1iEbppZTWCgdLaxmzUvtk0K0JodRqxYgJrDQ5DAfi16j2ICfJGJ9MH9S6IvYuKzQAn1UWWSCdMA",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 432,
+            "minLength" : 1,
+            "pattern" : "^[0-9A-Za-z]+$",
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: actors",
+          "example" : "actors.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "actors.albums"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: actors.albums",
+          "example" : "actors.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "actors.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserFeedItems_Actors_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get actors relationship (\"to-many\").",
+        "tags" : [ "userFeedItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/userFeedItems/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "The resource the activity concerns.",
+        "parameters" : [ {
+          "description" : "Opaque identifier of a user feed item.",
+          "example" : "49XlsRIbQZSrRDe0QZhJ0y9nGzecOTVBOUN8MUUeD1iEbppZTWCgdLaxmzUvtk0K0JodRqxYgJrDQ5DAfi16j2ICfJGJ9MH9S6IvYuKzQAn1UWWSCdMA",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 432,
+            "minLength" : 1,
+            "pattern" : "^[0-9A-Za-z]+$",
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserFeedItems_Subject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
+        "tags" : [ "userFeedItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/userFeeds/{id}" : {
+      "get" : {
+        "description" : "Retrieves single userFeed by id.",
+        "parameters" : [ {
+          "description" : "Opaque identifier of a user's feed state. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserFeeds_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get single userFeed.",
+        "tags" : [ "userFeeds" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Advances the supplied seen positions and returns the updated feed state.",
+        "parameters" : [ {
+          "description" : "Opaque identifier of a user's feed state. Use `me` for the authenticated user's resource",
+          "example" : "me",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UserFeedsUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UserFeeds_Update_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update single userFeed.",
+        "tags" : [ "userFeeds" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/userNewReleaseMixes/{id}" : {
       "get" : {
         "description" : "Retrieves single userNewReleaseMixe by id.",
@@ -33448,7 +34220,7 @@
             "minItems" : 1,
             "type" : "array",
             "items" : {
-              "pattern" : "^(?:albums|artists|tracks|videos|playlists):[^,]+$",
+              "pattern" : "^(?:albums|artists|tracks|videos|playlists|folders):[^,]+$",
               "type" : "string"
             }
           }
@@ -36082,6 +36854,34 @@
           }
         }
       },
+      "ArtistsBannerArtRelationshipUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 1,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistsBannerArtRelationshipUpdateOperation_Payload_Data"
+            }
+          }
+        }
+      },
+      "ArtistsBannerArtRelationshipUpdateOperation_Payload_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "artworks" ]
+          }
+        }
+      },
       "ArtistsCreateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -36185,6 +36985,34 @@
           }
         }
       },
+      "ArtistsLogoArtRelationshipUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 1,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistsLogoArtRelationshipUpdateOperation_Payload_Data"
+            }
+          }
+        }
+      },
+      "ArtistsLogoArtRelationshipUpdateOperation_Payload_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "artworks" ]
+          }
+        }
+      },
       "ArtistsProfileArtRelationshipUpdateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -36245,6 +37073,12 @@
       "ArtistsUpdateOperation_Payload_Data_Attributes" : {
         "type" : "object",
         "properties" : {
+          "backgroundColor" : {
+            "minLength" : 1,
+            "pattern" : "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+            "type" : "string",
+            "description" : "Background colour override."
+          },
           "contributionsEnabled" : {
             "type" : "boolean"
           },
@@ -36256,6 +37090,12 @@
             "items" : {
               "$ref" : "#/components/schemas/External_Link_Payload"
             }
+          },
+          "foregroundColor" : {
+            "minLength" : 1,
+            "pattern" : "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+            "type" : "string",
+            "description" : "Foreground colour override."
           },
           "handle" : {
             "oneOf" : [ {
@@ -36330,6 +37170,13 @@
         "required" : [ "name", "popularity" ],
         "type" : "object",
         "properties" : {
+          "backgroundColor" : {
+            "minLength" : 1,
+            "pattern" : "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+            "type" : "string",
+            "description" : "Artist profile background colour override",
+            "example" : "#001122"
+          },
           "contributionsEnabled" : {
             "type" : "boolean",
             "description" : "Is the artist enabled for contributions?",
@@ -36346,6 +37193,13 @@
             "items" : {
               "$ref" : "#/components/schemas/External_Link"
             }
+          },
+          "foregroundColor" : {
+            "minLength" : 1,
+            "pattern" : "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+            "type" : "string",
+            "description" : "Artist profile foreground colour override",
+            "example" : "#FFFFFF"
           },
           "handle" : {
             "minLength" : 1,
@@ -36380,6 +37234,24 @@
             "type" : "boolean",
             "description" : "Is the artist spotlighted?",
             "example" : true
+          }
+        }
+      },
+      "Artists_BannerArt_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         }
       },
@@ -36543,6 +37415,24 @@
           }
         }
       },
+      "Artists_LogoArt_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "Artists_Multi_Resource_Data_Document" : {
         "required" : [ "data", "links" ],
         "type" : "object",
@@ -36620,6 +37510,9 @@
           "albums" : {
             "$ref" : "#/components/schemas/Artists_Albums_Multi_Relationship_Data_Document"
           },
+          "bannerArt" : {
+            "$ref" : "#/components/schemas/Artists_BannerArt_Multi_Relationship_Data_Document"
+          },
           "biography" : {
             "$ref" : "#/components/schemas/Artists_Biography_Single_Relationship_Data_Document"
           },
@@ -36631,6 +37524,9 @@
           },
           "following" : {
             "$ref" : "#/components/schemas/Artists_Following_Multi_Relationship_Data_Document"
+          },
+          "logoArt" : {
+            "$ref" : "#/components/schemas/Artists_LogoArt_Multi_Relationship_Data_Document"
           },
           "owners" : {
             "$ref" : "#/components/schemas/Artists_Owners_Multi_Relationship_Data_Document"
@@ -37750,12 +38646,12 @@
           },
           "expiresAt" : {
             "type" : "string",
-            "description" : "Datetime the invite expires (ISO 8601)",
+            "description" : "Time the underlying share expires; accepted grants remain valid",
             "format" : "date-time"
           },
           "revoked" : {
             "type" : "boolean",
-            "description" : "Whether the invite has been revoked by the subject's owner"
+            "description" : "Whether the underlying share has been revoked"
           }
         }
       },
@@ -40378,7 +41274,7 @@
             "enum" : [ "VIEWER", "COLLABORATOR", "OWNER" ]
           }
         },
-        "description" : "The viewer's effective role for the subject. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent."
+        "description" : "The viewer's effective role for the subject."
       },
       "Groups_Attributes" : {
         "required" : [ "name" ],
@@ -40579,6 +41475,8 @@
               "userDailyMixes" : "#/components/schemas/UserDailyMixes_Resource_Object",
               "userDataExportRequests" : "#/components/schemas/UserDataExportRequests_Resource_Object",
               "userDiscoveryMixes" : "#/components/schemas/UserDiscoveryMixes_Resource_Object",
+              "userFeedItems" : "#/components/schemas/UserFeedItems_Resource_Object",
+              "userFeeds" : "#/components/schemas/UserFeeds_Resource_Object",
               "userNewReleaseMixes" : "#/components/schemas/UserNewReleaseMixes_Resource_Object",
               "userOfflineMixes" : "#/components/schemas/UserOfflineMixes_Resource_Object",
               "userPlaybackStates" : "#/components/schemas/UserPlaybackStates_Resource_Object",
@@ -40732,6 +41630,10 @@
             "$ref" : "#/components/schemas/UserDataExportRequests_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/UserDiscoveryMixes_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/UserFeedItems_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/UserFeeds_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/UserNewReleaseMixes_Resource_Object"
           }, {
@@ -41152,22 +42054,18 @@
       },
       "LyricsProvider" : {
         "type" : "object",
-        "properties" : {
-          "name" : {
-            "type" : "string"
-          },
-          "source" : {
-            "type" : "string",
-            "enum" : [ "TIDAL", "THIRD_PARTY" ]
-          }
-        },
         "discriminator" : {
           "mapping" : {
             "THIRD_PARTY" : "#/components/schemas/ThirdPartyLyricsProvider",
             "TIDAL" : "#/components/schemas/TidalLyricsProvider"
           },
           "propertyName" : "source"
-        }
+        },
+        "oneOf" : [ {
+          "$ref" : "#/components/schemas/TidalLyricsProvider"
+        }, {
+          "$ref" : "#/components/schemas/ThirdPartyLyricsProvider"
+        } ]
       },
       "LyricsUpdateOperation_Payload" : {
         "required" : [ "data" ],
@@ -41218,11 +42116,7 @@
             "type" : "string"
           },
           "provider" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/ThirdPartyLyricsProvider"
-            }, {
-              "$ref" : "#/components/schemas/TidalLyricsProvider"
-            } ]
+            "$ref" : "#/components/schemas/LyricsProvider"
           },
           "technicalStatus" : {
             "type" : "string",
@@ -42089,6 +42983,79 @@
           }
         }
       },
+      "PlayQueuesUpdateOperation_Current" : {
+        "required" : [ "meta" ],
+        "type" : "object",
+        "properties" : {
+          "meta" : {
+            "$ref" : "#/components/schemas/PlayQueuesUpdateOperation_Current_Meta"
+          }
+        },
+        "description" : "Selects current from meta; data is ignored."
+      },
+      "PlayQueuesUpdateOperation_Current_Meta" : {
+        "required" : [ "mode" ],
+        "type" : "object",
+        "properties" : {
+          "itemId" : {
+            "type" : "string",
+            "description" : "Queue item identifier; required for ITEM."
+          },
+          "mode" : {
+            "type" : "string",
+            "description" : "FIRST_FUTURE_ITEM follows shuffle/repeat; no-op when future is empty.",
+            "enum" : [ "FIRST_FUTURE_ITEM", "ITEM" ]
+          }
+        }
+      },
+      "PlayQueuesUpdateOperation_Future" : {
+        "required" : [ "data", "meta" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 1,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PlayQueuesUpdateOperation_Future_Data"
+            }
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/PlayQueuesUpdateOperation_Future_Meta"
+          }
+        }
+      },
+      "PlayQueuesUpdateOperation_Future_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "tracks", "videos" ]
+          }
+        }
+      },
+      "PlayQueuesUpdateOperation_Future_Meta" : {
+        "required" : [ "mode" ],
+        "type" : "object",
+        "properties" : {
+          "mode" : {
+            "type" : "string",
+            "enum" : [ "ADD_TO_FRONT", "ADD_TO_BACK", "ADD_BEFORE", "REPLACE_ALL" ]
+          },
+          "positionBefore" : {
+            "type" : "string",
+            "description" : "Required for ADD_BEFORE."
+          },
+          "source" : {
+            "$ref" : "#/components/schemas/PlayQueuesFutureRelationshipSource"
+          }
+        }
+      },
       "PlayQueuesUpdateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -42099,7 +43066,7 @@
         }
       },
       "PlayQueuesUpdateOperation_Payload_Data" : {
-        "required" : [ "attributes", "id", "type" ],
+        "required" : [ "id", "type" ],
         "type" : "object",
         "properties" : {
           "attributes" : {
@@ -42108,6 +43075,9 @@
           "id" : {
             "minLength" : 1,
             "type" : "string"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/PlayQueuesUpdateOperation_Payload_Data_Relationships"
           },
           "type" : {
             "type" : "string",
@@ -42128,6 +43098,17 @@
           },
           "shuffled" : {
             "type" : "boolean"
+          }
+        }
+      },
+      "PlayQueuesUpdateOperation_Payload_Data_Relationships" : {
+        "type" : "object",
+        "properties" : {
+          "current" : {
+            "$ref" : "#/components/schemas/PlayQueuesUpdateOperation_Current"
+          },
+          "future" : {
+            "$ref" : "#/components/schemas/PlayQueuesUpdateOperation_Future"
           }
         }
       },
@@ -44513,8 +45494,11 @@
             "enum" : [ "USD" ]
           },
           "price" : {
+            "minimum" : 0,
+            "exclusiveMinimum" : true,
+            "pattern" : "^\\+?(?=[0-9.]*[1-9])(?:[0-9]+(?:\\.[0-9]{0,2})?|\\.[0-9]{1,2})$(?![\\s\\S])",
             "type" : "string",
-            "description" : "Price amount with max 2 decimal places",
+            "description" : "Amount in the currency's major units",
             "example" : "9.99"
           }
         }
@@ -44565,8 +45549,11 @@
             "enum" : [ "USD" ]
           },
           "price" : {
+            "minimum" : 0,
+            "exclusiveMinimum" : true,
+            "pattern" : "^\\+?(?=[0-9.]*[1-9])(?:[0-9]+(?:\\.[0-9]{0,2})?|\\.[0-9]{1,2})$(?![\\s\\S])",
             "type" : "string",
-            "description" : "Price amount with max 2 decimal places",
+            "description" : "Amount in the currency's major units",
             "example" : "9.99"
           }
         }
@@ -47441,27 +48428,36 @@
         }
       },
       "ThirdPartyLyricsProvider" : {
-        "required" : [ "commonTrackId", "lyricsId", "name" ],
+        "required" : [ "commonTrackId", "lyricsId", "name", "source" ],
         "type" : "object",
-        "allOf" : [ {
-          "$ref" : "#/components/schemas/LyricsProvider"
-        }, {
-          "type" : "object",
-          "properties" : {
-            "commonTrackId" : {
-              "type" : "string"
-            },
-            "lyricsId" : {
-              "type" : "string"
-            }
+        "properties" : {
+          "commonTrackId" : {
+            "type" : "string"
+          },
+          "lyricsId" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "source" : {
+            "type" : "string",
+            "enum" : [ "THIRD_PARTY" ]
           }
-        } ]
+        }
       },
       "TidalLyricsProvider" : {
+        "required" : [ "source" ],
         "type" : "object",
-        "allOf" : [ {
-          "$ref" : "#/components/schemas/LyricsProvider"
-        } ]
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "source" : {
+            "type" : "string",
+            "enum" : [ "TIDAL" ]
+          }
+        }
       },
       "TrackFilesReadById403ResponseBody" : {
         "required" : [ "errors" ],
@@ -51733,6 +52729,470 @@
           }
         }
       },
+      "UserFeedItemActivityDetails" : {
+        "type" : "object",
+        "description" : "Details of the activity represented by the group.",
+        "discriminator" : {
+          "mapping" : {
+            "ALBUM_RELEASED" : "#/components/schemas/UserFeedItemAlbumReleasedDetails",
+            "ALBUM_SHARED" : "#/components/schemas/UserFeedItemAlbumSharedDetails",
+            "ARTIST_FOLLOWED" : "#/components/schemas/UserFeedItemArtistFollowedDetails",
+            "COMMENT_REPLIED" : "#/components/schemas/UserFeedItemCommentRepliedDetails",
+            "COPYRIGHT_FLAGGED" : "#/components/schemas/UserFeedItemCopyrightFlaggedDetails",
+            "PLAYLIST_UPDATED" : "#/components/schemas/UserFeedItemPlaylistUpdatedDetails",
+            "TRACK_SOURCE_FILE_COMMENTED" : "#/components/schemas/UserFeedItemTrackSourceFileCommentedDetails"
+          },
+          "propertyName" : "activityType"
+        },
+        "oneOf" : [ {
+          "$ref" : "#/components/schemas/UserFeedItemAlbumReleasedDetails"
+        }, {
+          "$ref" : "#/components/schemas/UserFeedItemAlbumSharedDetails"
+        }, {
+          "$ref" : "#/components/schemas/UserFeedItemArtistFollowedDetails"
+        }, {
+          "$ref" : "#/components/schemas/UserFeedItemCommentRepliedDetails"
+        }, {
+          "$ref" : "#/components/schemas/UserFeedItemCopyrightFlaggedDetails"
+        }, {
+          "$ref" : "#/components/schemas/UserFeedItemPlaylistUpdatedDetails"
+        }, {
+          "$ref" : "#/components/schemas/UserFeedItemTrackSourceFileCommentedDetails"
+        } ]
+      },
+      "UserFeedItemAlbumReleasedDetails" : {
+        "required" : [ "activityType" ],
+        "type" : "object",
+        "properties" : {
+          "activityType" : {
+            "type" : "string",
+            "description" : "Type of activity represented by the group",
+            "enum" : [ "ALBUM_RELEASED" ]
+          },
+          "releaseSource" : {
+            "type" : "string",
+            "description" : "How the album was supplied to TIDAL",
+            "example" : "UPLOAD",
+            "enum" : [ "LABEL", "UPLOAD" ]
+          }
+        }
+      },
+      "UserFeedItemAlbumSharedDetails" : {
+        "required" : [ "activityType" ],
+        "type" : "object",
+        "properties" : {
+          "activityType" : {
+            "type" : "string",
+            "description" : "Type of activity represented by the group",
+            "enum" : [ "ALBUM_SHARED" ]
+          }
+        }
+      },
+      "UserFeedItemArtistFollowedDetails" : {
+        "required" : [ "activityType" ],
+        "type" : "object",
+        "properties" : {
+          "activityType" : {
+            "type" : "string",
+            "description" : "Type of activity represented by the group",
+            "enum" : [ "ARTIST_FOLLOWED" ]
+          }
+        }
+      },
+      "UserFeedItemCommentRepliedDetails" : {
+        "required" : [ "activityType" ],
+        "type" : "object",
+        "properties" : {
+          "activityType" : {
+            "type" : "string",
+            "description" : "Type of activity represented by the group",
+            "enum" : [ "COMMENT_REPLIED" ]
+          }
+        }
+      },
+      "UserFeedItemCopyrightFlaggedDetails" : {
+        "required" : [ "activityType" ],
+        "type" : "object",
+        "properties" : {
+          "activityType" : {
+            "type" : "string",
+            "description" : "Type of activity represented by the group",
+            "enum" : [ "COPYRIGHT_FLAGGED" ]
+          },
+          "matchCount" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Number of copyright matches found for the upload",
+            "format" : "int32",
+            "example" : 1
+          }
+        }
+      },
+      "UserFeedItemPlaylistUpdatedDetails" : {
+        "required" : [ "activityType" ],
+        "type" : "object",
+        "properties" : {
+          "activityType" : {
+            "type" : "string",
+            "description" : "Type of activity represented by the group",
+            "enum" : [ "PLAYLIST_UPDATED" ]
+          },
+          "newItemCount" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Number of items added to the playlist",
+            "format" : "int32",
+            "example" : 1
+          }
+        }
+      },
+      "UserFeedItemTrackSourceFileCommentedDetails" : {
+        "required" : [ "activityType" ],
+        "type" : "object",
+        "properties" : {
+          "activityType" : {
+            "type" : "string",
+            "description" : "Type of activity represented by the group",
+            "enum" : [ "TRACK_SOURCE_FILE_COMMENTED" ]
+          }
+        }
+      },
+      "UserFeedItems_Actors_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserFeedItems_Attributes" : {
+        "required" : [ "activityDetails", "countIsPeople", "eventCount", "firstAt", "lastAt", "surface", "unread" ],
+        "type" : "object",
+        "properties" : {
+          "activityDetails" : {
+            "$ref" : "#/components/schemas/UserFeedItemActivityDetails"
+          },
+          "countIsPeople" : {
+            "type" : "boolean",
+            "description" : "Whether `eventCount` also counts distinct people"
+          },
+          "eventCount" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Number of events represented by the item",
+            "format" : "int32"
+          },
+          "firstAt" : {
+            "type" : "string",
+            "description" : "Time of the first event in the group",
+            "format" : "date-time",
+            "example" : "2026-09-29T12:08:07.738Z"
+          },
+          "lastAt" : {
+            "type" : "string",
+            "description" : "Time of the latest event in the group",
+            "format" : "date-time",
+            "example" : "2026-09-29T12:08:07.738Z"
+          },
+          "surface" : {
+            "type" : "string",
+            "description" : "The feed surface containing the activity",
+            "example" : "INBOX",
+            "enum" : [ "INBOX", "FEED" ]
+          },
+          "unread" : {
+            "type" : "boolean",
+            "description" : "Whether the item contains unseen activity"
+          }
+        }
+      },
+      "UserFeedItems_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UserFeedItems_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/UserFeedItems_Multi_Resource_Data_Document_Meta"
+          }
+        }
+      },
+      "UserFeedItems_Multi_Resource_Data_Document_Meta" : {
+        "required" : [ "seenThroughToken" ],
+        "type" : "object",
+        "properties" : {
+          "seenThroughToken" : {
+            "maxLength" : 128,
+            "minLength" : 1,
+            "pattern" : "^[0-9A-Za-z]+$",
+            "type" : "string",
+            "description" : "Opaque position for marking the surface seen, issued with its first page."
+          }
+        }
+      },
+      "UserFeedItems_Relationships" : {
+        "properties" : {
+          "actors" : {
+            "$ref" : "#/components/schemas/UserFeedItems_Actors_Multi_Relationship_Data_Document"
+          },
+          "subject" : {
+            "$ref" : "#/components/schemas/UserFeedItems_Subject_Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "UserFeedItems_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/UserFeedItems_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/UserFeedItems_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "UserFeedItems_Subject_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/UserFeedItems_Subject_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "UserFeedItems_Subject_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "UserFeedItems_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/UserFeedItems_Subject_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserFeedsUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/UserFeedsUpdateOperation_Payload_Data"
+          }
+        }
+      },
+      "UserFeedsUpdateOperation_Payload_Data" : {
+        "required" : [ "attributes", "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/UserFeedsUpdateOperation_Payload_Data_Attributes"
+          },
+          "id" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "userFeeds" ]
+          }
+        }
+      },
+      "UserFeedsUpdateOperation_Payload_Data_Attributes" : {
+        "type" : "object",
+        "properties" : {
+          "feed" : {
+            "$ref" : "#/components/schemas/UserFeedsUpdateOperation_Payload_Data_Attributes_Feed"
+          },
+          "inbox" : {
+            "$ref" : "#/components/schemas/UserFeedsUpdateOperation_Payload_Data_Attributes_Inbox"
+          }
+        }
+      },
+      "UserFeedsUpdateOperation_Payload_Data_Attributes_Feed" : {
+        "required" : [ "seenThroughToken" ],
+        "type" : "object",
+        "properties" : {
+          "seenThroughToken" : {
+            "maxLength" : 128,
+            "minLength" : 1,
+            "pattern" : "^[0-9A-Za-z]+$",
+            "type" : "string",
+            "description" : "The seen position returned in `userFeedItems.meta.seenThroughToken` for this surface."
+          }
+        },
+        "description" : "Feed seen state"
+      },
+      "UserFeedsUpdateOperation_Payload_Data_Attributes_Inbox" : {
+        "required" : [ "seenThroughToken" ],
+        "type" : "object",
+        "properties" : {
+          "seenThroughToken" : {
+            "maxLength" : 128,
+            "minLength" : 1,
+            "pattern" : "^[0-9A-Za-z]+$",
+            "type" : "string",
+            "description" : "The seen position returned in `userFeedItems.meta.seenThroughToken` for this surface."
+          }
+        },
+        "description" : "Inbox seen state"
+      },
+      "UserFeeds_Attributes" : {
+        "required" : [ "feed", "inbox" ],
+        "type" : "object",
+        "properties" : {
+          "feed" : {
+            "$ref" : "#/components/schemas/UserFeeds_Attributes_Feed"
+          },
+          "inbox" : {
+            "$ref" : "#/components/schemas/UserFeeds_Attributes_Inbox"
+          }
+        }
+      },
+      "UserFeeds_Attributes_Feed" : {
+        "required" : [ "hasUnread" ],
+        "type" : "object",
+        "properties" : {
+          "hasUnread" : {
+            "type" : "boolean",
+            "description" : "Whether the feed contains unread activity"
+          },
+          "seenThroughToken" : {
+            "maxLength" : 128,
+            "minLength" : 1,
+            "pattern" : "^[0-9A-Za-z]+$",
+            "type" : "string",
+            "description" : "Opaque position through which the surface has been seen. Omitted when unavailable."
+          }
+        },
+        "description" : "Feed read state"
+      },
+      "UserFeeds_Attributes_Inbox" : {
+        "required" : [ "unreadCount" ],
+        "type" : "object",
+        "properties" : {
+          "seenThroughToken" : {
+            "maxLength" : 128,
+            "minLength" : 1,
+            "pattern" : "^[0-9A-Za-z]+$",
+            "type" : "string",
+            "description" : "Opaque position through which the surface has been seen. Omitted when unavailable."
+          },
+          "unreadCount" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Number of unread inbox items",
+            "format" : "int32"
+          }
+        },
+        "description" : "Inbox read state"
+      },
+      "UserFeeds_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/UserFeeds_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "UserFeeds_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/UserFeeds_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "UserFeeds_Update_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/UserFeeds_Resource_Object"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "UserNewReleaseMixes_Attributes" : {
         "type" : "object"
       },
@@ -52917,8 +54377,11 @@
             "example" : "EUR"
           },
           "currentPrice" : {
+            "minimum" : 0,
+            "exclusiveMinimum" : true,
+            "pattern" : "^\\+?(?=[0-9.]*[1-9])(?:[0-9]+(?:\\.[0-9]{0,2})?|\\.[0-9]{1,2})$(?![\\s\\S])",
             "type" : "string",
-            "description" : "Price amount with max 2 decimal places",
+            "description" : "Amount in the currency's major units",
             "example" : "9.99"
           },
           "effectiveDate" : {
@@ -52927,8 +54390,11 @@
             "format" : "date"
           },
           "newPrice" : {
+            "minimum" : 0,
+            "exclusiveMinimum" : true,
+            "pattern" : "^\\+?(?=[0-9.]*[1-9])(?:[0-9]+(?:\\.[0-9]{0,2})?|\\.[0-9]{1,2})$(?![\\s\\S])",
             "type" : "string",
-            "description" : "Price amount with max 2 decimal places",
+            "description" : "Amount in the currency's major units",
             "example" : "9.99"
           }
         }

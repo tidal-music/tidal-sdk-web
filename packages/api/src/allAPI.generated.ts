@@ -2453,7 +2453,7 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Include related resources. Available relationships: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
+                     * @description Include related resources. Available relationships: albums, bannerArt, biography, claimStatus, followers, following, logoArt, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
@@ -2464,7 +2464,7 @@ export interface paths {
                     /** @description User id. Use `me` for the authenticated user */
                     "filter[owners.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("albums" | "biography" | "claimStatus" | "followers" | "following" | "owners" | "profileArt" | "radio" | "roles" | "similarArtists" | "trackProviders" | "tracks" | "videos")[];
+                    includeLinkage?: ("albums" | "bannerArt" | "biography" | "claimStatus" | "followers" | "following" | "logoArt" | "owners" | "profileArt" | "radio" | "roles" | "similarArtists" | "trackProviders" | "tracks" | "videos")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -2573,12 +2573,12 @@ export interface paths {
                      */
                     countryCode?: string;
                     /**
-                     * @description Include related resources. Available relationships: albums, biography, claimStatus, followers, following, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
+                     * @description Include related resources. Available relationships: albums, bannerArt, biography, claimStatus, followers, following, logoArt, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("albums" | "biography" | "claimStatus" | "followers" | "following" | "owners" | "profileArt" | "radio" | "roles" | "similarArtists" | "trackProviders" | "tracks" | "videos")[];
+                    includeLinkage?: ("albums" | "bannerArt" | "biography" | "claimStatus" | "followers" | "following" | "logoArt" | "owners" | "profileArt" | "radio" | "roles" | "similarArtists" | "trackProviders" | "tracks" | "videos")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -2623,7 +2623,7 @@ export interface paths {
         head?: never;
         /**
          * Update single artist.
-         * @description Updates existing artist.
+         * @description When both profile colours are available, they must have at least 3:1 contrast.
          */
         patch: {
             parameters: {
@@ -2739,6 +2739,118 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/artists/{id}/relationships/bannerArt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get bannerArt relationship ("to-many").
+         * @description Reads the selected header banner artwork.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Include related resources. Available relationships: bannerArt
+                     * @example bannerArt
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Artists_BannerArt_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update bannerArt relationship ("to-many").
+         * @description Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Returns an acknowledgement.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ArtistsBannerArtRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
         trace?: never;
     };
     "/artists/{id}/relationships/biography": {
@@ -3090,6 +3202,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/artists/{id}/relationships/logoArt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get logoArt relationship ("to-many").
+         * @description Reads the selected logo artwork.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Include related resources. Available relationships: logoArt
+                     * @example logoArt
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Artists_LogoArt_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update logoArt relationship ("to-many").
+         * @description Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Returns an acknowledgement.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Artist id
+                     * @example 1566
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ArtistsLogoArtRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
     "/artists/{id}/relationships/owners": {
         parameters: {
             query?: never;
@@ -3160,7 +3384,7 @@ export interface paths {
         };
         /**
          * Get profileArt relationship ("to-many").
-         * @description Retrieves profileArt relationship.
+         * @description Reads the artist's avatar artwork.
          */
         get: {
             parameters: {
@@ -3216,7 +3440,7 @@ export interface paths {
         head?: never;
         /**
          * Update profileArt relationship ("to-many").
-         * @description Updates profileArt relationship.
+         * @description Updates the artist's avatar artwork.
          */
         patch: {
             parameters: {
@@ -4451,6 +4675,7 @@ export interface paths {
         put?: never;
         /**
          * Create single collaborationInviteRedemption.
+         * @deprecated
          * @description Creates a new collaborationInviteRedemption.
          */
         post: {
@@ -4505,6 +4730,7 @@ export interface paths {
         };
         /**
          * Get multiple collaborationInvites.
+         * @deprecated
          * @description Retrieves multiple collaborationInvites by available filters, or without if applicable.
          */
         get: {
@@ -4553,6 +4779,7 @@ export interface paths {
         put?: never;
         /**
          * Create single collaborationInvite.
+         * @deprecated
          * @description Creates a new collaborationInvite.
          */
         post: {
@@ -4607,6 +4834,7 @@ export interface paths {
         };
         /**
          * Get single collaborationInvite.
+         * @deprecated
          * @description Retrieves single collaborationInvite by id.
          */
         get: {
@@ -4660,6 +4888,7 @@ export interface paths {
         post?: never;
         /**
          * Delete single collaborationInvite.
+         * @deprecated
          * @description Deletes existing collaborationInvite.
          */
         delete: {
@@ -4715,6 +4944,7 @@ export interface paths {
         };
         /**
          * Get owners relationship ("to-many").
+         * @deprecated
          * @description Retrieves owners relationship.
          */
         get: {
@@ -4776,6 +5006,7 @@ export interface paths {
         };
         /**
          * Get subject relationship ("to-one").
+         * @deprecated
          * @description Retrieves subject relationship.
          */
         get: {
@@ -9332,7 +9563,7 @@ export interface paths {
         head?: never;
         /**
          * Update single playQueue.
-         * @description Updates existing playQueue.
+         * @description Atomically applies attributes, future items, then current selection.
          */
         patch: {
             parameters: {
@@ -19983,6 +20214,301 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/userFeedItems": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple userFeedItems.
+         * @description The authenticated user's activity on the selected feed surface.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
+                    /** @description Feed surface to read (e.g. `INBOX`) */
+                    "filter[surface]": "INBOX" | "FEED";
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: actors, subject
+                     * @example actors.albums
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("actors" | "subject")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: actors.albums
+                     * @example actors.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserFeedItems_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userFeedItems/{id}/relationships/actors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get actors relationship ("to-many").
+         * @description Artists attributed to the activity.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: actors
+                     * @example actors.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: actors.albums
+                     * @example actors.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Opaque identifier of a user feed item.
+                     * @example 49XlsRIbQZSrRDe0QZhJ0y9nGzecOTVBOUN8MUUeD1iEbppZTWCgdLaxmzUvtk0K0JodRqxYgJrDQ5DAfi16j2ICfJGJ9MH9S6IvYuKzQAn1UWWSCdMA
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserFeedItems_Actors_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userFeedItems/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description The resource the activity concerns.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Opaque identifier of a user feed item.
+                     * @example 49XlsRIbQZSrRDe0QZhJ0y9nGzecOTVBOUN8MUUeD1iEbppZTWCgdLaxmzUvtk0K0JodRqxYgJrDQ5DAfi16j2ICfJGJ9MH9S6IvYuKzQAn1UWWSCdMA
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserFeedItems_Subject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userFeeds/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single userFeed.
+         * @description Retrieves single userFeed by id.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Opaque identifier of a user's feed state. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserFeeds_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update single userFeed.
+         * @description Advances the supplied seen positions and returns the updated feed state.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Opaque identifier of a user's feed state. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserFeedsUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserFeeds_Update_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
     "/userNewReleaseMixes/{id}": {
         parameters: {
             query?: never;
@@ -23542,6 +24068,14 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ArtistsBannerArtRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["ArtistsBannerArtRelationshipUpdateOperation_Payload_Data"][];
+        };
+        ArtistsBannerArtRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artworks";
+        };
         ArtistsCreateOperation_Payload: {
             data: components["schemas"]["ArtistsCreateOperation_Payload_Data"];
             meta?: components["schemas"]["ArtistsCreateOperation_Payload_Meta"];
@@ -23574,6 +24108,14 @@ export interface components {
             /** @enum {string} */
             type: "artists";
         };
+        ArtistsLogoArtRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["ArtistsLogoArtRelationshipUpdateOperation_Payload_Data"][];
+        };
+        ArtistsLogoArtRelationshipUpdateOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "artworks";
+        };
         ArtistsProfileArtRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["ArtistsProfileArtRelationshipUpdateOperation_Payload_Data"][];
         };
@@ -23593,9 +24135,13 @@ export interface components {
             type: "artists";
         };
         ArtistsUpdateOperation_Payload_Data_Attributes: {
+            /** @description Background colour override. */
+            backgroundColor?: string;
             contributionsEnabled?: boolean;
             contributionsSalesPitch?: string;
             externalLinks?: components["schemas"]["External_Link_Payload"][];
+            /** @description Foreground colour override. */
+            foregroundColor?: string;
             handle?: string | (never | null);
             name?: string;
         };
@@ -23625,6 +24171,11 @@ export interface components {
         };
         Artists_Attributes: {
             /**
+             * @description Artist profile background colour override
+             * @example #001122
+             */
+            backgroundColor?: string;
+            /**
              * @description Is the artist enabled for contributions?
              * @example true
              */
@@ -23636,6 +24187,11 @@ export interface components {
             contributionsSalesPitch?: string;
             /** @description Artist links external to TIDAL API */
             externalLinks?: components["schemas"]["External_Link"][];
+            /**
+             * @description Artist profile foreground colour override
+             * @example #FFFFFF
+             */
+            foregroundColor?: string;
             /**
              * @description Artist handle
              * @example jayz
@@ -23668,6 +24224,11 @@ export interface components {
              * @example true
              */
             spotlighted?: boolean;
+        };
+        Artists_BannerArt_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Artists_Biography_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
@@ -23738,6 +24299,11 @@ export interface components {
         Artists_Following_Resource_Identifier_Meta: {
             viewer?: components["schemas"]["Artists_Followers_Resource_Meta_ViewerContext"];
         };
+        Artists_LogoArt_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Artists_Multi_Resource_Data_Document: {
             data: components["schemas"]["Artists_Resource_Object"][];
             included?: components["schemas"]["Included"];
@@ -23760,10 +24326,12 @@ export interface components {
         };
         Artists_Relationships: {
             albums?: components["schemas"]["Artists_Albums_Multi_Relationship_Data_Document"];
+            bannerArt?: components["schemas"]["Artists_BannerArt_Multi_Relationship_Data_Document"];
             biography?: components["schemas"]["Artists_Biography_Single_Relationship_Data_Document"];
             claimStatus?: components["schemas"]["Artists_ClaimStatus_Single_Relationship_Data_Document"];
             followers?: components["schemas"]["Artists_Followers_Multi_Relationship_Data_Document"];
             following?: components["schemas"]["Artists_Following_Multi_Relationship_Data_Document"];
+            logoArt?: components["schemas"]["Artists_LogoArt_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Artists_Owners_Multi_Relationship_Data_Document"];
             profileArt?: components["schemas"]["Artists_ProfileArt_Multi_Relationship_Data_Document"];
             radio?: components["schemas"]["Artists_Radio_Multi_Relationship_Data_Document"];
@@ -24250,10 +24818,10 @@ export interface components {
             createdAt: string;
             /**
              * Format: date-time
-             * @description Datetime the invite expires (ISO 8601)
+             * @description Time the underlying share expires; accepted grants remain valid
              */
             expiresAt: string;
-            /** @description Whether the invite has been revoked by the subject's owner */
+            /** @description Whether the underlying share has been revoked */
             revoked: boolean;
         };
         CollaborationInvites_Create_Single_Resource_Data_Document: {
@@ -25340,7 +25908,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        /** @description The viewer's effective role for the subject. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
+        /** @description The viewer's effective role for the subject. */
         Grantee: {
             /**
              * @description Effective role.
@@ -25406,7 +25974,7 @@ export interface components {
         };
         /** @description The viewer has the original subject in their normal collection. Present as an empty object when known present, otherwise omitted. Includes owned and saved playlists and saved mixes across folders; excludes Save for Later. */
         InCollection: Record<string, never>;
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -25574,11 +26142,7 @@ export interface components {
         LyricsCreateOperation_Payload_Meta: {
             generate?: boolean;
         };
-        LyricsProvider: {
-            name?: string;
-            /** @enum {string} */
-            source?: "TIDAL" | "THIRD_PARTY";
-        };
+        LyricsProvider: components["schemas"]["TidalLyricsProvider"] | components["schemas"]["ThirdPartyLyricsProvider"];
         LyricsUpdateOperation_Payload: {
             data: components["schemas"]["LyricsUpdateOperation_Payload_Data"];
         };
@@ -25596,7 +26160,7 @@ export interface components {
             /** @enum {string} */
             direction?: "LEFT_TO_RIGHT" | "RIGHT_TO_LEFT";
             lrcText?: string;
-            provider?: components["schemas"]["ThirdPartyLyricsProvider"] | components["schemas"]["TidalLyricsProvider"];
+            provider?: components["schemas"]["LyricsProvider"];
             /** @enum {string} */
             technicalStatus: "PENDING" | "PROCESSING" | "ERROR" | "OK";
             text?: string;
@@ -25954,12 +26518,42 @@ export interface components {
         PlayQueuesFutureRelationshipUpdateOperation_Payload_Meta: {
             positionBefore: string;
         };
+        /** @description Selects current from meta; data is ignored. */
+        PlayQueuesUpdateOperation_Current: {
+            meta: components["schemas"]["PlayQueuesUpdateOperation_Current_Meta"];
+        };
+        PlayQueuesUpdateOperation_Current_Meta: {
+            /** @description Queue item identifier; required for ITEM. */
+            itemId?: string;
+            /**
+             * @description FIRST_FUTURE_ITEM follows shuffle/repeat; no-op when future is empty.
+             * @enum {string}
+             */
+            mode: "FIRST_FUTURE_ITEM" | "ITEM";
+        };
+        PlayQueuesUpdateOperation_Future: {
+            data: components["schemas"]["PlayQueuesUpdateOperation_Future_Data"][];
+            meta: components["schemas"]["PlayQueuesUpdateOperation_Future_Meta"];
+        };
+        PlayQueuesUpdateOperation_Future_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "tracks" | "videos";
+        };
+        PlayQueuesUpdateOperation_Future_Meta: {
+            /** @enum {string} */
+            mode: "ADD_TO_FRONT" | "ADD_TO_BACK" | "ADD_BEFORE" | "REPLACE_ALL";
+            /** @description Required for ADD_BEFORE. */
+            positionBefore?: string;
+            source?: components["schemas"]["PlayQueuesFutureRelationshipSource"];
+        };
         PlayQueuesUpdateOperation_Payload: {
             data: components["schemas"]["PlayQueuesUpdateOperation_Payload_Data"];
         };
         PlayQueuesUpdateOperation_Payload_Data: {
-            attributes: components["schemas"]["PlayQueuesUpdateOperation_Payload_Data_Attributes"];
+            attributes?: components["schemas"]["PlayQueuesUpdateOperation_Payload_Data_Attributes"];
             id: string;
+            relationships?: components["schemas"]["PlayQueuesUpdateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "playQueues";
         };
@@ -25969,6 +26563,10 @@ export interface components {
             /** @enum {string} */
             shuffle?: "OFF" | "BATCH" | "ALL";
             shuffled?: boolean;
+        };
+        PlayQueuesUpdateOperation_Payload_Data_Relationships: {
+            current?: components["schemas"]["PlayQueuesUpdateOperation_Current"];
+            future?: components["schemas"]["PlayQueuesUpdateOperation_Future"];
         };
         PlayQueues_Attributes: {
             /**
@@ -26929,7 +27527,7 @@ export interface components {
              */
             currency: "USD";
             /**
-             * @description Price amount with max 2 decimal places
+             * @description Amount in the currency's major units
              * @example 9.99
              */
             price: string;
@@ -26952,7 +27550,7 @@ export interface components {
              */
             currency: "USD";
             /**
-             * @description Price amount with max 2 decimal places
+             * @description Amount in the currency's major units
              * @example 9.99
              */
             price: string;
@@ -28252,17 +28850,18 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        ThirdPartyLyricsProvider: Omit<WithRequired<components["schemas"]["LyricsProvider"], "name">, "source"> & {
+        ThirdPartyLyricsProvider: {
             commonTrackId: string;
             lyricsId: string;
-        } & {
+            name: string;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             source: "THIRD_PARTY";
         };
-        TidalLyricsProvider: Omit<components["schemas"]["LyricsProvider"], "source"> & {
+        TidalLyricsProvider: {
+            name?: string;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -30015,6 +30614,225 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Details of the activity represented by the group. */
+        UserFeedItemActivityDetails: components["schemas"]["UserFeedItemAlbumReleasedDetails"] | components["schemas"]["UserFeedItemAlbumSharedDetails"] | components["schemas"]["UserFeedItemArtistFollowedDetails"] | components["schemas"]["UserFeedItemCommentRepliedDetails"] | components["schemas"]["UserFeedItemCopyrightFlaggedDetails"] | components["schemas"]["UserFeedItemPlaylistUpdatedDetails"] | components["schemas"]["UserFeedItemTrackSourceFileCommentedDetails"];
+        UserFeedItemAlbumReleasedDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "ALBUM_RELEASED";
+            /**
+             * @description How the album was supplied to TIDAL
+             * @example UPLOAD
+             * @enum {string}
+             */
+            releaseSource?: "LABEL" | "UPLOAD";
+        };
+        UserFeedItemAlbumSharedDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "ALBUM_SHARED";
+        };
+        UserFeedItemArtistFollowedDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "ARTIST_FOLLOWED";
+        };
+        UserFeedItemCommentRepliedDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "COMMENT_REPLIED";
+        };
+        UserFeedItemCopyrightFlaggedDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "COPYRIGHT_FLAGGED";
+            /**
+             * Format: int32
+             * @description Number of copyright matches found for the upload
+             * @example 1
+             */
+            matchCount?: number;
+        };
+        UserFeedItemPlaylistUpdatedDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "PLAYLIST_UPDATED";
+            /**
+             * Format: int32
+             * @description Number of items added to the playlist
+             * @example 1
+             */
+            newItemCount?: number;
+        };
+        UserFeedItemTrackSourceFileCommentedDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "TRACK_SOURCE_FILE_COMMENTED";
+        };
+        UserFeedItems_Actors_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserFeedItems_Attributes: {
+            activityDetails: components["schemas"]["UserFeedItemActivityDetails"];
+            /** @description Whether `eventCount` also counts distinct people */
+            countIsPeople: boolean;
+            /**
+             * Format: int32
+             * @description Number of events represented by the item
+             */
+            eventCount: number;
+            /**
+             * Format: date-time
+             * @description Time of the first event in the group
+             * @example 2026-09-29T12:08:07.738Z
+             */
+            firstAt: string;
+            /**
+             * Format: date-time
+             * @description Time of the latest event in the group
+             * @example 2026-09-29T12:08:07.738Z
+             */
+            lastAt: string;
+            /**
+             * @description The feed surface containing the activity
+             * @example INBOX
+             * @enum {string}
+             */
+            surface: "INBOX" | "FEED";
+            /** @description Whether the item contains unseen activity */
+            unread: boolean;
+        };
+        UserFeedItems_Multi_Resource_Data_Document: {
+            data: components["schemas"]["UserFeedItems_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["UserFeedItems_Multi_Resource_Data_Document_Meta"];
+        };
+        UserFeedItems_Multi_Resource_Data_Document_Meta: {
+            /** @description Opaque position for marking the surface seen, issued with its first page. */
+            seenThroughToken: string;
+        };
+        UserFeedItems_Relationships: {
+            actors?: components["schemas"]["UserFeedItems_Actors_Multi_Relationship_Data_Document"];
+            subject?: components["schemas"]["UserFeedItems_Subject_Single_Relationship_Data_Document"];
+        };
+        UserFeedItems_Resource_Object: {
+            attributes?: components["schemas"]["UserFeedItems_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["UserFeedItems_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "userFeedItems";
+        };
+        UserFeedItems_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["UserFeedItems_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        UserFeedItems_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        UserFeedItems_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["UserFeedItems_Subject_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserFeedsUpdateOperation_Payload: {
+            data: components["schemas"]["UserFeedsUpdateOperation_Payload_Data"];
+        };
+        UserFeedsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["UserFeedsUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "userFeeds";
+        };
+        UserFeedsUpdateOperation_Payload_Data_Attributes: {
+            feed?: components["schemas"]["UserFeedsUpdateOperation_Payload_Data_Attributes_Feed"];
+            inbox?: components["schemas"]["UserFeedsUpdateOperation_Payload_Data_Attributes_Inbox"];
+        };
+        /** @description Feed seen state */
+        UserFeedsUpdateOperation_Payload_Data_Attributes_Feed: {
+            /** @description The seen position returned in `userFeedItems.meta.seenThroughToken` for this surface. */
+            seenThroughToken: string;
+        };
+        /** @description Inbox seen state */
+        UserFeedsUpdateOperation_Payload_Data_Attributes_Inbox: {
+            /** @description The seen position returned in `userFeedItems.meta.seenThroughToken` for this surface. */
+            seenThroughToken: string;
+        };
+        UserFeeds_Attributes: {
+            feed: components["schemas"]["UserFeeds_Attributes_Feed"];
+            inbox: components["schemas"]["UserFeeds_Attributes_Inbox"];
+        };
+        /** @description Feed read state */
+        UserFeeds_Attributes_Feed: {
+            /** @description Whether the feed contains unread activity */
+            hasUnread: boolean;
+            /** @description Opaque position through which the surface has been seen. Omitted when unavailable. */
+            seenThroughToken?: string;
+        };
+        /** @description Inbox read state */
+        UserFeeds_Attributes_Inbox: {
+            /** @description Opaque position through which the surface has been seen. Omitted when unavailable. */
+            seenThroughToken?: string;
+            /**
+             * Format: int32
+             * @description Number of unread inbox items
+             */
+            unreadCount: number;
+        };
+        UserFeeds_Resource_Object: {
+            attributes?: components["schemas"]["UserFeeds_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "userFeeds";
+        };
+        UserFeeds_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserFeeds_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserFeeds_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserFeeds_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         UserNewReleaseMixes_Attributes: Record<string, never>;
         UserNewReleaseMixes_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
@@ -30458,7 +31276,7 @@ export interface components {
              */
             currency: string;
             /**
-             * @description Price amount with max 2 decimal places
+             * @description Amount in the currency's major units
              * @example 9.99
              */
             currentPrice: string;
@@ -30468,7 +31286,7 @@ export interface components {
              */
             effectiveDate: string;
             /**
-             * @description Price amount with max 2 decimal places
+             * @description Amount in the currency's major units
              * @example 9.99
              */
             newPrice: string;
@@ -31300,7 +32118,4 @@ export interface components {
     pathItems: never;
 }
 export type $defs = Record<string, never>;
-type WithRequired<T, K extends keyof T> = T & {
-    [P in K]-?: T[P];
-};
 export type operations = Record<string, never>;
