@@ -20289,7 +20289,7 @@ export interface paths {
         };
         /**
          * Get actors relationship ("to-many").
-         * @description Artists attributed to the activity.
+         * @description Artists attributed to the activity. Always empty for `ALBUM_FAVOURITED`, `TRACK_FAVOURITED` and `TRACK_PLAYLISTED`, which are counts only, and for `HISTORY_MIX_READY`, which nobody else acted on.
          */
         get: {
             parameters: {
@@ -20355,7 +20355,7 @@ export interface paths {
         };
         /**
          * Get subject relationship ("to-one").
-         * @description The resource the activity concerns.
+         * @description The resource the activity concerns. For `HISTORY_MIX_READY`, the viewer's history mix as a playlist.
          */
         get: {
             parameters: {
@@ -25908,7 +25908,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        /** @description The viewer's effective role for the subject. */
+        /** @description The viewer's effective role for the subject. Populated for albums, tracks and folders; omitted for other subject types. */
         Grantee: {
             /**
              * @description Effective role.
@@ -30615,7 +30615,15 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         /** @description Details of the activity represented by the group. */
-        UserFeedItemActivityDetails: components["schemas"]["UserFeedItemAlbumReleasedDetails"] | components["schemas"]["UserFeedItemAlbumSharedDetails"] | components["schemas"]["UserFeedItemArtistFollowedDetails"] | components["schemas"]["UserFeedItemCommentRepliedDetails"] | components["schemas"]["UserFeedItemCopyrightFlaggedDetails"] | components["schemas"]["UserFeedItemPlaylistUpdatedDetails"] | components["schemas"]["UserFeedItemTrackSourceFileCommentedDetails"];
+        UserFeedItemActivityDetails: components["schemas"]["UserFeedItemAlbumFavouritedDetails"] | components["schemas"]["UserFeedItemAlbumReleasedDetails"] | components["schemas"]["UserFeedItemAlbumSharedDetails"] | components["schemas"]["UserFeedItemArtistFollowedDetails"] | components["schemas"]["UserFeedItemCommentRepliedDetails"] | components["schemas"]["UserFeedItemCopyrightFlaggedDetails"] | components["schemas"]["UserFeedItemHistoryMixReadyDetails"] | components["schemas"]["UserFeedItemPlaylistUpdatedDetails"] | components["schemas"]["UserFeedItemTrackFavouritedDetails"] | components["schemas"]["UserFeedItemTrackPlaylistedDetails"] | components["schemas"]["UserFeedItemTrackSourceFileCommentedDetails"];
+        /** @description Listeners saved one of your albums. `eventCount` is the number of distinct people who saved it in the item's day; actors are never listed */
+        UserFeedItemAlbumFavouritedDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "ALBUM_FAVOURITED";
+        };
         UserFeedItemAlbumReleasedDetails: {
             /**
              * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
@@ -30663,6 +30671,25 @@ export interface components {
              */
             matchCount?: number;
         };
+        /** @description A new history mix of the viewer's own listening is ready. The `subject` is the mix, as a playlist. `frequency` is how often the mix is generated. `eventCount` is always 1, and actors are never listed */
+        UserFeedItemHistoryMixReadyDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "HISTORY_MIX_READY";
+            /**
+             * @description Recurrence frequency defined by RFC 5545
+             * @example MONTHLY
+             * @enum {string}
+             */
+            frequency: "MONTHLY" | "YEARLY";
+            /**
+             * @description The calendar period the mix covers: `YYYY-MM` for a `MONTHLY` mix, `YYYY` for a `YEARLY` one
+             * @example 2026-09
+             */
+            period: string;
+        };
         UserFeedItemPlaylistUpdatedDetails: {
             /**
              * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
@@ -30675,6 +30702,22 @@ export interface components {
              * @example 1
              */
             newItemCount?: number;
+        };
+        /** @description Listeners saved one of your tracks. `eventCount` is the number of distinct people who saved it in the item's day; actors are never listed */
+        UserFeedItemTrackFavouritedDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "TRACK_FAVOURITED";
+        };
+        /** @description One of your tracks was added to user playlists. `eventCount` is the number of distinct playlists it was added to in the item's day, not people; actors are never listed */
+        UserFeedItemTrackPlaylistedDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "TRACK_PLAYLISTED";
         };
         UserFeedItemTrackSourceFileCommentedDetails: {
             /**
