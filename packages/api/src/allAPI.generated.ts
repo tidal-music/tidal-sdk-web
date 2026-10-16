@@ -390,7 +390,7 @@ export interface paths {
                      * @example artists.albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -497,7 +497,7 @@ export interface paths {
                      * @example artists.albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -646,7 +646,7 @@ export interface paths {
                      * @example albumStatistics
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -719,7 +719,7 @@ export interface paths {
                      * @example artists.albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -787,7 +787,7 @@ export interface paths {
                      * @example coverArt
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -901,7 +901,7 @@ export interface paths {
                      * @example genres
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -974,7 +974,7 @@ export interface paths {
                      * @example items
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1083,7 +1083,7 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1149,7 +1149,7 @@ export interface paths {
                      * @example priceConfig
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1217,7 +1217,7 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1288,7 +1288,7 @@ export interface paths {
                      * @example replacement
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1356,7 +1356,7 @@ export interface paths {
                      * @example shares.sharedResources
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1429,7 +1429,7 @@ export interface paths {
                      * @example similarAlbums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1492,7 +1492,7 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1558,7 +1558,7 @@ export interface paths {
                      * @example usageRules
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -14208,7 +14208,7 @@ export interface paths {
         delete: {
             parameters: {
                 query?: {
-                    /** @description Also revoke grants issued through this share. Defaults to false; true is currently unsupported. */
+                    /** @description Also revoke the access granted to everyone who saved this share; access from other sources stays. Defaults to false. Not supported for playlist shares or for owners not yet on the access store; there true is rejected with 400. */
                     revokeGrants?: boolean;
                 };
                 header?: {
@@ -15512,7 +15512,7 @@ export interface paths {
                     uriScheme: "HTTPS" | "DATA";
                     usage: "PLAYBACK" | "DOWNLOAD";
                     adaptive: boolean;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -15897,7 +15897,7 @@ export interface paths {
                      * @example albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16004,7 +16004,7 @@ export interface paths {
                      * @example albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16165,7 +16165,7 @@ export interface paths {
                      * @example albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16284,7 +16284,7 @@ export interface paths {
                      * @example artists.albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16352,7 +16352,7 @@ export interface paths {
                      * @example credits.artist.albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16413,7 +16413,7 @@ export interface paths {
                      * @example download
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16481,7 +16481,7 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16549,7 +16549,7 @@ export interface paths {
                      * @example lyrics.track
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16610,7 +16610,7 @@ export interface paths {
                      * @example metadataStatus
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16673,7 +16673,7 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16739,7 +16739,7 @@ export interface paths {
                      * @example priceConfig
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16807,7 +16807,7 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16875,7 +16875,7 @@ export interface paths {
                      * @example radio.items
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16946,7 +16946,7 @@ export interface paths {
                      * @example replacement
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -17014,7 +17014,7 @@ export interface paths {
                      * @example shares.sharedResources
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -17087,7 +17087,7 @@ export interface paths {
                      * @example similarTracks
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -17148,7 +17148,7 @@ export interface paths {
                      * @example sourceFile
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -17221,7 +17221,7 @@ export interface paths {
                      * @example suggestedTracks
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -17282,7 +17282,7 @@ export interface paths {
                      * @example trackStatistics
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -17348,7 +17348,7 @@ export interface paths {
                      * @example usageRules
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -20289,7 +20289,7 @@ export interface paths {
         };
         /**
          * Get actors relationship ("to-many").
-         * @description Artists attributed to the activity. Always empty for `ALBUM_FAVOURITED`, `TRACK_FAVOURITED` and `TRACK_PLAYLISTED`, which are counts only, and for `HISTORY_MIX_READY`, which nobody else acted on.
+         * @description Artists attributed to the activity. Always empty for `ALBUM_FAVOURITED`, `TRACK_FAVOURITED` and `TRACK_PLAYLISTED`, which are counts only, and for `HISTORY_MIX_READY` and `TRACK_PLAY_MILESTONE`, which nobody else acted on.
          */
         get: {
             parameters: {
@@ -28280,7 +28280,7 @@ export interface components {
         SharesCreateOperation_Payload_Data_Relationships_SharedResources_Data: {
             id: string;
             /** @enum {string} */
-            type: "tracks" | "albums" | "playlists";
+            type: "tracks" | "albums" | "playlists" | "folders";
         };
         Shares_Attributes: {
             /** @description Share code */
@@ -30615,7 +30615,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         /** @description Details of the activity represented by the group. */
-        UserFeedItemActivityDetails: components["schemas"]["UserFeedItemAlbumFavouritedDetails"] | components["schemas"]["UserFeedItemAlbumReleasedDetails"] | components["schemas"]["UserFeedItemAlbumSharedDetails"] | components["schemas"]["UserFeedItemArtistFollowedDetails"] | components["schemas"]["UserFeedItemCommentRepliedDetails"] | components["schemas"]["UserFeedItemCopyrightFlaggedDetails"] | components["schemas"]["UserFeedItemHistoryMixReadyDetails"] | components["schemas"]["UserFeedItemPlaylistUpdatedDetails"] | components["schemas"]["UserFeedItemTrackFavouritedDetails"] | components["schemas"]["UserFeedItemTrackPlaylistedDetails"] | components["schemas"]["UserFeedItemTrackSourceFileCommentedDetails"];
+        UserFeedItemActivityDetails: components["schemas"]["UserFeedItemAlbumFavouritedDetails"] | components["schemas"]["UserFeedItemAlbumReleasedDetails"] | components["schemas"]["UserFeedItemAlbumSharedDetails"] | components["schemas"]["UserFeedItemArtistFollowedDetails"] | components["schemas"]["UserFeedItemCommentRepliedDetails"] | components["schemas"]["UserFeedItemCopyrightFlaggedDetails"] | components["schemas"]["UserFeedItemHistoryMixReadyDetails"] | components["schemas"]["UserFeedItemPlaylistUpdatedDetails"] | components["schemas"]["UserFeedItemTrackFavouritedDetails"] | components["schemas"]["UserFeedItemTrackPlaylistedDetails"] | components["schemas"]["UserFeedItemTrackPlayMilestoneDetails"] | components["schemas"]["UserFeedItemTrackSourceFileCommentedDetails"];
         /** @description Listeners saved one of your albums. `eventCount` is the number of distinct people who saved it in the item's day; actors are never listed */
         UserFeedItemAlbumFavouritedDetails: {
             /**
@@ -30710,6 +30710,20 @@ export interface components {
              * @enum {string}
              */
             activityType: "TRACK_FAVOURITED";
+        };
+        /** @description One of your uploaded tracks reached a total play count. The `subject` is the track. `eventCount` is always 1, and actors are never listed */
+        UserFeedItemTrackPlayMilestoneDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "TRACK_PLAY_MILESTONE";
+            /**
+             * Format: int32
+             * @description The total play count the track reached
+             * @example 1000
+             */
+            threshold: number;
         };
         /** @description One of your tracks was added to user playlists. `eventCount` is the number of distinct playlists it was added to in the item's day, not people; actors are never listed */
         UserFeedItemTrackPlaylistedDetails: {
