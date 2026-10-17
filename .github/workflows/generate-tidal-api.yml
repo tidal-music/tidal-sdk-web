@@ -32,7 +32,7 @@ jobs:
       SPEC_FILE: bin/tidal-api-oas.json
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/setup@fbda4c85fc2e1e08721cd8763afea8f48d60f024 # v3.0.0
+      - uses: pnpm/setup@a0881977cd8ea73b1ed212236c99ca10dcc80cf4 # v3.1.1
         with:
           install: false
       - uses: actions/setup-node@v7
