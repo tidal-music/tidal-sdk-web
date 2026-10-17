@@ -66,7 +66,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -427,7 +427,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -541,7 +541,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -586,7 +586,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -834,7 +834,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -1021,7 +1021,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -1617,7 +1617,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -1733,7 +1733,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -1948,7 +1948,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -2055,7 +2055,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -2100,7 +2100,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -2212,7 +2212,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -2433,6 +2433,390 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/artistSalesStatistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple artistSalesStatistics.
+         * @description Retrieves multiple artistSalesStatistics by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Artist ID. Every published range of the artist is returned (e.g. `1566`) */
+                    "filter[artist.id]": string[];
+                    /**
+                     * @description Include related resources. Available relationships: artist, topSellers
+                     * @example artist.albums
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("artist" | "topSellers")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistSalesStatistics_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistSalesStatistics/{id}/relationships/artist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artist relationship ("to-one").
+         * @description Retrieves artist relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: artist
+                     * @example artist.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist sales statistics id
+                     * @example LPtReLsCUO7kRhYq
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistSalesStatistics_Artist_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistSalesStatistics/{id}/relationships/topSellers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get topSellers relationship ("to-many").
+         * @description Retrieves topSellers relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: topSellers
+                     * @example topSellers
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: topSellers
+                     * @example topSellers
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist sales statistics id
+                     * @example LPtReLsCUO7kRhYq
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistStreamsStatistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple artistStreamsStatistics.
+         * @description Retrieves multiple artistStreamsStatistics by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Artist ID. Every published range of the artist is returned (e.g. `1566`) */
+                    "filter[artist.id]": string[];
+                    /**
+                     * @description Include related resources. Available relationships: artist, topTracks
+                     * @example artist.albums
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("artist" | "topTracks")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistStreamsStatistics_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistStreamsStatistics/{id}/relationships/artist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artist relationship ("to-one").
+         * @description Retrieves artist relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: artist
+                     * @example artist.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist streams statistics id
+                     * @example LPtReLsCUO7kRhYq
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistStreamsStatistics_Artist_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistStreamsStatistics/{id}/relationships/topTracks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get topTracks relationship ("to-many").
+         * @description Retrieves topTracks relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: topTracks
+                     * @example topTracks
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: topTracks
+                     * @example topTracks
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist streams statistics id
+                     * @example LPtReLsCUO7kRhYq
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/artists": {
         parameters: {
             query?: never;
@@ -2505,7 +2889,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -2629,7 +3013,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -2812,7 +3196,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -3111,7 +3495,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -3158,7 +3542,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -3273,7 +3657,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -3446,7 +3830,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -3958,7 +4342,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -4138,7 +4522,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -4354,7 +4738,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -4456,7 +4840,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -4501,7 +4885,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -4682,7 +5066,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -4786,7 +5170,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -4895,7 +5279,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -5141,7 +5525,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -5248,7 +5632,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -5293,7 +5677,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -5586,7 +5970,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -7004,7 +7388,61 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Get multiple folderItems.
+         * @description Lists items in a folder, newest placement first. Select a folder with parent.id, or select your root with parent.isRoot=true and parent.owners.id=me. These forms cannot be combined; no other parent-filter combinations are supported.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: breadcrumb, owners, parent, subject
+                     * @example breadcrumb.children.subject
+                     */
+                    include?: string[];
+                    /** @description Folder id (e.g. `e3226624-355b-48f8-aa93-db42532caa66`) */
+                    "filter[parent.id]"?: string;
+                    /** @description Filter by parent.isRoot */
+                    "filter[parent.isRoot]"?: string;
+                    /** @description Root folder owner; must be the authenticated user.. Use `me` for the authenticated user */
+                    "filter[parent.owners.id]"?: string;
+                    /** @description In folders you own, me selects owned placements and !me selects shared placements. In someone else's folder, me returns no items and !me returns the normal listing. Omit for all items. */
+                    "filter[subject.owners.id]"?: string;
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("breadcrumb" | "owners" | "parent" | "subject")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: breadcrumb.children.subject
+                     * @example breadcrumb.children.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["FolderItems_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
         put?: never;
         /**
          * Create single folderItem.
@@ -7014,7 +7452,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -7121,7 +7559,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -7357,7 +7795,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -7490,6 +7928,8 @@ export interface paths {
                      * @example children.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path?: never;
@@ -7525,7 +7965,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -7590,6 +8030,8 @@ export interface paths {
                      * @example children.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7632,7 +8074,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -7677,7 +8119,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -7744,6 +8186,8 @@ export interface paths {
                      * @example children.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7805,6 +8249,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7869,6 +8315,8 @@ export interface paths {
                      * @example parent.children.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7935,6 +8383,8 @@ export interface paths {
                      * @example preview.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -8261,7 +8711,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -8439,7 +8889,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -8486,7 +8936,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -8608,7 +9058,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -8715,7 +9165,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -8760,7 +9210,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -8948,7 +9398,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -9122,7 +9572,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -9417,7 +9867,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -9524,7 +9974,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -9569,7 +10019,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -9734,7 +10184,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -9842,7 +10292,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -9889,7 +10339,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -9938,7 +10388,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -10169,7 +10619,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -10273,7 +10723,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -10314,7 +10764,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -10476,7 +10926,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -10776,7 +11226,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -10823,7 +11273,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -10872,7 +11322,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -10989,7 +11439,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -11101,7 +11551,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11146,7 +11596,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11252,7 +11702,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11428,7 +11878,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11611,7 +12061,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11658,7 +12108,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11707,7 +12157,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11983,7 +12433,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -12763,7 +13213,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -12820,7 +13270,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -13064,7 +13514,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -13171,7 +13621,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -14102,7 +14552,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -14212,7 +14662,7 @@ export interface paths {
                     revokeGrants?: boolean;
                 };
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -14396,7 +14846,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -14562,7 +15012,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -14666,6 +15116,477 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/squareItems": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple squareItems.
+         * @description Retrieves multiple squareItems by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description User id. Use `me` for the authenticated user */
+                    "filter[owners.id]": string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /** @description Include related resources. Available relationships: owners */
+                    include?: string[];
+                    /** @description Only items with this origin (e.g. `TIDAL`) */
+                    "filter[origin]"?: "TIDAL" | "OTHER";
+                    /** @description Word-prefix match on item titles, descriptions and abbreviations, and on variation names, SKUs and UPCs (e.g. `tee`) */
+                    "filter[query]"?: string;
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsReadByFilter403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsReadByFilter409Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single squareItem.
+         * @description Creates a new squareItem.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareItemsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Create_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsCreateResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsCreateResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/squareItems/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single squareItem.
+         * @description Retrieves single squareItem by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Include related resources. Available relationships: owners */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsReadById403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsReadById409Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Delete single squareItem.
+         * @description Deletes existing squareItem.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsDeleteResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsDeleteResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Update single squareItem.
+         * @description Updates existing squareItem.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareItemsUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Update_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsUpdateResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsUpdateResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/squareItems/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Owners_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/squareSites/{id}/relationships/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get items relationship ("to-many").
+         * @description Items published in the site, in title order. Missing catalog scopes return MISSING_ITEMS_SCOPE. A page can be short or empty and still have a next cursor.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: items
+                     * @example items
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square Online site id
+                     * @example IhETt7taHSVV2MUu9kqjMDengjnhVZa
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareSites_Items_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareSitesReadMultiDataRelationship403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareSitesReadMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Add to items relationship ("to-many").
+         * @description Publishes the items in the site. Items already published and repeated items are left alone. An item missing from the catalog fails the request before anything changes.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Square Online site id
+                     * @example IhETt7taHSVV2MUu9kqjMDengjnhVZa
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareSitesItemsRelationshipAddOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareSitesAddMultiDataRelationship403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareSitesAddMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        /**
+         * Delete from items relationship ("to-many").
+         * @description Removes the items from the site; they stay in the catalog. Items not published and repeated items are left alone. An item missing from the catalog fails the request before anything changes.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Square Online site id
+                     * @example IhETt7taHSVV2MUu9kqjMDengjnhVZa
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareSitesItemsRelationshipRemoveOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareSitesRemoveMultiDataRelationship403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareSitesRemoveMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/stripeConnections": {
         parameters: {
             query?: never;
@@ -14721,7 +15642,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -14994,7 +15915,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -15054,7 +15975,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -15171,7 +16092,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -15574,7 +16495,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -15934,7 +16855,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -16048,7 +16969,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -16093,7 +17014,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -16212,7 +17133,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -17460,7 +18381,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -17700,7 +18621,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -17747,7 +18668,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18000,7 +18921,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18047,7 +18968,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18215,7 +19136,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -18322,7 +19243,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18367,7 +19288,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18477,7 +19398,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18524,7 +19445,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18837,7 +19758,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18884,7 +19805,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -19122,7 +20043,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -19169,7 +20090,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -19422,7 +20343,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -19469,7 +20390,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -19722,7 +20643,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -19769,7 +20690,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -20033,7 +20954,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -20468,7 +21389,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -20864,7 +21785,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -20974,7 +21895,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21082,7 +22003,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21129,7 +22050,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21297,7 +22218,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21476,7 +22397,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21523,7 +22444,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21695,7 +22616,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21742,7 +22663,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21853,7 +22774,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21900,7 +22821,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21961,7 +22882,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -24068,6 +24989,426 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        ArtistSalesStatistics_Artist_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ArtistSalesStatistics_Attributes: {
+            buyerSources?: components["schemas"]["ArtistSalesStatistics_BuyerSources"];
+            byType?: components["schemas"]["ArtistSalesStatistics_ByType"];
+            /**
+             * @description Currency of every amount
+             * @enum {string}
+             */
+            currency?: "USD";
+            /**
+             * Format: date
+             * @description Last day included in the underlying data
+             */
+            dataThrough: string;
+            /**
+             * Format: date
+             * @description Last day of the window, inclusive
+             */
+            endDate: string;
+            /**
+             * Format: int64
+             * @description Items sold in the window
+             */
+            itemsSold?: number;
+            /**
+             * Format: date-time
+             * @description When these statistics were computed
+             */
+            lastModifiedAt: string;
+            netSales?: components["schemas"]["ArtistSalesStatistics_NetSales"];
+            /**
+             * Format: int64
+             * @description Orders in the window
+             */
+            orders?: number;
+            refunds?: components["schemas"]["ArtistSalesStatistics_Refunds"];
+            series?: components["schemas"]["ArtistSalesStatistics_Series"];
+            /**
+             * Format: date
+             * @description First day of the window
+             */
+            startDate: string;
+            /**
+             * @description Status of sales statistics. NOT_SET_UP: the artist has not set up sales. UNAVAILABLE: not available at the moment
+             * @enum {string}
+             */
+            status: "OK" | "NOT_SET_UP" | "UNAVAILABLE";
+            windowPeriod: components["schemas"]["ArtistStatisticsWindowPeriod"];
+        };
+        ArtistSalesStatistics_BuyerSourceShare: {
+            /**
+             * Format: double
+             * @description Share of orders
+             */
+            shareOfOrders: number;
+            /**
+             * @description Where buyers came from. UNKNOWN: a source this API does not know
+             * @enum {string}
+             */
+            source: "ALBUM_AND_TRACK_PAGES" | "ARTIST_PROFILE" | "SHARED_LINKS" | "TIDAL_HOME" | "UNKNOWN";
+        };
+        /** @description Where buyers came from. items is present exactly when status is OK, and an empty items is a measured empty result */
+        ArtistSalesStatistics_BuyerSources: {
+            items?: components["schemas"]["ArtistSalesStatistics_BuyerSourceShare"][];
+            /**
+             * @description Status of artist statistics that may be withheld. OK: the data is present. SUPPRESSED: withheld because too few people are counted to show it. UNAVAILABLE: not available at the moment
+             * @enum {string}
+             */
+            status: "OK" | "SUPPRESSED" | "UNAVAILABLE";
+        };
+        /** @description Net sales by product type */
+        ArtistSalesStatistics_ByType: {
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            downloadsAmount: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            merchAmount: string;
+        };
+        ArtistSalesStatistics_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ArtistSalesStatistics_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Sold minus refunded in the window. previousAmount is the same for the previous window of the same length and is absent when there is no earlier window to compare with */
+        ArtistSalesStatistics_NetSales: {
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            amount: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            previousAmount?: string;
+        };
+        /** @description Refunds in the window. amount is the total refunded */
+        ArtistSalesStatistics_Refunds: {
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            amount: string;
+            /**
+             * Format: int64
+             * @description Refunded orders
+             */
+            count: number;
+        };
+        ArtistSalesStatistics_Relationships: {
+            artist?: components["schemas"]["ArtistSalesStatistics_Artist_Single_Relationship_Data_Document"];
+            topSellers?: components["schemas"]["ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document"];
+        };
+        ArtistSalesStatistics_Resource_Object: {
+            attributes?: components["schemas"]["ArtistSalesStatistics_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["ArtistSalesStatistics_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "artistSalesStatistics";
+        };
+        /** @description Net sales per bucket */
+        ArtistSalesStatistics_Series: {
+            bucketPeriod?: components["schemas"]["ArtistStatisticsBucketPeriod"];
+            points: components["schemas"]["ArtistSalesStatistics_SeriesPoint"][];
+        };
+        ArtistSalesStatistics_SeriesPoint: {
+            /**
+             * Format: date
+             * @description First day of the bucket
+             */
+            date: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            downloadsAmount: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            merchAmount: string;
+        };
+        ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["ArtistSalesStatistics_TopSellers_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document_Meta"];
+        };
+        /** @description status is the status of the sales statistics */
+        ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document_Meta: {
+            /**
+             * @description Currency of netSalesAmount. Present when status is OK
+             * @enum {string}
+             */
+            currency?: "USD";
+            /**
+             * @description Status of sales statistics. NOT_SET_UP: the artist has not set up sales. UNAVAILABLE: not available at the moment
+             * @enum {string}
+             */
+            status: "OK" | "NOT_SET_UP" | "UNAVAILABLE";
+        };
+        ArtistSalesStatistics_TopSellers_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["ArtistSalesStatistics_TopSellers_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        /** @description netSalesAmount is the product's net sales in the window, in the relationship's currency */
+        ArtistSalesStatistics_TopSellers_Resource_Identifier_Meta: {
+            /**
+             * @description What was sold. UNKNOWN: a kind this API does not know
+             * @enum {string}
+             */
+            kind: "DOWNLOAD" | "MERCH" | "UNKNOWN";
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            netSalesAmount: string;
+            /**
+             * Format: int32
+             * @description 1-based position in the producer's ranking. Products this API cannot link are left out, so ranks can have gaps
+             */
+            rank: number;
+            replacement?: components["schemas"]["Replacement_Provenance"];
+            /**
+             * Format: int64
+             * @description Units sold in the window
+             */
+            units: number;
+        };
+        /**
+         * @description Calendar width of each bucket. Absent when the producer's width is not recognized
+         * @enum {string}
+         */
+        ArtistStatisticsBucketPeriod: "P1D" | "P7D";
+        /**
+         * @description Reporting window preset. startDate and endDate give the actual data coverage
+         * @enum {string}
+         */
+        ArtistStatisticsWindowPeriod: "P7D" | "P28D" | "P12M";
+        ArtistStreamsStatistics_Artist_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ArtistStreamsStatistics_Attributes: {
+            /**
+             * @description Status of artist statistics that may be withheld. OK: the data is present. SUPPRESSED: withheld because too few people are counted to show it. UNAVAILABLE: not available at the moment
+             * @enum {string}
+             */
+            breakdownsStatus: "OK" | "SUPPRESSED" | "UNAVAILABLE";
+            /**
+             * Format: date
+             * @description Last day included in the underlying data
+             */
+            dataThrough: string;
+            /**
+             * Format: date
+             * @description Last day of the window, inclusive
+             */
+            endDate: string;
+            /**
+             * Format: date-time
+             * @description When these statistics were computed
+             */
+            lastModifiedAt: string;
+            listeners: components["schemas"]["ArtistStreamsStatistics_Count"];
+            newFollowers: components["schemas"]["ArtistStreamsStatistics_Count"];
+            plays: components["schemas"]["ArtistStreamsStatistics_Plays"];
+            playsBySource?: components["schemas"]["ArtistStreamsStatistics_PlaysBySource"];
+            saves: components["schemas"]["ArtistStreamsStatistics_Count"];
+            series: components["schemas"]["ArtistStreamsStatistics_Series"];
+            /**
+             * Format: date
+             * @description First day of the window
+             */
+            startDate: string;
+            topCountries?: components["schemas"]["ArtistStreamsStatistics_TopCountries"];
+            windowPeriod: components["schemas"]["ArtistStatisticsWindowPeriod"];
+        };
+        /** @description A count in the window that may be withheld. value is present exactly when status is OK, and 0 is a measured zero */
+        ArtistStreamsStatistics_Count: {
+            /**
+             * @description Status of artist statistics that may be withheld. OK: the data is present. SUPPRESSED: withheld because too few people are counted to show it. UNAVAILABLE: not available at the moment
+             * @enum {string}
+             */
+            status: "OK" | "SUPPRESSED" | "UNAVAILABLE";
+            /** Format: int64 */
+            value?: number;
+        };
+        ArtistStreamsStatistics_CountryListeners: {
+            countryCode: string;
+            /** Format: int64 */
+            listeners: number;
+        };
+        ArtistStreamsStatistics_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ArtistStreamsStatistics_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ArtistStreamsStatistics_OtherPlays: {
+            /** Format: int64 */
+            plays: number;
+            /**
+             * Format: double
+             * @description Share of all plays
+             */
+            share: number;
+        };
+        ArtistStreamsStatistics_Plays: {
+            /**
+             * Format: int64
+             * @description Plays in the previous window of the same length. Absent when there is no earlier window to compare with
+             */
+            previous?: number;
+            /**
+             * Format: int64
+             * @description Plays in the window
+             */
+            value: number;
+        };
+        /** @description Plays by where they started. other holds the plays not in items. Without a note, items and other add up to all plays, and an absent other means no plays are left. With note HIDDEN, part of the plays is withheld, so an absent other is unknown rather than zero */
+        ArtistStreamsStatistics_PlaysBySource: {
+            items: components["schemas"]["ArtistStreamsStatistics_SourcePlays"][];
+            /**
+             * @description How a breakdown relates to its total. GROUPED: the remainder includes entries too small to show alone, and the breakdown still adds up to the total. HIDDEN: part of the total is withheld, so the breakdown adds up to less than the total. UNKNOWN: a note this API does not know, so the breakdown may not add up
+             * @enum {string}
+             */
+            note?: "GROUPED" | "HIDDEN" | "UNKNOWN";
+            other?: components["schemas"]["ArtistStreamsStatistics_OtherPlays"];
+        };
+        ArtistStreamsStatistics_Relationships: {
+            artist?: components["schemas"]["ArtistStreamsStatistics_Artist_Single_Relationship_Data_Document"];
+            topTracks?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document"];
+        };
+        ArtistStreamsStatistics_Resource_Object: {
+            attributes?: components["schemas"]["ArtistStreamsStatistics_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["ArtistStreamsStatistics_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "artistStreamsStatistics";
+        };
+        /** @description Plays per bucket */
+        ArtistStreamsStatistics_Series: {
+            bucketPeriod?: components["schemas"]["ArtistStatisticsBucketPeriod"];
+            points: components["schemas"]["ArtistStreamsStatistics_SeriesPoint"][];
+        };
+        ArtistStreamsStatistics_SeriesPoint: {
+            /**
+             * Format: date
+             * @description First day of the bucket
+             */
+            date: string;
+            /** Format: int64 */
+            plays: number;
+        };
+        ArtistStreamsStatistics_SourcePlays: {
+            /** Format: int64 */
+            plays: number;
+            /**
+             * Format: double
+             * @description Share of all plays
+             */
+            share: number;
+            /**
+             * @description Where plays started. UNKNOWN: a source this API does not know
+             * @enum {string}
+             */
+            source: "MIXES_AND_RADIO" | "ALBUMS_AND_PROFILE" | "TIDAL_PLAYLISTS" | "LISTENER_PLAYLISTS" | "LISTENER_COLLECTIONS" | "SEARCH" | "UNKNOWN";
+        };
+        /** @description Listeners by country. Without a note, items and otherListeners add up to all listeners, and an absent otherListeners means no listeners are left. With note HIDDEN, part of the listeners is withheld, so an absent otherListeners is unknown rather than zero */
+        ArtistStreamsStatistics_TopCountries: {
+            items: components["schemas"]["ArtistStreamsStatistics_CountryListeners"][];
+            /**
+             * @description How a breakdown relates to its total. GROUPED: the remainder includes entries too small to show alone, and the breakdown still adds up to the total. HIDDEN: part of the total is withheld, so the breakdown adds up to less than the total. UNKNOWN: a note this API does not know, so the breakdown may not add up
+             * @enum {string}
+             */
+            note?: "GROUPED" | "HIDDEN" | "UNKNOWN";
+            /**
+             * Format: int64
+             * @description Listeners in countries not in items. A present value, 0 included, is measured
+             */
+            otherListeners?: number;
+        };
+        ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document_Meta"];
+        };
+        /** @description status is the breakdownsStatus of the statistics. When it is not OK the entries are withheld, so the empty linkage is not a measured empty result */
+        ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document_Meta: {
+            /**
+             * Format: int32
+             * @description Tracks left out because too few people listened to them. Present when status is OK
+             */
+            hiddenCount?: number;
+            /**
+             * @description Status of artist statistics that may be withheld. OK: the data is present. SUPPRESSED: withheld because too few people are counted to show it. UNAVAILABLE: not available at the moment
+             * @enum {string}
+             */
+            status: "OK" | "SUPPRESSED" | "UNAVAILABLE";
+        };
+        ArtistStreamsStatistics_TopTracks_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        ArtistStreamsStatistics_TopTracks_Resource_Identifier_Meta: {
+            /**
+             * Format: int64
+             * @description Plays of the track in the window
+             */
+            plays: number;
+            /**
+             * Format: int32
+             * @description 1-based position in the producer's ranking. Tracks this API cannot link are left out, so ranks can have gaps
+             */
+            rank: number;
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         ArtistsBannerArtRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["ArtistsBannerArtRelationshipUpdateOperation_Payload_Data"][];
         };
@@ -25687,6 +27028,11 @@ export interface components {
             data: components["schemas"]["FolderItems_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        FolderItems_Multi_Resource_Data_Document: {
+            data: components["schemas"]["FolderItems_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         FolderItems_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25814,6 +27160,8 @@ export interface components {
             }[];
         };
         Folders_Attributes: {
+            /** @description Whether this is the root folder. */
+            isRoot: boolean;
             name: string;
         };
         Folders_Children_Multi_Relationship_Data_Document: {
@@ -25966,7 +27314,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "IDEMPOTENT_REQUEST_PAYLOAD_MISMATCH";
-                /** @example Idempotency key reused with a different payload */
+                /** @example Idempotency key reused for a different request */
                 detail?: string;
                 /** @example 422 */
                 status: string;
@@ -25974,7 +27322,7 @@ export interface components {
         };
         /** @description The viewer has the original subject in their normal collection. Present as an empty object when known present, otherwise omitted. Includes owned and saved playlists and saved mixes across folders; excludes Save for Later. */
         InCollection: Record<string, never>;
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -28535,6 +29883,401 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SquareItemsCreateOperation_Payload: {
+            data: components["schemas"]["SquareItemsCreateOperation_Payload_Data"];
+        };
+        SquareItemsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["SquareItemsCreateOperation_Payload_Data_Attributes"];
+            /** @enum {string} */
+            type: "squareItems";
+        };
+        SquareItemsCreateOperation_Payload_Data_Attributes: {
+            /** @description Item description */
+            description?: string;
+            /** @description Item title */
+            title: string;
+            /** @description Variations, in display order */
+            variations: components["schemas"]["SquareItemsCreateOperation_Payload_Data_Attributes_Variation"][];
+        };
+        SquareItemsCreateOperation_Payload_Data_Attributes_Variation: {
+            /** @description Variation name, such as a size or color */
+            name?: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            price: string;
+            /**
+             * Format: int64
+             * @description Units in stock at the seller's main location; applies only when stock is tracked
+             */
+            stockQuantity?: number;
+            /** @description Whether Square tracks stock for this variation */
+            stockTracked: boolean;
+        };
+        SquareItemsCreateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsCreateResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemsDeleteResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsDeleteResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemsReadByFilter403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsReadByFilter409ResponseBody: {
+            errors: {
+                /**
+                 * @example MISSING_ITEMS_SCOPE
+                 * @enum {string}
+                 */
+                code: "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemsReadById403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsReadById409ResponseBody: {
+            errors: {
+                /**
+                 * @example MISSING_ITEMS_SCOPE
+                 * @enum {string}
+                 */
+                code: "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemsUpdateOperation_Payload: {
+            data: components["schemas"]["SquareItemsUpdateOperation_Payload_Data"];
+            meta: components["schemas"]["SquareItemsUpdateOperation_Payload_Meta"];
+        };
+        SquareItemsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["SquareItemsUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "squareItems";
+        };
+        SquareItemsUpdateOperation_Payload_Data_Attributes: {
+            /** @description Item description; an empty string removes it */
+            description?: string;
+            /** @description Item title */
+            title?: string;
+            /** @description Complete variation list in display order; variations without a variationId are added and omitted ones deleted. Every price must be positive and is written as FIXED. Replacement requires every existing variation to have a positive fixed price at the main location; otherwise edit the variations in Square Dashboard. Updates without variations remain supported. */
+            variations?: components["schemas"]["SquareItemsUpdateOperation_Payload_Data_Attributes_Variation"][];
+        };
+        SquareItemsUpdateOperation_Payload_Data_Attributes_Variation: {
+            /** @description Variation name, such as a size or color; an empty string for none */
+            name: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            price: string;
+            /**
+             * Format: int64
+             * @description Units in stock at the seller's main location; applies only when stock is tracked. Omit to leave the stock unchanged.
+             */
+            stockQuantity?: number;
+            /** @description Whether Square tracks stock for this variation */
+            stockTracked: boolean;
+            /** @description The variation to update; omit to add a variation */
+            variationId?: string;
+        };
+        SquareItemsUpdateOperation_Payload_Meta: {
+            /**
+             * Format: int64
+             * @description Catalog revision read by the editor; stale revisions return 409
+             */
+            expectedRevision: number;
+        };
+        SquareItemsUpdateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsUpdateResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CATALOG_VERSION_MISMATCH
+                 * @enum {string}
+                 */
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE" | "UNSUPPORTED_VARIATION_PRICING";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItems_Attributes: {
+            /**
+             * @description Currency of every price on the item
+             * @enum {string}
+             */
+            currency: "USD";
+            /** @description Item description */
+            description?: string;
+            /**
+             * Format: date-time
+             * @description Timestamp when the item was last modified in Square; absent when Square has not reported one
+             */
+            lastModifiedAt?: string;
+            /**
+             * @description Where the item was created
+             * @enum {string}
+             */
+            origin?: "TIDAL" | "OTHER";
+            /** @description Whether the item is published in the seller's selected Square Online site; false when no site is selected */
+            publishedInSelectedSite?: boolean;
+            /**
+             * Format: int64
+             * @description Square catalog item revision used to guard item updates; excludes inventory stock
+             */
+            revision: number;
+            /** @description Item title; empty for an untitled item created in Square */
+            title: string;
+            /** @description Variations, in Square's order */
+            variations: components["schemas"]["SquareItems_Variation"][];
+        };
+        SquareItems_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareItems_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItems_Multi_Resource_Data_Document: {
+            data: components["schemas"]["SquareItems_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItems_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItems_Relationships: {
+            owners?: components["schemas"]["SquareItems_Owners_Multi_Relationship_Data_Document"];
+        };
+        SquareItems_Resource_Object: {
+            attributes?: components["schemas"]["SquareItems_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["SquareItems_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "squareItems";
+        };
+        SquareItems_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareItems_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItems_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareItems_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItems_Variation: {
+            /** @description Variation name, such as a size or color; may be empty */
+            name: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            price?: string;
+            /**
+             * @description How the variation is priced; price is present only when FIXED
+             * @enum {string}
+             */
+            pricingType: "FIXED" | "VARIABLE";
+            /**
+             * Format: int64
+             * @description Units in stock at the seller's main location; present only when stock is tracked, and negative when Square has sold more than it counted
+             */
+            stockQuantity?: number;
+            /** @description Whether Square tracks stock for this variation */
+            stockTracked?: boolean;
+            variationId: string;
+        };
+        SquareSitesAddMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareSitesAddMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE" | "SITE_NOT_SELECTED";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareSitesItemsRelationshipAddOperation_Payload: {
+            /** @description The items to publish */
+            data: components["schemas"]["SquareSitesItemsRelationshipAddOperation_Payload_Data"][];
+        };
+        /** @description The items to publish */
+        SquareSitesItemsRelationshipAddOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "squareItems";
+        };
+        SquareSitesItemsRelationshipRemoveOperation_Payload: {
+            /** @description The items to unpublish */
+            data: components["schemas"]["SquareSitesItemsRelationshipRemoveOperation_Payload_Data"][];
+        };
+        /** @description The items to unpublish */
+        SquareSitesItemsRelationshipRemoveOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "squareItems";
+        };
+        SquareSitesReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareSitesReadMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example MISSING_ITEMS_SCOPE
+                 * @enum {string}
+                 */
+                code: "MISSING_ITEMS_SCOPE" | "SITE_NOT_SELECTED";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareSitesRemoveMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareSitesRemoveMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE" | "SITE_NOT_SELECTED";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
         SquareSites_Attributes: {
             /** @description The site's domain, if one is configured */
             domain?: string;
@@ -28543,6 +30286,14 @@ export interface components {
             /** @description The site's title as set by the seller in Square */
             siteTitle?: string;
         };
+        SquareSites_Items_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareSites_Relationships: {
+            items?: components["schemas"]["SquareSites_Items_Multi_Relationship_Data_Document"];
+        };
         SquareSites_Resource_Object: {
             attributes?: components["schemas"]["SquareSites_Attributes"];
             /**
@@ -28550,6 +30301,7 @@ export interface components {
              * @example 12345
              */
             id: string;
+            relationships?: components["schemas"]["SquareSites_Relationships"];
             /**
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
@@ -31877,7 +33629,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Idempotency409ResponseBody"];
             };
         };
-        /** @description Idempotency key reused with a different payload */
+        /** @description Idempotency key reused for a different request */
         Idempotency422Response: {
             headers: {
                 [name: string]: unknown;
@@ -31983,6 +33735,150 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["SquareConnectionsUpdateSingleDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemsCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsCreateResource403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Request already in progress for this idempotency key */
+        SquareItemsCreateResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsCreateResource409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemsDeleteResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsDeleteResource403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Request already in progress for this idempotency key */
+        SquareItemsDeleteResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsDeleteResource409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemsReadByFilter403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsReadByFilter403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+        SquareItemsReadByFilter409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsReadByFilter409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemsReadById403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsReadById403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+        SquareItemsReadById409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsReadById409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemsUpdateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsUpdateResource403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Variation editing requires positive fixed prices for every existing variation; edit this item's variations in Square Dashboard; Square catalog item changed; reload it before editing; Request already in progress for this idempotency key */
+        SquareItemsUpdateResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsUpdateResource409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareSitesAddMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareSitesAddMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; The site isn't the seller's selected Square Online site; select it to manage its items; Request already in progress for this idempotency key */
+        SquareSitesAddMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareSitesAddMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareSitesReadMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareSitesReadMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; The site isn't the seller's selected Square Online site; select it to manage its items */
+        SquareSitesReadMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareSitesReadMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareSitesRemoveMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareSitesRemoveMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; The site isn't the seller's selected Square Online site; select it to manage its items; Request already in progress for this idempotency key */
+        SquareSitesRemoveMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareSitesRemoveMultiDataRelationship409ResponseBody"];
             };
         };
         /** @description Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device */
@@ -32167,7 +34063,7 @@ export interface components {
         };
     };
     parameters: {
-        /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+        /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
         IdempotencyKey: string;
     };
     requestBodies: never;

@@ -5,10 +5,10 @@
       "name" : "TIDAL Developer - Discussions",
       "url" : "https://github.com/orgs/tidal-music/discussions"
     },
-    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. Never parse, construct, or infer meaning from an `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes. Monetary amounts are decimal strings; each field defines its sign and precision constraints.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nComma-separated identifiers match any complete pair. For to-many relationships, one related\nresource must match; filtering does not trim relationship contents. Each endpoint lists its supported filters and types.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<member>]=value`](https://jsonapi.org/format/#fetching-filtering) filters collections; each endpoint documents its available filters, and most collections require at least one.\n- [`sort=<member>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<member>` descending (`sort=-addedAt`). Filter and sort members are relative to the resources being returned.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Once the original request has completed, retrying with the same key and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
+    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. Never parse, construct, or infer meaning from an `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes. Monetary amounts are decimal strings; each field defines its sign and precision constraints.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nComma-separated identifiers match any complete pair. For to-many relationships, one related\nresource must match; filtering does not trim relationship contents. Each endpoint lists its supported filters and types.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<member>]=value`](https://jsonapi.org/format/#fetching-filtering) filters collections; each endpoint documents its available filters, and most collections require at least one.\n- [`sort=<member>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<member>` descending (`sort=-addedAt`). Filter and sort members are relative to the resources being returned.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Keys are scoped to the client and the authenticated user. Once the original request has completed, retrying it with the same key, method, path, query and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different method, path, query or payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Revisions and concurrent editing\n\nWhere supported, `attributes.revision` identifies the resource's documented aggregate state; a separately versioned relationship collection uses document `meta.revision`. Revisions are nonnegative integers that increase when covered state changes. Compare them only within the same identity and scope, preserve the exact value, and never calculate the next revision. Related content, viewer projections and independent sources are not automatically covered. Domain fields named `version`, such as a music edition, are distinct; existing endpoints retain their documented contracts.\n\nGuarded mutations accept the observed value as top-level `meta.expectedRevision`. Each operation declares its scope and whether the precondition is required. A mismatch returns `409`; missing required input returns `400`. Refresh and reconcile after a conflict, then submit a new operation with a new idempotency key. An identical retry with the original key replays a recorded success under the idempotency contract. These revisions are not HTTP ETags.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.177"
+    "version" : "1.10.183"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -42,6 +42,12 @@
   }, {
     "description" : "A role describing an artist's contribution, such as performer or producer.",
     "name" : "artistRoles"
+  }, {
+    "description" : "Sales statistics of an artist over one reporting window. Every attribute other than windowPeriod, startDate, endDate, dataThrough, lastModifiedAt and status is present only when status is OK.",
+    "name" : "artistSalesStatistics"
+  }, {
+    "description" : "Streaming statistics of an artist over one reporting window. listeners, newFollowers and saves count unique listeners, new followers and saves in the window, each with its own status. breakdownsStatus covers playsBySource, topCountries and the entries of topTracks. When it is not OK, playsBySource and topCountries are absent and topTracks has empty linkage with the status in its meta, because its entries are withheld.",
+    "name" : "artistStreamsStatistics"
   }, {
     "description" : "A music artist.",
     "name" : "artists"
@@ -158,6 +164,9 @@
   }, {
     "description" : "A Square seller connection linked to a user for receiving payments.",
     "name" : "squareConnections"
+  }, {
+    "description" : "An item in the seller's own Square catalog.",
+    "name" : "squareItems"
   }, {
     "description" : "A Square Online site belonging to the seller's Square account.",
     "name" : "squareSites"
@@ -3868,6 +3877,552 @@
         "tags" : [ "artistRoles" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      }
+    },
+    "/artistSalesStatistics" : {
+      "get" : {
+        "description" : "Retrieves multiple artistSalesStatistics by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Artist ID. Every published range of the artist is returned (e.g. `1566`)",
+          "in" : "query",
+          "name" : "filter[artist.id]",
+          "required" : true,
+          "schema" : {
+            "maxItems" : 1,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "minLength" : 1,
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: artist, topSellers",
+          "example" : "artist.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "artist.albums"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "artist", "topSellers" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums",
+          "example" : "artist.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artist.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ArtistSalesStatistics_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple artistSalesStatistics.",
+        "tags" : [ "artistSalesStatistics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/artistSalesStatistics/{id}/relationships/artist" : {
+      "get" : {
+        "description" : "Retrieves artist relationship.",
+        "parameters" : [ {
+          "description" : "Artist sales statistics id",
+          "example" : "LPtReLsCUO7kRhYq",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: artist",
+          "example" : "artist.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "artist.albums"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums",
+          "example" : "artist.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artist.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ArtistSalesStatistics_Artist_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get artist relationship (\"to-one\").",
+        "tags" : [ "artistSalesStatistics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/artistSalesStatistics/{id}/relationships/topSellers" : {
+      "get" : {
+        "description" : "Retrieves topSellers relationship.",
+        "parameters" : [ {
+          "description" : "Artist sales statistics id",
+          "example" : "LPtReLsCUO7kRhYq",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: topSellers",
+          "example" : "topSellers",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "topSellers"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: topSellers",
+          "example" : "topSellers",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "topSellers"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get topSellers relationship (\"to-many\").",
+        "tags" : [ "artistSalesStatistics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/artistStreamsStatistics" : {
+      "get" : {
+        "description" : "Retrieves multiple artistStreamsStatistics by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Artist ID. Every published range of the artist is returned (e.g. `1566`)",
+          "in" : "query",
+          "name" : "filter[artist.id]",
+          "required" : true,
+          "schema" : {
+            "maxItems" : 1,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "minLength" : 1,
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: artist, topTracks",
+          "example" : "artist.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "artist.albums"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "artist", "topTracks" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums",
+          "example" : "artist.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artist.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ArtistStreamsStatistics_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple artistStreamsStatistics.",
+        "tags" : [ "artistStreamsStatistics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/artistStreamsStatistics/{id}/relationships/artist" : {
+      "get" : {
+        "description" : "Retrieves artist relationship.",
+        "parameters" : [ {
+          "description" : "Artist streams statistics id",
+          "example" : "LPtReLsCUO7kRhYq",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: artist",
+          "example" : "artist.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "artist.albums"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums",
+          "example" : "artist.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "artist.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ArtistStreamsStatistics_Artist_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get artist relationship (\"to-one\").",
+        "tags" : [ "artistStreamsStatistics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/artistStreamsStatistics/{id}/relationships/topTracks" : {
+      "get" : {
+        "description" : "Retrieves topTracks relationship.",
+        "parameters" : [ {
+          "description" : "Artist streams statistics id",
+          "example" : "LPtReLsCUO7kRhYq",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: topTracks",
+          "example" : "topTracks",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "topTracks"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: topTracks",
+          "example" : "topTracks",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "topTracks"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get topTracks relationship (\"to-many\").",
+        "tags" : [ "artistStreamsStatistics" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -10619,6 +11174,133 @@
       }
     },
     "/folderItems" : {
+      "get" : {
+        "description" : "Lists items in a folder, newest placement first. Select a folder with parent.id, or select your root with parent.isRoot=true and parent.owners.id=me. These forms cannot be combined; no other parent-filter combinations are supported.",
+        "parameters" : [ {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: breadcrumb, owners, parent, subject",
+          "example" : "breadcrumb.children.subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "breadcrumb.children.subject"
+            }
+          }
+        }, {
+          "description" : "Folder id (e.g. `e3226624-355b-48f8-aa93-db42532caa66`)",
+          "in" : "query",
+          "name" : "filter[parent.id]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Filter by parent.isRoot",
+          "in" : "query",
+          "name" : "filter[parent.isRoot]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Root folder owner; must be the authenticated user.. Use `me` for the authenticated user",
+          "in" : "query",
+          "name" : "filter[parent.owners.id]",
+          "required" : false,
+          "schema" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }, {
+          "description" : "In folders you own, me selects owned placements and !me selects shared placements. In someone else's folder, me returns no items and !me returns the normal listing. Omit for all items.",
+          "in" : "query",
+          "name" : "filter[subject.owners.id]",
+          "required" : false,
+          "schema" : {
+            "pattern" : "^!?me$",
+            "type" : "string"
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "breadcrumb", "owners", "parent", "subject" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: breadcrumb.children.subject",
+          "example" : "breadcrumb.children.subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "breadcrumb.children.subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FolderItems_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
+        } ],
+        "summary" : "Get multiple folderItems.",
+        "tags" : [ "folderItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
       "post" : {
         "description" : "Creates a new folderItem.",
         "parameters" : [ {
@@ -11307,6 +11989,15 @@
             "type" : "string",
             "example" : "children.subject"
           }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -11345,6 +12036,8 @@
           }
         },
         "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
           "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
         } ],
         "summary" : "Get multiple folders.",
@@ -11533,6 +12226,15 @@
             "type" : "string",
             "example" : "children.subject"
           }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -11571,6 +12273,8 @@
           }
         },
         "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
           "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
         } ],
         "summary" : "Get single folder.",
@@ -11697,6 +12401,15 @@
             "type" : "string",
             "example" : "children.subject"
           }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -11777,6 +12490,15 @@
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -11815,6 +12537,8 @@
           }
         },
         "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
           "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
         } ],
         "summary" : "Get owners relationship (\"to-many\").",
@@ -11858,6 +12582,15 @@
           "schema" : {
             "type" : "string",
             "example" : "parent.children.subject"
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
           }
         } ],
         "responses" : {
@@ -11948,6 +12681,15 @@
           "schema" : {
             "type" : "string",
             "example" : "preview.subject"
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
           }
         } ],
         "responses" : {
@@ -21904,6 +22646,767 @@
         } ],
         "summary" : "Get sites relationship (\"to-many\").",
         "tags" : [ "squareConnections" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/squareItems" : {
+      "get" : {
+        "description" : "Retrieves multiple squareItems by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "User id. Use `me` for the authenticated user",
+          "in" : "query",
+          "name" : "filter[owners.id]",
+          "required" : true,
+          "schema" : {
+            "maxItems" : 1,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "minLength" : 1,
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "Only items with this origin (e.g. `TIDAL`)",
+          "in" : "query",
+          "name" : "filter[origin]",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "TIDAL", "OTHER" ]
+          }
+        }, {
+          "description" : "Word-prefix match on item titles, descriptions and abbreviations, and on variation names, SKUs and UPCs (e.g. `tee`)",
+          "in" : "query",
+          "name" : "filter[query]",
+          "required" : false,
+          "schema" : {
+            "maxLength" : 255,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "owners" ]
+            }
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareItems_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareItemsReadByFilter403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareItemsReadByFilter409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple squareItems.",
+        "tags" : [ "squareItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "post" : {
+        "description" : "Creates a new squareItem.",
+        "parameters" : [ {
+          "description" : "Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned.",
+          "in" : "header",
+          "name" : "Idempotency-Key",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 128,
+            "type" : "string",
+            "example" : "79e1f37e-3e84-4c51-b5e2-7d9e1a2b3c4d"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SquareItemsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareItems_Create_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareItemsCreateResource403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareItemsCreateResource409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single squareItem.",
+        "tags" : [ "squareItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/squareItems/{id}" : {
+      "delete" : {
+        "description" : "Deletes existing squareItem.",
+        "parameters" : [ {
+          "description" : "Square item id",
+          "example" : "p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mutation_Response_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareItemsDeleteResource403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareItemsDeleteResource409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Delete single squareItem.",
+        "tags" : [ "squareItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "get" : {
+        "description" : "Retrieves single squareItem by id.",
+        "parameters" : [ {
+          "description" : "Square item id",
+          "example" : "p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "owners" ]
+            }
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareItems_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareItemsReadById403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareItemsReadById409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get single squareItem.",
+        "tags" : [ "squareItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Updates existing squareItem.",
+        "parameters" : [ {
+          "description" : "Square item id",
+          "example" : "p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned.",
+          "in" : "header",
+          "name" : "Idempotency-Key",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 128,
+            "type" : "string",
+            "example" : "79e1f37e-3e84-4c51-b5e2-7d9e1a2b3c4d"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SquareItemsUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareItems_Update_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareItemsUpdateResource403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareItemsUpdateResource409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update single squareItem.",
+        "tags" : [ "squareItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/squareItems/{id}/relationships/owners" : {
+      "get" : {
+        "description" : "Retrieves owners relationship.",
+        "parameters" : [ {
+          "description" : "Square item id",
+          "example" : "p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareItems_Owners_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "squareItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/squareSites/{id}/relationships/items" : {
+      "delete" : {
+        "description" : "Removes the items from the site; they stay in the catalog. Items not published and repeated items are left alone. An item missing from the catalog fails the request before anything changes.",
+        "parameters" : [ {
+          "description" : "Square Online site id",
+          "example" : "IhETt7taHSVV2MUu9kqjMDengjnhVZa",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SquareSitesItemsRelationshipRemoveOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mutation_Response_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareSitesRemoveMultiDataRelationship403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareSitesRemoveMultiDataRelationship409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Delete from items relationship (\"to-many\").",
+        "tags" : [ "squareSites" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "get" : {
+        "description" : "Items published in the site, in title order. Missing catalog scopes return MISSING_ITEMS_SCOPE. A page can be short or empty and still have a next cursor.",
+        "parameters" : [ {
+          "description" : "Square Online site id",
+          "example" : "IhETt7taHSVV2MUu9kqjMDengjnhVZa",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: items",
+          "example" : "items",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "items"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareSites_Items_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareSitesReadMultiDataRelationship403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareSitesReadMultiDataRelationship409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get items relationship (\"to-many\").",
+        "tags" : [ "squareSites" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "post" : {
+        "description" : "Publishes the items in the site. Items already published and repeated items are left alone. An item missing from the catalog fails the request before anything changes.",
+        "parameters" : [ {
+          "description" : "Square Online site id",
+          "example" : "IhETt7taHSVV2MUu9kqjMDengjnhVZa",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SquareSitesItemsRelationshipAddOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mutation_Response_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareSitesAddMultiDataRelationship403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareSitesAddMultiDataRelationship409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Add to items relationship (\"to-many\").",
+        "tags" : [ "squareSites" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
         }
@@ -34578,7 +36081,7 @@
   "components" : {
     "parameters" : {
       "IdempotencyKey" : {
-        "description" : "Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned.",
+        "description" : "Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned.",
         "in" : "header",
         "name" : "Idempotency-Key",
         "required" : false,
@@ -34728,7 +36231,7 @@
             }
           }
         },
-        "description" : "Idempotency key reused with a different payload"
+        "description" : "Idempotency key reused for a different request"
       },
       "PlaylistGenerationSchedulesCreateResource403Response" : {
         "content" : {
@@ -34839,6 +36342,166 @@
           }
         },
         "description" : "Square credential lacks required site scopes; run Square onboarding again; Request already in progress for this idempotency key"
+      },
+      "SquareItemsCreateResource403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsCreateResource403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareItemsCreateResource409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsCreateResource409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Request already in progress for this idempotency key"
+      },
+      "SquareItemsDeleteResource403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsDeleteResource403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareItemsDeleteResource409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsDeleteResource409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Request already in progress for this idempotency key"
+      },
+      "SquareItemsReadByFilter403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsReadByFilter403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareItemsReadByFilter409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsReadByFilter409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+      },
+      "SquareItemsReadById403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsReadById403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareItemsReadById409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsReadById409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+      },
+      "SquareItemsUpdateResource403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsUpdateResource403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareItemsUpdateResource409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsUpdateResource409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Variation editing requires positive fixed prices for every existing variation; edit this item's variations in Square Dashboard; Square catalog item changed; reload it before editing; Request already in progress for this idempotency key"
+      },
+      "SquareSitesAddMultiDataRelationship403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareSitesAddMultiDataRelationship403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareSitesAddMultiDataRelationship409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareSitesAddMultiDataRelationship409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; The site isn't the seller's selected Square Online site; select it to manage its items; Request already in progress for this idempotency key"
+      },
+      "SquareSitesReadMultiDataRelationship403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareSitesReadMultiDataRelationship403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareSitesReadMultiDataRelationship409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareSitesReadMultiDataRelationship409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; The site isn't the seller's selected Square Online site; select it to manage its items"
+      },
+      "SquareSitesRemoveMultiDataRelationship403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareSitesRemoveMultiDataRelationship403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareSitesRemoveMultiDataRelationship409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareSitesRemoveMultiDataRelationship409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; The site isn't the seller's selected Square Online site; select it to manage its items; Request already in progress for this idempotency key"
       },
       "TrackFilesReadById403Response" : {
         "content" : {
@@ -36851,6 +38514,758 @@
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ArtistSalesStatistics_Artist_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ArtistSalesStatistics_Attributes" : {
+        "required" : [ "dataThrough", "endDate", "lastModifiedAt", "startDate", "status", "windowPeriod" ],
+        "type" : "object",
+        "properties" : {
+          "buyerSources" : {
+            "$ref" : "#/components/schemas/ArtistSalesStatistics_BuyerSources"
+          },
+          "byType" : {
+            "$ref" : "#/components/schemas/ArtistSalesStatistics_ByType"
+          },
+          "currency" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Currency of every amount",
+            "enum" : [ "USD" ]
+          },
+          "dataThrough" : {
+            "type" : "string",
+            "description" : "Last day included in the underlying data",
+            "format" : "date"
+          },
+          "endDate" : {
+            "type" : "string",
+            "description" : "Last day of the window, inclusive",
+            "format" : "date"
+          },
+          "itemsSold" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Items sold in the window",
+            "format" : "int64"
+          },
+          "lastModifiedAt" : {
+            "type" : "string",
+            "description" : "When these statistics were computed",
+            "format" : "date-time"
+          },
+          "netSales" : {
+            "$ref" : "#/components/schemas/ArtistSalesStatistics_NetSales"
+          },
+          "orders" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Orders in the window",
+            "format" : "int64"
+          },
+          "refunds" : {
+            "$ref" : "#/components/schemas/ArtistSalesStatistics_Refunds"
+          },
+          "series" : {
+            "$ref" : "#/components/schemas/ArtistSalesStatistics_Series"
+          },
+          "startDate" : {
+            "type" : "string",
+            "description" : "First day of the window",
+            "format" : "date"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Status of sales statistics. NOT_SET_UP: the artist has not set up sales. UNAVAILABLE: not available at the moment",
+            "enum" : [ "OK", "NOT_SET_UP", "UNAVAILABLE" ]
+          },
+          "windowPeriod" : {
+            "$ref" : "#/components/schemas/ArtistStatisticsWindowPeriod"
+          }
+        }
+      },
+      "ArtistSalesStatistics_BuyerSourceShare" : {
+        "required" : [ "shareOfOrders", "source" ],
+        "type" : "object",
+        "properties" : {
+          "shareOfOrders" : {
+            "maximum" : 1,
+            "exclusiveMaximum" : false,
+            "minimum" : 0,
+            "exclusiveMinimum" : false,
+            "type" : "number",
+            "description" : "Share of orders",
+            "format" : "double"
+          },
+          "source" : {
+            "type" : "string",
+            "description" : "Where buyers came from. UNKNOWN: a source this API does not know",
+            "enum" : [ "ALBUM_AND_TRACK_PAGES", "ARTIST_PROFILE", "SHARED_LINKS", "TIDAL_HOME", "UNKNOWN" ]
+          }
+        }
+      },
+      "ArtistSalesStatistics_BuyerSources" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistSalesStatistics_BuyerSourceShare"
+            }
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Status of artist statistics that may be withheld. OK: the data is present. SUPPRESSED: withheld because too few people are counted to show it. UNAVAILABLE: not available at the moment",
+            "enum" : [ "OK", "SUPPRESSED", "UNAVAILABLE" ]
+          }
+        },
+        "description" : "Where buyers came from. items is present exactly when status is OK, and an empty items is a measured empty result"
+      },
+      "ArtistSalesStatistics_ByType" : {
+        "required" : [ "downloadsAmount", "merchAmount" ],
+        "type" : "object",
+        "properties" : {
+          "downloadsAmount" : {
+            "pattern" : "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          },
+          "merchAmount" : {
+            "pattern" : "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          }
+        },
+        "description" : "Net sales by product type"
+      },
+      "ArtistSalesStatistics_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistSalesStatistics_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ArtistSalesStatistics_NetSales" : {
+        "required" : [ "amount" ],
+        "type" : "object",
+        "properties" : {
+          "amount" : {
+            "pattern" : "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          },
+          "previousAmount" : {
+            "pattern" : "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          }
+        },
+        "description" : "Sold minus refunded in the window. previousAmount is the same for the previous window of the same length and is absent when there is no earlier window to compare with"
+      },
+      "ArtistSalesStatistics_Refunds" : {
+        "required" : [ "amount", "count" ],
+        "type" : "object",
+        "properties" : {
+          "amount" : {
+            "pattern" : "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          },
+          "count" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Refunded orders",
+            "format" : "int64"
+          }
+        },
+        "description" : "Refunds in the window. amount is the total refunded"
+      },
+      "ArtistSalesStatistics_Relationships" : {
+        "properties" : {
+          "artist" : {
+            "$ref" : "#/components/schemas/ArtistSalesStatistics_Artist_Single_Relationship_Data_Document"
+          },
+          "topSellers" : {
+            "$ref" : "#/components/schemas/ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "ArtistSalesStatistics_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ArtistSalesStatistics_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ArtistSalesStatistics_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ArtistSalesStatistics_Series" : {
+        "required" : [ "points" ],
+        "type" : "object",
+        "properties" : {
+          "bucketPeriod" : {
+            "$ref" : "#/components/schemas/ArtistStatisticsBucketPeriod"
+          },
+          "points" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistSalesStatistics_SeriesPoint"
+            }
+          }
+        },
+        "description" : "Net sales per bucket"
+      },
+      "ArtistSalesStatistics_SeriesPoint" : {
+        "required" : [ "date", "downloadsAmount", "merchAmount" ],
+        "type" : "object",
+        "properties" : {
+          "date" : {
+            "type" : "string",
+            "description" : "First day of the bucket",
+            "format" : "date"
+          },
+          "downloadsAmount" : {
+            "pattern" : "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          },
+          "merchAmount" : {
+            "pattern" : "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          }
+        }
+      },
+      "ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistSalesStatistics_TopSellers_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document_Meta"
+          }
+        }
+      },
+      "ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document_Meta" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "currency" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Currency of netSalesAmount. Present when status is OK",
+            "enum" : [ "USD" ]
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Status of sales statistics. NOT_SET_UP: the artist has not set up sales. UNAVAILABLE: not available at the moment",
+            "enum" : [ "OK", "NOT_SET_UP", "UNAVAILABLE" ]
+          }
+        },
+        "description" : "status is the status of the sales statistics"
+      },
+      "ArtistSalesStatistics_TopSellers_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/ArtistSalesStatistics_TopSellers_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ArtistSalesStatistics_TopSellers_Resource_Identifier_Meta" : {
+        "required" : [ "kind", "netSalesAmount", "rank", "units" ],
+        "type" : "object",
+        "properties" : {
+          "kind" : {
+            "type" : "string",
+            "description" : "What was sold. UNKNOWN: a kind this API does not know",
+            "enum" : [ "DOWNLOAD", "MERCH", "UNKNOWN" ]
+          },
+          "netSalesAmount" : {
+            "pattern" : "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          },
+          "rank" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "1-based position in the producer's ranking. Products this API cannot link are left out, so ranks can have gaps",
+            "format" : "int32"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          },
+          "units" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Units sold in the window",
+            "format" : "int64"
+          }
+        },
+        "description" : "netSalesAmount is the product's net sales in the window, in the relationship's currency"
+      },
+      "ArtistStatisticsBucketPeriod" : {
+        "type" : "string",
+        "description" : "Calendar width of each bucket. Absent when the producer's width is not recognized",
+        "enum" : [ "P1D", "P7D" ]
+      },
+      "ArtistStatisticsWindowPeriod" : {
+        "type" : "string",
+        "description" : "Reporting window preset. startDate and endDate give the actual data coverage",
+        "enum" : [ "P7D", "P28D", "P12M" ]
+      },
+      "ArtistStreamsStatistics_Artist_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ArtistStreamsStatistics_Attributes" : {
+        "required" : [ "breakdownsStatus", "dataThrough", "endDate", "lastModifiedAt", "listeners", "newFollowers", "plays", "saves", "series", "startDate", "windowPeriod" ],
+        "type" : "object",
+        "properties" : {
+          "breakdownsStatus" : {
+            "type" : "string",
+            "description" : "Status of artist statistics that may be withheld. OK: the data is present. SUPPRESSED: withheld because too few people are counted to show it. UNAVAILABLE: not available at the moment",
+            "enum" : [ "OK", "SUPPRESSED", "UNAVAILABLE" ]
+          },
+          "dataThrough" : {
+            "type" : "string",
+            "description" : "Last day included in the underlying data",
+            "format" : "date"
+          },
+          "endDate" : {
+            "type" : "string",
+            "description" : "Last day of the window, inclusive",
+            "format" : "date"
+          },
+          "lastModifiedAt" : {
+            "type" : "string",
+            "description" : "When these statistics were computed",
+            "format" : "date-time"
+          },
+          "listeners" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_Count"
+          },
+          "newFollowers" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_Count"
+          },
+          "plays" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_Plays"
+          },
+          "playsBySource" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_PlaysBySource"
+          },
+          "saves" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_Count"
+          },
+          "series" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_Series"
+          },
+          "startDate" : {
+            "type" : "string",
+            "description" : "First day of the window",
+            "format" : "date"
+          },
+          "topCountries" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_TopCountries"
+          },
+          "windowPeriod" : {
+            "$ref" : "#/components/schemas/ArtistStatisticsWindowPeriod"
+          }
+        }
+      },
+      "ArtistStreamsStatistics_Count" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "description" : "Status of artist statistics that may be withheld. OK: the data is present. SUPPRESSED: withheld because too few people are counted to show it. UNAVAILABLE: not available at the moment",
+            "enum" : [ "OK", "SUPPRESSED", "UNAVAILABLE" ]
+          },
+          "value" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "description" : "A count in the window that may be withheld. value is present exactly when status is OK, and 0 is a measured zero"
+      },
+      "ArtistStreamsStatistics_CountryListeners" : {
+        "required" : [ "countryCode", "listeners" ],
+        "type" : "object",
+        "properties" : {
+          "countryCode" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "listeners" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "ArtistStreamsStatistics_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistStreamsStatistics_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ArtistStreamsStatistics_OtherPlays" : {
+        "required" : [ "plays", "share" ],
+        "type" : "object",
+        "properties" : {
+          "plays" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "share" : {
+            "maximum" : 1,
+            "exclusiveMaximum" : false,
+            "minimum" : 0,
+            "exclusiveMinimum" : false,
+            "type" : "number",
+            "description" : "Share of all plays",
+            "format" : "double"
+          }
+        }
+      },
+      "ArtistStreamsStatistics_Plays" : {
+        "required" : [ "value" ],
+        "type" : "object",
+        "properties" : {
+          "previous" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Plays in the previous window of the same length. Absent when there is no earlier window to compare with",
+            "format" : "int64"
+          },
+          "value" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Plays in the window",
+            "format" : "int64"
+          }
+        }
+      },
+      "ArtistStreamsStatistics_PlaysBySource" : {
+        "required" : [ "items" ],
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistStreamsStatistics_SourcePlays"
+            }
+          },
+          "note" : {
+            "type" : "string",
+            "description" : "How a breakdown relates to its total. GROUPED: the remainder includes entries too small to show alone, and the breakdown still adds up to the total. HIDDEN: part of the total is withheld, so the breakdown adds up to less than the total. UNKNOWN: a note this API does not know, so the breakdown may not add up",
+            "enum" : [ "GROUPED", "HIDDEN", "UNKNOWN" ]
+          },
+          "other" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_OtherPlays"
+          }
+        },
+        "description" : "Plays by where they started. other holds the plays not in items. Without a note, items and other add up to all plays, and an absent other means no plays are left. With note HIDDEN, part of the plays is withheld, so an absent other is unknown rather than zero"
+      },
+      "ArtistStreamsStatistics_Relationships" : {
+        "properties" : {
+          "artist" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_Artist_Single_Relationship_Data_Document"
+          },
+          "topTracks" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "ArtistStreamsStatistics_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ArtistStreamsStatistics_Series" : {
+        "required" : [ "points" ],
+        "type" : "object",
+        "properties" : {
+          "bucketPeriod" : {
+            "$ref" : "#/components/schemas/ArtistStatisticsBucketPeriod"
+          },
+          "points" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistStreamsStatistics_SeriesPoint"
+            }
+          }
+        },
+        "description" : "Plays per bucket"
+      },
+      "ArtistStreamsStatistics_SeriesPoint" : {
+        "required" : [ "date", "plays" ],
+        "type" : "object",
+        "properties" : {
+          "date" : {
+            "type" : "string",
+            "description" : "First day of the bucket",
+            "format" : "date"
+          },
+          "plays" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "ArtistStreamsStatistics_SourcePlays" : {
+        "required" : [ "plays", "share", "source" ],
+        "type" : "object",
+        "properties" : {
+          "plays" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "share" : {
+            "maximum" : 1,
+            "exclusiveMaximum" : false,
+            "minimum" : 0,
+            "exclusiveMinimum" : false,
+            "type" : "number",
+            "description" : "Share of all plays",
+            "format" : "double"
+          },
+          "source" : {
+            "type" : "string",
+            "description" : "Where plays started. UNKNOWN: a source this API does not know",
+            "enum" : [ "MIXES_AND_RADIO", "ALBUMS_AND_PROFILE", "TIDAL_PLAYLISTS", "LISTENER_PLAYLISTS", "LISTENER_COLLECTIONS", "SEARCH", "UNKNOWN" ]
+          }
+        }
+      },
+      "ArtistStreamsStatistics_TopCountries" : {
+        "required" : [ "items" ],
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistStreamsStatistics_CountryListeners"
+            }
+          },
+          "note" : {
+            "type" : "string",
+            "description" : "How a breakdown relates to its total. GROUPED: the remainder includes entries too small to show alone, and the breakdown still adds up to the total. HIDDEN: part of the total is withheld, so the breakdown adds up to less than the total. UNKNOWN: a note this API does not know, so the breakdown may not add up",
+            "enum" : [ "GROUPED", "HIDDEN", "UNKNOWN" ]
+          },
+          "otherListeners" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Listeners in countries not in items. A present value, 0 included, is measured",
+            "format" : "int64"
+          }
+        },
+        "description" : "Listeners by country. Without a note, items and otherListeners add up to all listeners, and an absent otherListeners means no listeners are left. With note HIDDEN, part of the listeners is withheld, so an absent otherListeners is unknown rather than zero"
+      },
+      "ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtistStreamsStatistics_TopTracks_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document_Meta"
+          }
+        }
+      },
+      "ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document_Meta" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "hiddenCount" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Tracks left out because too few people listened to them. Present when status is OK",
+            "format" : "int32"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Status of artist statistics that may be withheld. OK: the data is present. SUPPRESSED: withheld because too few people are counted to show it. UNAVAILABLE: not available at the moment",
+            "enum" : [ "OK", "SUPPRESSED", "UNAVAILABLE" ]
+          }
+        },
+        "description" : "status is the breakdownsStatus of the statistics. When it is not OK the entries are withheld, so the empty linkage is not a measured empty result"
+      },
+      "ArtistStreamsStatistics_TopTracks_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_TopTracks_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ArtistStreamsStatistics_TopTracks_Resource_Identifier_Meta" : {
+        "required" : [ "plays", "rank" ],
+        "type" : "object",
+        "properties" : {
+          "plays" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Plays of the track in the window",
+            "format" : "int64"
+          },
+          "rank" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "1-based position in the producer's ranking. Tracks this API cannot link are left out, so ranks can have gaps",
+            "format" : "int32"
+          },
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
           }
         }
       },
@@ -40680,6 +43095,24 @@
           }
         }
       },
+      "FolderItems_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FolderItems_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "FolderItems_Owners_Multi_Relationship_Data_Document" : {
         "required" : [ "links" ],
         "type" : "object",
@@ -41011,9 +43444,13 @@
         }
       },
       "Folders_Attributes" : {
-        "required" : [ "name" ],
+        "required" : [ "isRoot", "name" ],
         "type" : "object",
         "properties" : {
+          "isRoot" : {
+            "type" : "boolean",
+            "description" : "Whether this is the root folder."
+          },
           "name" : {
             "maxLength" : 255,
             "minLength" : 1,
@@ -41385,7 +43822,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "Idempotency key reused with a different payload"
+                  "example" : "Idempotency key reused for a different request"
                 },
                 "status" : {
                   "type" : "string",
@@ -41413,6 +43850,8 @@
               "artistClaimStatuses" : "#/components/schemas/ArtistClaimStatuses_Resource_Object",
               "artistClaims" : "#/components/schemas/ArtistClaims_Resource_Object",
               "artistRoles" : "#/components/schemas/ArtistRoles_Resource_Object",
+              "artistSalesStatistics" : "#/components/schemas/ArtistSalesStatistics_Resource_Object",
+              "artistStreamsStatistics" : "#/components/schemas/ArtistStreamsStatistics_Resource_Object",
               "artists" : "#/components/schemas/Artists_Resource_Object",
               "artworks" : "#/components/schemas/Artworks_Resource_Object",
               "changeEventStreams" : "#/components/schemas/ChangeEventStreams_Resource_Object",
@@ -41452,6 +43891,7 @@
               "searchSuggestions" : "#/components/schemas/SearchSuggestions_Resource_Object",
               "shares" : "#/components/schemas/Shares_Resource_Object",
               "squareConnections" : "#/components/schemas/SquareConnections_Resource_Object",
+              "squareItems" : "#/components/schemas/SquareItems_Resource_Object",
               "squareSites" : "#/components/schemas/SquareSites_Resource_Object",
               "stripeConnections" : "#/components/schemas/StripeConnections_Resource_Object",
               "stripeDashboardLinks" : "#/components/schemas/StripeDashboardLinks_Resource_Object",
@@ -41506,6 +43946,10 @@
             "$ref" : "#/components/schemas/ArtistClaims_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/ArtistRoles_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/ArtistSalesStatistics_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/ArtistStreamsStatistics_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Artists_Resource_Object"
           }, {
@@ -41584,6 +44028,8 @@
             "$ref" : "#/components/schemas/Shares_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/SquareConnections_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/SquareItems_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/SquareSites_Resource_Object"
           }, {
@@ -47743,6 +50189,877 @@
           }
         }
       },
+      "SquareItemsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItemsCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "SquareItemsCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SquareItemsCreateOperation_Payload_Data_Attributes"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItems" ]
+          }
+        }
+      },
+      "SquareItemsCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "title", "variations" ],
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "maxLength" : 4096,
+            "type" : "string",
+            "description" : "Item description"
+          },
+          "title" : {
+            "maxLength" : 512,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Item title"
+          },
+          "variations" : {
+            "maxItems" : 100,
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "Variations, in display order",
+            "items" : {
+              "$ref" : "#/components/schemas/SquareItemsCreateOperation_Payload_Data_Attributes_Variation"
+            }
+          }
+        }
+      },
+      "SquareItemsCreateOperation_Payload_Data_Attributes_Variation" : {
+        "required" : [ "price", "stockTracked" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "maxLength" : 255,
+            "type" : "string",
+            "description" : "Variation name, such as a size or color"
+          },
+          "price" : {
+            "minimum" : 0,
+            "exclusiveMinimum" : true,
+            "pattern" : "^\\+?(?=[0-9.]*[1-9])(?:0*[0-9]{1,16}(?:\\.[0-9]{0,2})?|\\.[0-9]{1,2})$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          },
+          "stockQuantity" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Units in stock at the seller's main location; applies only when stock is tracked",
+            "format" : "int64"
+          },
+          "stockTracked" : {
+            "type" : "boolean",
+            "description" : "Whether Square tracks stock for this variation"
+          }
+        }
+      },
+      "SquareItemsCreateResource403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsCreateResource409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "CONFLICT",
+                  "enum" : [ "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsDeleteResource403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsDeleteResource409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "CONFLICT",
+                  "enum" : [ "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsReadByFilter403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsReadByFilter409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "MISSING_ITEMS_SCOPE",
+                  "enum" : [ "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsReadById403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsReadById409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "MISSING_ITEMS_SCOPE",
+                  "enum" : [ "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsUpdateOperation_Payload" : {
+        "required" : [ "data", "meta" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItemsUpdateOperation_Payload_Data"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SquareItemsUpdateOperation_Payload_Meta"
+          }
+        }
+      },
+      "SquareItemsUpdateOperation_Payload_Data" : {
+        "required" : [ "attributes", "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SquareItemsUpdateOperation_Payload_Data_Attributes"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItems" ]
+          }
+        }
+      },
+      "SquareItemsUpdateOperation_Payload_Data_Attributes" : {
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "maxLength" : 4096,
+            "type" : "string",
+            "description" : "Item description; an empty string removes it"
+          },
+          "title" : {
+            "maxLength" : 512,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Item title"
+          },
+          "variations" : {
+            "maxItems" : 100,
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "Complete variation list in display order; variations without a variationId are added and omitted ones deleted. Every price must be positive and is written as FIXED. Replacement requires every existing variation to have a positive fixed price at the main location; otherwise edit the variations in Square Dashboard. Updates without variations remain supported.",
+            "items" : {
+              "$ref" : "#/components/schemas/SquareItemsUpdateOperation_Payload_Data_Attributes_Variation"
+            }
+          }
+        }
+      },
+      "SquareItemsUpdateOperation_Payload_Data_Attributes_Variation" : {
+        "required" : [ "name", "price", "stockTracked" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "maxLength" : 255,
+            "type" : "string",
+            "description" : "Variation name, such as a size or color; an empty string for none"
+          },
+          "price" : {
+            "minimum" : 0,
+            "exclusiveMinimum" : true,
+            "pattern" : "^\\+?(?=[0-9.]*[1-9])(?:0*[0-9]{1,16}(?:\\.[0-9]{0,2})?|\\.[0-9]{1,2})$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          },
+          "stockQuantity" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Units in stock at the seller's main location; applies only when stock is tracked. Omit to leave the stock unchanged.",
+            "format" : "int64"
+          },
+          "stockTracked" : {
+            "type" : "boolean",
+            "description" : "Whether Square tracks stock for this variation"
+          },
+          "variationId" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "The variation to update; omit to add a variation"
+          }
+        }
+      },
+      "SquareItemsUpdateOperation_Payload_Meta" : {
+        "required" : [ "expectedRevision" ],
+        "type" : "object",
+        "properties" : {
+          "expectedRevision" : {
+            "maximum" : 9007199254740991,
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Catalog revision read by the editor; stale revisions return 409",
+            "format" : "int64"
+          }
+        }
+      },
+      "SquareItemsUpdateResource403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsUpdateResource409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "CATALOG_VERSION_MISMATCH",
+                  "enum" : [ "CATALOG_VERSION_MISMATCH", "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE", "UNSUPPORTED_VARIATION_PRICING" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItems_Attributes" : {
+        "required" : [ "currency", "revision", "title", "variations" ],
+        "type" : "object",
+        "properties" : {
+          "currency" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Currency of every price on the item",
+            "enum" : [ "USD" ]
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Item description"
+          },
+          "lastModifiedAt" : {
+            "type" : "string",
+            "description" : "Timestamp when the item was last modified in Square; absent when Square has not reported one",
+            "format" : "date-time"
+          },
+          "origin" : {
+            "type" : "string",
+            "description" : "Where the item was created",
+            "enum" : [ "TIDAL", "OTHER" ]
+          },
+          "publishedInSelectedSite" : {
+            "type" : "boolean",
+            "description" : "Whether the item is published in the seller's selected Square Online site; false when no site is selected"
+          },
+          "revision" : {
+            "maximum" : 9007199254740991,
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Square catalog item revision used to guard item updates; excludes inventory stock",
+            "format" : "int64"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Item title; empty for an untitled item created in Square"
+          },
+          "variations" : {
+            "type" : "array",
+            "description" : "Variations, in Square's order",
+            "items" : {
+              "$ref" : "#/components/schemas/SquareItems_Variation"
+            }
+          }
+        }
+      },
+      "SquareItems_Create_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItems_Resource_Object"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SquareItems_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SquareItems_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SquareItems_Owners_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SquareItems_Relationships" : {
+        "properties" : {
+          "owners" : {
+            "$ref" : "#/components/schemas/SquareItems_Owners_Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "SquareItems_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SquareItems_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/SquareItems_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SquareItems_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItems_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SquareItems_Update_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItems_Resource_Object"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SquareItems_Variation" : {
+        "required" : [ "name", "pricingType", "variationId" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "Variation name, such as a size or color; may be empty"
+          },
+          "price" : {
+            "minimum" : 0,
+            "pattern" : "^[+-]?(?:[0-9]+(?:\\.[0-9]{0,2})?|\\.[0-9]{1,2})$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          },
+          "pricingType" : {
+            "type" : "string",
+            "description" : "How the variation is priced; price is present only when FIXED",
+            "enum" : [ "FIXED", "VARIABLE" ]
+          },
+          "stockQuantity" : {
+            "type" : "integer",
+            "description" : "Units in stock at the seller's main location; present only when stock is tracked, and negative when Square has sold more than it counted",
+            "format" : "int64"
+          },
+          "stockTracked" : {
+            "type" : "boolean",
+            "description" : "Whether Square tracks stock for this variation"
+          },
+          "variationId" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }
+      },
+      "SquareSitesAddMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareSitesAddMultiDataRelationship409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "CONFLICT",
+                  "enum" : [ "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE", "SITE_NOT_SELECTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareSitesItemsRelationshipAddOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 50,
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "The items to publish",
+            "items" : {
+              "$ref" : "#/components/schemas/SquareSitesItemsRelationshipAddOperation_Payload_Data"
+            }
+          }
+        }
+      },
+      "SquareSitesItemsRelationshipAddOperation_Payload_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItems" ]
+          }
+        },
+        "description" : "The items to publish"
+      },
+      "SquareSitesItemsRelationshipRemoveOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 50,
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "The items to unpublish",
+            "items" : {
+              "$ref" : "#/components/schemas/SquareSitesItemsRelationshipRemoveOperation_Payload_Data"
+            }
+          }
+        }
+      },
+      "SquareSitesItemsRelationshipRemoveOperation_Payload_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItems" ]
+          }
+        },
+        "description" : "The items to unpublish"
+      },
+      "SquareSitesReadMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareSitesReadMultiDataRelationship409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "MISSING_ITEMS_SCOPE",
+                  "enum" : [ "MISSING_ITEMS_SCOPE", "SITE_NOT_SELECTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareSitesRemoveMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareSitesRemoveMultiDataRelationship409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "CONFLICT",
+                  "enum" : [ "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE", "SITE_NOT_SELECTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
       "SquareSites_Attributes" : {
         "type" : "object",
         "properties" : {
@@ -47760,6 +51077,31 @@
           }
         }
       },
+      "SquareSites_Items_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SquareSites_Relationships" : {
+        "properties" : {
+          "items" : {
+            "$ref" : "#/components/schemas/SquareSites_Items_Multi_Relationship_Data_Document"
+          }
+        }
+      },
       "SquareSites_Resource_Object" : {
         "required" : [ "id", "type" ],
         "type" : "object",
@@ -47771,6 +51113,9 @@
             "type" : "string",
             "description" : "Resource id",
             "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/SquareSites_Relationships"
           },
           "type" : {
             "minLength" : 1,
