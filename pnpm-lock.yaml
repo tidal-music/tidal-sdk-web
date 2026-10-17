@@ -199,7 +199,7 @@ importers:
         version: 10.12.0(supports-color@10.2.2)
       eslint-config-tidal:
         specifier: 5.0.0
-        version: 5.0.0(@types/node@26.5.1)(happy-dom@20.14.6)(lightningcss@1.33.0)(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(supports-color@10.2.2)(terser@5.31.0)(yaml@2.9.0)
+        version: 5.0.0(@types/node@26.5.1)(happy-dom@21.0.1)(lightningcss@1.33.0)(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(supports-color@10.2.2)(terser@5.31.0)(yaml@2.9.0)
       eslint-plugin-disable-autofix:
         specifier: 6.1.3
         version: 6.1.3(eslint@10.12.0(supports-color@10.2.2))
@@ -226,7 +226,7 @@ importers:
         version: 1.1.0(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
       vitest:
         specifier: 5.0.4
-        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
+        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@21.0.1)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
 
   packages/api:
     dependencies:
@@ -263,7 +263,7 @@ importers:
         version: 5.1.2(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.14)(rollup@4.64.6)(supports-color@10.2.2)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
       vitest:
         specifier: 5.0.4
-        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
+        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@21.0.1)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
 
   packages/auth:
     dependencies:
@@ -294,7 +294,7 @@ importers:
         version: 5.1.2(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.14)(rollup@4.64.6)(supports-color@10.2.2)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
       vitest:
         specifier: 5.0.4
-        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
+        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@21.0.1)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
 
   packages/common:
     devDependencies:
@@ -318,7 +318,7 @@ importers:
         version: 5.1.2(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.14)(rollup@4.64.6)(supports-color@10.2.2)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
       vitest:
         specifier: 5.0.4
-        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
+        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@21.0.1)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
 
   packages/event-producer:
     dependencies:
@@ -348,8 +348,8 @@ importers:
         specifier: 5.0.4
         version: 5.0.4(vitest@5.0.4)
       happy-dom:
-        specifier: 20.14.6
-        version: 20.14.6
+        specifier: 21.0.1
+        version: 21.0.1
       typescript:
         specifier: npm:@typescript/typescript6@6.0.2
         version: '@typescript/typescript6@6.0.2'
@@ -361,7 +361,7 @@ importers:
         version: 5.1.2(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.14)(rollup@4.64.6)(supports-color@10.2.2)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
       vitest:
         specifier: 5.0.4
-        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
+        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@21.0.1)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
       xml-js:
         specifier: 1.6.11
         version: 1.6.11
@@ -508,7 +508,7 @@ importers:
         version: 5.1.2(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.14)(rollup@4.64.6)(supports-color@10.2.2)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
       vitest:
         specifier: 5.0.4
-        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
+        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@21.0.1)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
 
   packages/template:
     devDependencies:
@@ -532,7 +532,7 @@ importers:
         version: 5.1.2(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.14)(rollup@4.64.6)(supports-color@10.2.2)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
       vitest:
         specifier: 5.0.4
-        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
+        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@21.0.1)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
 
   packages/true-time:
     devDependencies:
@@ -556,7 +556,7 @@ importers:
         version: 5.1.2(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.14)(rollup@4.64.6)(supports-color@10.2.2)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
       vitest:
         specifier: 5.0.4
-        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
+        version: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@21.0.1)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
 
 packages:
 
@@ -4054,8 +4054,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  happy-dom@20.14.6:
-    resolution: {integrity: sha512-5DDsf4QmEIlRL6NkCv/fxSjYHHkZceL/IaYQdJc2h3G7DRTEai++VTjbfL0LB9geW2VrA3+vrjF3Efx+OTtX0Q==}
+  happy-dom@21.0.1:
+    resolution: {integrity: sha512-pRBs/u9fhrncyByOl58DMex0R2uAj6ZPKWIjV5j5yNGZBqLw3P6BTRhlc0DD5b/Ht4/6JYTMuE2LJhUWRC6SGw==}
     engines: {node: '>=20.0.0'}
 
   has-bigints@1.1.0:
@@ -8359,16 +8359,16 @@ snapshots:
       obug: 3.0.0
       std-env: 4.3.0
       tinyrainbow: 3.2.0
-      vitest: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
+      vitest: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@21.0.1)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
 
-  '@vitest/eslint-plugin@1.6.9(eslint@10.0.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)(vitest@4.0.18(@types/node@26.5.1)(happy-dom@20.14.6)(lightningcss@1.33.0)(terser@5.31.0)(yaml@2.9.0))':
+  '@vitest/eslint-plugin@1.6.9(eslint@10.0.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)(vitest@4.0.18(@types/node@26.5.1)(happy-dom@21.0.1)(lightningcss@1.33.0)(terser@5.31.0)(yaml@2.9.0))':
     dependencies:
       '@typescript-eslint/scope-manager': 8.56.0
       '@typescript-eslint/utils': 8.56.0(eslint@10.0.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)
       eslint: 10.0.1(supports-color@10.2.2)
     optionalDependencies:
       typescript: 5.9.3
-      vitest: 4.0.18(@types/node@26.5.1)(happy-dom@20.14.6)(lightningcss@1.33.0)(terser@5.31.0)(yaml@2.9.0)
+      vitest: 4.0.18(@types/node@26.5.1)(happy-dom@21.0.1)(lightningcss@1.33.0)(terser@5.31.0)(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -8451,7 +8451,7 @@ snapshots:
       pathe: 2.0.3
       sirv: 3.0.2
       tinyrainbow: 3.2.0
-      vitest: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
+      vitest: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@21.0.1)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -8473,7 +8473,7 @@ snapshots:
   '@vitest/web-worker@5.0.4(vitest@5.0.4)':
     dependencies:
       obug: 3.0.0
-      vitest: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
+      vitest: 5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@21.0.1)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
 
   '@volar/language-core@2.4.28':
     dependencies:
@@ -9548,7 +9548,7 @@ snapshots:
     dependencies:
       eslint: 10.0.1(supports-color@10.2.2)
 
-  eslint-config-tidal@5.0.0(@types/node@26.5.1)(happy-dom@20.14.6)(lightningcss@1.33.0)(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(supports-color@10.2.2)(terser@5.31.0)(yaml@2.9.0):
+  eslint-config-tidal@5.0.0(@types/node@26.5.1)(happy-dom@21.0.1)(lightningcss@1.33.0)(storybook@10.2.10(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(supports-color@10.2.2)(terser@5.31.0)(yaml@2.9.0):
     dependencies:
       '@eslint/compat': 2.0.2(eslint@10.0.1(supports-color@10.2.2))
       '@eslint/eslintrc': 3.3.3(supports-color@10.2.2)
@@ -9556,7 +9556,7 @@ snapshots:
       '@jambit/eslint-plugin-typed-redux-saga': 0.4.0
       '@typescript-eslint/eslint-plugin': 8.56.0(@typescript-eslint/parser@8.56.0(eslint@10.0.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(eslint@10.0.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)
       '@typescript-eslint/parser': 8.56.0(eslint@10.0.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)
-      '@vitest/eslint-plugin': 1.6.9(eslint@10.0.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)(vitest@4.0.18(@types/node@26.5.1)(happy-dom@20.14.6)(lightningcss@1.33.0)(terser@5.31.0)(yaml@2.9.0))
+      '@vitest/eslint-plugin': 1.6.9(eslint@10.0.1(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)(vitest@4.0.18(@types/node@26.5.1)(happy-dom@21.0.1)(lightningcss@1.33.0)(terser@5.31.0)(yaml@2.9.0))
       confusing-browser-globals: 1.0.11
       eslint: 10.0.1(supports-color@10.2.2)
       eslint-config-prettier: 10.1.8(eslint@10.0.1(supports-color@10.2.2))
@@ -9575,7 +9575,7 @@ snapshots:
       redux-saga: 1.4.2
       typed-redux-saga: 1.4.0(redux-saga@1.4.2)(supports-color@10.2.2)
       typescript: 5.9.3
-      vitest: 4.0.18(@types/node@26.5.1)(happy-dom@20.14.6)(lightningcss@1.33.0)(terser@5.31.0)(yaml@2.9.0)
+      vitest: 4.0.18(@types/node@26.5.1)(happy-dom@21.0.1)(lightningcss@1.33.0)(terser@5.31.0)(yaml@2.9.0)
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@opentelemetry/api'
@@ -10141,9 +10141,9 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  happy-dom@20.14.6:
+  happy-dom@21.0.1:
     dependencies:
-      '@types/node': 26.5.1
+      '@types/node': 24.19.2
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.1
       buffer-image-size: 0.6.4
@@ -12196,7 +12196,7 @@ snapshots:
       terser: 5.31.0
       yaml: 2.9.0
 
-  vitest@4.0.18(@types/node@26.5.1)(happy-dom@20.14.6)(lightningcss@1.33.0)(terser@5.31.0)(yaml@2.9.0):
+  vitest@4.0.18(@types/node@26.5.1)(happy-dom@21.0.1)(lightningcss@1.33.0)(terser@5.31.0)(yaml@2.9.0):
     dependencies:
       '@vitest/expect': 4.0.18
       '@vitest/mocker': 4.0.18(vite@7.3.1(@types/node@26.5.1)(lightningcss@1.33.0)(terser@5.31.0)(yaml@2.9.0))
@@ -12220,7 +12220,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 26.5.1
-      happy-dom: 20.14.6
+      happy-dom: 21.0.1
     transitivePeerDependencies:
       - jiti
       - less
@@ -12234,7 +12234,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@20.14.6)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0)):
+  vitest@5.0.4(@types/node@26.5.1)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(happy-dom@21.0.1)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0)):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/mocker': 5.0.4(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(terser@5.31.0)(yaml@2.9.0))
@@ -12254,7 +12254,7 @@ snapshots:
       '@types/node': 26.5.1
       '@vitest/coverage-v8': 5.0.4(vitest@5.0.4)
       '@vitest/ui': 5.0.4(vitest@5.0.4)
-      happy-dom: 20.14.6
+      happy-dom: 21.0.1
     transitivePeerDependencies:
       - msw
 
