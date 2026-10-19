@@ -7176,13 +7176,8 @@ export interface paths {
                      * @example modules.items
                      */
                     include?: string[];
-                    /** @description The page subject. Its type must match pageType. Required unless subject.id is supplied; both must be omitted for HOME_FREE. Do not combine with subject.id. */
+                    /** @description The page subject. Its type must match pageType. Required except for HOME_FREE, where it must be omitted. */
                     "filter[subject]"?: string;
-                    /**
-                     * @deprecated
-                     * @description Deprecated alternative to filter[subject]. Omit when subject is supplied or pageType is HOME_FREE. (e.g. `67890`)
-                     */
-                    "filter[subject.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("modules" | "subject")[];
                     /**
