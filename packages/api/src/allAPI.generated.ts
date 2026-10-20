@@ -18,17 +18,17 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES, TIDAL_CONNECT_DEVELOPER (e.g. `DEVELOPER`) */
                     "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
+                    /** @description Filter by terms.isLatestVersion */
+                    "filter[terms.isLatestVersion]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: owners, terms
                      * @example terms
                      */
                     include?: string[];
-                    /** @description Filter by terms.isLatestVersion */
-                    "filter[terms.isLatestVersion]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("owners" | "terms")[];
                 };
@@ -363,28 +363,26 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("createdAt" | "-createdAt" | "title" | "-title")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description List of barcode IDs (EAN-13 or UPC-A). NOTE: Supplying more than one barcode ID will currently only return one album per barcode ID. (e.g. `196589525444`) */
+                    "filter[barcodeId]"?: string[];
+                    /** @description List of album IDs (e.g. `251380836`) */
+                    "filter[id]"?: string[];
+                    /** @description User id. Also accepts `me`. */
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
                      * @example artists.albums
                      */
                     include?: string[];
-                    /** @description List of barcode IDs (EAN-13 or UPC-A). NOTE: Supplying more than one barcode ID will currently only return one album per barcode ID. (e.g. `196589525444`) */
-                    "filter[barcodeId]"?: string[];
-                    /** @description List of album IDs (e.g. `251380836`) */
-                    "filter[id]"?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("albumStatistics" | "artists" | "coverArt" | "genres" | "items" | "owners" | "priceConfig" | "providers" | "replacement" | "shares" | "similarAlbums" | "suggestedCoverArts" | "usageRules")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
@@ -392,6 +390,8 @@ export interface paths {
                     replaceMedia?: string;
                     /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("createdAt" | "-createdAt" | "title" | "-title")[];
                 };
                 header?: never;
                 path?: never;
@@ -702,8 +702,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -714,6 +712,8 @@ export interface paths {
                      * @example artists.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
@@ -775,8 +775,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -787,6 +785,8 @@ export interface paths {
                      * @example coverArt
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
@@ -889,8 +889,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -901,6 +899,8 @@ export interface paths {
                      * @example genres
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
@@ -957,8 +957,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -969,6 +967,8 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -1339,7 +1339,7 @@ export interface paths {
         };
         /**
          * Get shares relationship ("to-many").
-         * @description Retrieves shares relationship.
+         * @description The album's share links, active and expired, newest first.
          */
         get: {
             parameters: {
@@ -1412,8 +1412,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -1424,6 +1422,8 @@ export interface paths {
                      * @example similarAlbums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarAlbums
                      * @example similarAlbums
@@ -1899,7 +1899,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /**
                      * @description Include related resources. Available relationships: acceptedArtists, owners, recommendedArtists
@@ -2836,17 +2836,17 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description Artist handle (e.g. `jayz`) */
+                    "filter[handle]"?: string[];
+                    /** @description List of artist IDs (e.g. `1566`) */
+                    "filter[id]"?: string[];
+                    /** @description User id. Also accepts `me`. */
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: albums, bannerArt, biography, claimStatus, followers, following, logoArt, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
-                    /** @description Artist handle (e.g. `jayz`) */
-                    "filter[handle]"?: string[];
-                    /** @description List of artist IDs (e.g. `1566`) */
-                    "filter[id]"?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("albums" | "bannerArt" | "biography" | "claimStatus" | "followers" | "following" | "logoArt" | "owners" | "profileArt" | "radio" | "roles" | "similarArtists" | "trackProviders" | "tracks" | "videos")[];
                     /**
@@ -3068,8 +3068,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -3080,6 +3078,8 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -3374,19 +3374,19 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    viewerContext?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: followers
                      * @example followers.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: followers.albums
                      * @example followers.albums
                      */
                     replaceMedia?: string;
+                    viewerContext?: string;
                 };
                 header?: never;
                 path: {
@@ -3441,19 +3441,19 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    viewerContext?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: following
                      * @example following.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: following.albums
                      * @example following.albums
                      */
                     replaceMedia?: string;
+                    viewerContext?: string;
                 };
                 header?: never;
                 path: {
@@ -3885,8 +3885,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -3897,6 +3895,8 @@ export interface paths {
                      * @example radio.items
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: radio.items
                      * @example radio.items
@@ -4017,8 +4017,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -4029,6 +4027,8 @@ export interface paths {
                      * @example similarArtists.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarArtists.albums
                      * @example similarArtists.albums
@@ -4088,13 +4088,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: trackProviders
                      * @example trackProviders
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
@@ -4154,8 +4154,6 @@ export interface paths {
                      * @example FINGERPRINT
                      */
                     collapseBy: "FINGERPRINT" | "NONE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -4166,6 +4164,8 @@ export interface paths {
                      * @example tracks
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
                      * @example tracks
@@ -4225,8 +4225,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -4237,6 +4235,8 @@ export interface paths {
                      * @example videos
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
                      * @example videos
@@ -4694,7 +4694,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /**
                      * @description Include related resources. Available relationships: certificates, owners
@@ -5460,19 +5460,8 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("createdAt" | "-createdAt" | "likeCount" | "-likeCount" | "replyCount" | "-replyCount" | "startTime" | "-startTime")[];
-                    /**
-                     * @description Include related resources. Available relationships: author, owners, parentComment
-                     * @example author.albums
-                     */
-                    include?: string[];
                     /** @description Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[parentComment.id]"?: string[];
-                    /** @description The subject whose comments to return. Use either subject or the deprecated subject.id and subject.type pair. */
-                    "filter[subject]"?: string;
                     /**
                      * @deprecated
                      * @description Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)
@@ -5483,13 +5472,24 @@ export interface paths {
                      * @description Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)
                      */
                     "filter[subject.type]"?: ("albums" | "tracks" | "trackSourceFiles")[];
+                    /** @description The subject whose comments to return. Use either subject or the deprecated subject.id and subject.type pair. */
+                    "filter[subject]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: author, owners, parentComment
+                     * @example author.albums
+                     */
+                    include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("author" | "owners" | "parentComment")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
                      * @example author.albums
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("createdAt" | "-createdAt" | "likeCount" | "-likeCount" | "replyCount" | "-replyCount" | "startTime" | "-startTime")[];
                 };
                 header?: never;
                 path?: never;
@@ -5921,7 +5921,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /**
                      * @description Include related resources. Available relationships: claimedResource, claimingArtist, owners
@@ -6641,13 +6641,6 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: subject
-                     * @example subject
-                     */
-                    include?: string[];
-                    /** @description The subject whose DSP sharing links to return. Use either subject or the deprecated subject.id and subject.type pair. */
-                    "filter[subject]"?: string;
-                    /**
                      * @deprecated
                      * @description Deprecated: use filter[subject]. The id of the subject resource
                      */
@@ -6657,6 +6650,13 @@ export interface paths {
                      * @description Deprecated: use filter[subject]. The type of the subject resource (e.g. `tracks`)
                      */
                     "filter[subject.type]"?: ("tracks" | "albums" | "artists")[];
+                    /** @description The subject whose DSP sharing links to return. Use either subject or the deprecated subject.id and subject.type pair. */
+                    "filter[subject]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject
+                     */
+                    include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: "subject"[];
                     /**
@@ -6777,34 +6777,27 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
                      * @description The type of device making the request
                      * @example PHONE
                      */
                     deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /** @description DynamicModules Id (e.g. `nejMcAhh5N8S3EQ4LaqysVdI0cZZ`) */
+                    "filter[id]": string[];
                     /**
                      * @description The system type of the device making the request
                      * @example IOS
                      */
                     systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                     /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion: string;
-                    /** @description DynamicModules Id (e.g. `nejMcAhh5N8S3EQ4LaqysVdI0cZZ`) */
-                    "filter[id]": string[];
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description Include related resources. Available relationships: items, seedItem
                      * @example items
@@ -6812,6 +6805,13 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "seedItem")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -6866,6 +6866,11 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
                      * @description The type of device making the request
                      * @example PHONE
                      */
@@ -6876,22 +6881,10 @@ export interface paths {
                      */
                     systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                     /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion: string;
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description Include related resources. Available relationships: items, seedItem
                      * @example items
@@ -6899,6 +6892,13 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "seedItem")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -6959,6 +6959,11 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
                      * @description The type of device making the request
                      * @example PHONE
                      */
@@ -6969,29 +6974,24 @@ export interface paths {
                      */
                     systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                     /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion: string;
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -7052,6 +7052,11 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
                      * @description The type of device making the request
                      * @example PHONE
                      */
@@ -7062,27 +7067,22 @@ export interface paths {
                      */
                     systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                     /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion: string;
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: seedItem
                      * @example seedItem
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: seedItem
                      * @example seedItem
@@ -7143,43 +7143,43 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
                      * @description The type of device making the request
                      * @example PHONE
                      */
                     deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /** @description type of the page (e.g. `ARTIST`) */
+                    "filter[pageType]": string[];
                     /**
                      * @description The system type of the device making the request
                      * @example IOS
                      */
                     systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                     /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion: string;
-                    /** @description type of the page (e.g. `ARTIST`) */
-                    "filter[pageType]": string[];
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
+                    /** @description The page subject. Its type must match pageType. Required except for HOME_FREE, where it must be omitted. Also accepts `users:me`. */
+                    "filter[subject]"?: string;
                     /**
                      * @description Include related resources. Available relationships: modules, subject
                      * @example modules.items
                      */
                     include?: string[];
-                    /** @description The page subject. Its type must match pageType. Required except for HOME_FREE, where it must be omitted. */
-                    "filter[subject]"?: string;
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("modules" | "subject")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: modules.items
                      * @example modules.items
@@ -7234,6 +7234,11 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
                      * @description The type of device making the request
                      * @example PHONE
                      */
@@ -7244,29 +7249,24 @@ export interface paths {
                      */
                     systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                     /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion: string;
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: modules
                      * @example modules.items
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: modules.items
                      * @example modules.items
@@ -7390,23 +7390,25 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    /** @description Folder id (e.g. `e3226624-355b-48f8-aa93-db42532caa66`). Also accepts `me`. */
+                    "filter[parent.id]"?: string;
+                    /** @description Filter by parent.isRoot */
+                    "filter[parent.isRoot]"?: string;
+                    /** @description Root folder owner; must be the authenticated user. Also accepts `me`. */
+                    "filter[parent.owners.id]"?: string;
+                    /** @description In your folders, `=me` selects owned placements and `[ne]=me` selects shared placements. In someone else's folder, `=me` returns no items and `[ne]=me` returns all items. Accepts only `me` or your own user ID. */
+                    "filter[subject.owners.id]"?: string;
+                    /** @description In your folders, `=me` selects owned placements and `[ne]=me` selects shared placements. In someone else's folder, `=me` returns no items and `[ne]=me` returns all items. Accepts only `me` or your own user ID. */
+                    "filter[subject.owners.id][ne]"?: string;
                     /**
                      * @description Include related resources. Available relationships: breadcrumb, owners, parent, subject
                      * @example breadcrumb.children.subject
                      */
                     include?: string[];
-                    /** @description Folder id (e.g. `e3226624-355b-48f8-aa93-db42532caa66`) */
-                    "filter[parent.id]"?: string;
-                    /** @description Filter by parent.isRoot */
-                    "filter[parent.isRoot]"?: string;
-                    /** @description Root folder owner; must be the authenticated user.. Use `me` for the authenticated user */
-                    "filter[parent.owners.id]"?: string;
-                    /** @description In folders you own, me selects owned placements and !me selects shared placements. In someone else's folder, me returns no items and !me returns the normal listing. Omit for all items. */
-                    "filter[subject.owners.id]"?: string;
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("breadcrumb" | "owners" | "parent" | "subject")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: breadcrumb.children.subject
                      * @example breadcrumb.children.subject
@@ -7909,15 +7911,15 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Folder id (e.g. `e3226624-355b-48f8-aa93-db42532caa66`) */
+                    /** @description Folder id (e.g. `e3226624-355b-48f8-aa93-db42532caa66`). Also accepts `me`. */
                     "filter[id]": string[];
                     /**
-                     * @description Include related resources. Available relationships: children, owners, parent, preview
+                     * @description Include related resources. Available relationships: children, owners, parent, preview, shares
                      * @example children.subject
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("children" | "owners" | "parent" | "preview")[];
+                    includeLinkage?: ("children" | "owners" | "parent" | "preview" | "shares")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: children.subject
                      * @example children.subject
@@ -8014,12 +8016,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: children, owners, parent, preview
+                     * @description Include related resources. Available relationships: children, owners, parent, preview, shares
                      * @example children.subject
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("children" | "owners" | "parent" | "preview")[];
+                    includeLinkage?: ("children" | "owners" | "parent" | "preview" | "shares")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: children.subject
                      * @example children.subject
@@ -8169,13 +8171,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: children
                      * @example children.subject
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: children.subject
                      * @example children.subject
@@ -8420,6 +8422,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/folders/{id}/relationships/shares": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get shares relationship ("to-many").
+         * @description The folder's share links, active and expired, newest first.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: shares
+                     * @example shares.sharedResources
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: shares.sharedResources
+                     * @example shares.sharedResources
+                     */
+                    replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Folder id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Folders_Shares_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/genres": {
         parameters: {
             query?: never;
@@ -8436,13 +8506,13 @@ export interface paths {
                 query: {
                     /** @description Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from (e.g. `'1,2,3' or 'USER_SELECTABLE'`) */
                     "filter[id]": string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
                     locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path?: never;
@@ -8653,19 +8723,19 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    /** @description Client-provided installation identifier to filter by (e.g. `a468bee88def`) */
+                    "filter[clientProvidedInstallationId]"?: string[];
+                    /** @description User ID to filter by. Also accepts `me`. */
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: offlineInventory, owners
                      * @example offlineInventory
                      */
                     include?: string[];
-                    /** @description Client-provided installation identifier to filter by (e.g. `a468bee88def`) */
-                    "filter[clientProvidedInstallationId]"?: string[];
-                    /** @description User ID to filter by. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("offlineInventory" | "owners")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
                      * @example offlineInventory
@@ -8827,17 +8897,17 @@ export interface paths {
                 query: {
                     /** @description One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`) */
                     "filter[type]": ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    /** @description Offline item id (e.g. `1234`) */
+                    "filter[id]"?: string[];
+                    /** @description One of: PENDING, STORED, FAILED (e.g. `PENDING`) */
+                    "filter[state]"?: ("PENDING" | "STORED" | "FAILED")[];
                     /**
                      * @description Include related resources. Available relationships: offlineInventory
                      * @example offlineInventory
                      */
                     include?: string[];
-                    /** @description Offline item id (e.g. `1234`) */
-                    "filter[id]"?: string[];
-                    /** @description One of: PENDING, STORED, FAILED (e.g. `PENDING`) */
-                    "filter[state]"?: ("PENDING" | "STORED" | "FAILED")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
                      * @example offlineInventory
@@ -9448,8 +9518,6 @@ export interface paths {
                 query: {
                     /** @description List of offline task IDs (e.g. `a468bee88def`) */
                     "filter[installation.id]": string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: collection, item, owners
                      * @example collection
@@ -9457,6 +9525,8 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("collection" | "item" | "owners")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection
                      * @example collection
@@ -9811,10 +9881,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: changeEventStream, current, future, owners, past
                      * @example current
@@ -9822,6 +9890,8 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("changeEventStream" | "current" | "future" | "owners" | "past")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current
                      * @example current
@@ -10234,13 +10304,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: future
                      * @example future
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: future
                      * @example future
@@ -10499,13 +10569,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: past
                      * @example past
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: past
                      * @example past
@@ -11168,13 +11238,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: trackPreferences
                      * @example trackPreferences
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: trackPreferences
                      * @example trackPreferences
@@ -11372,33 +11442,33 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("createdAt" | "-createdAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description User id. Also accepts `me`. */
+                    "filter[collaborators.id]"?: string[];
+                    /** @description List of playlist IDs (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
+                    "filter[id]"?: string[];
+                    /** @description User id. Also accepts `me`. */
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: collaboratorProfiles, collaborators, coverArt, curators, items, ownerProfiles, owners, suggestedCoverArts
                      * @example curators.albums
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[collaborators.id]"?: string[];
-                    /** @description List of playlist IDs (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
-                    "filter[id]"?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("collaboratorProfiles" | "collaborators" | "coverArt" | "curators" | "items" | "ownerProfiles" | "owners" | "suggestedCoverArts")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: curators.albums
                      * @example curators.albums
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("createdAt" | "-createdAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                 };
                 header?: never;
                 path?: never;
@@ -11928,13 +11998,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: curators
                      * @example curators.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: curators.albums
                      * @example curators.albums
@@ -11994,27 +12064,27 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "albums.title" | "-albums.title" | "artists.name" | "-artists.name" | "duration" | "-duration" | "itemIndex" | "-itemIndex" | "title" | "-title")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description Filter playlist items by a free-text query (e.g. `halo`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
-                    /** @description Filter playlist items by a free-text query (e.g. `halo`) */
-                    "filter[query]"?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "albums.title" | "-albums.title" | "artists.name" | "-artists.name" | "duration" | "-duration" | "itemIndex" | "-itemIndex" | "title" | "-title")[];
                 };
                 header?: never;
                 path: {
@@ -12534,7 +12604,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /**
                      * @description Include related resources. Available relationships: owners, provider
@@ -12712,15 +12782,15 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description List of barcode IDs (EAN-13 or UPC-A) (e.g. `00602527336510`) */
+                    "filter[barcodeId]"?: string[];
+                    /** @description List of GRIDs (Global Release Identifier, ISO 7064) (e.g. `A10302B0013941653J`) */
+                    "filter[grid]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: provider, subject
                      * @example subject
                      */
                     include?: string[];
-                    /** @description List of barcode IDs (EAN-13 or UPC-A) (e.g. `00602527336510`) */
-                    "filter[barcodeId]"?: string[];
-                    /** @description List of GRIDs (Global Release Identifier, ISO 7064) (e.g. `A10302B0013941653J`) */
-                    "filter[grid]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("provider" | "subject")[];
                     /**
@@ -12951,12 +13021,10 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /** @description The type of purchased content (e.g. `albums`) */
                     "filter[subject.type]": ("albums" | "tracks")[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: owners, subject
                      * @example subject
@@ -12964,6 +13032,8 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("owners" | "subject")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
                      * @example subject
@@ -13142,20 +13212,8 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
-                    statsOnly?: boolean;
-                    viewerContext?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description Include related resources. Available relationships: author, ownerProfiles, owners
-                     * @example author.albums
-                     */
-                    include?: string[];
                     /** @description Filter by emoji (e.g. `👍`) */
                     "filter[emoji]"?: string[];
-                    /** @description The subject whose reactions to return. Use either subject or the deprecated subject.id and subject.type pair. */
-                    "filter[subject]"?: string;
                     /**
                      * @deprecated
                      * @description Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)
@@ -13166,13 +13224,25 @@ export interface paths {
                      * @description Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)
                      */
                     "filter[subject.type]"?: ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments" | "trackSourceFiles")[];
+                    /** @description The subject whose reactions to return. Use either subject or the deprecated subject.id and subject.type pair. */
+                    "filter[subject]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: author, ownerProfiles, owners
+                     * @example author.albums
+                     */
+                    include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("author" | "ownerProfiles" | "owners")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
                      * @example author.albums
                      */
                     replaceMedia?: string;
+                    stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
+                    statsOnly?: boolean;
+                    viewerContext?: string;
                 };
                 header?: never;
                 path?: never;
@@ -13673,10 +13743,10 @@ export interface paths {
                     /** @description Search query (e.g. `hello`) */
                     "filter[query]": string;
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -13688,15 +13758,10 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
-                     * @description The system type of the device making the request
-                     * @example IOS
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
-                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: albums, artists, playlists, topHits, tracks, videos
                      * @example albums
@@ -13709,6 +13774,11 @@ export interface paths {
                      * @example albums
                      */
                     replaceMedia?: string;
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                 };
                 header?: never;
                 path?: never;
@@ -13758,12 +13828,10 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -13775,25 +13843,27 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
-                     * @description The system type of the device making the request
-                     * @example IOS
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
-                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: albums
                      * @example albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
                      */
                     replaceMedia?: string;
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                 };
                 header?: never;
                 path: {
@@ -13846,12 +13916,10 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -13863,25 +13931,27 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /**
+                     * @description Include related resources. Available relationships: artists
+                     * @example artists.albums
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
+                    /**
                      * @description The system type of the device making the request
                      * @example IOS
                      */
                     systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
-                    /**
-                     * @description Include related resources. Available relationships: artists
-                     * @example artists
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists
-                     * @example artists
-                     */
-                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -13934,12 +14004,10 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -13951,25 +14019,27 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /**
+                     * @description Include related resources. Available relationships: playlists
+                     * @example playlists.items
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlists.items
+                     * @example playlists.items
+                     */
+                    replaceMedia?: string;
+                    /**
                      * @description The system type of the device making the request
                      * @example IOS
                      */
                     systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
-                    /**
-                     * @description Include related resources. Available relationships: playlists
-                     * @example playlists
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlists
-                     * @example playlists
-                     */
-                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -14022,12 +14092,10 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -14039,25 +14107,27 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
-                     * @description The system type of the device making the request
-                     * @example IOS
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
-                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: topHits
                      * @example topHits
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: topHits
                      * @example topHits
                      */
                     replaceMedia?: string;
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                 };
                 header?: never;
                 path: {
@@ -14110,12 +14180,10 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -14127,25 +14195,27 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
-                     * @description The system type of the device making the request
-                     * @example IOS
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
-                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: tracks
                      * @example tracks
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
                      * @example tracks
                      */
                     replaceMedia?: string;
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                 };
                 header?: never;
                 path: {
@@ -14198,12 +14268,10 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -14215,25 +14283,27 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
-                     * @description The system type of the device making the request
-                     * @example IOS
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
-                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: videos
                      * @example videos
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
                      * @example videos
                      */
                     replaceMedia?: string;
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                 };
                 header?: never;
                 path: {
@@ -14288,15 +14358,15 @@ export interface paths {
                     /** @description Search query (e.g. `hello`) */
                     "filter[query]": string;
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
-                     */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: directHits, history
                      * @example directHits
@@ -14358,15 +14428,15 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
-                     */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: directHits
                      * @example directHits
@@ -14431,15 +14501,15 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
-                     */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: history
                      * @example history
@@ -14772,13 +14842,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: sharedResources
                      * @example sharedResources
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources
                      * @example sharedResources
@@ -15125,18 +15195,18 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Include related resources. Available relationships: owners */
-                    include?: string[];
                     /** @description Only items with this origin (e.g. `TIDAL`) */
                     "filter[origin]"?: "TIDAL" | "OTHER";
                     /** @description Word-prefix match on item titles, descriptions and abbreviations, and on variation names, SKUs and UPCs (e.g. `tee`) */
                     "filter[query]"?: string;
+                    /** @description Include related resources. Available relationships: owners */
+                    include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: "owners"[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path?: never;
@@ -15439,13 +15509,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
@@ -15596,7 +15666,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /** @description Include related resources. Available relationships: owners */
                     include?: string[];
@@ -15751,7 +15821,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /** @description Include related resources. Available relationships: owners */
                     include?: string[];
@@ -15866,7 +15936,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /**
                      * @description Include related resources. Available relationships: priceChange
@@ -16423,11 +16493,11 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    manifestType: "HLS" | "MPEG_DASH";
+                    adaptive: boolean;
                     formats: ("HEAACV1" | "AACLC" | "FLAC" | "FLAC_HIRES" | "EAC3_JOC")[];
+                    manifestType: "HLS" | "MPEG_DASH";
                     uriScheme: "HTTPS" | "DATA";
                     usage: "PLAYBACK" | "DOWNLOAD";
-                    adaptive: boolean;
                     /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
@@ -16786,28 +16856,26 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("createdAt" | "-createdAt" | "title" | "-title")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description List of track IDs (e.g. `75413016`) */
+                    "filter[id]"?: string[];
+                    /** @description List of ISRCs. When a single ISRC is provided, pagination is supported and multiple tracks may be returned. When multiple ISRCs are provided, one track per ISRC is returned without pagination. (e.g. `QMJMT1701237`) */
+                    "filter[isrc]"?: string[];
+                    /** @description User id. Also accepts `me`. */
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: albums, artists, credits, download, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, suggestedTracks, trackStatistics, usageRules
                      * @example albums
                      */
                     include?: string[];
-                    /** @description List of track IDs (e.g. `75413016`) */
-                    "filter[id]"?: string[];
-                    /** @description List of ISRCs. When a single ISRC is provided, pagination is supported and multiple tracks may be returned. When multiple ISRCs are provided, one track per ISRC is returned without pagination. (e.g. `QMJMT1701237`) */
-                    "filter[isrc]"?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("albums" | "artists" | "credits" | "download" | "genres" | "lyrics" | "metadataStatus" | "owners" | "priceConfig" | "providers" | "radio" | "replacement" | "shares" | "similarTracks" | "sourceFile" | "suggestedTracks" | "trackStatistics" | "usageRules")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -16815,6 +16883,8 @@ export interface paths {
                     replaceMedia?: string;
                     /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("createdAt" | "-createdAt" | "title" | "-title")[];
                 };
                 header?: never;
                 path?: never;
@@ -17183,8 +17253,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -17195,6 +17263,8 @@ export interface paths {
                      * @example artists.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
@@ -17256,13 +17326,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: credits
                      * @example credits.artist.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: credits.artist.albums
                      * @example credits.artist.albums
@@ -17913,7 +17983,7 @@ export interface paths {
         };
         /**
          * Get shares relationship ("to-many").
-         * @description Retrieves shares relationship.
+         * @description The track's share links, active and expired, newest first.
          */
         get: {
             parameters: {
@@ -17986,8 +18056,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -17998,6 +18066,8 @@ export interface paths {
                      * @example similarTracks
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarTracks
                      * @example similarTracks
@@ -18120,8 +18190,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -18132,6 +18200,8 @@ export interface paths {
                      * @example suggestedTracks
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: suggestedTracks
                      * @example suggestedTracks
@@ -18483,17 +18553,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items, owners
                      * @example items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "owners")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -18553,27 +18623,27 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "artists.name" | "-artists.name" | "releaseDate" | "-releaseDate" | "title" | "-title")[];
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
+                    /** @description Filter albums by a free-text query matched against the album title and artist names. Internal clients only (e.g. `love`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
-                    /** @description Filter albums by a free-text query matched against the album title and artist names. Internal clients only (e.g. `love`) */
-                    "filter[query]"?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "artists.name" | "-artists.name" | "releaseDate" | "-releaseDate" | "title" | "-title")[];
                 };
                 header?: never;
                 path: {
@@ -18783,17 +18853,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items, owners
                      * @example items.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "owners")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.albums
                      * @example items.albums
@@ -18853,27 +18923,27 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "name" | "-name")[];
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
+                    /** @description Filter artists by a free-text query matched against the artist name. Internal clients only (e.g. `love`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.albums
                      */
                     include?: string[];
-                    /** @description Filter artists by a free-text query matched against the artist name. Internal clients only (e.g. `love`) */
-                    "filter[query]"?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.albums
                      * @example items.albums
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "name" | "-name")[];
                 };
                 header?: never;
                 path: {
@@ -19338,20 +19408,20 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                 };
                 header?: never;
                 path: {
@@ -19624,17 +19694,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items, owners
                      * @example items.items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "owners")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -19695,22 +19765,22 @@ export interface paths {
             parameters: {
                 query?: {
                     collectionView?: "FLAT" | "FOLDERS";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
+                    /** @description Filter playlists by a free-text query. Returns matching playlists only (no mixes or folders), including playlists inside folders. Cannot be combined with collectionView=FOLDERS. Internal clients only (e.g. `summer`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
-                    /** @description Filter playlists by a free-text query. Returns matching playlists only (no mixes or folders), including playlists inside folders. Cannot be combined with collectionView=FOLDERS. Internal clients only (e.g. `summer`) */
-                    "filter[query]"?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                 };
                 header?: never;
                 path: {
@@ -19985,13 +20055,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -20205,17 +20275,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items, owners
                      * @example items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "owners")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -20275,27 +20345,27 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "albums.title" | "-albums.title" | "artists.name" | "-artists.name" | "duration" | "-duration" | "title" | "-title")[];
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
+                    /** @description Filter tracks by a free-text query matched against the track title, artist names and album title. Internal clients only (e.g. `love`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
-                    /** @description Filter tracks by a free-text query matched against the track title, artist names and album title. Internal clients only (e.g. `love`) */
-                    "filter[query]"?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "albums.title" | "-albums.title" | "artists.name" | "-artists.name" | "duration" | "-duration" | "title" | "-title")[];
                 };
                 header?: never;
                 path: {
@@ -20505,17 +20575,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items, owners
                      * @example items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "owners")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -20575,27 +20645,27 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "artists.name" | "-artists.name" | "duration" | "-duration" | "title" | "-title")[];
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
+                    /** @description Filter videos by a free-text query matched against the video title and artist names. Internal clients only (e.g. `love`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
-                    /** @description Filter videos by a free-text query matched against the video title and artist names. Internal clients only (e.g. `love`) */
-                    "filter[query]"?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "artists.name" | "-artists.name" | "duration" | "-duration" | "title" | "-title")[];
                 };
                 header?: never;
                 path: {
@@ -20805,17 +20875,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: "items"[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -20875,18 +20945,18 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -21003,17 +21073,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: "items"[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -21073,18 +21143,18 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -21144,12 +21214,10 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /** @description Feed surface to read (e.g. `INBOX`) */
                     "filter[surface]": "INBOX" | "FEED";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: actors, subject
                      * @example actors.albums
@@ -21157,6 +21225,8 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("actors" | "subject")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: actors.albums
                      * @example actors.albums
@@ -21210,13 +21280,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: actors
                      * @example actors.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: actors.albums
                      * @example actors.albums
@@ -21440,17 +21510,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: "items"[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -21510,18 +21580,18 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -21582,17 +21652,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: "items"[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -21652,18 +21722,18 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -22269,17 +22339,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: artists, owners, tracks, videos
                      * @example artists.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("artists" | "owners" | "tracks" | "videos")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
@@ -22339,13 +22409,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: artists
                      * @example artists.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
@@ -22558,13 +22628,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: tracks
                      * @example tracks
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
                      * @example tracks
@@ -22716,13 +22786,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: videos
                      * @example videos
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
                      * @example videos
@@ -22931,7 +23001,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /**
                      * @description Include related resources. Available relationships: decision
@@ -23239,15 +23309,15 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description List of video IDs (e.g. `75623239`) */
+                    "filter[id]"?: string[];
+                    /** @description List of ISRCs (e.g. `QMJMT1701237`) */
+                    "filter[isrc]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: albums, artists, credits, providers, replacement, similarVideos, suggestedVideos, thumbnailArt, usageRules
                      * @example albums
                      */
                     include?: string[];
-                    /** @description List of video IDs (e.g. `75623239`) */
-                    "filter[id]"?: string[];
-                    /** @description List of ISRCs (e.g. `QMJMT1701237`) */
-                    "filter[isrc]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("albums" | "artists" | "credits" | "providers" | "replacement" | "similarVideos" | "suggestedVideos" | "thumbnailArt" | "usageRules")[];
                     /**
@@ -23374,8 +23444,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -23386,6 +23454,8 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -23445,8 +23515,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -23457,6 +23525,8 @@ export interface paths {
                      * @example artists.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
@@ -23516,13 +23586,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: credits
                      * @example credits.artist.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: credits.artist.albums
                      * @example credits.artist.albums
@@ -23582,8 +23652,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -23594,6 +23662,8 @@ export interface paths {
                      * @example providers
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
@@ -23717,8 +23787,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -23729,6 +23797,8 @@ export interface paths {
                      * @example similarVideos
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarVideos
                      * @example similarVideos
@@ -23788,8 +23858,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -23800,6 +23868,8 @@ export interface paths {
                      * @example suggestedVideos
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: suggestedVideos
                      * @example suggestedVideos
@@ -23859,8 +23929,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -23871,6 +23939,8 @@ export interface paths {
                      * @example thumbnailArt
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
@@ -23989,7 +24059,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Original subjects to look up. */
+                    /** @description Original subjects to look up. Also accepts `folders:me`. */
                     "filter[subject]": string[];
                     /**
                      * @description Include related resources. Available relationships: subject, viewer
@@ -24258,6 +24328,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         AcceptedTerms_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24281,6 +24352,7 @@ export interface components {
              */
             type: "acceptedTerms";
         };
+        /** @description Target resource types: `terms`. */
         AcceptedTerms_Terms_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -24303,6 +24375,7 @@ export interface components {
              */
             uniqueListeners: number;
         };
+        /** @description Target resource types: `users`. */
         AlbumStatistics_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24443,11 +24516,13 @@ export interface components {
             /** @enum {string} */
             type: "genres";
         };
+        /** @description Target resource types: `albumStatistics`. */
         Albums_AlbumStatistics_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         Albums_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24536,6 +24611,7 @@ export interface components {
              */
             version?: string;
         };
+        /** @description Target resource types: `artworks`. */
         Albums_CoverArt_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24545,11 +24621,13 @@ export interface components {
             data: components["schemas"]["Albums_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `genres`. */
         Albums_Genres_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `tracks`, `videos`. */
         Albums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Albums_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24588,16 +24666,19 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Albums_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `priceConfigurations`. */
         Albums_PriceConfig_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `providers`. */
         Albums_Providers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24634,6 +24715,7 @@ export interface components {
         Albums_Replacement_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`. */
         Albums_Replacement_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Albums_Replacement_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -24653,11 +24735,13 @@ export interface components {
              */
             type: "albums";
         };
+        /** @description Target resource types: `shares`. */
         Albums_Shares_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `albums`. */
         Albums_SimilarAlbums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Albums_SimilarAlbums_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24684,6 +24768,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artworks`. */
         Albums_SuggestedCoverArts_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Albums_SuggestedCoverArts_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24713,6 +24798,7 @@ export interface components {
             /** @description Foreground color for the suggested artwork */
             foregroundColor: string;
         };
+        /** @description Target resource types: `usageRules`. */
         Albums_UsageRules_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -24796,6 +24882,7 @@ export interface components {
              */
             text: string;
         };
+        /** @description Target resource types: `users`. */
         ArtistBiographies_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24891,6 +24978,7 @@ export interface components {
             authorizationCode: string;
             redirectUri: string;
         };
+        /** @description Target resource types: `artists`. */
         ArtistClaims_AcceptedArtists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24928,11 +25016,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         ArtistClaims_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         ArtistClaims_RecommendedArtists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24984,6 +25074,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         ArtistSalesStatistics_Artist_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -25142,6 +25233,7 @@ export interface components {
              */
             merchAmount: string;
         };
+        /** @description Target resource types: `albums`, `tracks`. */
         ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["ArtistSalesStatistics_TopSellers_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25208,6 +25300,7 @@ export interface components {
          * @enum {string}
          */
         ArtistStatisticsWindowPeriod: "P7D" | "P28D" | "P12M";
+        /** @description Target resource types: `artists`. */
         ArtistStreamsStatistics_Artist_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -25359,6 +25452,7 @@ export interface components {
              */
             otherListeners?: number;
         };
+        /** @description Target resource types: `tracks`. */
         ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25484,6 +25578,7 @@ export interface components {
         ArtistsUpdateOperation_Payload_Meta: {
             dryRun?: boolean;
         };
+        /** @description Target resource types: `albums`. */
         Artists_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Albums_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25561,16 +25656,19 @@ export interface components {
              */
             spotlighted?: boolean;
         };
+        /** @description Target resource types: `artworks`. */
         Artists_BannerArt_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artistBiographies`. */
         Artists_Biography_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artistClaimStatuses`. */
         Artists_ClaimStatus_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -25580,6 +25678,7 @@ export interface components {
             data: components["schemas"]["Artists_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         Artists_Followers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Followers_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25614,6 +25713,7 @@ export interface components {
              */
             myArtistFollows: boolean;
         };
+        /** @description Target resource types: `artists`. */
         Artists_Following_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Following_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25635,6 +25735,7 @@ export interface components {
         Artists_Following_Resource_Identifier_Meta: {
             viewer?: components["schemas"]["Artists_Followers_Resource_Meta_ViewerContext"];
         };
+        /** @description Target resource types: `artworks`. */
         Artists_LogoArt_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25645,16 +25746,19 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Artists_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artworks`. */
         Artists_ProfileArt_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`. */
         Artists_Radio_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25691,11 +25795,13 @@ export interface components {
              */
             type: "artists";
         };
+        /** @description Target resource types: `artistRoles`. */
         Artists_Roles_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         Artists_SimilarArtists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25706,6 +25812,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `providers`. */
         Artists_TrackProviders_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_TrackProviders_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25732,6 +25839,7 @@ export interface components {
              */
             numberOfTracks: number;
         };
+        /** @description Target resource types: `tracks`. */
         Artists_Tracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Tracks_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25753,6 +25861,7 @@ export interface components {
         Artists_Tracks_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `videos`. */
         Artists_Videos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Videos_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25865,6 +25974,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Artworks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25971,6 +26081,7 @@ export interface components {
             data: components["schemas"]["ClientCertificates_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         ClientCertificates_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26036,6 +26147,7 @@ export interface components {
             redirectUris?: string[];
             scopes?: string[];
         };
+        /** @description Target resource types: `clientCertificates`. */
         Clients_Certificates_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26050,6 +26162,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Clients_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26169,6 +26282,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         CollaborationInvites_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26197,6 +26311,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`. */
         CollaborationInvites_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26295,6 +26410,7 @@ export interface components {
              */
             startTime?: string;
         };
+        /** @description Target resource types: `artists`. */
         Comments_Author_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26309,11 +26425,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Comments_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `comments`. */
         Comments_ParentComment_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26414,11 +26532,13 @@ export interface components {
         ContentClaims_ClaimedResource_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `tracks`, `videos`. */
         ContentClaims_ClaimedResource_Single_Relationship_Data_Document: {
             data?: components["schemas"]["ContentClaims_ClaimedResource_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         ContentClaims_ClaimingArtist_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26433,6 +26553,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         ContentClaims_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26466,6 +26587,7 @@ export interface components {
         Copyright: {
             text: string;
         };
+        /** @description Target resource types: `artists`. */
         Credits_Artist_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26483,6 +26605,7 @@ export interface components {
              */
             role: string;
         };
+        /** @description Target resource types: `artistRoles`. */
         Credits_Category_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26608,6 +26731,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Downloads_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26687,6 +26811,7 @@ export interface components {
         DspSharingLinks_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `artists`, `tracks`. */
         DspSharingLinks_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["DspSharingLinks_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26721,6 +26846,7 @@ export interface components {
              */
             viewAllLayout?: "GRID" | "LIST" | "UNKNOWN";
         };
+        /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `videos`. */
         DynamicModules_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["DynamicModules_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26781,6 +26907,7 @@ export interface components {
         DynamicModules_SeedItem_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `artists`. */
         DynamicModules_SeedItem_Single_Relationship_Data_Document: {
             data?: components["schemas"]["DynamicModules_SeedItem_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26805,6 +26932,7 @@ export interface components {
              */
             reportingId: string;
         };
+        /** @description Target resource types: `dynamicModules`. */
         DynamicPages_Modules_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26857,6 +26985,7 @@ export interface components {
         DynamicPages_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `users`, `videos`. */
         DynamicPages_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["DynamicPages_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27014,6 +27143,7 @@ export interface components {
             /** @description Whether this item references a subject in another owner's tree, regardless of its current availability. */
             reference: boolean;
         };
+        /** @description Target resource types: `folders`. */
         FolderItems_Breadcrumb_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27028,11 +27158,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         FolderItems_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `folders`. */
         FolderItems_Parent_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27088,6 +27220,7 @@ export interface components {
         FolderItems_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `folders`. */
         FolderItems_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["FolderItems_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27159,6 +27292,7 @@ export interface components {
             isRoot: boolean;
             name: string;
         };
+        /** @description Target resource types: `folderItems`. */
         Folders_Children_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27173,16 +27307,19 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Folders_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `folders`. */
         Folders_Parent_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `folderItems`. */
         Folders_Preview_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27193,6 +27330,7 @@ export interface components {
             owners?: components["schemas"]["Folders_Owners_Multi_Relationship_Data_Document"];
             parent?: components["schemas"]["Folders_Parent_Single_Relationship_Data_Document"];
             preview?: components["schemas"]["Folders_Preview_Multi_Relationship_Data_Document"];
+            shares?: components["schemas"]["Folders_Shares_Multi_Relationship_Data_Document"];
         };
         Folders_Resource_Object: {
             attributes?: components["schemas"]["Folders_Attributes"];
@@ -27207,6 +27345,12 @@ export interface components {
              * @enum {string}
              */
             type: "folders";
+        };
+        /** @description Target resource types: `shares`. */
+        Folders_Shares_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Folders_Single_Resource_Data_Document: {
             data: components["schemas"]["Folders_Resource_Object"];
@@ -27365,6 +27509,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `albums`, `playlists`, `tracks`, `userCollectionTracks`, `videos`. */
         Installations_OfflineInventory_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Installations_OfflineInventory_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27388,6 +27533,7 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `users`. */
         Installations_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27512,6 +27658,7 @@ export interface components {
             data: components["schemas"]["Lyrics_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Lyrics_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27556,6 +27703,7 @@ export interface components {
         Lyrics_Track_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `tracks`. */
         Lyrics_Track_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Lyrics_Track_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27721,6 +27869,7 @@ export interface components {
         OfflineTasks_Collection_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `playlists`, `tracks`, `userCollectionTracks`, `videos`. */
         OfflineTasks_Collection_Single_Relationship_Data_Document: {
             data?: components["schemas"]["OfflineTasks_Collection_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27742,6 +27891,7 @@ export interface components {
         OfflineTasks_Item_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `playlists`, `tracks`, `userCollectionTracks`, `videos`. */
         OfflineTasks_Item_Single_Relationship_Data_Document: {
             data?: components["schemas"]["OfflineTasks_Item_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27752,6 +27902,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         OfflineTasks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27940,6 +28091,7 @@ export interface components {
             /** @description Queue is shuffled or not */
             shuffled: boolean;
         };
+        /** @description Target resource types: `changeEventStreams`. */
         PlayQueues_ChangeEventStream_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27979,6 +28131,7 @@ export interface components {
             replacement?: components["schemas"]["Replacement_Provenance"];
             updatedByInstallationId?: string;
         };
+        /** @description Target resource types: `tracks`, `videos`. */
         PlayQueues_Current_Single_Relationship_Data_Document: {
             data?: components["schemas"]["PlayQueues_Current_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -28025,6 +28178,7 @@ export interface components {
             /** @enum {string} */
             type: "tracks" | "videos";
         };
+        /** @description Target resource types: `tracks`, `videos`. */
         PlayQueues_Future_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["PlayQueues_Future_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28070,11 +28224,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         PlayQueues_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `tracks`, `videos`. */
         PlayQueues_Past_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["PlayQueues_Past_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28245,6 +28401,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`. */
         PlaylistGenerationSchedules_Playlist_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -28418,6 +28575,7 @@ export interface components {
              */
             status: "PENDING" | "PROCESSING" | "ERROR" | "OK";
         };
+        /** @description Target resource types: `playlistGenerations`. */
         PlaylistGenerations_BaseGeneration_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -28432,6 +28590,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`. */
         PlaylistGenerations_Playlist_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -28480,6 +28639,7 @@ export interface components {
             /** @enum {string} */
             preference: "KEEP" | "REMOVE" | "MORE_LIKE_THIS" | "UNKNOWN";
         };
+        /** @description Target resource types: `tracks`. */
         PlaylistGenerations_TrackPreferences_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["PlaylistGenerations_TrackPreferences_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28713,16 +28873,19 @@ export interface components {
              */
             playlistType: "EDITORIAL" | "USER" | "MIX" | "ARTIST";
         };
+        /** @description Target resource types: `artists`. */
         Playlists_CollaboratorProfiles_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Playlists_Collaborators_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artworks`. */
         Playlists_CoverArt_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28732,6 +28895,7 @@ export interface components {
             data: components["schemas"]["Playlists_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         Playlists_Curators_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28756,6 +28920,7 @@ export interface components {
             addedAt: string;
             itemId: string;
         };
+        /** @description Target resource types: `tracks`, `videos`. */
         Playlists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Playlists_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28785,11 +28950,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         Playlists_OwnerProfiles_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Playlists_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28826,6 +28993,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artworks`. */
         Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Playlists_SuggestedCoverArts_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28934,11 +29102,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         ProviderOwners_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `providers`. */
         ProviderOwners_Provider_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -28975,6 +29145,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `providers`. */
         ProviderProductInfos_Provider_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -29014,6 +29185,7 @@ export interface components {
         ProviderProductInfos_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `videos`. */
         ProviderProductInfos_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["ProviderProductInfos_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -29063,6 +29235,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Purchases_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29102,6 +29275,7 @@ export interface components {
         Purchases_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `tracks`. */
         Purchases_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Purchases_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -29156,6 +29330,7 @@ export interface components {
             /** @description The type of reaction representing an emoji */
             emoji: string;
         };
+        /** @description Target resource types: `artists`. */
         Reactions_Author_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -29176,11 +29351,13 @@ export interface components {
             currentUserReaction?: components["schemas"]["CurrentUserReaction"];
             stats?: components["schemas"]["ReactionStats"];
         };
+        /** @description Target resource types: `artists`. */
         Reactions_OwnerProfiles_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Reactions_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29347,6 +29524,7 @@ export interface components {
              */
             type: "searchHistoryEntries";
         };
+        /** @description Target resource types: `albums`. */
         SearchResults_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["SearchResults_Albums_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29368,26 +29546,11 @@ export interface components {
         SearchResults_Albums_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `artists`. */
         SearchResults_Artists_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["SearchResults_Artists_Resource_Identifier"][];
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
-        };
-        SearchResults_Artists_Resource_Identifier: {
-            /**
-             * @description Resource id
-             * @example 12345
-             */
-            id: string;
-            meta?: components["schemas"]["SearchResults_Artists_Resource_Identifier_Meta"];
-            /**
-             * @description Resource type
-             * @example tracks
-             */
-            type: string;
-        };
-        SearchResults_Artists_Resource_Identifier_Meta: {
-            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         SearchResults_Attributes: {
             /**
@@ -29411,26 +29574,11 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`. */
         SearchResults_Playlists_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["SearchResults_Playlists_Resource_Identifier"][];
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
-        };
-        SearchResults_Playlists_Resource_Identifier: {
-            /**
-             * @description Resource id
-             * @example 12345
-             */
-            id: string;
-            meta?: components["schemas"]["SearchResults_Playlists_Resource_Identifier_Meta"];
-            /**
-             * @description Resource type
-             * @example tracks
-             */
-            type: string;
-        };
-        SearchResults_Playlists_Resource_Identifier_Meta: {
-            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         SearchResults_Relationships: {
             albums?: components["schemas"]["SearchResults_Albums_Multi_Relationship_Data_Document"];
@@ -29454,6 +29602,7 @@ export interface components {
              */
             type: "searchResults";
         };
+        /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `videos`. */
         SearchResults_TopHits_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["SearchResults_TopHits_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29475,6 +29624,7 @@ export interface components {
         SearchResults_TopHits_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `tracks`. */
         SearchResults_Tracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["SearchResults_Tracks_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29496,6 +29646,7 @@ export interface components {
         SearchResults_Tracks_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `videos`. */
         SearchResults_Videos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["SearchResults_Videos_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29528,6 +29679,7 @@ export interface components {
             /** @description Unique tracking id */
             trackingId: string;
         };
+        /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `videos`. */
         SearchSuggestions_DirectHits_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["SearchSuggestions_DirectHits_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29563,6 +29715,7 @@ export interface components {
              */
             start: number;
         };
+        /** @description Target resource types: `searchHistoryEntries`. */
         SearchSuggestions_History_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29656,6 +29809,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Shares_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29679,6 +29833,7 @@ export interface components {
              */
             type: "shares";
         };
+        /** @description Target resource types: `albums`, `folders`, `playlists`, `tracks`. */
         Shares_SharedResources_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Shares_SharedResources_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29854,6 +30009,7 @@ export interface components {
              */
             type: "squareConnections";
         };
+        /** @description Target resource types: `squareSites`. */
         SquareConnections_SelectedSite_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -29873,6 +30029,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `squareSites`. */
         SquareConnections_Sites_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30122,6 +30279,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         SquareItems_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30281,6 +30439,7 @@ export interface components {
             /** @description The site's title as set by the seller in Square */
             siteTitle?: string;
         };
+        /** @description Target resource types: `squareItems`. */
         SquareSites_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30381,6 +30540,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         StripeConnections_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30411,6 +30571,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         StripeDashboardLinks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30497,6 +30658,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `userSubscriptionPriceChanges`. */
         SubscriptionPriceChangeDecisions_PriceChange_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -30535,6 +30697,7 @@ export interface components {
             data: components["schemas"]["TemporaryUserTokens_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         TemporaryUserTokens_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30793,6 +30956,7 @@ export interface components {
             data: components["schemas"]["TrackSourceFiles_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         TrackSourceFiles_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30832,6 +30996,7 @@ export interface components {
              */
             uniqueListeners: number;
         };
+        /** @description Target resource types: `users`. */
         TrackStatistics_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30987,6 +31152,7 @@ export interface components {
             /** @enum {string} */
             type: "genres";
         };
+        /** @description Target resource types: `albums`. */
         Tracks_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Tracks_Albums_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31008,6 +31174,7 @@ export interface components {
         Tracks_Albums_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `artists`. */
         Tracks_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31097,26 +31264,31 @@ export interface components {
             data: components["schemas"]["Tracks_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `credits`. */
         Tracks_Credits_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `downloads`. */
         Tracks_Download_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `genres`. */
         Tracks_Genres_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `lyrics`. */
         Tracks_Lyrics_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `tracksMetadataStatus`. */
         Tracks_MetadataStatus_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -31127,21 +31299,25 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Tracks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `priceConfigurations`. */
         Tracks_PriceConfig_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `providers`. */
         Tracks_Providers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`. */
         Tracks_Radio_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31183,6 +31359,7 @@ export interface components {
         Tracks_Replacement_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `tracks`. */
         Tracks_Replacement_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Tracks_Replacement_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -31202,11 +31379,13 @@ export interface components {
              */
             type: "tracks";
         };
+        /** @description Target resource types: `shares`. */
         Tracks_Shares_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `tracks`. */
         Tracks_SimilarTracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Tracks_SimilarTracks_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31233,11 +31412,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `trackSourceFiles`. */
         Tracks_SourceFile_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `tracks`. */
         Tracks_SuggestedTracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Tracks_SuggestedTracks_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31259,11 +31440,13 @@ export interface components {
         Tracks_SuggestedTracks_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `trackStatistics`. */
         Tracks_TrackStatistics_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `usageRules`. */
         Tracks_UsageRules_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -31430,6 +31613,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `albums`. */
         UserCollectionAlbums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31453,6 +31637,7 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `users`. */
         UserCollectionAlbums_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31565,6 +31750,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `artists`. */
         UserCollectionArtists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31587,6 +31773,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `users`. */
         UserCollectionArtists_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31687,6 +31874,7 @@ export interface components {
             data: components["schemas"]["UserCollectionFolders_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`, `userCollectionFolders`. */
         UserCollectionFolders_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionFolders_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31714,6 +31902,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         UserCollectionFolders_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31743,6 +31932,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `userCollectionPlaylists`. */
         UserCollectionFolders_UserCollection_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -31832,6 +32022,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `playlists`, `userCollectionFolders`. */
         UserCollectionPlaylists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionPlaylists_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31854,6 +32045,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `users`. */
         UserCollectionPlaylists_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31948,6 +32140,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `videos`. */
         UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31971,6 +32164,7 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `users`. */
         UserCollectionSaveForLaters_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -32083,6 +32277,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `tracks`. */
         UserCollectionTracks_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionTracks_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -32106,6 +32301,7 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `users`. */
         UserCollectionTracks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -32218,6 +32414,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `videos`. */
         UserCollectionVideos_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -32241,6 +32438,7 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `users`. */
         UserCollectionVideos_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -32270,6 +32468,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserDailyMixes_Attributes: Record<string, never>;
+        /** @description Target resource types: `playlists`. */
         UserDailyMixes_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -32334,6 +32533,7 @@ export interface components {
             type: "userDataExportRequests";
         };
         UserDiscoveryMixes_Attributes: Record<string, never>;
+        /** @description Target resource types: `playlists`. */
         UserDiscoveryMixes_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -32487,6 +32687,7 @@ export interface components {
              */
             activityType: "TRACK_SOURCE_FILE_COMMENTED";
         };
+        /** @description Target resource types: `artists`. */
         UserFeedItems_Actors_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -32566,6 +32767,7 @@ export interface components {
         UserFeedItems_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `artists`, `comments`, `playlists`, `trackSourceFiles`, `tracks`. */
         UserFeedItems_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["UserFeedItems_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -32638,6 +32840,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserNewReleaseMixes_Attributes: Record<string, never>;
+        /** @description Target resource types: `playlists`. */
         UserNewReleaseMixes_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -32666,6 +32869,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserOfflineMixes_Attributes: Record<string, never>;
+        /** @description Target resource types: `playlists`. */
         UserOfflineMixes_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -32733,6 +32937,7 @@ export interface components {
             /** @enum {string} */
             playbackStatus?: "PLAYING" | "PAUSED";
         };
+        /** @description Target resource types: `installations`. */
         UserPlaybackStates_ActivePlayer_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -32760,16 +32965,19 @@ export interface components {
             /** @enum {string} */
             type: "installations";
         };
+        /** @description Target resource types: `installations`. */
         UserPlaybackStates_AvailablePlayers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `changeEventStreams`. */
         UserPlaybackStates_ChangeEventStream_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playQueues`. */
         UserPlaybackStates_PlayQueue_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -32883,6 +33091,7 @@ export interface components {
             /** @enum {string} */
             type: "artists";
         };
+        /** @description Target resource types: `artists`. */
         UserRecommendationBlocks_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Artists_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -32909,6 +33118,7 @@ export interface components {
             createdAt: string;
         };
         UserRecommendationBlocks_Attributes: Record<string, never>;
+        /** @description Target resource types: `users`. */
         UserRecommendationBlocks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -32948,6 +33158,7 @@ export interface components {
             /** @enum {string} */
             type: "tracks";
         };
+        /** @description Target resource types: `tracks`. */
         UserRecommendationBlocks_Tracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Tracks_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -32983,6 +33194,7 @@ export interface components {
             /** @enum {string} */
             type: "videos";
         };
+        /** @description Target resource types: `videos`. */
         UserRecommendationBlocks_Videos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Videos_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -33095,6 +33307,7 @@ export interface components {
              */
             newPrice: string;
         };
+        /** @description Target resource types: `subscriptionPriceChangeDecisions`. */
         UserSubscriptionPriceChanges_Decision_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -33122,6 +33335,7 @@ export interface components {
              */
             type: "userSubscriptionPriceChanges";
         };
+        /** @description Target resource types: `artists`. */
         Users_Artist_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -33250,6 +33464,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `albums`. */
         Videos_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Videos_Albums_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -33271,6 +33486,7 @@ export interface components {
         Videos_Albums_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `artists`. */
         Videos_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -33323,6 +33539,7 @@ export interface components {
              */
             version?: string;
         };
+        /** @description Target resource types: `credits`. */
         Videos_Credits_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -33333,6 +33550,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `providers`. */
         Videos_Providers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -33365,6 +33583,7 @@ export interface components {
         Videos_Replacement_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `videos`. */
         Videos_Replacement_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Videos_Replacement_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -33384,6 +33603,7 @@ export interface components {
              */
             type: "videos";
         };
+        /** @description Target resource types: `videos`. */
         Videos_SimilarVideos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Videos_SimilarVideos_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -33410,6 +33630,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `videos`. */
         Videos_SuggestedVideos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Videos_SuggestedVideos_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -33431,11 +33652,13 @@ export interface components {
         Videos_SuggestedVideos_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `artworks`. */
         Videos_ThumbnailArt_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `usageRules`. */
         Videos_UsageRules_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -33495,11 +33718,13 @@ export interface components {
         ViewerContexts_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `artists`, `folders`, `playlists`, `tracks`, `videos`. */
         ViewerContexts_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["ViewerContexts_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         ViewerContexts_Viewer_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
