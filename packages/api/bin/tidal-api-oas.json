@@ -5,10 +5,10 @@
       "name" : "TIDAL Developer - Discussions",
       "url" : "https://github.com/orgs/tidal-music/discussions"
     },
-    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. Never parse, construct, or infer meaning from an `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes. Monetary amounts are decimal strings; each field defines its sign and precision constraints.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nWhere multiple identifiers are accepted, comma-separated values match any complete pair.\nWhen a member path names a to-many relationship, at least one related resource must match;\nfiltering does not trim that relationship. On to-many relationship reads, an empty member\npath (`filter[]=tracks:123`) filters primary data itself.\nEach endpoint lists its supported filters and types.\n\nWhere supported, `me` aliases the authenticated user's dedicated resource ID for the referenced\nresource type. It works in paths, resource-ID filters and compact identifiers (`type:me`), with\nthe same meaning as the resolved ID. Reads using the alias are `no-store`.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<memberPath>]=value`](https://jsonapi.org/format/#fetching-filtering) filters primary data by equality. Each endpoint lists its available filters; most collections require at least one.\n- Where explicitly documented, `filter[<memberPath>][ne]=value` negates the complete equality predicate. When the member path names a to-many relationship, no related ID may match any supplied value; a known-empty relationship matches. Operators are separate from values. Supplied comparisons combine with AND. For a required filter with multiple supported comparisons, at least one must be supplied; the parameter descriptions identify these alternatives. Unsupported operators and groups return `400`.\n- [`sort=<memberPath>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<memberPath>` descending (`sort=-addedAt`). Filter and sort member paths are relative to primary data.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Keys are scoped to the client and the authenticated user. Once the original request has completed, retrying it with the same key, method, path, query and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different method, path, query or payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Revisions and concurrent editing\n\nWhere supported, `attributes.revision` identifies the resource's documented aggregate state; a separately versioned relationship collection uses document `meta.revision`. Revisions are nonnegative integers that increase when covered state changes. Compare them only within the same identity and scope, preserve the exact value, and never calculate the next revision. Related content, viewer projections and independent sources are not automatically covered. Domain fields named `version`, such as a music edition, are distinct; existing endpoints retain their documented contracts.\n\nGuarded mutations accept the observed value as top-level `meta.expectedRevision`. Each operation declares its scope and whether the precondition is required. A mismatch returns `409`; missing required input returns `400`. Refresh and reconcile after a conflict, then submit a new operation with a new idempotency key. An identical retry with the original key replays a recorded success under the idempotency contract. These revisions are not HTTP ETags.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
+    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. Never parse, construct, or infer meaning from an `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes. Monetary amounts are decimal strings; each field defines its sign and precision constraints.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nWhere multiple identifiers are accepted, comma-separated values match any complete pair.\nWhen a member path names a to-many relationship, at least one related resource must match;\nfiltering does not trim that relationship. On to-many relationship reads, an empty member\npath (`filter[]=tracks:123`) filters primary data itself.\nEach endpoint lists its supported filters and types.\n\nWhere supported, `me` aliases the authenticated user's dedicated resource ID for the referenced\nresource type. It works in paths, resource-ID filters, compact identifiers (`type:me`), resource\nPATCH primary IDs and standalone relationship mutation identifiers, with the same meaning as\nthe resolved ID. Reads using the alias are `no-store`.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<memberPath>]=value`](https://jsonapi.org/format/#fetching-filtering) filters primary data by equality. Each endpoint lists its available filters; most collections require at least one.\n- Where explicitly documented, `filter[<memberPath>][ne]=value` negates the complete equality predicate. When the member path names a to-many relationship, no related ID may match any supplied value; a known-empty relationship matches. Operators are separate from values. Supplied comparisons combine with AND. For a required filter with multiple supported comparisons, at least one must be supplied; the parameter descriptions identify these alternatives. Unsupported operators and groups return `400`.\n- [`sort=<memberPath>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<memberPath>` descending (`sort=-addedAt`). Filter and sort member paths are relative to primary data.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Keys are scoped to the client and the authenticated user. Once the original request has completed, retrying it with the same key, method, path, query and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different method, path, query or payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Revisions and concurrent editing\n\nWhere supported, `attributes.revision` identifies the resource's documented aggregate state; a separately versioned relationship collection uses document `meta.revision`. Revisions are nonnegative integers that increase when covered state changes. Compare them only within the same identity and scope, preserve the exact value, and never calculate the next revision. Related content, viewer projections and independent sources are not automatically covered. Domain fields named `version`, such as a music edition, are distinct; existing endpoints retain their documented contracts.\n\nGuarded mutations accept the observed value as top-level `meta.expectedRevision`. Each operation declares its scope and whether the precondition is required. A mismatch returns `409`; missing required input returns `400`. Refresh and reconcile after a conflict, then submit a new operation with a new idempotency key. An identical retry with the original key replays a recorded success under the idempotency contract. These revisions are not HTTP ETags.\n\nReturned revisions describe observed snapshots, not reservations for later writes. Background changes can advance them immediately after a successful response.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.188"
+    "version" : "1.10.193"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -144,6 +144,9 @@
     "description" : "An emoji reaction by a user on a piece of content.",
     "name" : "reactions"
   }, {
+    "description" : "An explicit direct grant on an access-core album, track or folder. Only the subject's owner may read and administer grants. Inherited access and share-link grants are excluded.",
+    "name" : "resourceGrants"
+  }, {
     "description" : "A completed acceptance of a share's offered role.",
     "name" : "savedShares"
   }, {
@@ -164,6 +167,12 @@
   }, {
     "description" : "A Square seller connection linked to a user for receiving payments.",
     "name" : "squareConnections"
+  }, {
+    "description" : "A physical inventory count recorded in Square, identified by its count reference. Its quantity describes stock at occurredAt, rather than current calculated stock after later inventory activity. Creation only; no resource reads or relationship navigation.",
+    "name" : "squareItemVariationPhysicalCounts"
+  }, {
+    "description" : "A variation in the seller's own Square catalog.",
+    "name" : "squareItemVariations"
   }, {
     "description" : "An item in the seller's own Square catalog.",
     "name" : "squareItems"
@@ -10787,14 +10796,15 @@
             "enum" : [ "BROWSER", "CAR", "DESKTOP", "PHONE", "TABLET", "TV" ]
           }
         }, {
-          "description" : "type of the page (e.g. `ARTIST`)",
+          "description" : "Type of the page (e.g. `ARTIST`)",
           "in" : "query",
           "name" : "filter[pageType]",
           "required" : true,
           "schema" : {
             "type" : "array",
             "items" : {
-              "type" : "string"
+              "type" : "string",
+              "enum" : [ "HOME_STATIC", "HOME_UPLOADS", "HOME_EDITORIAL", "HOME_FREE", "STUDIO_HOME", "ARTIST", "ALBUM", "PLAYLIST", "TRACK", "VIDEO" ]
             }
           }
         }, {
@@ -10931,7 +10941,7 @@
     },
     "/dynamicPages/{id}/relationships/modules" : {
       "get" : {
-        "description" : "Retrieves modules relationship.",
+        "description" : "The page's modules, in display order.",
         "parameters" : [ {
           "description" : "Client version number",
           "example" : "2026.0.1",
@@ -11163,7 +11173,7 @@
     },
     "/folderItems" : {
       "get" : {
-        "description" : "Lists items in a folder, newest placement first. Select a folder with parent.id, or select your root with parent.isRoot=true and parent.owners.id=me. These forms cannot be combined; no other parent-filter combinations are supported.",
+        "description" : "Lists items in a folder, newest placement first. Select a folder with parent.id, or select your root with parent.isRoot=true and parent.owners.id=me. These forms cannot be combined; no other parent-filter combinations are supported. To search every folder in your tree instead, use query with parent.owners.id=me alone.",
         "parameters" : [ {
           "description" : "Folder id (e.g. `e3226624-355b-48f8-aa93-db42532caa66`). Also accepts `me`.",
           "in" : "query",
@@ -11181,11 +11191,21 @@
             "type" : "string"
           }
         }, {
-          "description" : "Root folder owner; must be the authenticated user. Also accepts `me`.",
+          "description" : "Owner of the folder an item is in; must be the authenticated user. With parent.isRoot=true it selects your root, and with query your whole tree. Also accepts `me`.",
           "in" : "query",
           "name" : "filter[parent.owners.id]",
           "required" : false,
           "schema" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }, {
+          "description" : "Searches every folder in your tree, selected with parent.owners.id=me, and lists the matching items in one flat list. An item matches when each word given starts a word in its folder's name, its album's title or the title of one of the album's tracks, ignoring case. An item shared with you matches by its subject, and only while you can open it. (e.g. `demo`)",
+          "in" : "query",
+          "name" : "filter[query]",
+          "required" : false,
+          "schema" : {
+            "maxLength" : 200,
             "minLength" : 1,
             "type" : "string"
           }
@@ -20330,6 +20350,587 @@
         }
       }
     },
+    "/resourceGrants" : {
+      "get" : {
+        "description" : "Lists the owner's explicit direct grants, selected by subject or grantee, optionally restricted by assigned role. Requires subject or grantee.",
+        "parameters" : [ {
+          "description" : "Filter by grantee. Also accepts `users:me`.",
+          "in" : "query",
+          "name" : "filter[grantee]",
+          "required" : false,
+          "schema" : {
+            "pattern" : "^(?:users|groups):[^,]+$",
+            "type" : "string"
+          }
+        }, {
+          "description" : "One of: VIEWER, COLLABORATOR, OWNER (e.g. `VIEWER`)",
+          "in" : "query",
+          "name" : "filter[role]",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "VIEWER", "COLLABORATOR", "OWNER" ]
+          }
+        }, {
+          "description" : "Filter by subject. Also accepts `folders:me`.",
+          "in" : "query",
+          "name" : "filter[subject]",
+          "required" : false,
+          "schema" : {
+            "pattern" : "^(?:albums|tracks|folders):[^,]+$",
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: grantee, subject",
+          "example" : "grantee.artist.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "grantee.artist.albums"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "grantee", "subject" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grantee.artist.albums",
+          "example" : "grantee.artist.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "grantee.artist.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrants_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple resourceGrants.",
+        "tags" : [ "resourceGrants" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "post" : {
+        "description" : "Creates a new resourceGrant.",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ResourceGrantsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrants_Create_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single resourceGrant.",
+        "tags" : [ "resourceGrants" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/resourceGrants/{id}" : {
+      "delete" : {
+        "description" : "Deletes existing resourceGrant.",
+        "parameters" : [ {
+          "description" : "Opaque resource grant ID",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mutation_Response_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Delete single resourceGrant.",
+        "tags" : [ "resourceGrants" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "get" : {
+        "description" : "Retrieves single resourceGrant by id.",
+        "parameters" : [ {
+          "description" : "Opaque resource grant ID",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: grantee, subject",
+          "example" : "grantee.artist.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "grantee.artist.albums"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "grantee", "subject" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grantee.artist.albums",
+          "example" : "grantee.artist.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "grantee.artist.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrants_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get single resourceGrant.",
+        "tags" : [ "resourceGrants" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Updates existing resourceGrant.",
+        "parameters" : [ {
+          "description" : "Opaque resource grant ID",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ResourceGrantsUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrants_Update_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update single resourceGrant.",
+        "tags" : [ "resourceGrants" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/resourceGrants/{id}/relationships/grantee" : {
+      "get" : {
+        "description" : "Retrieves grantee relationship.",
+        "parameters" : [ {
+          "description" : "Opaque resource grant ID",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: grantee",
+          "example" : "grantee.artist.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "grantee.artist.albums"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grantee.artist.albums",
+          "example" : "grantee.artist.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "grantee.artist.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrants_Grantee_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get grantee relationship (\"to-one\").",
+        "tags" : [ "resourceGrants" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/resourceGrants/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "Opaque resource grant ID",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrants_Subject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
+        "tags" : [ "resourceGrants" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/savedShares" : {
       "post" : {
         "description" : "Creates a new savedShare.",
@@ -22747,6 +23348,493 @@
         }
       }
     },
+    "/squareItemVariationPhysicalCounts" : {
+      "post" : {
+        "description" : "Records a whole-unit physical stock count at occurredAt. Requires stock tracking at the selected site's shipping location (merchant-main fallback). While its replay receipt remains available, exact retries retain the original location and event time. Catalog revisions do not guard inventory counts.",
+        "parameters" : [ {
+          "description" : "Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned.",
+          "in" : "header",
+          "name" : "Idempotency-Key",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 128,
+            "type" : "string",
+            "example" : "79e1f37e-3e84-4c51-b5e2-7d9e1a2b3c4d"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SquareItemVariationPhysicalCountsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareItemVariationPhysicalCounts_Create_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareItemVariationPhysicalCountsCreateResource403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareItemVariationPhysicalCountsCreateResource409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single squareItemVariationPhysicalCount.",
+        "tags" : [ "squareItemVariationPhysicalCounts" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/squareItemVariations" : {
+      "post" : {
+        "description" : "Adds a fixed-price variation at the end of the item's display order, preserving all existing variations and their pricing modes. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.",
+        "parameters" : [ {
+          "description" : "Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned.",
+          "in" : "header",
+          "name" : "Idempotency-Key",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 128,
+            "type" : "string",
+            "example" : "79e1f37e-3e84-4c51-b5e2-7d9e1a2b3c4d"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SquareItemVariationsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareItemVariations_Create_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareItemVariationsCreateResource403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareItemVariationsCreateResource409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single squareItemVariation.",
+        "tags" : [ "squareItemVariations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/squareItemVariations/{id}" : {
+      "delete" : {
+        "description" : "Deletes this variation by ID without a revision precondition, preserving its siblings. The last variation cannot be deleted; delete the item instead. Returns an acknowledgement; read the parent item for its current revision. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.",
+        "parameters" : [ {
+          "description" : "Square variation id",
+          "example" : "p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned.",
+          "in" : "header",
+          "name" : "Idempotency-Key",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 128,
+            "type" : "string",
+            "example" : "79e1f37e-3e84-4c51-b5e2-7d9e1a2b3c4d"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mutation_Response_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareItemVariationsDeleteResource403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareItemVariationsDeleteResource409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Delete single squareItemVariation.",
+        "tags" : [ "squareItemVariations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "get" : {
+        "description" : "Retrieves single squareItemVariation by id.",
+        "parameters" : [ {
+          "description" : "Square variation id",
+          "example" : "p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "owners" ]
+            }
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareItemVariations_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareItemVariationsReadById403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareItemVariationsReadById409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get single squareItemVariation.",
+        "tags" : [ "squareItemVariations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Updates the variation's global name or its price and stock tracking at the selected site's shipping location, with merchant-main fallback. Stock quantity is changed through physical-count submissions. Price changes require existing positive fixed pricing at that location; name and stock tracking preserve other pricing modes. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.",
+        "parameters" : [ {
+          "description" : "Square variation id",
+          "example" : "p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned.",
+          "in" : "header",
+          "name" : "Idempotency-Key",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 128,
+            "type" : "string",
+            "example" : "79e1f37e-3e84-4c51-b5e2-7d9e1a2b3c4d"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SquareItemVariationsUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareItemVariations_Update_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareItemVariationsUpdateResource403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareItemVariationsUpdateResource409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update single squareItemVariation.",
+        "tags" : [ "squareItemVariations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/squareItemVariations/{id}/relationships/owners" : {
+      "get" : {
+        "description" : "Retrieves owners relationship.",
+        "parameters" : [ {
+          "description" : "Square variation id",
+          "example" : "p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareItemVariations_Owners_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "squareItemVariations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/squareItems" : {
       "get" : {
         "description" : "Retrieves multiple squareItems by available filters, or without if applicable.",
@@ -22784,14 +23872,16 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: owners",
+          "description" : "Include related resources. Available relationships: owners, variations",
+          "example" : "variations",
           "in" : "query",
           "name" : "include",
           "required" : false,
           "schema" : {
             "type" : "array",
             "items" : {
-              "type" : "string"
+              "type" : "string",
+              "example" : "variations"
             }
           }
         }, {
@@ -22804,7 +23894,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "owners" ]
+              "enum" : [ "owners", "variations" ]
             }
           },
           "style" : "form"
@@ -23026,14 +24116,16 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: owners",
+          "description" : "Include related resources. Available relationships: owners, variations",
+          "example" : "variations",
           "in" : "query",
           "name" : "include",
           "required" : false,
           "schema" : {
             "type" : "array",
             "items" : {
-              "type" : "string"
+              "type" : "string",
+              "example" : "variations"
             }
           }
         }, {
@@ -23046,7 +24138,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "owners" ]
+              "enum" : [ "owners", "variations" ]
             }
           },
           "style" : "form"
@@ -23262,6 +24354,177 @@
           "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
         "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "squareItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/squareItems/{id}/relationships/variations" : {
+      "get" : {
+        "description" : "Variations in Square's display order.",
+        "parameters" : [ {
+          "description" : "Square item id",
+          "example" : "p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: variations",
+          "example" : "variations",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "variations"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareItems_Variations_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareItemsReadMultiDataRelationship403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareItemsReadMultiDataRelationship409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get variations relationship (\"to-many\").",
+        "tags" : [ "squareItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Moves the selected variations as an ordered block before positionBefore, or to the end when omitted. Unselected variations retain their relative order. Returns the affected linkage only and the updated item revision. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.",
+        "parameters" : [ {
+          "description" : "Square item id",
+          "example" : "p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned.",
+          "in" : "header",
+          "name" : "Idempotency-Key",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 128,
+            "type" : "string",
+            "example" : "79e1f37e-3e84-4c51-b5e2-7d9e1a2b3c4d"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SquareItemsVariationsRelationshipUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareItems_Variations_Update_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareItemsUpdateMultiDataRelationship403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareItemsUpdateMultiDataRelationship409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update variations relationship (\"to-many\").",
         "tags" : [ "squareItems" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -36439,6 +37702,106 @@
         },
         "description" : "Square credential lacks required site scopes; run Square onboarding again; Request already in progress for this idempotency key"
       },
+      "SquareItemVariationPhysicalCountsCreateResource403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemVariationPhysicalCountsCreateResource403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareItemVariationPhysicalCountsCreateResource409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemVariationPhysicalCountsCreateResource409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog and inventory scopes; reconnect Square; Square inventory cannot accept this physical count in its current state; Request already in progress for this idempotency key"
+      },
+      "SquareItemVariationsCreateResource403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemVariationsCreateResource403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareItemVariationsCreateResource409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemVariationsCreateResource409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square item changed; reload it before changing its variations; Another request is changing the Square catalog; Request already in progress for this idempotency key"
+      },
+      "SquareItemVariationsDeleteResource403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemVariationsDeleteResource403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareItemVariationsDeleteResource409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemVariationsDeleteResource409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square item changed; reload it before changing its variations; An item must retain at least one variation; Another request is changing the Square catalog; Request already in progress for this idempotency key"
+      },
+      "SquareItemVariationsReadById403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemVariationsReadById403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareItemVariationsReadById409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemVariationsReadById409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+      },
+      "SquareItemVariationsUpdateResource403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemVariationsUpdateResource403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareItemVariationsUpdateResource409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemVariationsUpdateResource409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square variation changed; reload it before editing; This variation's pricing cannot be edited here; edit it in Square Dashboard; Another request is changing the Square catalog; Request already in progress for this idempotency key"
+      },
       "SquareItemsCreateResource403Response" : {
         "content" : {
           "application/vnd.api+json" : {
@@ -36519,6 +37882,46 @@
         },
         "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
       },
+      "SquareItemsReadMultiDataRelationship403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsReadMultiDataRelationship403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareItemsReadMultiDataRelationship409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsReadMultiDataRelationship409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+      },
+      "SquareItemsUpdateMultiDataRelationship403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsUpdateMultiDataRelationship403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareItemsUpdateMultiDataRelationship409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsUpdateMultiDataRelationship409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square catalog item changed; reload it before editing; Another request is changing the Square catalog; Request already in progress for this idempotency key"
+      },
       "SquareItemsUpdateResource403Response" : {
         "content" : {
           "application/vnd.api+json" : {
@@ -36537,7 +37940,7 @@
             }
           }
         },
-        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Variation editing requires positive fixed prices for every existing variation; edit this item's variations in Square Dashboard; Square catalog item changed; reload it before editing; Request already in progress for this idempotency key"
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Square catalog item changed; reload it before editing; Request already in progress for this idempotency key"
       },
       "SquareSitesAddMultiDataRelationship403Response" : {
         "content" : {
@@ -42546,17 +43949,15 @@
         "description" : "Target resource types: `albums`, `artists`, `tracks`."
       },
       "DynamicModules_Attributes" : {
-        "required" : [ "icons", "previewLayout" ],
+        "required" : [ "headerActions", "previewLayout" ],
         "type" : "object",
         "properties" : {
-          "icons" : {
+          "headerActions" : {
             "type" : "array",
-            "description" : "Semantic icons the module should show. SPOTLIGHT_INFO identifies modules whose content was selected by TIDAL's editorial team.",
-            "example" : "SPOTLIGHT_INFO",
+            "description" : "Actions available in the module header. SPOTLIGHT_INFO opens information about TIDAL Spotlight. Clients choose the presentation and ignore unsupported actions, including UNKNOWN.",
+            "example" : [ "SPOTLIGHT_INFO" ],
             "items" : {
               "type" : "string",
-              "description" : "Semantic icons the module should show. SPOTLIGHT_INFO identifies modules whose content was selected by TIDAL's editorial team.",
-              "example" : "SPOTLIGHT_INFO",
               "enum" : [ "SPOTLIGHT_INFO", "UNKNOWN" ]
             }
           },
@@ -42753,7 +44154,7 @@
             "type" : "string",
             "description" : "Type of the page eg. home, artist",
             "example" : "HOME_STATIC",
-            "enum" : [ "HOME_STATIC", "HOME_UPLOADS", "HOME_EDITORIAL", "HOME_FREE", "ARTIST", "ALBUM", "PLAYLIST", "TRACK", "VIDEO" ]
+            "enum" : [ "HOME_STATIC", "HOME_UPLOADS", "HOME_EDITORIAL", "HOME_FREE", "STUDIO_HOME", "ARTIST", "ALBUM", "PLAYLIST", "TRACK", "VIDEO" ]
           },
           "reportingId" : {
             "type" : "string",
@@ -43170,7 +44571,8 @@
         "type" : "object",
         "properties" : {
           "id" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Also accepts `me`."
           },
           "type" : {
             "type" : "string",
@@ -43555,7 +44957,8 @@
             "$ref" : "#/components/schemas/FoldersUpdateOperation_Payload_Data_Attributes"
           },
           "id" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Also accepts `me`."
           },
           "type" : {
             "type" : "string",
@@ -44069,6 +45472,7 @@
               "providers" : "#/components/schemas/Providers_Resource_Object",
               "purchases" : "#/components/schemas/Purchases_Resource_Object",
               "reactions" : "#/components/schemas/Reactions_Resource_Object",
+              "resourceGrants" : "#/components/schemas/ResourceGrants_Resource_Object",
               "savedShares" : "#/components/schemas/SavedShares_Resource_Object",
               "scopes" : "#/components/schemas/Scopes_Resource_Object",
               "searchHistoryEntries" : "#/components/schemas/SearchHistoryEntries_Resource_Object",
@@ -44076,6 +45480,8 @@
               "searchSuggestions" : "#/components/schemas/SearchSuggestions_Resource_Object",
               "shares" : "#/components/schemas/Shares_Resource_Object",
               "squareConnections" : "#/components/schemas/SquareConnections_Resource_Object",
+              "squareItemVariationPhysicalCounts" : "#/components/schemas/SquareItemVariationPhysicalCounts_Resource_Object",
+              "squareItemVariations" : "#/components/schemas/SquareItemVariations_Resource_Object",
               "squareItems" : "#/components/schemas/SquareItems_Resource_Object",
               "squareSites" : "#/components/schemas/SquareSites_Resource_Object",
               "stripeConnections" : "#/components/schemas/StripeConnections_Resource_Object",
@@ -44200,6 +45606,8 @@
           }, {
             "$ref" : "#/components/schemas/Reactions_Resource_Object"
           }, {
+            "$ref" : "#/components/schemas/ResourceGrants_Resource_Object"
+          }, {
             "$ref" : "#/components/schemas/SavedShares_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Scopes_Resource_Object"
@@ -44213,6 +45621,10 @@
             "$ref" : "#/components/schemas/Shares_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/SquareConnections_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/SquareItemVariationPhysicalCounts_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/SquareItemVariations_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/SquareItems_Resource_Object"
           }, {
@@ -44362,7 +45774,7 @@
           "id" : {
             "minLength" : 1,
             "type" : "string",
-            "description" : "The item id. Use \"me\" when the type is userCollectionTracks to resolve to the authenticated user's collection."
+            "description" : "Also accepts `me` when type is `userCollectionTracks`."
           },
           "type" : {
             "type" : "string",
@@ -44532,6 +45944,34 @@
             "$ref" : "#/components/schemas/Links"
           }
         }
+      },
+      "Item" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItems" ]
+          }
+        },
+        "description" : "The catalog item containing this variation"
+      },
+      "ItemVariation" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItemVariations" ]
+          }
+        },
+        "description" : "Variations available for independent catalog edits, in Square's display order"
       },
       "LegacyBarcodeId" : {
         "type" : "object",
@@ -49001,6 +50441,303 @@
         },
         "description" : "Relationship replacement projection provenance. ORIGINAL retains the requested identifier as the applicable resource, REPLACED projects another identifier, and NOT_REPLACED retains the requested identifier because no applicable replacement exists."
       },
+      "ResourceGrantsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrantsCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "ResourceGrantsCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ResourceGrantsCreateOperation_Payload_Data_Attributes"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ResourceGrantsCreateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "resourceGrants" ]
+          }
+        }
+      },
+      "ResourceGrantsCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "role" ],
+        "type" : "object",
+        "properties" : {
+          "role" : {
+            "type" : "string",
+            "enum" : [ "VIEWER", "COLLABORATOR" ]
+          }
+        }
+      },
+      "ResourceGrantsCreateOperation_Payload_Data_Relationships" : {
+        "required" : [ "grantee", "subject" ],
+        "type" : "object",
+        "properties" : {
+          "grantee" : {
+            "$ref" : "#/components/schemas/ResourceGrantsGranteeLinkage"
+          },
+          "subject" : {
+            "$ref" : "#/components/schemas/ResourceGrantsSubjectLinkage"
+          }
+        }
+      },
+      "ResourceGrantsGrantee" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "users", "groups" ]
+          }
+        }
+      },
+      "ResourceGrantsGranteeLinkage" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrantsGrantee"
+          }
+        }
+      },
+      "ResourceGrantsSubject" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "albums", "tracks", "folders" ]
+          }
+        }
+      },
+      "ResourceGrantsSubjectLinkage" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrantsSubject"
+          }
+        }
+      },
+      "ResourceGrantsUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrantsUpdateOperation_Payload_Data"
+          }
+        }
+      },
+      "ResourceGrantsUpdateOperation_Payload_Data" : {
+        "required" : [ "attributes", "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ResourceGrantsUpdateOperation_Payload_Data_Attributes"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "resourceGrants" ]
+          }
+        }
+      },
+      "ResourceGrantsUpdateOperation_Payload_Data_Attributes" : {
+        "required" : [ "role" ],
+        "type" : "object",
+        "properties" : {
+          "role" : {
+            "type" : "string",
+            "enum" : [ "VIEWER", "COLLABORATOR" ]
+          }
+        }
+      },
+      "ResourceGrants_Attributes" : {
+        "required" : [ "role" ],
+        "type" : "object",
+        "properties" : {
+          "role" : {
+            "type" : "string",
+            "enum" : [ "VIEWER", "COLLABORATOR", "OWNER" ]
+          }
+        }
+      },
+      "ResourceGrants_Create_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrants_Resource_Object"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ResourceGrants_Grantee_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `groups`, `users`."
+      },
+      "ResourceGrants_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ResourceGrants_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ResourceGrants_Relationships" : {
+        "properties" : {
+          "grantee" : {
+            "$ref" : "#/components/schemas/ResourceGrants_Grantee_Single_Relationship_Data_Document"
+          },
+          "subject" : {
+            "$ref" : "#/components/schemas/ResourceGrants_Subject_Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "ResourceGrants_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ResourceGrants_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ResourceGrants_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ResourceGrants_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrants_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ResourceGrants_Subject_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/ResourceGrants_Subject_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ResourceGrants_Subject_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "ResourceGrants_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/ResourceGrants_Subject_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `albums`, `folders`, `tracks`."
+      },
+      "ResourceGrants_Update_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrants_Resource_Object"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "Resource_Identifier" : {
         "required" : [ "id", "type" ],
         "type" : "object",
@@ -50365,6 +52102,693 @@
         },
         "description" : "Target resource types: `squareSites`."
       },
+      "SquareItemVariationPhysicalCountsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItemVariationPhysicalCountsCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "SquareItemVariationPhysicalCountsCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Attributes"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItemVariationPhysicalCounts" ]
+          }
+        }
+      },
+      "SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "occurredAt", "quantity" ],
+        "type" : "object",
+        "properties" : {
+          "occurredAt" : {
+            "type" : "string",
+            "description" : "Physical count event time; the first submission must be within the preceding 24 hours and not in the future",
+            "format" : "date-time"
+          },
+          "quantity" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Relationships" : {
+        "required" : [ "variations" ],
+        "type" : "object",
+        "properties" : {
+          "variations" : {
+            "$ref" : "#/components/schemas/SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Relationships_Variations"
+          }
+        }
+      },
+      "SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Relationships_Variations" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 1,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Variation"
+            }
+          }
+        }
+      },
+      "SquareItemVariationPhysicalCountsCreateResource403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemVariationPhysicalCountsCreateResource409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "CONFLICT",
+                  "enum" : [ "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog and inventory scopes; reconnect Square"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemVariationPhysicalCounts_Attributes" : {
+        "required" : [ "occurredAt", "quantity", "squareLocationId" ],
+        "type" : "object",
+        "properties" : {
+          "occurredAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "quantity" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "squareLocationId" : {
+            "type" : "string",
+            "description" : "Square location where this physical count was recorded"
+          }
+        }
+      },
+      "SquareItemVariationPhysicalCounts_Create_Single_Resource_Data_Document" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItemVariationPhysicalCounts_Resource_Object"
+          }
+        }
+      },
+      "SquareItemVariationPhysicalCounts_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SquareItemVariationPhysicalCounts_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SquareItemVariationsCreateOperation_Payload" : {
+        "required" : [ "data", "meta" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItemVariationsCreateOperation_Payload_Data"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SquareItemVariations_ExpectedItemRevision"
+          }
+        }
+      },
+      "SquareItemVariationsCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SquareItemVariationsCreateOperation_Payload_Data_Attributes"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/SquareItemVariationsCreateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItemVariations" ]
+          }
+        }
+      },
+      "SquareItemVariationsCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "price", "stockTracked" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "maxLength" : 255,
+            "type" : "string"
+          },
+          "price" : {
+            "minimum" : 0,
+            "exclusiveMinimum" : true,
+            "pattern" : "^\\+?(?=[0-9.]*[1-9])(?:0*[0-9]{1,16}(?:\\.[0-9]{0,2})?|\\.[0-9]{1,2})$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          },
+          "stockTracked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "SquareItemVariationsCreateOperation_Payload_Data_Relationships" : {
+        "required" : [ "items" ],
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "$ref" : "#/components/schemas/SquareItemVariationsCreateOperation_Payload_Data_Relationships_Items"
+          }
+        }
+      },
+      "SquareItemVariationsCreateOperation_Payload_Data_Relationships_Items" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 1,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Item"
+            }
+          }
+        }
+      },
+      "SquareItemVariationsCreateResource403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemVariationsCreateResource409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "CATALOG_VERSION_MISMATCH",
+                  "enum" : [ "CATALOG_VERSION_MISMATCH", "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemVariationsDeleteResource403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemVariationsDeleteResource409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "CATALOG_VERSION_MISMATCH",
+                  "enum" : [ "CATALOG_VERSION_MISMATCH", "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "LAST_VARIATION", "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemVariationsReadById403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemVariationsReadById409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "MISSING_ITEMS_SCOPE",
+                  "enum" : [ "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemVariationsUpdateOperation_Payload" : {
+        "required" : [ "data", "meta" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItemVariationsUpdateOperation_Payload_Data"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SquareItemVariationsUpdateOperation_Payload_Meta"
+          }
+        }
+      },
+      "SquareItemVariationsUpdateOperation_Payload_Data" : {
+        "required" : [ "attributes", "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SquareItemVariationsUpdateOperation_Payload_Data_Attributes"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItemVariations" ]
+          }
+        }
+      },
+      "SquareItemVariationsUpdateOperation_Payload_Data_Attributes" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "maxLength" : 255,
+            "type" : "string",
+            "description" : "Variation name; an empty string clears it"
+          },
+          "price" : {
+            "minimum" : 0,
+            "exclusiveMinimum" : true,
+            "pattern" : "^\\+?(?=[0-9.]*[1-9])(?:0*[0-9]{1,16}(?:\\.[0-9]{0,2})?|\\.[0-9]{1,2})$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          },
+          "stockTracked" : {
+            "type" : "boolean",
+            "description" : "Stock tracking at the selected site's shipping location (merchant-main fallback)"
+          }
+        }
+      },
+      "SquareItemVariationsUpdateOperation_Payload_Meta" : {
+        "required" : [ "expectedRevision" ],
+        "type" : "object",
+        "properties" : {
+          "expectedRevision" : {
+            "maximum" : 9007199254740991,
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Observed variation revision; does not guard the parent item or inventory quantity",
+            "format" : "int64"
+          }
+        }
+      },
+      "SquareItemVariationsUpdateResource403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemVariationsUpdateResource409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "CATALOG_VERSION_MISMATCH",
+                  "enum" : [ "CATALOG_VERSION_MISMATCH", "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE", "UNSUPPORTED_VARIATION_PRICING" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemVariations_Attributes" : {
+        "required" : [ "currency", "name", "pricingType", "revision", "stockTracked" ],
+        "type" : "object",
+        "properties" : {
+          "currency" : {
+            "minLength" : 1,
+            "type" : "string",
+            "enum" : [ "USD" ]
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Variation name; may be empty"
+          },
+          "price" : {
+            "minimum" : 0,
+            "pattern" : "^[+-]?(?:0*[0-9]{1,17}(?:\\.[0-9]{0,2})?|\\.[0-9]{1,2})$(?![\\s\\S])",
+            "type" : "string",
+            "description" : "Amount in the currency's major units",
+            "example" : "9.99"
+          },
+          "pricingType" : {
+            "type" : "string",
+            "description" : "Effective pricing mode at the selected site's shipping location (merchant-main fallback). Price is present only for FIXED when its amount is available",
+            "enum" : [ "FIXED", "VARIABLE" ]
+          },
+          "revision" : {
+            "maximum" : 9007199254740991,
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Square variation revision covering its catalog fields, including name, pricing and stock tracking; excludes inventory quantity and other variations",
+            "format" : "int64"
+          },
+          "stockQuantity" : {
+            "type" : "integer",
+            "description" : "Units at the selected site's shipping location (merchant-main fallback); present only when tracked and available; may be negative",
+            "format" : "int64"
+          },
+          "stockTracked" : {
+            "type" : "boolean",
+            "description" : "Whether Square tracks stock at the selected site's shipping location (merchant-main fallback)"
+          }
+        }
+      },
+      "SquareItemVariations_Create_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItemVariations_Resource_Object"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SquareItemVariations_Create_Single_Resource_Data_Document_Meta"
+          }
+        }
+      },
+      "SquareItemVariations_Create_Single_Resource_Data_Document_Meta" : {
+        "required" : [ "itemRevision" ],
+        "type" : "object",
+        "properties" : {
+          "itemRevision" : {
+            "maximum" : 9007199254740991,
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Parent squareItems catalog revision after the membership change; Square may advance it asynchronously",
+            "format" : "int64"
+          }
+        }
+      },
+      "SquareItemVariations_ExpectedItemRevision" : {
+        "required" : [ "expectedItemRevision" ],
+        "type" : "object",
+        "properties" : {
+          "expectedItemRevision" : {
+            "maximum" : 9007199254740991,
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Observed parent squareItems.attributes.revision; guards item membership rather than variation fields or inventory",
+            "format" : "int64"
+          }
+        }
+      },
+      "SquareItemVariations_Owners_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `users`."
+      },
+      "SquareItemVariations_Relationships" : {
+        "properties" : {
+          "owners" : {
+            "$ref" : "#/components/schemas/SquareItemVariations_Owners_Multi_Relationship_Data_Document"
+          }
+        }
+      },
+      "SquareItemVariations_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SquareItemVariations_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/SquareItemVariations_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SquareItemVariations_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItemVariations_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SquareItemVariations_Update_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItemVariations_Resource_Object"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "SquareItemsCreateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -50388,7 +52812,7 @@
         }
       },
       "SquareItemsCreateOperation_Payload_Data_Attributes" : {
-        "required" : [ "title", "variations" ],
+        "required" : [ "initialVariations", "title" ],
         "type" : "object",
         "properties" : {
           "description" : {
@@ -50396,13 +52820,7 @@
             "type" : "string",
             "description" : "Item description"
           },
-          "title" : {
-            "maxLength" : 512,
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "Item title"
-          },
-          "variations" : {
+          "initialVariations" : {
             "maxItems" : 100,
             "minItems" : 1,
             "type" : "array",
@@ -50410,6 +52828,12 @@
             "items" : {
               "$ref" : "#/components/schemas/SquareItemsCreateOperation_Payload_Data_Attributes_Variation"
             }
+          },
+          "title" : {
+            "maxLength" : 512,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Item title"
           }
         }
       },
@@ -50433,7 +52857,7 @@
           "stockQuantity" : {
             "minimum" : 0,
             "type" : "integer",
-            "description" : "Units in stock at the seller's main location; applies only when stock is tracked",
+            "description" : "Units in stock at the selected site's shipping location (merchant-main fallback); applies only when stock is tracked",
             "format" : "int64"
           },
           "stockTracked" : {
@@ -50666,6 +53090,118 @@
           }
         }
       },
+      "SquareItemsReadMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsReadMultiDataRelationship409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "MISSING_ITEMS_SCOPE",
+                  "enum" : [ "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsUpdateMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsUpdateMultiDataRelationship409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "CATALOG_VERSION_MISMATCH",
+                  "enum" : [ "CATALOG_VERSION_MISMATCH", "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
       "SquareItemsUpdateOperation_Payload" : {
         "required" : [ "data", "meta" ],
         "type" : "object",
@@ -50707,49 +53243,6 @@
             "minLength" : 1,
             "type" : "string",
             "description" : "Item title"
-          },
-          "variations" : {
-            "maxItems" : 100,
-            "minItems" : 1,
-            "type" : "array",
-            "description" : "Complete variation list in display order; variations without a variationId are added and omitted ones deleted. Every price must be positive and is written as FIXED. Replacement requires every existing variation to have a positive fixed price at the main location; otherwise edit the variations in Square Dashboard. Updates without variations remain supported.",
-            "items" : {
-              "$ref" : "#/components/schemas/SquareItemsUpdateOperation_Payload_Data_Attributes_Variation"
-            }
-          }
-        }
-      },
-      "SquareItemsUpdateOperation_Payload_Data_Attributes_Variation" : {
-        "required" : [ "name", "price", "stockTracked" ],
-        "type" : "object",
-        "properties" : {
-          "name" : {
-            "maxLength" : 255,
-            "type" : "string",
-            "description" : "Variation name, such as a size or color; an empty string for none"
-          },
-          "price" : {
-            "minimum" : 0,
-            "exclusiveMinimum" : true,
-            "pattern" : "^\\+?(?=[0-9.]*[1-9])(?:0*[0-9]{1,16}(?:\\.[0-9]{0,2})?|\\.[0-9]{1,2})$(?![\\s\\S])",
-            "type" : "string",
-            "description" : "Amount in the currency's major units",
-            "example" : "9.99"
-          },
-          "stockQuantity" : {
-            "minimum" : 0,
-            "type" : "integer",
-            "description" : "Units in stock at the seller's main location; applies only when stock is tracked. Omit to leave the stock unchanged.",
-            "format" : "int64"
-          },
-          "stockTracked" : {
-            "type" : "boolean",
-            "description" : "Whether Square tracks stock for this variation"
-          },
-          "variationId" : {
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "The variation to update; omit to add a variation"
           }
         }
       },
@@ -50807,7 +53300,7 @@
                 "code" : {
                   "type" : "string",
                   "example" : "CATALOG_VERSION_MISMATCH",
-                  "enum" : [ "CATALOG_VERSION_MISMATCH", "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE", "UNSUPPORTED_VARIATION_PRICING" ]
+                  "enum" : [ "CATALOG_VERSION_MISMATCH", "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE" ]
                 },
                 "detail" : {
                   "type" : "string",
@@ -50822,8 +53315,41 @@
           }
         }
       },
+      "SquareItemsVariationsRelationshipUpdateOperation_Payload" : {
+        "required" : [ "data", "meta" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 50,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ItemVariation"
+            }
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SquareItemsVariationsRelationshipUpdateOperation_Payload_Meta"
+          }
+        }
+      },
+      "SquareItemsVariationsRelationshipUpdateOperation_Payload_Meta" : {
+        "required" : [ "expectedRevision" ],
+        "type" : "object",
+        "properties" : {
+          "expectedRevision" : {
+            "maximum" : 9007199254740991,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "positionBefore" : {
+            "type" : "string",
+            "description" : "Variation before which the selected block is placed; omission appends"
+          }
+        }
+      },
       "SquareItems_Attributes" : {
-        "required" : [ "currency", "revision", "title", "variations" ],
+        "required" : [ "currency", "revision", "title" ],
         "type" : "object",
         "properties" : {
           "currency" : {
@@ -50860,13 +53386,6 @@
           "title" : {
             "type" : "string",
             "description" : "Item title; empty for an untitled item created in Square"
-          },
-          "variations" : {
-            "type" : "array",
-            "description" : "Variations, in Square's order",
-            "items" : {
-              "$ref" : "#/components/schemas/SquareItems_Variation"
-            }
           }
         }
       },
@@ -50923,6 +53442,9 @@
         "properties" : {
           "owners" : {
             "$ref" : "#/components/schemas/SquareItems_Owners_Multi_Relationship_Data_Document"
+          },
+          "variations" : {
+            "$ref" : "#/components/schemas/SquareItems_Variations_Multi_Relationship_Data_Document"
           }
         }
       },
@@ -50976,38 +53498,65 @@
           }
         }
       },
-      "SquareItems_Variation" : {
-        "required" : [ "name", "pricingType", "variationId" ],
+      "SquareItems_Variations_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
         "type" : "object",
         "properties" : {
-          "name" : {
-            "type" : "string",
-            "description" : "Variation name, such as a size or color; may be empty"
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
           },
-          "price" : {
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `squareItemVariations`."
+      },
+      "SquareItems_Variations_Update_Multi_Relationship_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SquareItems_Variations_Update_Resource_Identifier"
+            }
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SquareItems_Variations_Update_Multi_Relationship_Data_Document_Meta"
+          }
+        }
+      },
+      "SquareItems_Variations_Update_Multi_Relationship_Data_Document_Meta" : {
+        "required" : [ "revision" ],
+        "type" : "object",
+        "properties" : {
+          "revision" : {
+            "maximum" : 9007199254740991,
             "minimum" : 0,
-            "pattern" : "^[+-]?(?:[0-9]+(?:\\.[0-9]{0,2})?|\\.[0-9]{1,2})$(?![\\s\\S])",
-            "type" : "string",
-            "description" : "Amount in the currency's major units",
-            "example" : "9.99"
-          },
-          "pricingType" : {
-            "type" : "string",
-            "description" : "How the variation is priced; price is present only when FIXED",
-            "enum" : [ "FIXED", "VARIABLE" ]
-          },
-          "stockQuantity" : {
             "type" : "integer",
-            "description" : "Units in stock at the seller's main location; present only when stock is tracked, and negative when Square has sold more than it counted",
             "format" : "int64"
-          },
-          "stockTracked" : {
-            "type" : "boolean",
-            "description" : "Whether Square tracks stock for this variation"
-          },
-          "variationId" : {
-            "minLength" : 1,
+          }
+        }
+      },
+      "SquareItems_Variations_Update_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
             "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItemVariations" ]
           }
         }
       },
@@ -56709,7 +59258,8 @@
           },
           "id" : {
             "minLength" : 1,
-            "type" : "string"
+            "type" : "string",
+            "description" : "Also accepts `me`."
           },
           "type" : {
             "type" : "string",
@@ -57103,7 +59653,8 @@
           },
           "id" : {
             "minLength" : 1,
-            "type" : "string"
+            "type" : "string",
+            "description" : "Also accepts `me`."
           },
           "type" : {
             "type" : "string",
@@ -58252,6 +60803,20 @@
             "$ref" : "#/components/schemas/Links"
           }
         }
+      },
+      "Variation" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItemVariations" ]
+          }
+        },
+        "description" : "The variation whose physical stock was counted"
       },
       "VideoManifestsReadById403ResponseBody" : {
         "required" : [ "errors" ],

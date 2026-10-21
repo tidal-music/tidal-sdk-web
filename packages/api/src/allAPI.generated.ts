@@ -7152,8 +7152,8 @@ export interface paths {
                      * @example PHONE
                      */
                     deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
-                    /** @description type of the page (e.g. `ARTIST`) */
-                    "filter[pageType]": string[];
+                    /** @description Type of the page (e.g. `ARTIST`) */
+                    "filter[pageType]": ("HOME_STATIC" | "HOME_UPLOADS" | "HOME_EDITORIAL" | "HOME_FREE" | "STUDIO_HOME" | "ARTIST" | "ALBUM" | "PLAYLIST" | "TRACK" | "VIDEO")[];
                     /**
                      * @description The system type of the device making the request
                      * @example IOS
@@ -7228,7 +7228,7 @@ export interface paths {
         };
         /**
          * Get modules relationship ("to-many").
-         * @description Retrieves modules relationship.
+         * @description The page's modules, in display order.
          */
         get: {
             parameters: {
@@ -7385,7 +7385,7 @@ export interface paths {
         };
         /**
          * Get multiple folderItems.
-         * @description Lists items in a folder, newest placement first. Select a folder with parent.id, or select your root with parent.isRoot=true and parent.owners.id=me. These forms cannot be combined; no other parent-filter combinations are supported.
+         * @description Lists items in a folder, newest placement first. Select a folder with parent.id, or select your root with parent.isRoot=true and parent.owners.id=me. These forms cannot be combined; no other parent-filter combinations are supported. To search every folder in your tree instead, use query with parent.owners.id=me alone.
          */
         get: {
             parameters: {
@@ -7394,8 +7394,10 @@ export interface paths {
                     "filter[parent.id]"?: string;
                     /** @description Filter by parent.isRoot */
                     "filter[parent.isRoot]"?: string;
-                    /** @description Root folder owner; must be the authenticated user. Also accepts `me`. */
+                    /** @description Owner of the folder an item is in; must be the authenticated user. With parent.isRoot=true it selects your root, and with query your whole tree. Also accepts `me`. */
                     "filter[parent.owners.id]"?: string;
+                    /** @description Searches every folder in your tree, selected with parent.owners.id=me, and lists the matching items in one flat list. An item matches when each word given starts a word in its folder's name, its album's title or the title of one of the album's tracks, ignoring case. An item shared with you matches by its subject, and only while you can open it. (e.g. `demo`) */
+                    "filter[query]"?: string;
                     /** @description In your folders, `=me` selects owned placements and `[ne]=me` selects shared placements. In someone else's folder, `=me` returns no items and `[ne]=me` returns all items. Accepts only `me` or your own user ID. */
                     "filter[subject.owners.id]"?: string;
                     /** @description In your folders, `=me` selects owned placements and `[ne]=me` selects shared placements. In someone else's folder, `=me` returns no items and `[ne]=me` returns all items. Accepts only `me` or your own user ID. */
@@ -13562,6 +13564,381 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/resourceGrants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple resourceGrants.
+         * @description Lists the owner's explicit direct grants, selected by subject or grantee, optionally restricted by assigned role. Requires subject or grantee.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Filter by grantee. Also accepts `users:me`. */
+                    "filter[grantee]"?: string;
+                    /** @description One of: VIEWER, COLLABORATOR, OWNER (e.g. `VIEWER`) */
+                    "filter[role]"?: "VIEWER" | "COLLABORATOR" | "OWNER";
+                    /** @description Filter by subject. Also accepts `folders:me`. */
+                    "filter[subject]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: grantee, subject
+                     * @example grantee.artist.albums
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("grantee" | "subject")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grantee.artist.albums
+                     * @example grantee.artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single resourceGrant.
+         * @description Creates a new resourceGrant.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ResourceGrantsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Create_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resourceGrants/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single resourceGrant.
+         * @description Retrieves single resourceGrant by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: grantee, subject
+                     * @example grantee.artist.albums
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("grantee" | "subject")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grantee.artist.albums
+                     * @example grantee.artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque resource grant ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Delete single resourceGrant.
+         * @description Deletes existing resourceGrant.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /** @description Opaque resource grant ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Update single resourceGrant.
+         * @description Updates existing resourceGrant.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /** @description Opaque resource grant ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ResourceGrantsUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Update_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/resourceGrants/{id}/relationships/grantee": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get grantee relationship ("to-one").
+         * @description Retrieves grantee relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: grantee
+                     * @example grantee.artist.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grantee.artist.albums
+                     * @example grantee.artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque resource grant ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Grantee_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resourceGrants/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque resource grant ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Subject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/savedShares": {
         parameters: {
             query?: never;
@@ -15181,6 +15558,331 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/squareItemVariationPhysicalCounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create single squareItemVariationPhysicalCount.
+         * @description Records a whole-unit physical stock count at occurredAt. Requires stock tracking at the selected site's shipping location (merchant-main fallback). While its replay receipt remains available, exact retries retain the original location and event time. Catalog revisions do not guard inventory counts.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareItemVariationPhysicalCountsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItemVariationPhysicalCounts_Create_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemVariationPhysicalCountsCreateResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemVariationPhysicalCountsCreateResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/squareItemVariations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create single squareItemVariation.
+         * @description Adds a fixed-price variation at the end of the item's display order, preserving all existing variations and their pricing modes. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareItemVariationsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItemVariations_Create_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemVariationsCreateResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemVariationsCreateResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/squareItemVariations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single squareItemVariation.
+         * @description Retrieves single squareItemVariation by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Include related resources. Available relationships: owners */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square variation id
+                     * @example p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItemVariations_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemVariationsReadById403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemVariationsReadById409Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Delete single squareItemVariation.
+         * @description Deletes this variation by ID without a revision precondition, preserving its siblings. The last variation cannot be deleted; delete the item instead. Returns an acknowledgement; read the parent item for its current revision. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path: {
+                    /**
+                     * @description Square variation id
+                     * @example p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemVariationsDeleteResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemVariationsDeleteResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Update single squareItemVariation.
+         * @description Updates the variation's global name or its price and stock tracking at the selected site's shipping location, with merchant-main fallback. Stock quantity is changed through physical-count submissions. Price changes require existing positive fixed pricing at that location; name and stock tracking preserve other pricing modes. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path: {
+                    /**
+                     * @description Square variation id
+                     * @example p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareItemVariationsUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItemVariations_Update_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemVariationsUpdateResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemVariationsUpdateResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/squareItemVariations/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square variation id
+                     * @example p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItemVariations_Owners_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/squareItems": {
         parameters: {
             query?: never;
@@ -15201,10 +15903,13 @@ export interface paths {
                     "filter[origin]"?: "TIDAL" | "OTHER";
                     /** @description Word-prefix match on item titles, descriptions and abbreviations, and on variation names, SKUs and UPCs (e.g. `tee`) */
                     "filter[query]"?: string;
-                    /** @description Include related resources. Available relationships: owners */
+                    /**
+                     * @description Include related resources. Available relationships: owners, variations
+                     * @example variations
+                     */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: "owners"[];
+                    includeLinkage?: ("owners" | "variations")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                 };
@@ -15298,10 +16003,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Include related resources. Available relationships: owners */
+                    /**
+                     * @description Include related resources. Available relationships: owners, variations
+                     * @example variations
+                     */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: "owners"[];
+                    includeLinkage?: ("owners" | "variations")[];
                 };
                 header?: never;
                 path: {
@@ -15493,6 +16201,116 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/squareItems/{id}/relationships/variations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get variations relationship ("to-many").
+         * @description Variations in Square's display order.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: variations
+                     * @example variations
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Variations_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsReadMultiDataRelationship403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsReadMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update variations relationship ("to-many").
+         * @description Moves the selected variations as an ordered block before positionBefore, or to the end when omitted. Unselected variations retain their relative order. Returns the affected linkage only and the updated item revision. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareItemsVariationsRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Variations_Update_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsUpdateMultiDataRelationship403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsUpdateMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
         trace?: never;
     };
     "/squareSites/{id}/relationships/items": {
@@ -26819,10 +27637,12 @@ export interface components {
         };
         DynamicModules_Attributes: {
             /**
-             * @description Semantic icons the module should show. SPOTLIGHT_INFO identifies modules whose content was selected by TIDAL's editorial team.
-             * @example SPOTLIGHT_INFO
+             * @description Actions available in the module header. SPOTLIGHT_INFO opens information about TIDAL Spotlight. Clients choose the presentation and ignore unsupported actions, including UNKNOWN.
+             * @example [
+             *       "SPOTLIGHT_INFO"
+             *     ]
              */
-            icons: ("SPOTLIGHT_INFO" | "UNKNOWN")[];
+            headerActions: ("SPOTLIGHT_INFO" | "UNKNOWN")[];
             /**
              * @description Presentation family for items in a dynamic module preview. The API selects the semantic presentation intent while clients own platform-specific geometry. A layout does not prescribe scroll direction, row or column count, dimensions, spacing, breakpoints, or visible item count; clients preserve the server-provided item order. GRID means artwork-forward tiles or cards. LIST means detail-forward row cells, which clients may arrange in one or more columns. SHORTCUT means compact quick-access items, which clients may arrange as a responsive grid or rail. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
              * @example GRID
@@ -26924,7 +27744,7 @@ export interface components {
              * @example HOME_STATIC
              * @enum {string}
              */
-            pageType: "HOME_STATIC" | "HOME_UPLOADS" | "HOME_EDITORIAL" | "HOME_FREE" | "ARTIST" | "ALBUM" | "PLAYLIST" | "TRACK" | "VIDEO";
+            pageType: "HOME_STATIC" | "HOME_UPLOADS" | "HOME_EDITORIAL" | "HOME_FREE" | "STUDIO_HOME" | "ARTIST" | "ALBUM" | "PLAYLIST" | "TRACK" | "VIDEO";
             /**
              * Format: uuid
              * @description Id used for reporting user events
@@ -27120,6 +27940,7 @@ export interface components {
             data: components["schemas"]["FolderItemsParentRelationshipUpdateOperation_Payload_Data"];
         };
         FolderItemsParentRelationshipUpdateOperation_Payload_Data: {
+            /** @description Also accepts `me`. */
             id: string;
             /** @enum {string} */
             type: "folders";
@@ -27267,6 +28088,7 @@ export interface components {
         };
         FoldersUpdateOperation_Payload_Data: {
             attributes: components["schemas"]["FoldersUpdateOperation_Payload_Data_Attributes"];
+            /** @description Also accepts `me`. */
             id: string;
             /** @enum {string} */
             type: "folders";
@@ -27461,7 +28283,7 @@ export interface components {
         };
         /** @description The viewer has the original subject in their normal collection. Present as an empty object when known present, otherwise omitted. Includes owned and saved playlists and saved mixes across folders; excludes Save for Later. */
         InCollection: Record<string, never>;
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["ResourceGrants_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"] | components["schemas"]["SquareItemVariations_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -27486,7 +28308,7 @@ export interface components {
             data: components["schemas"]["InstallationsOfflineInventory_ItemIdentifier"][];
         };
         InstallationsOfflineInventory_ItemIdentifier: {
-            /** @description The item id. Use "me" when the type is userCollectionTracks to resolve to the authenticated user's collection. */
+            /** @description Also accepts `me` when type is `userCollectionTracks`. */
             id: string;
             /** @enum {string} */
             type: "tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks";
@@ -27561,6 +28383,18 @@ export interface components {
             data: components["schemas"]["Installations_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        /** @description The catalog item containing this variation */
+        Item: {
+            id: string;
+            /** @enum {string} */
+            type: "squareItems";
+        };
+        /** @description Variations available for independent catalog edits, in Square's display order */
+        ItemVariation: {
+            id: string;
+            /** @enum {string} */
+            type: "squareItemVariations";
         };
         /** @description List of UPCs retrieved from the DSP */
         LegacyBarcodeId: {
@@ -29396,6 +30230,120 @@ export interface components {
             /** @enum {string} */
             status: "ORIGINAL" | "REPLACED" | "NOT_REPLACED";
         };
+        ResourceGrantsCreateOperation_Payload: {
+            data: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data"];
+        };
+        ResourceGrantsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "resourceGrants";
+        };
+        ResourceGrantsCreateOperation_Payload_Data_Attributes: {
+            /** @enum {string} */
+            role: "VIEWER" | "COLLABORATOR";
+        };
+        ResourceGrantsCreateOperation_Payload_Data_Relationships: {
+            grantee: components["schemas"]["ResourceGrantsGranteeLinkage"];
+            subject: components["schemas"]["ResourceGrantsSubjectLinkage"];
+        };
+        ResourceGrantsGrantee: {
+            id: string;
+            /** @enum {string} */
+            type: "users" | "groups";
+        };
+        ResourceGrantsGranteeLinkage: {
+            data: components["schemas"]["ResourceGrantsGrantee"];
+        };
+        ResourceGrantsSubject: {
+            id: string;
+            /** @enum {string} */
+            type: "albums" | "tracks" | "folders";
+        };
+        ResourceGrantsSubjectLinkage: {
+            data: components["schemas"]["ResourceGrantsSubject"];
+        };
+        ResourceGrantsUpdateOperation_Payload: {
+            data: components["schemas"]["ResourceGrantsUpdateOperation_Payload_Data"];
+        };
+        ResourceGrantsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["ResourceGrantsUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "resourceGrants";
+        };
+        ResourceGrantsUpdateOperation_Payload_Data_Attributes: {
+            /** @enum {string} */
+            role: "VIEWER" | "COLLABORATOR";
+        };
+        ResourceGrants_Attributes: {
+            /** @enum {string} */
+            role: "VIEWER" | "COLLABORATOR" | "OWNER";
+        };
+        ResourceGrants_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrants_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `groups`, `users`. */
+        ResourceGrants_Grantee_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrants_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrants_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrants_Relationships: {
+            grantee?: components["schemas"]["ResourceGrants_Grantee_Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["ResourceGrants_Subject_Single_Relationship_Data_Document"];
+        };
+        ResourceGrants_Resource_Object: {
+            attributes?: components["schemas"]["ResourceGrants_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["ResourceGrants_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "resourceGrants";
+        };
+        ResourceGrants_Single_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrants_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrants_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["ResourceGrants_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        ResourceGrants_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        /** @description Target resource types: `albums`, `folders`, `tracks`. */
+        ResourceGrants_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["ResourceGrants_Subject_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrants_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrants_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         Resource_Identifier: {
             /**
              * @description Resource id
@@ -30035,6 +30983,316 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        SquareItemVariationPhysicalCountsCreateOperation_Payload: {
+            data: components["schemas"]["SquareItemVariationPhysicalCountsCreateOperation_Payload_Data"];
+        };
+        SquareItemVariationPhysicalCountsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "squareItemVariationPhysicalCounts";
+        };
+        SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Attributes: {
+            /**
+             * Format: date-time
+             * @description Physical count event time; the first submission must be within the preceding 24 hours and not in the future
+             */
+            occurredAt: string;
+            /** Format: int64 */
+            quantity: number;
+        };
+        SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Relationships: {
+            variations: components["schemas"]["SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Relationships_Variations"];
+        };
+        SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Relationships_Variations: {
+            data: components["schemas"]["Variation"][];
+        };
+        SquareItemVariationPhysicalCountsCreateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationPhysicalCountsCreateResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog and inventory scopes; reconnect Square */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationPhysicalCounts_Attributes: {
+            /** Format: date-time */
+            occurredAt: string;
+            /** Format: int64 */
+            quantity: number;
+            /** @description Square location where this physical count was recorded */
+            squareLocationId: string;
+        };
+        SquareItemVariationPhysicalCounts_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"];
+        };
+        SquareItemVariationPhysicalCounts_Resource_Object: {
+            attributes?: components["schemas"]["SquareItemVariationPhysicalCounts_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "squareItemVariationPhysicalCounts";
+        };
+        SquareItemVariationsCreateOperation_Payload: {
+            data: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Data"];
+            meta: components["schemas"]["SquareItemVariations_ExpectedItemRevision"];
+        };
+        SquareItemVariationsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "squareItemVariations";
+        };
+        SquareItemVariationsCreateOperation_Payload_Data_Attributes: {
+            name?: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            price: string;
+            stockTracked: boolean;
+        };
+        SquareItemVariationsCreateOperation_Payload_Data_Relationships: {
+            items: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Data_Relationships_Items"];
+        };
+        SquareItemVariationsCreateOperation_Payload_Data_Relationships_Items: {
+            data: components["schemas"]["Item"][];
+        };
+        SquareItemVariationsCreateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsCreateResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CATALOG_VERSION_MISMATCH
+                 * @enum {string}
+                 */
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsDeleteResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsDeleteResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CATALOG_VERSION_MISMATCH
+                 * @enum {string}
+                 */
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "LAST_VARIATION" | "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsReadById403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsReadById409ResponseBody: {
+            errors: {
+                /**
+                 * @example MISSING_ITEMS_SCOPE
+                 * @enum {string}
+                 */
+                code: "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsUpdateOperation_Payload: {
+            data: components["schemas"]["SquareItemVariationsUpdateOperation_Payload_Data"];
+            meta: components["schemas"]["SquareItemVariationsUpdateOperation_Payload_Meta"];
+        };
+        SquareItemVariationsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["SquareItemVariationsUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "squareItemVariations";
+        };
+        SquareItemVariationsUpdateOperation_Payload_Data_Attributes: {
+            /** @description Variation name; an empty string clears it */
+            name?: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            price?: string;
+            /** @description Stock tracking at the selected site's shipping location (merchant-main fallback) */
+            stockTracked?: boolean;
+        };
+        SquareItemVariationsUpdateOperation_Payload_Meta: {
+            /**
+             * Format: int64
+             * @description Observed variation revision; does not guard the parent item or inventory quantity
+             */
+            expectedRevision: number;
+        };
+        SquareItemVariationsUpdateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsUpdateResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CATALOG_VERSION_MISMATCH
+                 * @enum {string}
+                 */
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE" | "UNSUPPORTED_VARIATION_PRICING";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemVariations_Attributes: {
+            /** @enum {string} */
+            currency: "USD";
+            /** @description Variation name; may be empty */
+            name: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            price?: string;
+            /**
+             * @description Effective pricing mode at the selected site's shipping location (merchant-main fallback). Price is present only for FIXED when its amount is available
+             * @enum {string}
+             */
+            pricingType: "FIXED" | "VARIABLE";
+            /**
+             * Format: int64
+             * @description Square variation revision covering its catalog fields, including name, pricing and stock tracking; excludes inventory quantity and other variations
+             */
+            revision: number;
+            /**
+             * Format: int64
+             * @description Units at the selected site's shipping location (merchant-main fallback); present only when tracked and available; may be negative
+             */
+            stockQuantity?: number;
+            /** @description Whether Square tracks stock at the selected site's shipping location (merchant-main fallback) */
+            stockTracked: boolean;
+        };
+        SquareItemVariations_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareItemVariations_Resource_Object"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["SquareItemVariations_Create_Single_Resource_Data_Document_Meta"];
+        };
+        SquareItemVariations_Create_Single_Resource_Data_Document_Meta: {
+            /**
+             * Format: int64
+             * @description Parent squareItems catalog revision after the membership change; Square may advance it asynchronously
+             */
+            itemRevision: number;
+        };
+        SquareItemVariations_ExpectedItemRevision: {
+            /**
+             * Format: int64
+             * @description Observed parent squareItems.attributes.revision; guards item membership rather than variation fields or inventory
+             */
+            expectedItemRevision: number;
+        };
+        /** @description Target resource types: `users`. */
+        SquareItemVariations_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItemVariations_Relationships: {
+            owners?: components["schemas"]["SquareItemVariations_Owners_Multi_Relationship_Data_Document"];
+        };
+        SquareItemVariations_Resource_Object: {
+            attributes?: components["schemas"]["SquareItemVariations_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["SquareItemVariations_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "squareItemVariations";
+        };
+        SquareItemVariations_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareItemVariations_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItemVariations_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareItemVariations_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         SquareItemsCreateOperation_Payload: {
             data: components["schemas"]["SquareItemsCreateOperation_Payload_Data"];
         };
@@ -30046,10 +31304,10 @@ export interface components {
         SquareItemsCreateOperation_Payload_Data_Attributes: {
             /** @description Item description */
             description?: string;
+            /** @description Variations, in display order */
+            initialVariations: components["schemas"]["SquareItemsCreateOperation_Payload_Data_Attributes_Variation"][];
             /** @description Item title */
             title: string;
-            /** @description Variations, in display order */
-            variations: components["schemas"]["SquareItemsCreateOperation_Payload_Data_Attributes_Variation"][];
         };
         SquareItemsCreateOperation_Payload_Data_Attributes_Variation: {
             /** @description Variation name, such as a size or color */
@@ -30061,7 +31319,7 @@ export interface components {
             price: string;
             /**
              * Format: int64
-             * @description Units in stock at the seller's main location; applies only when stock is tracked
+             * @description Units in stock at the selected site's shipping location (merchant-main fallback); applies only when stock is tracked
              */
             stockQuantity?: number;
             /** @description Whether Square tracks stock for this variation */
@@ -30171,6 +31429,58 @@ export interface components {
                 status: string;
             }[];
         };
+        SquareItemsReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsReadMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example MISSING_ITEMS_SCOPE
+                 * @enum {string}
+                 */
+                code: "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemsUpdateMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsUpdateMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example CATALOG_VERSION_MISMATCH
+                 * @enum {string}
+                 */
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
         SquareItemsUpdateOperation_Payload: {
             data: components["schemas"]["SquareItemsUpdateOperation_Payload_Data"];
             meta: components["schemas"]["SquareItemsUpdateOperation_Payload_Meta"];
@@ -30186,26 +31496,6 @@ export interface components {
             description?: string;
             /** @description Item title */
             title?: string;
-            /** @description Complete variation list in display order; variations without a variationId are added and omitted ones deleted. Every price must be positive and is written as FIXED. Replacement requires every existing variation to have a positive fixed price at the main location; otherwise edit the variations in Square Dashboard. Updates without variations remain supported. */
-            variations?: components["schemas"]["SquareItemsUpdateOperation_Payload_Data_Attributes_Variation"][];
-        };
-        SquareItemsUpdateOperation_Payload_Data_Attributes_Variation: {
-            /** @description Variation name, such as a size or color; an empty string for none */
-            name: string;
-            /**
-             * @description Amount in the currency's major units
-             * @example 9.99
-             */
-            price: string;
-            /**
-             * Format: int64
-             * @description Units in stock at the seller's main location; applies only when stock is tracked. Omit to leave the stock unchanged.
-             */
-            stockQuantity?: number;
-            /** @description Whether Square tracks stock for this variation */
-            stockTracked: boolean;
-            /** @description The variation to update; omit to add a variation */
-            variationId?: string;
         };
         SquareItemsUpdateOperation_Payload_Meta: {
             /**
@@ -30233,12 +31523,22 @@ export interface components {
                  * @example CATALOG_VERSION_MISMATCH
                  * @enum {string}
                  */
-                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE" | "UNSUPPORTED_VARIATION_PRICING";
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
                 /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
                 detail?: string;
                 /** @example 409 */
                 status: string;
             }[];
+        };
+        SquareItemsVariationsRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["ItemVariation"][];
+            meta: components["schemas"]["SquareItemsVariationsRelationshipUpdateOperation_Payload_Meta"];
+        };
+        SquareItemsVariationsRelationshipUpdateOperation_Payload_Meta: {
+            /** Format: int64 */
+            expectedRevision: number;
+            /** @description Variation before which the selected block is placed; omission appends */
+            positionBefore?: string;
         };
         SquareItems_Attributes: {
             /**
@@ -30267,8 +31567,6 @@ export interface components {
             revision: number;
             /** @description Item title; empty for an untitled item created in Square */
             title: string;
-            /** @description Variations, in Square's order */
-            variations: components["schemas"]["SquareItems_Variation"][];
         };
         SquareItems_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["SquareItems_Resource_Object"];
@@ -30287,6 +31585,7 @@ export interface components {
         };
         SquareItems_Relationships: {
             owners?: components["schemas"]["SquareItems_Owners_Multi_Relationship_Data_Document"];
+            variations?: components["schemas"]["SquareItems_Variations_Multi_Relationship_Data_Document"];
         };
         SquareItems_Resource_Object: {
             attributes?: components["schemas"]["SquareItems_Attributes"];
@@ -30311,27 +31610,25 @@ export interface components {
             data: components["schemas"]["SquareItems_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        SquareItems_Variation: {
-            /** @description Variation name, such as a size or color; may be empty */
-            name: string;
-            /**
-             * @description Amount in the currency's major units
-             * @example 9.99
-             */
-            price?: string;
-            /**
-             * @description How the variation is priced; price is present only when FIXED
-             * @enum {string}
-             */
-            pricingType: "FIXED" | "VARIABLE";
-            /**
-             * Format: int64
-             * @description Units in stock at the seller's main location; present only when stock is tracked, and negative when Square has sold more than it counted
-             */
-            stockQuantity?: number;
-            /** @description Whether Square tracks stock for this variation */
-            stockTracked?: boolean;
-            variationId: string;
+        /** @description Target resource types: `squareItemVariations`. */
+        SquareItems_Variations_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItems_Variations_Update_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["SquareItems_Variations_Update_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["SquareItems_Variations_Update_Multi_Relationship_Data_Document_Meta"];
+        };
+        SquareItems_Variations_Update_Multi_Relationship_Data_Document_Meta: {
+            /** Format: int64 */
+            revision: number;
+        };
+        SquareItems_Variations_Update_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "squareItemVariations";
         };
         SquareSitesAddMultiDataRelationship403ResponseBody: {
             errors: {
@@ -32778,6 +34075,7 @@ export interface components {
         };
         UserFeedsUpdateOperation_Payload_Data: {
             attributes: components["schemas"]["UserFeedsUpdateOperation_Payload_Data_Attributes"];
+            /** @description Also accepts `me`. */
             id: string;
             /** @enum {string} */
             type: "userFeeds";
@@ -32929,6 +34227,7 @@ export interface components {
         };
         UserPlaybackStatesUpdateOperation_Payload_Data: {
             attributes: components["schemas"]["UserPlaybackStatesUpdateOperation_Payload_Data_Attributes"];
+            /** @description Also accepts `me`. */
             id: string;
             /** @enum {string} */
             type: "userPlaybackStates";
@@ -33405,6 +34704,12 @@ export interface components {
             data: components["schemas"]["Users_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        /** @description The variation whose physical stock was counted */
+        Variation: {
+            id: string;
+            /** @enum {string} */
+            type: "squareItemVariations";
         };
         VideoManifestsReadById403ResponseBody: {
             errors: {
@@ -33958,6 +35263,96 @@ export interface components {
             };
         };
         /** @description Latest terms and conditions must be accepted */
+        SquareItemVariationPhysicalCountsCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationPhysicalCountsCreateResource403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog and inventory scopes; reconnect Square; Square inventory cannot accept this physical count in its current state; Request already in progress for this idempotency key */
+        SquareItemVariationPhysicalCountsCreateResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationPhysicalCountsCreateResource409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemVariationsCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsCreateResource403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square item changed; reload it before changing its variations; Another request is changing the Square catalog; Request already in progress for this idempotency key */
+        SquareItemVariationsCreateResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsCreateResource409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemVariationsDeleteResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsDeleteResource403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square item changed; reload it before changing its variations; An item must retain at least one variation; Another request is changing the Square catalog; Request already in progress for this idempotency key */
+        SquareItemVariationsDeleteResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsDeleteResource409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemVariationsReadById403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsReadById403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+        SquareItemVariationsReadById409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsReadById409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemVariationsUpdateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsUpdateResource403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square variation changed; reload it before editing; This variation's pricing cannot be edited here; edit it in Square Dashboard; Another request is changing the Square catalog; Request already in progress for this idempotency key */
+        SquareItemVariationsUpdateResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsUpdateResource409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
         SquareItemsCreateResource403Response: {
             headers: {
                 [name: string]: unknown;
@@ -34030,6 +35425,42 @@ export interface components {
             };
         };
         /** @description Latest terms and conditions must be accepted */
+        SquareItemsReadMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsReadMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+        SquareItemsReadMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsReadMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemsUpdateMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsUpdateMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square catalog item changed; reload it before editing; Another request is changing the Square catalog; Request already in progress for this idempotency key */
+        SquareItemsUpdateMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsUpdateMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
         SquareItemsUpdateResource403Response: {
             headers: {
                 [name: string]: unknown;
@@ -34038,7 +35469,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["SquareItemsUpdateResource403ResponseBody"];
             };
         };
-        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Variation editing requires positive fixed prices for every existing variation; edit this item's variations in Square Dashboard; Square catalog item changed; reload it before editing; Request already in progress for this idempotency key */
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Square catalog item changed; reload it before editing; Request already in progress for this idempotency key */
         SquareItemsUpdateResource409Response: {
             headers: {
                 [name: string]: unknown;
