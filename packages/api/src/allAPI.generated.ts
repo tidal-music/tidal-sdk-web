@@ -7385,7 +7385,7 @@ export interface paths {
         };
         /**
          * Get multiple folderItems.
-         * @description Lists items in a folder, newest placement first. Select a folder with parent.id, or select your root with parent.isRoot=true and parent.owners.id=me. These forms cannot be combined; no other parent-filter combinations are supported. To search every folder in your tree instead, use query with parent.owners.id=me alone.
+         * @description Lists items in a folder, newest placement first. Select a folder with parent.id, or select your root with parent.isRoot=true and parent.owners.id=me. These forms cannot be combined; no other parent-filter combinations are supported. To search every folder in your tree instead, use query, subject.albums:published or both with parent.owners.id=me alone.
          */
         get: {
             parameters: {
@@ -7394,10 +7394,12 @@ export interface paths {
                     "filter[parent.id]"?: string;
                     /** @description Filter by parent.isRoot */
                     "filter[parent.isRoot]"?: string;
-                    /** @description Owner of the folder an item is in; must be the authenticated user. With parent.isRoot=true it selects your root, and with query your whole tree. Also accepts `me`. */
+                    /** @description Owner of the folder an item is in; must be the authenticated user. With parent.isRoot=true it selects your root, and with query or subject.albums:published your whole tree. Also accepts `me`. */
                     "filter[parent.owners.id]"?: string;
                     /** @description Searches every folder in your tree, selected with parent.owners.id=me, and lists the matching items in one flat list. An item matches when each word given starts a word in its folder's name, its album's title or the title of one of the album's tracks, ignoring case. An item shared with you matches by its subject, and only while you can open it. (e.g. `demo`) */
                     "filter[query]"?: string;
+                    /** @description Searches every folder in your tree, selected with parent.owners.id=me, for albums that are (true) or are not (false) published, and lists them in one flat list. Other items never match. Combines with query. (e.g. `true`) */
+                    "filter[subject.albums:published]"?: string;
                     /** @description In your folders, `=me` selects owned placements and `[ne]=me` selects shared placements. In someone else's folder, `=me` returns no items and `[ne]=me` returns all items. Accepts only `me` or your own user ID. */
                     "filter[subject.owners.id]"?: string;
                     /** @description In your folders, `=me` selects owned placements and `[ne]=me` selects shared placements. In someone else's folder, `=me` returns no items and `[ne]=me` returns all items. Accepts only `me` or your own user ID. */
@@ -25406,6 +25408,11 @@ export interface components {
              * @example 0.56
              */
             popularity: number;
+            /**
+             * @description Whether the album is published and available to everyone. Present only for uploaded albums.
+             * @example true
+             */
+            published?: boolean;
             /**
              * Format: date
              * @description Release date (ISO-8601)
