@@ -5,7 +5,7 @@ allowBuilds:
   esbuild: true
   unrs-resolver: true
 overrides:
-  "@75lb/deep-merge": 1.1.4
+  "@75lb/deep-merge": 1.1.5
   "ajv@>=8": 8.20.0
   "basic-ftp": 6.2.3
   "diff@>=5 <6": 9.0.0
@@ -14,11 +14,11 @@ overrides:
   "js-yaml@>=4": 4.3.2
   "koa": 3.2.1
   "lodash": 4.18.1
-  "markdown-it@>=14": 15.0.2
+  "markdown-it@>=14": 15.0.3
   "micromatch": 4.0.8
   "minimatch@<4": 3.1.5
   "minimatch@>=5": 10.2.6
-  "qs@>=6.7": 6.16.0
-  "rollup@>=4": 4.64.6
+  "qs@>=6.7": 6.16.1
+  "rollup@>=4": 4.64.12
   "serialize-javascript": 7.1.2
   "tar-fs@>=3": 3.1.3
