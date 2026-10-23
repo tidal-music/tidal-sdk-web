@@ -15906,12 +15906,12 @@ export interface paths {
                     /** @description Word-prefix match on item titles, descriptions and abbreviations, and on variation names, SKUs and UPCs (e.g. `tee`) */
                     "filter[query]"?: string;
                     /**
-                     * @description Include related resources. Available relationships: owners, variations
-                     * @example variations
+                     * @description Include related resources. Available relationships: artworks, owners, variations
+                     * @example artworks
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("owners" | "variations")[];
+                    includeLinkage?: ("artworks" | "owners" | "variations")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                 };
@@ -16006,12 +16006,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: owners, variations
-                     * @example variations
+                     * @description Include related resources. Available relationships: artworks, owners, variations
+                     * @example artworks
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("owners" | "variations")[];
+                    includeLinkage?: ("artworks" | "owners" | "variations")[];
                 };
                 header?: never;
                 path: {
@@ -16142,6 +16142,68 @@ export interface paths {
                 503: components["responses"]["Default503Response"];
             };
         };
+        trace?: never;
+    };
+    "/squareItems/{id}/relationships/artworks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artworks relationship ("to-many").
+         * @description A photo Square has no URL for stays in the list and its artwork has no files.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: artworks
+                     * @example artworks
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Artworks_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsReadMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/squareItems/{id}/relationships/owners": {
@@ -26715,7 +26777,7 @@ export interface components {
              * @description Artwork file href
              */
             href: string;
-            meta: components["schemas"]["Artwork_File_Meta"];
+            meta?: components["schemas"]["Artwork_File_Meta"];
             /**
              * @description Media type hint for the artwork file
              * @example image/jpeg
@@ -27673,7 +27735,7 @@ export interface components {
              */
             viewAllLayout?: "GRID" | "LIST" | "UNKNOWN";
         };
-        /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `videos`. */
+        /** @description Target resource types: `albums`, `artistStreamsStatistics`, `artists`, `playlists`, `tracks`, `videos`. */
         DynamicModules_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["DynamicModules_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31547,6 +31609,12 @@ export interface components {
             /** @description Variation before which the selected block is placed; omission appends */
             positionBefore?: string;
         };
+        /** @description Target resource types: `artworks`. */
+        SquareItems_Artworks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         SquareItems_Attributes: {
             /**
              * @description Currency of every price on the item
@@ -31591,6 +31659,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         SquareItems_Relationships: {
+            artworks?: components["schemas"]["SquareItems_Artworks_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["SquareItems_Owners_Multi_Relationship_Data_Document"];
             variations?: components["schemas"]["SquareItems_Variations_Multi_Relationship_Data_Document"];
         };
@@ -32246,6 +32315,7 @@ export interface components {
             type: "tracks";
         };
         TrackSourceFiles_Attributes: {
+            downloadLink?: components["schemas"]["Link_Object"];
             /** @description MD5 hash of file to be uploaded */
             md5Hash: string;
             /**
@@ -32254,7 +32324,7 @@ export interface components {
              */
             size: number;
             status: components["schemas"]["File_Status"];
-            uploadLink: components["schemas"]["File_Upload_Link"];
+            uploadLink?: components["schemas"]["File_Upload_Link"];
         };
         TrackSourceFiles_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["TrackSourceFiles_Resource_Object"];
