@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. Never parse, construct, or infer meaning from an `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes. Monetary amounts are decimal strings; each field defines its sign and precision constraints.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nWhere multiple identifiers are accepted, comma-separated values match any complete pair.\nWhen a member path names a to-many relationship, at least one related resource must match;\nfiltering does not trim that relationship. On to-many relationship reads, an empty member\npath (`filter[]=tracks:123`) filters primary data itself.\nEach endpoint lists its supported filters and types.\n\nWhere supported, `me` aliases the authenticated user's dedicated resource ID for the referenced\nresource type. It works in paths, resource-ID filters, compact identifiers (`type:me`), resource\nPATCH primary IDs and standalone relationship mutation identifiers, with the same meaning as\nthe resolved ID. Reads using the alias are `no-store`.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<memberPath>]=value`](https://jsonapi.org/format/#fetching-filtering) filters primary data by equality. Each endpoint lists its available filters; most collections require at least one.\n- Where explicitly documented, `filter[<memberPath>][ne]=value` negates the complete equality predicate. When the member path names a to-many relationship, no related ID may match any supplied value; a known-empty relationship matches. Operators are separate from values. Supplied comparisons combine with AND. For a required filter with multiple supported comparisons, at least one must be supplied; the parameter descriptions identify these alternatives. Unsupported operators and groups return `400`.\n- [`sort=<memberPath>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<memberPath>` descending (`sort=-addedAt`). Filter and sort member paths are relative to primary data.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Keys are scoped to the client and the authenticated user. Once the original request has completed, retrying it with the same key, method, path, query and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different method, path, query or payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Revisions and concurrent editing\n\nWhere supported, `attributes.revision` identifies the resource's documented aggregate state; a separately versioned relationship collection uses document `meta.revision`. Revisions are nonnegative integers that increase when covered state changes. Compare them only within the same identity and scope, preserve the exact value, and never calculate the next revision. Related content, viewer projections and independent sources are not automatically covered. Domain fields named `version`, such as a music edition, are distinct; existing endpoints retain their documented contracts.\n\nGuarded mutations accept the observed value as top-level `meta.expectedRevision`. Each operation declares its scope and whether the precondition is required. A mismatch returns `409`; missing required input returns `400`. Refresh and reconcile after a conflict, then submit a new operation with a new idempotency key. An identical retry with the original key replays a recorded success under the idempotency contract. These revisions are not HTTP ETags.\n\nReturned revisions describe observed snapshots, not reservations for later writes. Background changes can advance them immediately after a successful response.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.199"
+    "version" : "1.10.206"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -144,7 +144,7 @@
     "description" : "An emoji reaction by a user on a piece of content.",
     "name" : "reactions"
   }, {
-    "description" : "An explicit direct grant on an access-core album, track or folder. Only the subject's owner may read and administer grants. Inherited access and share-link grants are excluded.",
+    "description" : "A stored grant on an access-core album, track or folder, including saved-share-link grants. The subject's owner and directly named user grantee may read the grant; only the owner may administer it. Grants from any source may be deleted; creation and role updates apply only to direct grants.",
     "name" : "resourceGrants"
   }, {
     "description" : "A completed acceptance of a share's offered role.",
@@ -162,7 +162,7 @@
     "description" : "Autocomplete suggestions for a search query.",
     "name" : "searchSuggestions"
   }, {
-    "description" : "An offer of a role on a TIDAL resource. Accept through savedShares to acquire the offered role.",
+    "description" : "A share of a TIDAL resource. Its access modes permit bearer access, redemption through savedShares for the offered role, or both.",
     "name" : "shares"
   }, {
     "description" : "A Square seller connection linked to a user for receiving payments.",
@@ -174,7 +174,7 @@
     "description" : "A variation in the seller's own Square catalog.",
     "name" : "squareItemVariations"
   }, {
-    "description" : "An item in the seller's own Square catalog.",
+    "description" : "An item in the seller's own Square catalog. Create an item together with its initial variations through `POST /operations` using JSON:API Atomic Operations. Standalone `POST /squareItems` is not supported.",
     "name" : "squareItems"
   }, {
     "description" : "A Square Online site belonging to the seller's Square account.",
@@ -1036,6 +1036,15 @@
           }
         }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -1215,6 +1224,15 @@
           }
         }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "requestBody" : {
           "content" : {
@@ -1568,7 +1586,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates coverArt relationship.",
+        "description" : "Replaces the uploaded cover artwork selection with one attachable artwork. Empty data clears the selection. Previously attached uploaded artwork is soft-deleted unless system-managed. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Album id",
           "example" : "251380836",
@@ -1580,6 +1598,15 @@
           }
         }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "requestBody" : {
           "content" : {
@@ -1852,7 +1879,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates items relationship.",
+        "description" : "Incrementally updates one existing track's 1-based track number to meta.positionIndex. Does not replace the album's items or add or remove tracks. Empty data is rejected. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Album id",
           "example" : "251380836",
@@ -1864,6 +1891,15 @@
           }
         }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "requestBody" : {
           "content" : {
@@ -3584,7 +3620,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates acceptedArtists relationship.",
+        "description" : "Accepts one recommended artist and processes the claim, merging profile metadata or moving claimed albums according to the recommendation. Empty data cancels the claim; it does not delete any artist. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Artist claim id",
           "example" : "f47ac10b-58cc-4372-a567-0e02b2c3d479",
@@ -5021,7 +5057,7 @@
         }
       },
       "patch" : {
-        "description" : "Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Returns an acknowledgement.",
+        "description" : "Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Previous artwork no longer selected by profileArt, bannerArt or logoArt is soft-deleted unless system-managed. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Artist id",
           "example" : "1566",
@@ -5683,7 +5719,7 @@
         }
       },
       "patch" : {
-        "description" : "Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Returns an acknowledgement.",
+        "description" : "Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Previous artwork no longer selected by profileArt, bannerArt or logoArt is soft-deleted unless system-managed. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Artist id",
           "example" : "1566",
@@ -5930,7 +5966,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates the artist's avatar artwork.",
+        "description" : "Replaces the artist's uploaded avatar selection with one owned, attachable artwork. Empty data clears the uploaded selection; legacy pictures or album fallback artwork may still appear in profileArt. Previous artwork no longer selected by profileArt, bannerArt or logoArt is soft-deleted unless system-managed. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Artist id",
           "example" : "1566",
@@ -11805,7 +11841,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates parent relationship.",
+        "description" : "Moves the item to the supplied parent folder, replacing its previous parent. To move to the top level, supply the root folder explicitly; null data is rejected. Returns the new parent linkage.",
         "parameters" : [ {
           "description" : "Folder item id",
           "example" : "e3226624-355b-48f8-aa93-db42532caa66",
@@ -11839,7 +11875,7 @@
             "description" : "Successful response"
           },
           "400" : {
-            "$ref" : "#/components/responses/FolderItemsUpdateSingleDataRelationship400Response"
+            "$ref" : "#/components/responses/FolderItemsParentUpdateSingleDataRelationship400Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -12151,6 +12187,15 @@
           }
         }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -12321,6 +12366,15 @@
           }
         }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "requestBody" : {
           "content" : {
@@ -14836,6 +14890,85 @@
         }
       }
     },
+    "/operations" : {
+      "post" : {
+        "description" : "Commits a supported group of resource creations together. Only add operations without ref or href are supported. Local linkage must reference an earlier creation. Each resource's mutation policy applies. After a timeout or server error, retry unchanged with the original Idempotency-Key. Replay is bounded by downstream receipt and idempotency retention.",
+        "parameters" : [ {
+          "description" : "Retry an unchanged request with the original key after a timeout or server error. Replay is bounded by downstream receipt and idempotency retention.",
+          "in" : "header",
+          "name" : "Idempotency-Key",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 128,
+            "minLength" : 1,
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Atomic_Operations_Request"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Atomic_Operations_Response"
+                }
+              }
+            },
+            "description" : "Committed results, in the order of the requested operations"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/AtomicOperations400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/AtomicOperations403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/AtomicOperations404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/AtomicOperations405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/AtomicOperations406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/AtomicOperations409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/AtomicOperations415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/AtomicOperations422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/AtomicOperations429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/AtomicOperations500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/AtomicOperations503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Commit atomic resource operations",
+        "tags" : [ "squareItemVariations", "squareItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/playQueues" : {
       "get" : {
         "description" : "Retrieves multiple playQueues by available filters, or without if applicable.",
@@ -15395,7 +15528,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates current relationship.",
+        "description" : "Sets the current item to the existing queue occurrence identified by data.meta.itemId, changing which entries are past and future. Null data is rejected. Optional position and updatedByInstallationId must be supplied together. Returns the current item linkage and queue revision.",
         "parameters" : [ {
           "description" : "Play queue id",
           "example" : "550e8400-e29b-41d4-a716-446655440000",
@@ -15471,7 +15604,7 @@
     },
     "/playQueues/{id}/relationships/future" : {
       "delete" : {
-        "description" : "Deletes item(s) from future relationship.",
+        "description" : "Removes the future occurrences selected by data[].meta.itemId without deleting their tracks or videos. Other queue entries are preserved. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Play queue id",
           "example" : "550e8400-e29b-41d4-a716-446655440000",
@@ -15633,7 +15766,7 @@
         }
       },
       "patch" : {
-        "description" : "Returns empty data and meta.revision as an acknowledgement.",
+        "description" : "Incrementally moves existing future occurrences selected by data[].meta.itemId, in their current queue order, before meta.positionBefore. Preserves memberships and unselected entries' metadata and relative order. Empty data is rejected. Returns empty data and meta.revision as an acknowledgement.",
         "parameters" : [ {
           "description" : "Play queue id",
           "example" : "550e8400-e29b-41d4-a716-446655440000",
@@ -15707,7 +15840,7 @@
         }
       },
       "post" : {
-        "description" : "With meta.source, startIndex selects an entry in the first page's data before unsupported types are skipped. Tracks and videos are added in page order, retaining duplicates; other types are skipped without expansion. Reaching 1000 added items or 100 pages queues the collected prefix. Invalid sources or indexes, a suffix with no playable items, repeated pages, and read failures encountered before a cap leave the queue unchanged. Returns empty data and meta.revision as an acknowledgement.",
+        "description" : "Omitting top-level meta or setting it to null defaults to REPLACE_ALL, replacing future entries. Use ADD_TO_FRONT, ADD_TO_BACK or ADD_BEFORE in meta.mode to add without replacing existing entries. ADD_BEFORE requires meta.positionBefore. REPLACE_ALL_AND_CURRENT replaces future entries; ADD_TO_FRONT_REPLACE_CURRENT prepends entries. Both select the first newly inserted entry in the active queue order as current, which may differ from request order when shuffled. With empty data and no source, replacement modes clear future entries; the current entry is unchanged when no entries are inserted. With meta.source, startIndex selects an entry in the first page's data before unsupported types are skipped. Tracks and videos are added in page order, retaining duplicates; other types are skipped without expansion. Reaching 1000 added items or 100 pages queues the collected prefix. Invalid sources or indexes, a suffix with no playable items, repeated pages, and read failures encountered before a cap leave the queue unchanged. Returns empty data and meta.revision as an acknowledgement.",
         "parameters" : [ {
           "description" : "Play queue id",
           "example" : "550e8400-e29b-41d4-a716-446655440000",
@@ -16921,7 +17054,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/PlaylistGenerationsRemoveMultiDataRelationship409Response"
+            "$ref" : "#/components/responses/PlaylistGenerationsTrackPreferencesRemoveMultiDataRelationship409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -17038,7 +17171,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates feedback for one existing track preference, leaving other entries unchanged. A missing entry returns 409. Returns the complete preference snapshot. Requires the current meta.preferenceVersion as meta.expectedPreferenceVersion; stale versions return 409.",
+        "description" : "Incrementally updates feedback for one existing track preference, leaving other entries unchanged. Empty data is rejected; a missing entry returns 409. Returns the complete preference snapshot. Requires the current meta.preferenceVersion as meta.expectedPreferenceVersion; stale versions return 409.",
         "parameters" : [ {
           "description" : "Playlist generation id",
           "example" : "10TwTjJ5EVfyMaTFh1evzyxi0cuSjcbzClSQBtDDX4CXQ7GVg",
@@ -17085,7 +17218,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/PlaylistGenerationsUpdateMultiDataRelationship409Response"
+            "$ref" : "#/components/responses/PlaylistGenerationsTrackPreferencesUpdateMultiDataRelationship409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -17160,7 +17293,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/PlaylistGenerationsAddMultiDataRelationshipWithResponse409Response"
+            "$ref" : "#/components/responses/PlaylistGenerationsTrackPreferencesAddMultiDataRelationshipWithResponse409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -17989,7 +18122,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates coverArt relationship.",
+        "description" : "Replaces the custom cover artwork selection with one attachable artwork. Empty data clears the custom selection. Previously attached uploaded artwork is soft-deleted unless system-managed. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Playlist id",
           "example" : "550e8400-e29b-41d4-a716-446655440000",
@@ -18354,7 +18487,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates items relationship.",
+        "description" : "Incrementally moves the occurrences selected by data[].meta.itemId before meta.positionBefore, or to the end when meta is omitted. Preserves unselected memberships, their metadata and relative order; no items are added or removed. Empty data is rejected. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Playlist id",
           "example" : "550e8400-e29b-41d4-a716-446655440000",
@@ -18474,7 +18607,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/PlaylistsAddMultiDataRelationshipWithResponse409Response"
+            "$ref" : "#/components/responses/PlaylistsItemsAddMultiDataRelationshipWithResponse409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -20360,7 +20493,7 @@
     },
     "/resourceGrants" : {
       "get" : {
-        "description" : "Lists the owner's explicit direct grants, selected by subject or grantee, optionally restricted by assigned role. Requires subject or grantee.",
+        "description" : "Lists stored grants from every source visible to the subject's owner or named user grantee, selected by subject or grantee, optionally restricted by assigned role. Requires subject or grantee.",
         "parameters" : [ {
           "description" : "Filter by grantee. Also accepts `users:me`.",
           "in" : "query",
@@ -20941,7 +21074,7 @@
     },
     "/savedShares" : {
       "post" : {
-        "description" : "Creates a new savedShare.",
+        "description" : "Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
@@ -23162,7 +23295,7 @@
             "$ref" : "#/components/responses/Default400Response"
           },
           "403" : {
-            "$ref" : "#/components/responses/SquareConnectionsReadSingleDataRelationship403Response"
+            "$ref" : "#/components/responses/SquareConnectionsSelectedSiteReadSingleDataRelationship403Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -23196,7 +23329,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates selectedSite relationship.",
+        "description" : "Replaces the selected Square site. Explicit null data clears the selection without deleting the site. Returns the selected site linkage, or null data when cleared.",
         "parameters" : [ {
           "description" : "Square connection id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -23233,7 +23366,7 @@
             "$ref" : "#/components/responses/Default400Response"
           },
           "403" : {
-            "$ref" : "#/components/responses/SquareConnectionsUpdateSingleDataRelationship403Response"
+            "$ref" : "#/components/responses/SquareConnectionsSelectedSiteUpdateSingleDataRelationship403Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -23245,7 +23378,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/SquareConnectionsUpdateSingleDataRelationship409Response"
+            "$ref" : "#/components/responses/SquareConnectionsSelectedSiteUpdateSingleDataRelationship409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -23322,7 +23455,7 @@
             "$ref" : "#/components/responses/Default400Response"
           },
           "403" : {
-            "$ref" : "#/components/responses/SquareConnectionsReadMultiDataRelationship403Response"
+            "$ref" : "#/components/responses/SquareConnectionsSitesReadMultiDataRelationship403Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -23965,82 +24098,6 @@
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
         }
-      },
-      "post" : {
-        "description" : "Creates a new squareItem.",
-        "parameters" : [ {
-          "description" : "Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned.",
-          "in" : "header",
-          "name" : "Idempotency-Key",
-          "required" : true,
-          "schema" : {
-            "maxLength" : 128,
-            "type" : "string",
-            "example" : "79e1f37e-3e84-4c51-b5e2-7d9e1a2b3c4d"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/vnd.api+json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/SquareItemsCreateOperation_Payload"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "201" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SquareItems_Create_Single_Resource_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "403" : {
-            "$ref" : "#/components/responses/SquareItemsCreateResource403Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "409" : {
-            "$ref" : "#/components/responses/SquareItemsCreateResource409Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "422" : {
-            "$ref" : "#/components/responses/Idempotency422Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "w_usr" ]
-        } ],
-        "summary" : "Create single squareItem.",
-        "tags" : [ "squareItems" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
-        }
       }
     },
     "/squareItems/{id}" : {
@@ -24346,7 +24403,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/SquareItemsReadMultiDataRelationship409Response"
+            "$ref" : "#/components/responses/SquareItemsArtworksReadMultiDataRelationship409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -24365,6 +24422,94 @@
           "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
         "summary" : "Get artworks relationship (\"to-many\").",
+        "tags" : [ "squareItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Appends images without moving existing photos. Duplicate artwork IDs are rejected. Uploaded TIDAL JPEG artworks, at most 15,000,000 bytes, are copied to Square and attached under new artwork IDs; their originals stay unchanged. Existing Square artworks must belong to this seller and are attached directly. Returns only the affected Square artwork linkage, in the item's display order, and the committed item revision. Copies may remain in Square if attachment fails. Retry unchanged with the original Idempotency-Key after a timeout or 5xx. Recovery is bounded by Marketplace receipts and Square's idempotency retention, and can be blocked if the item is deleted or a source becomes unavailable or ineligible. Read the item again to reconcile its current state.",
+        "parameters" : [ {
+          "description" : "Square item id",
+          "example" : "p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned.",
+          "in" : "header",
+          "name" : "Idempotency-Key",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 128,
+            "type" : "string",
+            "example" : "79e1f37e-3e84-4c51-b5e2-7d9e1a2b3c4d"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SquareItemsArtworksRelationshipUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SquareItems_Artworks_Update_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "403" : {
+            "$ref" : "#/components/responses/SquareItemsArtworksUpdateMultiDataRelationship403Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/SquareItemsArtworksUpdateMultiDataRelationship409Response"
+          },
+          "413" : {
+            "$ref" : "#/components/responses/SquareItemsArtworksUpdateMultiDataRelationship413Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update artworks relationship (\"to-many\").",
         "tags" : [ "squareItems" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -24500,7 +24645,7 @@
             "$ref" : "#/components/responses/Default400Response"
           },
           "403" : {
-            "$ref" : "#/components/responses/SquareItemsReadMultiDataRelationship403Response"
+            "$ref" : "#/components/responses/SquareItemsVariationsReadMultiDataRelationship403Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -24512,7 +24657,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/SquareItemsReadMultiDataRelationship409Response"
+            "$ref" : "#/components/responses/SquareItemsVariationsReadMultiDataRelationship409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -24537,7 +24682,7 @@
         }
       },
       "patch" : {
-        "description" : "Moves the selected variations as an ordered block before positionBefore, or to the end when omitted. Unselected variations retain their relative order. Returns the affected linkage only and the updated item revision. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.",
+        "description" : "Incrementally moves the selected variations as an ordered block before positionBefore, or to the end when omitted. Memberships are preserved; unselected variations retain their metadata and relative order. Empty data is rejected. Returns the affected linkage only and the updated item revision. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.",
         "parameters" : [ {
           "description" : "Square item id",
           "example" : "p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay",
@@ -24582,7 +24727,7 @@
             "$ref" : "#/components/responses/Default400Response"
           },
           "403" : {
-            "$ref" : "#/components/responses/SquareItemsUpdateMultiDataRelationship403Response"
+            "$ref" : "#/components/responses/SquareItemsVariationsUpdateMultiDataRelationship403Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -24594,7 +24739,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/SquareItemsUpdateMultiDataRelationship409Response"
+            "$ref" : "#/components/responses/SquareItemsVariationsUpdateMultiDataRelationship409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -24661,7 +24806,7 @@
             "$ref" : "#/components/responses/Default400Response"
           },
           "403" : {
-            "$ref" : "#/components/responses/SquareSitesRemoveMultiDataRelationship403Response"
+            "$ref" : "#/components/responses/SquareSitesItemsRemoveMultiDataRelationship403Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -24673,7 +24818,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/SquareSitesRemoveMultiDataRelationship409Response"
+            "$ref" : "#/components/responses/SquareSitesItemsRemoveMultiDataRelationship409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -24748,7 +24893,7 @@
             "$ref" : "#/components/responses/Default400Response"
           },
           "403" : {
-            "$ref" : "#/components/responses/SquareSitesReadMultiDataRelationship403Response"
+            "$ref" : "#/components/responses/SquareSitesItemsReadMultiDataRelationship403Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -24760,7 +24905,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/SquareSitesReadMultiDataRelationship409Response"
+            "$ref" : "#/components/responses/SquareSitesItemsReadMultiDataRelationship409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -24822,7 +24967,7 @@
             "$ref" : "#/components/responses/Default400Response"
           },
           "403" : {
-            "$ref" : "#/components/responses/SquareSitesAddMultiDataRelationship403Response"
+            "$ref" : "#/components/responses/SquareSitesItemsAddMultiDataRelationship403Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -24834,7 +24979,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/SquareSitesAddMultiDataRelationship409Response"
+            "$ref" : "#/components/responses/SquareSitesItemsAddMultiDataRelationship409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -26795,6 +26940,15 @@
           }
         }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -26974,6 +27128,15 @@
           }
         }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "requestBody" : {
           "content" : {
@@ -27146,7 +27309,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates albums relationship.",
+        "description" : "Moves the uploaded track to the supplied album, replacing its previous album association. Exactly one album is required; empty data cannot clear it. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Track id",
           "example" : "75413016",
@@ -27158,6 +27321,15 @@
           }
         }, {
           "$ref" : "#/components/parameters/IdempotencyKey"
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "requestBody" : {
           "content" : {
@@ -29315,7 +29487,7 @@
             "$ref" : "#/components/responses/Default400Response"
           },
           "403" : {
-            "$ref" : "#/components/responses/UserCollectionAlbumsReadMultiDataRelationship403Response"
+            "$ref" : "#/components/responses/UserCollectionAlbumsItemsReadMultiDataRelationship403Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -29395,7 +29567,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/UserCollectionAlbumsAddMultiDataRelationshipWithResponse409Response"
+            "$ref" : "#/components/responses/UserCollectionAlbumsItemsAddMultiDataRelationshipWithResponse409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -29776,7 +29948,7 @@
             "$ref" : "#/components/responses/Default400Response"
           },
           "403" : {
-            "$ref" : "#/components/responses/UserCollectionArtistsReadMultiDataRelationship403Response"
+            "$ref" : "#/components/responses/UserCollectionArtistsItemsReadMultiDataRelationship403Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -29856,7 +30028,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/UserCollectionArtistsAddMultiDataRelationshipWithResponse409Response"
+            "$ref" : "#/components/responses/UserCollectionArtistsItemsAddMultiDataRelationshipWithResponse409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -31050,7 +31222,7 @@
             "$ref" : "#/components/responses/Default400Response"
           },
           "403" : {
-            "$ref" : "#/components/responses/UserCollectionPlaylistsReadMultiDataRelationship403Response"
+            "$ref" : "#/components/responses/UserCollectionPlaylistsItemsReadMultiDataRelationship403Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -31130,7 +31302,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409Response"
+            "$ref" : "#/components/responses/UserCollectionPlaylistsItemsAddMultiDataRelationshipWithResponse409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -31544,7 +31716,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409Response"
+            "$ref" : "#/components/responses/UserCollectionSaveForLatersItemsAddMultiDataRelationshipWithResponse409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -31925,7 +32097,7 @@
             "$ref" : "#/components/responses/Default400Response"
           },
           "403" : {
-            "$ref" : "#/components/responses/UserCollectionTracksReadMultiDataRelationship403Response"
+            "$ref" : "#/components/responses/UserCollectionTracksItemsReadMultiDataRelationship403Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -32005,7 +32177,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/UserCollectionTracksAddMultiDataRelationshipWithResponse409Response"
+            "$ref" : "#/components/responses/UserCollectionTracksItemsAddMultiDataRelationshipWithResponse409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -32386,7 +32558,7 @@
             "$ref" : "#/components/responses/Default400Response"
           },
           "403" : {
-            "$ref" : "#/components/responses/UserCollectionVideosReadMultiDataRelationship403Response"
+            "$ref" : "#/components/responses/UserCollectionVideosItemsReadMultiDataRelationship403Response"
           },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
@@ -32466,7 +32638,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/UserCollectionVideosAddMultiDataRelationshipWithResponse409Response"
+            "$ref" : "#/components/responses/UserCollectionVideosItemsAddMultiDataRelationshipWithResponse409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -34146,7 +34318,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates activePlayer relationship.",
+        "description" : "Replaces the active-player selection with the supplied owned installation. Explicit null data releases the player without deleting the installation. Returns null linkage when released or when the selected installation has no live attachment. An unavailable selection is retained and becomes visible again when its attachment is refreshed.",
         "parameters" : [ {
           "description" : "User playback session id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -34222,7 +34394,7 @@
     },
     "/userPlaybackStates/{id}/relationships/availablePlayers" : {
       "delete" : {
-        "description" : "Deletes item(s) from availablePlayers relationship.",
+        "description" : "Detaches one installation without deleting it. Also releases the active player when it is that installation. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "User playback session id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -34384,7 +34556,7 @@
         }
       },
       "post" : {
-        "description" : "Adds item(s) to availablePlayers relationship.",
+        "description" : "Attaches or refreshes one owned installation as an available player, preserving other attachments. Returns all currently available player linkage.",
         "parameters" : [ {
           "description" : "User playback session id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -34610,7 +34782,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates playQueue relationship.",
+        "description" : "Replaces the selected play queue. Explicit null data clears the selection without deleting the queue. Returns the selected queue linkage, or null data when cleared.",
         "parameters" : [ {
           "description" : "User playback session id. Use `me` for the authenticated user's resource",
           "example" : "me",
@@ -35000,7 +35172,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response"
+            "$ref" : "#/components/responses/UserRecommendationBlocksArtistsAddMultiDataRelationshipWithResponse409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -35318,7 +35490,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response"
+            "$ref" : "#/components/responses/UserRecommendationBlocksTracksAddMultiDataRelationshipWithResponse409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -35556,7 +35728,7 @@
             "$ref" : "#/components/responses/Default406Response"
           },
           "409" : {
-            "$ref" : "#/components/responses/UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response"
+            "$ref" : "#/components/responses/UserRecommendationBlocksVideosAddMultiDataRelationshipWithResponse409Response"
           },
           "415" : {
             "$ref" : "#/components/responses/Default415Response"
@@ -37543,6 +37715,116 @@
       }
     },
     "responses" : {
+      "AtomicOperations400Response" : {
+        "content" : {
+          "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/AtomicOperations400ResponseBody"
+            }
+          }
+        },
+        "description" : "Invalid request"
+      },
+      "AtomicOperations403Response" : {
+        "content" : {
+          "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/AtomicOperations403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "AtomicOperations404Response" : {
+        "content" : {
+          "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/AtomicOperations404ResponseBody"
+            }
+          }
+        },
+        "description" : "Resource not found"
+      },
+      "AtomicOperations405Response" : {
+        "content" : {
+          "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/AtomicOperations405ResponseBody"
+            }
+          }
+        },
+        "description" : "HTTP method not allowed"
+      },
+      "AtomicOperations406Response" : {
+        "content" : {
+          "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/AtomicOperations406ResponseBody"
+            }
+          }
+        },
+        "description" : "No acceptable response media type"
+      },
+      "AtomicOperations409Response" : {
+        "content" : {
+          "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/AtomicOperations409ResponseBody"
+            }
+          }
+        },
+        "description" : "Request already in progress for this idempotency key; Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog"
+      },
+      "AtomicOperations415Response" : {
+        "content" : {
+          "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/AtomicOperations415ResponseBody"
+            }
+          }
+        },
+        "description" : "Unsupported request media type or encoding"
+      },
+      "AtomicOperations422Response" : {
+        "content" : {
+          "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/AtomicOperations422ResponseBody"
+            }
+          }
+        },
+        "description" : "Idempotency key reused for a different request"
+      },
+      "AtomicOperations429Response" : {
+        "content" : {
+          "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/AtomicOperations429ResponseBody"
+            }
+          }
+        },
+        "description" : "Rate limit exceeded"
+      },
+      "AtomicOperations500Response" : {
+        "content" : {
+          "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/AtomicOperations500ResponseBody"
+            }
+          }
+        },
+        "description" : "Internal server error"
+      },
+      "AtomicOperations503Response" : {
+        "content" : {
+          "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/AtomicOperations503ResponseBody"
+            }
+          }
+        },
+        "description" : "Service temporarily unavailable"
+      },
       "Default400Response" : {
         "content" : {
           "application/vnd.api+json" : {
@@ -37633,11 +37915,11 @@
         },
         "description" : "A folder cannot be placed inside itself or one of its descendants"
       },
-      "FolderItemsUpdateSingleDataRelationship400Response" : {
+      "FolderItemsParentUpdateSingleDataRelationship400Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/FolderItemsUpdateSingleDataRelationship400ResponseBody"
+              "$ref" : "#/components/schemas/FolderItemsParentUpdateSingleDataRelationship400ResponseBody"
             }
           }
         },
@@ -37693,16 +37975,6 @@
         },
         "description" : "Active playlist schedule limit reached"
       },
-      "PlaylistGenerationsAddMultiDataRelationshipWithResponse409Response" : {
-        "content" : {
-          "application/vnd.api+json" : {
-            "schema" : {
-              "$ref" : "#/components/schemas/PlaylistGenerationsAddMultiDataRelationshipWithResponse409ResponseBody"
-            }
-          }
-        },
-        "description" : "The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key"
-      },
       "PlaylistGenerationsCreateResource409Response" : {
         "content" : {
           "application/vnd.api+json" : {
@@ -37713,31 +37985,41 @@
         },
         "description" : "The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key"
       },
-      "PlaylistGenerationsRemoveMultiDataRelationship409Response" : {
+      "PlaylistGenerationsTrackPreferencesAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/PlaylistGenerationsRemoveMultiDataRelationship409ResponseBody"
+              "$ref" : "#/components/schemas/PlaylistGenerationsTrackPreferencesAddMultiDataRelationshipWithResponse409ResponseBody"
             }
           }
         },
         "description" : "The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key"
       },
-      "PlaylistGenerationsUpdateMultiDataRelationship409Response" : {
+      "PlaylistGenerationsTrackPreferencesRemoveMultiDataRelationship409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/PlaylistGenerationsUpdateMultiDataRelationship409ResponseBody"
+              "$ref" : "#/components/schemas/PlaylistGenerationsTrackPreferencesRemoveMultiDataRelationship409ResponseBody"
             }
           }
         },
         "description" : "The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key"
       },
-      "PlaylistsAddMultiDataRelationshipWithResponse409Response" : {
+      "PlaylistGenerationsTrackPreferencesUpdateMultiDataRelationship409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/PlaylistsAddMultiDataRelationshipWithResponse409ResponseBody"
+              "$ref" : "#/components/schemas/PlaylistGenerationsTrackPreferencesUpdateMultiDataRelationship409ResponseBody"
+            }
+          }
+        },
+        "description" : "The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key"
+      },
+      "PlaylistsItemsAddMultiDataRelationshipWithResponse409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/PlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody"
             }
           }
         },
@@ -37753,45 +38035,45 @@
         },
         "description" : "Latest terms and conditions must be accepted"
       },
-      "SquareConnectionsReadMultiDataRelationship403Response" : {
+      "SquareConnectionsSelectedSiteReadSingleDataRelationship403Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/SquareConnectionsReadMultiDataRelationship403ResponseBody"
+              "$ref" : "#/components/schemas/SquareConnectionsSelectedSiteReadSingleDataRelationship403ResponseBody"
             }
           }
         },
         "description" : "Latest terms and conditions must be accepted"
       },
-      "SquareConnectionsReadSingleDataRelationship403Response" : {
+      "SquareConnectionsSelectedSiteUpdateSingleDataRelationship403Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/SquareConnectionsReadSingleDataRelationship403ResponseBody"
+              "$ref" : "#/components/schemas/SquareConnectionsSelectedSiteUpdateSingleDataRelationship403ResponseBody"
             }
           }
         },
         "description" : "Latest terms and conditions must be accepted"
       },
-      "SquareConnectionsUpdateSingleDataRelationship403Response" : {
+      "SquareConnectionsSelectedSiteUpdateSingleDataRelationship409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/SquareConnectionsUpdateSingleDataRelationship403ResponseBody"
-            }
-          }
-        },
-        "description" : "Latest terms and conditions must be accepted"
-      },
-      "SquareConnectionsUpdateSingleDataRelationship409Response" : {
-        "content" : {
-          "application/vnd.api+json" : {
-            "schema" : {
-              "$ref" : "#/components/schemas/SquareConnectionsUpdateSingleDataRelationship409ResponseBody"
+              "$ref" : "#/components/schemas/SquareConnectionsSelectedSiteUpdateSingleDataRelationship409ResponseBody"
             }
           }
         },
         "description" : "Square credential lacks required site scopes; run Square onboarding again; Request already in progress for this idempotency key"
+      },
+      "SquareConnectionsSitesReadMultiDataRelationship403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareConnectionsSitesReadMultiDataRelationship403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
       },
       "SquareItemVariationPhysicalCountsCreateResource403Response" : {
         "content" : {
@@ -37893,25 +38175,45 @@
         },
         "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square variation changed; reload it before editing; This variation's pricing cannot be edited here; edit it in Square Dashboard; Another request is changing the Square catalog; Request already in progress for this idempotency key"
       },
-      "SquareItemsCreateResource403Response" : {
+      "SquareItemsArtworksReadMultiDataRelationship409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/SquareItemsCreateResource403ResponseBody"
+              "$ref" : "#/components/schemas/SquareItemsArtworksReadMultiDataRelationship409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+      },
+      "SquareItemsArtworksUpdateMultiDataRelationship403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsArtworksUpdateMultiDataRelationship403ResponseBody"
             }
           }
         },
         "description" : "Latest terms and conditions must be accepted"
       },
-      "SquareItemsCreateResource409Response" : {
+      "SquareItemsArtworksUpdateMultiDataRelationship409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/SquareItemsCreateResource409ResponseBody"
+              "$ref" : "#/components/schemas/SquareItemsArtworksUpdateMultiDataRelationship409ResponseBody"
             }
           }
         },
-        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Request already in progress for this idempotency key"
+        "description" : "Square catalog item changed; reload it before editing; A Square item can have at most 20 images; Another request is changing the Square catalog; Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Request already in progress for this idempotency key"
+      },
+      "SquareItemsArtworksUpdateMultiDataRelationship413Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsArtworksUpdateMultiDataRelationship413ResponseBody"
+            }
+          }
+        },
+        "description" : "Square images must be at most 15 MB (15,000,000 bytes)"
       },
       "SquareItemsDeleteResource403Response" : {
         "content" : {
@@ -37973,46 +38275,6 @@
         },
         "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
       },
-      "SquareItemsReadMultiDataRelationship403Response" : {
-        "content" : {
-          "application/vnd.api+json" : {
-            "schema" : {
-              "$ref" : "#/components/schemas/SquareItemsReadMultiDataRelationship403ResponseBody"
-            }
-          }
-        },
-        "description" : "Latest terms and conditions must be accepted"
-      },
-      "SquareItemsReadMultiDataRelationship409Response" : {
-        "content" : {
-          "application/vnd.api+json" : {
-            "schema" : {
-              "$ref" : "#/components/schemas/SquareItemsReadMultiDataRelationship409ResponseBody"
-            }
-          }
-        },
-        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
-      },
-      "SquareItemsUpdateMultiDataRelationship403Response" : {
-        "content" : {
-          "application/vnd.api+json" : {
-            "schema" : {
-              "$ref" : "#/components/schemas/SquareItemsUpdateMultiDataRelationship403ResponseBody"
-            }
-          }
-        },
-        "description" : "Latest terms and conditions must be accepted"
-      },
-      "SquareItemsUpdateMultiDataRelationship409Response" : {
-        "content" : {
-          "application/vnd.api+json" : {
-            "schema" : {
-              "$ref" : "#/components/schemas/SquareItemsUpdateMultiDataRelationship409ResponseBody"
-            }
-          }
-        },
-        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square catalog item changed; reload it before editing; Another request is changing the Square catalog; Request already in progress for this idempotency key"
-      },
       "SquareItemsUpdateResource403Response" : {
         "content" : {
           "application/vnd.api+json" : {
@@ -38033,61 +38295,101 @@
         },
         "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Square catalog item changed; reload it before editing; Request already in progress for this idempotency key"
       },
-      "SquareSitesAddMultiDataRelationship403Response" : {
+      "SquareItemsVariationsReadMultiDataRelationship403Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/SquareSitesAddMultiDataRelationship403ResponseBody"
+              "$ref" : "#/components/schemas/SquareItemsVariationsReadMultiDataRelationship403ResponseBody"
             }
           }
         },
         "description" : "Latest terms and conditions must be accepted"
       },
-      "SquareSitesAddMultiDataRelationship409Response" : {
+      "SquareItemsVariationsReadMultiDataRelationship409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/SquareSitesAddMultiDataRelationship409ResponseBody"
+              "$ref" : "#/components/schemas/SquareItemsVariationsReadMultiDataRelationship409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+      },
+      "SquareItemsVariationsUpdateMultiDataRelationship403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsVariationsUpdateMultiDataRelationship403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareItemsVariationsUpdateMultiDataRelationship409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareItemsVariationsUpdateMultiDataRelationship409ResponseBody"
+            }
+          }
+        },
+        "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square catalog item changed; reload it before editing; Another request is changing the Square catalog; Request already in progress for this idempotency key"
+      },
+      "SquareSitesItemsAddMultiDataRelationship403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareSitesItemsAddMultiDataRelationship403ResponseBody"
+            }
+          }
+        },
+        "description" : "Latest terms and conditions must be accepted"
+      },
+      "SquareSitesItemsAddMultiDataRelationship409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SquareSitesItemsAddMultiDataRelationship409ResponseBody"
             }
           }
         },
         "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; The site isn't the seller's selected Square Online site; select it to manage its items; Request already in progress for this idempotency key"
       },
-      "SquareSitesReadMultiDataRelationship403Response" : {
+      "SquareSitesItemsReadMultiDataRelationship403Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/SquareSitesReadMultiDataRelationship403ResponseBody"
+              "$ref" : "#/components/schemas/SquareSitesItemsReadMultiDataRelationship403ResponseBody"
             }
           }
         },
         "description" : "Latest terms and conditions must be accepted"
       },
-      "SquareSitesReadMultiDataRelationship409Response" : {
+      "SquareSitesItemsReadMultiDataRelationship409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/SquareSitesReadMultiDataRelationship409ResponseBody"
+              "$ref" : "#/components/schemas/SquareSitesItemsReadMultiDataRelationship409ResponseBody"
             }
           }
         },
         "description" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect; The site isn't the seller's selected Square Online site; select it to manage its items"
       },
-      "SquareSitesRemoveMultiDataRelationship403Response" : {
+      "SquareSitesItemsRemoveMultiDataRelationship403Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/SquareSitesRemoveMultiDataRelationship403ResponseBody"
+              "$ref" : "#/components/schemas/SquareSitesItemsRemoveMultiDataRelationship403ResponseBody"
             }
           }
         },
         "description" : "Latest terms and conditions must be accepted"
       },
-      "SquareSitesRemoveMultiDataRelationship409Response" : {
+      "SquareSitesItemsRemoveMultiDataRelationship409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/SquareSitesRemoveMultiDataRelationship409ResponseBody"
+              "$ref" : "#/components/schemas/SquareSitesItemsRemoveMultiDataRelationship409ResponseBody"
             }
           }
         },
@@ -38133,41 +38435,41 @@
         },
         "description" : "Content does not exist or is no longer available"
       },
-      "UserCollectionAlbumsAddMultiDataRelationshipWithResponse409Response" : {
+      "UserCollectionAlbumsItemsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/UserCollectionAlbumsAddMultiDataRelationshipWithResponse409ResponseBody"
+              "$ref" : "#/components/schemas/UserCollectionAlbumsItemsAddMultiDataRelationshipWithResponse409ResponseBody"
             }
           }
         },
         "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
-      "UserCollectionAlbumsReadMultiDataRelationship403Response" : {
+      "UserCollectionAlbumsItemsReadMultiDataRelationship403Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/UserCollectionAlbumsReadMultiDataRelationship403ResponseBody"
+              "$ref" : "#/components/schemas/UserCollectionAlbumsItemsReadMultiDataRelationship403ResponseBody"
             }
           }
         },
         "description" : "filter[query] requires INTERNAL access tier"
       },
-      "UserCollectionArtistsAddMultiDataRelationshipWithResponse409Response" : {
+      "UserCollectionArtistsItemsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/UserCollectionArtistsAddMultiDataRelationshipWithResponse409ResponseBody"
+              "$ref" : "#/components/schemas/UserCollectionArtistsItemsAddMultiDataRelationshipWithResponse409ResponseBody"
             }
           }
         },
         "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
-      "UserCollectionArtistsReadMultiDataRelationship403Response" : {
+      "UserCollectionArtistsItemsReadMultiDataRelationship403Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/UserCollectionArtistsReadMultiDataRelationship403ResponseBody"
+              "$ref" : "#/components/schemas/UserCollectionArtistsItemsReadMultiDataRelationship403ResponseBody"
             }
           }
         },
@@ -38183,81 +38485,101 @@
         },
         "description" : "Folder must be empty and owned by you"
       },
-      "UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409Response" : {
+      "UserCollectionPlaylistsItemsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409ResponseBody"
+              "$ref" : "#/components/schemas/UserCollectionPlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody"
             }
           }
         },
         "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
-      "UserCollectionPlaylistsReadMultiDataRelationship403Response" : {
+      "UserCollectionPlaylistsItemsReadMultiDataRelationship403Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/UserCollectionPlaylistsReadMultiDataRelationship403ResponseBody"
+              "$ref" : "#/components/schemas/UserCollectionPlaylistsItemsReadMultiDataRelationship403ResponseBody"
             }
           }
         },
         "description" : "filter[query] requires INTERNAL access tier"
       },
-      "UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409Response" : {
+      "UserCollectionSaveForLatersItemsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409ResponseBody"
+              "$ref" : "#/components/schemas/UserCollectionSaveForLatersItemsAddMultiDataRelationshipWithResponse409ResponseBody"
             }
           }
         },
         "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
-      "UserCollectionTracksAddMultiDataRelationshipWithResponse409Response" : {
+      "UserCollectionTracksItemsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/UserCollectionTracksAddMultiDataRelationshipWithResponse409ResponseBody"
+              "$ref" : "#/components/schemas/UserCollectionTracksItemsAddMultiDataRelationshipWithResponse409ResponseBody"
             }
           }
         },
         "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
-      "UserCollectionTracksReadMultiDataRelationship403Response" : {
+      "UserCollectionTracksItemsReadMultiDataRelationship403Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/UserCollectionTracksReadMultiDataRelationship403ResponseBody"
+              "$ref" : "#/components/schemas/UserCollectionTracksItemsReadMultiDataRelationship403ResponseBody"
             }
           }
         },
         "description" : "filter[query] requires INTERNAL access tier"
       },
-      "UserCollectionVideosAddMultiDataRelationshipWithResponse409Response" : {
+      "UserCollectionVideosItemsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/UserCollectionVideosAddMultiDataRelationshipWithResponse409ResponseBody"
+              "$ref" : "#/components/schemas/UserCollectionVideosItemsAddMultiDataRelationshipWithResponse409ResponseBody"
             }
           }
         },
         "description" : "Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key"
       },
-      "UserCollectionVideosReadMultiDataRelationship403Response" : {
+      "UserCollectionVideosItemsReadMultiDataRelationship403Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/UserCollectionVideosReadMultiDataRelationship403ResponseBody"
+              "$ref" : "#/components/schemas/UserCollectionVideosItemsReadMultiDataRelationship403ResponseBody"
             }
           }
         },
         "description" : "filter[query] requires INTERNAL access tier"
       },
-      "UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response" : {
+      "UserRecommendationBlocksArtistsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
           "application/vnd.api+json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/UserRecommendationBlocksAddMultiDataRelationshipWithResponse409ResponseBody"
+              "$ref" : "#/components/schemas/UserRecommendationBlocksArtistsAddMultiDataRelationshipWithResponse409ResponseBody"
+            }
+          }
+        },
+        "description" : "Recommendation block limit reached; Request already in progress for this idempotency key"
+      },
+      "UserRecommendationBlocksTracksAddMultiDataRelationshipWithResponse409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/UserRecommendationBlocksTracksAddMultiDataRelationshipWithResponse409ResponseBody"
+            }
+          }
+        },
+        "description" : "Recommendation block limit reached; Request already in progress for this idempotency key"
+      },
+      "UserRecommendationBlocksVideosAddMultiDataRelationshipWithResponse409Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/UserRecommendationBlocksVideosAddMultiDataRelationshipWithResponse409ResponseBody"
             }
           }
         },
@@ -38559,6 +38881,17 @@
             "items" : {
               "$ref" : "#/components/schemas/AlbumsCoverArtRelationshipUpdateOperation_Payload_Data"
             }
+          },
+          "meta" : {
+            "type" : "object",
+            "properties" : {
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
+                "enum" : [ "REPLACE_ALL" ],
+                "default" : "REPLACE_ALL"
+              }
+            }
           }
         }
       },
@@ -38717,7 +39050,22 @@
             }
           },
           "meta" : {
-            "$ref" : "#/components/schemas/AlbumsItemsRelationshipUpdateOperation_Payload_Meta"
+            "required" : [ "positionIndex" ],
+            "type" : "object",
+            "properties" : {
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.",
+                "enum" : [ "INCREMENTAL" ],
+                "default" : "INCREMENTAL"
+              },
+              "positionIndex" : {
+                "minimum" : 1,
+                "type" : "integer",
+                "description" : "1-based index",
+                "format" : "int32"
+              }
+            }
           }
         }
       },
@@ -39797,6 +40145,17 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload_Data"
+            }
+          },
+          "meta" : {
+            "type" : "object",
+            "properties" : {
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
+                "enum" : [ "REPLACE_ALL" ],
+                "default" : "REPLACE_ALL"
+              }
             }
           }
         }
@@ -40899,6 +41258,17 @@
             "items" : {
               "$ref" : "#/components/schemas/ArtistsBannerArtRelationshipUpdateOperation_Payload_Data"
             }
+          },
+          "meta" : {
+            "type" : "object",
+            "properties" : {
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
+                "enum" : [ "REPLACE_ALL" ],
+                "default" : "REPLACE_ALL"
+              }
+            }
           }
         }
       },
@@ -41030,6 +41400,17 @@
             "items" : {
               "$ref" : "#/components/schemas/ArtistsLogoArtRelationshipUpdateOperation_Payload_Data"
             }
+          },
+          "meta" : {
+            "type" : "object",
+            "properties" : {
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
+                "enum" : [ "REPLACE_ALL" ],
+                "default" : "REPLACE_ALL"
+              }
+            }
           }
         }
       },
@@ -41057,6 +41438,17 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/ArtistsProfileArtRelationshipUpdateOperation_Payload_Data"
+            }
+          },
+          "meta" : {
+            "type" : "object",
+            "properties" : {
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
+                "enum" : [ "REPLACE_ALL" ],
+                "default" : "REPLACE_ALL"
+              }
             }
           }
         }
@@ -42070,6 +42462,344 @@
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "AtomicOperations400ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "status" ],
+              "type" : "object",
+              "properties" : {
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Invalid request"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "400"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AtomicOperations403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AtomicOperations404ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "status" ],
+              "type" : "object",
+              "properties" : {
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Resource not found"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "404"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AtomicOperations405ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "status" ],
+              "type" : "object",
+              "properties" : {
+                "detail" : {
+                  "type" : "string",
+                  "example" : "HTTP method not allowed"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "405"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AtomicOperations406ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "status" ],
+              "type" : "object",
+              "properties" : {
+                "detail" : {
+                  "type" : "string",
+                  "example" : "No acceptable response media type"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "406"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AtomicOperations409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "CONFLICT",
+                  "enum" : [ "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Request already in progress for this idempotency key"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AtomicOperations415ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "status" ],
+              "type" : "object",
+              "properties" : {
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Unsupported request media type or encoding"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "415"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AtomicOperations422ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "IDEMPOTENT_REQUEST_PAYLOAD_MISMATCH",
+                  "enum" : [ "IDEMPOTENT_REQUEST_PAYLOAD_MISMATCH" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Idempotency key reused for a different request"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "422"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AtomicOperations429ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "status" ],
+              "type" : "object",
+              "properties" : {
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Rate limit exceeded"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "429"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AtomicOperations500ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "status" ],
+              "type" : "object",
+              "properties" : {
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Internal server error"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "500"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AtomicOperations503ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "status" ],
+              "type" : "object",
+              "properties" : {
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Service temporarily unavailable"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "503"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Atomic_Operations_Request" : {
+        "required" : [ "atomic:operations" ],
+        "type" : "object",
+        "properties" : {
+          "atomic:operations" : {
+            "maxItems" : 101,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "oneOf" : [ {
+                "required" : [ "op", "data" ],
+                "type" : "object",
+                "properties" : {
+                  "data" : {
+                    "$ref" : "#/components/schemas/SquareItemVariationsCreateOperation_Payload_Local_Data"
+                  },
+                  "op" : {
+                    "type" : "string",
+                    "enum" : [ "add" ]
+                  }
+                },
+                "description" : "Creates a positive fixed-price variation linked by lid to the item added earlier in this atomic request. Inventory quantity is submitted separately."
+              }, {
+                "required" : [ "op", "data" ],
+                "type" : "object",
+                "properties" : {
+                  "data" : {
+                    "$ref" : "#/components/schemas/SquareItemsCreateOperation_Payload_Data"
+                  },
+                  "op" : {
+                    "type" : "string",
+                    "enum" : [ "add" ]
+                  }
+                },
+                "description" : "Creates an item together with 1–100 variation add operations in one atomic request. The item must precede its variations and have a local ID. Inventory counts are submitted separately."
+              } ]
+            }
+          }
+        }
+      },
+      "Atomic_Operations_Response" : {
+        "required" : [ "atomic:results" ],
+        "type" : "object",
+        "properties" : {
+          "atomic:results" : {
+            "maxItems" : 101,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "oneOf" : [ {
+                "required" : [ "data" ],
+                "type" : "object",
+                "properties" : {
+                  "data" : {
+                    "$ref" : "#/components/schemas/SquareItemVariations_Resource_Object"
+                  }
+                }
+              }, {
+                "required" : [ "data" ],
+                "type" : "object",
+                "properties" : {
+                  "data" : {
+                    "$ref" : "#/components/schemas/SquareItems_Resource_Object"
+                  }
+                }
+              } ]
+            }
           }
         }
       },
@@ -44676,7 +45406,7 @@
           }
         }
       },
-      "FolderItemsUpdateSingleDataRelationship400ResponseBody" : {
+      "FolderItemsParentUpdateSingleDataRelationship400ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -46055,6 +46785,21 @@
         },
         "description" : "The catalog item containing this variation"
       },
+      "ItemArtwork" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "artworks" ]
+          }
+        },
+        "description" : "Item photos in Square's display order, including photos without an available URL; the first is the primary photo"
+      },
       "ItemVariation" : {
         "required" : [ "id", "type" ],
         "type" : "object",
@@ -47118,7 +47863,19 @@
             }
           },
           "meta" : {
-            "$ref" : "#/components/schemas/PlayQueuesFutureRelationshipUpdateOperation_Payload_Meta"
+            "required" : [ "positionBefore" ],
+            "type" : "object",
+            "properties" : {
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.",
+                "enum" : [ "INCREMENTAL" ],
+                "default" : "INCREMENTAL"
+              },
+              "positionBefore" : {
+                "type" : "string"
+              }
+            }
           }
         }
       },
@@ -48170,34 +48927,6 @@
           }
         }
       },
-      "PlaylistGenerationsAddMultiDataRelationshipWithResponse409ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "CONFLICT",
-                  "enum" : [ "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying."
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "409"
-                }
-              }
-            }
-          }
-        }
-      },
       "PlaylistGenerationsCreateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -48328,7 +49057,7 @@
           }
         }
       },
-      "PlaylistGenerationsRemoveMultiDataRelationship409ResponseBody" : {
+      "PlaylistGenerationsTrackPreferencesAddMultiDataRelationshipWithResponse409ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -48417,7 +49146,21 @@
             }
           },
           "meta" : {
-            "$ref" : "#/components/schemas/PlaylistGenerationsTrackPreferencesRelationship_Payload_Meta"
+            "required" : [ "expectedPreferenceVersion" ],
+            "type" : "object",
+            "properties" : {
+              "expectedPreferenceVersion" : {
+                "minimum" : 0,
+                "type" : "integer",
+                "format" : "int32"
+              },
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.",
+                "enum" : [ "INCREMENTAL" ],
+                "default" : "INCREMENTAL"
+              }
+            }
           }
         }
       },
@@ -48459,7 +49202,35 @@
           }
         }
       },
-      "PlaylistGenerationsUpdateMultiDataRelationship409ResponseBody" : {
+      "PlaylistGenerationsTrackPreferencesRemoveMultiDataRelationship409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "CONFLICT",
+                  "enum" : [ "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying."
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PlaylistGenerationsTrackPreferencesUpdateMultiDataRelationship409ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -48821,34 +49592,6 @@
           }
         }
       },
-      "PlaylistsAddMultiDataRelationshipWithResponse409ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "DUPLICATE_ITEMS_IN_PLAYLIST",
-                  "enum" : [ "DUPLICATE_ITEMS_IN_PLAYLIST", "IDEMPOTENT_REQUEST_IN_PROGRESS", "TOO_MANY_ITEMS_IN_PLAYLIST" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "Playlist already contains one or more requested items"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "409"
-                }
-              }
-            }
-          }
-        }
-      },
       "PlaylistsCollaboratorProfilesRelationshipRemoveOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -48887,6 +49630,17 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/PlaylistsCoverArtRelationshipUpdateOperation_Payload_Data"
+            }
+          },
+          "meta" : {
+            "type" : "object",
+            "properties" : {
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
+                "enum" : [ "REPLACE_ALL" ],
+                "default" : "REPLACE_ALL"
+              }
             }
           }
         }
@@ -48949,6 +49703,34 @@
             "maxLength" : 250,
             "minLength" : 1,
             "type" : "string"
+          }
+        }
+      },
+      "PlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "DUPLICATE_ITEMS_IN_PLAYLIST",
+                  "enum" : [ "DUPLICATE_ITEMS_IN_PLAYLIST", "IDEMPOTENT_REQUEST_IN_PROGRESS", "TOO_MANY_ITEMS_IN_PLAYLIST" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Playlist already contains one or more requested items"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
           }
         }
       },
@@ -49085,7 +49867,35 @@
             }
           },
           "meta" : {
-            "$ref" : "#/components/schemas/PlaylistsItemsRelationshipUpdateOperation_Payload_Meta"
+            "anyOf" : [ {
+              "required" : [ "positionBefore" ],
+              "type" : "object",
+              "properties" : {
+                "mode" : {
+                  "type" : "string",
+                  "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.",
+                  "enum" : [ "INCREMENTAL" ],
+                  "default" : "INCREMENTAL"
+                },
+                "positionBefore" : {
+                  "maxLength" : 36,
+                  "minLength" : 1,
+                  "type" : "string"
+                }
+              }
+            }, {
+              "required" : [ "mode" ],
+              "type" : "object",
+              "properties" : {
+                "mode" : {
+                  "type" : "string",
+                  "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.",
+                  "enum" : [ "INCREMENTAL" ],
+                  "default" : "INCREMENTAL"
+                }
+              },
+              "additionalProperties" : false
+            } ]
           }
         }
       },
@@ -51586,6 +52396,19 @@
         "required" : [ "role" ],
         "type" : "object",
         "properties" : {
+          "accessModes" : {
+            "minItems" : 1,
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "Ways this share may be used to obtain access. BEARER permits access by presenting its code while active. VOUCHER permits redemption for a stored grant. Defaults to both modes for every role. Playlist shares must include VOUCHER; bearer-only playlist shares are rejected with 400.",
+            "items" : {
+              "maxLength" : 2147483647,
+              "minLength" : 1,
+              "type" : "string",
+              "description" : "Ways this share may be used to obtain access. BEARER permits access by presenting its code while active. VOUCHER permits redemption for a stored grant. Defaults to both modes for every role. Playlist shares must include VOUCHER; bearer-only playlist shares are rejected with 400.",
+              "enum" : [ "BEARER", "VOUCHER" ]
+            }
+          },
           "role" : {
             "type" : "string",
             "description" : "Role offered by the share.",
@@ -51630,9 +52453,20 @@
         }
       },
       "Shares_Attributes" : {
-        "required" : [ "code", "createdAt", "expiresAt", "role" ],
+        "required" : [ "accessModes", "code", "createdAt", "expiresAt", "role" ],
         "type" : "object",
         "properties" : {
+          "accessModes" : {
+            "minItems" : 1,
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "Ways this share may be used to obtain access. BEARER permits access by presenting its code while active. VOUCHER permits an authenticated user to redeem it for a stored grant. Multiple modes may be enabled.",
+            "items" : {
+              "type" : "string",
+              "description" : "Ways this share may be used to obtain access. BEARER permits access by presenting its code while active. VOUCHER permits an authenticated user to redeem it for a stored grant. Multiple modes may be enabled.",
+              "enum" : [ "BEARER", "VOUCHER" ]
+            }
+          },
           "code" : {
             "minLength" : 1,
             "type" : "string",
@@ -51872,35 +52706,7 @@
           }
         }
       },
-      "SquareConnectionsReadMultiDataRelationship403ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
-                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "Latest terms and conditions must be accepted"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "403"
-                }
-              }
-            }
-          }
-        }
-      },
-      "SquareConnectionsReadSingleDataRelationship403ResponseBody" : {
+      "SquareConnectionsSelectedSiteReadSingleDataRelationship403ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -51958,7 +52764,7 @@
         },
         "description" : "The site to select; null clears the selection."
       },
-      "SquareConnectionsUpdateSingleDataRelationship403ResponseBody" : {
+      "SquareConnectionsSelectedSiteUpdateSingleDataRelationship403ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -51986,7 +52792,7 @@
           }
         }
       },
-      "SquareConnectionsUpdateSingleDataRelationship409ResponseBody" : {
+      "SquareConnectionsSelectedSiteUpdateSingleDataRelationship409ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -52008,6 +52814,34 @@
                 "status" : {
                   "type" : "string",
                   "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareConnectionsSitesReadMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
                 }
               }
             }
@@ -52435,6 +53269,73 @@
             "items" : {
               "$ref" : "#/components/schemas/Item"
             }
+          }
+        }
+      },
+      "SquareItemVariationsCreateOperation_Payload_Local" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItemVariationsCreateOperation_Payload_Local_Data"
+          }
+        }
+      },
+      "SquareItemVariationsCreateOperation_Payload_Local_Data" : {
+        "required" : [ "attributes", "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SquareItemVariationsCreateOperation_Payload_Data_Attributes"
+          },
+          "lid" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Local identity available to later operations in this request"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/SquareItemVariationsCreateOperation_Payload_Local_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItemVariations" ]
+          }
+        }
+      },
+      "SquareItemVariationsCreateOperation_Payload_Local_Data_Relationships" : {
+        "required" : [ "items" ],
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "$ref" : "#/components/schemas/SquareItemVariationsCreateOperation_Payload_Local_Data_Relationships_Items"
+          }
+        }
+      },
+      "SquareItemVariationsCreateOperation_Payload_Local_Data_Relationships_Items" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 1,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SquareItemVariationsCreateOperation_Payload_Local_Item"
+            }
+          }
+        }
+      },
+      "SquareItemVariationsCreateOperation_Payload_Local_Item" : {
+        "required" : [ "lid", "type" ],
+        "type" : "object",
+        "properties" : {
+          "lid" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItems" ]
           }
         }
       },
@@ -52885,84 +53786,79 @@
           }
         }
       },
-      "SquareItemsCreateOperation_Payload" : {
-        "required" : [ "data" ],
+      "SquareItemsArtworksReadMultiDataRelationship409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "MISSING_ITEMS_SCOPE",
+                  "enum" : [ "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsArtworksRelationshipUpdateOperation_Payload" : {
+        "required" : [ "data", "meta" ],
         "type" : "object",
         "properties" : {
           "data" : {
-            "$ref" : "#/components/schemas/SquareItemsCreateOperation_Payload_Data"
-          }
-        }
-      },
-      "SquareItemsCreateOperation_Payload_Data" : {
-        "required" : [ "attributes", "type" ],
-        "type" : "object",
-        "properties" : {
-          "attributes" : {
-            "$ref" : "#/components/schemas/SquareItemsCreateOperation_Payload_Data_Attributes"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "squareItems" ]
-          }
-        }
-      },
-      "SquareItemsCreateOperation_Payload_Data_Attributes" : {
-        "required" : [ "initialVariations", "title" ],
-        "type" : "object",
-        "properties" : {
-          "description" : {
-            "maxLength" : 4096,
-            "type" : "string",
-            "description" : "Item description"
-          },
-          "initialVariations" : {
-            "maxItems" : 100,
+            "maxItems" : 20,
             "minItems" : 1,
             "type" : "array",
-            "description" : "Variations, in display order",
             "items" : {
-              "$ref" : "#/components/schemas/SquareItemsCreateOperation_Payload_Data_Attributes_Variation"
+              "$ref" : "#/components/schemas/ItemArtwork"
             }
           },
-          "title" : {
-            "maxLength" : 512,
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "Item title"
+          "meta" : {
+            "required" : [ "expectedRevision" ],
+            "type" : "object",
+            "properties" : {
+              "expectedRevision" : {
+                "maximum" : 9007199254740991,
+                "minimum" : 0,
+                "type" : "integer",
+                "format" : "int64"
+              },
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
+                "enum" : [ "REPLACE_ALL" ],
+                "default" : "REPLACE_ALL"
+              }
+            }
           }
         }
       },
-      "SquareItemsCreateOperation_Payload_Data_Attributes_Variation" : {
-        "required" : [ "price", "stockTracked" ],
+      "SquareItemsArtworksRelationshipUpdateOperation_Payload_Meta" : {
+        "required" : [ "expectedRevision" ],
         "type" : "object",
         "properties" : {
-          "name" : {
-            "maxLength" : 255,
-            "type" : "string",
-            "description" : "Variation name, such as a size or color"
-          },
-          "price" : {
-            "minimum" : 0,
-            "exclusiveMinimum" : true,
-            "pattern" : "^\\+?(?=[0-9.]*[1-9])(?:0*[0-9]{1,16}(?:\\.[0-9]{0,2})?|\\.[0-9]{1,2})$(?![\\s\\S])",
-            "type" : "string",
-            "description" : "Amount in the currency's major units",
-            "example" : "9.99"
-          },
-          "stockQuantity" : {
+          "expectedRevision" : {
+            "maximum" : 9007199254740991,
             "minimum" : 0,
             "type" : "integer",
-            "description" : "Units in stock at the selected site's shipping location (merchant-main fallback); applies only when stock is tracked",
             "format" : "int64"
-          },
-          "stockTracked" : {
-            "type" : "boolean",
-            "description" : "Whether Square tracks stock for this variation"
           }
         }
       },
-      "SquareItemsCreateResource403ResponseBody" : {
+      "SquareItemsArtworksUpdateMultiDataRelationship403ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -52990,7 +53886,7 @@
           }
         }
       },
-      "SquareItemsCreateResource409ResponseBody" : {
+      "SquareItemsArtworksUpdateMultiDataRelationship409ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -53002,12 +53898,12 @@
               "properties" : {
                 "code" : {
                   "type" : "string",
-                  "example" : "CONFLICT",
-                  "enum" : [ "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE" ]
+                  "example" : "CATALOG_VERSION_MISMATCH",
+                  "enum" : [ "CATALOG_VERSION_MISMATCH", "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "IMAGE_LIMIT_EXCEEDED", "MISSING_ITEMS_SCOPE" ]
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                  "example" : "Square catalog item changed; reload it before editing"
                 },
                 "status" : {
                   "type" : "string",
@@ -53015,6 +53911,78 @@
                 }
               }
             }
+          }
+        }
+      },
+      "SquareItemsArtworksUpdateMultiDataRelationship413ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "ARTWORK_IMAGE_TOO_LARGE",
+                  "enum" : [ "ARTWORK_IMAGE_TOO_LARGE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square images must be at most 15 MB (15,000,000 bytes)"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "413"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SquareItemsCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "SquareItemsCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SquareItemsCreateOperation_Payload_Data_Attributes"
+          },
+          "lid" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Local identity available to later operations in this request"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "squareItems" ]
+          }
+        }
+      },
+      "SquareItemsCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "title" ],
+        "type" : "object",
+        "properties" : {
+          "description" : {
+            "maxLength" : 4096,
+            "type" : "string",
+            "description" : "Item description"
+          },
+          "title" : {
+            "maxLength" : 512,
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Item title"
           }
         }
       },
@@ -53186,118 +54154,6 @@
           }
         }
       },
-      "SquareItemsReadMultiDataRelationship403ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
-                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "Latest terms and conditions must be accepted"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "403"
-                }
-              }
-            }
-          }
-        }
-      },
-      "SquareItemsReadMultiDataRelationship409ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "MISSING_ITEMS_SCOPE",
-                  "enum" : [ "MISSING_ITEMS_SCOPE" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "409"
-                }
-              }
-            }
-          }
-        }
-      },
-      "SquareItemsUpdateMultiDataRelationship403ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
-                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "Latest terms and conditions must be accepted"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "403"
-                }
-              }
-            }
-          }
-        }
-      },
-      "SquareItemsUpdateMultiDataRelationship409ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "CATALOG_VERSION_MISMATCH",
-                  "enum" : [ "CATALOG_VERSION_MISMATCH", "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "409"
-                }
-              }
-            }
-          }
-        }
-      },
       "SquareItemsUpdateOperation_Payload" : {
         "required" : [ "data", "meta" ],
         "type" : "object",
@@ -53411,6 +54267,62 @@
           }
         }
       },
+      "SquareItemsVariationsReadMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsVariationsReadMultiDataRelationship409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "MISSING_ITEMS_SCOPE",
+                  "enum" : [ "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
       "SquareItemsVariationsRelationshipUpdateOperation_Payload" : {
         "required" : [ "data", "meta" ],
         "type" : "object",
@@ -53424,7 +54336,26 @@
             }
           },
           "meta" : {
-            "$ref" : "#/components/schemas/SquareItemsVariationsRelationshipUpdateOperation_Payload_Meta"
+            "required" : [ "expectedRevision" ],
+            "type" : "object",
+            "properties" : {
+              "expectedRevision" : {
+                "maximum" : 9007199254740991,
+                "minimum" : 0,
+                "type" : "integer",
+                "format" : "int64"
+              },
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.",
+                "enum" : [ "INCREMENTAL" ],
+                "default" : "INCREMENTAL"
+              },
+              "positionBefore" : {
+                "type" : "string",
+                "description" : "Variation before which the selected block is placed; omission appends"
+              }
+            }
           }
         }
       },
@@ -53441,6 +54372,62 @@
           "positionBefore" : {
             "type" : "string",
             "description" : "Variation before which the selected block is placed; omission appends"
+          }
+        }
+      },
+      "SquareItemsVariationsUpdateMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareItemsVariationsUpdateMultiDataRelationship409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "CATALOG_VERSION_MISMATCH",
+                  "enum" : [ "CATALOG_VERSION_MISMATCH", "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
           }
         }
       },
@@ -53462,6 +54449,50 @@
           }
         },
         "description" : "Target resource types: `artworks`."
+      },
+      "SquareItems_Artworks_Update_Multi_Relationship_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SquareItems_Artworks_Update_Resource_Identifier"
+            }
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SquareItems_Artworks_Update_Multi_Relationship_Data_Document_Meta"
+          }
+        }
+      },
+      "SquareItems_Artworks_Update_Multi_Relationship_Data_Document_Meta" : {
+        "required" : [ "revision" ],
+        "type" : "object",
+        "properties" : {
+          "revision" : {
+            "maximum" : 9007199254740991,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "SquareItems_Artworks_Update_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "artworks" ]
+          }
+        }
       },
       "SquareItems_Attributes" : {
         "required" : [ "currency", "revision", "title" ],
@@ -53501,18 +54532,6 @@
           "title" : {
             "type" : "string",
             "description" : "Item title; empty for an untitled item created in Square"
-          }
-        }
-      },
-      "SquareItems_Create_Single_Resource_Data_Document" : {
-        "required" : [ "data", "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "$ref" : "#/components/schemas/SquareItems_Resource_Object"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
           }
         }
       },
@@ -53678,7 +54697,7 @@
           }
         }
       },
-      "SquareSitesAddMultiDataRelationship403ResponseBody" : {
+      "SquareSitesItemsAddMultiDataRelationship403ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -53706,7 +54725,7 @@
           }
         }
       },
-      "SquareSitesAddMultiDataRelationship409ResponseBody" : {
+      "SquareSitesItemsAddMultiDataRelationship409ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -53720,6 +54739,62 @@
                   "type" : "string",
                   "example" : "CONFLICT",
                   "enum" : [ "CONFLICT", "IDEMPOTENT_REQUEST_IN_PROGRESS", "MISSING_ITEMS_SCOPE", "SITE_NOT_SELECTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareSitesItemsReadMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
+                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Latest terms and conditions must be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SquareSitesItemsReadMultiDataRelationship409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "MISSING_ITEMS_SCOPE",
+                  "enum" : [ "MISSING_ITEMS_SCOPE", "SITE_NOT_SELECTED" ]
                 },
                 "detail" : {
                   "type" : "string",
@@ -53792,7 +54867,7 @@
         },
         "description" : "The items to unpublish"
       },
-      "SquareSitesReadMultiDataRelationship403ResponseBody" : {
+      "SquareSitesItemsRemoveMultiDataRelationship403ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -53820,63 +54895,7 @@
           }
         }
       },
-      "SquareSitesReadMultiDataRelationship409ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "MISSING_ITEMS_SCOPE",
-                  "enum" : [ "MISSING_ITEMS_SCOPE", "SITE_NOT_SELECTED" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "Square credential lacks the catalog scopes; run Square onboarding again to reconnect"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "409"
-                }
-              }
-            }
-          }
-        }
-      },
-      "SquareSitesRemoveMultiDataRelationship403ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "REQUIRED_TERMS_NOT_ACCEPTED",
-                  "enum" : [ "REQUIRED_TERMS_NOT_ACCEPTED" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "Latest terms and conditions must be accepted"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "403"
-                }
-              }
-            }
-          }
-        }
-      },
-      "SquareSitesRemoveMultiDataRelationship409ResponseBody" : {
+      "SquareSitesItemsRemoveMultiDataRelationship409ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -55194,6 +56213,17 @@
             "items" : {
               "$ref" : "#/components/schemas/TracksAlbumsRelationshipUpdateOperation_Payload_Data"
             }
+          },
+          "meta" : {
+            "type" : "object",
+            "properties" : {
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
+                "enum" : [ "REPLACE_ALL" ],
+                "default" : "REPLACE_ALL"
+              }
+            }
           }
         }
       },
@@ -56441,7 +57471,7 @@
           }
         }
       },
-      "UserCollectionAlbumsAddMultiDataRelationshipWithResponse409ResponseBody" : {
+      "UserCollectionAlbumsItemsAddMultiDataRelationshipWithResponse409ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -56463,6 +57493,34 @@
                 "status" : {
                   "type" : "string",
                   "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserCollectionAlbumsItemsReadMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "UNAUTHORIZED",
+                  "enum" : [ "UNAUTHORIZED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "filter[query] requires INTERNAL access tier"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
                 }
               }
             }
@@ -56552,34 +57610,6 @@
           "type" : {
             "type" : "string",
             "enum" : [ "albums" ]
-          }
-        }
-      },
-      "UserCollectionAlbumsReadMultiDataRelationship403ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "UNAUTHORIZED",
-                  "enum" : [ "UNAUTHORIZED" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "filter[query] requires INTERNAL access tier"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "403"
-                }
-              }
-            }
           }
         }
       },
@@ -56774,7 +57804,7 @@
           }
         }
       },
-      "UserCollectionArtistsAddMultiDataRelationshipWithResponse409ResponseBody" : {
+      "UserCollectionArtistsItemsAddMultiDataRelationshipWithResponse409ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -56796,6 +57826,34 @@
                 "status" : {
                   "type" : "string",
                   "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserCollectionArtistsItemsReadMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "UNAUTHORIZED",
+                  "enum" : [ "UNAUTHORIZED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "filter[query] requires INTERNAL access tier"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
                 }
               }
             }
@@ -56885,34 +57943,6 @@
           "type" : {
             "type" : "string",
             "enum" : [ "artists" ]
-          }
-        }
-      },
-      "UserCollectionArtistsReadMultiDataRelationship403ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "UNAUTHORIZED",
-                  "enum" : [ "UNAUTHORIZED" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "filter[query] requires INTERNAL access tier"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "403"
-                }
-              }
-            }
           }
         }
       },
@@ -57469,7 +58499,7 @@
         },
         "description" : "Target resource types: `userCollectionPlaylists`."
       },
-      "UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409ResponseBody" : {
+      "UserCollectionPlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -57491,6 +58521,34 @@
                 "status" : {
                   "type" : "string",
                   "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserCollectionPlaylistsItemsReadMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "UNAUTHORIZED",
+                  "enum" : [ "UNAUTHORIZED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "filter[query] requires INTERNAL access tier"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
                 }
               }
             }
@@ -57580,34 +58638,6 @@
           "type" : {
             "type" : "string",
             "enum" : [ "playlists" ]
-          }
-        }
-      },
-      "UserCollectionPlaylistsReadMultiDataRelationship403ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "UNAUTHORIZED",
-                  "enum" : [ "UNAUTHORIZED" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "filter[query] requires INTERNAL access tier"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "403"
-                }
-              }
-            }
           }
         }
       },
@@ -57799,7 +58829,7 @@
           }
         }
       },
-      "UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409ResponseBody" : {
+      "UserCollectionSaveForLatersItemsAddMultiDataRelationshipWithResponse409ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -58088,7 +59118,7 @@
           }
         }
       },
-      "UserCollectionTracksAddMultiDataRelationshipWithResponse409ResponseBody" : {
+      "UserCollectionTracksItemsAddMultiDataRelationshipWithResponse409ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -58110,6 +59140,34 @@
                 "status" : {
                   "type" : "string",
                   "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserCollectionTracksItemsReadMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "UNAUTHORIZED",
+                  "enum" : [ "UNAUTHORIZED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "filter[query] requires INTERNAL access tier"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
                 }
               }
             }
@@ -58199,34 +59257,6 @@
           "type" : {
             "type" : "string",
             "enum" : [ "tracks" ]
-          }
-        }
-      },
-      "UserCollectionTracksReadMultiDataRelationship403ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "UNAUTHORIZED",
-                  "enum" : [ "UNAUTHORIZED" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "filter[query] requires INTERNAL access tier"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "403"
-                }
-              }
-            }
           }
         }
       },
@@ -58421,7 +59451,7 @@
           }
         }
       },
-      "UserCollectionVideosAddMultiDataRelationshipWithResponse409ResponseBody" : {
+      "UserCollectionVideosItemsAddMultiDataRelationshipWithResponse409ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -58443,6 +59473,34 @@
                 "status" : {
                   "type" : "string",
                   "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UserCollectionVideosItemsReadMultiDataRelationship403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "UNAUTHORIZED",
+                  "enum" : [ "UNAUTHORIZED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "filter[query] requires INTERNAL access tier"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
                 }
               }
             }
@@ -58532,34 +59590,6 @@
           "type" : {
             "type" : "string",
             "enum" : [ "videos" ]
-          }
-        }
-      },
-      "UserCollectionVideosReadMultiDataRelationship403ResponseBody" : {
-        "required" : [ "errors" ],
-        "type" : "object",
-        "properties" : {
-          "errors" : {
-            "type" : "array",
-            "items" : {
-              "required" : [ "code", "status" ],
-              "type" : "object",
-              "properties" : {
-                "code" : {
-                  "type" : "string",
-                  "example" : "UNAUTHORIZED",
-                  "enum" : [ "UNAUTHORIZED" ]
-                },
-                "detail" : {
-                  "type" : "string",
-                  "example" : "filter[query] requires INTERNAL access tier"
-                },
-                "status" : {
-                  "type" : "string",
-                  "example" : "403"
-                }
-              }
-            }
           }
         }
       },
@@ -60044,7 +61074,7 @@
           }
         }
       },
-      "UserRecommendationBlocksAddMultiDataRelationshipWithResponse409ResponseBody" : {
+      "UserRecommendationBlocksArtistsAddMultiDataRelationshipWithResponse409ResponseBody" : {
         "required" : [ "errors" ],
         "type" : "object",
         "properties" : {
@@ -60128,6 +61158,34 @@
           }
         }
       },
+      "UserRecommendationBlocksTracksAddMultiDataRelationshipWithResponse409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "IDEMPOTENT_REQUEST_IN_PROGRESS",
+                  "enum" : [ "IDEMPOTENT_REQUEST_IN_PROGRESS", "MAXIMUM_NUMBER_OF_BLOCKS_EXCEEDED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Recommendation block limit reached"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
+          }
+        }
+      },
       "UserRecommendationBlocksTracksRelationshipAddOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -60181,6 +61239,34 @@
           "type" : {
             "type" : "string",
             "enum" : [ "tracks" ]
+          }
+        }
+      },
+      "UserRecommendationBlocksVideosAddMultiDataRelationshipWithResponse409ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "IDEMPOTENT_REQUEST_IN_PROGRESS",
+                  "enum" : [ "IDEMPOTENT_REQUEST_IN_PROGRESS", "MAXIMUM_NUMBER_OF_BLOCKS_EXCEEDED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Recommendation block limit reached"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "409"
+                }
+              }
+            }
           }
         }
       },
