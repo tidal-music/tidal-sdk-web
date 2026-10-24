@@ -18,17 +18,17 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /** @description One of: DEVELOPER, UPLOAD_MARKETPLACE, MERCH_GUIDELINES, TIDAL_CONNECT_DEVELOPER (e.g. `DEVELOPER`) */
                     "filter[terms.termsType]": ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
+                    /** @description Filter by terms.isLatestVersion */
+                    "filter[terms.isLatestVersion]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: owners, terms
                      * @example terms
                      */
                     include?: string[];
-                    /** @description Filter by terms.isLatestVersion */
-                    "filter[terms.isLatestVersion]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("owners" | "terms")[];
                 };
@@ -66,7 +66,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -363,35 +363,35 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("createdAt" | "-createdAt" | "title" | "-title")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description List of barcode IDs (EAN-13 or UPC-A). NOTE: Supplying more than one barcode ID will currently only return one album per barcode ID. (e.g. `196589525444`) */
+                    "filter[barcodeId]"?: string[];
+                    /** @description List of album IDs (e.g. `251380836`) */
+                    "filter[id]"?: string[];
+                    /** @description User id. Also accepts `me`. */
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: albumStatistics, artists, coverArt, genres, items, owners, priceConfig, providers, replacement, shares, similarAlbums, suggestedCoverArts, usageRules
                      * @example artists.albums
                      */
                     include?: string[];
-                    /** @description List of barcode IDs (EAN-13 or UPC-A). NOTE: Supplying more than one barcode ID will currently only return one album per barcode ID. (e.g. `196589525444`) */
-                    "filter[barcodeId]"?: string[];
-                    /** @description List of album IDs (e.g. `251380836`) */
-                    "filter[id]"?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("albumStatistics" | "artists" | "coverArt" | "genres" | "items" | "owners" | "priceConfig" | "providers" | "replacement" | "shares" | "similarAlbums" | "suggestedCoverArts" | "usageRules")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("createdAt" | "-createdAt" | "title" | "-title")[];
                 };
                 header?: never;
                 path?: never;
@@ -427,7 +427,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -497,7 +497,7 @@ export interface paths {
                      * @example artists.albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -539,9 +539,12 @@ export interface paths {
          */
         delete: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -584,9 +587,12 @@ export interface paths {
          */
         patch: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -646,7 +652,7 @@ export interface paths {
                      * @example albumStatistics
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -702,8 +708,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -714,12 +718,14 @@ export interface paths {
                      * @example artists.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -775,8 +781,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -787,7 +791,9 @@ export interface paths {
                      * @example coverArt
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -828,13 +834,16 @@ export interface paths {
         head?: never;
         /**
          * Update coverArt relationship ("to-many").
-         * @description Updates coverArt relationship.
+         * @description Replaces the uploaded cover artwork selection with one attachable artwork. Empty data clears the selection. Previously attached uploaded artwork is soft-deleted unless system-managed. Returns an acknowledgement.
          */
         patch: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -889,8 +898,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -901,7 +908,9 @@ export interface paths {
                      * @example genres
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -957,8 +966,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -969,12 +976,14 @@ export interface paths {
                      * @example items
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1015,13 +1024,16 @@ export interface paths {
         head?: never;
         /**
          * Update items relationship ("to-many").
-         * @description Updates items relationship.
+         * @description Incrementally updates one existing track's 1-based track number to meta.positionIndex. Does not replace the album's items or add or remove tracks. Empty data is rejected. Returns an acknowledgement.
          */
         patch: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -1083,7 +1095,7 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1149,7 +1161,7 @@ export interface paths {
                      * @example priceConfig
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1217,7 +1229,7 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1288,7 +1300,7 @@ export interface paths {
                      * @example replacement
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1339,7 +1351,7 @@ export interface paths {
         };
         /**
          * Get shares relationship ("to-many").
-         * @description Retrieves shares relationship.
+         * @description The album's share links, active and expired, newest first.
          */
         get: {
             parameters: {
@@ -1356,7 +1368,7 @@ export interface paths {
                      * @example shares.sharedResources
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1412,8 +1424,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -1424,12 +1434,14 @@ export interface paths {
                      * @example similarAlbums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarAlbums
                      * @example similarAlbums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1492,7 +1504,7 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1558,7 +1570,7 @@ export interface paths {
                      * @example usageRules
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -1617,7 +1629,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -1733,7 +1745,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -1899,7 +1911,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /**
                      * @description Include related resources. Available relationships: acceptedArtists, owners, recommendedArtists
@@ -1948,7 +1960,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -2055,7 +2067,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -2100,7 +2112,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -2206,13 +2218,13 @@ export interface paths {
         head?: never;
         /**
          * Update acceptedArtists relationship ("to-many").
-         * @description Updates acceptedArtists relationship.
+         * @description Accepts one recommended artist and processes the claim, merging profile metadata or moving claimed albums according to the recommendation. Empty data cancels the claim; it does not delete any artist. Returns an acknowledgement.
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -2433,6 +2445,390 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/artistSalesStatistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple artistSalesStatistics.
+         * @description Retrieves multiple artistSalesStatistics by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Artist ID. Every published range of the artist is returned (e.g. `1566`) */
+                    "filter[artist.id]": string[];
+                    /**
+                     * @description Include related resources. Available relationships: artist, topSellers
+                     * @example artist.albums
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("artist" | "topSellers")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistSalesStatistics_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistSalesStatistics/{id}/relationships/artist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artist relationship ("to-one").
+         * @description Retrieves artist relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: artist
+                     * @example artist.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist sales statistics id
+                     * @example LPtReLsCUO7kRhYq
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistSalesStatistics_Artist_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistSalesStatistics/{id}/relationships/topSellers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get topSellers relationship ("to-many").
+         * @description Retrieves topSellers relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: topSellers
+                     * @example topSellers
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: topSellers
+                     * @example topSellers
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist sales statistics id
+                     * @example LPtReLsCUO7kRhYq
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistStreamsStatistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple artistStreamsStatistics.
+         * @description Retrieves multiple artistStreamsStatistics by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Artist ID. Every published range of the artist is returned (e.g. `1566`) */
+                    "filter[artist.id]": string[];
+                    /**
+                     * @description Include related resources. Available relationships: artist, topTracks
+                     * @example artist.albums
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("artist" | "topTracks")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistStreamsStatistics_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistStreamsStatistics/{id}/relationships/artist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artist relationship ("to-one").
+         * @description Retrieves artist relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: artist
+                     * @example artist.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artist.albums
+                     * @example artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist streams statistics id
+                     * @example LPtReLsCUO7kRhYq
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistStreamsStatistics_Artist_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/artistStreamsStatistics/{id}/relationships/topTracks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get topTracks relationship ("to-many").
+         * @description Retrieves topTracks relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: topTracks
+                     * @example topTracks
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: topTracks
+                     * @example topTracks
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Artist streams statistics id
+                     * @example LPtReLsCUO7kRhYq
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/artists": {
         parameters: {
             query?: never;
@@ -2452,17 +2848,17 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description Artist handle (e.g. `jayz`) */
+                    "filter[handle]"?: string[];
+                    /** @description List of artist IDs (e.g. `1566`) */
+                    "filter[id]"?: string[];
+                    /** @description User id. Also accepts `me`. */
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: albums, bannerArt, biography, claimStatus, followers, following, logoArt, owners, profileArt, radio, roles, similarArtists, trackProviders, tracks, videos
                      * @example albums
                      */
                     include?: string[];
-                    /** @description Artist handle (e.g. `jayz`) */
-                    "filter[handle]"?: string[];
-                    /** @description List of artist IDs (e.g. `1566`) */
-                    "filter[id]"?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("albums" | "bannerArt" | "biography" | "claimStatus" | "followers" | "following" | "logoArt" | "owners" | "profileArt" | "radio" | "roles" | "similarArtists" | "trackProviders" | "tracks" | "videos")[];
                     /**
@@ -2505,7 +2901,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -2629,7 +3025,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -2684,8 +3080,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -2696,6 +3090,8 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -2806,13 +3202,13 @@ export interface paths {
         head?: never;
         /**
          * Update bannerArt relationship ("to-many").
-         * @description Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Returns an acknowledgement.
+         * @description Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Previous artwork no longer selected by profileArt, bannerArt or logoArt is soft-deleted unless system-managed. Returns an acknowledgement.
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -2990,19 +3386,19 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    viewerContext?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: followers
                      * @example followers.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: followers.albums
                      * @example followers.albums
                      */
                     replaceMedia?: string;
+                    viewerContext?: string;
                 };
                 header?: never;
                 path: {
@@ -3057,19 +3453,19 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    viewerContext?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: following
                      * @example following.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: following.albums
                      * @example following.albums
                      */
                     replaceMedia?: string;
+                    viewerContext?: string;
                 };
                 header?: never;
                 path: {
@@ -3111,7 +3507,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -3158,7 +3554,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -3267,13 +3663,13 @@ export interface paths {
         head?: never;
         /**
          * Update logoArt relationship ("to-many").
-         * @description Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Returns an acknowledgement.
+         * @description Selects one owned, attachable IMAGE artwork by ID, replacing the selection. Empty data clears the selection; null data and more than one entry are rejected. Previous artwork no longer selected by profileArt, bannerArt or logoArt is soft-deleted unless system-managed. Returns an acknowledgement.
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -3440,13 +3836,13 @@ export interface paths {
         head?: never;
         /**
          * Update profileArt relationship ("to-many").
-         * @description Updates the artist's avatar artwork.
+         * @description Replaces the artist's uploaded avatar selection with one owned, attachable artwork. Empty data clears the uploaded selection; legacy pictures or album fallback artwork may still appear in profileArt. Previous artwork no longer selected by profileArt, bannerArt or logoArt is soft-deleted unless system-managed. Returns an acknowledgement.
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -3501,8 +3897,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -3513,6 +3907,8 @@ export interface paths {
                      * @example radio.items
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: radio.items
                      * @example radio.items
@@ -3633,8 +4029,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -3645,6 +4039,8 @@ export interface paths {
                      * @example similarArtists.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarArtists.albums
                      * @example similarArtists.albums
@@ -3704,13 +4100,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: trackProviders
                      * @example trackProviders
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
@@ -3770,8 +4166,6 @@ export interface paths {
                      * @example FINGERPRINT
                      */
                     collapseBy: "FINGERPRINT" | "NONE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -3782,6 +4176,8 @@ export interface paths {
                      * @example tracks
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
                      * @example tracks
@@ -3841,8 +4237,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -3853,6 +4247,8 @@ export interface paths {
                      * @example videos
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
                      * @example videos
@@ -3958,7 +4354,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -4138,7 +4534,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -4310,7 +4706,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /**
                      * @description Include related resources. Available relationships: certificates, owners
@@ -4354,7 +4750,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -4456,7 +4852,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -4501,7 +4897,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -4682,7 +5078,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -4786,7 +5182,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -4895,7 +5291,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -5076,19 +5472,8 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("createdAt" | "-createdAt" | "likeCount" | "-likeCount" | "replyCount" | "-replyCount" | "startTime" | "-startTime")[];
-                    /**
-                     * @description Include related resources. Available relationships: author, owners, parentComment
-                     * @example author.albums
-                     */
-                    include?: string[];
                     /** @description Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
                     "filter[parentComment.id]"?: string[];
-                    /** @description The subject whose comments to return. Use either subject or the deprecated subject.id and subject.type pair. */
-                    "filter[subject]"?: string;
                     /**
                      * @deprecated
                      * @description Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)
@@ -5099,13 +5484,24 @@ export interface paths {
                      * @description Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)
                      */
                     "filter[subject.type]"?: ("albums" | "tracks" | "trackSourceFiles")[];
+                    /** @description The subject whose comments to return. Use either subject or the deprecated subject.id and subject.type pair. */
+                    "filter[subject]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: author, owners, parentComment
+                     * @example author.albums
+                     */
+                    include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("author" | "owners" | "parentComment")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
                      * @example author.albums
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("createdAt" | "-createdAt" | "likeCount" | "-likeCount" | "replyCount" | "-replyCount" | "startTime" | "-startTime")[];
                 };
                 header?: never;
                 path?: never;
@@ -5141,7 +5537,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -5248,7 +5644,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -5293,7 +5689,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -5537,7 +5933,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /**
                      * @description Include related resources. Available relationships: claimedResource, claimingArtist, owners
@@ -5586,7 +5982,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -6257,13 +6653,6 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: subject
-                     * @example subject
-                     */
-                    include?: string[];
-                    /** @description The subject whose DSP sharing links to return. Use either subject or the deprecated subject.id and subject.type pair. */
-                    "filter[subject]"?: string;
-                    /**
                      * @deprecated
                      * @description Deprecated: use filter[subject]. The id of the subject resource
                      */
@@ -6273,6 +6662,13 @@ export interface paths {
                      * @description Deprecated: use filter[subject]. The type of the subject resource (e.g. `tracks`)
                      */
                     "filter[subject.type]"?: ("tracks" | "albums" | "artists")[];
+                    /** @description The subject whose DSP sharing links to return. Use either subject or the deprecated subject.id and subject.type pair. */
+                    "filter[subject]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject
+                     */
+                    include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: "subject"[];
                     /**
@@ -6393,34 +6789,27 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
                      * @description The type of device making the request
                      * @example PHONE
                      */
                     deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /** @description DynamicModules Id (e.g. `nejMcAhh5N8S3EQ4LaqysVdI0cZZ`) */
+                    "filter[id]": string[];
                     /**
                      * @description The system type of the device making the request
                      * @example IOS
                      */
                     systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                     /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion: string;
-                    /** @description DynamicModules Id (e.g. `nejMcAhh5N8S3EQ4LaqysVdI0cZZ`) */
-                    "filter[id]": string[];
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description Include related resources. Available relationships: items, seedItem
                      * @example items
@@ -6428,6 +6817,13 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "seedItem")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -6482,6 +6878,11 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
                      * @description The type of device making the request
                      * @example PHONE
                      */
@@ -6492,22 +6893,10 @@ export interface paths {
                      */
                     systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                     /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion: string;
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description Include related resources. Available relationships: items, seedItem
                      * @example items
@@ -6515,6 +6904,13 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "seedItem")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -6575,6 +6971,11 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
                      * @description The type of device making the request
                      * @example PHONE
                      */
@@ -6585,29 +6986,24 @@ export interface paths {
                      */
                     systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                     /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion: string;
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -6668,6 +7064,11 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
                      * @description The type of device making the request
                      * @example PHONE
                      */
@@ -6678,27 +7079,22 @@ export interface paths {
                      */
                     systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                     /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion: string;
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: seedItem
                      * @example seedItem
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: seedItem
                      * @example seedItem
@@ -6759,48 +7155,43 @@ export interface paths {
             parameters: {
                 query: {
                     /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
+                    /**
                      * @description The type of device making the request
                      * @example PHONE
                      */
                     deviceType: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
+                    /** @description Type of the page (e.g. `ARTIST`) */
+                    "filter[pageType]": ("HOME_STATIC" | "HOME_UPLOADS" | "HOME_EDITORIAL" | "HOME_FREE" | "STUDIO_HOME" | "ARTIST" | "ALBUM" | "PLAYLIST" | "TRACK" | "VIDEO")[];
                     /**
                      * @description The system type of the device making the request
                      * @example IOS
                      */
                     systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                     /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion: string;
-                    /** @description type of the page (e.g. `ARTIST`) */
-                    "filter[pageType]": string[];
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
+                    /** @description The page subject. Its type must match pageType. Required except for HOME_FREE, where it must be omitted. Also accepts `users:me`. */
+                    "filter[subject]"?: string;
                     /**
                      * @description Include related resources. Available relationships: modules, subject
                      * @example modules.items
                      */
                     include?: string[];
-                    /** @description The page subject. Its type must match pageType. Required unless subject.id is supplied; both must be omitted for HOME_FREE. Do not combine with subject.id. */
-                    "filter[subject]"?: string;
-                    /**
-                     * @deprecated
-                     * @description Deprecated alternative to filter[subject]. Omit when subject is supplied or pageType is HOME_FREE. (e.g. `67890`)
-                     */
-                    "filter[subject.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("modules" | "subject")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: modules.items
                      * @example modules.items
@@ -6849,11 +7240,16 @@ export interface paths {
         };
         /**
          * Get modules relationship ("to-many").
-         * @description Retrieves modules relationship.
+         * @description The page's modules, in display order.
          */
         get: {
             parameters: {
                 query: {
+                    /**
+                     * @description Client version number
+                     * @example 2026.0.1
+                     */
+                    clientVersion: string;
                     /**
                      * @description The type of device making the request
                      * @example PHONE
@@ -6865,29 +7261,24 @@ export interface paths {
                      */
                     systemType: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                     /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion: string;
-                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
-                    refreshSeed?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: modules
                      * @example modules.items
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /** @description Stable seed used to keep dynamic page and module results consistent across a client session. */
+                    refreshSeed?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: modules.items
                      * @example modules.items
@@ -7004,7 +7395,67 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Get multiple folderItems.
+         * @description Lists items in a folder, newest placement first. Select a folder with parent.id, or select your root with parent.isRoot=true and parent.owners.id=me. These forms cannot be combined; no other parent-filter combinations are supported. To search every folder in your tree instead, use query, subject.albums:published or both with parent.owners.id=me alone.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Folder id (e.g. `e3226624-355b-48f8-aa93-db42532caa66`). Also accepts `me`. */
+                    "filter[parent.id]"?: string;
+                    /** @description Filter by parent.isRoot */
+                    "filter[parent.isRoot]"?: string;
+                    /** @description Owner of the folder an item is in; must be the authenticated user. With parent.isRoot=true it selects your root, and with query or subject.albums:published your whole tree. Also accepts `me`. */
+                    "filter[parent.owners.id]"?: string;
+                    /** @description Searches every folder in your tree, selected with parent.owners.id=me, and lists the matching items in one flat list. An item matches when each word given starts a word in its folder's name, its album's title or the title of one of the album's tracks, ignoring case. An item shared with you matches by its subject, and only while you can open it. (e.g. `demo`) */
+                    "filter[query]"?: string;
+                    /** @description Searches every folder in your tree, selected with parent.owners.id=me, for albums that are (true) or are not (false) published, and lists them in one flat list. Other items never match. Combines with query. (e.g. `true`) */
+                    "filter[subject.albums:published]"?: string;
+                    /** @description In your folders, `=me` selects owned placements and `[ne]=me` selects shared placements. In someone else's folder, `=me` returns no items and `[ne]=me` returns all items. Accepts only `me` or your own user ID. */
+                    "filter[subject.owners.id]"?: string;
+                    /** @description In your folders, `=me` selects owned placements and `[ne]=me` selects shared placements. In someone else's folder, `=me` returns no items and `[ne]=me` returns all items. Accepts only `me` or your own user ID. */
+                    "filter[subject.owners.id][ne]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: breadcrumb, owners, parent, subject
+                     * @example breadcrumb.children.subject
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("breadcrumb" | "owners" | "parent" | "subject")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: breadcrumb.children.subject
+                     * @example breadcrumb.children.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["FolderItems_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
         put?: never;
         /**
          * Create single folderItem.
@@ -7014,7 +7465,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -7121,7 +7572,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -7351,13 +7802,13 @@ export interface paths {
         head?: never;
         /**
          * Update parent relationship ("to-one").
-         * @description Updates parent relationship.
+         * @description Moves the item to the supplied parent folder, replacing its previous parent. To move to the top level, supply the root folder explicitly; null data is rejected. Returns the new parent linkage.
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -7384,7 +7835,7 @@ export interface paths {
                         "application/vnd.api+json": components["schemas"]["FolderItems_Parent_Update_Single_Relationship_Data_Document"];
                     };
                 };
-                400: components["responses"]["FolderItemsUpdateSingleDataRelationship400Response"];
+                400: components["responses"]["FolderItemsParentUpdateSingleDataRelationship400Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -7476,20 +7927,22 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Folder id (e.g. `e3226624-355b-48f8-aa93-db42532caa66`) */
+                    /** @description Folder id (e.g. `e3226624-355b-48f8-aa93-db42532caa66`). Also accepts `me`. */
                     "filter[id]": string[];
                     /**
-                     * @description Include related resources. Available relationships: children, owners, parent, preview
+                     * @description Include related resources. Available relationships: children, owners, parent, preview, shares
                      * @example children.subject
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("children" | "owners" | "parent" | "preview")[];
+                    includeLinkage?: ("children" | "owners" | "parent" | "preview" | "shares")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: children.subject
                      * @example children.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path?: never;
@@ -7525,7 +7978,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -7579,17 +8032,19 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: children, owners, parent, preview
+                     * @description Include related resources. Available relationships: children, owners, parent, preview, shares
                      * @example children.subject
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("children" | "owners" | "parent" | "preview")[];
+                    includeLinkage?: ("children" | "owners" | "parent" | "preview" | "shares")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: children.subject
                      * @example children.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7630,9 +8085,12 @@ export interface paths {
          */
         delete: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -7675,9 +8133,12 @@ export interface paths {
          */
         patch: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -7732,18 +8193,20 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: children
                      * @example children.subject
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: children.subject
                      * @example children.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7805,6 +8268,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7869,6 +8334,8 @@ export interface paths {
                      * @example parent.children.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7935,6 +8402,8 @@ export interface paths {
                      * @example preview.subject
                      */
                     replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -7975,6 +8444,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/folders/{id}/relationships/shares": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get shares relationship ("to-many").
+         * @description The folder's share links, active and expired, newest first.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: shares
+                     * @example shares.sharedResources
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: shares.sharedResources
+                     * @example shares.sharedResources
+                     */
+                    replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Folder id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Folders_Shares_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/genres": {
         parameters: {
             query?: never;
@@ -7991,13 +8528,13 @@ export interface paths {
                 query: {
                     /** @description Allows filtering by genre id(s). USER_SELECTABLE is special value used to return specific genres which users can select from (e.g. `'1,2,3' or 'USER_SELECTABLE'`) */
                     "filter[id]": string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
                      * @example en-US
                      */
                     locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path?: never;
@@ -8208,19 +8745,19 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    /** @description Client-provided installation identifier to filter by (e.g. `a468bee88def`) */
+                    "filter[clientProvidedInstallationId]"?: string[];
+                    /** @description User ID to filter by. Also accepts `me`. */
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: offlineInventory, owners
                      * @example offlineInventory
                      */
                     include?: string[];
-                    /** @description Client-provided installation identifier to filter by (e.g. `a468bee88def`) */
-                    "filter[clientProvidedInstallationId]"?: string[];
-                    /** @description User ID to filter by. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("offlineInventory" | "owners")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
                      * @example offlineInventory
@@ -8261,7 +8798,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -8382,17 +8919,17 @@ export interface paths {
                 query: {
                     /** @description One of: tracks, videos, albums, playlists, userCollectionTracks (e.g. `tracks`) */
                     "filter[type]": ("tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks")[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    /** @description Offline item id (e.g. `1234`) */
+                    "filter[id]"?: string[];
+                    /** @description One of: PENDING, STORED, FAILED (e.g. `PENDING`) */
+                    "filter[state]"?: ("PENDING" | "STORED" | "FAILED")[];
                     /**
                      * @description Include related resources. Available relationships: offlineInventory
                      * @example offlineInventory
                      */
                     include?: string[];
-                    /** @description Offline item id (e.g. `1234`) */
-                    "filter[id]"?: string[];
-                    /** @description One of: PENDING, STORED, FAILED (e.g. `PENDING`) */
-                    "filter[state]"?: ("PENDING" | "STORED" | "FAILED")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: offlineInventory
                      * @example offlineInventory
@@ -8439,7 +8976,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -8486,7 +9023,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -8608,7 +9145,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -8715,7 +9252,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -8760,7 +9297,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -8948,7 +9485,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -9003,8 +9540,6 @@ export interface paths {
                 query: {
                     /** @description List of offline task IDs (e.g. `a468bee88def`) */
                     "filter[installation.id]": string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: collection, item, owners
                      * @example collection
@@ -9012,6 +9547,8 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("collection" | "item" | "owners")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: collection
                      * @example collection
@@ -9122,7 +9659,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -9352,6 +9889,63 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/operations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Commit atomic resource operations
+         * @description Commits a supported group of resource creations together. Only add operations without ref or href are supported. Local linkage must reference an earlier creation. Each resource's mutation policy applies. After a timeout or server error, retry unchanged with the original Idempotency-Key. Replay is bounded by downstream receipt and idempotency retention.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Retry an unchanged request with the original key after a timeout or server error. Replay is bounded by downstream receipt and idempotency retention. */
+                    "Idempotency-Key": string;
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["Atomic_Operations_Request"];
+                };
+            };
+            responses: {
+                /** @description Committed results, in the order of the requested operations */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["Atomic_Operations_Response"];
+                    };
+                };
+                400: components["responses"]["AtomicOperations400Response"];
+                403: components["responses"]["AtomicOperations403Response"];
+                404: components["responses"]["AtomicOperations404Response"];
+                405: components["responses"]["AtomicOperations405Response"];
+                406: components["responses"]["AtomicOperations406Response"];
+                409: components["responses"]["AtomicOperations409Response"];
+                415: components["responses"]["AtomicOperations415Response"];
+                422: components["responses"]["AtomicOperations422Response"];
+                429: components["responses"]["AtomicOperations429Response"];
+                500: components["responses"]["AtomicOperations500Response"];
+                503: components["responses"]["AtomicOperations503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/playQueues": {
         parameters: {
             query?: never;
@@ -9366,10 +9960,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: changeEventStream, current, future, owners, past
                      * @example current
@@ -9377,6 +9969,8 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("changeEventStream" | "current" | "future" | "owners" | "past")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: current
                      * @example current
@@ -9417,7 +10011,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -9524,7 +10118,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -9569,7 +10163,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -9728,13 +10322,13 @@ export interface paths {
         head?: never;
         /**
          * Update current relationship ("to-one").
-         * @description Updates current relationship.
+         * @description Sets the current item to the existing queue occurrence identified by data.meta.itemId, changing which entries are past and future. Null data is rejected. Optional position and updatedByInstallationId must be supplied together. Returns the current item linkage and queue revision.
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -9789,13 +10383,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: future
                      * @example future
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: future
                      * @example future
@@ -9836,13 +10430,13 @@ export interface paths {
         put?: never;
         /**
          * Add to future relationship ("to-many").
-         * @description With meta.source, startIndex selects an entry in the first page's data before unsupported types are skipped. Tracks and videos are added in page order, retaining duplicates; other types are skipped without expansion. Reaching 1000 added items or 100 pages queues the collected prefix. Invalid sources or indexes, a suffix with no playable items, repeated pages, and read failures encountered before a cap leave the queue unchanged. Returns empty data and meta.revision as an acknowledgement.
+         * @description Omitting top-level meta or setting it to null defaults to REPLACE_ALL, replacing future entries. Use ADD_TO_FRONT, ADD_TO_BACK or ADD_BEFORE in meta.mode to add without replacing existing entries. ADD_BEFORE requires meta.positionBefore. REPLACE_ALL_AND_CURRENT replaces future entries; ADD_TO_FRONT_REPLACE_CURRENT prepends entries. Both select the first newly inserted entry in the active queue order as current, which may differ from request order when shuffled. With empty data and no source, replacement modes clear future entries; the current entry is unchanged when no entries are inserted. With meta.source, startIndex selects an entry in the first page's data before unsupported types are skipped. Tracks and videos are added in page order, retaining duplicates; other types are skipped without expansion. Reaching 1000 added items or 100 pages queues the collected prefix. Invalid sources or indexes, a suffix with no playable items, repeated pages, and read failures encountered before a cap leave the queue unchanged. Returns empty data and meta.revision as an acknowledgement.
          */
         post: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -9883,13 +10477,13 @@ export interface paths {
         };
         /**
          * Delete from future relationship ("to-many").
-         * @description Deletes item(s) from future relationship.
+         * @description Removes the future occurrences selected by data[].meta.itemId without deleting their tracks or videos. Other queue entries are preserved. Returns an acknowledgement.
          */
         delete: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -9932,13 +10526,13 @@ export interface paths {
         head?: never;
         /**
          * Update future relationship ("to-many").
-         * @description Returns empty data and meta.revision as an acknowledgement.
+         * @description Incrementally moves existing future occurrences selected by data[].meta.itemId, in their current queue order, before meta.positionBefore. Preserves memberships and unselected entries' metadata and relative order. Empty data is rejected. Returns empty data and meta.revision as an acknowledgement.
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -10054,13 +10648,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: past
                      * @example past
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: past
                      * @example past
@@ -10169,7 +10763,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -10273,7 +10867,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -10314,7 +10908,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -10476,7 +11070,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -10723,13 +11317,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: trackPreferences
                      * @example trackPreferences
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: trackPreferences
                      * @example trackPreferences
@@ -10776,7 +11370,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -10807,7 +11401,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["PlaylistGenerationsAddMultiDataRelationshipWithResponse409Response"];
+                409: components["responses"]["PlaylistGenerationsTrackPreferencesAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -10823,7 +11417,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -10854,7 +11448,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["PlaylistGenerationsRemoveMultiDataRelationship409Response"];
+                409: components["responses"]["PlaylistGenerationsTrackPreferencesRemoveMultiDataRelationship409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -10866,13 +11460,13 @@ export interface paths {
         head?: never;
         /**
          * Update trackPreferences relationship ("to-many").
-         * @description Updates feedback for one existing track preference, leaving other entries unchanged. A missing entry returns 409. Returns the complete preference snapshot. Requires the current meta.preferenceVersion as meta.expectedPreferenceVersion; stale versions return 409.
+         * @description Incrementally updates feedback for one existing track preference, leaving other entries unchanged. Empty data is rejected; a missing entry returns 409. Returns the complete preference snapshot. Requires the current meta.preferenceVersion as meta.expectedPreferenceVersion; stale versions return 409.
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -10903,7 +11497,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["PlaylistGenerationsUpdateMultiDataRelationship409Response"];
+                409: components["responses"]["PlaylistGenerationsTrackPreferencesUpdateMultiDataRelationship409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -10927,33 +11521,33 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("createdAt" | "-createdAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description User id. Also accepts `me`. */
+                    "filter[collaborators.id]"?: string[];
+                    /** @description List of playlist IDs (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
+                    "filter[id]"?: string[];
+                    /** @description User id. Also accepts `me`. */
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: collaboratorProfiles, collaborators, coverArt, curators, items, ownerProfiles, owners, suggestedCoverArts
                      * @example curators.albums
                      */
                     include?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[collaborators.id]"?: string[];
-                    /** @description List of playlist IDs (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
-                    "filter[id]"?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("collaboratorProfiles" | "collaborators" | "coverArt" | "curators" | "items" | "ownerProfiles" | "owners" | "suggestedCoverArts")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: curators.albums
                      * @example curators.albums
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("createdAt" | "-createdAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                 };
                 header?: never;
                 path?: never;
@@ -10989,7 +11583,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -11101,7 +11695,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11146,7 +11740,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11252,7 +11846,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11422,13 +12016,13 @@ export interface paths {
         head?: never;
         /**
          * Update coverArt relationship ("to-many").
-         * @description Updates coverArt relationship.
+         * @description Replaces the custom cover artwork selection with one attachable artwork. Empty data clears the custom selection. Previously attached uploaded artwork is soft-deleted unless system-managed. Returns an acknowledgement.
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11483,13 +12077,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: curators
                      * @example curators.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: curators.albums
                      * @example curators.albums
@@ -11549,27 +12143,27 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "albums.title" | "-albums.title" | "artists.name" | "-artists.name" | "duration" | "-duration" | "itemIndex" | "-itemIndex" | "title" | "-title")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description Filter playlist items by a free-text query (e.g. `halo`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
-                    /** @description Filter playlist items by a free-text query (e.g. `halo`) */
-                    "filter[query]"?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "albums.title" | "-albums.title" | "artists.name" | "-artists.name" | "duration" | "-duration" | "itemIndex" | "-itemIndex" | "title" | "-title")[];
                 };
                 header?: never;
                 path: {
@@ -11611,7 +12205,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11642,7 +12236,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["PlaylistsAddMultiDataRelationshipWithResponse409Response"];
+                409: components["responses"]["PlaylistsItemsAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -11658,7 +12252,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11701,13 +12295,13 @@ export interface paths {
         head?: never;
         /**
          * Update items relationship ("to-many").
-         * @description Updates items relationship.
+         * @description Incrementally moves the occurrences selected by data[].meta.itemId before meta.positionBefore, or to the end when meta is omitted. Preserves unselected memberships, their metadata and relative order; no items are added or removed. Empty data is rejected. Returns an acknowledgement.
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -11983,7 +12577,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -12089,7 +12683,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /**
                      * @description Include related resources. Available relationships: owners, provider
@@ -12267,15 +12861,15 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description List of barcode IDs (EAN-13 or UPC-A) (e.g. `00602527336510`) */
+                    "filter[barcodeId]"?: string[];
+                    /** @description List of GRIDs (Global Release Identifier, ISO 7064) (e.g. `A10302B0013941653J`) */
+                    "filter[grid]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: provider, subject
                      * @example subject
                      */
                     include?: string[];
-                    /** @description List of barcode IDs (EAN-13 or UPC-A) (e.g. `00602527336510`) */
-                    "filter[barcodeId]"?: string[];
-                    /** @description List of GRIDs (Global Release Identifier, ISO 7064) (e.g. `A10302B0013941653J`) */
-                    "filter[grid]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("provider" | "subject")[];
                     /**
@@ -12506,12 +13100,10 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /** @description The type of purchased content (e.g. `albums`) */
                     "filter[subject.type]": ("albums" | "tracks")[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: owners, subject
                      * @example subject
@@ -12519,6 +13111,8 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("owners" | "subject")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
                      * @example subject
@@ -12697,20 +13291,8 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
-                    statsOnly?: boolean;
-                    viewerContext?: string;
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description Include related resources. Available relationships: author, ownerProfiles, owners
-                     * @example author.albums
-                     */
-                    include?: string[];
                     /** @description Filter by emoji (e.g. `👍`) */
                     "filter[emoji]"?: string[];
-                    /** @description The subject whose reactions to return. Use either subject or the deprecated subject.id and subject.type pair. */
-                    "filter[subject]"?: string;
                     /**
                      * @deprecated
                      * @description Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)
@@ -12721,13 +13303,25 @@ export interface paths {
                      * @description Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)
                      */
                     "filter[subject.type]"?: ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments" | "trackSourceFiles")[];
+                    /** @description The subject whose reactions to return. Use either subject or the deprecated subject.id and subject.type pair. */
+                    "filter[subject]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: author, ownerProfiles, owners
+                     * @example author.albums
+                     */
+                    include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("author" | "ownerProfiles" | "owners")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
                      * @example author.albums
                      */
                     replaceMedia?: string;
+                    stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
+                    statsOnly?: boolean;
+                    viewerContext?: string;
                 };
                 header?: never;
                 path?: never;
@@ -12763,7 +13357,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -12820,7 +13414,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -13047,6 +13641,381 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/resourceGrants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple resourceGrants.
+         * @description Lists stored grants from every source visible to the subject's owner or named user grantee, selected by subject or grantee, optionally restricted by assigned role. Requires subject or grantee.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Filter by grantee. Also accepts `users:me`. */
+                    "filter[grantee]"?: string;
+                    /** @description One of: VIEWER, COLLABORATOR, OWNER (e.g. `VIEWER`) */
+                    "filter[role]"?: "VIEWER" | "COLLABORATOR" | "OWNER";
+                    /** @description Filter by subject. Also accepts `folders:me`. */
+                    "filter[subject]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: grantee, subject
+                     * @example grantee.artist.albums
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("grantee" | "subject")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grantee.artist.albums
+                     * @example grantee.artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single resourceGrant.
+         * @description Creates a new resourceGrant.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ResourceGrantsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Create_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resourceGrants/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single resourceGrant.
+         * @description Retrieves single resourceGrant by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: grantee, subject
+                     * @example grantee.artist.albums
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("grantee" | "subject")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grantee.artist.albums
+                     * @example grantee.artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque resource grant ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Delete single resourceGrant.
+         * @description Deletes existing resourceGrant.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /** @description Opaque resource grant ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Update single resourceGrant.
+         * @description Updates existing resourceGrant.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /** @description Opaque resource grant ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ResourceGrantsUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Update_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/resourceGrants/{id}/relationships/grantee": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get grantee relationship ("to-one").
+         * @description Retrieves grantee relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: grantee
+                     * @example grantee.artist.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grantee.artist.albums
+                     * @example grantee.artist.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque resource grant ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Grantee_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resourceGrants/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque resource grant ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Subject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/savedShares": {
         parameters: {
             query?: never;
@@ -13058,13 +14027,13 @@ export interface paths {
         put?: never;
         /**
          * Create single savedShare.
-         * @description Creates a new savedShare.
+         * @description Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403.
          */
         post: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -13171,7 +14140,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -13228,10 +14197,10 @@ export interface paths {
                     /** @description Search query (e.g. `hello`) */
                     "filter[query]": string;
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -13243,15 +14212,10 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
-                     * @description The system type of the device making the request
-                     * @example IOS
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
-                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: albums, artists, playlists, topHits, tracks, videos
                      * @example albums
@@ -13264,6 +14228,11 @@ export interface paths {
                      * @example albums
                      */
                     replaceMedia?: string;
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                 };
                 header?: never;
                 path?: never;
@@ -13313,12 +14282,10 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -13330,25 +14297,27 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
-                     * @description The system type of the device making the request
-                     * @example IOS
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
-                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: albums
                      * @example albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
                      */
                     replaceMedia?: string;
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                 };
                 header?: never;
                 path: {
@@ -13401,12 +14370,10 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -13418,25 +14385,27 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /**
+                     * @description Include related resources. Available relationships: artists
+                     * @example artists.albums
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
+                     * @example artists.albums
+                     */
+                    replaceMedia?: string;
+                    /**
                      * @description The system type of the device making the request
                      * @example IOS
                      */
                     systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
-                    /**
-                     * @description Include related resources. Available relationships: artists
-                     * @example artists
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists
-                     * @example artists
-                     */
-                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -13489,12 +14458,10 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -13506,25 +14473,27 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
+                    /**
+                     * @description Include related resources. Available relationships: playlists
+                     * @example playlists.items
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlists.items
+                     * @example playlists.items
+                     */
+                    replaceMedia?: string;
+                    /**
                      * @description The system type of the device making the request
                      * @example IOS
                      */
                     systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
-                    /**
-                     * @description Include related resources. Available relationships: playlists
-                     * @example playlists
-                     */
-                    include?: string[];
-                    /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: playlists
-                     * @example playlists
-                     */
-                    replaceMedia?: string;
                 };
                 header?: never;
                 path: {
@@ -13577,12 +14546,10 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -13594,25 +14561,27 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
-                     * @description The system type of the device making the request
-                     * @example IOS
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
-                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: topHits
                      * @example topHits
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: topHits
                      * @example topHits
                      */
                     replaceMedia?: string;
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                 };
                 header?: never;
                 path: {
@@ -13665,12 +14634,10 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -13682,25 +14649,27 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
-                     * @description The system type of the device making the request
-                     * @example IOS
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
-                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: tracks
                      * @example tracks
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
                      * @example tracks
                      */
                     replaceMedia?: string;
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                 };
                 header?: never;
                 path: {
@@ -13753,12 +14722,10 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
+                     * @description Client version number
+                     * @example 2026.0.1
                      */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
+                    clientVersion?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -13770,25 +14737,27 @@ export interface paths {
                      */
                     deviceType?: "BROWSER" | "CAR" | "DESKTOP" | "PHONE" | "TABLET" | "TV";
                     /**
-                     * @description The system type of the device making the request
-                     * @example IOS
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
                      */
-                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
-                    /**
-                     * @description Client version number
-                     * @example 2026.0.1
-                     */
-                    clientVersion?: string;
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: videos
                      * @example videos
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
                      * @example videos
                      */
                     replaceMedia?: string;
+                    /**
+                     * @description The system type of the device making the request
+                     * @example IOS
+                     */
+                    systemType?: "ANDROID" | "DESKTOP" | "TESLA" | "IOS" | "WEB";
                 };
                 header?: never;
                 path: {
@@ -13843,15 +14812,15 @@ export interface paths {
                     /** @description Search query (e.g. `hello`) */
                     "filter[query]": string;
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
-                     */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: directHits, history
                      * @example directHits
@@ -13913,15 +14882,15 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
-                     */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: directHits
                      * @example directHits
@@ -13986,15 +14955,15 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
-                     * @example INCLUDE
-                     */
-                    explicitFilter?: "INCLUDE" | "EXCLUDE";
-                    /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /**
+                     * @description Explicit filter. Valid values: INCLUDE or EXCLUDE
+                     * @example INCLUDE
+                     */
+                    explicitFilter?: "INCLUDE" | "EXCLUDE";
                     /**
                      * @description Include related resources. Available relationships: history
                      * @example history
@@ -14102,7 +15071,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -14208,11 +15177,11 @@ export interface paths {
         delete: {
             parameters: {
                 query?: {
-                    /** @description Also revoke grants issued through this share. Defaults to false; true is currently unsupported. */
+                    /** @description Also revoke the access granted to everyone who saved this share; access from other sources stays. Defaults to false. Not supported for playlist shares or for owners not yet on the access store; there true is rejected with 400. */
                     revokeGrants?: boolean;
                 };
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -14327,13 +15296,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: sharedResources
                      * @example sharedResources
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources
                      * @example sharedResources
@@ -14396,7 +15365,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -14539,7 +15508,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
-                403: components["responses"]["SquareConnectionsReadSingleDataRelationship403Response"];
+                403: components["responses"]["SquareConnectionsSelectedSiteReadSingleDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -14556,13 +15525,13 @@ export interface paths {
         head?: never;
         /**
          * Update selectedSite relationship ("to-one").
-         * @description Updates selectedSite relationship.
+         * @description Replaces the selected Square site. Explicit null data clears the selection without deleting the site. Returns the selected site linkage, or null data when cleared.
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -14590,11 +15559,11 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
-                403: components["responses"]["SquareConnectionsUpdateSingleDataRelationship403Response"];
+                403: components["responses"]["SquareConnectionsSelectedSiteUpdateSingleDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["SquareConnectionsUpdateSingleDataRelationship409Response"];
+                409: components["responses"]["SquareConnectionsSelectedSiteUpdateSingleDataRelationship409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -14648,7 +15617,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
-                403: components["responses"]["SquareConnectionsReadMultiDataRelationship403Response"];
+                403: components["responses"]["SquareConnectionsSitesReadMultiDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -14661,6 +15630,987 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/squareItemVariationPhysicalCounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create single squareItemVariationPhysicalCount.
+         * @description Records a whole-unit physical stock count at occurredAt. Requires stock tracking at the selected site's shipping location (merchant-main fallback). While its replay receipt remains available, exact retries retain the original location and event time. Catalog revisions do not guard inventory counts.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareItemVariationPhysicalCountsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItemVariationPhysicalCounts_Create_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemVariationPhysicalCountsCreateResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemVariationPhysicalCountsCreateResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/squareItemVariations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create single squareItemVariation.
+         * @description Adds a fixed-price variation at the end of the item's display order, preserving all existing variations and their pricing modes. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareItemVariationsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItemVariations_Create_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemVariationsCreateResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemVariationsCreateResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/squareItemVariations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single squareItemVariation.
+         * @description Retrieves single squareItemVariation by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Include related resources. Available relationships: owners */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square variation id
+                     * @example p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItemVariations_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemVariationsReadById403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemVariationsReadById409Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Delete single squareItemVariation.
+         * @description Deletes this variation by ID without a revision precondition, preserving its siblings. The last variation cannot be deleted; delete the item instead. Returns an acknowledgement; read the parent item for its current revision. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path: {
+                    /**
+                     * @description Square variation id
+                     * @example p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemVariationsDeleteResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemVariationsDeleteResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Update single squareItemVariation.
+         * @description Updates the variation's global name or its price and stock tracking at the selected site's shipping location, with merchant-main fallback. Stock quantity is changed through physical-count submissions. Price changes require existing positive fixed pricing at that location; name and stock tracking preserve other pricing modes. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path: {
+                    /**
+                     * @description Square variation id
+                     * @example p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareItemVariationsUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItemVariations_Update_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemVariationsUpdateResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemVariationsUpdateResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/squareItemVariations/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square variation id
+                     * @example p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItemVariations_Owners_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/squareItems": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple squareItems.
+         * @description Retrieves multiple squareItems by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description User id. Also accepts `me`. */
+                    "filter[owners.id]": string[];
+                    /** @description Only items with this origin (e.g. `TIDAL`) */
+                    "filter[origin]"?: "TIDAL" | "OTHER";
+                    /** @description Word-prefix match on item titles, descriptions and abbreviations, and on variation names, SKUs and UPCs (e.g. `tee`) */
+                    "filter[query]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: artworks, owners, variations
+                     * @example artworks
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("artworks" | "owners" | "variations")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsReadByFilter403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsReadByFilter409Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/squareItems/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single squareItem.
+         * @description Retrieves single squareItem by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: artworks, owners, variations
+                     * @example artworks
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("artworks" | "owners" | "variations")[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsReadById403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsReadById409Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Delete single squareItem.
+         * @description Deletes existing squareItem.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsDeleteResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsDeleteResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Update single squareItem.
+         * @description Updates existing squareItem.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareItemsUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Update_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsUpdateResource403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsUpdateResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/squareItems/{id}/relationships/artworks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artworks relationship ("to-many").
+         * @description A photo Square has no URL for stays in the list and its artwork has no files.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: artworks
+                     * @example artworks
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Artworks_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsArtworksReadMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update artworks relationship ("to-many").
+         * @description Appends images without moving existing photos. Duplicate artwork IDs are rejected. Uploaded TIDAL JPEG artworks, at most 15,000,000 bytes, are copied to Square and attached under new artwork IDs; their originals stay unchanged. Existing Square artworks must belong to this seller and are attached directly. Returns only the affected Square artwork linkage, in the item's display order, and the committed item revision. Copies may remain in Square if attachment fails. Retry unchanged with the original Idempotency-Key after a timeout or 5xx. Recovery is bounded by Marketplace receipts and Square's idempotency retention, and can be blocked if the item is deleted or a source becomes unavailable or ineligible. Read the item again to reconcile its current state.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareItemsArtworksRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Artworks_Update_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsArtworksUpdateMultiDataRelationship403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsArtworksUpdateMultiDataRelationship409Response"];
+                413: components["responses"]["SquareItemsArtworksUpdateMultiDataRelationship413Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/squareItems/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Owners_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/squareItems/{id}/relationships/variations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get variations relationship ("to-many").
+         * @description Variations in Square's display order.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: variations
+                     * @example variations
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Variations_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsVariationsReadMultiDataRelationship403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsVariationsReadMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update variations relationship ("to-many").
+         * @description Incrementally moves the selected variations as an ordered block before positionBefore, or to the end when omitted. Memberships are preserved; unselected variations retain their metadata and relative order. Empty data is rejected. Returns the affected linkage only and the updated item revision. After a timeout or `5xx`, retry unchanged with the original Idempotency-Key. Replay protection is bounded by receipt availability and Square's idempotency retention.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path: {
+                    /**
+                     * @description Square item id
+                     * @example p67ILh4Qr7GGjIlwk4gBeQ5IHZIu0pXANdpGDmZfnFay
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareItemsVariationsRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItems_Variations_Update_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemsVariationsUpdateMultiDataRelationship403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemsVariationsUpdateMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/squareSites/{id}/relationships/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get items relationship ("to-many").
+         * @description Items published in the site, in title order. Missing catalog scopes return MISSING_ITEMS_SCOPE. A page can be short or empty and still have a next cursor.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: items
+                     * @example items
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square Online site id
+                     * @example IhETt7taHSVV2MUu9kqjMDengjnhVZa
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareSites_Items_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareSitesItemsReadMultiDataRelationship403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareSitesItemsReadMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Add to items relationship ("to-many").
+         * @description Publishes the items in the site. Items already published and repeated items are left alone. An item missing from the catalog fails the request before anything changes.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Square Online site id
+                     * @example IhETt7taHSVV2MUu9kqjMDengjnhVZa
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareSitesItemsRelationshipAddOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareSitesItemsAddMultiDataRelationship403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareSitesItemsAddMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        /**
+         * Delete from items relationship ("to-many").
+         * @description Removes the items from the site; they stay in the catalog. Items not published and repeated items are left alone. An item missing from the catalog fails the request before anything changes.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Square Online site id
+                     * @example IhETt7taHSVV2MUu9kqjMDengjnhVZa
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareSitesItemsRelationshipRemoveOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareSitesItemsRemoveMultiDataRelationship403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareSitesItemsRemoveMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
         options?: never;
         head?: never;
         patch?: never;
@@ -14680,7 +16630,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /** @description Include related resources. Available relationships: owners */
                     include?: string[];
@@ -14721,7 +16671,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -14835,7 +16785,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /** @description Include related resources. Available relationships: owners */
                     include?: string[];
@@ -14950,7 +16900,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /**
                      * @description Include related resources. Available relationships: priceChange
@@ -14994,7 +16944,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -15054,7 +17004,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -15171,7 +17121,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -15507,12 +17457,12 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    manifestType: "HLS" | "MPEG_DASH";
+                    adaptive: boolean;
                     formats: ("HEAACV1" | "AACLC" | "FLAC" | "FLAC_HIRES" | "EAC3_JOC")[];
+                    manifestType: "HLS" | "MPEG_DASH";
                     uriScheme: "HTTPS" | "DATA";
                     usage: "PLAYBACK" | "DOWNLOAD";
-                    adaptive: boolean;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -15574,7 +17524,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -15870,35 +17820,35 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("createdAt" | "-createdAt" | "title" | "-title")[];
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description List of track IDs (e.g. `75413016`) */
+                    "filter[id]"?: string[];
+                    /** @description List of ISRCs. When a single ISRC is provided, pagination is supported and multiple tracks may be returned. When multiple ISRCs are provided, one track per ISRC is returned without pagination. (e.g. `QMJMT1701237`) */
+                    "filter[isrc]"?: string[];
+                    /** @description User id. Also accepts `me`. */
+                    "filter[owners.id]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: albums, artists, credits, download, genres, lyrics, metadataStatus, owners, priceConfig, providers, radio, replacement, shares, similarTracks, sourceFile, suggestedTracks, trackStatistics, usageRules
                      * @example albums
                      */
                     include?: string[];
-                    /** @description List of track IDs (e.g. `75413016`) */
-                    "filter[id]"?: string[];
-                    /** @description List of ISRCs. When a single ISRC is provided, pagination is supported and multiple tracks may be returned. When multiple ISRCs are provided, one track per ISRC is returned without pagination. (e.g. `QMJMT1701237`) */
-                    "filter[isrc]"?: string[];
-                    /** @description User id. Use `me` for the authenticated user */
-                    "filter[owners.id]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("albums" | "artists" | "credits" | "download" | "genres" | "lyrics" | "metadataStatus" | "owners" | "priceConfig" | "providers" | "radio" | "replacement" | "shares" | "similarTracks" | "sourceFile" | "suggestedTracks" | "trackStatistics" | "usageRules")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("createdAt" | "-createdAt" | "title" | "-title")[];
                 };
                 header?: never;
                 path?: never;
@@ -15934,7 +17884,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -16004,7 +17954,7 @@ export interface paths {
                      * @example albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16046,9 +17996,12 @@ export interface paths {
          */
         delete: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -16091,9 +18044,12 @@ export interface paths {
          */
         patch: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -16165,7 +18121,7 @@ export interface paths {
                      * @example albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16206,13 +18162,16 @@ export interface paths {
         head?: never;
         /**
          * Update albums relationship ("to-many").
-         * @description Updates albums relationship.
+         * @description Moves the uploaded track to the supplied album, replacing its previous album association. Exactly one album is required; empty data cannot clear it. Returns an acknowledgement.
          */
         patch: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -16267,8 +18226,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -16279,12 +18236,14 @@ export interface paths {
                      * @example artists.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16340,19 +18299,19 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: credits
                      * @example credits.artist.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: credits.artist.albums
                      * @example credits.artist.albums
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16413,7 +18372,7 @@ export interface paths {
                      * @example download
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16481,7 +18440,7 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16549,7 +18508,7 @@ export interface paths {
                      * @example lyrics.track
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16610,7 +18569,7 @@ export interface paths {
                      * @example metadataStatus
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16673,7 +18632,7 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16739,7 +18698,7 @@ export interface paths {
                      * @example priceConfig
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16807,7 +18766,7 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16875,7 +18834,7 @@ export interface paths {
                      * @example radio.items
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16946,7 +18905,7 @@ export interface paths {
                      * @example replacement
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -16997,7 +18956,7 @@ export interface paths {
         };
         /**
          * Get shares relationship ("to-many").
-         * @description Retrieves shares relationship.
+         * @description The track's share links, active and expired, newest first.
          */
         get: {
             parameters: {
@@ -17014,7 +18973,7 @@ export interface paths {
                      * @example shares.sharedResources
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -17070,8 +19029,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -17082,12 +19039,14 @@ export interface paths {
                      * @example similarTracks
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarTracks
                      * @example similarTracks
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -17148,7 +19107,7 @@ export interface paths {
                      * @example sourceFile
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -17204,8 +19163,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -17216,12 +19173,14 @@ export interface paths {
                      * @example suggestedTracks
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: suggestedTracks
                      * @example suggestedTracks
                      */
                     replaceMedia?: string;
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -17282,7 +19241,7 @@ export interface paths {
                      * @example trackStatistics
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -17348,7 +19307,7 @@ export interface paths {
                      * @example usageRules
                      */
                     include?: string[];
-                    /** @description Share code that grants access to UNLISTED resources. When provided, allows non-owners to access resources that would otherwise be restricted. */
+                    /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
                 header?: never;
@@ -17460,7 +19419,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -17567,17 +19526,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items, owners
                      * @example items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "owners")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -17637,27 +19596,27 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "artists.name" | "-artists.name" | "releaseDate" | "-releaseDate" | "title" | "-title")[];
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
+                    /** @description Filter albums by a free-text query matched against the album title and artist names. Internal clients only (e.g. `love`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
-                    /** @description Filter albums by a free-text query matched against the album title and artist names. Internal clients only (e.g. `love`) */
-                    "filter[query]"?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "artists.name" | "-artists.name" | "releaseDate" | "-releaseDate" | "title" | "-title")[];
                 };
                 header?: never;
                 path: {
@@ -17681,7 +19640,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
-                403: components["responses"]["UserCollectionAlbumsReadMultiDataRelationship403Response"];
+                403: components["responses"]["UserCollectionAlbumsItemsReadMultiDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -17700,7 +19659,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -17731,7 +19690,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionAlbumsAddMultiDataRelationshipWithResponse409Response"];
+                409: components["responses"]["UserCollectionAlbumsItemsAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -17747,7 +19706,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -17867,17 +19826,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items, owners
                      * @example items.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "owners")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.albums
                      * @example items.albums
@@ -17937,27 +19896,27 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "name" | "-name")[];
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
+                    /** @description Filter artists by a free-text query matched against the artist name. Internal clients only (e.g. `love`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.albums
                      */
                     include?: string[];
-                    /** @description Filter artists by a free-text query matched against the artist name. Internal clients only (e.g. `love`) */
-                    "filter[query]"?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.albums
                      * @example items.albums
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "name" | "-name")[];
                 };
                 header?: never;
                 path: {
@@ -17981,7 +19940,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
-                403: components["responses"]["UserCollectionArtistsReadMultiDataRelationship403Response"];
+                403: components["responses"]["UserCollectionArtistsItemsReadMultiDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -18000,7 +19959,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18031,7 +19990,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionArtistsAddMultiDataRelationshipWithResponse409Response"];
+                409: components["responses"]["UserCollectionArtistsItemsAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -18047,7 +20006,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18215,7 +20174,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -18322,7 +20281,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18367,7 +20326,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18422,20 +20381,20 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                 };
                 header?: never;
                 path: {
@@ -18477,7 +20436,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18524,7 +20483,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18708,17 +20667,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items, owners
                      * @example items.items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "owners")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -18779,22 +20738,22 @@ export interface paths {
             parameters: {
                 query?: {
                     collectionView?: "FLAT" | "FOLDERS";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
+                    /** @description Filter playlists by a free-text query. Returns matching playlists only (no mixes or folders), including playlists inside folders. Cannot be combined with collectionView=FOLDERS. Internal clients only (e.g. `summer`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
-                    /** @description Filter playlists by a free-text query. Returns matching playlists only (no mixes or folders), including playlists inside folders. Cannot be combined with collectionView=FOLDERS. Internal clients only (e.g. `summer`) */
-                    "filter[query]"?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "lastModifiedAt" | "-lastModifiedAt" | "name" | "-name")[];
                 };
                 header?: never;
                 path: {
@@ -18818,7 +20777,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
-                403: components["responses"]["UserCollectionPlaylistsReadMultiDataRelationship403Response"];
+                403: components["responses"]["UserCollectionPlaylistsItemsReadMultiDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -18837,7 +20796,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -18868,7 +20827,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409Response"];
+                409: components["responses"]["UserCollectionPlaylistsItemsAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -18884,7 +20843,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -19069,13 +21028,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -19122,7 +21081,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -19153,7 +21112,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409Response"];
+                409: components["responses"]["UserCollectionSaveForLatersItemsAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -19169,7 +21128,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -19289,17 +21248,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items, owners
                      * @example items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "owners")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -19359,27 +21318,27 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "albums.title" | "-albums.title" | "artists.name" | "-artists.name" | "duration" | "-duration" | "title" | "-title")[];
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
+                    /** @description Filter tracks by a free-text query matched against the track title, artist names and album title. Internal clients only (e.g. `love`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
-                    /** @description Filter tracks by a free-text query matched against the track title, artist names and album title. Internal clients only (e.g. `love`) */
-                    "filter[query]"?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "albums.title" | "-albums.title" | "artists.name" | "-artists.name" | "duration" | "-duration" | "title" | "-title")[];
                 };
                 header?: never;
                 path: {
@@ -19403,7 +21362,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
-                403: components["responses"]["UserCollectionTracksReadMultiDataRelationship403Response"];
+                403: components["responses"]["UserCollectionTracksItemsReadMultiDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -19422,7 +21381,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -19453,7 +21412,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionTracksAddMultiDataRelationshipWithResponse409Response"];
+                409: components["responses"]["UserCollectionTracksItemsAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -19469,7 +21428,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -19589,17 +21548,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items, owners
                      * @example items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("items" | "owners")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
@@ -19659,27 +21618,27 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("addedAt" | "-addedAt" | "artists.name" | "-artists.name" | "duration" | "-duration" | "title" | "-title")[];
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
+                    /** @description Filter videos by a free-text query matched against the video title and artist names. Internal clients only (e.g. `love`) */
+                    "filter[query]"?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items
                      */
                     include?: string[];
-                    /** @description Filter videos by a free-text query matched against the video title and artist names. Internal clients only (e.g. `love`) */
-                    "filter[query]"?: string;
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items
                      * @example items
                      */
                     replaceMedia?: string;
+                    /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
+                    sort?: ("addedAt" | "-addedAt" | "artists.name" | "-artists.name" | "duration" | "-duration" | "title" | "-title")[];
                 };
                 header?: never;
                 path: {
@@ -19703,7 +21662,7 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
-                403: components["responses"]["UserCollectionVideosReadMultiDataRelationship403Response"];
+                403: components["responses"]["UserCollectionVideosItemsReadMultiDataRelationship403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
@@ -19722,7 +21681,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -19753,7 +21712,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserCollectionVideosAddMultiDataRelationshipWithResponse409Response"];
+                409: components["responses"]["UserCollectionVideosItemsAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -19769,7 +21728,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -19889,17 +21848,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: "items"[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -19959,18 +21918,18 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -20033,7 +21992,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -20087,17 +22046,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: "items"[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -20157,18 +22116,18 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -20228,12 +22187,10 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /** @description Feed surface to read (e.g. `INBOX`) */
                     "filter[surface]": "INBOX" | "FEED";
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: actors, subject
                      * @example actors.albums
@@ -20241,6 +22198,8 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("actors" | "subject")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: actors.albums
                      * @example actors.albums
@@ -20289,18 +22248,18 @@ export interface paths {
         };
         /**
          * Get actors relationship ("to-many").
-         * @description Artists attributed to the activity.
+         * @description Artists attributed to the activity. Always empty for `ALBUM_FAVOURITED`, `TRACK_FAVOURITED` and `TRACK_PLAYLISTED`, which are counts only, and for `HISTORY_MIX_READY` and `TRACK_PLAY_MILESTONE`, which nobody else acted on.
          */
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: actors
                      * @example actors.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: actors.albums
                      * @example actors.albums
@@ -20355,7 +22314,7 @@ export interface paths {
         };
         /**
          * Get subject relationship ("to-one").
-         * @description The resource the activity concerns.
+         * @description The resource the activity concerns. For `HISTORY_MIX_READY`, the viewer's history mix as a playlist.
          */
         get: {
             parameters: {
@@ -20468,7 +22427,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -20524,17 +22483,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: "items"[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -20594,18 +22553,18 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -20666,17 +22625,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: "items"[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -20736,18 +22695,18 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                    /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
                     /**
                      * @description Include related resources. Available relationships: items
                      * @example items.items
                      */
                     include?: string[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: items.items
                      * @example items.items
@@ -20864,7 +22823,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -20968,13 +22927,13 @@ export interface paths {
         head?: never;
         /**
          * Update activePlayer relationship ("to-one").
-         * @description Updates activePlayer relationship.
+         * @description Replaces the active-player selection with the supplied owned installation. Explicit null data releases the player without deleting the installation. Returns null linkage when released or when the selected installation has no live attachment. An unavailable selection is retained and becomes visible again when its attachment is refreshed.
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21076,13 +23035,13 @@ export interface paths {
         put?: never;
         /**
          * Add to availablePlayers relationship ("to-many").
-         * @description Adds item(s) to availablePlayers relationship.
+         * @description Attaches or refreshes one owned installation as an available player, preserving other attachments. Returns all currently available player linkage.
          */
         post: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21123,13 +23082,13 @@ export interface paths {
         };
         /**
          * Delete from availablePlayers relationship ("to-many").
-         * @description Deletes item(s) from availablePlayers relationship.
+         * @description Detaches one installation without deleting it. Also releases the active player when it is that installation. Returns an acknowledgement.
          */
         delete: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21291,13 +23250,13 @@ export interface paths {
         head?: never;
         /**
          * Update playQueue relationship ("to-one").
-         * @description Updates playQueue relationship.
+         * @description Replaces the selected play queue. Explicit null data clears the selection without deleting the queue. Returns the selected queue linkage, or null data when cleared.
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21353,17 +23312,17 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
-                     * @example en-US
-                     */
-                    locale?: string;
-                    /**
                      * @description Include related resources. Available relationships: artists, owners, tracks, videos
                      * @example artists.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("artists" | "owners" | "tracks" | "videos")[];
+                    /**
+                     * @description BCP 47 locale (e.g., en-US, nb-NO, pt-BR). Defaults to en-US if not provided or unsupported.
+                     * @example en-US
+                     */
+                    locale?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
@@ -21423,13 +23382,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: artists
                      * @example artists.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
@@ -21476,7 +23435,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21507,7 +23466,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response"];
+                409: components["responses"]["UserRecommendationBlocksArtistsAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -21523,7 +23482,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21642,13 +23601,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: tracks
                      * @example tracks
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: tracks
                      * @example tracks
@@ -21695,7 +23654,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21726,7 +23685,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response"];
+                409: components["responses"]["UserRecommendationBlocksTracksAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -21742,7 +23701,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21800,13 +23759,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: videos
                      * @example videos
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: videos
                      * @example videos
@@ -21853,7 +23812,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21884,7 +23843,7 @@ export interface paths {
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
-                409: components["responses"]["UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response"];
+                409: components["responses"]["UserRecommendationBlocksVideosAddMultiDataRelationshipWithResponse409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -21900,7 +23859,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path: {
@@ -21961,7 +23920,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: {
-                    /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
                     "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 };
                 path?: never;
@@ -22015,7 +23974,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description User id. Use `me` for the authenticated user */
+                    /** @description User id. Also accepts `me`. */
                     "filter[owners.id]": string[];
                     /**
                      * @description Include related resources. Available relationships: decision
@@ -22323,15 +24282,15 @@ export interface paths {
                      * @example US
                      */
                     countryCode?: string;
+                    /** @description List of video IDs (e.g. `75623239`) */
+                    "filter[id]"?: string[];
+                    /** @description List of ISRCs (e.g. `QMJMT1701237`) */
+                    "filter[isrc]"?: string[];
                     /**
                      * @description Include related resources. Available relationships: albums, artists, credits, providers, replacement, similarVideos, suggestedVideos, thumbnailArt, usageRules
                      * @example albums
                      */
                     include?: string[];
-                    /** @description List of video IDs (e.g. `75623239`) */
-                    "filter[id]"?: string[];
-                    /** @description List of ISRCs (e.g. `QMJMT1701237`) */
-                    "filter[isrc]"?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: ("albums" | "artists" | "credits" | "providers" | "replacement" | "similarVideos" | "suggestedVideos" | "thumbnailArt" | "usageRules")[];
                     /**
@@ -22458,8 +24417,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -22470,6 +24427,8 @@ export interface paths {
                      * @example albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: albums
                      * @example albums
@@ -22529,8 +24488,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -22541,6 +24498,8 @@ export interface paths {
                      * @example artists.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: artists.albums
                      * @example artists.albums
@@ -22600,13 +24559,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description Include related resources. Available relationships: credits
                      * @example credits.artist.albums
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: credits.artist.albums
                      * @example credits.artist.albums
@@ -22666,8 +24625,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -22678,6 +24635,8 @@ export interface paths {
                      * @example providers
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
@@ -22801,8 +24760,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -22813,6 +24770,8 @@ export interface paths {
                      * @example similarVideos
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: similarVideos
                      * @example similarVideos
@@ -22872,8 +24831,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -22884,6 +24841,8 @@ export interface paths {
                      * @example suggestedVideos
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: suggestedVideos
                      * @example suggestedVideos
@@ -22943,8 +24902,6 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
                     /**
                      * @description ISO 3166-1 alpha-2 country code
                      * @example US
@@ -22955,6 +24912,8 @@ export interface paths {
                      * @example thumbnailArt
                      */
                     include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
                 };
                 header?: never;
                 path: {
@@ -23073,7 +25032,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Original subjects to look up. */
+                    /** @description Original subjects to look up. Also accepts `folders:me`. */
                     "filter[subject]": string[];
                     /**
                      * @description Include related resources. Available relationships: subject, viewer
@@ -23342,6 +25301,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         AcceptedTerms_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -23365,6 +25325,7 @@ export interface components {
              */
             type: "acceptedTerms";
         };
+        /** @description Target resource types: `terms`. */
         AcceptedTerms_Terms_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -23387,6 +25348,7 @@ export interface components {
              */
             uniqueListeners: number;
         };
+        /** @description Target resource types: `users`. */
         AlbumStatistics_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -23416,6 +25378,14 @@ export interface components {
         };
         AlbumsCoverArtRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["AlbumsCoverArtRelationshipUpdateOperation_Payload_Data"][];
+            meta?: {
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.
+                 * @default REPLACE_ALL
+                 * @enum {string}
+                 */
+                mode: "REPLACE_ALL";
+            };
         };
         AlbumsCoverArtRelationshipUpdateOperation_Payload_Data: {
             id: string;
@@ -23469,7 +25439,19 @@ export interface components {
         };
         AlbumsItemsRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["AlbumsItemsRelationshipUpdateOperation_Payload_Data"][];
-            meta: components["schemas"]["AlbumsItemsRelationshipUpdateOperation_Payload_Meta"];
+            meta: {
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.
+                 * @default INCREMENTAL
+                 * @enum {string}
+                 */
+                mode: "INCREMENTAL";
+                /**
+                 * Format: int32
+                 * @description 1-based index
+                 */
+                positionIndex: number;
+            };
         };
         AlbumsItemsRelationshipUpdateOperation_Payload_Data: {
             id: string;
@@ -23527,11 +25509,13 @@ export interface components {
             /** @enum {string} */
             type: "genres";
         };
+        /** @description Target resource types: `albumStatistics`. */
         Albums_AlbumStatistics_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         Albums_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -23598,6 +25582,11 @@ export interface components {
              */
             popularity: number;
             /**
+             * @description Whether the album is published and available to everyone. Present only for uploaded albums.
+             * @example true
+             */
+            published?: boolean;
+            /**
              * Format: date
              * @description Release date (ISO-8601)
              * @example 2017-06-30
@@ -23620,6 +25609,7 @@ export interface components {
              */
             version?: string;
         };
+        /** @description Target resource types: `artworks`. */
         Albums_CoverArt_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -23629,11 +25619,13 @@ export interface components {
             data: components["schemas"]["Albums_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `genres`. */
         Albums_Genres_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `tracks`, `videos`. */
         Albums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Albums_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -23672,16 +25664,19 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Albums_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `priceConfigurations`. */
         Albums_PriceConfig_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `providers`. */
         Albums_Providers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -23718,6 +25713,7 @@ export interface components {
         Albums_Replacement_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`. */
         Albums_Replacement_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Albums_Replacement_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -23737,11 +25733,13 @@ export interface components {
              */
             type: "albums";
         };
+        /** @description Target resource types: `shares`. */
         Albums_Shares_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `albums`. */
         Albums_SimilarAlbums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Albums_SimilarAlbums_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -23768,6 +25766,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artworks`. */
         Albums_SuggestedCoverArts_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Albums_SuggestedCoverArts_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -23797,6 +25796,7 @@ export interface components {
             /** @description Foreground color for the suggested artwork */
             foregroundColor: string;
         };
+        /** @description Target resource types: `usageRules`. */
         Albums_UsageRules_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -23880,6 +25880,7 @@ export interface components {
              */
             text: string;
         };
+        /** @description Target resource types: `users`. */
         ArtistBiographies_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -23936,6 +25937,14 @@ export interface components {
         };
         ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload_Data"][];
+            meta?: {
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.
+                 * @default REPLACE_ALL
+                 * @enum {string}
+                 */
+                mode: "REPLACE_ALL";
+            };
         };
         ArtistClaimsAcceptedArtistsRelationshipUpdateOperation_Payload_Data: {
             id: string;
@@ -23975,6 +25984,7 @@ export interface components {
             authorizationCode: string;
             redirectUri: string;
         };
+        /** @description Target resource types: `artists`. */
         ArtistClaims_AcceptedArtists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24012,11 +26022,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         ArtistClaims_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         ArtistClaims_RecommendedArtists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24068,8 +26080,440 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
+        ArtistSalesStatistics_Artist_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ArtistSalesStatistics_Attributes: {
+            buyerSources?: components["schemas"]["ArtistSalesStatistics_BuyerSources"];
+            byType?: components["schemas"]["ArtistSalesStatistics_ByType"];
+            /**
+             * @description Currency of every amount
+             * @enum {string}
+             */
+            currency?: "USD";
+            /**
+             * Format: date
+             * @description Last day included in the underlying data
+             */
+            dataThrough: string;
+            /**
+             * Format: date
+             * @description Last day of the window, inclusive
+             */
+            endDate: string;
+            /**
+             * Format: int64
+             * @description Items sold in the window
+             */
+            itemsSold?: number;
+            /**
+             * Format: date-time
+             * @description When these statistics were computed
+             */
+            lastModifiedAt: string;
+            netSales?: components["schemas"]["ArtistSalesStatistics_NetSales"];
+            /**
+             * Format: int64
+             * @description Orders in the window
+             */
+            orders?: number;
+            refunds?: components["schemas"]["ArtistSalesStatistics_Refunds"];
+            series?: components["schemas"]["ArtistSalesStatistics_Series"];
+            /**
+             * Format: date
+             * @description First day of the window
+             */
+            startDate: string;
+            /**
+             * @description Status of sales statistics. NOT_SET_UP: the artist has not set up sales. UNAVAILABLE: not available at the moment
+             * @enum {string}
+             */
+            status: "OK" | "NOT_SET_UP" | "UNAVAILABLE";
+            windowPeriod: components["schemas"]["ArtistStatisticsWindowPeriod"];
+        };
+        ArtistSalesStatistics_BuyerSourceShare: {
+            /**
+             * Format: double
+             * @description Share of orders
+             */
+            shareOfOrders: number;
+            /**
+             * @description Where buyers came from. UNKNOWN: a source this API does not know
+             * @enum {string}
+             */
+            source: "ALBUM_AND_TRACK_PAGES" | "ARTIST_PROFILE" | "SHARED_LINKS" | "TIDAL_HOME" | "UNKNOWN";
+        };
+        /** @description Where buyers came from. items is present exactly when status is OK, and an empty items is a measured empty result */
+        ArtistSalesStatistics_BuyerSources: {
+            items?: components["schemas"]["ArtistSalesStatistics_BuyerSourceShare"][];
+            /**
+             * @description Status of artist statistics that may be withheld. OK: the data is present. SUPPRESSED: withheld because too few people are counted to show it. UNAVAILABLE: not available at the moment
+             * @enum {string}
+             */
+            status: "OK" | "SUPPRESSED" | "UNAVAILABLE";
+        };
+        /** @description Net sales by product type */
+        ArtistSalesStatistics_ByType: {
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            downloadsAmount: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            merchAmount: string;
+        };
+        ArtistSalesStatistics_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ArtistSalesStatistics_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Sold minus refunded in the window. previousAmount is the same for the previous window of the same length and is absent when there is no earlier window to compare with */
+        ArtistSalesStatistics_NetSales: {
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            amount: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            previousAmount?: string;
+        };
+        /** @description Refunds in the window. amount is the total refunded */
+        ArtistSalesStatistics_Refunds: {
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            amount: string;
+            /**
+             * Format: int64
+             * @description Refunded orders
+             */
+            count: number;
+        };
+        ArtistSalesStatistics_Relationships: {
+            artist?: components["schemas"]["ArtistSalesStatistics_Artist_Single_Relationship_Data_Document"];
+            topSellers?: components["schemas"]["ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document"];
+        };
+        ArtistSalesStatistics_Resource_Object: {
+            attributes?: components["schemas"]["ArtistSalesStatistics_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["ArtistSalesStatistics_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "artistSalesStatistics";
+        };
+        /** @description Net sales per bucket */
+        ArtistSalesStatistics_Series: {
+            bucketPeriod?: components["schemas"]["ArtistStatisticsBucketPeriod"];
+            points: components["schemas"]["ArtistSalesStatistics_SeriesPoint"][];
+        };
+        ArtistSalesStatistics_SeriesPoint: {
+            /**
+             * Format: date
+             * @description First day of the bucket
+             */
+            date: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            downloadsAmount: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            merchAmount: string;
+        };
+        /** @description Target resource types: `albums`, `tracks`. */
+        ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["ArtistSalesStatistics_TopSellers_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document_Meta"];
+        };
+        /** @description status is the status of the sales statistics */
+        ArtistSalesStatistics_TopSellers_Multi_Relationship_Data_Document_Meta: {
+            /**
+             * @description Currency of netSalesAmount. Present when status is OK
+             * @enum {string}
+             */
+            currency?: "USD";
+            /**
+             * @description Status of sales statistics. NOT_SET_UP: the artist has not set up sales. UNAVAILABLE: not available at the moment
+             * @enum {string}
+             */
+            status: "OK" | "NOT_SET_UP" | "UNAVAILABLE";
+        };
+        ArtistSalesStatistics_TopSellers_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["ArtistSalesStatistics_TopSellers_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        /** @description netSalesAmount is the product's net sales in the window, in the relationship's currency */
+        ArtistSalesStatistics_TopSellers_Resource_Identifier_Meta: {
+            /**
+             * @description What was sold. UNKNOWN: a kind this API does not know
+             * @enum {string}
+             */
+            kind: "DOWNLOAD" | "MERCH" | "UNKNOWN";
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            netSalesAmount: string;
+            /**
+             * Format: int32
+             * @description 1-based position in the producer's ranking. Products this API cannot link are left out, so ranks can have gaps
+             */
+            rank: number;
+            replacement?: components["schemas"]["Replacement_Provenance"];
+            /**
+             * Format: int64
+             * @description Units sold in the window
+             */
+            units: number;
+        };
+        /**
+         * @description Calendar width of each bucket. Absent when the producer's width is not recognized
+         * @enum {string}
+         */
+        ArtistStatisticsBucketPeriod: "P1D" | "P7D";
+        /**
+         * @description Reporting window preset. startDate and endDate give the actual data coverage
+         * @enum {string}
+         */
+        ArtistStatisticsWindowPeriod: "P7D" | "P28D" | "P12M";
+        /** @description Target resource types: `artists`. */
+        ArtistStreamsStatistics_Artist_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ArtistStreamsStatistics_Attributes: {
+            /**
+             * @description Status of artist statistics that may be withheld. OK: the data is present. SUPPRESSED: withheld because too few people are counted to show it. UNAVAILABLE: not available at the moment
+             * @enum {string}
+             */
+            breakdownsStatus: "OK" | "SUPPRESSED" | "UNAVAILABLE";
+            /**
+             * Format: date
+             * @description Last day included in the underlying data
+             */
+            dataThrough: string;
+            /**
+             * Format: date
+             * @description Last day of the window, inclusive
+             */
+            endDate: string;
+            /**
+             * Format: date-time
+             * @description When these statistics were computed
+             */
+            lastModifiedAt: string;
+            listeners: components["schemas"]["ArtistStreamsStatistics_Count"];
+            newFollowers: components["schemas"]["ArtistStreamsStatistics_Count"];
+            plays: components["schemas"]["ArtistStreamsStatistics_Plays"];
+            playsBySource?: components["schemas"]["ArtistStreamsStatistics_PlaysBySource"];
+            saves: components["schemas"]["ArtistStreamsStatistics_Count"];
+            series: components["schemas"]["ArtistStreamsStatistics_Series"];
+            /**
+             * Format: date
+             * @description First day of the window
+             */
+            startDate: string;
+            topCountries?: components["schemas"]["ArtistStreamsStatistics_TopCountries"];
+            windowPeriod: components["schemas"]["ArtistStatisticsWindowPeriod"];
+        };
+        /** @description A count in the window that may be withheld. value is present exactly when status is OK, and 0 is a measured zero */
+        ArtistStreamsStatistics_Count: {
+            /**
+             * @description Status of artist statistics that may be withheld. OK: the data is present. SUPPRESSED: withheld because too few people are counted to show it. UNAVAILABLE: not available at the moment
+             * @enum {string}
+             */
+            status: "OK" | "SUPPRESSED" | "UNAVAILABLE";
+            /** Format: int64 */
+            value?: number;
+        };
+        ArtistStreamsStatistics_CountryListeners: {
+            countryCode: string;
+            /** Format: int64 */
+            listeners: number;
+        };
+        ArtistStreamsStatistics_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ArtistStreamsStatistics_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ArtistStreamsStatistics_OtherPlays: {
+            /** Format: int64 */
+            plays: number;
+            /**
+             * Format: double
+             * @description Share of all plays
+             */
+            share: number;
+        };
+        ArtistStreamsStatistics_Plays: {
+            /**
+             * Format: int64
+             * @description Plays in the previous window of the same length. Absent when there is no earlier window to compare with
+             */
+            previous?: number;
+            /**
+             * Format: int64
+             * @description Plays in the window
+             */
+            value: number;
+        };
+        /** @description Plays by where they started. other holds the plays not in items. Without a note, items and other add up to all plays, and an absent other means no plays are left. With note HIDDEN, part of the plays is withheld, so an absent other is unknown rather than zero */
+        ArtistStreamsStatistics_PlaysBySource: {
+            items: components["schemas"]["ArtistStreamsStatistics_SourcePlays"][];
+            /**
+             * @description How a breakdown relates to its total. GROUPED: the remainder includes entries too small to show alone, and the breakdown still adds up to the total. HIDDEN: part of the total is withheld, so the breakdown adds up to less than the total. UNKNOWN: a note this API does not know, so the breakdown may not add up
+             * @enum {string}
+             */
+            note?: "GROUPED" | "HIDDEN" | "UNKNOWN";
+            other?: components["schemas"]["ArtistStreamsStatistics_OtherPlays"];
+        };
+        ArtistStreamsStatistics_Relationships: {
+            artist?: components["schemas"]["ArtistStreamsStatistics_Artist_Single_Relationship_Data_Document"];
+            topTracks?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document"];
+        };
+        ArtistStreamsStatistics_Resource_Object: {
+            attributes?: components["schemas"]["ArtistStreamsStatistics_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["ArtistStreamsStatistics_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "artistStreamsStatistics";
+        };
+        /** @description Plays per bucket */
+        ArtistStreamsStatistics_Series: {
+            bucketPeriod?: components["schemas"]["ArtistStatisticsBucketPeriod"];
+            points: components["schemas"]["ArtistStreamsStatistics_SeriesPoint"][];
+        };
+        ArtistStreamsStatistics_SeriesPoint: {
+            /**
+             * Format: date
+             * @description First day of the bucket
+             */
+            date: string;
+            /** Format: int64 */
+            plays: number;
+        };
+        ArtistStreamsStatistics_SourcePlays: {
+            /** Format: int64 */
+            plays: number;
+            /**
+             * Format: double
+             * @description Share of all plays
+             */
+            share: number;
+            /**
+             * @description Where plays started. UNKNOWN: a source this API does not know
+             * @enum {string}
+             */
+            source: "MIXES_AND_RADIO" | "ALBUMS_AND_PROFILE" | "TIDAL_PLAYLISTS" | "LISTENER_PLAYLISTS" | "LISTENER_COLLECTIONS" | "SEARCH" | "UNKNOWN";
+        };
+        /** @description Listeners by country. Without a note, items and otherListeners add up to all listeners, and an absent otherListeners means no listeners are left. With note HIDDEN, part of the listeners is withheld, so an absent otherListeners is unknown rather than zero */
+        ArtistStreamsStatistics_TopCountries: {
+            items: components["schemas"]["ArtistStreamsStatistics_CountryListeners"][];
+            /**
+             * @description How a breakdown relates to its total. GROUPED: the remainder includes entries too small to show alone, and the breakdown still adds up to the total. HIDDEN: part of the total is withheld, so the breakdown adds up to less than the total. UNKNOWN: a note this API does not know, so the breakdown may not add up
+             * @enum {string}
+             */
+            note?: "GROUPED" | "HIDDEN" | "UNKNOWN";
+            /**
+             * Format: int64
+             * @description Listeners in countries not in items. A present value, 0 included, is measured
+             */
+            otherListeners?: number;
+        };
+        /** @description Target resource types: `tracks`. */
+        ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document_Meta"];
+        };
+        /** @description status is the breakdownsStatus of the statistics. When it is not OK the entries are withheld, so the empty linkage is not a measured empty result */
+        ArtistStreamsStatistics_TopTracks_Multi_Relationship_Data_Document_Meta: {
+            /**
+             * Format: int32
+             * @description Tracks left out because too few people listened to them. Present when status is OK
+             */
+            hiddenCount?: number;
+            /**
+             * @description Status of artist statistics that may be withheld. OK: the data is present. SUPPRESSED: withheld because too few people are counted to show it. UNAVAILABLE: not available at the moment
+             * @enum {string}
+             */
+            status: "OK" | "SUPPRESSED" | "UNAVAILABLE";
+        };
+        ArtistStreamsStatistics_TopTracks_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["ArtistStreamsStatistics_TopTracks_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        ArtistStreamsStatistics_TopTracks_Resource_Identifier_Meta: {
+            /**
+             * Format: int64
+             * @description Plays of the track in the window
+             */
+            plays: number;
+            /**
+             * Format: int32
+             * @description 1-based position in the producer's ranking. Tracks this API cannot link are left out, so ranks can have gaps
+             */
+            rank: number;
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
         ArtistsBannerArtRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["ArtistsBannerArtRelationshipUpdateOperation_Payload_Data"][];
+            meta?: {
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.
+                 * @default REPLACE_ALL
+                 * @enum {string}
+                 */
+                mode: "REPLACE_ALL";
+            };
         };
         ArtistsBannerArtRelationshipUpdateOperation_Payload_Data: {
             id: string;
@@ -24110,6 +26554,14 @@ export interface components {
         };
         ArtistsLogoArtRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["ArtistsLogoArtRelationshipUpdateOperation_Payload_Data"][];
+            meta?: {
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.
+                 * @default REPLACE_ALL
+                 * @enum {string}
+                 */
+                mode: "REPLACE_ALL";
+            };
         };
         ArtistsLogoArtRelationshipUpdateOperation_Payload_Data: {
             id: string;
@@ -24118,6 +26570,14 @@ export interface components {
         };
         ArtistsProfileArtRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["ArtistsProfileArtRelationshipUpdateOperation_Payload_Data"][];
+            meta?: {
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.
+                 * @default REPLACE_ALL
+                 * @enum {string}
+                 */
+                mode: "REPLACE_ALL";
+            };
         };
         ArtistsProfileArtRelationshipUpdateOperation_Payload_Data: {
             id: string;
@@ -24148,6 +26608,7 @@ export interface components {
         ArtistsUpdateOperation_Payload_Meta: {
             dryRun?: boolean;
         };
+        /** @description Target resource types: `albums`. */
         Artists_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Albums_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24225,16 +26686,19 @@ export interface components {
              */
             spotlighted?: boolean;
         };
+        /** @description Target resource types: `artworks`. */
         Artists_BannerArt_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artistBiographies`. */
         Artists_Biography_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artistClaimStatuses`. */
         Artists_ClaimStatus_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -24244,6 +26708,7 @@ export interface components {
             data: components["schemas"]["Artists_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         Artists_Followers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Followers_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24278,6 +26743,7 @@ export interface components {
              */
             myArtistFollows: boolean;
         };
+        /** @description Target resource types: `artists`. */
         Artists_Following_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Following_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24299,6 +26765,7 @@ export interface components {
         Artists_Following_Resource_Identifier_Meta: {
             viewer?: components["schemas"]["Artists_Followers_Resource_Meta_ViewerContext"];
         };
+        /** @description Target resource types: `artworks`. */
         Artists_LogoArt_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24309,16 +26776,19 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Artists_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artworks`. */
         Artists_ProfileArt_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`. */
         Artists_Radio_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24355,11 +26825,13 @@ export interface components {
              */
             type: "artists";
         };
+        /** @description Target resource types: `artistRoles`. */
         Artists_Roles_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         Artists_SimilarArtists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24370,6 +26842,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `providers`. */
         Artists_TrackProviders_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_TrackProviders_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24396,6 +26869,7 @@ export interface components {
              */
             numberOfTracks: number;
         };
+        /** @description Target resource types: `tracks`. */
         Artists_Tracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Tracks_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24417,6 +26891,7 @@ export interface components {
         Artists_Tracks_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `videos`. */
         Artists_Videos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Artists_Videos_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24445,7 +26920,7 @@ export interface components {
              * @description Artwork file href
              */
             href: string;
-            meta: components["schemas"]["Artwork_File_Meta"];
+            meta?: components["schemas"]["Artwork_File_Meta"];
             /**
              * @description Media type hint for the artwork file
              * @example image/jpeg
@@ -24529,6 +27004,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Artworks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24555,6 +27031,127 @@ export interface components {
             data: components["schemas"]["Artworks_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        AtomicOperations400ResponseBody: {
+            errors: {
+                /** @example Invalid request */
+                detail?: string;
+                /** @example 400 */
+                status: string;
+            }[];
+        };
+        AtomicOperations403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        AtomicOperations404ResponseBody: {
+            errors: {
+                /** @example Resource not found */
+                detail?: string;
+                /** @example 404 */
+                status: string;
+            }[];
+        };
+        AtomicOperations405ResponseBody: {
+            errors: {
+                /** @example HTTP method not allowed */
+                detail?: string;
+                /** @example 405 */
+                status: string;
+            }[];
+        };
+        AtomicOperations406ResponseBody: {
+            errors: {
+                /** @example No acceptable response media type */
+                detail?: string;
+                /** @example 406 */
+                status: string;
+            }[];
+        };
+        AtomicOperations409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                /** @example Request already in progress for this idempotency key */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        AtomicOperations415ResponseBody: {
+            errors: {
+                /** @example Unsupported request media type or encoding */
+                detail?: string;
+                /** @example 415 */
+                status: string;
+            }[];
+        };
+        AtomicOperations422ResponseBody: {
+            errors: {
+                /**
+                 * @example IDEMPOTENT_REQUEST_PAYLOAD_MISMATCH
+                 * @enum {string}
+                 */
+                code: "IDEMPOTENT_REQUEST_PAYLOAD_MISMATCH";
+                /** @example Idempotency key reused for a different request */
+                detail?: string;
+                /** @example 422 */
+                status: string;
+            }[];
+        };
+        AtomicOperations429ResponseBody: {
+            errors: {
+                /** @example Rate limit exceeded */
+                detail?: string;
+                /** @example 429 */
+                status: string;
+            }[];
+        };
+        AtomicOperations500ResponseBody: {
+            errors: {
+                /** @example Internal server error */
+                detail?: string;
+                /** @example 500 */
+                status: string;
+            }[];
+        };
+        AtomicOperations503ResponseBody: {
+            errors: {
+                /** @example Service temporarily unavailable */
+                detail?: string;
+                /** @example 503 */
+                status: string;
+            }[];
+        };
+        Atomic_Operations_Request: {
+            "atomic:operations": ({
+                data: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Local_Data"];
+                /** @enum {string} */
+                op: "add";
+            } | {
+                data: components["schemas"]["SquareItemsCreateOperation_Payload_Data"];
+                /** @enum {string} */
+                op: "add";
+            })[];
+        };
+        Atomic_Operations_Response: {
+            "atomic:results": ({
+                data: components["schemas"]["SquareItemVariations_Resource_Object"];
+            } | {
+                data: components["schemas"]["SquareItems_Resource_Object"];
+            })[];
         };
         /** @description Track normalization data */
         AudioNormalizationData: {
@@ -24635,6 +27232,7 @@ export interface components {
             data: components["schemas"]["ClientCertificates_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         ClientCertificates_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24700,6 +27298,7 @@ export interface components {
             redirectUris?: string[];
             scopes?: string[];
         };
+        /** @description Target resource types: `clientCertificates`. */
         Clients_Certificates_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24714,6 +27313,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Clients_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24833,6 +27433,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         CollaborationInvites_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -24861,6 +27462,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`. */
         CollaborationInvites_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -24959,6 +27561,7 @@ export interface components {
              */
             startTime?: string;
         };
+        /** @description Target resource types: `artists`. */
         Comments_Author_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -24973,11 +27576,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Comments_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `comments`. */
         Comments_ParentComment_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -25078,11 +27683,13 @@ export interface components {
         ContentClaims_ClaimedResource_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `tracks`, `videos`. */
         ContentClaims_ClaimedResource_Single_Relationship_Data_Document: {
             data?: components["schemas"]["ContentClaims_ClaimedResource_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         ContentClaims_ClaimingArtist_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -25097,6 +27704,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         ContentClaims_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25130,6 +27738,7 @@ export interface components {
         Copyright: {
             text: string;
         };
+        /** @description Target resource types: `artists`. */
         Credits_Artist_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -25147,6 +27756,7 @@ export interface components {
              */
             role: string;
         };
+        /** @description Target resource types: `artistRoles`. */
         Credits_Category_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -25272,6 +27882,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Downloads_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25351,6 +27962,7 @@ export interface components {
         DspSharingLinks_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `artists`, `tracks`. */
         DspSharingLinks_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["DspSharingLinks_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -25358,10 +27970,12 @@ export interface components {
         };
         DynamicModules_Attributes: {
             /**
-             * @description Semantic icons the module should show. SPOTLIGHT_INFO identifies modules whose content was selected by TIDAL's editorial team.
-             * @example SPOTLIGHT_INFO
+             * @description Actions available in the module header. SPOTLIGHT_INFO opens information about TIDAL Spotlight. Clients choose the presentation and ignore unsupported actions, including UNKNOWN.
+             * @example [
+             *       "SPOTLIGHT_INFO"
+             *     ]
              */
-            icons: ("SPOTLIGHT_INFO" | "UNKNOWN")[];
+            headerActions: ("SPOTLIGHT_INFO" | "UNKNOWN")[];
             /**
              * @description Presentation family for items in a dynamic module preview. The API selects the semantic presentation intent while clients own platform-specific geometry. A layout does not prescribe scroll direction, row or column count, dimensions, spacing, breakpoints, or visible item count; clients preserve the server-provided item order. GRID means artwork-forward tiles or cards. LIST means detail-forward row cells, which clients may arrange in one or more columns. SHORTCUT means compact quick-access items, which clients may arrange as a responsive grid or rail. UNKNOWN is the forward-compatible default; clients should skip the module or use a safe default.
              * @example GRID
@@ -25385,6 +27999,7 @@ export interface components {
              */
             viewAllLayout?: "GRID" | "LIST" | "UNKNOWN";
         };
+        /** @description Target resource types: `albums`, `artistStreamsStatistics`, `artists`, `playlists`, `tracks`, `videos`. */
         DynamicModules_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["DynamicModules_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25445,6 +28060,7 @@ export interface components {
         DynamicModules_SeedItem_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `artists`. */
         DynamicModules_SeedItem_Single_Relationship_Data_Document: {
             data?: components["schemas"]["DynamicModules_SeedItem_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -25461,7 +28077,7 @@ export interface components {
              * @example HOME_STATIC
              * @enum {string}
              */
-            pageType: "HOME_STATIC" | "HOME_UPLOADS" | "HOME_EDITORIAL" | "HOME_FREE" | "ARTIST" | "ALBUM" | "PLAYLIST" | "TRACK" | "VIDEO";
+            pageType: "HOME_STATIC" | "HOME_UPLOADS" | "HOME_EDITORIAL" | "HOME_FREE" | "STUDIO_HOME" | "ARTIST" | "ALBUM" | "PLAYLIST" | "TRACK" | "VIDEO";
             /**
              * Format: uuid
              * @description Id used for reporting user events
@@ -25469,6 +28085,7 @@ export interface components {
              */
             reportingId: string;
         };
+        /** @description Target resource types: `dynamicModules`. */
         DynamicPages_Modules_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25521,6 +28138,7 @@ export interface components {
         DynamicPages_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `users`, `videos`. */
         DynamicPages_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["DynamicPages_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -25655,11 +28273,12 @@ export interface components {
             data: components["schemas"]["FolderItemsParentRelationshipUpdateOperation_Payload_Data"];
         };
         FolderItemsParentRelationshipUpdateOperation_Payload_Data: {
+            /** @description Also accepts `me`. */
             id: string;
             /** @enum {string} */
             type: "folders";
         };
-        FolderItemsUpdateSingleDataRelationship400ResponseBody: {
+        FolderItemsParentUpdateSingleDataRelationship400ResponseBody: {
             errors: {
                 /**
                  * @example FOLDER_CYCLE_NOT_ALLOWED
@@ -25678,6 +28297,7 @@ export interface components {
             /** @description Whether this item references a subject in another owner's tree, regardless of its current availability. */
             reference: boolean;
         };
+        /** @description Target resource types: `folders`. */
         FolderItems_Breadcrumb_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25687,11 +28307,18 @@ export interface components {
             data: components["schemas"]["FolderItems_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        FolderItems_Multi_Resource_Data_Document: {
+            data: components["schemas"]["FolderItems_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `users`. */
         FolderItems_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `folders`. */
         FolderItems_Parent_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -25747,6 +28374,7 @@ export interface components {
         FolderItems_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `folders`. */
         FolderItems_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["FolderItems_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -25793,6 +28421,7 @@ export interface components {
         };
         FoldersUpdateOperation_Payload_Data: {
             attributes: components["schemas"]["FoldersUpdateOperation_Payload_Data_Attributes"];
+            /** @description Also accepts `me`. */
             id: string;
             /** @enum {string} */
             type: "folders";
@@ -25814,8 +28443,11 @@ export interface components {
             }[];
         };
         Folders_Attributes: {
+            /** @description Whether this is the root folder. */
+            isRoot: boolean;
             name: string;
         };
+        /** @description Target resource types: `folderItems`. */
         Folders_Children_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25830,16 +28462,19 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Folders_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `folders`. */
         Folders_Parent_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `folderItems`. */
         Folders_Preview_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -25850,6 +28485,7 @@ export interface components {
             owners?: components["schemas"]["Folders_Owners_Multi_Relationship_Data_Document"];
             parent?: components["schemas"]["Folders_Parent_Single_Relationship_Data_Document"];
             preview?: components["schemas"]["Folders_Preview_Multi_Relationship_Data_Document"];
+            shares?: components["schemas"]["Folders_Shares_Multi_Relationship_Data_Document"];
         };
         Folders_Resource_Object: {
             attributes?: components["schemas"]["Folders_Attributes"];
@@ -25864,6 +28500,12 @@ export interface components {
              * @enum {string}
              */
             type: "folders";
+        };
+        /** @description Target resource types: `shares`. */
+        Folders_Shares_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         Folders_Single_Resource_Data_Document: {
             data: components["schemas"]["Folders_Resource_Object"];
@@ -25908,7 +28550,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        /** @description The viewer's effective role for the subject. */
+        /** @description The viewer's effective role for the subject. Populated for albums, tracks and folders; omitted for other subject types. */
         Grantee: {
             /**
              * @description Effective role.
@@ -25966,7 +28608,7 @@ export interface components {
                  * @enum {string}
                  */
                 code: "IDEMPOTENT_REQUEST_PAYLOAD_MISMATCH";
-                /** @example Idempotency key reused with a different payload */
+                /** @example Idempotency key reused for a different request */
                 detail?: string;
                 /** @example 422 */
                 status: string;
@@ -25974,7 +28616,7 @@ export interface components {
         };
         /** @description The viewer has the original subject in their normal collection. Present as an empty object when known present, otherwise omitted. Includes owned and saved playlists and saved mixes across folders; excludes Save for Later. */
         InCollection: Record<string, never>;
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["ResourceGrants_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"] | components["schemas"]["SquareItemVariations_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -25999,7 +28641,7 @@ export interface components {
             data: components["schemas"]["InstallationsOfflineInventory_ItemIdentifier"][];
         };
         InstallationsOfflineInventory_ItemIdentifier: {
-            /** @description The item id. Use "me" when the type is userCollectionTracks to resolve to the authenticated user's collection. */
+            /** @description Also accepts `me` when type is `userCollectionTracks`. */
             id: string;
             /** @enum {string} */
             type: "tracks" | "videos" | "albums" | "playlists" | "userCollectionTracks";
@@ -26022,6 +28664,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `albums`, `playlists`, `tracks`, `userCollectionTracks`, `videos`. */
         Installations_OfflineInventory_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Installations_OfflineInventory_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26045,6 +28688,7 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `users`. */
         Installations_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26072,6 +28716,24 @@ export interface components {
             data: components["schemas"]["Installations_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        /** @description The catalog item containing this variation */
+        Item: {
+            id: string;
+            /** @enum {string} */
+            type: "squareItems";
+        };
+        /** @description Item photos in Square's display order, including photos without an available URL; the first is the primary photo */
+        ItemArtwork: {
+            id: string;
+            /** @enum {string} */
+            type: "artworks";
+        };
+        /** @description Variations available for independent catalog edits, in Square's display order */
+        ItemVariation: {
+            id: string;
+            /** @enum {string} */
+            type: "squareItemVariations";
         };
         /** @description List of UPCs retrieved from the DSP */
         LegacyBarcodeId: {
@@ -26169,6 +28831,7 @@ export interface components {
             data: components["schemas"]["Lyrics_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Lyrics_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26213,6 +28876,7 @@ export interface components {
         Lyrics_Track_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `tracks`. */
         Lyrics_Track_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Lyrics_Track_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26378,6 +29042,7 @@ export interface components {
         OfflineTasks_Collection_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `playlists`, `tracks`, `userCollectionTracks`, `videos`. */
         OfflineTasks_Collection_Single_Relationship_Data_Document: {
             data?: components["schemas"]["OfflineTasks_Collection_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26399,6 +29064,7 @@ export interface components {
         OfflineTasks_Item_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `playlists`, `tracks`, `userCollectionTracks`, `videos`. */
         OfflineTasks_Item_Single_Relationship_Data_Document: {
             data?: components["schemas"]["OfflineTasks_Item_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26409,6 +29075,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         OfflineTasks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26504,7 +29171,15 @@ export interface components {
         };
         PlayQueuesFutureRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["PlayQueuesFutureRelationshipUpdateOperation_Payload_Data"][];
-            meta: components["schemas"]["PlayQueuesFutureRelationshipUpdateOperation_Payload_Meta"];
+            meta: {
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.
+                 * @default INCREMENTAL
+                 * @enum {string}
+                 */
+                mode: "INCREMENTAL";
+                positionBefore: string;
+            };
         };
         PlayQueuesFutureRelationshipUpdateOperation_Payload_Data: {
             id: string;
@@ -26597,6 +29272,7 @@ export interface components {
             /** @description Queue is shuffled or not */
             shuffled: boolean;
         };
+        /** @description Target resource types: `changeEventStreams`. */
         PlayQueues_ChangeEventStream_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26636,6 +29312,7 @@ export interface components {
             replacement?: components["schemas"]["Replacement_Provenance"];
             updatedByInstallationId?: string;
         };
+        /** @description Target resource types: `tracks`, `videos`. */
         PlayQueues_Current_Single_Relationship_Data_Document: {
             data?: components["schemas"]["PlayQueues_Current_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26682,6 +29359,7 @@ export interface components {
             /** @enum {string} */
             type: "tracks" | "videos";
         };
+        /** @description Target resource types: `tracks`, `videos`. */
         PlayQueues_Future_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["PlayQueues_Future_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26727,11 +29405,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         PlayQueues_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `tracks`, `videos`. */
         PlayQueues_Past_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["PlayQueues_Past_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -26902,6 +29582,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`. */
         PlaylistGenerationSchedules_Playlist_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -26932,19 +29613,6 @@ export interface components {
         PlaylistGenerationSchedules_Update_Single_Resource_Data_Document: {
             data: components["schemas"]["PlaylistGenerationSchedules_Resource_Object"];
             links: components["schemas"]["Links"];
-        };
-        PlaylistGenerationsAddMultiDataRelationshipWithResponse409ResponseBody: {
-            errors: {
-                /**
-                 * @example CONFLICT
-                 * @enum {string}
-                 */
-                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS";
-                /** @example The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying. */
-                detail?: string;
-                /** @example 409 */
-                status: string;
-            }[];
         };
         PlaylistGenerationsCreateOperation_Payload: {
             data: components["schemas"]["PlaylistGenerationsCreateOperation_Payload_Data"];
@@ -26997,7 +29665,7 @@ export interface components {
                 status: string;
             }[];
         };
-        PlaylistGenerationsRemoveMultiDataRelationship409ResponseBody: {
+        PlaylistGenerationsTrackPreferencesAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example CONFLICT
@@ -27025,7 +29693,16 @@ export interface components {
         };
         PlaylistGenerationsTrackPreferencesRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["PlaylistGenerationsTrackPreferencesRelationship_Payload_Data"][];
-            meta: components["schemas"]["PlaylistGenerationsTrackPreferencesRelationship_Payload_Meta"];
+            meta: {
+                /** Format: int32 */
+                expectedPreferenceVersion: number;
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.
+                 * @default INCREMENTAL
+                 * @enum {string}
+                 */
+                mode: "INCREMENTAL";
+            };
         };
         PlaylistGenerationsTrackPreferencesRelationship_Payload_Data: {
             id: string;
@@ -27041,7 +29718,20 @@ export interface components {
             /** Format: int32 */
             expectedPreferenceVersion: number;
         };
-        PlaylistGenerationsUpdateMultiDataRelationship409ResponseBody: {
+        PlaylistGenerationsTrackPreferencesRemoveMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS";
+                /** @example The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying. */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        PlaylistGenerationsTrackPreferencesUpdateMultiDataRelationship409ResponseBody: {
             errors: {
                 /**
                  * @example CONFLICT
@@ -27075,6 +29765,7 @@ export interface components {
              */
             status: "PENDING" | "PROCESSING" | "ERROR" | "OK";
         };
+        /** @description Target resource types: `playlistGenerations`. */
         PlaylistGenerations_BaseGeneration_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27089,6 +29780,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`. */
         PlaylistGenerations_Playlist_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27137,6 +29829,7 @@ export interface components {
             /** @enum {string} */
             preference: "KEEP" | "REMOVE" | "MORE_LIKE_THIS" | "UNKNOWN";
         };
+        /** @description Target resource types: `tracks`. */
         PlaylistGenerations_TrackPreferences_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["PlaylistGenerations_TrackPreferences_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27184,19 +29877,6 @@ export interface components {
             /** @enum {string} */
             preference: "KEEP" | "REMOVE" | "MORE_LIKE_THIS" | "UNKNOWN";
         };
-        PlaylistsAddMultiDataRelationshipWithResponse409ResponseBody: {
-            errors: {
-                /**
-                 * @example DUPLICATE_ITEMS_IN_PLAYLIST
-                 * @enum {string}
-                 */
-                code: "DUPLICATE_ITEMS_IN_PLAYLIST" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_PLAYLIST";
-                /** @example Playlist already contains one or more requested items */
-                detail?: string;
-                /** @example 409 */
-                status: string;
-            }[];
-        };
         PlaylistsCollaboratorProfilesRelationshipRemoveOperation_Payload: {
             data: components["schemas"]["PlaylistsCollaboratorProfilesRelationshipRemoveOperation_Payload_Data"][];
         };
@@ -27207,6 +29887,14 @@ export interface components {
         };
         PlaylistsCoverArtRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["PlaylistsCoverArtRelationshipUpdateOperation_Payload_Data"][];
+            meta?: {
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.
+                 * @default REPLACE_ALL
+                 * @enum {string}
+                 */
+                mode: "REPLACE_ALL";
+            };
         };
         PlaylistsCoverArtRelationshipUpdateOperation_Payload_Data: {
             id: string;
@@ -27232,6 +29920,19 @@ export interface components {
             createdAt?: string;
             description?: string;
             name: string;
+        };
+        PlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody: {
+            errors: {
+                /**
+                 * @example DUPLICATE_ITEMS_IN_PLAYLIST
+                 * @enum {string}
+                 */
+                code: "DUPLICATE_ITEMS_IN_PLAYLIST" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "TOO_MANY_ITEMS_IN_PLAYLIST";
+                /** @example Playlist already contains one or more requested items */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
         };
         PlaylistsItemsRelationshipAddOperation_Payload: {
             data: components["schemas"]["PlaylistsItemsRelationshipAddOperation_Payload_Data"][];
@@ -27280,7 +29981,22 @@ export interface components {
         };
         PlaylistsItemsRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["PlaylistsItemsRelationshipUpdateOperation_Payload_Data"][];
-            meta?: components["schemas"]["PlaylistsItemsRelationshipUpdateOperation_Payload_Meta"];
+            meta?: {
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.
+                 * @default INCREMENTAL
+                 * @enum {string}
+                 */
+                mode: "INCREMENTAL";
+                positionBefore: string;
+            } | {
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.
+                 * @default INCREMENTAL
+                 * @enum {string}
+                 */
+                mode: "INCREMENTAL";
+            };
         };
         PlaylistsItemsRelationshipUpdateOperation_Payload_Data: {
             id: string;
@@ -27370,16 +30086,19 @@ export interface components {
              */
             playlistType: "EDITORIAL" | "USER" | "MIX" | "ARTIST";
         };
+        /** @description Target resource types: `artists`. */
         Playlists_CollaboratorProfiles_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Playlists_Collaborators_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artworks`. */
         Playlists_CoverArt_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27389,6 +30108,7 @@ export interface components {
             data: components["schemas"]["Playlists_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         Playlists_Curators_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27413,6 +30133,7 @@ export interface components {
             addedAt: string;
             itemId: string;
         };
+        /** @description Target resource types: `tracks`, `videos`. */
         Playlists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Playlists_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27442,11 +30163,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artists`. */
         Playlists_OwnerProfiles_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Playlists_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27483,6 +30206,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `artworks`. */
         Playlists_SuggestedCoverArts_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Playlists_SuggestedCoverArts_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27591,11 +30315,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         ProviderOwners_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `providers`. */
         ProviderOwners_Provider_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27632,6 +30358,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `providers`. */
         ProviderProductInfos_Provider_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27671,6 +30398,7 @@ export interface components {
         ProviderProductInfos_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `videos`. */
         ProviderProductInfos_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["ProviderProductInfos_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27720,6 +30448,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Purchases_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27759,6 +30488,7 @@ export interface components {
         Purchases_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `tracks`. */
         Purchases_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Purchases_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27813,6 +30543,7 @@ export interface components {
             /** @description The type of reaction representing an emoji */
             emoji: string;
         };
+        /** @description Target resource types: `artists`. */
         Reactions_Author_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -27833,11 +30564,13 @@ export interface components {
             currentUserReaction?: components["schemas"]["CurrentUserReaction"];
             stats?: components["schemas"]["ReactionStats"];
         };
+        /** @description Target resource types: `artists`. */
         Reactions_OwnerProfiles_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Reactions_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -27875,6 +30608,120 @@ export interface components {
             original?: components["schemas"]["Replacement_Original_Identifier"];
             /** @enum {string} */
             status: "ORIGINAL" | "REPLACED" | "NOT_REPLACED";
+        };
+        ResourceGrantsCreateOperation_Payload: {
+            data: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data"];
+        };
+        ResourceGrantsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "resourceGrants";
+        };
+        ResourceGrantsCreateOperation_Payload_Data_Attributes: {
+            /** @enum {string} */
+            role: "VIEWER" | "COLLABORATOR";
+        };
+        ResourceGrantsCreateOperation_Payload_Data_Relationships: {
+            grantee: components["schemas"]["ResourceGrantsGranteeLinkage"];
+            subject: components["schemas"]["ResourceGrantsSubjectLinkage"];
+        };
+        ResourceGrantsGrantee: {
+            id: string;
+            /** @enum {string} */
+            type: "users" | "groups";
+        };
+        ResourceGrantsGranteeLinkage: {
+            data: components["schemas"]["ResourceGrantsGrantee"];
+        };
+        ResourceGrantsSubject: {
+            id: string;
+            /** @enum {string} */
+            type: "albums" | "tracks" | "folders";
+        };
+        ResourceGrantsSubjectLinkage: {
+            data: components["schemas"]["ResourceGrantsSubject"];
+        };
+        ResourceGrantsUpdateOperation_Payload: {
+            data: components["schemas"]["ResourceGrantsUpdateOperation_Payload_Data"];
+        };
+        ResourceGrantsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["ResourceGrantsUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "resourceGrants";
+        };
+        ResourceGrantsUpdateOperation_Payload_Data_Attributes: {
+            /** @enum {string} */
+            role: "VIEWER" | "COLLABORATOR";
+        };
+        ResourceGrants_Attributes: {
+            /** @enum {string} */
+            role: "VIEWER" | "COLLABORATOR" | "OWNER";
+        };
+        ResourceGrants_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrants_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `groups`, `users`. */
+        ResourceGrants_Grantee_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrants_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrants_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrants_Relationships: {
+            grantee?: components["schemas"]["ResourceGrants_Grantee_Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["ResourceGrants_Subject_Single_Relationship_Data_Document"];
+        };
+        ResourceGrants_Resource_Object: {
+            attributes?: components["schemas"]["ResourceGrants_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["ResourceGrants_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "resourceGrants";
+        };
+        ResourceGrants_Single_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrants_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrants_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["ResourceGrants_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        ResourceGrants_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        /** @description Target resource types: `albums`, `folders`, `tracks`. */
+        ResourceGrants_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["ResourceGrants_Subject_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrants_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrants_Resource_Object"];
+            links: components["schemas"]["Links"];
         };
         Resource_Identifier: {
             /**
@@ -28004,6 +30851,7 @@ export interface components {
              */
             type: "searchHistoryEntries";
         };
+        /** @description Target resource types: `albums`. */
         SearchResults_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["SearchResults_Albums_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28025,26 +30873,11 @@ export interface components {
         SearchResults_Albums_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `artists`. */
         SearchResults_Artists_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["SearchResults_Artists_Resource_Identifier"][];
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
-        };
-        SearchResults_Artists_Resource_Identifier: {
-            /**
-             * @description Resource id
-             * @example 12345
-             */
-            id: string;
-            meta?: components["schemas"]["SearchResults_Artists_Resource_Identifier_Meta"];
-            /**
-             * @description Resource type
-             * @example tracks
-             */
-            type: string;
-        };
-        SearchResults_Artists_Resource_Identifier_Meta: {
-            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         SearchResults_Attributes: {
             /**
@@ -28068,26 +30901,11 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`. */
         SearchResults_Playlists_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["SearchResults_Playlists_Resource_Identifier"][];
+            data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
-        };
-        SearchResults_Playlists_Resource_Identifier: {
-            /**
-             * @description Resource id
-             * @example 12345
-             */
-            id: string;
-            meta?: components["schemas"]["SearchResults_Playlists_Resource_Identifier_Meta"];
-            /**
-             * @description Resource type
-             * @example tracks
-             */
-            type: string;
-        };
-        SearchResults_Playlists_Resource_Identifier_Meta: {
-            replacement?: components["schemas"]["Replacement_Provenance"];
         };
         SearchResults_Relationships: {
             albums?: components["schemas"]["SearchResults_Albums_Multi_Relationship_Data_Document"];
@@ -28111,6 +30929,7 @@ export interface components {
              */
             type: "searchResults";
         };
+        /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `videos`. */
         SearchResults_TopHits_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["SearchResults_TopHits_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28132,6 +30951,7 @@ export interface components {
         SearchResults_TopHits_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `tracks`. */
         SearchResults_Tracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["SearchResults_Tracks_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28153,6 +30973,7 @@ export interface components {
         SearchResults_Tracks_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `videos`. */
         SearchResults_Videos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["SearchResults_Videos_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28185,6 +31006,7 @@ export interface components {
             /** @description Unique tracking id */
             trackingId: string;
         };
+        /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `videos`. */
         SearchSuggestions_DirectHits_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["SearchSuggestions_DirectHits_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28220,6 +31042,7 @@ export interface components {
              */
             start: number;
         };
+        /** @description Target resource types: `searchHistoryEntries`. */
         SearchSuggestions_History_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28265,6 +31088,8 @@ export interface components {
             type: "shares";
         };
         SharesCreateOperation_Payload_Data_Attributes: {
+            /** @description Ways this share may be used to obtain access. BEARER permits access by presenting its code while active. VOUCHER permits redemption for a stored grant. Defaults to both modes for every role. Playlist shares must include VOUCHER; bearer-only playlist shares are rejected with 400. */
+            accessModes?: ("BEARER" | "VOUCHER")[];
             /**
              * @description Role offered by the share.
              * @enum {string}
@@ -28280,9 +31105,11 @@ export interface components {
         SharesCreateOperation_Payload_Data_Relationships_SharedResources_Data: {
             id: string;
             /** @enum {string} */
-            type: "tracks" | "albums" | "playlists";
+            type: "tracks" | "albums" | "playlists" | "folders";
         };
         Shares_Attributes: {
+            /** @description Ways this share may be used to obtain access. BEARER permits access by presenting its code while active. VOUCHER permits an authenticated user to redeem it for a stored grant. Multiple modes may be enabled. */
+            accessModes: ("BEARER" | "VOUCHER")[];
             /** @description Share code */
             code: string;
             /**
@@ -28313,6 +31140,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Shares_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28336,6 +31164,7 @@ export interface components {
              */
             type: "shares";
         };
+        /** @description Target resource types: `albums`, `folders`, `playlists`, `tracks`. */
         Shares_SharedResources_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Shares_SharedResources_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28395,20 +31224,7 @@ export interface components {
                 status: string;
             }[];
         };
-        SquareConnectionsReadMultiDataRelationship403ResponseBody: {
-            errors: {
-                /**
-                 * @example REQUIRED_TERMS_NOT_ACCEPTED
-                 * @enum {string}
-                 */
-                code: "REQUIRED_TERMS_NOT_ACCEPTED";
-                /** @example Latest terms and conditions must be accepted */
-                detail?: string;
-                /** @example 403 */
-                status: string;
-            }[];
-        };
-        SquareConnectionsReadSingleDataRelationship403ResponseBody: {
+        SquareConnectionsSelectedSiteReadSingleDataRelationship403ResponseBody: {
             errors: {
                 /**
                  * @example REQUIRED_TERMS_NOT_ACCEPTED
@@ -28430,7 +31246,7 @@ export interface components {
             /** @enum {string} */
             type: "squareSites";
         };
-        SquareConnectionsUpdateSingleDataRelationship403ResponseBody: {
+        SquareConnectionsSelectedSiteUpdateSingleDataRelationship403ResponseBody: {
             errors: {
                 /**
                  * @example REQUIRED_TERMS_NOT_ACCEPTED
@@ -28443,7 +31259,7 @@ export interface components {
                 status: string;
             }[];
         };
-        SquareConnectionsUpdateSingleDataRelationship409ResponseBody: {
+        SquareConnectionsSelectedSiteUpdateSingleDataRelationship409ResponseBody: {
             errors: {
                 /**
                  * @example IDEMPOTENT_REQUEST_IN_PROGRESS
@@ -28453,6 +31269,19 @@ export interface components {
                 /** @example Square credential lacks required site scopes; run Square onboarding again */
                 detail?: string;
                 /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareConnectionsSitesReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
                 status: string;
             }[];
         };
@@ -28511,6 +31340,7 @@ export interface components {
              */
             type: "squareConnections";
         };
+        /** @description Target resource types: `squareSites`. */
         SquareConnections_SelectedSite_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -28530,10 +31360,833 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `squareSites`. */
         SquareConnections_Sites_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
+        };
+        SquareItemVariationPhysicalCountsCreateOperation_Payload: {
+            data: components["schemas"]["SquareItemVariationPhysicalCountsCreateOperation_Payload_Data"];
+        };
+        SquareItemVariationPhysicalCountsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "squareItemVariationPhysicalCounts";
+        };
+        SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Attributes: {
+            /**
+             * Format: date-time
+             * @description Physical count event time; the first submission must be within the preceding 24 hours and not in the future
+             */
+            occurredAt: string;
+            /** Format: int64 */
+            quantity: number;
+        };
+        SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Relationships: {
+            variations: components["schemas"]["SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Relationships_Variations"];
+        };
+        SquareItemVariationPhysicalCountsCreateOperation_Payload_Data_Relationships_Variations: {
+            data: components["schemas"]["Variation"][];
+        };
+        SquareItemVariationPhysicalCountsCreateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationPhysicalCountsCreateResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog and inventory scopes; reconnect Square */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationPhysicalCounts_Attributes: {
+            /** Format: date-time */
+            occurredAt: string;
+            /** Format: int64 */
+            quantity: number;
+            /** @description Square location where this physical count was recorded */
+            squareLocationId: string;
+        };
+        SquareItemVariationPhysicalCounts_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"];
+        };
+        SquareItemVariationPhysicalCounts_Resource_Object: {
+            attributes?: components["schemas"]["SquareItemVariationPhysicalCounts_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "squareItemVariationPhysicalCounts";
+        };
+        SquareItemVariationsCreateOperation_Payload: {
+            data: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Data"];
+            meta: components["schemas"]["SquareItemVariations_ExpectedItemRevision"];
+        };
+        SquareItemVariationsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "squareItemVariations";
+        };
+        SquareItemVariationsCreateOperation_Payload_Data_Attributes: {
+            name?: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            price: string;
+            stockTracked: boolean;
+        };
+        SquareItemVariationsCreateOperation_Payload_Data_Relationships: {
+            items: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Data_Relationships_Items"];
+        };
+        SquareItemVariationsCreateOperation_Payload_Data_Relationships_Items: {
+            data: components["schemas"]["Item"][];
+        };
+        SquareItemVariationsCreateOperation_Payload_Local: {
+            data: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Local_Data"];
+        };
+        SquareItemVariationsCreateOperation_Payload_Local_Data: {
+            attributes: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Data_Attributes"];
+            /** @description Local identity available to later operations in this request */
+            lid?: string;
+            relationships: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Local_Data_Relationships"];
+            /** @enum {string} */
+            type: "squareItemVariations";
+        };
+        SquareItemVariationsCreateOperation_Payload_Local_Data_Relationships: {
+            items: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Local_Data_Relationships_Items"];
+        };
+        SquareItemVariationsCreateOperation_Payload_Local_Data_Relationships_Items: {
+            data: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Local_Item"][];
+        };
+        SquareItemVariationsCreateOperation_Payload_Local_Item: {
+            lid: string;
+            /** @enum {string} */
+            type: "squareItems";
+        };
+        SquareItemVariationsCreateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsCreateResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CATALOG_VERSION_MISMATCH
+                 * @enum {string}
+                 */
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsDeleteResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsDeleteResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CATALOG_VERSION_MISMATCH
+                 * @enum {string}
+                 */
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "LAST_VARIATION" | "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsReadById403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsReadById409ResponseBody: {
+            errors: {
+                /**
+                 * @example MISSING_ITEMS_SCOPE
+                 * @enum {string}
+                 */
+                code: "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsUpdateOperation_Payload: {
+            data: components["schemas"]["SquareItemVariationsUpdateOperation_Payload_Data"];
+            meta: components["schemas"]["SquareItemVariationsUpdateOperation_Payload_Meta"];
+        };
+        SquareItemVariationsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["SquareItemVariationsUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "squareItemVariations";
+        };
+        SquareItemVariationsUpdateOperation_Payload_Data_Attributes: {
+            /** @description Variation name; an empty string clears it */
+            name?: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            price?: string;
+            /** @description Stock tracking at the selected site's shipping location (merchant-main fallback) */
+            stockTracked?: boolean;
+        };
+        SquareItemVariationsUpdateOperation_Payload_Meta: {
+            /**
+             * Format: int64
+             * @description Observed variation revision; does not guard the parent item or inventory quantity
+             */
+            expectedRevision: number;
+        };
+        SquareItemVariationsUpdateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsUpdateResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CATALOG_VERSION_MISMATCH
+                 * @enum {string}
+                 */
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE" | "UNSUPPORTED_VARIATION_PRICING";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemVariations_Attributes: {
+            /** @enum {string} */
+            currency: "USD";
+            /** @description Variation name; may be empty */
+            name: string;
+            /**
+             * @description Amount in the currency's major units
+             * @example 9.99
+             */
+            price?: string;
+            /**
+             * @description Effective pricing mode at the selected site's shipping location (merchant-main fallback). Price is present only for FIXED when its amount is available
+             * @enum {string}
+             */
+            pricingType: "FIXED" | "VARIABLE";
+            /**
+             * Format: int64
+             * @description Square variation revision covering its catalog fields, including name, pricing and stock tracking; excludes inventory quantity and other variations
+             */
+            revision: number;
+            /**
+             * Format: int64
+             * @description Units at the selected site's shipping location (merchant-main fallback); present only when tracked and available; may be negative
+             */
+            stockQuantity?: number;
+            /** @description Whether Square tracks stock at the selected site's shipping location (merchant-main fallback) */
+            stockTracked: boolean;
+        };
+        SquareItemVariations_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareItemVariations_Resource_Object"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["SquareItemVariations_Create_Single_Resource_Data_Document_Meta"];
+        };
+        SquareItemVariations_Create_Single_Resource_Data_Document_Meta: {
+            /**
+             * Format: int64
+             * @description Parent squareItems catalog revision after the membership change; Square may advance it asynchronously
+             */
+            itemRevision: number;
+        };
+        SquareItemVariations_ExpectedItemRevision: {
+            /**
+             * Format: int64
+             * @description Observed parent squareItems.attributes.revision; guards item membership rather than variation fields or inventory
+             */
+            expectedItemRevision: number;
+        };
+        /** @description Target resource types: `users`. */
+        SquareItemVariations_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItemVariations_Relationships: {
+            owners?: components["schemas"]["SquareItemVariations_Owners_Multi_Relationship_Data_Document"];
+        };
+        SquareItemVariations_Resource_Object: {
+            attributes?: components["schemas"]["SquareItemVariations_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["SquareItemVariations_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "squareItemVariations";
+        };
+        SquareItemVariations_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareItemVariations_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItemVariations_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareItemVariations_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItemsArtworksReadMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example MISSING_ITEMS_SCOPE
+                 * @enum {string}
+                 */
+                code: "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemsArtworksRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["ItemArtwork"][];
+            meta: {
+                /** Format: int64 */
+                expectedRevision: number;
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.
+                 * @default REPLACE_ALL
+                 * @enum {string}
+                 */
+                mode: "REPLACE_ALL";
+            };
+        };
+        SquareItemsArtworksRelationshipUpdateOperation_Payload_Meta: {
+            /** Format: int64 */
+            expectedRevision: number;
+        };
+        SquareItemsArtworksUpdateMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsArtworksUpdateMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example CATALOG_VERSION_MISMATCH
+                 * @enum {string}
+                 */
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "IMAGE_LIMIT_EXCEEDED" | "MISSING_ITEMS_SCOPE";
+                /** @example Square catalog item changed; reload it before editing */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemsArtworksUpdateMultiDataRelationship413ResponseBody: {
+            errors: {
+                /**
+                 * @example ARTWORK_IMAGE_TOO_LARGE
+                 * @enum {string}
+                 */
+                code: "ARTWORK_IMAGE_TOO_LARGE";
+                /** @example Square images must be at most 15 MB (15,000,000 bytes) */
+                detail?: string;
+                /** @example 413 */
+                status: string;
+            }[];
+        };
+        SquareItemsCreateOperation_Payload: {
+            data: components["schemas"]["SquareItemsCreateOperation_Payload_Data"];
+        };
+        SquareItemsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["SquareItemsCreateOperation_Payload_Data_Attributes"];
+            /** @description Local identity available to later operations in this request */
+            lid?: string;
+            /** @enum {string} */
+            type: "squareItems";
+        };
+        SquareItemsCreateOperation_Payload_Data_Attributes: {
+            /** @description Item description */
+            description?: string;
+            /** @description Item title */
+            title: string;
+        };
+        SquareItemsDeleteResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsDeleteResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemsReadByFilter403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsReadByFilter409ResponseBody: {
+            errors: {
+                /**
+                 * @example MISSING_ITEMS_SCOPE
+                 * @enum {string}
+                 */
+                code: "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemsReadById403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsReadById409ResponseBody: {
+            errors: {
+                /**
+                 * @example MISSING_ITEMS_SCOPE
+                 * @enum {string}
+                 */
+                code: "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemsUpdateOperation_Payload: {
+            data: components["schemas"]["SquareItemsUpdateOperation_Payload_Data"];
+            meta: components["schemas"]["SquareItemsUpdateOperation_Payload_Meta"];
+        };
+        SquareItemsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["SquareItemsUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "squareItems";
+        };
+        SquareItemsUpdateOperation_Payload_Data_Attributes: {
+            /** @description Item description; an empty string removes it */
+            description?: string;
+            /** @description Item title */
+            title?: string;
+        };
+        SquareItemsUpdateOperation_Payload_Meta: {
+            /**
+             * Format: int64
+             * @description Catalog revision read by the editor; stale revisions return 409
+             */
+            expectedRevision: number;
+        };
+        SquareItemsUpdateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsUpdateResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example CATALOG_VERSION_MISMATCH
+                 * @enum {string}
+                 */
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemsVariationsReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsVariationsReadMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example MISSING_ITEMS_SCOPE
+                 * @enum {string}
+                 */
+                code: "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemsVariationsRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["ItemVariation"][];
+            meta: {
+                /** Format: int64 */
+                expectedRevision: number;
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.
+                 * @default INCREMENTAL
+                 * @enum {string}
+                 */
+                mode: "INCREMENTAL";
+                /** @description Variation before which the selected block is placed; omission appends */
+                positionBefore?: string;
+            };
+        };
+        SquareItemsVariationsRelationshipUpdateOperation_Payload_Meta: {
+            /** Format: int64 */
+            expectedRevision: number;
+            /** @description Variation before which the selected block is placed; omission appends */
+            positionBefore?: string;
+        };
+        SquareItemsVariationsUpdateMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemsVariationsUpdateMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example CATALOG_VERSION_MISMATCH
+                 * @enum {string}
+                 */
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        /** @description Target resource types: `artworks`. */
+        SquareItems_Artworks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItems_Artworks_Update_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["SquareItems_Artworks_Update_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["SquareItems_Artworks_Update_Multi_Relationship_Data_Document_Meta"];
+        };
+        SquareItems_Artworks_Update_Multi_Relationship_Data_Document_Meta: {
+            /** Format: int64 */
+            revision: number;
+        };
+        SquareItems_Artworks_Update_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "artworks";
+        };
+        SquareItems_Attributes: {
+            /**
+             * @description Currency of every price on the item
+             * @enum {string}
+             */
+            currency: "USD";
+            /** @description Item description */
+            description?: string;
+            /**
+             * Format: date-time
+             * @description Timestamp when the item was last modified in Square; absent when Square has not reported one
+             */
+            lastModifiedAt?: string;
+            /**
+             * @description Where the item was created
+             * @enum {string}
+             */
+            origin?: "TIDAL" | "OTHER";
+            /** @description Whether the item is published in the seller's selected Square Online site; false when no site is selected */
+            publishedInSelectedSite?: boolean;
+            /**
+             * Format: int64
+             * @description Square catalog item revision used to guard item updates; excludes inventory stock
+             */
+            revision: number;
+            /** @description Item title; empty for an untitled item created in Square */
+            title: string;
+        };
+        SquareItems_Multi_Resource_Data_Document: {
+            data: components["schemas"]["SquareItems_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `users`. */
+        SquareItems_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItems_Relationships: {
+            artworks?: components["schemas"]["SquareItems_Artworks_Multi_Relationship_Data_Document"];
+            owners?: components["schemas"]["SquareItems_Owners_Multi_Relationship_Data_Document"];
+            variations?: components["schemas"]["SquareItems_Variations_Multi_Relationship_Data_Document"];
+        };
+        SquareItems_Resource_Object: {
+            attributes?: components["schemas"]["SquareItems_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["SquareItems_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "squareItems";
+        };
+        SquareItems_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareItems_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItems_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["SquareItems_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `squareItemVariations`. */
+        SquareItems_Variations_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareItems_Variations_Update_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["SquareItems_Variations_Update_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["SquareItems_Variations_Update_Multi_Relationship_Data_Document_Meta"];
+        };
+        SquareItems_Variations_Update_Multi_Relationship_Data_Document_Meta: {
+            /** Format: int64 */
+            revision: number;
+        };
+        SquareItems_Variations_Update_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "squareItemVariations";
+        };
+        SquareSitesItemsAddMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareSitesItemsAddMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE" | "SITE_NOT_SELECTED";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareSitesItemsReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareSitesItemsReadMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example MISSING_ITEMS_SCOPE
+                 * @enum {string}
+                 */
+                code: "MISSING_ITEMS_SCOPE" | "SITE_NOT_SELECTED";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareSitesItemsRelationshipAddOperation_Payload: {
+            /** @description The items to publish */
+            data: components["schemas"]["SquareSitesItemsRelationshipAddOperation_Payload_Data"][];
+        };
+        /** @description The items to publish */
+        SquareSitesItemsRelationshipAddOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "squareItems";
+        };
+        SquareSitesItemsRelationshipRemoveOperation_Payload: {
+            /** @description The items to unpublish */
+            data: components["schemas"]["SquareSitesItemsRelationshipRemoveOperation_Payload_Data"][];
+        };
+        /** @description The items to unpublish */
+        SquareSitesItemsRelationshipRemoveOperation_Payload_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "squareItems";
+        };
+        SquareSitesItemsRemoveMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareSitesItemsRemoveMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE" | "SITE_NOT_SELECTED";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
         };
         SquareSites_Attributes: {
             /** @description The site's domain, if one is configured */
@@ -28543,6 +32196,15 @@ export interface components {
             /** @description The site's title as set by the seller in Square */
             siteTitle?: string;
         };
+        /** @description Target resource types: `squareItems`. */
+        SquareSites_Items_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        SquareSites_Relationships: {
+            items?: components["schemas"]["SquareSites_Items_Multi_Relationship_Data_Document"];
+        };
         SquareSites_Resource_Object: {
             attributes?: components["schemas"]["SquareSites_Attributes"];
             /**
@@ -28550,6 +32212,7 @@ export interface components {
              * @example 12345
              */
             id: string;
+            relationships?: components["schemas"]["SquareSites_Relationships"];
             /**
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
@@ -28634,6 +32297,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         StripeConnections_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28664,6 +32328,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         StripeDashboardLinks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -28750,6 +32415,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `userSubscriptionPriceChanges`. */
         SubscriptionPriceChangeDecisions_PriceChange_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -28788,6 +32454,7 @@ export interface components {
             data: components["schemas"]["TemporaryUserTokens_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         TemporaryUserTokens_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29032,6 +32699,7 @@ export interface components {
             type: "tracks";
         };
         TrackSourceFiles_Attributes: {
+            downloadLink?: components["schemas"]["Link_Object"];
             /** @description MD5 hash of file to be uploaded */
             md5Hash: string;
             /**
@@ -29040,12 +32708,13 @@ export interface components {
              */
             size: number;
             status: components["schemas"]["File_Status"];
-            uploadLink: components["schemas"]["File_Upload_Link"];
+            uploadLink?: components["schemas"]["File_Upload_Link"];
         };
         TrackSourceFiles_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["TrackSourceFiles_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         TrackSourceFiles_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29085,6 +32754,7 @@ export interface components {
              */
             uniqueListeners: number;
         };
+        /** @description Target resource types: `users`. */
         TrackStatistics_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29114,6 +32784,14 @@ export interface components {
         };
         TracksAlbumsRelationshipUpdateOperation_Payload: {
             data: components["schemas"]["TracksAlbumsRelationshipUpdateOperation_Payload_Data"][];
+            meta?: {
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.
+                 * @default REPLACE_ALL
+                 * @enum {string}
+                 */
+                mode: "REPLACE_ALL";
+            };
         };
         TracksAlbumsRelationshipUpdateOperation_Payload_Data: {
             id: string;
@@ -29240,6 +32918,7 @@ export interface components {
             /** @enum {string} */
             type: "genres";
         };
+        /** @description Target resource types: `albums`. */
         Tracks_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Tracks_Albums_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29261,6 +32940,7 @@ export interface components {
         Tracks_Albums_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `artists`. */
         Tracks_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29350,26 +33030,31 @@ export interface components {
             data: components["schemas"]["Tracks_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `credits`. */
         Tracks_Credits_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `downloads`. */
         Tracks_Download_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `genres`. */
         Tracks_Genres_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `lyrics`. */
         Tracks_Lyrics_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `tracksMetadataStatus`. */
         Tracks_MetadataStatus_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -29380,21 +33065,25 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         Tracks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `priceConfigurations`. */
         Tracks_PriceConfig_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `providers`. */
         Tracks_Providers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`. */
         Tracks_Radio_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29436,6 +33125,7 @@ export interface components {
         Tracks_Replacement_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `tracks`. */
         Tracks_Replacement_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Tracks_Replacement_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -29455,11 +33145,13 @@ export interface components {
              */
             type: "tracks";
         };
+        /** @description Target resource types: `shares`. */
         Tracks_Shares_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `tracks`. */
         Tracks_SimilarTracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Tracks_SimilarTracks_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29486,11 +33178,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `trackSourceFiles`. */
         Tracks_SourceFile_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `tracks`. */
         Tracks_SuggestedTracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Tracks_SuggestedTracks_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29512,11 +33206,13 @@ export interface components {
         Tracks_SuggestedTracks_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `trackStatistics`. */
         Tracks_TrackStatistics_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `usageRules`. */
         Tracks_UsageRules_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -29599,7 +33295,7 @@ export interface components {
             /** @enum {string} */
             type: "userCollectionPlaylists";
         };
-        UserCollectionAlbumsAddMultiDataRelationshipWithResponse409ResponseBody: {
+        UserCollectionAlbumsItemsAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example DUPLICATE_ITEMS_IN_COLLECTION
@@ -29609,6 +33305,19 @@ export interface components {
                 /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
+                status: string;
+            }[];
+        };
+        UserCollectionAlbumsItemsReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example UNAUTHORIZED
+                 * @enum {string}
+                 */
+                code: "UNAUTHORIZED";
+                /** @example filter[query] requires INTERNAL access tier */
+                detail?: string;
+                /** @example 403 */
                 status: string;
             }[];
         };
@@ -29640,19 +33349,6 @@ export interface components {
             /** @enum {string} */
             type: "albums";
         };
-        UserCollectionAlbumsReadMultiDataRelationship403ResponseBody: {
-            errors: {
-                /**
-                 * @example UNAUTHORIZED
-                 * @enum {string}
-                 */
-                code: "UNAUTHORIZED";
-                /** @example filter[query] requires INTERNAL access tier */
-                detail?: string;
-                /** @example 403 */
-                status: string;
-            }[];
-        };
         UserCollectionAlbums_Attributes: {
             /**
              * Format: date-time
@@ -29683,6 +33379,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `albums`. */
         UserCollectionAlbums_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionAlbums_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29706,6 +33403,7 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `users`. */
         UserCollectionAlbums_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29734,7 +33432,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionArtistsAddMultiDataRelationshipWithResponse409ResponseBody: {
+        UserCollectionArtistsItemsAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example DUPLICATE_ITEMS_IN_COLLECTION
@@ -29744,6 +33442,19 @@ export interface components {
                 /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
+                status: string;
+            }[];
+        };
+        UserCollectionArtistsItemsReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example UNAUTHORIZED
+                 * @enum {string}
+                 */
+                code: "UNAUTHORIZED";
+                /** @example filter[query] requires INTERNAL access tier */
+                detail?: string;
+                /** @example 403 */
                 status: string;
             }[];
         };
@@ -29775,19 +33486,6 @@ export interface components {
             /** @enum {string} */
             type: "artists";
         };
-        UserCollectionArtistsReadMultiDataRelationship403ResponseBody: {
-            errors: {
-                /**
-                 * @example UNAUTHORIZED
-                 * @enum {string}
-                 */
-                code: "UNAUTHORIZED";
-                /** @example filter[query] requires INTERNAL access tier */
-                detail?: string;
-                /** @example 403 */
-                status: string;
-            }[];
-        };
         UserCollectionArtists_Attributes: {
             /**
              * Format: date-time
@@ -29818,6 +33516,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `artists`. */
         UserCollectionArtists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionArtists_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29840,6 +33539,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `users`. */
         UserCollectionArtists_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29940,6 +33640,7 @@ export interface components {
             data: components["schemas"]["UserCollectionFolders_Resource_Object"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playlists`, `userCollectionFolders`. */
         UserCollectionFolders_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionFolders_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29967,6 +33668,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         UserCollectionFolders_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -29996,12 +33698,13 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `userCollectionPlaylists`. */
         UserCollectionFolders_UserCollection_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409ResponseBody: {
+        UserCollectionPlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example DUPLICATE_ITEMS_IN_COLLECTION
@@ -30011,6 +33714,19 @@ export interface components {
                 /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
+                status: string;
+            }[];
+        };
+        UserCollectionPlaylistsItemsReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example UNAUTHORIZED
+                 * @enum {string}
+                 */
+                code: "UNAUTHORIZED";
+                /** @example filter[query] requires INTERNAL access tier */
+                detail?: string;
+                /** @example 403 */
                 status: string;
             }[];
         };
@@ -30042,19 +33758,6 @@ export interface components {
             /** @enum {string} */
             type: "playlists";
         };
-        UserCollectionPlaylistsReadMultiDataRelationship403ResponseBody: {
-            errors: {
-                /**
-                 * @example UNAUTHORIZED
-                 * @enum {string}
-                 */
-                code: "UNAUTHORIZED";
-                /** @example filter[query] requires INTERNAL access tier */
-                detail?: string;
-                /** @example 403 */
-                status: string;
-            }[];
-        };
         UserCollectionPlaylists_Attributes: {
             /**
              * Format: date-time
@@ -30085,6 +33788,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `playlists`, `userCollectionFolders`. */
         UserCollectionPlaylists_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionPlaylists_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30107,6 +33811,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `users`. */
         UserCollectionPlaylists_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30135,7 +33840,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409ResponseBody: {
+        UserCollectionSaveForLatersItemsAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example DUPLICATE_ITEMS_IN_COLLECTION
@@ -30201,6 +33906,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `albums`, `artists`, `playlists`, `tracks`, `videos`. */
         UserCollectionSaveForLaters_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionSaveForLaters_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30224,6 +33930,7 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `users`. */
         UserCollectionSaveForLaters_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30252,7 +33959,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionTracksAddMultiDataRelationshipWithResponse409ResponseBody: {
+        UserCollectionTracksItemsAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example DUPLICATE_ITEMS_IN_COLLECTION
@@ -30262,6 +33969,19 @@ export interface components {
                 /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
+                status: string;
+            }[];
+        };
+        UserCollectionTracksItemsReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example UNAUTHORIZED
+                 * @enum {string}
+                 */
+                code: "UNAUTHORIZED";
+                /** @example filter[query] requires INTERNAL access tier */
+                detail?: string;
+                /** @example 403 */
                 status: string;
             }[];
         };
@@ -30293,19 +34013,6 @@ export interface components {
             /** @enum {string} */
             type: "tracks";
         };
-        UserCollectionTracksReadMultiDataRelationship403ResponseBody: {
-            errors: {
-                /**
-                 * @example UNAUTHORIZED
-                 * @enum {string}
-                 */
-                code: "UNAUTHORIZED";
-                /** @example filter[query] requires INTERNAL access tier */
-                detail?: string;
-                /** @example 403 */
-                status: string;
-            }[];
-        };
         UserCollectionTracks_Attributes: {
             /**
              * Format: date-time
@@ -30336,6 +34043,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `tracks`. */
         UserCollectionTracks_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionTracks_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30359,6 +34067,7 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `users`. */
         UserCollectionTracks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30387,7 +34096,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        UserCollectionVideosAddMultiDataRelationshipWithResponse409ResponseBody: {
+        UserCollectionVideosItemsAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example DUPLICATE_ITEMS_IN_COLLECTION
@@ -30397,6 +34106,19 @@ export interface components {
                 /** @example Collection item limit reached */
                 detail?: string;
                 /** @example 409 */
+                status: string;
+            }[];
+        };
+        UserCollectionVideosItemsReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example UNAUTHORIZED
+                 * @enum {string}
+                 */
+                code: "UNAUTHORIZED";
+                /** @example filter[query] requires INTERNAL access tier */
+                detail?: string;
+                /** @example 403 */
                 status: string;
             }[];
         };
@@ -30428,19 +34150,6 @@ export interface components {
             /** @enum {string} */
             type: "videos";
         };
-        UserCollectionVideosReadMultiDataRelationship403ResponseBody: {
-            errors: {
-                /**
-                 * @example UNAUTHORIZED
-                 * @enum {string}
-                 */
-                code: "UNAUTHORIZED";
-                /** @example filter[query] requires INTERNAL access tier */
-                detail?: string;
-                /** @example 403 */
-                status: string;
-            }[];
-        };
         UserCollectionVideos_Attributes: {
             /**
              * Format: date-time
@@ -30471,6 +34180,7 @@ export interface components {
             /** Format: date-time */
             addedAt: string;
         };
+        /** @description Target resource types: `videos`. */
         UserCollectionVideos_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserCollectionVideos_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30494,6 +34204,7 @@ export interface components {
             addedAt: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `users`. */
         UserCollectionVideos_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30523,6 +34234,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserDailyMixes_Attributes: Record<string, never>;
+        /** @description Target resource types: `playlists`. */
         UserDailyMixes_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30587,6 +34299,7 @@ export interface components {
             type: "userDataExportRequests";
         };
         UserDiscoveryMixes_Attributes: Record<string, never>;
+        /** @description Target resource types: `playlists`. */
         UserDiscoveryMixes_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30615,7 +34328,15 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         /** @description Details of the activity represented by the group. */
-        UserFeedItemActivityDetails: components["schemas"]["UserFeedItemAlbumReleasedDetails"] | components["schemas"]["UserFeedItemAlbumSharedDetails"] | components["schemas"]["UserFeedItemArtistFollowedDetails"] | components["schemas"]["UserFeedItemCommentRepliedDetails"] | components["schemas"]["UserFeedItemCopyrightFlaggedDetails"] | components["schemas"]["UserFeedItemPlaylistUpdatedDetails"] | components["schemas"]["UserFeedItemTrackSourceFileCommentedDetails"];
+        UserFeedItemActivityDetails: components["schemas"]["UserFeedItemAlbumFavouritedDetails"] | components["schemas"]["UserFeedItemAlbumReleasedDetails"] | components["schemas"]["UserFeedItemAlbumSharedDetails"] | components["schemas"]["UserFeedItemArtistFollowedDetails"] | components["schemas"]["UserFeedItemCommentRepliedDetails"] | components["schemas"]["UserFeedItemCopyrightFlaggedDetails"] | components["schemas"]["UserFeedItemHistoryMixReadyDetails"] | components["schemas"]["UserFeedItemPlaylistUpdatedDetails"] | components["schemas"]["UserFeedItemTrackFavouritedDetails"] | components["schemas"]["UserFeedItemTrackPlaylistedDetails"] | components["schemas"]["UserFeedItemTrackPlayMilestoneDetails"] | components["schemas"]["UserFeedItemTrackSourceFileCommentedDetails"];
+        /** @description Listeners saved one of your albums. `eventCount` is the number of distinct people who saved it in the item's day; actors are never listed */
+        UserFeedItemAlbumFavouritedDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "ALBUM_FAVOURITED";
+        };
         UserFeedItemAlbumReleasedDetails: {
             /**
              * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
@@ -30663,6 +34384,25 @@ export interface components {
              */
             matchCount?: number;
         };
+        /** @description A new history mix of the viewer's own listening is ready. The `subject` is the mix, as a playlist. `frequency` is how often the mix is generated. `eventCount` is always 1, and actors are never listed */
+        UserFeedItemHistoryMixReadyDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "HISTORY_MIX_READY";
+            /**
+             * @description Recurrence frequency defined by RFC 5545
+             * @example MONTHLY
+             * @enum {string}
+             */
+            frequency: "MONTHLY" | "YEARLY";
+            /**
+             * @description The calendar period the mix covers: `YYYY-MM` for a `MONTHLY` mix, `YYYY` for a `YEARLY` one
+             * @example 2026-09
+             */
+            period: string;
+        };
         UserFeedItemPlaylistUpdatedDetails: {
             /**
              * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
@@ -30676,6 +34416,36 @@ export interface components {
              */
             newItemCount?: number;
         };
+        /** @description Listeners saved one of your tracks. `eventCount` is the number of distinct people who saved it in the item's day; actors are never listed */
+        UserFeedItemTrackFavouritedDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "TRACK_FAVOURITED";
+        };
+        /** @description One of your uploaded tracks reached a total play count. The `subject` is the track. `eventCount` is always 1, and actors are never listed */
+        UserFeedItemTrackPlayMilestoneDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "TRACK_PLAY_MILESTONE";
+            /**
+             * Format: int32
+             * @description The total play count the track reached
+             * @example 1000
+             */
+            threshold: number;
+        };
+        /** @description One of your tracks was added to user playlists. `eventCount` is the number of distinct playlists it was added to in the item's day, not people; actors are never listed */
+        UserFeedItemTrackPlaylistedDetails: {
+            /**
+             * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            activityType: "TRACK_PLAYLISTED";
+        };
         UserFeedItemTrackSourceFileCommentedDetails: {
             /**
              * @description Type of activity represented by the group (enum property replaced by openapi-typescript)
@@ -30683,6 +34453,7 @@ export interface components {
              */
             activityType: "TRACK_SOURCE_FILE_COMMENTED";
         };
+        /** @description Target resource types: `artists`. */
         UserFeedItems_Actors_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30762,6 +34533,7 @@ export interface components {
         UserFeedItems_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `artists`, `comments`, `playlists`, `trackSourceFiles`, `tracks`. */
         UserFeedItems_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["UserFeedItems_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -30772,6 +34544,7 @@ export interface components {
         };
         UserFeedsUpdateOperation_Payload_Data: {
             attributes: components["schemas"]["UserFeedsUpdateOperation_Payload_Data_Attributes"];
+            /** @description Also accepts `me`. */
             id: string;
             /** @enum {string} */
             type: "userFeeds";
@@ -30834,6 +34607,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserNewReleaseMixes_Attributes: Record<string, never>;
+        /** @description Target resource types: `playlists`. */
         UserNewReleaseMixes_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30862,6 +34636,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         UserOfflineMixes_Attributes: Record<string, never>;
+        /** @description Target resource types: `playlists`. */
         UserOfflineMixes_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30921,6 +34696,7 @@ export interface components {
         };
         UserPlaybackStatesUpdateOperation_Payload_Data: {
             attributes: components["schemas"]["UserPlaybackStatesUpdateOperation_Payload_Data_Attributes"];
+            /** @description Also accepts `me`. */
             id: string;
             /** @enum {string} */
             type: "userPlaybackStates";
@@ -30929,6 +34705,7 @@ export interface components {
             /** @enum {string} */
             playbackStatus?: "PLAYING" | "PAUSED";
         };
+        /** @description Target resource types: `installations`. */
         UserPlaybackStates_ActivePlayer_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -30956,16 +34733,19 @@ export interface components {
             /** @enum {string} */
             type: "installations";
         };
+        /** @description Target resource types: `installations`. */
         UserPlaybackStates_AvailablePlayers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `changeEventStreams`. */
         UserPlaybackStates_ChangeEventStream_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `playQueues`. */
         UserPlaybackStates_PlayQueue_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -31009,7 +34789,7 @@ export interface components {
             data: components["schemas"]["UserPlaybackStates_Resource_Object"];
             links: components["schemas"]["Links"];
         };
-        UserRecommendationBlocksAddMultiDataRelationshipWithResponse409ResponseBody: {
+        UserRecommendationBlocksArtistsAddMultiDataRelationshipWithResponse409ResponseBody: {
             errors: {
                 /**
                  * @example IDEMPOTENT_REQUEST_IN_PROGRESS
@@ -31038,6 +34818,19 @@ export interface components {
             /** @enum {string} */
             type: "artists";
         };
+        UserRecommendationBlocksTracksAddMultiDataRelationshipWithResponse409ResponseBody: {
+            errors: {
+                /**
+                 * @example IDEMPOTENT_REQUEST_IN_PROGRESS
+                 * @enum {string}
+                 */
+                code: "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MAXIMUM_NUMBER_OF_BLOCKS_EXCEEDED";
+                /** @example Recommendation block limit reached */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
         UserRecommendationBlocksTracksRelationshipAddOperation_Payload: {
             data: components["schemas"]["UserRecommendationBlocksTracksRelationshipAddOperation_Payload_Data"][];
         };
@@ -31053,6 +34846,19 @@ export interface components {
             id: string;
             /** @enum {string} */
             type: "tracks";
+        };
+        UserRecommendationBlocksVideosAddMultiDataRelationshipWithResponse409ResponseBody: {
+            errors: {
+                /**
+                 * @example IDEMPOTENT_REQUEST_IN_PROGRESS
+                 * @enum {string}
+                 */
+                code: "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MAXIMUM_NUMBER_OF_BLOCKS_EXCEEDED";
+                /** @example Recommendation block limit reached */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
         };
         UserRecommendationBlocksVideosRelationshipAddOperation_Payload: {
             data: components["schemas"]["UserRecommendationBlocksVideosRelationshipAddOperation_Payload_Data"][];
@@ -31079,6 +34885,7 @@ export interface components {
             /** @enum {string} */
             type: "artists";
         };
+        /** @description Target resource types: `artists`. */
         UserRecommendationBlocks_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Artists_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31105,6 +34912,7 @@ export interface components {
             createdAt: string;
         };
         UserRecommendationBlocks_Attributes: Record<string, never>;
+        /** @description Target resource types: `users`. */
         UserRecommendationBlocks_Owners_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31144,6 +34952,7 @@ export interface components {
             /** @enum {string} */
             type: "tracks";
         };
+        /** @description Target resource types: `tracks`. */
         UserRecommendationBlocks_Tracks_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Tracks_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31179,6 +34988,7 @@ export interface components {
             /** @enum {string} */
             type: "videos";
         };
+        /** @description Target resource types: `videos`. */
         UserRecommendationBlocks_Videos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["UserRecommendationBlocks_Videos_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31291,6 +35101,7 @@ export interface components {
              */
             newPrice: string;
         };
+        /** @description Target resource types: `subscriptionPriceChangeDecisions`. */
         UserSubscriptionPriceChanges_Decision_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -31318,6 +35129,7 @@ export interface components {
              */
             type: "userSubscriptionPriceChanges";
         };
+        /** @description Target resource types: `artists`. */
         Users_Artist_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -31388,6 +35200,12 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description The variation whose physical stock was counted */
+        Variation: {
+            id: string;
+            /** @enum {string} */
+            type: "squareItemVariations";
+        };
         VideoManifestsReadById403ResponseBody: {
             errors: {
                 /**
@@ -31446,6 +35264,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `albums`. */
         Videos_Albums_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Videos_Albums_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31467,6 +35286,7 @@ export interface components {
         Videos_Albums_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `artists`. */
         Videos_Artists_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31519,6 +35339,7 @@ export interface components {
              */
             version?: string;
         };
+        /** @description Target resource types: `credits`. */
         Videos_Credits_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31529,6 +35350,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `providers`. */
         Videos_Providers_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31561,6 +35383,7 @@ export interface components {
         Videos_Replacement_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `videos`. */
         Videos_Replacement_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Videos_Replacement_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -31580,6 +35403,7 @@ export interface components {
              */
             type: "videos";
         };
+        /** @description Target resource types: `videos`. */
         Videos_SimilarVideos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Videos_SimilarVideos_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31606,6 +35430,7 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `videos`. */
         Videos_SuggestedVideos_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Videos_SuggestedVideos_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -31627,11 +35452,13 @@ export interface components {
         Videos_SuggestedVideos_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `artworks`. */
         Videos_ThumbnailArt_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `usageRules`. */
         Videos_UsageRules_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -31691,11 +35518,13 @@ export interface components {
         ViewerContexts_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Target resource types: `albums`, `artists`, `folders`, `playlists`, `tracks`, `videos`. */
         ViewerContexts_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["ViewerContexts_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `users`. */
         ViewerContexts_Viewer_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -31703,6 +35532,105 @@ export interface components {
         };
     };
     responses: {
+        /** @description Invalid request */
+        AtomicOperations400Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["AtomicOperations400ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        AtomicOperations403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["AtomicOperations403ResponseBody"];
+            };
+        };
+        /** @description Resource not found */
+        AtomicOperations404Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["AtomicOperations404ResponseBody"];
+            };
+        };
+        /** @description HTTP method not allowed */
+        AtomicOperations405Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["AtomicOperations405ResponseBody"];
+            };
+        };
+        /** @description No acceptable response media type */
+        AtomicOperations406Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["AtomicOperations406ResponseBody"];
+            };
+        };
+        /** @description Request already in progress for this idempotency key; Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog */
+        AtomicOperations409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["AtomicOperations409ResponseBody"];
+            };
+        };
+        /** @description Unsupported request media type or encoding */
+        AtomicOperations415Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["AtomicOperations415ResponseBody"];
+            };
+        };
+        /** @description Idempotency key reused for a different request */
+        AtomicOperations422Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["AtomicOperations422ResponseBody"];
+            };
+        };
+        /** @description Rate limit exceeded */
+        AtomicOperations429Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["AtomicOperations429ResponseBody"];
+            };
+        };
+        /** @description Internal server error */
+        AtomicOperations500Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["AtomicOperations500ResponseBody"];
+            };
+        };
+        /** @description Service temporarily unavailable */
+        AtomicOperations503Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["AtomicOperations503ResponseBody"];
+            };
+        };
         /** @description Invalid request */
         Default400Response: {
             headers: {
@@ -31785,12 +35713,12 @@ export interface components {
             };
         };
         /** @description A folder cannot be placed inside itself or one of its descendants */
-        FolderItemsUpdateSingleDataRelationship400Response: {
+        FolderItemsParentUpdateSingleDataRelationship400Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["FolderItemsUpdateSingleDataRelationship400ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["FolderItemsParentUpdateSingleDataRelationship400ResponseBody"];
             };
         };
         /** @description The root folder cannot be renamed or deleted */
@@ -31820,7 +35748,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["Idempotency409ResponseBody"];
             };
         };
-        /** @description Idempotency key reused with a different payload */
+        /** @description Idempotency key reused for a different request */
         Idempotency422Response: {
             headers: {
                 [name: string]: unknown;
@@ -31839,15 +35767,6 @@ export interface components {
             };
         };
         /** @description The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key */
-        PlaylistGenerationsAddMultiDataRelationshipWithResponse409Response: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/vnd.api+json": components["schemas"]["PlaylistGenerationsAddMultiDataRelationshipWithResponse409ResponseBody"];
-            };
-        };
-        /** @description The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key */
         PlaylistGenerationsCreateResource409Response: {
             headers: {
                 [name: string]: unknown;
@@ -31857,30 +35776,39 @@ export interface components {
             };
         };
         /** @description The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key */
-        PlaylistGenerationsRemoveMultiDataRelationship409Response: {
+        PlaylistGenerationsTrackPreferencesAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["PlaylistGenerationsRemoveMultiDataRelationship409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["PlaylistGenerationsTrackPreferencesAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key */
-        PlaylistGenerationsUpdateMultiDataRelationship409Response: {
+        PlaylistGenerationsTrackPreferencesRemoveMultiDataRelationship409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["PlaylistGenerationsUpdateMultiDataRelationship409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["PlaylistGenerationsTrackPreferencesRemoveMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description The playlist state conflicts with the request: the preference version or base generation is stale, or the track preference selected for update does not exist. Refresh the current generation and track preferences before retrying.; Request already in progress for this idempotency key */
+        PlaylistGenerationsTrackPreferencesUpdateMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["PlaylistGenerationsTrackPreferencesUpdateMultiDataRelationship409ResponseBody"];
             };
         };
         /** @description Playlist already contains one or more requested items; Playlist item limit reached; Request already in progress for this idempotency key */
-        PlaylistsAddMultiDataRelationshipWithResponse409Response: {
+        PlaylistsItemsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["PlaylistsAddMultiDataRelationshipWithResponse409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["PlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description Latest terms and conditions must be accepted */
@@ -31893,39 +35821,327 @@ export interface components {
             };
         };
         /** @description Latest terms and conditions must be accepted */
-        SquareConnectionsReadMultiDataRelationship403Response: {
+        SquareConnectionsSelectedSiteReadSingleDataRelationship403Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["SquareConnectionsReadMultiDataRelationship403ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsSelectedSiteReadSingleDataRelationship403ResponseBody"];
             };
         };
         /** @description Latest terms and conditions must be accepted */
-        SquareConnectionsReadSingleDataRelationship403Response: {
+        SquareConnectionsSelectedSiteUpdateSingleDataRelationship403Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["SquareConnectionsReadSingleDataRelationship403ResponseBody"];
-            };
-        };
-        /** @description Latest terms and conditions must be accepted */
-        SquareConnectionsUpdateSingleDataRelationship403Response: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/vnd.api+json": components["schemas"]["SquareConnectionsUpdateSingleDataRelationship403ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsSelectedSiteUpdateSingleDataRelationship403ResponseBody"];
             };
         };
         /** @description Square credential lacks required site scopes; run Square onboarding again; Request already in progress for this idempotency key */
-        SquareConnectionsUpdateSingleDataRelationship409Response: {
+        SquareConnectionsSelectedSiteUpdateSingleDataRelationship409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["SquareConnectionsUpdateSingleDataRelationship409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsSelectedSiteUpdateSingleDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareConnectionsSitesReadMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareConnectionsSitesReadMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemVariationPhysicalCountsCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationPhysicalCountsCreateResource403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog and inventory scopes; reconnect Square; Square inventory cannot accept this physical count in its current state; Request already in progress for this idempotency key */
+        SquareItemVariationPhysicalCountsCreateResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationPhysicalCountsCreateResource409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemVariationsCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsCreateResource403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square item changed; reload it before changing its variations; Another request is changing the Square catalog; Request already in progress for this idempotency key */
+        SquareItemVariationsCreateResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsCreateResource409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemVariationsDeleteResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsDeleteResource403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square item changed; reload it before changing its variations; An item must retain at least one variation; Another request is changing the Square catalog; Request already in progress for this idempotency key */
+        SquareItemVariationsDeleteResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsDeleteResource409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemVariationsReadById403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsReadById403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+        SquareItemVariationsReadById409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsReadById409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemVariationsUpdateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsUpdateResource403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square variation changed; reload it before editing; This variation's pricing cannot be edited here; edit it in Square Dashboard; Another request is changing the Square catalog; Request already in progress for this idempotency key */
+        SquareItemVariationsUpdateResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsUpdateResource409ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+        SquareItemsArtworksReadMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsArtworksReadMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemsArtworksUpdateMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsArtworksUpdateMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Square catalog item changed; reload it before editing; A Square item can have at most 20 images; Another request is changing the Square catalog; Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Request already in progress for this idempotency key */
+        SquareItemsArtworksUpdateMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsArtworksUpdateMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Square images must be at most 15 MB (15,000,000 bytes) */
+        SquareItemsArtworksUpdateMultiDataRelationship413Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsArtworksUpdateMultiDataRelationship413ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemsDeleteResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsDeleteResource403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Request already in progress for this idempotency key */
+        SquareItemsDeleteResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsDeleteResource409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemsReadByFilter403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsReadByFilter403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+        SquareItemsReadByFilter409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsReadByFilter409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemsReadById403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsReadById403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+        SquareItemsReadById409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsReadById409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemsUpdateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsUpdateResource403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; Square catalog item changed; reload it before editing; Request already in progress for this idempotency key */
+        SquareItemsUpdateResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsUpdateResource409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemsVariationsReadMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsVariationsReadMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+        SquareItemsVariationsReadMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsVariationsReadMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemsVariationsUpdateMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsVariationsUpdateMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Square catalog item changed; reload it before editing; Another request is changing the Square catalog; Request already in progress for this idempotency key */
+        SquareItemsVariationsUpdateMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemsVariationsUpdateMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareSitesItemsAddMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareSitesItemsAddMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; The site isn't the seller's selected Square Online site; select it to manage its items; Request already in progress for this idempotency key */
+        SquareSitesItemsAddMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareSitesItemsAddMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareSitesItemsReadMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareSitesItemsReadMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; The site isn't the seller's selected Square Online site; select it to manage its items */
+        SquareSitesItemsReadMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareSitesItemsReadMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareSitesItemsRemoveMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareSitesItemsRemoveMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; The site isn't the seller's selected Square Online site; select it to manage its items; Request already in progress for this idempotency key */
+        SquareSitesItemsRemoveMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareSitesItemsRemoveMultiDataRelationship409ResponseBody"];
             };
         };
         /** @description Required playback prerequisites are missing; Content is unavailable in your location; Content must be purchased before playback; Client cannot access this content; Account is playing on another app or device */
@@ -31965,39 +36181,39 @@ export interface components {
             };
         };
         /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
-        UserCollectionAlbumsAddMultiDataRelationshipWithResponse409Response: {
+        UserCollectionAlbumsItemsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsAddMultiDataRelationshipWithResponse409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description filter[query] requires INTERNAL access tier */
-        UserCollectionAlbumsReadMultiDataRelationship403Response: {
+        UserCollectionAlbumsItemsReadMultiDataRelationship403Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsReadMultiDataRelationship403ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionAlbumsItemsReadMultiDataRelationship403ResponseBody"];
             };
         };
         /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
-        UserCollectionArtistsAddMultiDataRelationshipWithResponse409Response: {
+        UserCollectionArtistsItemsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionArtistsAddMultiDataRelationshipWithResponse409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionArtistsItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description filter[query] requires INTERNAL access tier */
-        UserCollectionArtistsReadMultiDataRelationship403Response: {
+        UserCollectionArtistsItemsReadMultiDataRelationship403Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionArtistsReadMultiDataRelationship403ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionArtistsItemsReadMultiDataRelationship403ResponseBody"];
             };
         };
         /** @description Folder must be empty and owned by you */
@@ -32010,75 +36226,93 @@ export interface components {
             };
         };
         /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
-        UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409Response: {
+        UserCollectionPlaylistsItemsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsAddMultiDataRelationshipWithResponse409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description filter[query] requires INTERNAL access tier */
-        UserCollectionPlaylistsReadMultiDataRelationship403Response: {
+        UserCollectionPlaylistsItemsReadMultiDataRelationship403Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsReadMultiDataRelationship403ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionPlaylistsItemsReadMultiDataRelationship403ResponseBody"];
             };
         };
         /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
-        UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409Response: {
+        UserCollectionSaveForLatersItemsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLatersAddMultiDataRelationshipWithResponse409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionSaveForLatersItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
-        UserCollectionTracksAddMultiDataRelationshipWithResponse409Response: {
+        UserCollectionTracksItemsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionTracksAddMultiDataRelationshipWithResponse409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionTracksItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description filter[query] requires INTERNAL access tier */
-        UserCollectionTracksReadMultiDataRelationship403Response: {
+        UserCollectionTracksItemsReadMultiDataRelationship403Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionTracksReadMultiDataRelationship403ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionTracksItemsReadMultiDataRelationship403ResponseBody"];
             };
         };
         /** @description Collection item limit reached; Collection already contains one or more items; Request already in progress for this idempotency key */
-        UserCollectionVideosAddMultiDataRelationshipWithResponse409Response: {
+        UserCollectionVideosItemsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionVideosAddMultiDataRelationshipWithResponse409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionVideosItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description filter[query] requires INTERNAL access tier */
-        UserCollectionVideosReadMultiDataRelationship403Response: {
+        UserCollectionVideosItemsReadMultiDataRelationship403Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserCollectionVideosReadMultiDataRelationship403ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserCollectionVideosItemsReadMultiDataRelationship403ResponseBody"];
             };
         };
         /** @description Recommendation block limit reached; Request already in progress for this idempotency key */
-        UserRecommendationBlocksAddMultiDataRelationshipWithResponse409Response: {
+        UserRecommendationBlocksArtistsAddMultiDataRelationshipWithResponse409Response: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
-                "application/vnd.api+json": components["schemas"]["UserRecommendationBlocksAddMultiDataRelationshipWithResponse409ResponseBody"];
+                "application/vnd.api+json": components["schemas"]["UserRecommendationBlocksArtistsAddMultiDataRelationshipWithResponse409ResponseBody"];
+            };
+        };
+        /** @description Recommendation block limit reached; Request already in progress for this idempotency key */
+        UserRecommendationBlocksTracksAddMultiDataRelationshipWithResponse409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserRecommendationBlocksTracksAddMultiDataRelationshipWithResponse409ResponseBody"];
+            };
+        };
+        /** @description Recommendation block limit reached; Request already in progress for this idempotency key */
+        UserRecommendationBlocksVideosAddMultiDataRelationshipWithResponse409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserRecommendationBlocksVideosAddMultiDataRelationshipWithResponse409ResponseBody"];
             };
         };
         /** @description Active report limit reached */
@@ -32110,7 +36344,7 @@ export interface components {
         };
     };
     parameters: {
-        /** @description Unique idempotency key for safe retry of mutation requests. If a duplicate key is sent with the same payload, the original response is replayed. If the payload differs, a 422 error is returned. */
+        /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
         IdempotencyKey: string;
     };
     requestBodies: never;
