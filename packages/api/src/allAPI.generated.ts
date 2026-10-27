@@ -15763,10 +15763,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Include related resources. Available relationships: owners */
+                    /**
+                     * @description Include related resources. Available relationships: artworks, owners
+                     * @example artworks
+                     */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: "owners"[];
+                    includeLinkage?: ("artworks" | "owners")[];
                 };
                 header?: never;
                 path: {
@@ -15890,6 +15893,117 @@ export interface paths {
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
                 409: components["responses"]["SquareItemVariationsUpdateResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/squareItemVariations/{id}/relationships/artworks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get artworks relationship ("to-many").
+         * @description Artworks of the variation's Square catalog images in Square's display order. An image Square has no URL for stays in the list and its artwork has no files. Returns the variation revision the list was read at.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: artworks
+                     * @example artworks
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Square variation id
+                     * @example p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItemVariations_Artworks_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemVariationsArtworksReadMultiDataRelationship403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemVariationsArtworksReadMultiDataRelationship409Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update artworks relationship ("to-many").
+         * @description Replaces the variation's photos with the complete ordered list. Omitted photos are detached and stay in the seller's Square catalog; an empty list clears them. The first artwork is the primary photo. Duplicate artwork IDs are rejected. Uploaded TIDAL JPEG artworks, at most 15,000,000 bytes, are copied to Square and attached under new artwork IDs; their originals stay unchanged. Existing Square artworks must belong to this seller and are attached directly; they need not be the item's photos. Returns the complete resulting linkage in display order and the committed variation revision. Copies may remain in Square if the replacement fails. Retry unchanged with the original Idempotency-Key after a timeout or 5xx. Recovery is bounded by Marketplace receipts and Square's idempotency retention, and can be blocked if the variation is deleted or a source becomes unavailable or ineligible. Read the variation again to reconcile its current state.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key": string;
+                };
+                path: {
+                    /**
+                     * @description Square variation id
+                     * @example p67ILh4Qr7GGobTNrt3N7OK7wBV836KfxXfJMf7OGhHm
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SquareItemVariationsArtworksRelationshipUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["SquareItemVariations_Artworks_Update_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                403: components["responses"]["SquareItemVariationsArtworksUpdateMultiDataRelationship403Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["SquareItemVariationsArtworksUpdateMultiDataRelationship409Response"];
+                413: components["responses"]["SquareItemVariationsArtworksUpdateMultiDataRelationship413Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
                 429: components["responses"]["Default429Response"];
@@ -16239,7 +16353,7 @@ export interface paths {
         head?: never;
         /**
          * Update artworks relationship ("to-many").
-         * @description Appends images without moving existing photos. Duplicate artwork IDs are rejected. Uploaded TIDAL JPEG artworks, at most 15,000,000 bytes, are copied to Square and attached under new artwork IDs; their originals stay unchanged. Existing Square artworks must belong to this seller and are attached directly. Returns only the affected Square artwork linkage, in the item's display order, and the committed item revision. Copies may remain in Square if attachment fails. Retry unchanged with the original Idempotency-Key after a timeout or 5xx. Recovery is bounded by Marketplace receipts and Square's idempotency retention, and can be blocked if the item is deleted or a source becomes unavailable or ineligible. Read the item again to reconcile its current state.
+         * @description Replaces the item's photos with the complete ordered list. Omitted photos are detached and stay in the seller's Square catalog; an empty list clears them. The first artwork is the primary photo. Duplicate artwork IDs are rejected. Uploaded TIDAL JPEG artworks, at most 15,000,000 bytes, are copied to Square and attached under new artwork IDs; their originals stay unchanged. Existing Square artworks must belong to this seller and are attached directly. Returns the complete resulting linkage in display order and the committed item revision. Copies may remain in Square if the replacement fails. Retry unchanged with the original Idempotency-Key after a timeout or 5xx. Recovery is bounded by Marketplace receipts and Square's idempotency retention, and can be blocked if the item is deleted or a source becomes unavailable or ineligible. Read the item again to reconcile its current state.
          */
         patch: {
             parameters: {
@@ -26913,6 +27027,12 @@ export interface components {
         Artists_Videos_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
+        /** @description Artworks of the variation's Square catalog images in Square's display order, including images Square has no URL for */
+        Artwork: {
+            id: string;
+            /** @enum {string} */
+            type: "artworks";
+        };
         /** @description Artwork files */
         Artwork_File: {
             /**
@@ -29307,6 +29427,11 @@ export interface components {
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
             position?: string;
+            /**
+             * Format: int64
+             * @description Position revision for this itemId; advances only on explicit position writes.
+             */
+            positionRevision?: number;
             /** Format: date-time */
             positionUpdatedAt?: string;
             replacement?: components["schemas"]["Replacement_Provenance"];
@@ -29330,6 +29455,11 @@ export interface components {
             itemId: string;
             legacySource?: components["schemas"]["LegacySource"];
             position?: string;
+            /**
+             * Format: int64
+             * @description Position revision for this itemId; advances only on explicit position writes.
+             */
+            positionRevision?: number;
             /** Format: date-time */
             positionUpdatedAt?: string;
             updatedByInstallationId?: string;
@@ -31440,6 +31570,94 @@ export interface components {
              */
             type: "squareItemVariationPhysicalCounts";
         };
+        SquareItemVariationsArtworksReadMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsArtworksReadMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example CONFLICT
+                 * @enum {string}
+                 */
+                code: "CONFLICT" | "MISSING_ITEMS_SCOPE";
+                /** @example Square credential lacks the catalog scopes; run Square onboarding again to reconnect */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsArtworksRelationshipUpdateOperation_Payload: {
+            data: components["schemas"]["Artwork"][];
+            meta: {
+                /**
+                 * Format: int64
+                 * @description Observed variation revision, read from attributes.revision or the relationship's meta.revision; a stale revision returns 409 and changes nothing. Does not guard the parent item, sibling variations or inventory quantity
+                 */
+                expectedRevision: number;
+                /**
+                 * @description Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.
+                 * @default REPLACE_ALL
+                 * @enum {string}
+                 */
+                mode: "REPLACE_ALL";
+            };
+        };
+        SquareItemVariationsArtworksRelationshipUpdateOperation_Payload_Meta: {
+            /**
+             * Format: int64
+             * @description Observed variation revision, read from attributes.revision or the relationship's meta.revision; a stale revision returns 409 and changes nothing. Does not guard the parent item, sibling variations or inventory quantity
+             */
+            expectedRevision: number;
+        };
+        SquareItemVariationsArtworksUpdateMultiDataRelationship403ResponseBody: {
+            errors: {
+                /**
+                 * @example REQUIRED_TERMS_NOT_ACCEPTED
+                 * @enum {string}
+                 */
+                code: "REQUIRED_TERMS_NOT_ACCEPTED";
+                /** @example Latest terms and conditions must be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsArtworksUpdateMultiDataRelationship409ResponseBody: {
+            errors: {
+                /**
+                 * @example CATALOG_VERSION_MISMATCH
+                 * @enum {string}
+                 */
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                /** @example Square variation changed; reload it before editing its artworks */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        SquareItemVariationsArtworksUpdateMultiDataRelationship413ResponseBody: {
+            errors: {
+                /**
+                 * @example ARTWORK_IMAGE_TOO_LARGE
+                 * @enum {string}
+                 */
+                code: "ARTWORK_IMAGE_TOO_LARGE";
+                /** @example Square images must be at most 15 MB (15,000,000 bytes) */
+                detail?: string;
+                /** @example 413 */
+                status: string;
+            }[];
+        };
         SquareItemVariationsCreateOperation_Payload: {
             data: components["schemas"]["SquareItemVariationsCreateOperation_Payload_Data"];
             meta: components["schemas"]["SquareItemVariations_ExpectedItemRevision"];
@@ -31619,6 +31837,33 @@ export interface components {
                 status: string;
             }[];
         };
+        /** @description Target resource types: `artworks`. */
+        SquareItemVariations_Artworks_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["SquareItemVariations_Artworks_Multi_Relationship_Data_Document_Meta"];
+        };
+        /** @description Revision of the variation whose artworks are listed */
+        SquareItemVariations_Artworks_Multi_Relationship_Data_Document_Meta: {
+            /** Format: int64 */
+            revision: number;
+        };
+        SquareItemVariations_Artworks_Update_Multi_Relationship_Data_Document: {
+            data: components["schemas"]["SquareItemVariations_Artworks_Update_Resource_Identifier"][];
+            links: components["schemas"]["Links"];
+            meta?: components["schemas"]["SquareItemVariations_Artworks_Update_Multi_Relationship_Data_Document_Meta"];
+        };
+        /** @description Revision of the variation whose artworks are listed */
+        SquareItemVariations_Artworks_Update_Multi_Relationship_Data_Document_Meta: {
+            /** Format: int64 */
+            revision: number;
+        };
+        SquareItemVariations_Artworks_Update_Resource_Identifier: {
+            id: string;
+            /** @enum {string} */
+            type: "artworks";
+        };
         SquareItemVariations_Attributes: {
             /** @enum {string} */
             currency: "USD";
@@ -31636,7 +31881,7 @@ export interface components {
             pricingType: "FIXED" | "VARIABLE";
             /**
              * Format: int64
-             * @description Square variation revision covering its catalog fields, including name, pricing and stock tracking; excludes inventory quantity and other variations
+             * @description Square variation revision covering its catalog fields, including name, pricing, stock tracking and attached artworks; excludes inventory quantity and other variations
              */
             revision: number;
             /**
@@ -31673,6 +31918,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         SquareItemVariations_Relationships: {
+            artworks?: components["schemas"]["SquareItemVariations_Artworks_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["SquareItemVariations_Owners_Multi_Relationship_Data_Document"];
         };
         SquareItemVariations_Resource_Object: {
@@ -31747,8 +31993,8 @@ export interface components {
                  * @example CATALOG_VERSION_MISMATCH
                  * @enum {string}
                  */
-                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "IMAGE_LIMIT_EXCEEDED" | "MISSING_ITEMS_SCOPE";
-                /** @example Square catalog item changed; reload it before editing */
+                code: "CATALOG_VERSION_MISMATCH" | "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                /** @example Square item changed; reload it before editing its artworks */
                 detail?: string;
                 /** @example 409 */
                 status: string;
@@ -35875,6 +36121,51 @@ export interface components {
             };
         };
         /** @description Latest terms and conditions must be accepted */
+        SquareItemVariationsArtworksReadMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsArtworksReadMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog */
+        SquareItemVariationsArtworksReadMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsArtworksReadMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
+        SquareItemVariationsArtworksUpdateMultiDataRelationship403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsArtworksUpdateMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description Square variation changed; reload it before editing its artworks; Another request is changing the Square catalog; Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Request already in progress for this idempotency key */
+        SquareItemVariationsArtworksUpdateMultiDataRelationship409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsArtworksUpdateMultiDataRelationship409ResponseBody"];
+            };
+        };
+        /** @description Square images must be at most 15 MB (15,000,000 bytes) */
+        SquareItemVariationsArtworksUpdateMultiDataRelationship413Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SquareItemVariationsArtworksUpdateMultiDataRelationship413ResponseBody"];
+            };
+        };
+        /** @description Latest terms and conditions must be accepted */
         SquareItemVariationsCreateResource403Response: {
             headers: {
                 [name: string]: unknown;
@@ -35964,7 +36255,7 @@ export interface components {
                 "application/vnd.api+json": components["schemas"]["SquareItemsArtworksUpdateMultiDataRelationship403ResponseBody"];
             };
         };
-        /** @description Square catalog item changed; reload it before editing; A Square item can have at most 20 images; Another request is changing the Square catalog; Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Request already in progress for this idempotency key */
+        /** @description Square item changed; reload it before editing its artworks; Another request is changing the Square catalog; Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Request already in progress for this idempotency key */
         SquareItemsArtworksUpdateMultiDataRelationship409Response: {
             headers: {
                 [name: string]: unknown;
