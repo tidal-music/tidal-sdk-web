@@ -21,7 +21,21 @@ The previous examples assume usage in a browser context, but for server-side / `
 
 Which approach to choose will depend on how much control you need over the Auth flow.
 
+## OpenAPI document
+
+The package includes the OpenAPI document used to generate its TypeScript
+types. Tools and validators can import it separately from the client:
+
+```js
+import spec from '@tidal-music/api/openapi.json' with { type: 'json' };
+```
+
+In Node.js, `import.meta.resolve('@tidal-music/api/openapi.json')` also resolves
+the document for tools that read JSON from disk. The document is pinned to the
+package version and is not imported by the client entry point.
+
 ## Development
 
-Run `pnpm generateTypes` to regenerate the types from the API specs.
+Run `pnpm generateTypes` to regenerate the types from `bin/tidal-api-oas.json`.
+The API update workflow refreshes that document and its generated types together.
 .

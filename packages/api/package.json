@@ -1,9 +1,10 @@
 {
   "name": "@tidal-music/api",
-  "version": "0.54.0",
+  "version": "0.54.1",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "bin/tidal-api-oas.json"
   ],
   "repository": {
     "type": "git",
@@ -12,10 +13,18 @@
   "license": "Apache-2.0",
   "module": "dist/index.js",
   "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "openapi.json": ["./bin/tidal-api-oas.json"]
+    }
+  },
   "exports": {
-    "types": "./dist/index.d.ts",
-    "import": "./dist/index.js",
-    "default": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./openapi.json": "./bin/tidal-api-oas.json"
   },
   "scripts": {
     "prepare": "vite build",
