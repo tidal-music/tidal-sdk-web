@@ -38,7 +38,7 @@
     "@vitest/coverage-v8": "5.0.5",
     "@vitest/ui": "5.0.4",
     "@vitest/web-worker": "5.0.5",
-    "happy-dom": "20.14.6",
+    "happy-dom": "21.0.4",
     "@typescript/native": "npm:typescript@7.0.2",
     "typescript": "npm:@typescript/typescript6@6.0.2",
     "vite": "8.3.5",
