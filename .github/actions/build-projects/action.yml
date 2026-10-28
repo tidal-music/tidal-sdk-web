@@ -1,9 +1,0 @@
-name: Build projects
-description: Builds all projects
-runs:
-  using: composite
-  steps:
-    - name: Build projects (incl. type definitions)
-      shell: bash
-      run: | # ... = "To select a package and its dependencies", make sure sibling deps are built first
-        pnpm --filter "@tidal-music/*..." build
