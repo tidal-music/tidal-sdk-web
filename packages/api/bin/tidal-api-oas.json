@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. Never parse, construct, or infer meaning from an `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes. Monetary amounts are decimal strings; each field defines its sign and precision constraints.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nWhere multiple identifiers are accepted, comma-separated values match any complete pair.\nWhen a member path names a to-many relationship, at least one related resource must match;\nfiltering does not trim that relationship. On to-many relationship reads, an empty member\npath (`filter[]=tracks:123`) filters primary data itself.\nEach endpoint lists its supported filters and types.\n\nWhere supported, `me` aliases the authenticated user's dedicated resource ID for the referenced\nresource type. It works in paths, resource-ID filters, compact identifiers (`type:me`), resource\nPATCH primary IDs and standalone relationship mutation identifiers, with the same meaning as\nthe resolved ID. Reads using the alias are `no-store`.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<memberPath>]=value`](https://jsonapi.org/format/#fetching-filtering) filters primary data by equality. Each endpoint lists its available filters; most collections require at least one.\n- Where explicitly documented, `filter[<memberPath>][ne]=value` negates the complete equality predicate. When the member path names a to-many relationship, no related ID may match any supplied value; a known-empty relationship matches. Operators are separate from values. Supplied comparisons combine with AND. For a required filter with multiple supported comparisons, at least one must be supplied; the parameter descriptions identify these alternatives. Unsupported operators and groups return `400`.\n- [`sort=<memberPath>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<memberPath>` descending (`sort=-addedAt`). Filter and sort member paths are relative to primary data.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Keys are scoped to the client and the authenticated user. Once the original request has completed, retrying it with the same key, method, path, query and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different method, path, query or payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Revisions and concurrent editing\n\nWhere supported, `attributes.revision` identifies the resource's documented aggregate state; a separately versioned relationship collection uses document `meta.revision`. Revisions are nonnegative integers that increase when covered state changes. Compare them only within the same identity and scope, preserve the exact value, and never calculate the next revision. Related content, viewer projections and independent sources are not automatically covered. Domain fields named `version`, such as a music edition, are distinct; existing endpoints retain their documented contracts.\n\nGuarded mutations accept the observed value as top-level `meta.expectedRevision`. Each operation declares its scope and whether the precondition is required. A mismatch returns `409`; missing required input returns `400`. Refresh and reconcile after a conflict, then submit a new operation with a new idempotency key. An identical retry with the original key replays a recorded success under the idempotency contract. These revisions are not HTTP ETags.\n\nReturned revisions describe observed snapshots, not reservations for later writes. Background changes can advance them immediately after a successful response.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.209"
+    "version" : "1.10.214"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -51,6 +51,9 @@
   }, {
     "description" : "A music artist.",
     "name" : "artists"
+  }, {
+    "description" : "A curated, TIDAL-owned set of artworks that users can attach as album or playlist cover art. Look a library up by name with `filter[name]`. A library exists once it has any entry; an unknown ID returns 404 and an unknown name returns no libraries. A library with no available artworks returns empty `artworks` and `randomArtwork`.",
+    "name" : "artworkLibraries"
   }, {
     "description" : "Artwork images and videos used for albums, artists, tracks, and playlists.",
     "name" : "artworks"
@@ -146,6 +149,9 @@
   }, {
     "description" : "A stored grant on an access-core album, track or folder, including saved-share-link grants. The subject's owner and directly named user grantee may read the grant; only the owner may administer it. Grants from any source may be deleted; creation and role updates apply only to direct grants.",
     "name" : "resourceGrants"
+  }, {
+    "description" : "Who has access to an access-core album, track or folder, and through what: the grants and active share links on it or a folder or album above it. Only the subject's owner may read it.",
+    "name" : "resourceSharingSettings"
   }, {
     "description" : "A completed acceptance of a share's offered role.",
     "name" : "savedShares"
@@ -903,8 +909,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "enum" : [ "createdAt", "-createdAt", "title", "-title" ],
               "default" : "-createdAt",
+              "enum" : [ "createdAt", "-createdAt", "title", "-title" ],
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -957,7 +963,7 @@
         }
       },
       "post" : {
-        "description" : "Creates a new album.",
+        "description" : "Creates an uploaded album. Album creation is not atomic with its artist assignment, so every listed artist must be owned by the caller; a collaborator or album-level grant is not enough until the album exists.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
@@ -1483,6 +1489,89 @@
         "tags" : [ "albums" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      },
+      "patch" : {
+        "description" : "Sets the album's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the album. Only the album's owner can change its artists. Returns an acknowledgement.",
+        "parameters" : [ {
+          "description" : "Album id",
+          "example" : "251380836",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AlbumsArtistsRelationshipUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mutation_Response_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update artists relationship (\"to-many\").",
+        "tags" : [ "albums" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -6618,6 +6707,343 @@
         }
       }
     },
+    "/artworkLibraries" : {
+      "get" : {
+        "description" : "Retrieves multiple artworkLibraries by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Library names (e.g. `album-defaults`)",
+          "in" : "query",
+          "name" : "filter[name]",
+          "required" : true,
+          "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "pattern" : "^[a-z0-9-]{1,64}$",
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: artworks, randomArtwork",
+          "example" : "artworks",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "artworks"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "artworks", "randomArtwork" ]
+            }
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ArtworkLibraries_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple artworkLibraries.",
+        "tags" : [ "artworkLibraries" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/artworkLibraries/{id}" : {
+      "get" : {
+        "description" : "Retrieves single artworkLibrarie by id.",
+        "parameters" : [ {
+          "description" : "Artwork library ID",
+          "example" : "AmX9i1vQ54Db3RZwLBr",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: artworks, randomArtwork",
+          "example" : "artworks",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "artworks"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "artworks", "randomArtwork" ]
+            }
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ArtworkLibraries_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get single artworkLibrarie.",
+        "tags" : [ "artworkLibraries" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/artworkLibraries/{id}/relationships/artworks" : {
+      "get" : {
+        "description" : "Artworks in the library that have finished processing and are not flagged or taken down, newest first",
+        "parameters" : [ {
+          "description" : "Artwork library ID",
+          "example" : "AmX9i1vQ54Db3RZwLBr",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: artworks",
+          "example" : "artworks",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "artworks"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ArtworkLibraries_Artworks_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get artworks relationship (\"to-many\").",
+        "tags" : [ "artworkLibraries" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/artworkLibraries/{id}/relationships/randomArtwork" : {
+      "get" : {
+        "description" : "A random artwork from the library, used by clients to supply a default artwork, for example for albums without cover art. Picked per request from the artworks that have finished processing and are not flagged or taken down, and not stored; empty when there are none. The same pick may be returned for as long as the response is cached",
+        "parameters" : [ {
+          "description" : "Artwork library ID",
+          "example" : "AmX9i1vQ54Db3RZwLBr",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: randomArtwork",
+          "example" : "randomArtwork",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "randomArtwork"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ArtworkLibraries_RandomArtwork_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get randomArtwork relationship (\"to-one\").",
+        "tags" : [ "artworkLibraries" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/artworks" : {
       "get" : {
         "description" : "Retrieves multiple artworks by available filters, or without if applicable.",
@@ -8393,8 +8819,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "enum" : [ "createdAt", "-createdAt", "likeCount", "-likeCount", "replyCount", "-replyCount", "startTime", "-startTime" ],
               "default" : "-createdAt",
+              "enum" : [ "createdAt", "-createdAt", "likeCount", "-likeCount", "replyCount", "-replyCount", "startTime", "-startTime" ],
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "LikeCountAsc", "LikeCountDesc", "ReplyCountAsc", "ReplyCountDesc", "StartTimeAsc", "StartTimeDesc" ]
             }
           }
@@ -16590,8 +17016,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "CURRENT", "LATEST" ],
-            "default" : "CURRENT"
+            "default" : "CURRENT",
+            "enum" : [ "CURRENT", "LATEST" ]
           }
         }, {
           "description" : "Include related resources. Available relationships: baseGeneration, playlist, trackPreferences",
@@ -17426,8 +17852,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "enum" : [ "createdAt", "-createdAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
               "default" : "-createdAt",
+              "enum" : [ "createdAt", "-createdAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "LastModifiedAtAsc", "LastModifiedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -18433,8 +18859,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "enum" : [ "addedAt", "-addedAt", "albums.title", "-albums.title", "artists.name", "-artists.name", "duration", "-duration", "itemIndex", "-itemIndex", "title", "-title" ],
               "default" : "itemIndex",
+              "enum" : [ "addedAt", "-addedAt", "albums.title", "-albums.title", "artists.name", "-artists.name", "duration", "-duration", "itemIndex", "-itemIndex", "title", "-title" ],
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "AlbumsTitleAsc", "AlbumsTitleDesc", "ArtistsNameAsc", "ArtistsNameDesc", "DurationAsc", "DurationDesc", "ItemIndexAsc", "ItemIndexDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -21072,6 +21498,456 @@
         }
       }
     },
+    "/resourceSharingSettings" : {
+      "get" : {
+        "description" : "Returns the sharing settings of a live access-core subject, or none when it has no node.",
+        "parameters" : [ {
+          "description" : "Filter by subject. Also accepts `folders:me`.",
+          "in" : "query",
+          "name" : "filter[subject]",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^(?:albums|tracks|folders):[^,]+$",
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: grants, shares, subject",
+          "example" : "grants.subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "grants.subject"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "grants", "shares", "subject" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grants.subject",
+          "example" : "grants.subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "grants.subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceSharingSettings_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple resourceSharingSettings.",
+        "tags" : [ "resourceSharingSettings" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/resourceSharingSettings/{id}" : {
+      "get" : {
+        "description" : "Retrieves single resourceSharingSetting by id.",
+        "parameters" : [ {
+          "description" : "Opaque resource sharing settings ID",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: grants, shares, subject",
+          "example" : "grants.subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "grants.subject"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "grants", "shares", "subject" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grants.subject",
+          "example" : "grants.subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "grants.subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceSharingSettings_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get single resourceSharingSetting.",
+        "tags" : [ "resourceSharingSettings" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/resourceSharingSettings/{id}/relationships/grants" : {
+      "get" : {
+        "description" : "Each grantee's strongest grant on the subject or a folder or album above it: the strongest role, then the nearest grant, then a direct grant over a saved link's, then the oldest. The owner comes first, then groups, then users. A grant's subject is the node it is on.",
+        "parameters" : [ {
+          "description" : "Opaque resource sharing settings ID",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: grants",
+          "example" : "grants.subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "grants.subject"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grants.subject",
+          "example" : "grants.subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "grants.subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceSharingSettings_Grants_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get grants relationship (\"to-many\").",
+        "tags" : [ "resourceSharingSettings" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/resourceSharingSettings/{id}/relationships/shares" : {
+      "get" : {
+        "description" : "The active share links on the subject or an album above it, or a folder above it whose link can be saved, next to expire first.",
+        "parameters" : [ {
+          "description" : "Opaque resource sharing settings ID",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: shares",
+          "example" : "shares.sharedResources",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "shares.sharedResources"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: shares.sharedResources",
+          "example" : "shares.sharedResources",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "shares.sharedResources"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceSharingSettings_Shares_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get shares relationship (\"to-many\").",
+        "tags" : [ "resourceSharingSettings" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/resourceSharingSettings/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "Opaque resource sharing settings ID",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceSharingSettings_Subject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
+        "tags" : [ "resourceSharingSettings" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/savedShares" : {
       "post" : {
         "description" : "Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403.",
@@ -21319,8 +22195,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "INCLUDE", "EXCLUDE" ],
-            "default" : "INCLUDE"
+            "default" : "INCLUDE",
+            "enum" : [ "INCLUDE", "EXCLUDE" ]
           }
         }, {
           "description" : "Include related resources. Available relationships: albums, artists, playlists, topHits, tracks, videos",
@@ -21465,8 +22341,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "INCLUDE", "EXCLUDE" ],
-            "default" : "INCLUDE"
+            "default" : "INCLUDE",
+            "enum" : [ "INCLUDE", "EXCLUDE" ]
           }
         }, {
           "description" : "Include related resources. Available relationships: albums",
@@ -21605,8 +22481,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "INCLUDE", "EXCLUDE" ],
-            "default" : "INCLUDE"
+            "default" : "INCLUDE",
+            "enum" : [ "INCLUDE", "EXCLUDE" ]
           }
         }, {
           "description" : "Include related resources. Available relationships: artists",
@@ -21745,8 +22621,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "INCLUDE", "EXCLUDE" ],
-            "default" : "INCLUDE"
+            "default" : "INCLUDE",
+            "enum" : [ "INCLUDE", "EXCLUDE" ]
           }
         }, {
           "description" : "Include related resources. Available relationships: playlists",
@@ -21885,8 +22761,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "INCLUDE", "EXCLUDE" ],
-            "default" : "INCLUDE"
+            "default" : "INCLUDE",
+            "enum" : [ "INCLUDE", "EXCLUDE" ]
           }
         }, {
           "description" : "Include related resources. Available relationships: topHits",
@@ -22025,8 +22901,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "INCLUDE", "EXCLUDE" ],
-            "default" : "INCLUDE"
+            "default" : "INCLUDE",
+            "enum" : [ "INCLUDE", "EXCLUDE" ]
           }
         }, {
           "description" : "Include related resources. Available relationships: tracks",
@@ -22165,8 +23041,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "INCLUDE", "EXCLUDE" ],
-            "default" : "INCLUDE"
+            "default" : "INCLUDE",
+            "enum" : [ "INCLUDE", "EXCLUDE" ]
           }
         }, {
           "description" : "Include related resources. Available relationships: videos",
@@ -22288,8 +23164,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "INCLUDE", "EXCLUDE" ],
-            "default" : "INCLUDE"
+            "default" : "INCLUDE",
+            "enum" : [ "INCLUDE", "EXCLUDE" ]
           }
         }, {
           "description" : "Include related resources. Available relationships: directHits, history",
@@ -22405,8 +23281,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "INCLUDE", "EXCLUDE" ],
-            "default" : "INCLUDE"
+            "default" : "INCLUDE",
+            "enum" : [ "INCLUDE", "EXCLUDE" ]
           }
         }, {
           "description" : "Include related resources. Available relationships: directHits",
@@ -22516,8 +23392,8 @@
           "required" : false,
           "schema" : {
             "type" : "string",
-            "enum" : [ "INCLUDE", "EXCLUDE" ],
-            "default" : "INCLUDE"
+            "default" : "INCLUDE",
+            "enum" : [ "INCLUDE", "EXCLUDE" ]
           }
         }, {
           "description" : "Include related resources. Available relationships: history",
@@ -26983,8 +27859,8 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "enum" : [ "createdAt", "-createdAt", "title", "-title" ],
               "default" : "-createdAt",
+              "enum" : [ "createdAt", "-createdAt", "title", "-title" ],
               "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -27675,6 +28551,89 @@
         "tags" : [ "tracks" ],
         "x-path-item-properties" : {
           "required-access-tier" : "THIRD_PARTY"
+        }
+      },
+      "patch" : {
+        "description" : "Sets the track's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the track or its album. Only the track's owner can change its artists. Returns an acknowledgement.",
+        "parameters" : [ {
+          "description" : "Track id",
+          "example" : "75413016",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TracksArtistsRelationshipUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mutation_Response_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update artists relationship (\"to-many\").",
+        "tags" : [ "tracks" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
         }
       }
     },
@@ -29642,8 +30601,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "enum" : [ "addedAt", "-addedAt", "artists.name", "-artists.name", "releaseDate", "-releaseDate", "title", "-title" ],
               "default" : "-addedAt",
+              "enum" : [ "addedAt", "-addedAt", "artists.name", "-artists.name", "releaseDate", "-releaseDate", "title", "-title" ],
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "ArtistsNameAsc", "ArtistsNameDesc", "ReleaseDateAsc", "ReleaseDateDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -30103,8 +31062,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "enum" : [ "addedAt", "-addedAt", "name", "-name" ],
               "default" : "-addedAt",
+              "enum" : [ "addedAt", "-addedAt", "name", "-name" ],
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -30839,8 +31798,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "enum" : [ "addedAt", "-addedAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
               "default" : "addedAt",
+              "enum" : [ "addedAt", "-addedAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "LastModifiedAtAsc", "LastModifiedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -31377,8 +32336,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "enum" : [ "addedAt", "-addedAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
               "default" : "-addedAt",
+              "enum" : [ "addedAt", "-addedAt", "lastModifiedAt", "-lastModifiedAt", "name", "-name" ],
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "LastModifiedAtAsc", "LastModifiedAtDesc", "NameAsc", "NameDesc" ]
             }
           }
@@ -32252,8 +33211,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "enum" : [ "addedAt", "-addedAt", "albums.title", "-albums.title", "artists.name", "-artists.name", "duration", "-duration", "title", "-title" ],
               "default" : "-addedAt",
+              "enum" : [ "addedAt", "-addedAt", "albums.title", "-albums.title", "artists.name", "-artists.name", "duration", "-duration", "title", "-title" ],
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "AlbumsTitleAsc", "AlbumsTitleDesc", "ArtistsNameAsc", "ArtistsNameDesc", "DurationAsc", "DurationDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -32713,8 +33672,8 @@
             "items" : {
               "type" : "string",
               "example" : "addedAt",
-              "enum" : [ "addedAt", "-addedAt", "artists.name", "-artists.name", "duration", "-duration", "title", "-title" ],
               "default" : "-addedAt",
+              "enum" : [ "addedAt", "-addedAt", "artists.name", "-artists.name", "duration", "-duration", "title", "-title" ],
               "x-enum-varnames" : [ "AddedAtAsc", "AddedAtDesc", "ArtistsNameAsc", "ArtistsNameDesc", "DurationAsc", "DurationDesc", "TitleAsc", "TitleDesc" ]
             }
           }
@@ -39096,6 +40055,45 @@
           }
         }
       },
+      "AlbumsArtistsRelationshipUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 10,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AlbumsArtistsRelationshipUpdateOperation_Payload_Data"
+            }
+          },
+          "meta" : {
+            "type" : "object",
+            "properties" : {
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
+                "default" : "REPLACE_ALL",
+                "enum" : [ "REPLACE_ALL" ]
+              }
+            }
+          }
+        }
+      },
+      "AlbumsArtistsRelationshipUpdateOperation_Payload_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "artists" ]
+          }
+        }
+      },
       "AlbumsCoverArtRelationshipUpdateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
@@ -39114,8 +40112,8 @@
               "mode" : {
                 "type" : "string",
                 "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
-                "enum" : [ "REPLACE_ALL" ],
-                "default" : "REPLACE_ALL"
+                "default" : "REPLACE_ALL",
+                "enum" : [ "REPLACE_ALL" ]
               }
             }
           }
@@ -39212,7 +40210,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 1,
+            "maxItems" : 10,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -39282,8 +40280,8 @@
               "mode" : {
                 "type" : "string",
                 "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.",
-                "enum" : [ "INCREMENTAL" ],
-                "default" : "INCREMENTAL"
+                "default" : "INCREMENTAL",
+                "enum" : [ "INCREMENTAL" ]
               },
               "positionIndex" : {
                 "minimum" : 1,
@@ -40379,8 +41377,8 @@
               "mode" : {
                 "type" : "string",
                 "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
-                "enum" : [ "REPLACE_ALL" ],
-                "default" : "REPLACE_ALL"
+                "default" : "REPLACE_ALL",
+                "enum" : [ "REPLACE_ALL" ]
               }
             }
           }
@@ -41491,8 +42489,8 @@
               "mode" : {
                 "type" : "string",
                 "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
-                "enum" : [ "REPLACE_ALL" ],
-                "default" : "REPLACE_ALL"
+                "default" : "REPLACE_ALL",
+                "enum" : [ "REPLACE_ALL" ]
               }
             }
           }
@@ -41633,8 +42631,8 @@
               "mode" : {
                 "type" : "string",
                 "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
-                "enum" : [ "REPLACE_ALL" ],
-                "default" : "REPLACE_ALL"
+                "default" : "REPLACE_ALL",
+                "enum" : [ "REPLACE_ALL" ]
               }
             }
           }
@@ -41672,8 +42670,8 @@
               "mode" : {
                 "type" : "string",
                 "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
-                "enum" : [ "REPLACE_ALL" ],
-                "default" : "REPLACE_ALL"
+                "default" : "REPLACE_ALL",
+                "enum" : [ "REPLACE_ALL" ]
               }
             }
           }
@@ -42449,6 +43447,198 @@
         },
         "description" : "Artworks of the variation's Square catalog images in Square's display order, including images Square has no URL for"
       },
+      "ArtworkLibraries_Artworks_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtworkLibraries_Artworks_Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `artworks`."
+      },
+      "ArtworkLibraries_Artworks_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/ArtworkLibraries_Artworks_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ArtworkLibraries_Artworks_Resource_Identifier_Meta" : {
+        "required" : [ "backgroundColor", "foregroundColor" ],
+        "type" : "object",
+        "properties" : {
+          "backgroundColor" : {
+            "minLength" : 1,
+            "pattern" : "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+            "type" : "string",
+            "description" : "Background color to use with the artwork"
+          },
+          "foregroundColor" : {
+            "minLength" : 1,
+            "pattern" : "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+            "type" : "string",
+            "description" : "Foreground color to use with the artwork"
+          }
+        }
+      },
+      "ArtworkLibraries_Attributes" : {
+        "required" : [ "name" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "Library name",
+            "example" : "album-defaults"
+          }
+        }
+      },
+      "ArtworkLibraries_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArtworkLibraries_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ArtworkLibraries_RandomArtwork_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/ArtworkLibraries_RandomArtwork_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ArtworkLibraries_RandomArtwork_Resource_Identifier_Meta" : {
+        "required" : [ "backgroundColor", "foregroundColor" ],
+        "type" : "object",
+        "properties" : {
+          "backgroundColor" : {
+            "minLength" : 1,
+            "pattern" : "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+            "type" : "string",
+            "description" : "Background color to use with the artwork"
+          },
+          "foregroundColor" : {
+            "minLength" : 1,
+            "pattern" : "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+            "type" : "string",
+            "description" : "Foreground color to use with the artwork"
+          }
+        }
+      },
+      "ArtworkLibraries_RandomArtwork_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/ArtworkLibraries_RandomArtwork_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `artworks`."
+      },
+      "ArtworkLibraries_Relationships" : {
+        "properties" : {
+          "artworks" : {
+            "$ref" : "#/components/schemas/ArtworkLibraries_Artworks_Multi_Relationship_Data_Document"
+          },
+          "randomArtwork" : {
+            "$ref" : "#/components/schemas/ArtworkLibraries_RandomArtwork_Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "ArtworkLibraries_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ArtworkLibraries_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ArtworkLibraries_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ArtworkLibraries_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ArtworkLibraries_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "Artwork_File" : {
         "required" : [ "href" ],
         "type" : "object",
@@ -43043,6 +44233,40 @@
             }
           }
         }
+      },
+      "Audio" : {
+        "type" : "object",
+        "properties" : {
+          "bitDepth" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Source audio bit depth in bits per sample. Absent for lossy audio or when unknown.",
+            "format" : "int32"
+          },
+          "bitrate" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Source audio bitrate in bits per second. Absent when unknown.",
+            "format" : "int64"
+          },
+          "codec" : {
+            "type" : "string",
+            "description" : "Source audio encoding. New values may be added.",
+            "enum" : [ "FLAC", "ALAC", "AAC", "MP3", "WMA_LOSSLESS", "PCM_S16LE", "PCM_S16BE", "PCM_S24LE", "PCM_S24BE", "PCM_S32LE", "PCM_S32BE", "PCM_F32LE", "PCM_F32BE", "EAC3", "AC4", "MHA1" ]
+          },
+          "duration" : {
+            "type" : "string",
+            "description" : "Duration of the source audio rounded up to 100 ms (ISO 8601), independent of catalogue or rendition duration. Absent when unknown.",
+            "example" : "PT25.3S"
+          },
+          "sampleRate" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Source audio sample rate in hertz. Absent when unknown.",
+            "format" : "int32"
+          }
+        },
+        "description" : "Available audio measurements for this source. May be absent independently of waveform."
       },
       "AudioNormalizationData" : {
         "type" : "object",
@@ -46508,6 +47732,7 @@
               "artistSalesStatistics" : "#/components/schemas/ArtistSalesStatistics_Resource_Object",
               "artistStreamsStatistics" : "#/components/schemas/ArtistStreamsStatistics_Resource_Object",
               "artists" : "#/components/schemas/Artists_Resource_Object",
+              "artworkLibraries" : "#/components/schemas/ArtworkLibraries_Resource_Object",
               "artworks" : "#/components/schemas/Artworks_Resource_Object",
               "changeEventStreams" : "#/components/schemas/ChangeEventStreams_Resource_Object",
               "clientCertificates" : "#/components/schemas/ClientCertificates_Resource_Object",
@@ -46540,6 +47765,7 @@
               "purchases" : "#/components/schemas/Purchases_Resource_Object",
               "reactions" : "#/components/schemas/Reactions_Resource_Object",
               "resourceGrants" : "#/components/schemas/ResourceGrants_Resource_Object",
+              "resourceSharingSettings" : "#/components/schemas/ResourceSharingSettings_Resource_Object",
               "savedShares" : "#/components/schemas/SavedShares_Resource_Object",
               "scopes" : "#/components/schemas/Scopes_Resource_Object",
               "searchHistoryEntries" : "#/components/schemas/SearchHistoryEntries_Resource_Object",
@@ -46611,6 +47837,8 @@
           }, {
             "$ref" : "#/components/schemas/Artists_Resource_Object"
           }, {
+            "$ref" : "#/components/schemas/ArtworkLibraries_Resource_Object"
+          }, {
             "$ref" : "#/components/schemas/Artworks_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/ChangeEventStreams_Resource_Object"
@@ -46674,6 +47902,8 @@
             "$ref" : "#/components/schemas/Reactions_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/ResourceGrants_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/ResourceSharingSettings_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/SavedShares_Resource_Object"
           }, {
@@ -48110,8 +49340,8 @@
               "mode" : {
                 "type" : "string",
                 "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.",
-                "enum" : [ "INCREMENTAL" ],
-                "default" : "INCREMENTAL"
+                "default" : "INCREMENTAL",
+                "enum" : [ "INCREMENTAL" ]
               },
               "positionBefore" : {
                 "type" : "string"
@@ -49412,8 +50642,8 @@
               "mode" : {
                 "type" : "string",
                 "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.",
-                "enum" : [ "INCREMENTAL" ],
-                "default" : "INCREMENTAL"
+                "default" : "INCREMENTAL",
+                "enum" : [ "INCREMENTAL" ]
               }
             }
           }
@@ -49893,8 +51123,8 @@
               "mode" : {
                 "type" : "string",
                 "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
-                "enum" : [ "REPLACE_ALL" ],
-                "default" : "REPLACE_ALL"
+                "default" : "REPLACE_ALL",
+                "enum" : [ "REPLACE_ALL" ]
               }
             }
           }
@@ -50038,8 +51268,8 @@
           "onDuplicates" : {
             "type" : "string",
             "description" : "How to handle available items already present in the playlist. Presence is evaluated against playlist state immediately before the operation; duplicate occurrences within this request do not make one another already present. ADD adds every requested occurrence. FAIL returns 409 and adds nothing when any requested resource type and id is already present. SKIP adds only absent resources and reports every omitted occurrence in response meta.skipped with reason ALREADY_PRESENT. Track and video identities with the same id are distinct. Defaults to ADD.",
-            "enum" : [ "ADD", "FAIL", "SKIP" ],
-            "default" : "ADD"
+            "default" : "ADD",
+            "enum" : [ "ADD", "FAIL", "SKIP" ]
           },
           "positionBefore" : {
             "maxLength" : 36,
@@ -50129,8 +51359,8 @@
                 "mode" : {
                   "type" : "string",
                   "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.",
-                  "enum" : [ "INCREMENTAL" ],
-                  "default" : "INCREMENTAL"
+                  "default" : "INCREMENTAL",
+                  "enum" : [ "INCREMENTAL" ]
                 },
                 "positionBefore" : {
                   "maxLength" : 36,
@@ -50145,8 +51375,8 @@
                 "mode" : {
                   "type" : "string",
                   "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.",
-                  "enum" : [ "INCREMENTAL" ],
-                  "default" : "INCREMENTAL"
+                  "default" : "INCREMENTAL",
+                  "enum" : [ "INCREMENTAL" ]
                 }
               },
               "additionalProperties" : false
@@ -51899,6 +53129,172 @@
           }
         }
       },
+      "ResourceSharingSettings_Attributes" : {
+        "required" : [ "shared" ],
+        "type" : "object",
+        "properties" : {
+          "shared" : {
+            "type" : "boolean",
+            "description" : "Whether anyone but the owner has a grant, or an active share link exists, on the subject or above it."
+          }
+        }
+      },
+      "ResourceSharingSettings_Grants_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `resourceGrants`."
+      },
+      "ResourceSharingSettings_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ResourceSharingSettings_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ResourceSharingSettings_Relationships" : {
+        "properties" : {
+          "grants" : {
+            "$ref" : "#/components/schemas/ResourceSharingSettings_Grants_Multi_Relationship_Data_Document"
+          },
+          "shares" : {
+            "$ref" : "#/components/schemas/ResourceSharingSettings_Shares_Multi_Relationship_Data_Document"
+          },
+          "subject" : {
+            "$ref" : "#/components/schemas/ResourceSharingSettings_Subject_Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "ResourceSharingSettings_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ResourceSharingSettings_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ResourceSharingSettings_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ResourceSharingSettings_Shares_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `shares`."
+      },
+      "ResourceSharingSettings_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceSharingSettings_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ResourceSharingSettings_Subject_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/ResourceSharingSettings_Subject_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ResourceSharingSettings_Subject_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "ResourceSharingSettings_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/ResourceSharingSettings_Subject_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `albums`, `folders`, `tracks`."
+      },
       "Resource_Identifier" : {
         "required" : [ "id", "type" ],
         "type" : "object",
@@ -52664,6 +54060,21 @@
               "enum" : [ "BEARER", "VOUCHER" ]
             }
           },
+          "expiresAt" : {
+            "type" : "string",
+            "description" : "Time bearer access and acceptance expire; must be in the future and at most a year away. Defaults to seven days after creation when omitted or null.",
+            "format" : "date-time",
+            "nullable" : true,
+            "example" : "2021-07-08T00:00:00Z"
+          },
+          "maxUses" : {
+            "maximum" : 100,
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Number of users other than the owner who may save the share. Only a save counts as a use, and a used-up share also stops bearer access. Requires the VOUCHER access mode. Omit or send null for unlimited saves.",
+            "format" : "int32",
+            "nullable" : true
+          },
           "role" : {
             "type" : "string",
             "description" : "Role offered by the share.",
@@ -52735,7 +54146,7 @@
           },
           "expiresAt" : {
             "type" : "string",
-            "description" : "Time bearer access and acceptance expire. New shares expire seven days after creation; accepted grants remain valid.",
+            "description" : "Time bearer access and acceptance expire; accepted grants remain valid.",
             "format" : "date-time"
           },
           "externalLinks" : {
@@ -52745,10 +54156,24 @@
               "$ref" : "#/components/schemas/External_Link"
             }
           },
+          "maxUses" : {
+            "maximum" : 100,
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Number of users other than the owner who may save the share. Absent when unlimited.",
+            "format" : "int32"
+          },
           "role" : {
             "type" : "string",
             "description" : "Role offered on the shared resource.",
             "enum" : [ "VIEWER", "COLLABORATOR" ]
+          },
+          "useCount" : {
+            "maximum" : 100,
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Number of users other than the owner who have saved the share. Once it reaches maxUses, bearer access and acceptance end. Absent when maxUses is.",
+            "format" : "int32"
           }
         }
       },
@@ -52894,6 +54319,18 @@
             "$ref" : "#/components/schemas/Links"
           }
         }
+      },
+      "SourceProcessing" : {
+        "type" : "object",
+        "properties" : {
+          "audio" : {
+            "$ref" : "#/components/schemas/Audio"
+          },
+          "waveform" : {
+            "$ref" : "#/components/schemas/Waveform"
+          }
+        },
+        "description" : "Available source-analysis results. Audio and waveform may be absent independently; presence does not indicate processing completion."
       },
       "SquareConnectionsCreateOperation_Payload" : {
         "required" : [ "data", "meta" ],
@@ -53537,8 +54974,8 @@
               "mode" : {
                 "type" : "string",
                 "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
-                "enum" : [ "REPLACE_ALL" ],
-                "default" : "REPLACE_ALL"
+                "default" : "REPLACE_ALL",
+                "enum" : [ "REPLACE_ALL" ]
               }
             }
           }
@@ -54363,8 +55800,8 @@
               "mode" : {
                 "type" : "string",
                 "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
-                "enum" : [ "REPLACE_ALL" ],
-                "default" : "REPLACE_ALL"
+                "default" : "REPLACE_ALL",
+                "enum" : [ "REPLACE_ALL" ]
               }
             }
           }
@@ -54872,8 +56309,8 @@
               "mode" : {
                 "type" : "string",
                 "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to INCREMENTAL.",
-                "enum" : [ "INCREMENTAL" ],
-                "default" : "INCREMENTAL"
+                "default" : "INCREMENTAL",
+                "enum" : [ "INCREMENTAL" ]
               },
               "positionBefore" : {
                 "type" : "string",
@@ -55546,8 +56983,8 @@
             "description" : "Deprecated: use meta.integrationType instead.",
             "example" : "REDIRECT",
             "deprecated" : true,
-            "enum" : [ "REDIRECT", "EMBEDDED" ],
-            "default" : "REDIRECT"
+            "default" : "REDIRECT",
+            "enum" : [ "REDIRECT", "EMBEDDED" ]
           },
           "refreshUrl" : {
             "type" : "string",
@@ -55571,8 +57008,8 @@
             "type" : "string",
             "description" : "Integration type for Stripe onboarding",
             "example" : "REDIRECT",
-            "enum" : [ "REDIRECT", "EMBEDDED" ],
-            "default" : "REDIRECT"
+            "default" : "REDIRECT",
+            "enum" : [ "REDIRECT", "EMBEDDED" ]
           },
           "refreshUrl" : {
             "type" : "string",
@@ -56555,6 +57992,9 @@
             "type" : "string",
             "description" : "MD5 hash of file to be uploaded"
           },
+          "processing" : {
+            "$ref" : "#/components/schemas/SourceProcessing"
+          },
           "size" : {
             "maximum" : 5000000000,
             "minimum" : 1,
@@ -56744,8 +58184,8 @@
               "mode" : {
                 "type" : "string",
                 "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
-                "enum" : [ "REPLACE_ALL" ],
-                "default" : "REPLACE_ALL"
+                "default" : "REPLACE_ALL",
+                "enum" : [ "REPLACE_ALL" ]
               }
             }
           }
@@ -56762,6 +58202,45 @@
           "type" : {
             "type" : "string",
             "enum" : [ "albums" ]
+          }
+        }
+      },
+      "TracksArtistsRelationshipUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 10,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TracksArtistsRelationshipUpdateOperation_Payload_Data"
+            }
+          },
+          "meta" : {
+            "type" : "object",
+            "properties" : {
+              "mode" : {
+                "type" : "string",
+                "description" : "Relationship mutation mode. INCREMENTAL updates selected existing entries without adding or removing memberships; REPLACE_ALL replaces the complete membership and its order where applicable. Omission defaults to REPLACE_ALL.",
+                "default" : "REPLACE_ALL",
+                "enum" : [ "REPLACE_ALL" ]
+              }
+            }
+          }
+        }
+      },
+      "TracksArtistsRelationshipUpdateOperation_Payload_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "artists" ]
           }
         }
       },
@@ -56860,7 +58339,7 @@
         "type" : "object",
         "properties" : {
           "data" : {
-            "maxItems" : 1,
+            "maxItems" : 10,
             "minItems" : 1,
             "type" : "array",
             "items" : {
@@ -63261,6 +64740,26 @@
           }
         },
         "description" : "Target resource types: `users`."
+      },
+      "Waveform" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 256,
+            "minItems" : 256,
+            "type" : "array",
+            "description" : "256 evenly selected 50 ms RMS windows across the entire source, in time order. Values range from 0 to 65535 relative to the largest selected amplitude. Short sources repeat windows; values are not duration/256 aggregates.",
+            "items" : {
+              "maximum" : 65535,
+              "minimum" : 0,
+              "type" : "integer",
+              "description" : "256 evenly selected 50 ms RMS windows across the entire source, in time order. Values range from 0 to 65535 relative to the largest selected amplitude. Short sources repeat windows; values are not duration/256 aggregates.",
+              "format" : "int32"
+            }
+          }
+        },
+        "description" : "Available waveform for this source. May be absent independently of audio. Map playback progress as time/processing.audio.duration when available; catalogue and preview durations are not interchangeable."
       }
     },
     "securitySchemes" : {
