@@ -1,5 +1,5 @@
 name: Setup repo and pnpm
-description: Gets pnpm and runs commands necessary before executing other steps
+description: Installs dependencies and builds workspace packages through their prepare scripts
 runs:
   using: composite
   steps:
@@ -14,6 +14,8 @@ runs:
         node-version-file: '.nvmrc'
         registry-url: 'https://registry.npmjs.org'
         cache: 'pnpm'
-    - name: Install dependencies
+    # Workspace prepare scripts build packages in dependency order during install.
+    # Callers can use the generated JavaScript and declarations without rebuilding.
+    - name: Install dependencies and build workspace packages
       shell: bash
       run: pnpm install --frozen-lockfile

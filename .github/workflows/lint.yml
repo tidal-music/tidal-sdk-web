@@ -10,7 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
-      - uses: ./.github/actions/build-projects
       - name: Run Lint Checks
         run: |
           pnpm lint:ci
@@ -20,7 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
-      - uses: ./.github/actions/build-projects
       - name: Run Type Checks
         run: |
           pnpm typecheck
@@ -30,7 +28,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
-      - uses: ./.github/actions/build-projects
       - name: Verify published types resolve under node10/node16/bundler
+        # attw runs npm pack; inspect the setup build without running prepare again.
+        env:
+          npm_config_ignore_scripts: 'true'
         run: |
           pnpm check:types-resolution
