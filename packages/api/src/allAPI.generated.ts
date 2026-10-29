@@ -4531,7 +4531,7 @@ export interface paths {
         };
         /**
          * Get randomArtwork relationship ("to-one").
-         * @description A random artwork from the library, used by clients to supply a default artwork, for example for albums without cover art. Picked per request from the artworks that have finished processing and are not flagged or taken down, and not stored; empty when there are none. The same pick may be returned for as long as the response is cached
+         * @description A random artwork from the library, used by clients to supply a default artwork, for example for albums without cover art. Picked per request from the artworks that have finished processing and are not flagged or taken down, and not stored; empty when there are none
          */
         get: {
             parameters: {
@@ -7704,12 +7704,12 @@ export interface paths {
                     /** @description In your folders, `=me` selects owned placements and `[ne]=me` selects shared placements. In someone else's folder, `=me` returns no items and `[ne]=me` returns all items. Accepts only `me` or your own user ID. */
                     "filter[subject.owners.id][ne]"?: string;
                     /**
-                     * @description Include related resources. Available relationships: breadcrumb, owners, parent, subject
+                     * @description Include related resources. Available relationships: breadcrumb, owners, parent, subject, subjectSharingSettings
                      * @example breadcrumb.children.subject
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("breadcrumb" | "owners" | "parent" | "subject")[];
+                    includeLinkage?: ("breadcrumb" | "owners" | "parent" | "subject" | "subjectSharingSettings")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -7806,12 +7806,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: breadcrumb, owners, parent, subject
+                     * @description Include related resources. Available relationships: breadcrumb, owners, parent, subject, subjectSharingSettings
                      * @example breadcrumb.children.subject
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("breadcrumb" | "owners" | "parent" | "subject")[];
+                    includeLinkage?: ("breadcrumb" | "owners" | "parent" | "subject" | "subjectSharingSettings")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: breadcrumb.children.subject
                      * @example breadcrumb.children.subject
@@ -8180,6 +8180,70 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["FolderItems_Subject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/folderItems/{id}/relationships/subjectSharingSettings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subjectSharingSettings relationship ("to-one").
+         * @description Retrieves subjectSharingSettings relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subjectSharingSettings
+                     * @example subjectSharingSettings.subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subjectSharingSettings.subject
+                     * @example subjectSharingSettings.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Folder item id
+                     * @example e3226624-355b-48f8-aa93-db42532caa66
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["FolderItems_SubjectSharingSettings_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -14312,13 +14376,13 @@ export interface paths {
         };
         /**
          * Get multiple resourceSharingSettings.
-         * @description Returns the sharing settings of a live access-core subject, or none when it has no node.
+         * @description Returns the sharing settings of up to 20 live access-core subjects. Subjects without a node, or that the caller does not own, return none.
          */
         get: {
             parameters: {
                 query: {
                     /** @description Filter by subject. Also accepts `folders:me`. */
-                    "filter[subject]": string;
+                    "filter[subject]": string[];
                     /**
                      * @description Include related resources. Available relationships: grants, shares, subject
                      * @example grants.subject
@@ -27952,7 +28016,7 @@ export interface components {
                  * @example CONFLICT
                  * @enum {string}
                  */
-                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE";
+                code: "CONFLICT" | "IDEMPOTENT_REQUEST_IN_PROGRESS" | "MISSING_ITEMS_SCOPE" | "SITE_NOT_SELECTED";
                 /** @example Request already in progress for this idempotency key */
                 detail?: string;
                 /** @example 409 */
@@ -29235,6 +29299,7 @@ export interface components {
             owners?: components["schemas"]["FolderItems_Owners_Multi_Relationship_Data_Document"];
             parent?: components["schemas"]["FolderItems_Parent_Single_Relationship_Data_Document"];
             subject?: components["schemas"]["FolderItems_Subject_Single_Relationship_Data_Document"];
+            subjectSharingSettings?: components["schemas"]["FolderItems_SubjectSharingSettings_Single_Relationship_Data_Document"];
         };
         FolderItems_Resource_Object: {
             attributes?: components["schemas"]["FolderItems_Attributes"];
@@ -29252,6 +29317,12 @@ export interface components {
         };
         FolderItems_Single_Resource_Data_Document: {
             data: components["schemas"]["FolderItems_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `resourceSharingSettings`. */
+        FolderItems_SubjectSharingSettings_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -32186,6 +32257,12 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Publication target supplied on creation; reads use publishedInSelectedSite */
+        Site: {
+            id: string;
+            /** @enum {string} */
+            type: "squareSites";
+        };
         /** @description Available source-analysis results. Audio and waveform may be absent independently; presence does not indicate processing completion. */
         SourceProcessing: {
             audio?: components["schemas"]["Audio"];
@@ -32890,6 +32967,7 @@ export interface components {
             attributes: components["schemas"]["SquareItemsCreateOperation_Payload_Data_Attributes"];
             /** @description Local identity available to later operations in this request */
             lid?: string;
+            relationships?: components["schemas"]["SquareItemsCreateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "squareItems";
         };
@@ -32898,6 +32976,13 @@ export interface components {
             description?: string;
             /** @description Item title */
             title: string;
+        };
+        SquareItemsCreateOperation_Payload_Data_Relationships: {
+            sites?: components["schemas"]["SquareItemsCreateOperation_Payload_Data_Relationships_Sites"];
+        };
+        /** @description Optional publication target; exactly one seller-selected site */
+        SquareItemsCreateOperation_Payload_Data_Relationships_Sites: {
+            data: components["schemas"]["Site"][];
         };
         SquareItemsDeleteResource403ResponseBody: {
             errors: {
@@ -36715,7 +36800,7 @@ export interface components {
                 "application/vnd.api+json;ext=\"https://jsonapi.org/ext/atomic\"": components["schemas"]["AtomicOperations406ResponseBody"];
             };
         };
-        /** @description Request already in progress for this idempotency key; Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog */
+        /** @description Request already in progress for this idempotency key; Square credential lacks the catalog scopes; run Square onboarding again to reconnect; Another request is changing the Square catalog; The site isn't the seller's selected Square Online site; select it to manage its items */
         AtomicOperations409Response: {
             headers: {
                 [name: string]: unknown;
