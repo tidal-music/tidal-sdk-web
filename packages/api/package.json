@@ -1,6 +1,6 @@
 {
   "name": "@tidal-music/api",
-  "version": "0.54.1",
+  "version": "0.55.0",
   "type": "module",
   "files": [
     "dist",
@@ -15,7 +15,9 @@
   "types": "./dist/index.d.ts",
   "typesVersions": {
     "*": {
-      "openapi.json": ["./bin/tidal-api-oas.json"]
+      "openapi.json": [
+        "./bin/tidal-api-oas.json"
+      ]
     }
   },
   "exports": {
