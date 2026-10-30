@@ -31704,6 +31704,8 @@ export interface components {
         ResourceSharingSettings_Attributes: {
             /** @description Whether anyone but the owner has a grant, or an active share link exists, on the subject or above it. */
             shared: boolean;
+            /** @description Whether a folder or album above the subject is shared, so the subject stays shared whatever is set on it. */
+            sharedViaParent: boolean;
         };
         /** @description Target resource types: `resourceGrants`. */
         ResourceSharingSettings_Grants_Multi_Relationship_Data_Document: {
