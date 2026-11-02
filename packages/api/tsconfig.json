@@ -1,7 +1,10 @@
 {
   "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "exactOptionalPropertyTypes": true
+  },
   "include": ["."],
   "exclude": [
-    "node_modules", "dist"
+    "node_modules", "dist", "test/types"
   ]
 }

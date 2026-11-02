@@ -38,4 +38,15 @@ package version and is not imported by the client entry point.
 
 Run `pnpm generateTypes` to regenerate the types from `bin/tidal-api-oas.json`.
 The API update workflow refreshes that document and its generated types together.
-.
+
+`pnpm typecheck` checks the API implementation with
+`exactOptionalPropertyTypes`, then rebuilds the package and compiles the
+consumer contracts in `test/types/`. These contracts import `@tidal-music/api`
+through its public package exports, using an independent strict consumer
+configuration with exact optional properties and unchecked-index checks.
+`pnpm typecheck:contracts` runs just the build and consumer checks.
+
+Optional properties can be omitted; passing `undefined` explicitly requires
+the declared type to include it. `null` remains valid wherever the OpenAPI
+schema permits it. Consumers enable these compiler checks in their own
+projects; the SDK's compiler options are not inherited by applications.

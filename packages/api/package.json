@@ -42,7 +42,8 @@
     "test": "vitest",
     "test:coverage": "pnpm run test --coverage",
     "test:ui": "pnpm run test:coverage --ui",
-    "typecheck": "tsc",
+    "typecheck": "tsc && pnpm typecheck:contracts",
+    "typecheck:contracts": "pnpm build && tsc -p test/types/tsconfig.json",
     "check:types-resolution": "attw --pack . --ignore-rules=cjs-resolves-to-esm"
   },
   "dependencies": {
