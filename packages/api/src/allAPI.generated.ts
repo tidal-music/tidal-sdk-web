@@ -8993,8 +8993,8 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Exact group name (case-sensitive) (e.g. `Everyone`) */
-                    "filter[name]": string;
+                    /** @description Group ID. The built-in Everyone group has the case-sensitive ID `everyone`. */
+                    "filter[id]": string[];
                 };
                 header?: never;
                 path?: never;
@@ -9046,8 +9046,8 @@ export interface paths {
                 header?: never;
                 path: {
                     /**
-                     * @description Group ID
-                     * @example 5x4uRI6Lowv
+                     * @description Group ID. The built-in Everyone group has the case-sensitive ID `everyone`.
+                     * @example everyone
                      */
                     id: string;
                 };
@@ -14006,7 +14006,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Filter by grantee. Also accepts `users:me`. */
+                    /** @description Filter by grantee. Use `groups:everyone` for the Everyone group. Also accepts `users:me`. */
                     "filter[grantee]"?: string;
                     /** @description One of: VIEWER, COLLABORATOR, OWNER (e.g. `VIEWER`) */
                     "filter[role]"?: "VIEWER" | "COLLABORATOR" | "OWNER";
@@ -18358,6 +18358,8 @@ export interface paths {
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
                     includeLinkage?: "owners"[];
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -18419,6 +18421,8 @@ export interface paths {
                     include?: string[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
                 };
                 header?: never;
                 path: {
@@ -31604,6 +31608,7 @@ export interface components {
             grantee: components["schemas"]["ResourceGrantsGranteeLinkage"];
             subject: components["schemas"]["ResourceGrantsSubjectLinkage"];
         };
+        /** @description A grant recipient. Identify the Everyone group with `type` set to `groups` and `id` set to `everyone`; only albums can be granted to it. */
         ResourceGrantsGrantee: {
             id: string;
             /** @enum {string} */
@@ -31702,7 +31707,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         ResourceSharingSettings_Attributes: {
-            /** @description Whether anyone but the owner has a grant, or an active share link exists, on the subject or above it. */
+            /** @description Whether a user other than the owner has a grant, or an active share link exists, on the subject or above it. The Everyone grant that comes with an album's usage rules does not count. */
             shared: boolean;
             /** @description Whether a folder or album above the subject is shared, so the subject stays shared whatever is set on it. */
             sharedViaParent: boolean;
