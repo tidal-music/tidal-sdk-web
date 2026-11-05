@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. A few resources document well-known IDs for permanent system singleton instances; compare those IDs by exact value. Never parse, construct, or infer meaning from any other `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes. Monetary amounts are decimal strings; each field defines its sign and precision constraints.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nWhere multiple identifiers are accepted, comma-separated values match any complete pair.\nWhen a member path names a to-many relationship, at least one related resource must match;\nfiltering does not trim that relationship. On to-many relationship reads, an empty member\npath (`filter[]=tracks:123`) filters primary data itself.\nEach endpoint lists its supported filters and types.\n\nWhere supported, `me` aliases the authenticated user's dedicated resource ID for the referenced\nresource type. It works in paths, resource-ID filters, compact identifiers (`type:me`), resource\nPATCH primary IDs and standalone relationship mutation identifiers, with the same meaning as\nthe resolved ID. Reads using the alias are `no-store`.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<memberPath>]=value`](https://jsonapi.org/format/#fetching-filtering) filters primary data by equality. Each endpoint lists its available filters; most collections require at least one.\n- Where explicitly documented, `filter[<memberPath>][ne]=value` negates the complete equality predicate. When the member path names a to-many relationship, no related ID may match any supplied value; a known-empty relationship matches. Operators are separate from values. Supplied comparisons combine with AND. For a required filter with multiple supported comparisons, at least one must be supplied; the parameter descriptions identify these alternatives. Unsupported operators and groups return `400`.\n- [`sort=<memberPath>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<memberPath>` descending (`sort=-addedAt`). Filter and sort member paths are relative to primary data.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Keys are scoped to the client and the authenticated user. Once the original request has completed, retrying it with the same key, method, path, query and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different method, path, query or payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Revisions and concurrent editing\n\nWhere supported, `attributes.revision` identifies the resource's documented aggregate state; a separately versioned relationship collection uses document `meta.revision`. Revisions are nonnegative integers that increase when covered state changes. Compare them only within the same identity and scope, preserve the exact value, and never calculate the next revision. Related content, viewer projections and independent sources are not automatically covered. Domain fields named `version`, such as a music edition, are distinct; existing endpoints retain their documented contracts.\n\nGuarded mutations accept the observed value as top-level `meta.expectedRevision`. Each operation declares its scope and whether the precondition is required. A mismatch returns `409`; missing required input returns `400`. Refresh and reconcile after a conflict, then submit a new operation with a new idempotency key. An identical retry with the original key replays a recorded success under the idempotency contract. These revisions are not HTTP ETags.\n\nReturned revisions describe observed snapshots, not reservations for later writes. Background changes can advance them immediately after a successful response.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.222"
+    "version" : "1.10.224"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -73,6 +73,10 @@
     "description" : "Deprecated compatibility view of a COLLABORATOR playlist share. Use `shares` instead. The ID and code identify the same share through either resource. Links are reusable. Expiry and revocation follow the underlying share.",
     "name" : "collaborationInvites"
   }, {
+    "description" : "Comment counts for a subject.",
+    "name" : "commentSummaries"
+  }, {
+    "description" : "A comment on a source file, or a reply to a root comment. Replies support one level only.",
     "name" : "comments"
   }, {
     "description" : "A claim by an artist asserting ownership of a piece of content.",
@@ -144,7 +148,10 @@
     "description" : "A user's purchased content.",
     "name" : "purchases"
   }, {
-    "description" : "An emoji reaction by a user on a piece of content.",
+    "description" : "Reaction counts for a subject.",
+    "name" : "reactionSummaries"
+  }, {
+    "description" : "An emoji reaction on a source file, or a thumbs-up like on a comment. Comment reactors cannot be listed.",
     "name" : "reactions"
   }, {
     "description" : "A stored grant on an access-core album, track or folder, including saved-share-link grants. The subject's owner and directly named user grantee may read the grant; only the owner may administer it. Grants from any source may be deleted; creation and role updates apply only to direct grants.",
@@ -8715,57 +8722,229 @@
         }
       }
     },
-    "/comments" : {
+    "/commentSummaries" : {
       "get" : {
-        "description" : "Retrieves multiple comments by available filters, or without if applicable.",
+        "description" : "Returns one current summary per accessible subject, for up to 20 subjects. Duplicates are returned once. Inaccessible or missing subjects are omitted. Empty supported subjects still have a summary. IDs remain stable as counts change. Source-file comment totals are unavailable and currently return a zero placeholder.",
         "parameters" : [ {
-          "description" : "Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`)",
+          "description" : "Subjects whose counts to return.",
           "in" : "query",
-          "name" : "filter[parentComment.id]",
-          "required" : false,
+          "name" : "filter[subject]",
+          "required" : true,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
-              "minLength" : 1,
+              "pattern" : "^(?:comments|trackSourceFiles):[^,]+$",
               "type" : "string"
             }
           }
         }, {
-          "deprecated" : true,
-          "description" : "Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)",
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
           "in" : "query",
-          "name" : "filter[subject.id]",
+          "name" : "countryCode",
           "required" : false,
           "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
+            "type" : "string"
           }
         }, {
-          "deprecated" : true,
-          "description" : "Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)",
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject.author.albums",
           "in" : "query",
-          "name" : "filter[subject.type]",
+          "name" : "include",
           "required" : false,
           "schema" : {
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "albums", "tracks", "trackSourceFiles" ]
+              "example" : "subject.author.albums"
             }
           }
         }, {
-          "description" : "The subject whose comments to return. Use either subject or the deprecated subject.id and subject.type pair.",
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
           "in" : "query",
-          "name" : "filter[subject]",
+          "name" : "includeLinkage",
           "required" : false,
           "schema" : {
-            "pattern" : "^(?:albums|tracks|trackSourceFiles):[^,]+$",
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "subject" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.author.albums"
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CommentSummaries_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple commentSummaries.",
+        "tags" : [ "commentSummaries" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/commentSummaries/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "Opaque identifier of one subject's current summary",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: author, owners, parentComment",
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject.author.albums"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.author.albums"
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CommentSummaries_Subject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
+        "tags" : [ "commentSummaries" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/comments" : {
+      "get" : {
+        "description" : "Returns root comments on a resource, or replies to a comment. Root comments support createdAt in either direction, newest first by default. Replies require sort=createdAt (oldest first); other sort values return 400.",
+        "parameters" : [ {
+          "description" : "The immediate subject whose comments to return.",
+          "in" : "query",
+          "name" : "filter[subject]",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^(?:trackSourceFiles|comments):[^,]+$",
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: author, commentSummary, owners, reactionSummary, rootSubject, subject",
           "example" : "author.albums",
           "in" : "query",
           "name" : "include",
@@ -8787,7 +8966,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "author", "owners", "parentComment" ]
+              "enum" : [ "author", "commentSummary", "owners", "reactionSummary", "rootSubject", "subject" ]
             }
           },
           "style" : "form"
@@ -8819,9 +8998,9 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "enum" : [ "createdAt", "-createdAt", "likeCount", "-likeCount", "replyCount", "-replyCount", "startTime", "-startTime" ],
+              "enum" : [ "createdAt", "-createdAt" ],
               "default" : "-createdAt",
-              "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "LikeCountAsc", "LikeCountDesc", "ReplyCountAsc", "ReplyCountDesc", "StartTimeAsc", "StartTimeDesc" ]
+              "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc" ]
             }
           }
         } ],
@@ -8871,7 +9050,7 @@
         }
       },
       "post" : {
-        "description" : "Creates a new comment.",
+        "description" : "Creates a root comment on a resource or a reply whose subject is a root comment. Replies to replies are rejected.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
@@ -9014,7 +9193,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: author, owners, parentComment",
+          "description" : "Include related resources. Available relationships: author, commentSummary, owners, reactionSummary, rootSubject, subject",
           "example" : "author.albums",
           "in" : "query",
           "name" : "include",
@@ -9036,7 +9215,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "author", "owners", "parentComment" ]
+              "enum" : [ "author", "commentSummary", "owners", "reactionSummary", "rootSubject", "subject" ]
             }
           },
           "style" : "form"
@@ -9253,6 +9432,78 @@
         }
       }
     },
+    "/comments/{id}/relationships/commentSummary" : {
+      "get" : {
+        "description" : "Retrieves commentSummary relationship.",
+        "parameters" : [ {
+          "description" : "Comment Id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: commentSummary",
+          "example" : "commentSummary",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "commentSummary"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Comments_CommentSummary_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get commentSummary relationship (\"to-one\").",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/comments/{id}/relationships/owners" : {
       "get" : {
         "description" : "Retrieves owners relationship.",
@@ -9333,9 +9584,9 @@
         }
       }
     },
-    "/comments/{id}/relationships/parentComment" : {
+    "/comments/{id}/relationships/reactionSummary" : {
       "get" : {
-        "description" : "Retrieves parentComment relationship.",
+        "description" : "Retrieves reactionSummary relationship.",
         "parameters" : [ {
           "description" : "Comment Id",
           "example" : "550e8400-e29b-41d4-a716-446655440000",
@@ -9346,8 +9597,8 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: parentComment",
-          "example" : "parentComment.author.albums",
+          "description" : "Include related resources. Available relationships: reactionSummary",
+          "example" : "reactionSummary",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -9355,18 +9606,8 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "parentComment.author.albums"
+              "example" : "reactionSummary"
             }
-          }
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: parentComment.author.albums",
-          "example" : "parentComment.author.albums",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "parentComment.author.albums"
           }
         } ],
         "responses" : {
@@ -9374,7 +9615,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Comments_ParentComment_Single_Relationship_Data_Document"
+                  "$ref" : "#/components/schemas/Comments_ReactionSummary_Single_Relationship_Data_Document"
                 }
               }
             },
@@ -9408,7 +9649,161 @@
         "security" : [ {
           "Authorization_Code_PKCE" : [ ]
         } ],
-        "summary" : "Get parentComment relationship (\"to-one\").",
+        "summary" : "Get reactionSummary relationship (\"to-one\").",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/comments/{id}/relationships/rootSubject" : {
+      "get" : {
+        "description" : "Retrieves rootSubject relationship.",
+        "parameters" : [ {
+          "description" : "Comment Id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: rootSubject",
+          "example" : "rootSubject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "rootSubject"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Comments_RootSubject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get rootSubject relationship (\"to-one\").",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/comments/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "Comment Id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject.author.albums"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.author.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Comments_Subject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
         "tags" : [ "comments" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -20466,10 +20861,228 @@
         }
       }
     },
+    "/reactionSummaries" : {
+      "get" : {
+        "description" : "Returns one current summary per accessible subject, for up to 20 subjects. Duplicates are returned once. Inaccessible or missing subjects are omitted. Empty supported subjects still have a summary. IDs remain stable as counts change.",
+        "parameters" : [ {
+          "description" : "Subjects whose counts to return.",
+          "in" : "query",
+          "name" : "filter[subject]",
+          "required" : true,
+          "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "pattern" : "^(?:trackSourceFiles|comments):[^,]+$",
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject.author.albums"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "subject" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.author.albums"
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReactionSummaries_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple reactionSummaries.",
+        "tags" : [ "reactionSummaries" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/reactionSummaries/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "Opaque identifier of one subject's current summary",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject.author.albums"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.author.albums"
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReactionSummaries_Subject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
+        "tags" : [ "reactionSummaries" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/reactions" : {
       "get" : {
-        "description" : "Retrieves multiple reactions by available filters, or without if applicable.",
+        "description" : "Lists reactions on a subject. Comment subjects are not supported.",
         "parameters" : [ {
+          "description" : "The subject whose reactions to return.",
+          "in" : "query",
+          "name" : "filter[subject]",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^(?:trackSourceFiles):[^,]+$",
+            "type" : "string"
+          }
+        }, {
           "description" : "Filter by emoji (e.g. `👍`)",
           "in" : "query",
           "name" : "filter[emoji]",
@@ -20482,41 +21095,7 @@
             }
           }
         }, {
-          "deprecated" : true,
-          "description" : "Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)",
-          "in" : "query",
-          "name" : "filter[subject.id]",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        }, {
-          "deprecated" : true,
-          "description" : "Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)",
-          "in" : "query",
-          "name" : "filter[subject.type]",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "enum" : [ "albums", "tracks", "artists", "videos", "playlists", "comments", "trackSourceFiles" ]
-            }
-          }
-        }, {
-          "description" : "The subject whose reactions to return. Use either subject or the deprecated subject.id and subject.type pair.",
-          "in" : "query",
-          "name" : "filter[subject]",
-          "required" : false,
-          "schema" : {
-            "pattern" : "^(?:albums|tracks|artists|videos|playlists|comments|trackSourceFiles):[^,]+$",
-            "type" : "string"
-          }
-        }, {
-          "description" : "Include related resources. Available relationships: author, ownerProfiles, owners",
+          "description" : "Include related resources. Available relationships: author, owners, subject",
           "example" : "author.albums",
           "in" : "query",
           "name" : "include",
@@ -20538,7 +21117,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "author", "ownerProfiles", "owners" ]
+              "enum" : [ "author", "owners", "subject" ]
             }
           },
           "style" : "form"
@@ -20559,28 +21138,6 @@
           "schema" : {
             "type" : "string",
             "example" : "author.albums"
-          }
-        }, {
-          "in" : "query",
-          "name" : "stats",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "ALL", "COUNTS_BY_TYPE", "TOTAL_COUNT" ]
-          }
-        }, {
-          "in" : "query",
-          "name" : "statsOnly",
-          "required" : false,
-          "schema" : {
-            "type" : "boolean"
-          }
-        }, {
-          "in" : "query",
-          "name" : "viewerContext",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
           }
         } ],
         "responses" : {
@@ -20629,7 +21186,7 @@
         }
       },
       "post" : {
-        "description" : "Creates a new reaction.",
+        "description" : "Adds or replaces the caller's reaction on a subject. Each user has at most one reaction per subject. Comments accept only 👍. Replacing a reaction keeps its ID.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
@@ -20843,87 +21400,6 @@
         }
       }
     },
-    "/reactions/{id}/relationships/ownerProfiles" : {
-      "get" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use author for attribution.",
-        "parameters" : [ {
-          "description" : "Reaction Id",
-          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Include related resources. Available relationships: ownerProfiles",
-          "example" : "ownerProfiles",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "ownerProfiles"
-            }
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Reactions_OwnerProfiles_Multi_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ ]
-        } ],
-        "summary" : "Get ownerProfiles relationship (\"to-many\").",
-        "tags" : [ "reactions" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
-        }
-      }
-    },
     "/reactions/{id}/relationships/owners" : {
       "get" : {
         "description" : "Retrieves owners relationship.",
@@ -20998,6 +21474,88 @@
           "Authorization_Code_PKCE" : [ ]
         } ],
         "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "reactions" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/reactions/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "Reaction Id",
+          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject.author.albums"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.author.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Reactions_Subject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
         "tags" : [ "reactions" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -27509,14 +28067,16 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: owners",
+          "description" : "Include related resources. Available relationships: commentSummary, owners, reactionSummary",
+          "example" : "commentSummary",
           "in" : "query",
           "name" : "include",
           "required" : false,
           "schema" : {
             "type" : "array",
             "items" : {
-              "type" : "string"
+              "type" : "string",
+              "example" : "commentSummary"
             }
           }
         }, {
@@ -27529,7 +28089,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "owners" ]
+              "enum" : [ "commentSummary", "owners", "reactionSummary" ]
             }
           },
           "style" : "form"
@@ -27583,6 +28143,87 @@
           "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
         "summary" : "Get single trackSourceFile.",
+        "tags" : [ "trackSourceFiles" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/trackSourceFiles/{id}/relationships/commentSummary" : {
+      "get" : {
+        "description" : "Retrieves commentSummary relationship.",
+        "parameters" : [ {
+          "description" : "Track source file id",
+          "example" : "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: commentSummary",
+          "example" : "commentSummary",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "commentSummary"
+            }
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get commentSummary relationship (\"to-one\").",
         "tags" : [ "trackSourceFiles" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -27672,6 +28313,87 @@
           "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
         "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "trackSourceFiles" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/trackSourceFiles/{id}/relationships/reactionSummary" : {
+      "get" : {
+        "description" : "Retrieves reactionSummary relationship.",
+        "parameters" : [ {
+          "description" : "Track source file id",
+          "example" : "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: reactionSummary",
+          "example" : "reactionSummary",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "reactionSummary"
+            }
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get reactionSummary relationship (\"to-one\").",
         "tags" : [ "trackSourceFiles" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -45132,6 +45854,88 @@
         },
         "description" : "Target resource types: `playlists`."
       },
+      "CommentSummaries_Attributes" : {
+        "required" : [ "totalCount" ],
+        "type" : "object",
+        "properties" : {
+          "totalCount" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Number of existing direct replies. Source-file comment totals are unavailable and currently return a zero placeholder.",
+            "format" : "int64"
+          }
+        }
+      },
+      "CommentSummaries_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CommentSummaries_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "CommentSummaries_Relationships" : {
+        "properties" : {
+          "subject" : {
+            "$ref" : "#/components/schemas/CommentSummaries_Subject_Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "CommentSummaries_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/CommentSummaries_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/CommentSummaries_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "CommentSummaries_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `comments`, `trackSourceFiles`."
+      },
       "Commented" : {
         "type" : "object",
         "description" : "The viewer has at least one existing comment on the subject; deleted historical comments do not count. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent."
@@ -45183,40 +45987,8 @@
         "required" : [ "subject" ],
         "type" : "object",
         "properties" : {
-          "parentComment" : {
-            "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Relationships_ParentComment"
-          },
           "subject" : {
             "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Relationships_Subject"
-          }
-        }
-      },
-      "CommentsCreateOperation_Payload_Data_Relationships_ParentComment" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data"
-            }, {
-              "type" : "object",
-              "nullable" : true,
-              "enum" : [ null ]
-            } ]
-          }
-        }
-      },
-      "CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "comments" ]
           }
         }
       },
@@ -45238,7 +46010,7 @@
           },
           "type" : {
             "type" : "string",
-            "enum" : [ "albums", "tracks", "trackSourceFiles" ]
+            "enum" : [ "trackSourceFiles", "comments" ]
           }
         }
       },
@@ -45286,7 +46058,7 @@
         }
       },
       "Comments_Attributes" : {
-        "required" : [ "createdAt", "lastModifiedAt", "likeCount", "message", "moderationStatus", "replyCount" ],
+        "required" : [ "createdAt", "lastModifiedAt", "message", "moderationStatus" ],
         "type" : "object",
         "properties" : {
           "createdAt" : {
@@ -45306,11 +46078,6 @@
             "format" : "date-time",
             "example" : "2025-11-17T12:54:48.606Z"
           },
-          "likeCount" : {
-            "type" : "integer",
-            "description" : "Number of likes on this comment",
-            "format" : "int32"
-          },
           "message" : {
             "maxLength" : 2000,
             "minLength" : 1,
@@ -45321,11 +46088,6 @@
             "type" : "string",
             "description" : "Moderation status of the comment",
             "enum" : [ "NOT_MODERATED", "FLAGGED", "TAKEN_DOWN", "OK", "ERROR" ]
-          },
-          "replyCount" : {
-            "type" : "integer",
-            "description" : "Number of replies to this comment",
-            "format" : "int32"
           },
           "startTime" : {
             "type" : "string",
@@ -45355,6 +46117,28 @@
           }
         },
         "description" : "Target resource types: `artists`."
+      },
+      "Comments_CommentSummary_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `commentSummaries`."
       },
       "Comments_Create_Single_Resource_Data_Document" : {
         "required" : [ "data", "links" ],
@@ -45405,7 +46189,7 @@
         },
         "description" : "Target resource types: `users`."
       },
-      "Comments_ParentComment_Single_Relationship_Data_Document" : {
+      "Comments_ReactionSummary_Single_Relationship_Data_Document" : {
         "required" : [ "links" ],
         "type" : "object",
         "properties" : {
@@ -45425,18 +46209,27 @@
             "$ref" : "#/components/schemas/Links"
           }
         },
-        "description" : "Target resource types: `comments`."
+        "description" : "Target resource types: `reactionSummaries`."
       },
       "Comments_Relationships" : {
         "properties" : {
           "author" : {
             "$ref" : "#/components/schemas/Comments_Author_Single_Relationship_Data_Document"
           },
+          "commentSummary" : {
+            "$ref" : "#/components/schemas/Comments_CommentSummary_Single_Relationship_Data_Document"
+          },
           "owners" : {
             "$ref" : "#/components/schemas/Comments_Owners_Multi_Relationship_Data_Document"
           },
-          "parentComment" : {
-            "$ref" : "#/components/schemas/Comments_ParentComment_Single_Relationship_Data_Document"
+          "reactionSummary" : {
+            "$ref" : "#/components/schemas/Comments_ReactionSummary_Single_Relationship_Data_Document"
+          },
+          "rootSubject" : {
+            "$ref" : "#/components/schemas/Comments_RootSubject_Single_Relationship_Data_Document"
+          },
+          "subject" : {
+            "$ref" : "#/components/schemas/Comments_Subject_Single_Relationship_Data_Document"
           }
         }
       },
@@ -45463,6 +46256,28 @@
           }
         }
       },
+      "Comments_RootSubject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `trackSourceFiles`."
+      },
       "Comments_Single_Resource_Data_Document" : {
         "required" : [ "data", "links" ],
         "type" : "object",
@@ -45477,6 +46292,28 @@
             "$ref" : "#/components/schemas/Links"
           }
         }
+      },
+      "Comments_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `comments`, `trackSourceFiles`."
       },
       "ContentClaimsCreateOperation_Payload" : {
         "required" : [ "data" ],
@@ -45886,26 +46723,6 @@
             "$ref" : "#/components/schemas/Links"
           }
         }
-      },
-      "CurrentUserReaction" : {
-        "type" : "object",
-        "properties" : {
-          "createdAt" : {
-            "type" : "string",
-            "description" : "When the reaction was created",
-            "format" : "date-time"
-          },
-          "emoji" : {
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "User's emoji reaction"
-          },
-          "id" : {
-            "type" : "string",
-            "description" : "Reaction ID"
-          }
-        },
-        "description" : "Current user's reaction"
       },
       "Default400ResponseBody" : {
         "required" : [ "errors" ],
@@ -47874,6 +48691,7 @@
               "clients" : "#/components/schemas/Clients_Resource_Object",
               "collaborationInviteRedemptions" : "#/components/schemas/CollaborationInviteRedemptions_Resource_Object",
               "collaborationInvites" : "#/components/schemas/CollaborationInvites_Resource_Object",
+              "commentSummaries" : "#/components/schemas/CommentSummaries_Resource_Object",
               "comments" : "#/components/schemas/Comments_Resource_Object",
               "contentClaims" : "#/components/schemas/ContentClaims_Resource_Object",
               "credits" : "#/components/schemas/Credits_Resource_Object",
@@ -47898,6 +48716,7 @@
               "providerProductInfos" : "#/components/schemas/ProviderProductInfos_Resource_Object",
               "providers" : "#/components/schemas/Providers_Resource_Object",
               "purchases" : "#/components/schemas/Purchases_Resource_Object",
+              "reactionSummaries" : "#/components/schemas/ReactionSummaries_Resource_Object",
               "reactions" : "#/components/schemas/Reactions_Resource_Object",
               "resourceGrants" : "#/components/schemas/ResourceGrants_Resource_Object",
               "resourceSharingSettings" : "#/components/schemas/ResourceSharingSettings_Resource_Object",
@@ -47986,6 +48805,8 @@
           }, {
             "$ref" : "#/components/schemas/CollaborationInvites_Resource_Object"
           }, {
+            "$ref" : "#/components/schemas/CommentSummaries_Resource_Object"
+          }, {
             "$ref" : "#/components/schemas/Comments_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/ContentClaims_Resource_Object"
@@ -48033,6 +48854,8 @@
             "$ref" : "#/components/schemas/Providers_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Purchases_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/ReactionSummaries_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Reactions_Resource_Object"
           }, {
@@ -52691,25 +53514,96 @@
         },
         "description" : "The viewer has a current reaction to the subject, with its emoji. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent."
       },
-      "ReactionStats" : {
+      "ReactionSummaries_Attributes" : {
+        "required" : [ "countsByEmoji", "totalCount" ],
         "type" : "object",
         "properties" : {
-          "countsByType" : {
+          "countsByEmoji" : {
             "type" : "object",
             "additionalProperties" : {
               "type" : "integer",
-              "description" : "Count of reactions by type",
-              "format" : "int32"
+              "description" : "Complete reaction counts keyed by emoji. Comments support only thumbs-up. An empty object means no reactions.",
+              "format" : "int64"
             },
-            "description" : "Count of reactions by type"
+            "description" : "Complete reaction counts keyed by emoji. Comments support only thumbs-up. An empty object means no reactions."
           },
           "totalCount" : {
+            "minimum" : 0,
             "type" : "integer",
-            "description" : "Total number of reactions",
-            "format" : "int32"
+            "description" : "Number of current reactions, summed across all emojis.",
+            "format" : "int64"
+          }
+        }
+      },
+      "ReactionSummaries_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ReactionSummaries_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ReactionSummaries_Relationships" : {
+        "properties" : {
+          "subject" : {
+            "$ref" : "#/components/schemas/ReactionSummaries_Subject_Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "ReactionSummaries_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ReactionSummaries_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ReactionSummaries_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ReactionSummaries_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         },
-        "description" : "Reaction statistics"
+        "description" : "Target resource types: `comments`, `trackSourceFiles`."
       },
       "ReactionsCreateOperation_Payload" : {
         "required" : [ "data" ],
@@ -52773,7 +53667,7 @@
           },
           "type" : {
             "type" : "string",
-            "enum" : [ "albums", "tracks", "artists", "videos", "playlists", "comments", "trackSourceFiles" ]
+            "enum" : [ "trackSourceFiles", "comments" ]
           }
         }
       },
@@ -52843,42 +53737,8 @@
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
-          },
-          "meta" : {
-            "$ref" : "#/components/schemas/Reactions_Multi_Resource_Data_Document_Meta"
           }
         }
-      },
-      "Reactions_Multi_Resource_Data_Document_Meta" : {
-        "type" : "object",
-        "properties" : {
-          "currentUserReaction" : {
-            "$ref" : "#/components/schemas/CurrentUserReaction"
-          },
-          "stats" : {
-            "$ref" : "#/components/schemas/ReactionStats"
-          }
-        },
-        "description" : "Reaction response metadata with stats and current user reaction"
-      },
-      "Reactions_OwnerProfiles_Multi_Relationship_Data_Document" : {
-        "required" : [ "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Resource_Identifier"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        },
-        "description" : "Target resource types: `artists`."
       },
       "Reactions_Owners_Multi_Relationship_Data_Document" : {
         "required" : [ "links" ],
@@ -52904,14 +53764,11 @@
           "author" : {
             "$ref" : "#/components/schemas/Reactions_Author_Single_Relationship_Data_Document"
           },
-          "ownerProfiles" : {
-            "deprecated" : true,
-            "allOf" : [ {
-              "$ref" : "#/components/schemas/Reactions_OwnerProfiles_Multi_Relationship_Data_Document"
-            } ]
-          },
           "owners" : {
             "$ref" : "#/components/schemas/Reactions_Owners_Multi_Relationship_Data_Document"
+          },
+          "subject" : {
+            "$ref" : "#/components/schemas/Reactions_Subject_Single_Relationship_Data_Document"
           }
         }
       },
@@ -52937,6 +53794,28 @@
             "example" : "tracks"
           }
         }
+      },
+      "Reactions_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `comments`, `trackSourceFiles`."
       },
       "Replacement_Original_Identifier" : {
         "required" : [ "id", "type" ],
@@ -58162,7 +59041,6 @@
         }
       },
       "TrackSourceFiles_Attributes" : {
-        "required" : [ "md5Hash", "size", "status" ],
         "type" : "object",
         "properties" : {
           "downloadLink" : {
@@ -58190,6 +59068,28 @@
             "$ref" : "#/components/schemas/File_Upload_Link"
           }
         }
+      },
+      "TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `commentSummaries`."
       },
       "TrackSourceFiles_Create_Single_Resource_Data_Document" : {
         "required" : [ "data", "links" ],
@@ -58222,10 +59122,38 @@
         },
         "description" : "Target resource types: `users`."
       },
+      "TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `reactionSummaries`."
+      },
       "TrackSourceFiles_Relationships" : {
         "properties" : {
+          "commentSummary" : {
+            "$ref" : "#/components/schemas/TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document"
+          },
           "owners" : {
             "$ref" : "#/components/schemas/TrackSourceFiles_Owners_Multi_Relationship_Data_Document"
+          },
+          "reactionSummary" : {
+            "$ref" : "#/components/schemas/TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document"
           }
         }
       },

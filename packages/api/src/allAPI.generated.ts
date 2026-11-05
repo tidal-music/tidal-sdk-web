@@ -5745,6 +5745,138 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/commentSummaries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple commentSummaries.
+         * @description Returns one current summary per accessible subject, for up to 20 subjects. Duplicates are returned once. Inaccessible or missing subjects are omitted. Empty supported subjects still have a summary. IDs remain stable as counts change. Source-file comment totals are unavailable and currently return a zero placeholder.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Subjects whose counts to return. */
+                    "filter[subject]": string[];
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject.author.albums
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "subject"[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums
+                     * @example subject.author.albums
+                     */
+                    replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["CommentSummaries_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/commentSummaries/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject.author.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums
+                     * @example subject.author.albums
+                     */
+                    replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque identifier of one subject's current summary */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["CommentSummaries_Subject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/comments": {
         parameters: {
             query?: never;
@@ -5754,32 +5886,20 @@ export interface paths {
         };
         /**
          * Get multiple comments.
-         * @description Retrieves multiple comments by available filters, or without if applicable.
+         * @description Returns root comments on a resource, or replies to a comment. Root comments support createdAt in either direction, newest first by default. Replies require sort=createdAt (oldest first); other sort values return 400.
          */
         get: {
             parameters: {
-                query?: {
-                    /** @description Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`) */
-                    "filter[parentComment.id]"?: string[];
+                query: {
+                    /** @description The immediate subject whose comments to return. */
+                    "filter[subject]": string;
                     /**
-                     * @deprecated
-                     * @description Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)
-                     */
-                    "filter[subject.id]"?: string[];
-                    /**
-                     * @deprecated
-                     * @description Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)
-                     */
-                    "filter[subject.type]"?: ("albums" | "tracks" | "trackSourceFiles")[];
-                    /** @description The subject whose comments to return. Use either subject or the deprecated subject.id and subject.type pair. */
-                    "filter[subject]"?: string;
-                    /**
-                     * @description Include related resources. Available relationships: author, owners, parentComment
+                     * @description Include related resources. Available relationships: author, commentSummary, owners, reactionSummary, rootSubject, subject
                      * @example author.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("author" | "owners" | "parentComment")[];
+                    includeLinkage?: ("author" | "commentSummary" | "owners" | "reactionSummary" | "rootSubject" | "subject")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -5788,7 +5908,7 @@ export interface paths {
                      */
                     replaceMedia?: string;
                     /** @description Values prefixed with "-" are sorted descending; values without it are sorted ascending. */
-                    sort?: ("createdAt" | "-createdAt" | "likeCount" | "-likeCount" | "replyCount" | "-replyCount" | "startTime" | "-startTime")[];
+                    sort?: ("createdAt" | "-createdAt")[];
                 };
                 header?: never;
                 path?: never;
@@ -5818,7 +5938,7 @@ export interface paths {
         put?: never;
         /**
          * Create single comment.
-         * @description Creates a new comment.
+         * @description Creates a root comment on a resource or a reply whose subject is a root comment. Replies to replies are rejected.
          */
         post: {
             parameters: {
@@ -5878,12 +5998,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: author, owners, parentComment
+                     * @description Include related resources. Available relationships: author, commentSummary, owners, reactionSummary, rootSubject, subject
                      * @example author.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("author" | "owners" | "parentComment")[];
+                    includeLinkage?: ("author" | "commentSummary" | "owners" | "reactionSummary" | "rootSubject" | "subject")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: author.albums
                      * @example author.albums
@@ -6081,6 +6201,65 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/comments/{id}/relationships/commentSummary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get commentSummary relationship ("to-one").
+         * @description Retrieves commentSummary relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: commentSummary
+                     * @example commentSummary
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Comment Id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Comments_CommentSummary_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/comments/{id}/relationships/owners": {
         parameters: {
             query?: never;
@@ -6142,7 +6321,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/comments/{id}/relationships/parentComment": {
+    "/comments/{id}/relationships/reactionSummary": {
         parameters: {
             query?: never;
             header?: never;
@@ -6150,20 +6329,138 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get parentComment relationship ("to-one").
-         * @description Retrieves parentComment relationship.
+         * Get reactionSummary relationship ("to-one").
+         * @description Retrieves reactionSummary relationship.
          */
         get: {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: parentComment
-                     * @example parentComment.author.albums
+                     * @description Include related resources. Available relationships: reactionSummary
+                     * @example reactionSummary
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Comment Id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Comments_ReactionSummary_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/comments/{id}/relationships/rootSubject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get rootSubject relationship ("to-one").
+         * @description Retrieves rootSubject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: rootSubject
+                     * @example rootSubject
+                     */
+                    include?: string[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Comment Id
+                     * @example 550e8400-e29b-41d4-a716-446655440000
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Comments_RootSubject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/comments/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject.author.albums
                      */
                     include?: string[];
                     /**
-                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: parentComment.author.albums
-                     * @example parentComment.author.albums
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums
+                     * @example subject.author.albums
                      */
                     replaceMedia?: string;
                 };
@@ -6185,7 +6482,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/vnd.api+json": components["schemas"]["Comments_ParentComment_Single_Relationship_Data_Document"];
+                        "application/vnd.api+json": components["schemas"]["Comments_Subject_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -13628,6 +13925,138 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/reactionSummaries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple reactionSummaries.
+         * @description Returns one current summary per accessible subject, for up to 20 subjects. Duplicates are returned once. Inaccessible or missing subjects are omitted. Empty supported subjects still have a summary. IDs remain stable as counts change.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Subjects whose counts to return. */
+                    "filter[subject]": string[];
+                    /**
+                     * @description ISO 3166-1 alpha-2 country code
+                     * @example US
+                     */
+                    countryCode?: string;
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject.author.albums
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "subject"[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums
+                     * @example subject.author.albums
+                     */
+                    replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ReactionSummaries_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reactionSummaries/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject.author.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums
+                     * @example subject.author.albums
+                     */
+                    replaceMedia?: string;
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque identifier of one subject's current summary */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ReactionSummaries_Subject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/reactions": {
         parameters: {
             query?: never;
@@ -13637,32 +14066,22 @@ export interface paths {
         };
         /**
          * Get multiple reactions.
-         * @description Retrieves multiple reactions by available filters, or without if applicable.
+         * @description Lists reactions on a subject. Comment subjects are not supported.
          */
         get: {
             parameters: {
-                query?: {
+                query: {
+                    /** @description The subject whose reactions to return. */
+                    "filter[subject]": string;
                     /** @description Filter by emoji (e.g. `👍`) */
                     "filter[emoji]"?: string[];
                     /**
-                     * @deprecated
-                     * @description Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)
-                     */
-                    "filter[subject.id]"?: string[];
-                    /**
-                     * @deprecated
-                     * @description Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)
-                     */
-                    "filter[subject.type]"?: ("albums" | "tracks" | "artists" | "videos" | "playlists" | "comments" | "trackSourceFiles")[];
-                    /** @description The subject whose reactions to return. Use either subject or the deprecated subject.id and subject.type pair. */
-                    "filter[subject]"?: string;
-                    /**
-                     * @description Include related resources. Available relationships: author, ownerProfiles, owners
+                     * @description Include related resources. Available relationships: author, owners, subject
                      * @example author.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("author" | "ownerProfiles" | "owners")[];
+                    includeLinkage?: ("author" | "owners" | "subject")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -13670,9 +14089,6 @@ export interface paths {
                      * @example author.albums
                      */
                     replaceMedia?: string;
-                    stats?: "ALL" | "COUNTS_BY_TYPE" | "TOTAL_COUNT";
-                    statsOnly?: boolean;
-                    viewerContext?: string;
                 };
                 header?: never;
                 path?: never;
@@ -13702,7 +14118,7 @@ export interface paths {
         put?: never;
         /**
          * Create single reaction.
-         * @description Creates a new reaction.
+         * @description Adds or replaces the caller's reaction on a subject. Each user has at most one reaction per subject. Comments accept only 👍. Replacing a reaction keeps its ID.
          */
         post: {
             parameters: {
@@ -13869,68 +14285,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/reactions/{id}/relationships/ownerProfiles": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get ownerProfiles relationship ("to-many").
-         * @deprecated
-         * @description Deprecated. Use author for attribution.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /**
-                     * @description Include related resources. Available relationships: ownerProfiles
-                     * @example ownerProfiles
-                     */
-                    include?: string[];
-                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
-                    "page[cursor]"?: string;
-                };
-                header?: never;
-                path: {
-                    /**
-                     * @description Reaction Id
-                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
-                     */
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/vnd.api+json": components["schemas"]["Reactions_OwnerProfiles_Multi_Relationship_Data_Document"];
-                    };
-                };
-                400: components["responses"]["Default400Response"];
-                404: components["responses"]["Default404Response"];
-                405: components["responses"]["Default405Response"];
-                406: components["responses"]["Default406Response"];
-                415: components["responses"]["Default415Response"];
-                429: components["responses"]["Default429Response"];
-                500: components["responses"]["Default500Response"];
-                503: components["responses"]["Default503Response"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/reactions/{id}/relationships/owners": {
         parameters: {
             query?: never;
@@ -13972,6 +14326,70 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["Reactions_Owners_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reactions/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject.author.albums
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums
+                     * @example subject.author.albums
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Reaction Id
+                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Reactions_Subject_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18354,10 +18772,13 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Include related resources. Available relationships: owners */
+                    /**
+                     * @description Include related resources. Available relationships: commentSummary, owners, reactionSummary
+                     * @example commentSummary
+                     */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: "owners"[];
+                    includeLinkage?: ("commentSummary" | "owners" | "reactionSummary")[];
                     /** @description Share code used as a bearer credential for the resource. */
                     shareCode?: string;
                 };
@@ -18380,6 +18801,67 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/trackSourceFiles/{id}/relationships/commentSummary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get commentSummary relationship ("to-one").
+         * @description Retrieves commentSummary relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: commentSummary
+                     * @example commentSummary
+                     */
+                    include?: string[];
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Track source file id
+                     * @example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -18443,6 +18925,67 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["TrackSourceFiles_Owners_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/trackSourceFiles/{id}/relationships/reactionSummary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get reactionSummary relationship ("to-one").
+         * @description Retrieves reactionSummary relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: reactionSummary
+                     * @example reactionSummary
+                     */
+                    include?: string[];
+                    /** @description Share code used as a bearer credential for the resource. */
+                    shareCode?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Track source file id
+                     * @example a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -28433,6 +28976,41 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        CommentSummaries_Attributes: {
+            /**
+             * Format: int64
+             * @description Number of existing direct replies. Source-file comment totals are unavailable and currently return a zero placeholder.
+             */
+            totalCount: number;
+        };
+        CommentSummaries_Multi_Resource_Data_Document: {
+            data: components["schemas"]["CommentSummaries_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        CommentSummaries_Relationships: {
+            subject?: components["schemas"]["CommentSummaries_Subject_Single_Relationship_Data_Document"];
+        };
+        CommentSummaries_Resource_Object: {
+            attributes?: components["schemas"]["CommentSummaries_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["CommentSummaries_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "commentSummaries";
+        };
+        /** @description Target resource types: `comments`, `trackSourceFiles`. */
+        CommentSummaries_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         /** @description The viewer has at least one existing comment on the subject; deleted historical comments do not count. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent. */
         Commented: Record<string, never>;
         CommentsCreateOperation_Payload: {
@@ -28451,16 +29029,7 @@ export interface components {
             startTime?: string;
         };
         CommentsCreateOperation_Payload_Data_Relationships: {
-            parentComment?: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_ParentComment"];
             subject: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_Subject"];
-        };
-        CommentsCreateOperation_Payload_Data_Relationships_ParentComment: {
-            data: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data"] | (never | null);
-        };
-        CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data: {
-            id: string;
-            /** @enum {string} */
-            type: "comments";
         };
         CommentsCreateOperation_Payload_Data_Relationships_Subject: {
             data: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_Subject_Data"];
@@ -28468,7 +29037,7 @@ export interface components {
         CommentsCreateOperation_Payload_Data_Relationships_Subject_Data: {
             id: string;
             /** @enum {string} */
-            type: "albums" | "tracks" | "trackSourceFiles";
+            type: "trackSourceFiles" | "comments";
         };
         CommentsUpdateOperation_Payload: {
             data: components["schemas"]["CommentsUpdateOperation_Payload_Data"];
@@ -28503,11 +29072,6 @@ export interface components {
              * @example 2025-11-17T12:54:48.606Z
              */
             lastModifiedAt: string;
-            /**
-             * Format: int32
-             * @description Number of likes on this comment
-             */
-            likeCount: number;
             /** @description The comment message content */
             message: string;
             /**
@@ -28516,11 +29080,6 @@ export interface components {
              */
             moderationStatus: "NOT_MODERATED" | "FLAGGED" | "TAKEN_DOWN" | "OK" | "ERROR";
             /**
-             * Format: int32
-             * @description Number of replies to this comment
-             */
-            replyCount: number;
-            /**
              * @description Start time offset for timestamped comments (ISO 8601 duration)
              * @example PT1M30S
              */
@@ -28528,6 +29087,12 @@ export interface components {
         };
         /** @description Target resource types: `artists`. */
         Comments_Author_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `commentSummaries`. */
+        Comments_CommentSummary_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
@@ -28547,16 +29112,19 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
-        /** @description Target resource types: `comments`. */
-        Comments_ParentComment_Single_Relationship_Data_Document: {
+        /** @description Target resource types: `reactionSummaries`. */
+        Comments_ReactionSummary_Single_Relationship_Data_Document: {
             data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
         Comments_Relationships: {
             author?: components["schemas"]["Comments_Author_Single_Relationship_Data_Document"];
+            commentSummary?: components["schemas"]["Comments_CommentSummary_Single_Relationship_Data_Document"];
             owners?: components["schemas"]["Comments_Owners_Multi_Relationship_Data_Document"];
-            parentComment?: components["schemas"]["Comments_ParentComment_Single_Relationship_Data_Document"];
+            reactionSummary?: components["schemas"]["Comments_ReactionSummary_Single_Relationship_Data_Document"];
+            rootSubject?: components["schemas"]["Comments_RootSubject_Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["Comments_Subject_Single_Relationship_Data_Document"];
         };
         Comments_Resource_Object: {
             attributes?: components["schemas"]["Comments_Attributes"];
@@ -28572,8 +29140,20 @@ export interface components {
              */
             type: "comments";
         };
+        /** @description Target resource types: `trackSourceFiles`. */
+        Comments_RootSubject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         Comments_Single_Resource_Data_Document: {
             data: components["schemas"]["Comments_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `comments`, `trackSourceFiles`. */
+        Comments_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
@@ -28749,18 +29329,6 @@ export interface components {
             data: components["schemas"]["Credits_Resource_Object"];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
-        };
-        /** @description Current user's reaction */
-        CurrentUserReaction: {
-            /**
-             * Format: date-time
-             * @description When the reaction was created
-             */
-            createdAt?: string;
-            /** @description User's emoji reaction */
-            emoji?: string;
-            /** @description Reaction ID */
-            id?: string;
         };
         Default400ResponseBody: {
             errors: {
@@ -29588,7 +30156,7 @@ export interface components {
         };
         /** @description The viewer has the original subject in their normal collection. Present as an empty object when known present, otherwise omitted. Includes owned and saved playlists and saved mixes across folders; excludes Save for Later. */
         InCollection: Record<string, never>;
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["ArtworkLibraries_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["ResourceGrants_Resource_Object"] | components["schemas"]["ResourceSharingSettings_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"] | components["schemas"]["SquareItemVariations_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["ArtworkLibraries_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["CommentSummaries_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["ReactionSummaries_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["ResourceGrants_Resource_Object"] | components["schemas"]["ResourceSharingSettings_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"] | components["schemas"]["SquareItemVariations_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -31480,17 +32048,44 @@ export interface components {
         Reaction: {
             emoji: string;
         };
-        /** @description Reaction statistics */
-        ReactionStats: {
-            /** @description Count of reactions by type */
-            countsByType?: {
+        ReactionSummaries_Attributes: {
+            /** @description Complete reaction counts keyed by emoji. Comments support only thumbs-up. An empty object means no reactions. */
+            countsByEmoji: {
                 [key: string]: number;
             };
             /**
-             * Format: int32
-             * @description Total number of reactions
+             * Format: int64
+             * @description Number of current reactions, summed across all emojis.
              */
-            totalCount?: number;
+            totalCount: number;
+        };
+        ReactionSummaries_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ReactionSummaries_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ReactionSummaries_Relationships: {
+            subject?: components["schemas"]["ReactionSummaries_Subject_Single_Relationship_Data_Document"];
+        };
+        ReactionSummaries_Resource_Object: {
+            attributes?: components["schemas"]["ReactionSummaries_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["ReactionSummaries_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "reactionSummaries";
+        };
+        /** @description Target resource types: `comments`, `trackSourceFiles`. */
+        ReactionSummaries_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         ReactionsCreateOperation_Payload: {
             data: components["schemas"]["ReactionsCreateOperation_Payload_Data"];
@@ -31513,7 +32108,7 @@ export interface components {
         ReactionsCreateOperation_Payload_Data_Relationships_Subject_Data: {
             id: string;
             /** @enum {string} */
-            type: "albums" | "tracks" | "artists" | "videos" | "playlists" | "comments" | "trackSourceFiles";
+            type: "trackSourceFiles" | "comments";
         };
         Reactions_Attributes: {
             /**
@@ -31539,18 +32134,6 @@ export interface components {
             data: components["schemas"]["Reactions_Resource_Object"][];
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
-            meta?: components["schemas"]["Reactions_Multi_Resource_Data_Document_Meta"];
-        };
-        /** @description Reaction response metadata with stats and current user reaction */
-        Reactions_Multi_Resource_Data_Document_Meta: {
-            currentUserReaction?: components["schemas"]["CurrentUserReaction"];
-            stats?: components["schemas"]["ReactionStats"];
-        };
-        /** @description Target resource types: `artists`. */
-        Reactions_OwnerProfiles_Multi_Relationship_Data_Document: {
-            data?: components["schemas"]["Resource_Identifier"][];
-            included?: components["schemas"]["Included"];
-            links: components["schemas"]["Links"];
         };
         /** @description Target resource types: `users`. */
         Reactions_Owners_Multi_Relationship_Data_Document: {
@@ -31560,9 +32143,8 @@ export interface components {
         };
         Reactions_Relationships: {
             author?: components["schemas"]["Reactions_Author_Single_Relationship_Data_Document"];
-            /** @deprecated */
-            ownerProfiles?: components["schemas"]["Reactions_OwnerProfiles_Multi_Relationship_Data_Document"];
             owners?: components["schemas"]["Reactions_Owners_Multi_Relationship_Data_Document"];
+            subject?: components["schemas"]["Reactions_Subject_Single_Relationship_Data_Document"];
         };
         Reactions_Resource_Object: {
             attributes?: components["schemas"]["Reactions_Attributes"];
@@ -31577,6 +32159,12 @@ export interface components {
              * @enum {string}
              */
             type: "reactions";
+        };
+        /** @description Target resource types: `comments`, `trackSourceFiles`. */
+        Reactions_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         /** @description Relationship identifier before contextual replacement projection. */
         Replacement_Original_Identifier: {
@@ -33909,15 +34497,21 @@ export interface components {
         TrackSourceFiles_Attributes: {
             downloadLink?: components["schemas"]["Link_Object"];
             /** @description MD5 hash of file to be uploaded */
-            md5Hash: string;
+            md5Hash?: string;
             processing?: components["schemas"]["SourceProcessing"];
             /**
              * Format: int64
              * @description File size of the track in bytes
              */
-            size: number;
-            status: components["schemas"]["File_Status"];
+            size?: number;
+            status?: components["schemas"]["File_Status"];
             uploadLink?: components["schemas"]["File_Upload_Link"];
+        };
+        /** @description Target resource types: `commentSummaries`. */
+        TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         TrackSourceFiles_Create_Single_Resource_Data_Document: {
             data: components["schemas"]["TrackSourceFiles_Resource_Object"];
@@ -33929,8 +34523,16 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `reactionSummaries`. */
+        TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         TrackSourceFiles_Relationships: {
+            commentSummary?: components["schemas"]["TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document"];
             owners?: components["schemas"]["TrackSourceFiles_Owners_Multi_Relationship_Data_Document"];
+            reactionSummary?: components["schemas"]["TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document"];
         };
         TrackSourceFiles_Resource_Object: {
             attributes?: components["schemas"]["TrackSourceFiles_Attributes"];
