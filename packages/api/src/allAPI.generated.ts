@@ -5754,7 +5754,7 @@ export interface paths {
         };
         /**
          * Get multiple commentSummaries.
-         * @description Returns one current summary per accessible subject, for up to 20 subjects. Duplicates are returned once. Inaccessible or missing subjects are omitted. Empty supported subjects still have a summary. IDs remain stable as counts change. Source-file comment totals are unavailable and currently return a zero placeholder.
+         * @description Returns one current summary per accessible subject, for up to 20 subjects. Duplicates are returned once. Inaccessible or missing subjects are omitted. Empty supported subjects still have a summary. IDs remain stable as counts change. Counts include root comments on source files and direct replies on comments.
          */
         get: {
             parameters: {
@@ -5886,7 +5886,7 @@ export interface paths {
         };
         /**
          * Get multiple comments.
-         * @description Returns root comments on a resource, or replies to a comment. Root comments support createdAt in either direction, newest first by default. Replies require sort=createdAt (oldest first); other sort values return 400.
+         * @description Returns root comments on a resource, or replies to a comment. Both support createdAt in either direction, newest first by default.
          */
         get: {
             parameters: {
@@ -14066,7 +14066,7 @@ export interface paths {
         };
         /**
          * Get multiple reactions.
-         * @description Lists reactions on a subject. Comment subjects are not supported.
+         * @description Lists reactions on a source file or comment, newest first.
          */
         get: {
             parameters: {
@@ -14118,7 +14118,7 @@ export interface paths {
         put?: never;
         /**
          * Create single reaction.
-         * @description Adds or replaces the caller's reaction on a subject. Each user has at most one reaction per subject. Comments accept only 👍. Replacing a reaction keeps its ID.
+         * @description Adds the caller's emoji reaction on a subject and exact time offsets. Omit both offsets for the whole subject, provide startOffset for a point, or both for a section. Offsets are supported only on source files and must be nonnegative, with endOffset at or after startOffset. Each user can add different emojis at the same position or section. Repeating the same emoji returns the existing reaction with its UUID and creation time unchanged.
          */
         post: {
             parameters: {
@@ -14187,7 +14187,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Reaction Id
-                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     * @example 550e8400-e29b-41d4-a716-446655440000
                      */
                     id: string;
                 };
@@ -14250,7 +14250,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Reaction Id
-                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     * @example 550e8400-e29b-41d4-a716-446655440000
                      */
                     id: string;
                 };
@@ -14311,7 +14311,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Reaction Id
-                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     * @example 550e8400-e29b-41d4-a716-446655440000
                      */
                     id: string;
                 };
@@ -14375,7 +14375,7 @@ export interface paths {
                 path: {
                     /**
                      * @description Reaction Id
-                     * @example nejMcAhh5N8S3EQ4LaqysVdI0cZZ
+                     * @example 550e8400-e29b-41d4-a716-446655440000
                      */
                     id: string;
                 };
@@ -15108,7 +15108,7 @@ export interface paths {
         put?: never;
         /**
          * Create single savedShare.
-         * @description Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403.
+         * @description Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403. A password-protected share needs its password unless the caller owns or already saved it; attempts are rate limited.
          */
         post: {
             parameters: {
@@ -15136,13 +15136,14 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["SavedSharesCreateResource403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
                 409: components["responses"]["Idempotency409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
+                429: components["responses"]["SavedSharesCreateResource429Response"];
                 500: components["responses"]["Default500Response"];
                 503: components["responses"]["Default503Response"];
             };
@@ -16299,7 +16300,53 @@ export interface paths {
         };
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update single share.
+         * @description Set, change or remove the share's password. Setting one also removes BEARER access; removing one leaves the access modes unchanged. Existing savers keep their access.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Share id
+                     * @example a468bee88def
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["SharesUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Shares_Update_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
         trace?: never;
     };
     "/shares/{id}/relationships/owners": {
@@ -28979,7 +29026,7 @@ export interface components {
         CommentSummaries_Attributes: {
             /**
              * Format: int64
-             * @description Number of existing direct replies. Source-file comment totals are unavailable and currently return a zero placeholder.
+             * @description Number of existing comments directly targeting the subject. For a source file this counts root comments; for a comment this counts its direct replies.
              */
             totalCount: number;
         };
@@ -29023,10 +29070,12 @@ export interface components {
             type: "comments";
         };
         CommentsCreateOperation_Payload_Data_Attributes: {
-            endTime?: string;
+            /** @description End offset from the beginning of the source file (ISO 8601 duration). */
+            endOffset?: string;
             /** @description The comment message content */
             message: string;
-            startTime?: string;
+            /** @description Start offset from the beginning of the source file (ISO 8601 duration). */
+            startOffset?: string;
         };
         CommentsCreateOperation_Payload_Data_Relationships: {
             subject: components["schemas"]["CommentsCreateOperation_Payload_Data_Relationships_Subject"];
@@ -29049,10 +29098,12 @@ export interface components {
             type: "comments";
         };
         CommentsUpdateOperation_Payload_Data_Attributes: {
-            endTime?: string;
+            /** @description End offset from the beginning of the source file (ISO 8601 duration). */
+            endOffset?: string;
             /** @description The comment message content */
             message?: string;
-            startTime?: string;
+            /** @description Start offset from the beginning of the source file (ISO 8601 duration). */
+            startOffset?: string;
         };
         Comments_Attributes: {
             /**
@@ -29062,10 +29113,10 @@ export interface components {
              */
             createdAt: string;
             /**
-             * @description End time offset for timestamped comments (ISO 8601 duration)
+             * @description End offset from the beginning of the source file (ISO 8601 duration)
              * @example PT2M
              */
-            endTime?: string;
+            endOffset?: string;
             /**
              * Format: date-time
              * @description Datetime when the comment was last modified (ISO 8601)
@@ -29080,10 +29131,10 @@ export interface components {
              */
             moderationStatus: "NOT_MODERATED" | "FLAGGED" | "TAKEN_DOWN" | "OK" | "ERROR";
             /**
-             * @description Start time offset for timestamped comments (ISO 8601 duration)
+             * @description Start offset from the beginning of the source file (ISO 8601 duration)
              * @example PT1M30S
              */
-            startTime?: string;
+            startOffset?: string;
         };
         /** @description Target resource types: `artists`. */
         Comments_Author_Single_Relationship_Data_Document: {
@@ -32049,13 +32100,13 @@ export interface components {
             emoji: string;
         };
         ReactionSummaries_Attributes: {
-            /** @description Complete reaction counts keyed by emoji. Comments support only thumbs-up. An empty object means no reactions. */
+            /** @description Complete reaction counts keyed by emoji for source files and comments. An empty object means no reactions. */
             countsByEmoji: {
                 [key: string]: number;
             };
             /**
              * Format: int64
-             * @description Number of current reactions, summed across all emojis.
+             * @description Number of current reactions across all emojis and time offsets, including whole-subject reactions. A user can contribute more than one reaction.
              */
             totalCount: number;
         };
@@ -32098,6 +32149,16 @@ export interface components {
         };
         ReactionsCreateOperation_Payload_Data_Attributes: {
             emoji: string;
+            /**
+             * @description Section end offset (ISO 8601 duration), at or after startOffset. Requires startOffset; omitted for a point reaction.
+             * @example PT15S
+             */
+            endOffset?: string;
+            /**
+             * @description Nonnegative source-file offset (ISO 8601 duration); omitted for the whole subject.
+             * @example PT10S
+             */
+            startOffset?: string;
         };
         ReactionsCreateOperation_Payload_Data_Relationships: {
             subject: components["schemas"]["ReactionsCreateOperation_Payload_Data_Relationships_Subject"];
@@ -32119,6 +32180,16 @@ export interface components {
             createdAt: string;
             /** @description The type of reaction representing an emoji */
             emoji: string;
+            /**
+             * @description End offset of a source-file section. Omitted for a point or whole-subject reaction.
+             * @example PT15S
+             */
+            endOffset?: string;
+            /**
+             * @description Source-file offset (ISO 8601 duration). Omitted for the whole subject.
+             * @example PT10S
+             */
+            startOffset?: string;
         };
         /** @description Target resource types: `artists`. */
         Reactions_Author_Single_Relationship_Data_Document: {
@@ -32393,6 +32464,7 @@ export interface components {
         SavedForLater: Record<string, never>;
         SavedSharesCreateOperation_Payload: {
             data: components["schemas"]["SavedSharesCreateOperation_Payload_Data"];
+            meta?: components["schemas"]["SavedSharesCreateOperation_Payload_Meta"];
         };
         SavedSharesCreateOperation_Payload_Data: {
             relationships: components["schemas"]["SavedSharesCreateOperation_Payload_Data_Relationships"];
@@ -32409,6 +32481,39 @@ export interface components {
             id: string;
             /** @enum {string} */
             type: "shares";
+        };
+        SavedSharesCreateOperation_Payload_Meta: {
+            /**
+             * Format: password
+             * @description Password of a password-protected share. Ignored for other shares.
+             */
+            password?: string;
+        };
+        SavedSharesCreateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example SHARE_PASSWORD_INVALID
+                 * @enum {string}
+                 */
+                code: "SHARE_PASSWORD_INVALID" | "SHARE_PASSWORD_REQUIRED" | "UNAUTHORIZED";
+                /** @example This share does not permit redemption */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        SavedSharesCreateResource429ResponseBody: {
+            errors: {
+                /**
+                 * @example SHARE_PASSWORD_ATTEMPTS_EXCEEDED
+                 * @enum {string}
+                 */
+                code: "SHARE_PASSWORD_ATTEMPTS_EXCEEDED";
+                /** @example Too many share password attempts; try again later */
+                detail?: string;
+                /** @example 429 */
+                status: string;
+            }[];
         };
         SavedShares_Attributes: {
             /**
@@ -32742,6 +32847,11 @@ export interface components {
              */
             maxUses?: number | null;
             /**
+             * Format: password
+             * @description Password a user must send to save the share. Never returned. Must be printable ASCII characters. Without accessModes, a protected share defaults to VOUCHER only; BEARER with a password, or a password on a playlist share, is rejected with 400.
+             */
+            password?: string;
+            /**
              * @description Role offered by the share.
              * @enum {string}
              */
@@ -32757,6 +32867,18 @@ export interface components {
             id: string;
             /** @enum {string} */
             type: "tracks" | "albums" | "playlists" | "folders";
+        };
+        SharesUpdateOperation_Payload: {
+            data: components["schemas"]["SharesUpdateOperation_Payload_Data"];
+        };
+        SharesUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["SharesUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "shares";
+        };
+        SharesUpdateOperation_Payload_Data_Attributes: {
+            password?: string | (never | null);
         };
         Shares_Attributes: {
             /** @description Ways this share may be used to obtain access. BEARER permits access by presenting its code while active. VOUCHER permits an authenticated user to redeem it for a stored grant. Multiple modes may be enabled. */
@@ -32781,6 +32903,13 @@ export interface components {
              * @description Number of users other than the owner who may save the share. Absent when unlimited.
              */
             maxUses?: number;
+            /**
+             * Format: password
+             * @description Password a user must send to save the share. Write-only: never returned.
+             */
+            password?: string;
+            /** @description Whether saving the share requires a password. A protected share never permits BEARER access, and only its owner and savers see its shared resource. */
+            passwordProtected: boolean;
             /**
              * @description Role offered on the shared resource.
              * @enum {string}
@@ -32850,6 +32979,10 @@ export interface components {
         Shares_Single_Resource_Data_Document: {
             data: components["schemas"]["Shares_Resource_Object"];
             included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        Shares_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["Shares_Resource_Object"];
             links: components["schemas"]["Links"];
         };
         /** @description Publication target supplied on creation; reads use publishedInSelectedSite */
@@ -37641,6 +37774,24 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["PlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
+            };
+        };
+        /** @description This share does not permit redemption; This share can no longer be accepted; The share is password protected; send its password; The share password is incorrect */
+        SavedSharesCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SavedSharesCreateResource403ResponseBody"];
+            };
+        };
+        /** @description Too many share password attempts; try again later */
+        SavedSharesCreateResource429Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["SavedSharesCreateResource429ResponseBody"];
             };
         };
         /** @description Latest terms and conditions must be accepted */

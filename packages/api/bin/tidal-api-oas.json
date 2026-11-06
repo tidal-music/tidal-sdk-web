@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. A few resources document well-known IDs for permanent system singleton instances; compare those IDs by exact value. Never parse, construct, or infer meaning from any other `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes. Monetary amounts are decimal strings; each field defines its sign and precision constraints.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nWhere multiple identifiers are accepted, comma-separated values match any complete pair.\nWhen a member path names a to-many relationship, at least one related resource must match;\nfiltering does not trim that relationship. On to-many relationship reads, an empty member\npath (`filter[]=tracks:123`) filters primary data itself.\nEach endpoint lists its supported filters and types.\n\nWhere supported, `me` aliases the authenticated user's dedicated resource ID for the referenced\nresource type. It works in paths, resource-ID filters, compact identifiers (`type:me`), resource\nPATCH primary IDs and standalone relationship mutation identifiers, with the same meaning as\nthe resolved ID. Reads using the alias are `no-store`.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<memberPath>]=value`](https://jsonapi.org/format/#fetching-filtering) filters primary data by equality. Each endpoint lists its available filters; most collections require at least one.\n- Where explicitly documented, `filter[<memberPath>][ne]=value` negates the complete equality predicate. When the member path names a to-many relationship, no related ID may match any supplied value; a known-empty relationship matches. Operators are separate from values. Supplied comparisons combine with AND. For a required filter with multiple supported comparisons, at least one must be supplied; the parameter descriptions identify these alternatives. Unsupported operators and groups return `400`.\n- [`sort=<memberPath>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<memberPath>` descending (`sort=-addedAt`). Filter and sort member paths are relative to primary data.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Keys are scoped to the client and the authenticated user. Once the original request has completed, retrying it with the same key, method, path, query and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different method, path, query or payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Revisions and concurrent editing\n\nWhere supported, `attributes.revision` identifies the resource's documented aggregate state; a separately versioned relationship collection uses document `meta.revision`. Revisions are nonnegative integers that increase when covered state changes. Compare them only within the same identity and scope, preserve the exact value, and never calculate the next revision. Related content, viewer projections and independent sources are not automatically covered. Domain fields named `version`, such as a music edition, are distinct; existing endpoints retain their documented contracts.\n\nGuarded mutations accept the observed value as top-level `meta.expectedRevision`. Each operation declares its scope and whether the precondition is required. A mismatch returns `409`; missing required input returns `400`. Refresh and reconcile after a conflict, then submit a new operation with a new idempotency key. An identical retry with the original key replays a recorded success under the idempotency contract. These revisions are not HTTP ETags.\n\nReturned revisions describe observed snapshots, not reservations for later writes. Background changes can advance them immediately after a successful response.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.224"
+    "version" : "1.10.227"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -151,7 +151,7 @@
     "description" : "Reaction counts for a subject.",
     "name" : "reactionSummaries"
   }, {
-    "description" : "An emoji reaction on a source file, or a thumbs-up like on a comment. Comment reactors cannot be listed.",
+    "description" : "An emoji reaction on a source file or comment.",
     "name" : "reactions"
   }, {
     "description" : "A stored grant on an access-core album, track or folder, including saved-share-link grants. The subject's owner and directly named user grantee may read the grant; only the owner may administer it. Grants from any source may be deleted; creation and role updates apply only to direct grants.",
@@ -8724,7 +8724,7 @@
     },
     "/commentSummaries" : {
       "get" : {
-        "description" : "Returns one current summary per accessible subject, for up to 20 subjects. Duplicates are returned once. Inaccessible or missing subjects are omitted. Empty supported subjects still have a summary. IDs remain stable as counts change. Source-file comment totals are unavailable and currently return a zero placeholder.",
+        "description" : "Returns one current summary per accessible subject, for up to 20 subjects. Duplicates are returned once. Inaccessible or missing subjects are omitted. Empty supported subjects still have a summary. IDs remain stable as counts change. Counts include root comments on source files and direct replies on comments.",
         "parameters" : [ {
           "description" : "Subjects whose counts to return.",
           "in" : "query",
@@ -8933,7 +8933,7 @@
     },
     "/comments" : {
       "get" : {
-        "description" : "Returns root comments on a resource, or replies to a comment. Root comments support createdAt in either direction, newest first by default. Replies require sort=createdAt (oldest first); other sort values return 400.",
+        "description" : "Returns root comments on a resource, or replies to a comment. Both support createdAt in either direction, newest first by default.",
         "parameters" : [ {
           "description" : "The immediate subject whose comments to return.",
           "in" : "query",
@@ -21072,14 +21072,14 @@
     },
     "/reactions" : {
       "get" : {
-        "description" : "Lists reactions on a subject. Comment subjects are not supported.",
+        "description" : "Lists reactions on a source file or comment, newest first.",
         "parameters" : [ {
           "description" : "The subject whose reactions to return.",
           "in" : "query",
           "name" : "filter[subject]",
           "required" : true,
           "schema" : {
-            "pattern" : "^(?:trackSourceFiles):[^,]+$",
+            "pattern" : "^(?:trackSourceFiles|comments):[^,]+$",
             "type" : "string"
           }
         }, {
@@ -21090,6 +21090,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "maxLength" : 32,
               "minLength" : 1,
               "type" : "string"
             }
@@ -21186,7 +21187,7 @@
         }
       },
       "post" : {
-        "description" : "Adds or replaces the caller's reaction on a subject. Each user has at most one reaction per subject. Comments accept only 👍. Replacing a reaction keeps its ID.",
+        "description" : "Adds the caller's emoji reaction on a subject and exact time offsets. Omit both offsets for the whole subject, provide startOffset for a point, or both for a section. Offsets are supported only on source files and must be nonnegative, with endOffset at or after startOffset. Each user can add different emojis at the same position or section. Repeating the same emoji returns the existing reaction with its UUID and creation time unchanged.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
@@ -21256,7 +21257,7 @@
         "description" : "Deletes existing reaction.",
         "parameters" : [ {
           "description" : "Reaction Id",
-          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -21323,7 +21324,7 @@
         "description" : "The artist who left the reaction.",
         "parameters" : [ {
           "description" : "Reaction Id",
-          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -21405,7 +21406,7 @@
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
           "description" : "Reaction Id",
-          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -21485,7 +21486,7 @@
         "description" : "Retrieves subject relationship.",
         "parameters" : [ {
           "description" : "Reaction Id",
-          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -22600,7 +22601,7 @@
     },
     "/savedShares" : {
       "post" : {
-        "description" : "Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403.",
+        "description" : "Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403. A password-protected share needs its password unless the caller owns or already saved it; attempts are rate limited.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
@@ -22627,6 +22628,9 @@
           "400" : {
             "$ref" : "#/components/responses/Default400Response"
           },
+          "403" : {
+            "$ref" : "#/components/responses/SavedSharesCreateResource403Response"
+          },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
           },
@@ -22646,7 +22650,7 @@
             "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
-            "$ref" : "#/components/responses/Default429Response"
+            "$ref" : "#/components/responses/SavedSharesCreateResource429Response"
           },
           "500" : {
             "$ref" : "#/components/responses/Default500Response"
@@ -24444,6 +24448,80 @@
           "Authorization_Code_PKCE" : [ ]
         } ],
         "summary" : "Get single share.",
+        "tags" : [ "shares" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Set, change or remove the share's password. Setting one also removes BEARER access; removing one leaves the access modes unchanged. Existing savers keep their access.",
+        "parameters" : [ {
+          "description" : "Share id",
+          "example" : "a468bee88def",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SharesUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Shares_Update_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update single share.",
         "tags" : [ "shares" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -39992,6 +40070,26 @@
         },
         "description" : "Playlist already contains one or more requested items; Playlist item limit reached; Request already in progress for this idempotency key"
       },
+      "SavedSharesCreateResource403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SavedSharesCreateResource403ResponseBody"
+            }
+          }
+        },
+        "description" : "This share does not permit redemption; This share can no longer be accepted; The share is password protected; send its password; The share password is incorrect"
+      },
+      "SavedSharesCreateResource429Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SavedSharesCreateResource429ResponseBody"
+            }
+          }
+        },
+        "description" : "Too many share password attempts; try again later"
+      },
       "SquareConnectionsReadById403Response" : {
         "content" : {
           "application/vnd.api+json" : {
@@ -45861,7 +45959,7 @@
           "totalCount" : {
             "minimum" : 0,
             "type" : "integer",
-            "description" : "Number of existing direct replies. Source-file comment totals are unavailable and currently return a zero placeholder.",
+            "description" : "Number of existing comments directly targeting the subject. For a source file this counts root comments; for a comment this counts its direct replies.",
             "format" : "int64"
           }
         }
@@ -45969,8 +46067,9 @@
         "required" : [ "message" ],
         "type" : "object",
         "properties" : {
-          "endTime" : {
-            "type" : "string"
+          "endOffset" : {
+            "type" : "string",
+            "description" : "End offset from the beginning of the source file (ISO 8601 duration)."
           },
           "message" : {
             "maxLength" : 2000,
@@ -45978,8 +46077,9 @@
             "type" : "string",
             "description" : "The comment message content"
           },
-          "startTime" : {
-            "type" : "string"
+          "startOffset" : {
+            "type" : "string",
+            "description" : "Start offset from the beginning of the source file (ISO 8601 duration)."
           }
         }
       },
@@ -46043,8 +46143,9 @@
       "CommentsUpdateOperation_Payload_Data_Attributes" : {
         "type" : "object",
         "properties" : {
-          "endTime" : {
-            "type" : "string"
+          "endOffset" : {
+            "type" : "string",
+            "description" : "End offset from the beginning of the source file (ISO 8601 duration)."
           },
           "message" : {
             "maxLength" : 2000,
@@ -46052,8 +46153,9 @@
             "type" : "string",
             "description" : "The comment message content"
           },
-          "startTime" : {
-            "type" : "string"
+          "startOffset" : {
+            "type" : "string",
+            "description" : "Start offset from the beginning of the source file (ISO 8601 duration)."
           }
         }
       },
@@ -46067,9 +46169,9 @@
             "format" : "date-time",
             "example" : "2025-11-17T12:54:48.606Z"
           },
-          "endTime" : {
+          "endOffset" : {
             "type" : "string",
-            "description" : "End time offset for timestamped comments (ISO 8601 duration)",
+            "description" : "End offset from the beginning of the source file (ISO 8601 duration)",
             "example" : "PT2M"
           },
           "lastModifiedAt" : {
@@ -46089,9 +46191,9 @@
             "description" : "Moderation status of the comment",
             "enum" : [ "NOT_MODERATED", "FLAGGED", "TAKEN_DOWN", "OK", "ERROR" ]
           },
-          "startTime" : {
+          "startOffset" : {
             "type" : "string",
-            "description" : "Start time offset for timestamped comments (ISO 8601 duration)",
+            "description" : "Start offset from the beginning of the source file (ISO 8601 duration)",
             "example" : "PT1M30S"
           }
         }
@@ -53508,6 +53610,7 @@
         "type" : "object",
         "properties" : {
           "emoji" : {
+            "maxLength" : 32,
             "minLength" : 1,
             "type" : "string"
           }
@@ -53522,15 +53625,15 @@
             "type" : "object",
             "additionalProperties" : {
               "type" : "integer",
-              "description" : "Complete reaction counts keyed by emoji. Comments support only thumbs-up. An empty object means no reactions.",
+              "description" : "Complete reaction counts keyed by emoji for source files and comments. An empty object means no reactions.",
               "format" : "int64"
             },
-            "description" : "Complete reaction counts keyed by emoji. Comments support only thumbs-up. An empty object means no reactions."
+            "description" : "Complete reaction counts keyed by emoji for source files and comments. An empty object means no reactions."
           },
           "totalCount" : {
             "minimum" : 0,
             "type" : "integer",
-            "description" : "Number of current reactions, summed across all emojis.",
+            "description" : "Number of current reactions across all emojis and time offsets, including whole-subject reactions. A user can contribute more than one reaction.",
             "format" : "int64"
           }
         }
@@ -53635,8 +53738,19 @@
         "type" : "object",
         "properties" : {
           "emoji" : {
+            "maxLength" : 32,
             "minLength" : 1,
             "type" : "string"
+          },
+          "endOffset" : {
+            "type" : "string",
+            "description" : "Section end offset (ISO 8601 duration), at or after startOffset. Requires startOffset; omitted for a point reaction.",
+            "example" : "PT15S"
+          },
+          "startOffset" : {
+            "type" : "string",
+            "description" : "Nonnegative source-file offset (ISO 8601 duration); omitted for the whole subject.",
+            "example" : "PT10S"
           }
         }
       },
@@ -53682,9 +53796,20 @@
             "example" : "2025-11-17T12:54:48.60606Z"
           },
           "emoji" : {
+            "maxLength" : 32,
             "minLength" : 1,
             "type" : "string",
             "description" : "The type of reaction representing an emoji"
+          },
+          "endOffset" : {
+            "type" : "string",
+            "description" : "End offset of a source-file section. Omitted for a point or whole-subject reaction.",
+            "example" : "PT15S"
+          },
+          "startOffset" : {
+            "type" : "string",
+            "description" : "Source-file offset (ISO 8601 duration). Omitted for the whole subject.",
+            "example" : "PT10S"
           }
         }
       },
@@ -54363,6 +54488,9 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/SavedSharesCreateOperation_Payload_Data"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SavedSharesCreateOperation_Payload_Meta"
           }
         }
       },
@@ -54408,6 +54536,75 @@
           "type" : {
             "type" : "string",
             "enum" : [ "shares" ]
+          }
+        }
+      },
+      "SavedSharesCreateOperation_Payload_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "password" : {
+            "type" : "string",
+            "format" : "password",
+            "description" : "Password of a password-protected share. Ignored for other shares.",
+            "maxLength" : 128,
+            "minLength" : 1,
+            "writeOnly" : true
+          }
+        }
+      },
+      "SavedSharesCreateResource403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "SHARE_PASSWORD_INVALID",
+                  "enum" : [ "SHARE_PASSWORD_INVALID", "SHARE_PASSWORD_REQUIRED", "UNAUTHORIZED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "This share does not permit redemption"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SavedSharesCreateResource429ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "SHARE_PASSWORD_ATTEMPTS_EXCEEDED",
+                  "enum" : [ "SHARE_PASSWORD_ATTEMPTS_EXCEEDED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Too many share password attempts; try again later"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "429"
+                }
+              }
+            }
           }
         }
       },
@@ -55094,6 +55291,15 @@
             "format" : "int32",
             "nullable" : true
           },
+          "password" : {
+            "type" : "string",
+            "format" : "password",
+            "description" : "Password a user must send to save the share. Never returned. Must be printable ASCII characters. Without accessModes, a protected share defaults to VOUCHER only; BEARER with a password, or a password on a playlist share, is rejected with 400.",
+            "maxLength" : 128,
+            "minLength" : 6,
+            "pattern" : "^[\\x20-\\x7E]*$",
+            "writeOnly" : true
+          },
           "role" : {
             "type" : "string",
             "description" : "Role offered by the share.",
@@ -55137,8 +55343,55 @@
           }
         }
       },
+      "SharesUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SharesUpdateOperation_Payload_Data"
+          }
+        }
+      },
+      "SharesUpdateOperation_Payload_Data" : {
+        "required" : [ "attributes", "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SharesUpdateOperation_Payload_Data_Attributes"
+          },
+          "id" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "shares" ]
+          }
+        }
+      },
+      "SharesUpdateOperation_Payload_Data_Attributes" : {
+        "type" : "object",
+        "properties" : {
+          "password" : {
+            "writeOnly" : true,
+            "oneOf" : [ {
+              "type" : "string",
+              "format" : "password",
+              "description" : "Password a user must send to save the share. Never returned. Must be printable ASCII characters. A value sets or changes it; null removes it; omitted leaves it unchanged. Playlist shares and shares without VOUCHER cannot have one.",
+              "maxLength" : 128,
+              "minLength" : 6,
+              "pattern" : "^[\\x20-\\x7E]*$",
+              "writeOnly" : true
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          }
+        }
+      },
       "Shares_Attributes" : {
-        "required" : [ "accessModes", "code", "createdAt", "expiresAt", "role" ],
+        "required" : [ "accessModes", "code", "createdAt", "expiresAt", "passwordProtected", "role" ],
         "type" : "object",
         "properties" : {
           "accessModes" : {
@@ -55181,6 +55434,19 @@
             "type" : "integer",
             "description" : "Number of users other than the owner who may save the share. Absent when unlimited.",
             "format" : "int32"
+          },
+          "password" : {
+            "type" : "string",
+            "format" : "password",
+            "description" : "Password a user must send to save the share. Write-only: never returned.",
+            "maxLength" : 128,
+            "minLength" : 6,
+            "pattern" : "^[\\x20-\\x7E]*$",
+            "writeOnly" : true
+          },
+          "passwordProtected" : {
+            "type" : "boolean",
+            "description" : "Whether saving the share requires a password. A protected share never permits BEARER access, and only its owner and savers see its shared resource."
           },
           "role" : {
             "type" : "string",
@@ -55333,6 +55599,18 @@
           },
           "included" : {
             "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "Shares_Update_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Shares_Resource_Object"
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
