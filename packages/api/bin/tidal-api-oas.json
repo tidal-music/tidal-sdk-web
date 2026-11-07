@@ -5,10 +5,10 @@
       "name" : "TIDAL Developer - Discussions",
       "url" : "https://github.com/orgs/tidal-music/discussions"
     },
-    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. Never parse, construct, or infer meaning from an `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes. Monetary amounts are decimal strings; each field defines its sign and precision constraints.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nWhere multiple identifiers are accepted, comma-separated values match any complete pair.\nWhen a member path names a to-many relationship, at least one related resource must match;\nfiltering does not trim that relationship. On to-many relationship reads, an empty member\npath (`filter[]=tracks:123`) filters primary data itself.\nEach endpoint lists its supported filters and types.\n\nWhere supported, `me` aliases the authenticated user's dedicated resource ID for the referenced\nresource type. It works in paths, resource-ID filters, compact identifiers (`type:me`), resource\nPATCH primary IDs and standalone relationship mutation identifiers, with the same meaning as\nthe resolved ID. Reads using the alias are `no-store`.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<memberPath>]=value`](https://jsonapi.org/format/#fetching-filtering) filters primary data by equality. Each endpoint lists its available filters; most collections require at least one.\n- Where explicitly documented, `filter[<memberPath>][ne]=value` negates the complete equality predicate. When the member path names a to-many relationship, no related ID may match any supplied value; a known-empty relationship matches. Operators are separate from values. Supplied comparisons combine with AND. For a required filter with multiple supported comparisons, at least one must be supplied; the parameter descriptions identify these alternatives. Unsupported operators and groups return `400`.\n- [`sort=<memberPath>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<memberPath>` descending (`sort=-addedAt`). Filter and sort member paths are relative to primary data.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Keys are scoped to the client and the authenticated user. Once the original request has completed, retrying it with the same key, method, path, query and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different method, path, query or payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Revisions and concurrent editing\n\nWhere supported, `attributes.revision` identifies the resource's documented aggregate state; a separately versioned relationship collection uses document `meta.revision`. Revisions are nonnegative integers that increase when covered state changes. Compare them only within the same identity and scope, preserve the exact value, and never calculate the next revision. Related content, viewer projections and independent sources are not automatically covered. Domain fields named `version`, such as a music edition, are distinct; existing endpoints retain their documented contracts.\n\nGuarded mutations accept the observed value as top-level `meta.expectedRevision`. Each operation declares its scope and whether the precondition is required. A mismatch returns `409`; missing required input returns `400`. Refresh and reconcile after a conflict, then submit a new operation with a new idempotency key. An identical retry with the original key replays a recorded success under the idempotency contract. These revisions are not HTTP ETags.\n\nReturned revisions describe observed snapshots, not reservations for later writes. Background changes can advance them immediately after a successful response.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
+    "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. A few resources document well-known IDs for permanent system singleton instances; compare those IDs by exact value. Never parse, construct, or infer meaning from any other `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes. Monetary amounts are decimal strings; each field defines its sign and precision constraints.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nWhere multiple identifiers are accepted, comma-separated values match any complete pair.\nWhen a member path names a to-many relationship, at least one related resource must match;\nfiltering does not trim that relationship. On collection and to-many relationship reads, the\nreserved root `self` (`filter[self]=tracks:123`) filters primary data itself.\nEach endpoint lists its supported filters and types.\n\nWhere supported, `me` aliases the authenticated user's dedicated resource ID for the referenced\nresource type. It works in paths, resource-ID filters, compact identifiers (`type:me`), resource\nPATCH primary IDs and standalone relationship mutation identifiers, with the same meaning as\nthe resolved ID. Reads using the alias are `no-store`.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<memberPath>]=value`](https://jsonapi.org/format/#fetching-filtering) filters primary data by equality. Each endpoint lists its available filters; most collections require at least one.\n- Where explicitly documented, `filter[<memberPath>][ne]=value` negates the complete equality predicate. When the member path names a to-many relationship, no related ID may match any supplied value; a known-empty relationship matches. Operators are separate from values. Supplied comparisons combine with AND. For a required filter with multiple supported comparisons, at least one must be supplied; the parameter descriptions identify these alternatives. Unsupported operators and groups return `400`.\n- Where documented, `filter[<path>][<operator>]=value` applies an endpoint-defined operator, such as `filter[self][matchesQuery]`. Its meaning is described per endpoint, and it combines with other filters by AND.\n- [`sort=<memberPath>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<memberPath>` descending (`sort=-addedAt`). Filter and sort member paths are relative to primary data.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Keys are scoped to the client and the authenticated user. Once the original request has completed, retrying it with the same key, method, path, query and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different method, path, query or payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Revisions and concurrent editing\n\nWhere supported, `attributes.revision` identifies the resource's documented aggregate state; a separately versioned relationship collection uses document `meta.revision`. Revisions are nonnegative integers that increase when covered state changes. Compare them only within the same identity and scope, preserve the exact value, and never calculate the next revision. Related content, viewer projections and independent sources are not automatically covered. Domain fields named `version`, such as a music edition, are distinct; existing endpoints retain their documented contracts.\n\nGuarded mutations accept the observed value as top-level `meta.expectedRevision`. Each operation declares its scope and whether the precondition is required. A mismatch returns `409`; missing required input returns `400`. Refresh and reconcile after a conflict, then submit a new operation with a new idempotency key. An identical retry with the original key replays a recorded success under the idempotency contract. These revisions are not HTTP ETags.\n\nReturned revisions describe observed snapshots, not reservations for later writes. Background changes can advance them immediately after a successful response.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.218"
+    "version" : "1.10.236"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -73,6 +73,10 @@
     "description" : "Deprecated compatibility view of a COLLABORATOR playlist share. Use `shares` instead. The ID and code identify the same share through either resource. Links are reusable. Expiry and revocation follow the underlying share.",
     "name" : "collaborationInvites"
   }, {
+    "description" : "Comment counts for a subject.",
+    "name" : "commentSummaries"
+  }, {
+    "description" : "A comment on a source file, or a reply to a root comment. Replies support one level only.",
     "name" : "comments"
   }, {
     "description" : "A claim by an artist asserting ownership of a piece of content.",
@@ -102,7 +106,7 @@
     "description" : "A music genre classification.",
     "name" : "genres"
   }, {
-    "description" : "A platform-managed audience. The Everyone group includes eligible callers with or without an end-user identity and has no stored member roster.",
+    "description" : "A platform-managed audience. The Everyone group has the well-known ID `everyone`, includes eligible callers with or without an end-user identity and has no stored member roster.",
     "name" : "groups"
   }, {
     "description" : "A registered device installation for a user.",
@@ -144,14 +148,14 @@
     "description" : "A user's purchased content.",
     "name" : "purchases"
   }, {
-    "description" : "An emoji reaction by a user on a piece of content.",
+    "description" : "Reaction counts for a subject.",
+    "name" : "reactionSummaries"
+  }, {
+    "description" : "An emoji reaction on a source file or comment.",
     "name" : "reactions"
   }, {
-    "description" : "A stored grant on an access-core album, track or folder, including saved-share-link grants. The subject's owner and directly named user grantee may read the grant; only the owner may administer it. Grants from any source may be deleted; creation and role updates apply only to direct grants.",
+    "description" : "A stored grant on an access-core album, track or folder, including saved-share-link grants. The subject's owner and directly named user grantee may read the grant; only the owner may administer it. Direct and saved-share-link grants may be deleted; creation and role updates apply only to direct grants.",
     "name" : "resourceGrants"
-  }, {
-    "description" : "Who has access to an access-core album, track or folder, and through what: the grants and active share links on it or a folder or album above it. Only the subject's owner may read it.",
-    "name" : "resourceSharingSettings"
   }, {
     "description" : "A completed acceptance of a share's offered role.",
     "name" : "savedShares"
@@ -170,6 +174,9 @@
   }, {
     "description" : "A share of a TIDAL resource. Its access modes permit bearer access, redemption through savedShares for the offered role, or both.",
     "name" : "shares"
+  }, {
+    "description" : "Current sharing facts aggregated from resourceGrants and shares on a live access-store album, track or folder and its ancestor chain. One summary per subject, independent of viewer.",
+    "name" : "sharingSummaries"
   }, {
     "description" : "A Square seller connection linked to a user for receiving payments.",
     "name" : "squareConnections"
@@ -207,7 +214,7 @@
     "description" : "A playback manifest for a track, containing streaming URIs and format details.",
     "name" : "trackManifests"
   }, {
-    "description" : "A track source file is the media source file of a track, meaning audio content.\nAfter a track source file is uploaded successfully it will be ingested and transcoded into deliverables and\nstored like any other content we receive from labels.\n",
+    "description" : "A track source file is the media source file of a track, meaning audio content.\nAfter a track source file is uploaded successfully it will be ingested and transcoded into deliverables and\nstored like any other content we receive from labels.\nAuthenticated users can read the file with an active collaborator bearer share on its track or containing album.\n",
     "name" : "trackSourceFiles"
   }, {
     "description" : "Playback statistics for a track, including total plays and unique listeners.",
@@ -963,7 +970,7 @@
         }
       },
       "post" : {
-        "description" : "Creates an uploaded album. Album creation is not atomic with its artist assignment, so every listed artist must be owned by the caller; a collaborator or album-level grant is not enough until the album exists.",
+        "description" : "Creates an uploaded album. Album creation is not atomic with its artist assignment, so the caller must be OWNER of every listed artist; COLLABORATOR, or a role on an album, is not enough until the album exists.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
@@ -8715,57 +8722,229 @@
         }
       }
     },
-    "/comments" : {
+    "/commentSummaries" : {
       "get" : {
-        "description" : "Retrieves multiple comments by available filters, or without if applicable.",
+        "description" : "Returns one current summary per accessible subject, for up to 20 subjects. Duplicates are returned once. Inaccessible or missing subjects are omitted. Empty supported subjects still have a summary. IDs remain stable as counts change. Counts include root comments on source files and direct replies on comments.",
         "parameters" : [ {
-          "description" : "Filter by parent comment ID to get replies (e.g. `550e8400-e29b-41d4-a716-446655440000`)",
+          "description" : "Subjects whose counts to return.",
           "in" : "query",
-          "name" : "filter[parentComment.id]",
-          "required" : false,
+          "name" : "filter[subject]",
+          "required" : true,
           "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
-              "minLength" : 1,
+              "pattern" : "^(?:comments|trackSourceFiles):[^,]+$",
               "type" : "string"
             }
           }
         }, {
-          "deprecated" : true,
-          "description" : "Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)",
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
           "in" : "query",
-          "name" : "filter[subject.id]",
+          "name" : "countryCode",
           "required" : false,
           "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
+            "type" : "string"
           }
         }, {
-          "deprecated" : true,
-          "description" : "Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)",
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject.author.albums",
           "in" : "query",
-          "name" : "filter[subject.type]",
+          "name" : "include",
           "required" : false,
           "schema" : {
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "albums", "tracks", "trackSourceFiles" ]
+              "example" : "subject.author.albums"
             }
           }
         }, {
-          "description" : "The subject whose comments to return. Use either subject or the deprecated subject.id and subject.type pair.",
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
           "in" : "query",
-          "name" : "filter[subject]",
+          "name" : "includeLinkage",
           "required" : false,
           "schema" : {
-            "pattern" : "^(?:albums|tracks|trackSourceFiles):[^,]+$",
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "subject" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.author.albums"
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CommentSummaries_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple commentSummaries.",
+        "tags" : [ "commentSummaries" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/commentSummaries/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "Opaque identifier of one subject's current summary",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: author, owners, parentComment",
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject.author.albums"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.author.albums"
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CommentSummaries_Subject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
+        "tags" : [ "commentSummaries" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/comments" : {
+      "get" : {
+        "description" : "Returns root comments on a resource, or replies to a comment. Both support createdAt in either direction, newest first by default.",
+        "parameters" : [ {
+          "description" : "The immediate subject whose comments to return.",
+          "in" : "query",
+          "name" : "filter[subject]",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^(?:trackSourceFiles|comments):[^,]+$",
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: author, commentSummary, owners, reactionSummary, rootSubject, subject",
           "example" : "author.albums",
           "in" : "query",
           "name" : "include",
@@ -8787,7 +8966,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "author", "owners", "parentComment" ]
+              "enum" : [ "author", "commentSummary", "owners", "reactionSummary", "rootSubject", "subject" ]
             }
           },
           "style" : "form"
@@ -8819,9 +8998,9 @@
             "items" : {
               "type" : "string",
               "example" : "createdAt",
-              "enum" : [ "createdAt", "-createdAt", "likeCount", "-likeCount", "replyCount", "-replyCount", "startTime", "-startTime" ],
+              "enum" : [ "createdAt", "-createdAt" ],
               "default" : "-createdAt",
-              "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc", "LikeCountAsc", "LikeCountDesc", "ReplyCountAsc", "ReplyCountDesc", "StartTimeAsc", "StartTimeDesc" ]
+              "x-enum-varnames" : [ "CreatedAtAsc", "CreatedAtDesc" ]
             }
           }
         } ],
@@ -8871,7 +9050,7 @@
         }
       },
       "post" : {
-        "description" : "Creates a new comment.",
+        "description" : "Creates a root comment on a resource or a reply whose subject is a root comment. Replies to replies are rejected.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
@@ -9014,7 +9193,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: author, owners, parentComment",
+          "description" : "Include related resources. Available relationships: author, commentSummary, owners, reactionSummary, rootSubject, subject",
           "example" : "author.albums",
           "in" : "query",
           "name" : "include",
@@ -9036,7 +9215,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "author", "owners", "parentComment" ]
+              "enum" : [ "author", "commentSummary", "owners", "reactionSummary", "rootSubject", "subject" ]
             }
           },
           "style" : "form"
@@ -9253,6 +9432,78 @@
         }
       }
     },
+    "/comments/{id}/relationships/commentSummary" : {
+      "get" : {
+        "description" : "Retrieves commentSummary relationship.",
+        "parameters" : [ {
+          "description" : "Comment Id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: commentSummary",
+          "example" : "commentSummary",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "commentSummary"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Comments_CommentSummary_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get commentSummary relationship (\"to-one\").",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/comments/{id}/relationships/owners" : {
       "get" : {
         "description" : "Retrieves owners relationship.",
@@ -9333,9 +9584,9 @@
         }
       }
     },
-    "/comments/{id}/relationships/parentComment" : {
+    "/comments/{id}/relationships/reactionSummary" : {
       "get" : {
-        "description" : "Retrieves parentComment relationship.",
+        "description" : "Retrieves reactionSummary relationship.",
         "parameters" : [ {
           "description" : "Comment Id",
           "example" : "550e8400-e29b-41d4-a716-446655440000",
@@ -9346,8 +9597,8 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: parentComment",
-          "example" : "parentComment.author.albums",
+          "description" : "Include related resources. Available relationships: reactionSummary",
+          "example" : "reactionSummary",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -9355,18 +9606,8 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "parentComment.author.albums"
+              "example" : "reactionSummary"
             }
-          }
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: parentComment.author.albums",
-          "example" : "parentComment.author.albums",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "parentComment.author.albums"
           }
         } ],
         "responses" : {
@@ -9374,7 +9615,7 @@
             "content" : {
               "application/vnd.api+json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Comments_ParentComment_Single_Relationship_Data_Document"
+                  "$ref" : "#/components/schemas/Comments_ReactionSummary_Single_Relationship_Data_Document"
                 }
               }
             },
@@ -9408,7 +9649,161 @@
         "security" : [ {
           "Authorization_Code_PKCE" : [ ]
         } ],
-        "summary" : "Get parentComment relationship (\"to-one\").",
+        "summary" : "Get reactionSummary relationship (\"to-one\").",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/comments/{id}/relationships/rootSubject" : {
+      "get" : {
+        "description" : "Retrieves rootSubject relationship.",
+        "parameters" : [ {
+          "description" : "Comment Id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: rootSubject",
+          "example" : "rootSubject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "rootSubject"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Comments_RootSubject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get rootSubject relationship (\"to-one\").",
+        "tags" : [ "comments" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/comments/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "Comment Id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject.author.albums"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.author.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Comments_Subject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
         "tags" : [ "comments" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -11664,7 +12059,7 @@
         }, {
           "description" : "Searches every folder in your tree, selected with parent.owners.id=me, and lists the matching items in one flat list. An item matches when each word given starts a word in its folder's name, its album's title or the title of one of the album's tracks, ignoring case. An item shared with you matches by its subject, and only while you can open it. (e.g. `demo`)",
           "in" : "query",
-          "name" : "filter[query]",
+          "name" : "filter[self][matchesQuery]",
           "required" : false,
           "schema" : {
             "maxLength" : 200,
@@ -11672,7 +12067,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Searches every folder in your tree, selected with parent.owners.id=me, for albums that are (true) or are not (false) published, and lists them in one flat list. Other items never match. Combines with query. (e.g. `true`)",
+          "description" : "Searches every folder in your tree, selected with parent.owners.id=me, for albums that are (true) or are not (false) published, and lists them in one flat list. Other items never match. Combines with filter[self][matchesQuery]. (e.g. `true`)",
           "in" : "query",
           "name" : "filter[subject.albums:published]",
           "required" : false,
@@ -11698,7 +12093,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: breadcrumb, owners, parent, subject, subjectSharingSettings",
+          "description" : "Include related resources. Available relationships: breadcrumb, owners, parent, sharingSummary, subject",
           "example" : "breadcrumb.children.subject",
           "in" : "query",
           "name" : "include",
@@ -11720,7 +12115,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "breadcrumb", "owners", "parent", "subject", "subjectSharingSettings" ]
+              "enum" : [ "breadcrumb", "owners", "parent", "sharingSummary", "subject" ]
             }
           },
           "style" : "form"
@@ -11932,7 +12327,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: breadcrumb, owners, parent, subject, subjectSharingSettings",
+          "description" : "Include related resources. Available relationships: breadcrumb, owners, parent, sharingSummary, subject",
           "example" : "breadcrumb.children.subject",
           "in" : "query",
           "name" : "include",
@@ -11954,7 +12349,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "breadcrumb", "owners", "parent", "subject", "subjectSharingSettings" ]
+              "enum" : [ "breadcrumb", "owners", "parent", "sharingSummary", "subject" ]
             }
           },
           "style" : "form"
@@ -12341,6 +12736,88 @@
         }
       }
     },
+    "/folderItems/{id}/relationships/sharingSummary" : {
+      "get" : {
+        "description" : "Retrieves sharingSummary relationship.",
+        "parameters" : [ {
+          "description" : "Folder item id",
+          "example" : "e3226624-355b-48f8-aa93-db42532caa66",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: sharingSummary",
+          "example" : "sharingSummary.subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "sharingSummary.subject"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharingSummary.subject",
+          "example" : "sharingSummary.subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "sharingSummary.subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FolderItems_SharingSummary_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
+        } ],
+        "summary" : "Get sharingSummary relationship (\"to-one\").",
+        "tags" : [ "folderItems" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/folderItems/{id}/relationships/subject" : {
       "get" : {
         "description" : "Retrieves subject relationship.",
@@ -12417,88 +12894,6 @@
           "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
         } ],
         "summary" : "Get subject relationship (\"to-one\").",
-        "tags" : [ "folderItems" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
-        }
-      }
-    },
-    "/folderItems/{id}/relationships/subjectSharingSettings" : {
-      "get" : {
-        "description" : "Retrieves subjectSharingSettings relationship.",
-        "parameters" : [ {
-          "description" : "Folder item id",
-          "example" : "e3226624-355b-48f8-aa93-db42532caa66",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Include related resources. Available relationships: subjectSharingSettings",
-          "example" : "subjectSharingSettings.subject",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "subjectSharingSettings.subject"
-            }
-          }
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subjectSharingSettings.subject",
-          "example" : "subjectSharingSettings.subject",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "subjectSharingSettings.subject"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/FolderItems_SubjectSharingSettings_Single_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "collection.read", "r_usr" ]
-        } ],
-        "summary" : "Get subjectSharingSettings relationship (\"to-one\").",
         "tags" : [ "folderItems" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -13580,13 +13975,18 @@
       "get" : {
         "description" : "Retrieves multiple groups by available filters, or without if applicable.",
         "parameters" : [ {
-          "description" : "Exact group name (case-sensitive) (e.g. `Everyone`)",
+          "description" : "Group ID. The built-in Everyone group has the case-sensitive ID `everyone`.",
           "in" : "query",
-          "name" : "filter[name]",
+          "name" : "filter[id]",
           "required" : true,
           "schema" : {
-            "minLength" : 1,
-            "type" : "string"
+            "maxItems" : 20,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "minLength" : 1,
+              "type" : "string"
+            }
           }
         } ],
         "responses" : {
@@ -13641,8 +14041,8 @@
       "get" : {
         "description" : "Retrieves single group by id.",
         "parameters" : [ {
-          "description" : "Group ID",
-          "example" : "5x4uRI6Lowv",
+          "description" : "Group ID. The built-in Everyone group has the case-sensitive ID `everyone`.",
+          "example" : "everyone",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -14077,6 +14477,18 @@
             "type" : "string"
           }
         }, {
+          "description" : "One of: PENDING, STORED, FAILED (e.g. `PENDING`)",
+          "in" : "query",
+          "name" : "filter[clientStorageState]",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "PENDING", "STORED", "FAILED" ]
+            }
+          }
+        }, {
           "description" : "Offline item id (e.g. `1234`)",
           "in" : "query",
           "name" : "filter[id]",
@@ -14086,18 +14498,6 @@
             "items" : {
               "minLength" : 1,
               "type" : "string"
-            }
-          }
-        }, {
-          "description" : "One of: PENDING, STORED, FAILED (e.g. `PENDING`)",
-          "in" : "query",
-          "name" : "filter[state]",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "enum" : [ "PENDING", "STORED", "FAILED" ]
             }
           }
         }, {
@@ -18894,7 +19294,7 @@
         }, {
           "description" : "Filter playlist items by a free-text query (e.g. `halo`)",
           "in" : "query",
-          "name" : "filter[query]",
+          "name" : "filter[self][matchesQuery]",
           "required" : false,
           "schema" : {
             "maxLength" : 100,
@@ -20461,10 +20861,228 @@
         }
       }
     },
+    "/reactionSummaries" : {
+      "get" : {
+        "description" : "Returns one current summary per accessible subject, for up to 20 subjects. Duplicates are returned once. Inaccessible or missing subjects are omitted. Empty supported subjects still have a summary. IDs remain stable as counts change.",
+        "parameters" : [ {
+          "description" : "Subjects whose counts to return.",
+          "in" : "query",
+          "name" : "filter[subject]",
+          "required" : true,
+          "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "pattern" : "^(?:trackSourceFiles|comments):[^,]+$",
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "ISO 3166-1 alpha-2 country code",
+          "example" : "US",
+          "in" : "query",
+          "name" : "countryCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject.author.albums"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "subject" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.author.albums"
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReactionSummaries_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get multiple reactionSummaries.",
+        "tags" : [ "reactionSummaries" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/reactionSummaries/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "Opaque identifier of one subject's current summary",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject.author.albums"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.author.albums"
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReactionSummaries_Subject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
+        "tags" : [ "reactionSummaries" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/reactions" : {
       "get" : {
-        "description" : "Retrieves multiple reactions by available filters, or without if applicable.",
+        "description" : "Lists reactions on a source file or comment, newest first.",
         "parameters" : [ {
+          "description" : "The subject whose reactions to return.",
+          "in" : "query",
+          "name" : "filter[subject]",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^(?:trackSourceFiles|comments):[^,]+$",
+            "type" : "string"
+          }
+        }, {
           "description" : "Filter by emoji (e.g. `👍`)",
           "in" : "query",
           "name" : "filter[emoji]",
@@ -20472,46 +21090,13 @@
           "schema" : {
             "type" : "array",
             "items" : {
+              "maxLength" : 32,
               "minLength" : 1,
               "type" : "string"
             }
           }
         }, {
-          "deprecated" : true,
-          "description" : "Deprecated: use filter[subject]. Filter by subject resource ID (e.g. `12345`)",
-          "in" : "query",
-          "name" : "filter[subject.id]",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        }, {
-          "deprecated" : true,
-          "description" : "Deprecated: use filter[subject]. Filter by subject resource type (e.g. `albums`)",
-          "in" : "query",
-          "name" : "filter[subject.type]",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "enum" : [ "albums", "tracks", "artists", "videos", "playlists", "comments", "trackSourceFiles" ]
-            }
-          }
-        }, {
-          "description" : "The subject whose reactions to return. Use either subject or the deprecated subject.id and subject.type pair.",
-          "in" : "query",
-          "name" : "filter[subject]",
-          "required" : false,
-          "schema" : {
-            "pattern" : "^(?:albums|tracks|artists|videos|playlists|comments|trackSourceFiles):[^,]+$",
-            "type" : "string"
-          }
-        }, {
-          "description" : "Include related resources. Available relationships: author, ownerProfiles, owners",
+          "description" : "Include related resources. Available relationships: author, owners, subject",
           "example" : "author.albums",
           "in" : "query",
           "name" : "include",
@@ -20533,7 +21118,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "author", "ownerProfiles", "owners" ]
+              "enum" : [ "author", "owners", "subject" ]
             }
           },
           "style" : "form"
@@ -20554,28 +21139,6 @@
           "schema" : {
             "type" : "string",
             "example" : "author.albums"
-          }
-        }, {
-          "in" : "query",
-          "name" : "stats",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "ALL", "COUNTS_BY_TYPE", "TOTAL_COUNT" ]
-          }
-        }, {
-          "in" : "query",
-          "name" : "statsOnly",
-          "required" : false,
-          "schema" : {
-            "type" : "boolean"
-          }
-        }, {
-          "in" : "query",
-          "name" : "viewerContext",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
           }
         } ],
         "responses" : {
@@ -20624,7 +21187,7 @@
         }
       },
       "post" : {
-        "description" : "Creates a new reaction.",
+        "description" : "Adds the caller's emoji reaction on a subject and exact time offsets. Omit both offsets for the whole subject, provide startOffset for a point, or both for a section. Offsets are supported only on source files and must be nonnegative, with endOffset at or after startOffset. Each user can add different emojis at the same position or section. Repeating the same emoji returns the existing reaction with its UUID and creation time unchanged.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
@@ -20694,7 +21257,7 @@
         "description" : "Deletes existing reaction.",
         "parameters" : [ {
           "description" : "Reaction Id",
-          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -20761,7 +21324,7 @@
         "description" : "The artist who left the reaction.",
         "parameters" : [ {
           "description" : "Reaction Id",
-          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -20838,93 +21401,12 @@
         }
       }
     },
-    "/reactions/{id}/relationships/ownerProfiles" : {
-      "get" : {
-        "deprecated" : true,
-        "description" : "Deprecated. Use author for attribution.",
-        "parameters" : [ {
-          "description" : "Reaction Id",
-          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Include related resources. Available relationships: ownerProfiles",
-          "example" : "ownerProfiles",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "ownerProfiles"
-            }
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Reactions_OwnerProfiles_Multi_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ ]
-        } ],
-        "summary" : "Get ownerProfiles relationship (\"to-many\").",
-        "tags" : [ "reactions" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
-        }
-      }
-    },
     "/reactions/{id}/relationships/owners" : {
       "get" : {
         "description" : "Retrieves owners relationship.",
         "parameters" : [ {
           "description" : "Reaction Id",
-          "example" : "nejMcAhh5N8S3EQ4LaqysVdI0cZZ",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
           "in" : "path",
           "name" : "id",
           "required" : true,
@@ -20999,11 +21481,93 @@
         }
       }
     },
+    "/reactions/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "Reaction Id",
+          "example" : "550e8400-e29b-41d4-a716-446655440000",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject.author.albums"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject.author.albums",
+          "example" : "subject.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject.author.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Reactions_Subject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
+        "tags" : [ "reactions" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/resourceGrants" : {
       "get" : {
-        "description" : "Lists stored grants from every source visible to the subject's owner or named user grantee, selected by subject or grantee, optionally restricted by assigned role. Requires subject or grantee.",
+        "description" : "Retrieves multiple resourceGrants by available filters, or without if applicable.",
         "parameters" : [ {
-          "description" : "Filter by grantee. Also accepts `users:me`.",
+          "description" : "Filter by grantee. Use `groups:everyone` for the Everyone group. Also accepts `users:me`.",
           "in" : "query",
           "name" : "filter[grantee]",
           "required" : false,
@@ -21019,6 +21583,15 @@
           "schema" : {
             "type" : "string",
             "enum" : [ "VIEWER", "COLLABORATOR", "OWNER" ]
+          }
+        }, {
+          "description" : "Album, track or folder owned by the caller. Selects every live stored grant on the resource and its ancestor folders and albums, direct and from saved share links. Each grant keeps the subject it is stored on, so a grantee can have several. Does not expand groups or bearer access or resolve effective permissions. Cannot be combined with other filters. Missing or non-owned resources return no records. Ordered by grantee, each grantee's nearest grants first; at most 20 grants per page. Also accepts `folders:me`.",
+          "in" : "query",
+          "name" : "filter[self][appliesTo]",
+          "required" : false,
+          "schema" : {
+            "pattern" : "^(?:albums|tracks|folders):[^,]+$",
+            "type" : "string"
           }
         }, {
           "description" : "Filter by subject. Also accepts `folders:me`.",
@@ -21580,464 +22153,9 @@
         }
       }
     },
-    "/resourceSharingSettings" : {
-      "get" : {
-        "description" : "Returns the sharing settings of up to 20 live access-core subjects. Subjects without a node, or that the caller does not own, return none.",
-        "parameters" : [ {
-          "description" : "Filter by subject. Also accepts `folders:me`.",
-          "in" : "query",
-          "name" : "filter[subject]",
-          "required" : true,
-          "schema" : {
-            "maxItems" : 20,
-            "minItems" : 1,
-            "type" : "array",
-            "items" : {
-              "pattern" : "^(?:albums|tracks|folders):[^,]+$",
-              "type" : "string"
-            }
-          }
-        }, {
-          "description" : "Include related resources. Available relationships: grants, shares, subject",
-          "example" : "grants.subject",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "grants.subject"
-            }
-          }
-        }, {
-          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
-          "explode" : false,
-          "in" : "query",
-          "name" : "includeLinkage",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "enum" : [ "grants", "shares", "subject" ]
-            }
-          },
-          "style" : "form"
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grants.subject",
-          "example" : "grants.subject",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "grants.subject"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ResourceSharingSettings_Multi_Resource_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "r_usr" ]
-        } ],
-        "summary" : "Get multiple resourceSharingSettings.",
-        "tags" : [ "resourceSharingSettings" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
-        }
-      }
-    },
-    "/resourceSharingSettings/{id}" : {
-      "get" : {
-        "description" : "Retrieves single resourceSharingSetting by id.",
-        "parameters" : [ {
-          "description" : "Opaque resource sharing settings ID",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Include related resources. Available relationships: grants, shares, subject",
-          "example" : "grants.subject",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "grants.subject"
-            }
-          }
-        }, {
-          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
-          "explode" : false,
-          "in" : "query",
-          "name" : "includeLinkage",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "enum" : [ "grants", "shares", "subject" ]
-            }
-          },
-          "style" : "form"
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grants.subject",
-          "example" : "grants.subject",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "grants.subject"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ResourceSharingSettings_Single_Resource_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "r_usr" ]
-        } ],
-        "summary" : "Get single resourceSharingSetting.",
-        "tags" : [ "resourceSharingSettings" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
-        }
-      }
-    },
-    "/resourceSharingSettings/{id}/relationships/grants" : {
-      "get" : {
-        "description" : "Each grantee's strongest grant on the subject or a folder or album above it: the strongest role, then the nearest grant, then a direct grant over a saved link's, then the oldest. The owner comes first, then groups, then users. A grant's subject is the node it is on.",
-        "parameters" : [ {
-          "description" : "Opaque resource sharing settings ID",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Include related resources. Available relationships: grants",
-          "example" : "grants.subject",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "grants.subject"
-            }
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grants.subject",
-          "example" : "grants.subject",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "grants.subject"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ResourceSharingSettings_Grants_Multi_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "r_usr" ]
-        } ],
-        "summary" : "Get grants relationship (\"to-many\").",
-        "tags" : [ "resourceSharingSettings" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
-        }
-      }
-    },
-    "/resourceSharingSettings/{id}/relationships/shares" : {
-      "get" : {
-        "description" : "The active share links on the subject or an album above it, or a folder above it whose link can be saved, next to expire first.",
-        "parameters" : [ {
-          "description" : "Opaque resource sharing settings ID",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Include related resources. Available relationships: shares",
-          "example" : "shares.sharedResources",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "shares.sharedResources"
-            }
-          }
-        }, {
-          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
-          "in" : "query",
-          "name" : "page[cursor]",
-          "required" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: shares.sharedResources",
-          "example" : "shares.sharedResources",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "shares.sharedResources"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ResourceSharingSettings_Shares_Multi_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "r_usr" ]
-        } ],
-        "summary" : "Get shares relationship (\"to-many\").",
-        "tags" : [ "resourceSharingSettings" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
-        }
-      }
-    },
-    "/resourceSharingSettings/{id}/relationships/subject" : {
-      "get" : {
-        "description" : "Retrieves subject relationship.",
-        "parameters" : [ {
-          "description" : "Opaque resource sharing settings ID",
-          "in" : "path",
-          "name" : "id",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "description" : "Include related resources. Available relationships: subject",
-          "example" : "subject",
-          "in" : "query",
-          "name" : "include",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "example" : "subject"
-            }
-          }
-        }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
-          "example" : "subject",
-          "in" : "query",
-          "name" : "replaceMedia",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "example" : "subject"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "content" : {
-              "application/vnd.api+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ResourceSharingSettings_Subject_Single_Relationship_Data_Document"
-                }
-              }
-            },
-            "description" : "Successful response"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/Default400Response"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/Default404Response"
-          },
-          "405" : {
-            "$ref" : "#/components/responses/Default405Response"
-          },
-          "406" : {
-            "$ref" : "#/components/responses/Default406Response"
-          },
-          "415" : {
-            "$ref" : "#/components/responses/Default415Response"
-          },
-          "429" : {
-            "$ref" : "#/components/responses/Default429Response"
-          },
-          "500" : {
-            "$ref" : "#/components/responses/Default500Response"
-          },
-          "503" : {
-            "$ref" : "#/components/responses/Default503Response"
-          }
-        },
-        "security" : [ {
-          "Authorization_Code_PKCE" : [ "r_usr" ]
-        } ],
-        "summary" : "Get subject relationship (\"to-one\").",
-        "tags" : [ "resourceSharingSettings" ],
-        "x-path-item-properties" : {
-          "required-access-tier" : "INTERNAL"
-        }
-      }
-    },
     "/savedShares" : {
       "post" : {
-        "description" : "Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403.",
+        "description" : "Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403. A password-protected share needs its password unless the caller owns or already saved it; attempts are rate limited.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
@@ -22064,6 +22182,9 @@
           "400" : {
             "$ref" : "#/components/responses/Default400Response"
           },
+          "403" : {
+            "$ref" : "#/components/responses/SavedSharesCreateResource403Response"
+          },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
           },
@@ -22083,7 +22204,7 @@
             "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
-            "$ref" : "#/components/responses/Default429Response"
+            "$ref" : "#/components/responses/SavedSharesCreateResource429Response"
           },
           "500" : {
             "$ref" : "#/components/responses/Default500Response"
@@ -23557,13 +23678,22 @@
           "description" : "A share code (e.g. `xyz`)",
           "in" : "query",
           "name" : "filter[code]",
-          "required" : true,
+          "required" : false,
           "schema" : {
             "type" : "array",
             "items" : {
               "minLength" : 1,
               "type" : "string"
             }
+          }
+        }, {
+          "description" : "Album, track or folder owned by the caller. Selects undeleted, unexpired links on the resource or an ancestor album, and VOUCHER-enabled links on an ancestor folder. Exhausted links are included. Each link keeps its own sharedResources. Cannot be combined with other filters. Missing or non-owned resources and subjects without a live access node return no records. Ordered by expiry then share ID; at most 20 links per page. Also accepts `folders:me`.",
+          "in" : "query",
+          "name" : "filter[self][appliesTo]",
+          "required" : false,
+          "schema" : {
+            "pattern" : "^(?:tracks|albums|folders):[^,]+$",
+            "type" : "string"
           }
         }, {
           "description" : "Include related resources. Available relationships: owners, sharedResources",
@@ -23592,6 +23722,14 @@
             }
           },
           "style" : "form"
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
         }, {
           "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: sharedResources",
           "example" : "sharedResources",
@@ -23642,7 +23780,7 @@
         "security" : [ {
           "Client_Credentials" : [ ]
         }, {
-          "Authorization_Code_PKCE" : [ ]
+          "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
         "summary" : "Get multiple shares.",
         "tags" : [ "shares" ],
@@ -23885,6 +24023,80 @@
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
         }
+      },
+      "patch" : {
+        "description" : "Set, change or remove the share's password. Setting one also removes BEARER access; removing one leaves the access modes unchanged. Existing savers keep their access.",
+        "parameters" : [ {
+          "description" : "Share id",
+          "example" : "a468bee88def",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SharesUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Shares_Update_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update single share.",
+        "tags" : [ "shares" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
       }
     },
     "/shares/{id}/relationships/owners" : {
@@ -24056,6 +24268,188 @@
         } ],
         "summary" : "Get sharedResources relationship (\"to-many\").",
         "tags" : [ "shares" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/sharingSummaries" : {
+      "get" : {
+        "description" : "Returns one current summary per distinct owned subject, for up to 20 subjects. Live subjects with no sharing return false flags. Missing or inaccessible subjects are omitted. IDs remain stable as sharing changes.",
+        "parameters" : [ {
+          "description" : "Filter by subject. Also accepts `folders:me`.",
+          "in" : "query",
+          "name" : "filter[subject]",
+          "required" : true,
+          "schema" : {
+            "maxItems" : 20,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "pattern" : "^(?:albums|tracks|folders):[^,]+$",
+              "type" : "string"
+            }
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "subject" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SharingSummaries_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple sharingSummaries.",
+        "tags" : [ "sharingSummaries" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/sharingSummaries/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "Opaque sharing summary ID",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SharingSummaries_Subject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
+        "tags" : [ "sharingSummaries" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
         }
@@ -25144,7 +25538,7 @@
         }, {
           "description" : "Word-prefix match on item titles, descriptions and abbreviations, and on variation names, SKUs and UPCs (e.g. `tee`)",
           "in" : "query",
-          "name" : "filter[query]",
+          "name" : "filter[self][matchesQuery]",
           "required" : false,
           "schema" : {
             "maxLength" : 255,
@@ -27504,14 +27898,16 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: owners",
+          "description" : "Include related resources. Available relationships: commentSummary, owners, reactionSummary",
+          "example" : "commentSummary",
           "in" : "query",
           "name" : "include",
           "required" : false,
           "schema" : {
             "type" : "array",
             "items" : {
-              "type" : "string"
+              "type" : "string",
+              "example" : "commentSummary"
             }
           }
         }, {
@@ -27524,10 +27920,19 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "owners" ]
+              "enum" : [ "commentSummary", "owners", "reactionSummary" ]
             }
           },
           "style" : "form"
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -27566,9 +27971,92 @@
           }
         },
         "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
           "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
         "summary" : "Get single trackSourceFile.",
+        "tags" : [ "trackSourceFiles" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/trackSourceFiles/{id}/relationships/commentSummary" : {
+      "get" : {
+        "description" : "Retrieves commentSummary relationship.",
+        "parameters" : [ {
+          "description" : "Track source file id",
+          "example" : "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: commentSummary",
+          "example" : "commentSummary",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "commentSummary"
+            }
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get commentSummary relationship (\"to-one\").",
         "tags" : [ "trackSourceFiles" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -27607,6 +28095,15 @@
           "required" : false,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
           }
         } ],
         "responses" : {
@@ -27649,6 +28146,87 @@
           "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
         "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "trackSourceFiles" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/trackSourceFiles/{id}/relationships/reactionSummary" : {
+      "get" : {
+        "description" : "Retrieves reactionSummary relationship.",
+        "parameters" : [ {
+          "description" : "Track source file id",
+          "example" : "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: reactionSummary",
+          "example" : "reactionSummary",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "reactionSummary"
+            }
+          }
+        }, {
+          "description" : "Share code used as a bearer credential for the resource.",
+          "in" : "query",
+          "name" : "shareCode",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "xyz"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get reactionSummary relationship (\"to-one\").",
         "tags" : [ "trackSourceFiles" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -30337,6 +30915,9 @@
           "400" : {
             "$ref" : "#/components/responses/Default400Response"
           },
+          "403" : {
+            "$ref" : "#/components/responses/UsageRulesCreateResource403Response"
+          },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
           },
@@ -30631,7 +31212,7 @@
         }, {
           "description" : "Filter albums by a free-text query matched against the album title and artist names. Internal clients only (e.g. `love`)",
           "in" : "query",
-          "name" : "filter[query]",
+          "name" : "filter[self][matchesQuery]",
           "required" : false,
           "schema" : {
             "maxLength" : 100,
@@ -31092,7 +31673,7 @@
         }, {
           "description" : "Filter artists by a free-text query matched against the artist name. Internal clients only (e.g. `love`)",
           "in" : "query",
-          "name" : "filter[query]",
+          "name" : "filter[self][matchesQuery]",
           "required" : false,
           "schema" : {
             "maxLength" : 100,
@@ -32376,7 +32957,7 @@
         }, {
           "description" : "Filter playlists by a free-text query. Returns matching playlists only (no mixes or folders), including playlists inside folders. Cannot be combined with collectionView=FOLDERS. Internal clients only (e.g. `summer`)",
           "in" : "query",
-          "name" : "filter[query]",
+          "name" : "filter[self][matchesQuery]",
           "required" : false,
           "schema" : {
             "maxLength" : 100,
@@ -33241,7 +33822,7 @@
         }, {
           "description" : "Filter tracks by a free-text query matched against the track title, artist names and album title. Internal clients only (e.g. `love`)",
           "in" : "query",
-          "name" : "filter[query]",
+          "name" : "filter[self][matchesQuery]",
           "required" : false,
           "schema" : {
             "maxLength" : 100,
@@ -33702,7 +34283,7 @@
         }, {
           "description" : "Filter videos by a free-text query matched against the video title and artist names. Internal clients only (e.g. `love`)",
           "in" : "query",
-          "name" : "filter[query]",
+          "name" : "filter[self][matchesQuery]",
           "required" : false,
           "schema" : {
             "maxLength" : 100,
@@ -38567,13 +39148,13 @@
             "minItems" : 1,
             "type" : "array",
             "items" : {
-              "pattern" : "^(?:albums|artists|tracks|videos|playlists|folders):[^,]+$",
+              "pattern" : "^(?:albums|artists|tracks|videos|playlists|folders|trackSourceFiles|comments):[^,]+$",
               "type" : "string"
             }
           }
         }, {
-          "description" : "Include related resources. Available relationships: subject, viewer",
-          "example" : "subject",
+          "description" : "Include related resources. Available relationships: comments, reactions, subject, viewer",
+          "example" : "comments.author.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -38581,7 +39162,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "subject"
+              "example" : "comments.author.albums"
             }
           }
         }, {
@@ -38594,19 +39175,19 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "subject", "viewer" ]
+              "enum" : [ "comments", "reactions", "subject", "viewer" ]
             }
           },
           "style" : "form"
         }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
-          "example" : "subject",
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: comments.author.albums",
+          "example" : "comments.author.albums",
           "in" : "query",
           "name" : "replaceMedia",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "example" : "subject"
+            "example" : "comments.author.albums"
           }
         } ],
         "responses" : {
@@ -38670,8 +39251,8 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: subject, viewer",
-          "example" : "subject",
+          "description" : "Include related resources. Available relationships: comments, reactions, subject, viewer",
+          "example" : "comments.author.albums",
           "in" : "query",
           "name" : "include",
           "required" : false,
@@ -38679,7 +39260,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "example" : "subject"
+              "example" : "comments.author.albums"
             }
           }
         }, {
@@ -38692,19 +39273,19 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "subject", "viewer" ]
+              "enum" : [ "comments", "reactions", "subject", "viewer" ]
             }
           },
           "style" : "form"
         }, {
-          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
-          "example" : "subject",
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: comments.author.albums",
+          "example" : "comments.author.albums",
           "in" : "query",
           "name" : "replaceMedia",
           "required" : false,
           "schema" : {
             "type" : "string",
-            "example" : "subject"
+            "example" : "comments.author.albums"
           }
         } ],
         "responses" : {
@@ -38747,6 +39328,190 @@
           "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
         "summary" : "Get single viewerContext.",
+        "tags" : [ "viewerContexts" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/viewerContexts/{id}/relationships/comments" : {
+      "get" : {
+        "description" : "Returns the viewer's comments on the subject.",
+        "parameters" : [ {
+          "description" : "Opaque identifier of one authenticated viewer and original subject pair",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 256,
+            "minLength" : 1,
+            "pattern" : "^[0-9A-Za-z]+$",
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: comments",
+          "example" : "comments.author.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "comments.author.albums"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: comments.author.albums",
+          "example" : "comments.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "comments.author.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ViewerContexts_Comments_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get comments relationship (\"to-many\").",
+        "tags" : [ "viewerContexts" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/viewerContexts/{id}/relationships/reactions" : {
+      "get" : {
+        "description" : "Returns the viewer's reactions on the subject.",
+        "parameters" : [ {
+          "description" : "Opaque identifier of one authenticated viewer and original subject pair",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "maxLength" : 256,
+            "minLength" : 1,
+            "pattern" : "^[0-9A-Za-z]+$",
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: reactions",
+          "example" : "reactions.author.albums",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "reactions.author.albums"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: reactions.author.albums",
+          "example" : "reactions.author.albums",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "reactions.author.albums"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ViewerContexts_Reactions_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get reactions relationship (\"to-many\").",
         "tags" : [ "viewerContexts" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -39247,6 +40012,26 @@
         },
         "description" : "Playlist already contains one or more requested items; Playlist item limit reached; Request already in progress for this idempotency key"
       },
+      "SavedSharesCreateResource403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SavedSharesCreateResource403ResponseBody"
+            }
+          }
+        },
+        "description" : "This share does not permit redemption; This share can no longer be accepted; The share is password protected; send its password; The share password is incorrect"
+      },
+      "SavedSharesCreateResource429Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/SavedSharesCreateResource429ResponseBody"
+            }
+          }
+        },
+        "description" : "Too many share password attempts; try again later"
+      },
       "SquareConnectionsReadById403Response" : {
         "content" : {
           "application/vnd.api+json" : {
@@ -39707,6 +40492,16 @@
         },
         "description" : "Content does not exist or is no longer available"
       },
+      "UsageRulesCreateResource403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/UsageRulesCreateResource403ResponseBody"
+            }
+          }
+        },
+        "description" : "An active seller connection is required for paid usage rules"
+      },
       "UserCollectionAlbumsItemsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
           "application/vnd.api+json" : {
@@ -39725,7 +40520,7 @@
             }
           }
         },
-        "description" : "filter[query] requires INTERNAL access tier"
+        "description" : "filter[self][matchesQuery] requires INTERNAL access tier"
       },
       "UserCollectionArtistsItemsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
@@ -39745,7 +40540,7 @@
             }
           }
         },
-        "description" : "filter[query] requires INTERNAL access tier"
+        "description" : "filter[self][matchesQuery] requires INTERNAL access tier"
       },
       "UserCollectionFoldersDeleteResource400Response" : {
         "content" : {
@@ -39775,7 +40570,7 @@
             }
           }
         },
-        "description" : "filter[query] requires INTERNAL access tier"
+        "description" : "filter[self][matchesQuery] requires INTERNAL access tier"
       },
       "UserCollectionSaveForLatersItemsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
@@ -39805,7 +40600,7 @@
             }
           }
         },
-        "description" : "filter[query] requires INTERNAL access tier"
+        "description" : "filter[self][matchesQuery] requires INTERNAL access tier"
       },
       "UserCollectionVideosItemsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
@@ -39825,7 +40620,7 @@
             }
           }
         },
-        "description" : "filter[query] requires INTERNAL access tier"
+        "description" : "filter[self][matchesQuery] requires INTERNAL access tier"
       },
       "UserRecommendationBlocksArtistsAddMultiDataRelationshipWithResponse409Response" : {
         "content" : {
@@ -45109,9 +45904,87 @@
         },
         "description" : "Target resource types: `playlists`."
       },
-      "Commented" : {
+      "CommentSummaries_Attributes" : {
+        "required" : [ "totalCount" ],
         "type" : "object",
-        "description" : "The viewer has at least one existing comment on the subject; deleted historical comments do not count. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent."
+        "properties" : {
+          "totalCount" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Number of existing comments directly targeting the subject. For a source file this counts root comments; for a comment this counts its direct replies.",
+            "format" : "int64"
+          }
+        }
+      },
+      "CommentSummaries_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CommentSummaries_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "CommentSummaries_Relationships" : {
+        "properties" : {
+          "subject" : {
+            "$ref" : "#/components/schemas/CommentSummaries_Subject_Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "CommentSummaries_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/CommentSummaries_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/CommentSummaries_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "CommentSummaries_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `comments`, `trackSourceFiles`."
       },
       "CommentsCreateOperation_Payload" : {
         "required" : [ "data" ],
@@ -45142,8 +46015,9 @@
         "required" : [ "message" ],
         "type" : "object",
         "properties" : {
-          "endTime" : {
-            "type" : "string"
+          "endOffset" : {
+            "type" : "string",
+            "description" : "End offset from the beginning of the source file (ISO 8601 duration)."
           },
           "message" : {
             "maxLength" : 2000,
@@ -45151,8 +46025,9 @@
             "type" : "string",
             "description" : "The comment message content"
           },
-          "startTime" : {
-            "type" : "string"
+          "startOffset" : {
+            "type" : "string",
+            "description" : "Start offset from the beginning of the source file (ISO 8601 duration)."
           }
         }
       },
@@ -45160,40 +46035,8 @@
         "required" : [ "subject" ],
         "type" : "object",
         "properties" : {
-          "parentComment" : {
-            "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Relationships_ParentComment"
-          },
           "subject" : {
             "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Relationships_Subject"
-          }
-        }
-      },
-      "CommentsCreateOperation_Payload_Data_Relationships_ParentComment" : {
-        "required" : [ "data" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data"
-            }, {
-              "type" : "object",
-              "nullable" : true,
-              "enum" : [ null ]
-            } ]
-          }
-        }
-      },
-      "CommentsCreateOperation_Payload_Data_Relationships_ParentComment_Data" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "minLength" : 1,
-            "type" : "string"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "comments" ]
           }
         }
       },
@@ -45215,7 +46058,7 @@
           },
           "type" : {
             "type" : "string",
-            "enum" : [ "albums", "tracks", "trackSourceFiles" ]
+            "enum" : [ "trackSourceFiles", "comments" ]
           }
         }
       },
@@ -45248,8 +46091,9 @@
       "CommentsUpdateOperation_Payload_Data_Attributes" : {
         "type" : "object",
         "properties" : {
-          "endTime" : {
-            "type" : "string"
+          "endOffset" : {
+            "type" : "string",
+            "description" : "End offset from the beginning of the source file (ISO 8601 duration)."
           },
           "message" : {
             "maxLength" : 2000,
@@ -45257,13 +46101,14 @@
             "type" : "string",
             "description" : "The comment message content"
           },
-          "startTime" : {
-            "type" : "string"
+          "startOffset" : {
+            "type" : "string",
+            "description" : "Start offset from the beginning of the source file (ISO 8601 duration)."
           }
         }
       },
       "Comments_Attributes" : {
-        "required" : [ "createdAt", "lastModifiedAt", "likeCount", "message", "moderationStatus", "replyCount" ],
+        "required" : [ "createdAt", "lastModifiedAt", "message", "moderationStatus" ],
         "type" : "object",
         "properties" : {
           "createdAt" : {
@@ -45272,9 +46117,9 @@
             "format" : "date-time",
             "example" : "2025-11-17T12:54:48.606Z"
           },
-          "endTime" : {
+          "endOffset" : {
             "type" : "string",
-            "description" : "End time offset for timestamped comments (ISO 8601 duration)",
+            "description" : "End offset from the beginning of the source file (ISO 8601 duration)",
             "example" : "PT2M"
           },
           "lastModifiedAt" : {
@@ -45282,11 +46127,6 @@
             "description" : "Datetime when the comment was last modified (ISO 8601)",
             "format" : "date-time",
             "example" : "2025-11-17T12:54:48.606Z"
-          },
-          "likeCount" : {
-            "type" : "integer",
-            "description" : "Number of likes on this comment",
-            "format" : "int32"
           },
           "message" : {
             "maxLength" : 2000,
@@ -45299,14 +46139,9 @@
             "description" : "Moderation status of the comment",
             "enum" : [ "NOT_MODERATED", "FLAGGED", "TAKEN_DOWN", "OK", "ERROR" ]
           },
-          "replyCount" : {
-            "type" : "integer",
-            "description" : "Number of replies to this comment",
-            "format" : "int32"
-          },
-          "startTime" : {
+          "startOffset" : {
             "type" : "string",
-            "description" : "Start time offset for timestamped comments (ISO 8601 duration)",
+            "description" : "Start offset from the beginning of the source file (ISO 8601 duration)",
             "example" : "PT1M30S"
           }
         }
@@ -45332,6 +46167,28 @@
           }
         },
         "description" : "Target resource types: `artists`."
+      },
+      "Comments_CommentSummary_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `commentSummaries`."
       },
       "Comments_Create_Single_Resource_Data_Document" : {
         "required" : [ "data", "links" ],
@@ -45382,7 +46239,7 @@
         },
         "description" : "Target resource types: `users`."
       },
-      "Comments_ParentComment_Single_Relationship_Data_Document" : {
+      "Comments_ReactionSummary_Single_Relationship_Data_Document" : {
         "required" : [ "links" ],
         "type" : "object",
         "properties" : {
@@ -45402,18 +46259,27 @@
             "$ref" : "#/components/schemas/Links"
           }
         },
-        "description" : "Target resource types: `comments`."
+        "description" : "Target resource types: `reactionSummaries`."
       },
       "Comments_Relationships" : {
         "properties" : {
           "author" : {
             "$ref" : "#/components/schemas/Comments_Author_Single_Relationship_Data_Document"
           },
+          "commentSummary" : {
+            "$ref" : "#/components/schemas/Comments_CommentSummary_Single_Relationship_Data_Document"
+          },
           "owners" : {
             "$ref" : "#/components/schemas/Comments_Owners_Multi_Relationship_Data_Document"
           },
-          "parentComment" : {
-            "$ref" : "#/components/schemas/Comments_ParentComment_Single_Relationship_Data_Document"
+          "reactionSummary" : {
+            "$ref" : "#/components/schemas/Comments_ReactionSummary_Single_Relationship_Data_Document"
+          },
+          "rootSubject" : {
+            "$ref" : "#/components/schemas/Comments_RootSubject_Single_Relationship_Data_Document"
+          },
+          "subject" : {
+            "$ref" : "#/components/schemas/Comments_Subject_Single_Relationship_Data_Document"
           }
         }
       },
@@ -45440,6 +46306,28 @@
           }
         }
       },
+      "Comments_RootSubject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `trackSourceFiles`."
+      },
       "Comments_Single_Resource_Data_Document" : {
         "required" : [ "data", "links" ],
         "type" : "object",
@@ -45454,6 +46342,28 @@
             "$ref" : "#/components/schemas/Links"
           }
         }
+      },
+      "Comments_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `comments`, `trackSourceFiles`."
       },
       "ContentClaimsCreateOperation_Payload" : {
         "required" : [ "data" ],
@@ -45863,26 +46773,6 @@
             "$ref" : "#/components/schemas/Links"
           }
         }
-      },
-      "CurrentUserReaction" : {
-        "type" : "object",
-        "properties" : {
-          "createdAt" : {
-            "type" : "string",
-            "description" : "When the reaction was created",
-            "format" : "date-time"
-          },
-          "emoji" : {
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "User's emoji reaction"
-          },
-          "id" : {
-            "type" : "string",
-            "description" : "Reaction ID"
-          }
-        },
-        "description" : "Current user's reaction"
       },
       "Default400ResponseBody" : {
         "required" : [ "errors" ],
@@ -46674,6 +47564,18 @@
         },
         "description" : "Target resource types: `albums`, `artists`, `playlists`, `tracks`, `users`, `videos`."
       },
+      "EffectiveRole" : {
+        "required" : [ "role" ],
+        "type" : "object",
+        "properties" : {
+          "role" : {
+            "type" : "string",
+            "description" : "Effective role.",
+            "enum" : [ "VIEWER", "COLLABORATOR", "OWNER" ]
+          }
+        },
+        "description" : "The viewer's effective role on the subject, from a grant or an implicit role such as an album's VIEWER through a grant on one of its tracks. Populated for owned albums, tracks and folders; omitted for other subjects. Share codes do not count."
+      },
       "Error_Object" : {
         "type" : "object",
         "properties" : {
@@ -47132,11 +48034,11 @@
           "parent" : {
             "$ref" : "#/components/schemas/FolderItems_Parent_Single_Relationship_Data_Document"
           },
+          "sharingSummary" : {
+            "$ref" : "#/components/schemas/FolderItems_SharingSummary_Single_Relationship_Data_Document"
+          },
           "subject" : {
             "$ref" : "#/components/schemas/FolderItems_Subject_Single_Relationship_Data_Document"
-          },
-          "subjectSharingSettings" : {
-            "$ref" : "#/components/schemas/FolderItems_SubjectSharingSettings_Single_Relationship_Data_Document"
           }
         }
       },
@@ -47163,22 +48065,7 @@
           }
         }
       },
-      "FolderItems_Single_Resource_Data_Document" : {
-        "required" : [ "data", "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "$ref" : "#/components/schemas/FolderItems_Resource_Object"
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "FolderItems_SubjectSharingSettings_Single_Relationship_Data_Document" : {
+      "FolderItems_SharingSummary_Single_Relationship_Data_Document" : {
         "required" : [ "links" ],
         "type" : "object",
         "properties" : {
@@ -47198,7 +48085,22 @@
             "$ref" : "#/components/schemas/Links"
           }
         },
-        "description" : "Target resource types: `resourceSharingSettings`."
+        "description" : "Target resource types: `sharingSummaries`."
+      },
+      "FolderItems_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/FolderItems_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
       },
       "FolderItems_Subject_Resource_Identifier" : {
         "required" : [ "id", "type" ],
@@ -47692,18 +48594,6 @@
           }
         }
       },
-      "Grantee" : {
-        "required" : [ "role" ],
-        "type" : "object",
-        "properties" : {
-          "role" : {
-            "type" : "string",
-            "description" : "Effective role.",
-            "enum" : [ "VIEWER", "COLLABORATOR", "OWNER" ]
-          }
-        },
-        "description" : "The viewer's effective role for the subject. Populated for albums, tracks and folders; omitted for other subject types."
-      },
       "Groups_Attributes" : {
         "required" : [ "name" ],
         "type" : "object",
@@ -47851,6 +48741,7 @@
               "clients" : "#/components/schemas/Clients_Resource_Object",
               "collaborationInviteRedemptions" : "#/components/schemas/CollaborationInviteRedemptions_Resource_Object",
               "collaborationInvites" : "#/components/schemas/CollaborationInvites_Resource_Object",
+              "commentSummaries" : "#/components/schemas/CommentSummaries_Resource_Object",
               "comments" : "#/components/schemas/Comments_Resource_Object",
               "contentClaims" : "#/components/schemas/ContentClaims_Resource_Object",
               "credits" : "#/components/schemas/Credits_Resource_Object",
@@ -47875,15 +48766,16 @@
               "providerProductInfos" : "#/components/schemas/ProviderProductInfos_Resource_Object",
               "providers" : "#/components/schemas/Providers_Resource_Object",
               "purchases" : "#/components/schemas/Purchases_Resource_Object",
+              "reactionSummaries" : "#/components/schemas/ReactionSummaries_Resource_Object",
               "reactions" : "#/components/schemas/Reactions_Resource_Object",
               "resourceGrants" : "#/components/schemas/ResourceGrants_Resource_Object",
-              "resourceSharingSettings" : "#/components/schemas/ResourceSharingSettings_Resource_Object",
               "savedShares" : "#/components/schemas/SavedShares_Resource_Object",
               "scopes" : "#/components/schemas/Scopes_Resource_Object",
               "searchHistoryEntries" : "#/components/schemas/SearchHistoryEntries_Resource_Object",
               "searchResults" : "#/components/schemas/SearchResults_Resource_Object",
               "searchSuggestions" : "#/components/schemas/SearchSuggestions_Resource_Object",
               "shares" : "#/components/schemas/Shares_Resource_Object",
+              "sharingSummaries" : "#/components/schemas/SharingSummaries_Resource_Object",
               "squareConnections" : "#/components/schemas/SquareConnections_Resource_Object",
               "squareItemVariationPhysicalCounts" : "#/components/schemas/SquareItemVariationPhysicalCounts_Resource_Object",
               "squareItemVariations" : "#/components/schemas/SquareItemVariations_Resource_Object",
@@ -47963,6 +48855,8 @@
           }, {
             "$ref" : "#/components/schemas/CollaborationInvites_Resource_Object"
           }, {
+            "$ref" : "#/components/schemas/CommentSummaries_Resource_Object"
+          }, {
             "$ref" : "#/components/schemas/Comments_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/ContentClaims_Resource_Object"
@@ -48011,11 +48905,11 @@
           }, {
             "$ref" : "#/components/schemas/Purchases_Resource_Object"
           }, {
+            "$ref" : "#/components/schemas/ReactionSummaries_Resource_Object"
+          }, {
             "$ref" : "#/components/schemas/Reactions_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/ResourceGrants_Resource_Object"
-          }, {
-            "$ref" : "#/components/schemas/ResourceSharingSettings_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/SavedShares_Resource_Object"
           }, {
@@ -48028,6 +48922,8 @@
             "$ref" : "#/components/schemas/SearchSuggestions_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Shares_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/SharingSummaries_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/SquareConnections_Resource_Object"
           }, {
@@ -52657,36 +53553,96 @@
         },
         "description" : "Target resource types: `albums`, `tracks`."
       },
-      "Reaction" : {
-        "required" : [ "emoji" ],
+      "ReactionSummaries_Attributes" : {
+        "required" : [ "countsByEmoji", "totalCount" ],
         "type" : "object",
         "properties" : {
-          "emoji" : {
-            "minLength" : 1,
-            "type" : "string"
-          }
-        },
-        "description" : "The viewer has a current reaction to the subject, with its emoji. Reserved; not currently populated and omitted from responses. Omission does not indicate that the relation is absent."
-      },
-      "ReactionStats" : {
-        "type" : "object",
-        "properties" : {
-          "countsByType" : {
+          "countsByEmoji" : {
             "type" : "object",
             "additionalProperties" : {
               "type" : "integer",
-              "description" : "Count of reactions by type",
-              "format" : "int32"
+              "description" : "Complete reaction counts keyed by emoji for source files and comments. An empty object means no reactions.",
+              "format" : "int64"
             },
-            "description" : "Count of reactions by type"
+            "description" : "Complete reaction counts keyed by emoji for source files and comments. An empty object means no reactions."
           },
           "totalCount" : {
+            "minimum" : 0,
             "type" : "integer",
-            "description" : "Total number of reactions",
-            "format" : "int32"
+            "description" : "Number of current reactions across all emojis and time offsets, including whole-subject reactions. A user can contribute more than one reaction.",
+            "format" : "int64"
+          }
+        }
+      },
+      "ReactionSummaries_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ReactionSummaries_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ReactionSummaries_Relationships" : {
+        "properties" : {
+          "subject" : {
+            "$ref" : "#/components/schemas/ReactionSummaries_Subject_Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "ReactionSummaries_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ReactionSummaries_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ReactionSummaries_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ReactionSummaries_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
           }
         },
-        "description" : "Reaction statistics"
+        "description" : "Target resource types: `comments`, `trackSourceFiles`."
       },
       "ReactionsCreateOperation_Payload" : {
         "required" : [ "data" ],
@@ -52718,8 +53674,19 @@
         "type" : "object",
         "properties" : {
           "emoji" : {
+            "maxLength" : 32,
             "minLength" : 1,
             "type" : "string"
+          },
+          "endOffset" : {
+            "type" : "string",
+            "description" : "Section end offset (ISO 8601 duration), at or after startOffset. Requires startOffset; omitted for a point reaction.",
+            "example" : "PT15S"
+          },
+          "startOffset" : {
+            "type" : "string",
+            "description" : "Nonnegative source-file offset (ISO 8601 duration); omitted for the whole subject.",
+            "example" : "PT10S"
           }
         }
       },
@@ -52750,7 +53717,7 @@
           },
           "type" : {
             "type" : "string",
-            "enum" : [ "albums", "tracks", "artists", "videos", "playlists", "comments", "trackSourceFiles" ]
+            "enum" : [ "trackSourceFiles", "comments" ]
           }
         }
       },
@@ -52765,9 +53732,20 @@
             "example" : "2025-11-17T12:54:48.60606Z"
           },
           "emoji" : {
+            "maxLength" : 32,
             "minLength" : 1,
             "type" : "string",
             "description" : "The type of reaction representing an emoji"
+          },
+          "endOffset" : {
+            "type" : "string",
+            "description" : "End offset of a source-file section. Omitted for a point or whole-subject reaction.",
+            "example" : "PT15S"
+          },
+          "startOffset" : {
+            "type" : "string",
+            "description" : "Source-file offset (ISO 8601 duration). Omitted for the whole subject.",
+            "example" : "PT10S"
           }
         }
       },
@@ -52820,42 +53798,8 @@
           },
           "links" : {
             "$ref" : "#/components/schemas/Links"
-          },
-          "meta" : {
-            "$ref" : "#/components/schemas/Reactions_Multi_Resource_Data_Document_Meta"
           }
         }
-      },
-      "Reactions_Multi_Resource_Data_Document_Meta" : {
-        "type" : "object",
-        "properties" : {
-          "currentUserReaction" : {
-            "$ref" : "#/components/schemas/CurrentUserReaction"
-          },
-          "stats" : {
-            "$ref" : "#/components/schemas/ReactionStats"
-          }
-        },
-        "description" : "Reaction response metadata with stats and current user reaction"
-      },
-      "Reactions_OwnerProfiles_Multi_Relationship_Data_Document" : {
-        "required" : [ "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Resource_Identifier"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        },
-        "description" : "Target resource types: `artists`."
       },
       "Reactions_Owners_Multi_Relationship_Data_Document" : {
         "required" : [ "links" ],
@@ -52881,14 +53825,11 @@
           "author" : {
             "$ref" : "#/components/schemas/Reactions_Author_Single_Relationship_Data_Document"
           },
-          "ownerProfiles" : {
-            "deprecated" : true,
-            "allOf" : [ {
-              "$ref" : "#/components/schemas/Reactions_OwnerProfiles_Multi_Relationship_Data_Document"
-            } ]
-          },
           "owners" : {
             "$ref" : "#/components/schemas/Reactions_Owners_Multi_Relationship_Data_Document"
+          },
+          "subject" : {
+            "$ref" : "#/components/schemas/Reactions_Subject_Single_Relationship_Data_Document"
           }
         }
       },
@@ -52914,6 +53855,28 @@
             "example" : "tracks"
           }
         }
+      },
+      "Reactions_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `comments`, `trackSourceFiles`."
       },
       "Replacement_Original_Identifier" : {
         "required" : [ "id", "type" ],
@@ -53002,7 +53965,8 @@
             "type" : "string",
             "enum" : [ "users", "groups" ]
           }
-        }
+        },
+        "description" : "A grant recipient. Identify the Everyone group with `type` set to `groups` and `id` set to `everyone`; only albums can be granted to it."
       },
       "ResourceGrantsGranteeLinkage" : {
         "required" : [ "data" ],
@@ -53241,176 +54205,6 @@
           }
         }
       },
-      "ResourceSharingSettings_Attributes" : {
-        "required" : [ "shared", "sharedViaParent" ],
-        "type" : "object",
-        "properties" : {
-          "shared" : {
-            "type" : "boolean",
-            "description" : "Whether anyone but the owner has a grant, or an active share link exists, on the subject or above it."
-          },
-          "sharedViaParent" : {
-            "type" : "boolean",
-            "description" : "Whether a folder or album above the subject is shared, so the subject stays shared whatever is set on it."
-          }
-        }
-      },
-      "ResourceSharingSettings_Grants_Multi_Relationship_Data_Document" : {
-        "required" : [ "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Resource_Identifier"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        },
-        "description" : "Target resource types: `resourceGrants`."
-      },
-      "ResourceSharingSettings_Multi_Resource_Data_Document" : {
-        "required" : [ "data", "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ResourceSharingSettings_Resource_Object"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "ResourceSharingSettings_Relationships" : {
-        "properties" : {
-          "grants" : {
-            "$ref" : "#/components/schemas/ResourceSharingSettings_Grants_Multi_Relationship_Data_Document"
-          },
-          "shares" : {
-            "$ref" : "#/components/schemas/ResourceSharingSettings_Shares_Multi_Relationship_Data_Document"
-          },
-          "subject" : {
-            "$ref" : "#/components/schemas/ResourceSharingSettings_Subject_Single_Relationship_Data_Document"
-          }
-        }
-      },
-      "ResourceSharingSettings_Resource_Object" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "attributes" : {
-            "$ref" : "#/components/schemas/ResourceSharingSettings_Attributes"
-          },
-          "id" : {
-            "type" : "string",
-            "description" : "Resource id",
-            "example" : "12345"
-          },
-          "relationships" : {
-            "$ref" : "#/components/schemas/ResourceSharingSettings_Relationships"
-          },
-          "type" : {
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "Resource type",
-            "example" : "tracks"
-          }
-        }
-      },
-      "ResourceSharingSettings_Shares_Multi_Relationship_Data_Document" : {
-        "required" : [ "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Resource_Identifier"
-            }
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        },
-        "description" : "Target resource types: `shares`."
-      },
-      "ResourceSharingSettings_Single_Resource_Data_Document" : {
-        "required" : [ "data", "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "$ref" : "#/components/schemas/ResourceSharingSettings_Resource_Object"
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        }
-      },
-      "ResourceSharingSettings_Subject_Resource_Identifier" : {
-        "required" : [ "id", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Resource id",
-            "example" : "12345"
-          },
-          "meta" : {
-            "$ref" : "#/components/schemas/ResourceSharingSettings_Subject_Resource_Identifier_Meta"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Resource type",
-            "example" : "tracks"
-          }
-        }
-      },
-      "ResourceSharingSettings_Subject_Resource_Identifier_Meta" : {
-        "type" : "object",
-        "properties" : {
-          "replacement" : {
-            "$ref" : "#/components/schemas/Replacement_Provenance"
-          }
-        }
-      },
-      "ResourceSharingSettings_Subject_Single_Relationship_Data_Document" : {
-        "required" : [ "links" ],
-        "type" : "object",
-        "properties" : {
-          "data" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/ResourceSharingSettings_Subject_Resource_Identifier"
-            }, {
-              "type" : "object",
-              "nullable" : true,
-              "enum" : [ null ]
-            } ]
-          },
-          "included" : {
-            "$ref" : "#/components/schemas/Included"
-          },
-          "links" : {
-            "$ref" : "#/components/schemas/Links"
-          }
-        },
-        "description" : "Target resource types: `albums`, `folders`, `tracks`."
-      },
       "Resource_Identifier" : {
         "required" : [ "id", "type" ],
         "type" : "object",
@@ -53460,6 +54254,9 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/SavedSharesCreateOperation_Payload_Data"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SavedSharesCreateOperation_Payload_Meta"
           }
         }
       },
@@ -53505,6 +54302,75 @@
           "type" : {
             "type" : "string",
             "enum" : [ "shares" ]
+          }
+        }
+      },
+      "SavedSharesCreateOperation_Payload_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "password" : {
+            "type" : "string",
+            "format" : "password",
+            "description" : "Password of a password-protected share. Ignored for other shares.",
+            "maxLength" : 128,
+            "minLength" : 1,
+            "writeOnly" : true
+          }
+        }
+      },
+      "SavedSharesCreateResource403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "SHARE_PASSWORD_INVALID",
+                  "enum" : [ "SHARE_PASSWORD_INVALID", "SHARE_PASSWORD_REQUIRED", "UNAUTHORIZED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "This share does not permit redemption"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SavedSharesCreateResource429ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "SHARE_PASSWORD_ATTEMPTS_EXCEEDED",
+                  "enum" : [ "SHARE_PASSWORD_ATTEMPTS_EXCEEDED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Too many share password attempts; try again later"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "429"
+                }
+              }
+            }
           }
         }
       },
@@ -54191,6 +55057,15 @@
             "format" : "int32",
             "nullable" : true
           },
+          "password" : {
+            "type" : "string",
+            "format" : "password",
+            "description" : "Password a user must send to save the share. Never returned. Must be printable ASCII characters. Without accessModes, a protected share defaults to VOUCHER only; BEARER with a password, or a password on a playlist share, is rejected with 400.",
+            "maxLength" : 128,
+            "minLength" : 6,
+            "pattern" : "^[\\x20-\\x7E]*$",
+            "writeOnly" : true
+          },
           "role" : {
             "type" : "string",
             "description" : "Role offered by the share.",
@@ -54234,8 +55109,55 @@
           }
         }
       },
+      "SharesUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SharesUpdateOperation_Payload_Data"
+          }
+        }
+      },
+      "SharesUpdateOperation_Payload_Data" : {
+        "required" : [ "attributes", "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SharesUpdateOperation_Payload_Data_Attributes"
+          },
+          "id" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "shares" ]
+          }
+        }
+      },
+      "SharesUpdateOperation_Payload_Data_Attributes" : {
+        "type" : "object",
+        "properties" : {
+          "password" : {
+            "writeOnly" : true,
+            "oneOf" : [ {
+              "type" : "string",
+              "format" : "password",
+              "description" : "Password a user must send to save the share. Never returned. Must be printable ASCII characters. A value sets or changes it; null removes it; omitted leaves it unchanged. Playlist shares and shares without VOUCHER cannot have one.",
+              "maxLength" : 128,
+              "minLength" : 6,
+              "pattern" : "^[\\x20-\\x7E]*$",
+              "writeOnly" : true
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          }
+        }
+      },
       "Shares_Attributes" : {
-        "required" : [ "accessModes", "code", "createdAt", "expiresAt", "role" ],
+        "required" : [ "accessModes", "code", "createdAt", "expiresAt", "passwordProtected", "role" ],
         "type" : "object",
         "properties" : {
           "accessModes" : {
@@ -54278,6 +55200,19 @@
             "type" : "integer",
             "description" : "Number of users other than the owner who may save the share. Absent when unlimited.",
             "format" : "int32"
+          },
+          "password" : {
+            "type" : "string",
+            "format" : "password",
+            "description" : "Password a user must send to save the share. Write-only: never returned.",
+            "maxLength" : 128,
+            "minLength" : 6,
+            "pattern" : "^[\\x20-\\x7E]*$",
+            "writeOnly" : true
+          },
+          "passwordProtected" : {
+            "type" : "boolean",
+            "description" : "Whether saving the share requires a password. A protected share never permits BEARER access, and only its owner and savers see its shared resource."
           },
           "role" : {
             "type" : "string",
@@ -54435,6 +55370,129 @@
             "$ref" : "#/components/schemas/Links"
           }
         }
+      },
+      "Shares_Update_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/Shares_Resource_Object"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SharingSummaries_Attributes" : {
+        "required" : [ "shared", "sharedViaParent" ],
+        "type" : "object",
+        "properties" : {
+          "shared" : {
+            "type" : "boolean",
+            "description" : "Whether a live grant to another user or an applicable undeleted, unexpired share exists on the subject or an ancestor. Everyone grants do not count. Ancestor folder links require VOUCHER; exhausted links still count."
+          },
+          "sharedViaParent" : {
+            "type" : "boolean",
+            "description" : "The same sharing check restricted to ancestor folders and albums. Descendants never contribute."
+          }
+        }
+      },
+      "SharingSummaries_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SharingSummaries_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "SharingSummaries_Relationships" : {
+        "properties" : {
+          "subject" : {
+            "$ref" : "#/components/schemas/SharingSummaries_Subject_Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "SharingSummaries_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/SharingSummaries_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/SharingSummaries_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SharingSummaries_Subject_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/SharingSummaries_Subject_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "SharingSummaries_Subject_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "SharingSummaries_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/SharingSummaries_Subject_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `albums`, `folders`, `tracks`."
       },
       "Site" : {
         "required" : [ "id", "type" ],
@@ -58138,7 +59196,6 @@
         }
       },
       "TrackSourceFiles_Attributes" : {
-        "required" : [ "md5Hash", "size", "status" ],
         "type" : "object",
         "properties" : {
           "downloadLink" : {
@@ -58166,6 +59223,28 @@
             "$ref" : "#/components/schemas/File_Upload_Link"
           }
         }
+      },
+      "TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `commentSummaries`."
       },
       "TrackSourceFiles_Create_Single_Resource_Data_Document" : {
         "required" : [ "data", "links" ],
@@ -58198,10 +59277,38 @@
         },
         "description" : "Target resource types: `users`."
       },
+      "TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `reactionSummaries`."
+      },
       "TrackSourceFiles_Relationships" : {
         "properties" : {
+          "commentSummary" : {
+            "$ref" : "#/components/schemas/TrackSourceFiles_CommentSummary_Single_Relationship_Data_Document"
+          },
           "owners" : {
             "$ref" : "#/components/schemas/TrackSourceFiles_Owners_Multi_Relationship_Data_Document"
+          },
+          "reactionSummary" : {
+            "$ref" : "#/components/schemas/TrackSourceFiles_ReactionSummary_Single_Relationship_Data_Document"
           }
         }
       },
@@ -59524,6 +60631,32 @@
           }
         }
       },
+      "UsageRulesCreateResource403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "UNAUTHORIZED"
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "An active seller connection is required for paid usage rules"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
       "UsageRules_Attributes" : {
         "required" : [ "countryCode" ],
         "type" : "object",
@@ -59676,7 +60809,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "filter[query] requires INTERNAL access tier"
+                  "example" : "filter[self][matchesQuery] requires INTERNAL access tier"
                 },
                 "status" : {
                   "type" : "string",
@@ -60009,7 +61142,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "filter[query] requires INTERNAL access tier"
+                  "example" : "filter[self][matchesQuery] requires INTERNAL access tier"
                 },
                 "status" : {
                   "type" : "string",
@@ -60704,7 +61837,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "filter[query] requires INTERNAL access tier"
+                  "example" : "filter[self][matchesQuery] requires INTERNAL access tier"
                 },
                 "status" : {
                   "type" : "string",
@@ -61323,7 +62456,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "filter[query] requires INTERNAL access tier"
+                  "example" : "filter[self][matchesQuery] requires INTERNAL access tier"
                 },
                 "status" : {
                   "type" : "string",
@@ -61656,7 +62789,7 @@
                 },
                 "detail" : {
                   "type" : "string",
-                  "example" : "filter[query] requires INTERNAL access tier"
+                  "example" : "filter[self][matchesQuery] requires INTERNAL access tier"
                 },
                 "status" : {
                   "type" : "string",
@@ -64735,17 +65868,14 @@
       "ViewerContexts_Attributes" : {
         "type" : "object",
         "properties" : {
-          "hasCommentedOn" : {
-            "$ref" : "#/components/schemas/Commented"
+          "hasEffectiveRole" : {
+            "$ref" : "#/components/schemas/EffectiveRole"
           },
           "hasInCollection" : {
             "$ref" : "#/components/schemas/InCollection"
           },
           "hasPurchased" : {
             "$ref" : "#/components/schemas/Purchased"
-          },
-          "hasReactedTo" : {
-            "$ref" : "#/components/schemas/Reaction"
           },
           "hasSavedForLater" : {
             "$ref" : "#/components/schemas/SavedForLater"
@@ -64755,11 +65885,27 @@
           },
           "isFollowing" : {
             "$ref" : "#/components/schemas/Following"
-          },
-          "isGranteeOf" : {
-            "$ref" : "#/components/schemas/Grantee"
           }
         }
+      },
+      "ViewerContexts_Comments_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `comments`."
       },
       "ViewerContexts_Multi_Resource_Data_Document" : {
         "required" : [ "data", "links" ],
@@ -64779,8 +65925,33 @@
           }
         }
       },
+      "ViewerContexts_Reactions_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `reactions`."
+      },
       "ViewerContexts_Relationships" : {
         "properties" : {
+          "comments" : {
+            "$ref" : "#/components/schemas/ViewerContexts_Comments_Multi_Relationship_Data_Document"
+          },
+          "reactions" : {
+            "$ref" : "#/components/schemas/ViewerContexts_Reactions_Multi_Relationship_Data_Document"
+          },
           "subject" : {
             "$ref" : "#/components/schemas/ViewerContexts_Subject_Single_Relationship_Data_Document"
           },
@@ -64874,7 +66045,7 @@
             "$ref" : "#/components/schemas/Links"
           }
         },
-        "description" : "Target resource types: `albums`, `artists`, `folders`, `playlists`, `tracks`, `videos`."
+        "description" : "Target resource types: `albums`, `artists`, `comments`, `folders`, `playlists`, `trackSourceFiles`, `tracks`, `videos`."
       },
       "ViewerContexts_Viewer_Single_Relationship_Data_Document" : {
         "required" : [ "links" ],
