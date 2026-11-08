@@ -14428,9 +14428,9 @@ export interface paths {
                     "filter[grantee]"?: string;
                     /** @description One of: VIEWER, COLLABORATOR, OWNER (e.g. `VIEWER`) */
                     "filter[role]"?: "VIEWER" | "COLLABORATOR" | "OWNER";
-                    /** @description Album, track or folder owned by the caller. Selects every live stored grant on the resource and its ancestor folders and albums, direct and from saved share links. Each grant keeps the subject it is stored on, so a grantee can have several. Does not expand groups or bearer access or resolve effective permissions. Cannot be combined with other filters. Missing or non-owned resources return no records. Ordered by grantee, each grantee's nearest grants first; at most 20 grants per page. Also accepts `folders:me`. */
+                    /** @description Album, track or folder owned by the caller; playlists return 400. Selects every live stored grant on the resource and its ancestor folders and albums, direct and from saved share links. Each grant keeps the subject it is stored on, so a grantee can have several. Does not expand groups or bearer access or resolve effective permissions. Cannot be combined with other filters. Missing or non-owned resources return no records. Ordered by grantee, each grantee's nearest grants first; at most 20 grants per page. Also accepts `folders:me`. */
                     "filter[self][appliesTo]"?: string;
-                    /** @description Filter by subject. Also accepts `folders:me`. */
+                    /** @description Filter by subject. Required unless `filter[self][appliesTo]` is used. The subject's owner reads all its grants; other callers read only grants made directly to them. Also accepts `folders:me`. */
                     "filter[subject]"?: string;
                     /**
                      * @description Include related resources. Available relationships: grantee, subject
@@ -14798,7 +14798,7 @@ export interface paths {
         put?: never;
         /**
          * Create single savedShare.
-         * @description Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403. A password-protected share needs its password unless the caller owns or already saved it; attempts are rate limited.
+         * @description Redeem an active share with VOUCHER access mode for its offered role. A share without VOUCHER mode returns 403. Every save, repeated ones included, needs a password-protected share's password and counts as a use of a limited share; password attempts are rate limited.
          */
         post: {
             parameters: {
@@ -28867,7 +28867,7 @@ export interface components {
         CollaborationInviteRedemptions_Attributes: {
             /**
              * Format: date-time
-             * @description Datetime the invite was redeemed (ISO 8601)
+             * @description Time of this redemption (ISO 8601). Redeeming the invite again returns the same id with the time of that request.
              */
             redeemedAt: string;
         };
@@ -32217,7 +32217,7 @@ export interface components {
         ResourceGrantsSubject: {
             id: string;
             /** @enum {string} */
-            type: "albums" | "tracks" | "folders";
+            type: "albums" | "tracks" | "folders" | "playlists";
         };
         ResourceGrantsSubjectLinkage: {
             data: components["schemas"]["ResourceGrantsSubject"];
@@ -32293,7 +32293,7 @@ export interface components {
         ResourceGrants_Subject_Resource_Identifier_Meta: {
             replacement?: components["schemas"]["Replacement_Provenance"];
         };
-        /** @description Target resource types: `albums`, `folders`, `tracks`. */
+        /** @description Target resource types: `albums`, `folders`, `playlists`, `tracks`. */
         ResourceGrants_Subject_Single_Relationship_Data_Document: {
             data?: components["schemas"]["ResourceGrants_Subject_Resource_Identifier"] | (never | null);
             included?: components["schemas"]["Included"];
@@ -32387,7 +32387,7 @@ export interface components {
         SavedShares_Attributes: {
             /**
              * Format: date-time
-             * @description Datetime of saved share creation (ISO 8601)
+             * @description Time of this save (ISO 8601). Saving the share again returns the same id with the time of that request.
              */
             createdAt: string;
         };
@@ -32702,8 +32702,6 @@ export interface components {
             type: "shares";
         };
         SharesCreateOperation_Payload_Data_Attributes: {
-            /** @description Ways this share may be used to obtain access. BEARER permits access by presenting its code while active. VOUCHER permits redemption for a stored grant. Defaults to both modes for every role. Playlist shares must include VOUCHER; bearer-only playlist shares are rejected with 400. */
-            accessModes?: ("BEARER" | "VOUCHER")[];
             /**
              * Format: date-time
              * @description Time bearer access and acceptance expire; must be in the future and at most a year away. Defaults to seven days after creation when omitted or null.
@@ -32712,12 +32710,12 @@ export interface components {
             expiresAt?: string | null;
             /**
              * Format: int32
-             * @description Number of users other than the owner who may save the share. Only a save counts as a use, and a used-up share also stops bearer access. Requires the VOUCHER access mode. Omit or send null for unlimited saves.
+             * @description Number of saves the share permits. Every save counts as a use, and a used-up share also stops bearer access. Omit or send null for unlimited saves.
              */
             maxUses?: number | null;
             /**
              * Format: password
-             * @description Password a user must send to save the share. Never returned. Must be printable ASCII characters. Without accessModes, a protected share defaults to VOUCHER only; BEARER with a password, or a password on a playlist share, is rejected with 400.
+             * @description Password a user must send to save the share. Never returned. Must be printable ASCII characters. A protected share permits no bearer access. A password on a playlist share is rejected with 400.
              */
             password?: string;
             /**
@@ -32750,7 +32748,10 @@ export interface components {
             password?: string | (never | null);
         };
         Shares_Attributes: {
-            /** @description Ways this share may be used to obtain access. BEARER permits access by presenting its code while active. VOUCHER permits an authenticated user to redeem it for a stored grant. Multiple modes may be enabled. */
+            /**
+             * @deprecated
+             * @description Ways this share may be used to obtain access, decided by the server. Deprecated: clients must not rely on it.
+             */
             accessModes: ("BEARER" | "VOUCHER")[];
             /** @description Share code */
             code: string;
@@ -32769,7 +32770,7 @@ export interface components {
             externalLinks?: components["schemas"]["External_Link"][];
             /**
              * Format: int32
-             * @description Number of users other than the owner who may save the share. Absent when unlimited.
+             * @description Number of saves the share permits. Absent when unlimited.
              */
             maxUses?: number;
             /**
@@ -32777,7 +32778,7 @@ export interface components {
              * @description Password a user must send to save the share. Write-only: never returned.
              */
             password?: string;
-            /** @description Whether saving the share requires a password. A protected share never permits BEARER access, and only its owner and savers see its shared resource. */
+            /** @description Whether saving the share requires a password. A protected share never permits BEARER access, and only its owner and users with a role on its shared resource see that resource. */
             passwordProtected: boolean;
             /**
              * @description Role offered on the shared resource.
@@ -32786,7 +32787,7 @@ export interface components {
             role: "VIEWER" | "COLLABORATOR";
             /**
              * Format: int32
-             * @description Number of users other than the owner who have saved the share. Once it reaches maxUses, bearer access and acceptance end. Absent when maxUses is.
+             * @description Number of saves so far, repeated saves included. Once it reaches maxUses, bearer access and acceptance end. Absent when maxUses is.
              */
             useCount?: number;
         };
