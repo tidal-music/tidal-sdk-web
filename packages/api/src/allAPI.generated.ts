@@ -583,7 +583,7 @@ export interface paths {
         head?: never;
         /**
          * Update single album.
-         * @description Updates existing album.
+         * @description Updates existing album. A COLLABORATOR on the album may update it; changing accessType or barcodeId needs OWNER.
          */
         patch: {
             parameters: {
@@ -766,7 +766,7 @@ export interface paths {
         head?: never;
         /**
          * Update artists relationship ("to-many").
-         * @description Sets the album's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the album. Only the album's owner can change its artists. Returns an acknowledgement.
+         * @description Sets the album's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the album. Owners and collaborators can change its artists. Returns an acknowledgement.
          */
         patch: {
             parameters: {
@@ -1073,7 +1073,7 @@ export interface paths {
         head?: never;
         /**
          * Update items relationship ("to-many").
-         * @description Incrementally updates one existing track's 1-based track number to meta.positionIndex. Does not replace the album's items or add or remove tracks. Empty data is rejected. Returns an acknowledgement.
+         * @description Incrementally updates one existing track's 1-based track number to meta.positionIndex. Does not replace the album's items or add or remove tracks. Empty data is rejected. A COLLABORATOR on the album may reorder. Returns an acknowledgement.
          */
         patch: {
             parameters: {
@@ -8386,7 +8386,7 @@ export interface paths {
         head?: never;
         /**
          * Update parent relationship ("to-one").
-         * @description Moves the item to the supplied parent folder, replacing its previous parent. To move to the top level, supply the root folder explicitly; null data is rejected. Returns the new parent linkage.
+         * @description Moves the item to the supplied parent folder, replacing its previous parent. To move to the top level, supply the root folder explicitly; null data is rejected. The caller needs at least COLLABORATOR on the new parent. Within the item's tree they need OWNER on the item or COLLABORATOR on the folder holding it; only its creator moves it into another user's tree. Returns the new parent linkage.
          */
         patch: {
             parameters: {
@@ -14410,6 +14410,458 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/resourceGrantInvitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple resourceGrantInvitations.
+         * @description Retrieves multiple resourceGrantInvitations by available filters, or without if applicable.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Invitation code (e.g. `42179b73-6f0c-405c-b926-2fdb45363c44`) */
+                    "filter[code]"?: string;
+                    /** @description Album, track or folder owned by the caller. Selects undeleted, unexpired invitations on the resource or its ancestors; used-up ones are included. Each keeps its own subject. Cannot be combined with other filters. Missing or non-owned resources and subjects without a live access node return no records. Ordered by expiry then ID; at most 20 invitations per page. Also accepts `folders:me`. */
+                    "filter[self][appliesTo]"?: string;
+                    /**
+                     * @description Include related resources. Available relationships: owners, previewGrant, subject
+                     * @example previewGrant.subject
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("owners" | "previewGrant" | "subject")[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: previewGrant.subject
+                     * @example previewGrant.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single resourceGrantInvitation.
+         * @description Creates a new resourceGrantInvitation.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ResourceGrantInvitationsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_Create_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resourceGrantInvitations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single resourceGrantInvitation.
+         * @description Retrieves single resourceGrantInvitation by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: owners, previewGrant, subject
+                     * @example previewGrant.subject
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: ("owners" | "previewGrant" | "subject")[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: previewGrant.subject
+                     * @example previewGrant.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Invitation id
+                     * @example e0163a07-8eee-4d30-ae44-75d44b1e47b0
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Delete single resourceGrantInvitation.
+         * @description Delete the invitation, ending redemption.
+         */
+        delete: {
+            parameters: {
+                query?: {
+                    /** @description Also revoke the grants redemptions issued; access from other sources stays. Defaults to false. Not yet supported, so true is rejected with 400. */
+                    revokeGrants?: boolean;
+                };
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Invitation id
+                     * @example e0163a07-8eee-4d30-ae44-75d44b1e47b0
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["Mutation_Response_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /**
+         * Update single resourceGrantInvitation.
+         * @description Set, change or remove the password. Users who redeemed keep their grants.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path: {
+                    /**
+                     * @description Invitation id
+                     * @example e0163a07-8eee-4d30-ae44-75d44b1e47b0
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["ResourceGrantInvitationsUpdateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_Update_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["Idempotency409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        trace?: never;
+    };
+    "/resourceGrantInvitations/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Invitation id
+                     * @example e0163a07-8eee-4d30-ae44-75d44b1e47b0
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_Owners_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resourceGrantInvitations/{id}/relationships/previewGrant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get previewGrant relationship ("to-one").
+         * @description Retrieves previewGrant relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: previewGrant
+                     * @example previewGrant.subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: previewGrant.subject
+                     * @example previewGrant.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Invitation id
+                     * @example e0163a07-8eee-4d30-ae44-75d44b1e47b0
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_PreviewGrant_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resourceGrantInvitations/{id}/relationships/subject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get subject relationship ("to-one").
+         * @description Retrieves subject relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: subject
+                     * @example subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject
+                     * @example subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Invitation id
+                     * @example e0163a07-8eee-4d30-ae44-75d44b1e47b0
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrantInvitations_Subject_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/resourceGrants": {
         parameters: {
             query?: never;
@@ -14433,12 +14885,12 @@ export interface paths {
                     /** @description Filter by subject. Required unless `filter[self][appliesTo]` is used. The subject's owner reads all its grants; other callers read only grants made directly to them. Also accepts `folders:me`. */
                     "filter[subject]"?: string;
                     /**
-                     * @description Include related resources. Available relationships: grantee, subject
+                     * @description Include related resources. Available relationships: grantee, invitation, subject
                      * @example grantee.artist.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("grantee" | "subject")[];
+                    includeLinkage?: ("grantee" | "invitation" | "subject")[];
                     /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
                     "page[cursor]"?: string;
                     /**
@@ -14475,7 +14927,7 @@ export interface paths {
         put?: never;
         /**
          * Create single resourceGrant.
-         * @description Creates a new resourceGrant.
+         * @description Create a direct grant from `role`, `subject` and `grantee`. Alternatively, redeem an invitation with only the `invitation` relationship: the caller receives the invitation's role on its subject, and the response is the caller's grant. Redeeming again returns the same grant. Every redemption, repeated ones included, needs a password-protected invitation's password and counts as a use of a limited invitation; password attempts are rate limited. The invitation's creator cannot redeem it.
          */
         post: {
             parameters: {
@@ -14503,13 +14955,14 @@ export interface paths {
                     };
                 };
                 400: components["responses"]["Default400Response"];
+                403: components["responses"]["ResourceGrantsCreateResource403Response"];
                 404: components["responses"]["Default404Response"];
                 405: components["responses"]["Default405Response"];
                 406: components["responses"]["Default406Response"];
                 409: components["responses"]["Idempotency409Response"];
                 415: components["responses"]["Default415Response"];
                 422: components["responses"]["Idempotency422Response"];
-                429: components["responses"]["Default429Response"];
+                429: components["responses"]["ResourceGrantsCreateResource429Response"];
                 500: components["responses"]["Default500Response"];
                 503: components["responses"]["Default503Response"];
             };
@@ -14535,12 +14988,12 @@ export interface paths {
             parameters: {
                 query?: {
                     /**
-                     * @description Include related resources. Available relationships: grantee, subject
+                     * @description Include related resources. Available relationships: grantee, invitation, subject
                      * @example grantee.artist.albums
                      */
                     include?: string[];
                     /** @description Comma-separated direct relationships to return as linkage only, without related content. */
-                    includeLinkage?: ("grantee" | "subject")[];
+                    includeLinkage?: ("grantee" | "invitation" | "subject")[];
                     /**
                      * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: grantee.artist.albums
                      * @example grantee.artist.albums
@@ -14706,6 +15159,67 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["ResourceGrants_Grantee_Single_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resourceGrants/{id}/relationships/invitation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get invitation relationship ("to-one").
+         * @description Retrieves invitation relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: invitation
+                     * @example invitation.subject
+                     */
+                    include?: string[];
+                    /**
+                     * @description Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: invitation.subject
+                     * @example invitation.subject
+                     */
+                    replaceMedia?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description Opaque resource grant ID */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["ResourceGrants_Invitation_Single_Relationship_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -19228,7 +19742,7 @@ export interface paths {
         head?: never;
         /**
          * Update single track.
-         * @description Updates existing track.
+         * @description Updates existing track. A COLLABORATOR on the track may update it; changing accessType or isrc needs OWNER.
          */
         patch: {
             parameters: {
@@ -19350,7 +19864,7 @@ export interface paths {
         head?: never;
         /**
          * Update albums relationship ("to-many").
-         * @description Moves the uploaded track to the supplied album, replacing its previous album association. Exactly one album is required; empty data cannot clear it. Returns an acknowledgement.
+         * @description Moves the uploaded track to the supplied album, replacing its previous album association. Exactly one album is required; empty data cannot clear it. The caller needs COLLABORATOR on the track and the album. The album must be in the same user's folders as the track (409 otherwise). Returns an acknowledgement.
          */
         patch: {
             parameters: {
@@ -19472,7 +19986,7 @@ export interface paths {
         head?: never;
         /**
          * Update artists relationship ("to-many").
-         * @description Sets the track's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the track or its album. Only the track's owner can change its artists. Returns an acknowledgement.
+         * @description Sets the track's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the track or its album. Owners and collaborators can change its artists. Returns an acknowledgement.
          */
         patch: {
             parameters: {
@@ -28050,6 +28564,12 @@ export interface components {
              */
             numberOfFollowers?: number;
             /**
+             * Format: int32
+             * @description Number of artists in the following relationship
+             * @example 48
+             */
+            numberOfFollowing?: number;
+            /**
              * @description Ownership type of the artist profile. LABEL: label-managed profile, USER: user-created profile, MIXED: claimed profile with both label and user content. May be null during rollout/backfill.
              * @enum {string}
              */
@@ -28520,6 +29040,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -29685,6 +30206,7 @@ export interface components {
             detail?: string;
             /** @description unique identifier for this particular occurrence of the problem */
             id?: string;
+            meta?: components["schemas"]["MetaObject"];
             source?: components["schemas"]["Error_Object_Source"];
             /** @description HTTP status code applicable to this problem */
             status?: string;
@@ -30149,7 +30671,7 @@ export interface components {
         };
         /** @description The viewer has the original subject in their normal collection. Present as an empty object when known present, otherwise omitted. Includes owned and saved playlists and saved mixes across folders; excludes Save for Later. */
         InCollection: Record<string, never>;
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["ArtworkLibraries_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["CommentSummaries_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["ReactionSummaries_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["ResourceGrants_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SharingSummaries_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"] | components["schemas"]["SquareItemVariations_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["ArtworkLibraries_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["CommentSummaries_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["ReactionSummaries_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["ResourceGrantInvitations_Resource_Object"] | components["schemas"]["ResourceGrants_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SharingSummaries_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"] | components["schemas"]["SquareItemVariations_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -30513,6 +31035,10 @@ export interface components {
              * @enum {string}
              */
             type: "manualArtistClaims";
+        };
+        MetaObject: Record<string, never>;
+        MissingTermsMeta: {
+            missingTermsTypes: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
         };
         Mutation_Response_Document: {
             links: components["schemas"]["Links"];
@@ -32188,22 +32714,229 @@ export interface components {
             /** @enum {string} */
             status: "ORIGINAL" | "REPLACED" | "NOT_REPLACED";
         };
+        ResourceGrantInvitationsCreateOperation_Payload: {
+            data: components["schemas"]["ResourceGrantInvitationsCreateOperation_Payload_Data"];
+        };
+        ResourceGrantInvitationsCreateOperation_Payload_Data: {
+            attributes: components["schemas"]["ResourceGrantInvitationsCreateOperation_Payload_Data_Attributes"];
+            relationships: components["schemas"]["ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships"];
+            /** @enum {string} */
+            type: "resourceGrantInvitations";
+        };
+        ResourceGrantInvitationsCreateOperation_Payload_Data_Attributes: {
+            /**
+             * Format: date-time
+             * @description Time redemption ends; must be in the future and at most a year away. Defaults to seven days after creation.
+             * @example 2021-07-08T00:00:00Z
+             */
+            expiresAt?: string | null;
+            /**
+             * Format: int32
+             * @description Number of redemptions permitted, repeated ones included. Unlimited when omitted or null.
+             */
+            maxUses?: number | null;
+            /**
+             * Format: password
+             * @description Password a user must send to redeem. Never returned. Must be printable ASCII characters. Playlist invitations cannot have one; 400.
+             */
+            password?: string;
+            /** @description Whether the code also gives VIEWER access to the subject, whatever the role, until the invitation expires. Previews are not yet supported, so true is rejected with 400. Defaults to false. */
+            preview?: boolean | null;
+            /**
+             * @description Role a redemption grants.
+             * @enum {string}
+             */
+            role: "VIEWER" | "COLLABORATOR";
+        };
+        ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships: {
+            subject: components["schemas"]["ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships_Subject"];
+        };
+        ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships_Subject: {
+            data: components["schemas"]["ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships_Subject_Data"];
+        };
+        ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships_Subject_Data: {
+            id: string;
+            /** @enum {string} */
+            type: "albums" | "tracks" | "folders" | "playlists";
+        };
+        ResourceGrantInvitationsUpdateOperation_Payload: {
+            data: components["schemas"]["ResourceGrantInvitationsUpdateOperation_Payload_Data"];
+        };
+        ResourceGrantInvitationsUpdateOperation_Payload_Data: {
+            attributes: components["schemas"]["ResourceGrantInvitationsUpdateOperation_Payload_Data_Attributes"];
+            id: string;
+            /** @enum {string} */
+            type: "resourceGrantInvitations";
+        };
+        ResourceGrantInvitationsUpdateOperation_Payload_Data_Attributes: {
+            password?: string | (never | null);
+            /** @description Whether the code also gives VIEWER access to the subject, whatever the role, until the invitation expires. Previews are not yet supported, so true is rejected with 400. Omitted leaves it unchanged. */
+            preview?: boolean;
+        };
+        ResourceGrantInvitations_Attributes: {
+            /** @description Code that identifies the invitation to its recipients. */
+            code: string;
+            /**
+             * Format: date-time
+             * @description Time the invitation was created.
+             * @example 2021-07-01T00:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Time redemption ends; issued grants remain.
+             */
+            expiresAt: string;
+            /**
+             * Format: int32
+             * @description Number of redemptions permitted. Absent when unlimited.
+             */
+            maxUses?: number;
+            /**
+             * Format: password
+             * @description Password a user must send to redeem. Write-only: never returned.
+             */
+            password?: string;
+            /** @description Whether redemption requires a password. Only the owner and users with a role on the subject see a protected invitation's subject; others get null linkage. */
+            passwordProtected: boolean;
+            /** @description Whether the code also gives VIEWER access to the subject until the invitation expires, through previewGrant. Previews are not yet supported, so it is always false. */
+            preview: boolean;
+            redemptionLink?: components["schemas"]["Link_Object"];
+            /**
+             * @description Role a redemption grants.
+             * @enum {string}
+             */
+            role: "VIEWER" | "COLLABORATOR";
+            /**
+             * Format: int32
+             * @description Number of redemptions so far, repeated ones included. Absent when maxUses is.
+             */
+            useCount?: number;
+        };
+        ResourceGrantInvitations_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrantInvitations_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrantInvitations_Multi_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrantInvitations_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `users`. */
+        ResourceGrantInvitations_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `resourceGrants`. */
+        ResourceGrantInvitations_PreviewGrant_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrantInvitations_Relationships: {
+            owners?: components["schemas"]["ResourceGrantInvitations_Owners_Multi_Relationship_Data_Document"];
+            previewGrant?: components["schemas"]["ResourceGrantInvitations_PreviewGrant_Single_Relationship_Data_Document"];
+            subject?: components["schemas"]["ResourceGrantInvitations_Subject_Single_Relationship_Data_Document"];
+        };
+        ResourceGrantInvitations_Resource_Object: {
+            attributes?: components["schemas"]["ResourceGrantInvitations_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["ResourceGrantInvitations_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "resourceGrantInvitations";
+        };
+        ResourceGrantInvitations_Single_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrantInvitations_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrantInvitations_Subject_Resource_Identifier: {
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            meta?: components["schemas"]["ResourceGrantInvitations_Subject_Resource_Identifier_Meta"];
+            /**
+             * @description Resource type
+             * @example tracks
+             */
+            type: string;
+        };
+        ResourceGrantInvitations_Subject_Resource_Identifier_Meta: {
+            replacement?: components["schemas"]["Replacement_Provenance"];
+        };
+        /** @description Target resource types: `albums`, `folders`, `playlists`, `tracks`. */
+        ResourceGrantInvitations_Subject_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["ResourceGrantInvitations_Subject_Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        ResourceGrantInvitations_Update_Single_Resource_Data_Document: {
+            data: components["schemas"]["ResourceGrantInvitations_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
         ResourceGrantsCreateOperation_Payload: {
             data: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data"];
+            meta?: components["schemas"]["ResourceGrantsCreateOperation_Payload_Meta"];
         };
         ResourceGrantsCreateOperation_Payload_Data: {
-            attributes: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data_Attributes"];
+            attributes?: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data_Attributes"];
             relationships: components["schemas"]["ResourceGrantsCreateOperation_Payload_Data_Relationships"];
             /** @enum {string} */
             type: "resourceGrants";
         };
+        /** @description Required for a direct grant; omitted when redeeming. */
         ResourceGrantsCreateOperation_Payload_Data_Attributes: {
             /** @enum {string} */
             role: "VIEWER" | "COLLABORATOR";
         };
+        /** @description Either `subject` and `grantee` for a direct grant, or only `invitation` to redeem it. */
         ResourceGrantsCreateOperation_Payload_Data_Relationships: {
-            grantee: components["schemas"]["ResourceGrantsGranteeLinkage"];
-            subject: components["schemas"]["ResourceGrantsSubjectLinkage"];
+            grantee?: components["schemas"]["ResourceGrantsGranteeLinkage"];
+            invitation?: components["schemas"]["ResourceGrantsInvitationLinkage"];
+            subject?: components["schemas"]["ResourceGrantsSubjectLinkage"];
+        };
+        ResourceGrantsCreateOperation_Payload_Meta: {
+            /**
+             * Format: password
+             * @description Password of a password-protected invitation. Ignored for other invitations.
+             */
+            password?: string;
+        };
+        ResourceGrantsCreateResource403ResponseBody: {
+            errors: {
+                /**
+                 * @example SHARE_PASSWORD_INVALID
+                 * @enum {string}
+                 */
+                code: "SHARE_PASSWORD_INVALID" | "SHARE_PASSWORD_REQUIRED" | "UNAUTHORIZED";
+                /** @example This invitation can no longer be accepted */
+                detail?: string;
+                /** @example 403 */
+                status: string;
+            }[];
+        };
+        ResourceGrantsCreateResource429ResponseBody: {
+            errors: {
+                /**
+                 * @example SHARE_PASSWORD_ATTEMPTS_EXCEEDED
+                 * @enum {string}
+                 */
+                code: "SHARE_PASSWORD_ATTEMPTS_EXCEEDED";
+                /** @example Too many invitation password attempts; try again later */
+                detail?: string;
+                /** @example 429 */
+                status: string;
+            }[];
         };
         /** @description A grant recipient. Identify the Everyone group with `type` set to `groups` and `id` set to `everyone`; only albums can be granted to it. */
         ResourceGrantsGrantee: {
@@ -32213,6 +32946,15 @@ export interface components {
         };
         ResourceGrantsGranteeLinkage: {
             data: components["schemas"]["ResourceGrantsGrantee"];
+        };
+        /** @description The invitation whose redemption issued the grant. Grants do not record it yet, so the linkage is always null. */
+        ResourceGrantsInvitation: {
+            id: string;
+            /** @enum {string} */
+            type: "resourceGrantInvitations";
+        };
+        ResourceGrantsInvitationLinkage: {
+            data: components["schemas"]["ResourceGrantsInvitation"];
         };
         ResourceGrantsSubject: {
             id: string;
@@ -32249,6 +32991,12 @@ export interface components {
             included?: components["schemas"]["Included"];
             links: components["schemas"]["Links"];
         };
+        /** @description Target resource types: `resourceGrantInvitations`. */
+        ResourceGrants_Invitation_Single_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"] | (never | null);
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         ResourceGrants_Multi_Resource_Data_Document: {
             data: components["schemas"]["ResourceGrants_Resource_Object"][];
             included?: components["schemas"]["Included"];
@@ -32256,6 +33004,7 @@ export interface components {
         };
         ResourceGrants_Relationships: {
             grantee?: components["schemas"]["ResourceGrants_Grantee_Single_Relationship_Data_Document"];
+            invitation?: components["schemas"]["ResourceGrants_Invitation_Single_Relationship_Data_Document"];
             subject?: components["schemas"]["ResourceGrants_Subject_Single_Relationship_Data_Document"];
         };
         ResourceGrants_Resource_Object: {
@@ -32945,6 +33694,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32958,6 +33708,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -32980,6 +33731,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33006,6 +33758,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33124,6 +33877,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33174,6 +33928,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33223,6 +33978,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33309,6 +34065,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33335,6 +34092,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33361,6 +34119,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33415,6 +34174,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33578,6 +34338,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33641,6 +34402,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33667,6 +34429,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33693,6 +34456,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33742,6 +34506,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33768,6 +34533,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33815,6 +34581,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33948,6 +34715,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -33974,6 +34742,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -34020,6 +34789,7 @@ export interface components {
                 code: "REQUIRED_TERMS_NOT_ACCEPTED";
                 /** @example Latest terms and conditions must be accepted */
                 detail?: string;
+                meta?: components["schemas"]["MissingTermsMeta"];
                 /** @example 403 */
                 status: string;
             }[];
@@ -37716,6 +38486,24 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["PlaylistsItemsAddMultiDataRelationshipWithResponse409ResponseBody"];
+            };
+        };
+        /** @description This invitation can no longer be accepted; The invitation is password protected; send its password; The invitation password is incorrect */
+        ResourceGrantsCreateResource403Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["ResourceGrantsCreateResource403ResponseBody"];
+            };
+        };
+        /** @description Too many invitation password attempts; try again later */
+        ResourceGrantsCreateResource429Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["ResourceGrantsCreateResource429ResponseBody"];
             };
         };
         /** @description This share does not permit redemption; This share can no longer be accepted; The share is password protected; send its password; The share password is incorrect */

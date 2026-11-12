@@ -8,7 +8,7 @@
     "description" : "The TIDAL API is a [JSON:API](https://jsonapi.org/)-compliant web API exposing TIDAL's music catalogue, metadata, and user functionality. Guides, authorization documentation, and API key management live at [developer.tidal.com](https://developer.tidal.com).\n\nAll endpoints exchange `application/vnd.api+json` documents per the [JSON:API specification](https://jsonapi.org/format/): [resource objects](https://jsonapi.org/format/#document-resource-objects) with `attributes` and `relationships`, [compound documents](https://jsonapi.org/format/#document-compound-documents) via `include`, and standard [error objects](https://jsonapi.org/format/#error-objects).\n\n### Authentication and authorization\n\nEvery request requires an OAuth 2.0 access token in the `Authorization: Bearer` header. Tokens are issued at `https://auth.tidal.com/v1/oauth2/token` via the client-credentials flow (server-to-server) or the authorization-code + PKCE flow (user context; authorize at `https://login.tidal.com/authorize`). Each endpoint documents which flows it accepts, the access tier it requires, and the scopes that apply. Scopes protect private user data: fields you are not authorized to read are redacted from the response rather than causing an error, and resources you cannot access at all behave as if they do not exist. See the [authorization guide](https://developer.tidal.com/documentation/api-sdk/api-sdk-authorization) for details.\n\n### Common wire types and compatibility\n\nEach property's schema is authoritative for its allowed values, format, requiredness, nullability, and constraints. A standard defines how a value is represented; an individual schema may support only a documented subset.\n\n- **Enums** use `UPPER_CASE_UNDERSCORE`, except JSON:API resource types, which use plural camelCase names such as `playlistGenerationSchedules`. New values can be added to any enum at any time, so treat unknown values as forward-compatible rather than errors.\n- **Resource IDs** are opaque strings. A few resources document well-known IDs for permanent system singleton instances; compare those IDs by exact value. Never parse, construct, or infer meaning from any other `id`, even when its current representation resembles an integer, UUID, or another recognizable value. Other properties explicitly marked with OpenAPI `format: uuid` are UUIDs.\n- **Dates and times** use ISO 8601. Date-times use the OpenAPI `date-time` format (`2024-05-01T12:00:00Z`), dates use `YYYY-MM-DD`, and durations use values such as `PT3M5S`.\n- **Recurrence frequencies** use RFC 5545 `FREQ` names such as `DAILY`, `WEEKLY`, and `MONTHLY`. The property's enum lists the frequencies that field currently supports.\n- **Weekdays** use `MONDAY` through `SUNDAY`.\n- **Time zones** use IANA Time Zone Database identifiers such as `Europe/Stockholm`, not abbreviations or raw UTC offsets for recurring civil-time schedules.\n- **Country codes** use ISO 3166-1 alpha-2; the shared country type also accepts `WW` for worldwide. **Locales** use IETF BCP 47 language tags such as `en-US`.\n- **Currencies** use ISO 4217 codes. Monetary amounts are decimal strings; each field defines its sign and precision constraints.\n- **Colors** use three- or six-digit hexadecimal strings (`#RGB` or `#RRGGBB`). Resource links to external URLs use JSON:API link objects with an `href` member.\n\n### Resource identifiers\n\nWhere supported, `filter[subject]=tracks:123` matches a related resource by type and ID;\n`filter[subject.id]=123` and `filter[subject.type]=tracks` match either component.\nWhere multiple identifiers are accepted, comma-separated values match any complete pair.\nWhen a member path names a to-many relationship, at least one related resource must match;\nfiltering does not trim that relationship. On collection and to-many relationship reads, the\nreserved root `self` (`filter[self]=tracks:123`) filters primary data itself.\nEach endpoint lists its supported filters and types.\n\nWhere supported, `me` aliases the authenticated user's dedicated resource ID for the referenced\nresource type. It works in paths, resource-ID filters, compact identifiers (`type:me`), resource\nPATCH primary IDs and standalone relationship mutation identifiers, with the same meaning as\nthe resolved ID. Reads using the alias are `no-store`.\n\n### Relationships and includes\n\n[Relationships](https://jsonapi.org/format/#document-resource-object-relationships) are returned only on request: [`include`](https://jsonapi.org/format/#fetching-includes) selects linkage and related content, while `includeLinkage` selects authorized linkage only. A relationship that was not requested is absent from the response, not empty. The full set of relationships a resource supports is documented in its schema.\n\nFor INTERNAL clients on resource GET endpoints, `includeLinkage` accepts comma-separated direct relationship names, for example `includeLinkage=subject,viewer`. It does not load related resources or add an `included` section. Nested paths and type qualifiers are unsupported. To-many linkage retains its normal pagination and relationship `next` links. Selecting the same relationship with both parameters applies full include behavior and reads the relationship once.\n\nRequest related resources in one round trip with `?include=`, a comma-separated list of dot-separated relationship paths — e.g. `include=coverArt,artists.profileArt` on an album. A nested path automatically embeds its intermediate resources: `artists.profileArt` includes the artists as well as their profile art. Include paths are always relative to the request's root resource, also on relationship endpoints. Including a relationship never changes the primary data; the related resources are added to `included`.\n\nInclude paths are validated: a path that cannot be resolved against the resources' documented relationships is rejected with `400`. Include trees are also bounded in path depth (default 3 levels) and in the total number of distinct resources they name (default 10); individual endpoints may apply different limits. Both selectors share the include-node limit, counting overlapping roots once. A request exceeding either limit is rejected with `400`, with the effective limit stated in the error.\n\n### Filtering, sorting, pagination\n\n- [`filter[<memberPath>]=value`](https://jsonapi.org/format/#fetching-filtering) filters primary data by equality. Each endpoint lists its available filters; most collections require at least one.\n- Where explicitly documented, `filter[<memberPath>][ne]=value` negates the complete equality predicate. When the member path names a to-many relationship, no related ID may match any supplied value; a known-empty relationship matches. Operators are separate from values. Supplied comparisons combine with AND. For a required filter with multiple supported comparisons, at least one must be supplied; the parameter descriptions identify these alternatives. Unsupported operators and groups return `400`.\n- Where documented, `filter[<path>][<operator>]=value` applies an endpoint-defined operator, such as `filter[self][matchesQuery]`. Its meaning is described per endpoint, and it combines with other filters by AND.\n- [`sort=<memberPath>`](https://jsonapi.org/format/#fetching-sorting) sorts ascending, `-<memberPath>` descending (`sort=-addedAt`). Filter and sort member paths are relative to primary data.\n- Parameters an endpoint cannot honor are rejected with `400`: a `filter[...]` parameter the endpoint does not document (the error lists the available filters), or `sort` on an endpoint that documents no sort values.\n- [Pagination](https://jsonapi.org/format/#fetching-pagination) is cursor-based: responses carry `links.self` and, while more pages exist, `links.next` with an opaque `page[cursor]`. Follow `next` until absent — there are no offset or total-page parameters. Collection sizes, when available, appear as `meta.total` and may be approximate.\n\n### Type qualifiers\n\nWhere a relationship can contain several resource types, a path segment may be prefixed with a concrete type to scope which type's member is accessed. A playlist's `items` are `tracks` or `videos`: `GET /playlists/{id}?include=items.tracks:albums` resolves `albums` only for the items that are tracks. Qualifiers scope member access — they never filter which resources appear in a relationship — and can be chained.\n\nThe same syntax applies to `filter` and `sort` member paths on endpoints that support it; where supported, the qualified member is listed among the endpoint's documented filters and sort values. The syntax follows JSON:API proposal [json-api#1695](https://github.com/json-api/json-api/issues/1695).\n\n### Mutations\n\n- [Partial updates](https://jsonapi.org/format/#crud-updating-resource-attributes) distinguish three wire states for nullable attributes: omission leaves the current value unchanged, an explicit `null` clears it, and a concrete value updates it.\n- Every mutation accepts an [`Idempotency-Key`](https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.html) header. Keys are scoped to the client and the authenticated user. Once the original request has completed, retrying it with the same key, method, path, query and payload within one hour replays its response; a retry while it is still processing is rejected with `409`, and the same key with a different method, path, query or payload with `422`.\n- After a successful write, your own subsequent reads reflect the change; other clients may observe it with a delay.\n\n### Revisions and concurrent editing\n\nWhere supported, `attributes.revision` identifies the resource's documented aggregate state; a separately versioned relationship collection uses document `meta.revision`. Revisions are nonnegative integers that increase when covered state changes. Compare them only within the same identity and scope, preserve the exact value, and never calculate the next revision. Related content, viewer projections and independent sources are not automatically covered. Domain fields named `version`, such as a music edition, are distinct; existing endpoints retain their documented contracts.\n\nGuarded mutations accept the observed value as top-level `meta.expectedRevision`. Each operation declares its scope and whether the precondition is required. A mismatch returns `409`; missing required input returns `400`. Refresh and reconcile after a conflict, then submit a new operation with a new idempotency key. An identical retry with the original key replays a recorded success under the idempotency contract. These revisions are not HTTP ETags.\n\nReturned revisions describe observed snapshots, not reservations for later writes. Background changes can advance them immediately after a successful response.\n\n### Media resource replacements - BETA Internal only\n\nMedia resources (`tracks`, `videos`, and `albums`) can become unavailable in a country when licensing rights change. By default, TIDAL API returns the resource identifiers originally stored in a collection. This keeps ordinary reads predictable and consistent.\n\nIf a stored media resource is unavailable for the effective country, TIDAL may identify a contextually applicable alternative that is available there. Replacement is best effort, so an alternative is not always available. Replacement never changes the stored collection.\n\nTIDAL API provides two ways to work with replacements:\n\n1. **Inspect the `replacement` relationship.** A media resource can expose its applicable alternative through the `replacement` relationship. Include this relationship when a client needs both the original and replacement identifiers or wants to decide whether to use the replacement.\n\n2. **Apply replacements with `replaceMedia`.** Clients can use `replaceMedia` to substitute applicable replacements directly into selected relationship data. The parameter accepts relationship paths using the same syntax as `include`. Projection affects only the response and preserves relationship order and metadata. Each identifier includes `meta.replacement` describing whether it was `ORIGINAL`, `REPLACED`, or `NOT_REPLACED`.\n\nFor example, `GET /playlists/{id}?include=items&replaceMedia=items` applies replacements to media identifiers in the playlist's `items` relationship.\n\n### Compression\n\nResponses are gzip-compressed when the request includes `Accept-Encoding: gzip` (bodies over 2 KB).\n\n### Deprecation\n\nDeprecated endpoints, parameters, and fields are marked `deprecated` in this specification, with the replacement noted in their description. Deprecated functionality keeps working for at least six months after being marked, and is only removed once a replacement is generally available.",
     "termsOfService" : "https://developer.tidal.com/documentation/guidelines/guidelines-developer-terms",
     "title" : "TIDAL API",
-    "version" : "1.10.240"
+    "version" : "1.10.245"
   },
   "externalDocs" : {
     "description" : "TIDAL Developer - Documentation",
@@ -100,7 +100,7 @@
     "description" : "One placement of a folder or album inside a folder. Everything in a folder is a folder item: an owned folder or album, or a reference to something another user shared with you. Removing a reference never touches its subject.",
     "name" : "folderItems"
   }, {
-    "description" : "A user-owned folder. Its contents are folderItems: folders, albums and references to things shared with the caller. Start at GET /folders/me, the caller's root folder, and walk down through /folders/me/relationships/children.",
+    "description" : "A user-owned folder. Its contents are folderItems: folders, albums and references to things shared with the caller. Start at GET /folders/me, the caller's root folder, and walk down through /folders/me/relationships/children. A COLLABORATOR on a folder creates folders in it and renames folders below it; deleting needs OWNER.",
     "name" : "folders"
   }, {
     "description" : "A music genre classification.",
@@ -154,7 +154,10 @@
     "description" : "An emoji reaction on a source file or comment.",
     "name" : "reactions"
   }, {
-    "description" : "A grant on an album, track, folder or playlist, including saved-share-link grants. The subject's owner and directly named user grantee may read the grant; only the owner may administer it. Creation and role updates apply only to direct grants, and some grants cannot be changed or removed. A grant's ID may change when its storage is migrated.",
+    "description" : "An invitation to a role on an album, track, folder or playlist. Redeeming it through resourceGrants grants the redeemer that role. Its code gives no access to the subject.",
+    "name" : "resourceGrantInvitations"
+  }, {
+    "description" : "A grant on an album, track, folder or playlist, including saved-share-link and redeemed-invitation grants. The subject's owner and directly named user grantee may read the grant; only the owner may administer it. Creation makes a direct grant or redeems an invitation. Role updates apply only to direct grants, and some grants cannot be changed or removed. A grant's ID may change when its storage is migrated.",
     "name" : "resourceGrants"
   }, {
     "description" : "A completed acceptance of a share's offered role.",
@@ -1225,7 +1228,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates existing album.",
+        "description" : "Updates existing album. A COLLABORATOR on the album may update it; changing accessType or barcodeId needs OWNER.",
         "parameters" : [ {
           "description" : "Album id",
           "example" : "251380836",
@@ -1499,7 +1502,7 @@
         }
       },
       "patch" : {
-        "description" : "Sets the album's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the album. Only the album's owner can change its artists. Returns an acknowledgement.",
+        "description" : "Sets the album's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the album. Owners and collaborators can change its artists. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Album id",
           "example" : "251380836",
@@ -1975,7 +1978,7 @@
         }
       },
       "patch" : {
-        "description" : "Incrementally updates one existing track's 1-based track number to meta.positionIndex. Does not replace the album's items or add or remove tracks. Empty data is rejected. Returns an acknowledgement.",
+        "description" : "Incrementally updates one existing track's 1-based track number to meta.positionIndex. Does not replace the album's items or add or remove tracks. Empty data is rejected. A COLLABORATOR on the album may reorder. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Album id",
           "example" : "251380836",
@@ -12662,7 +12665,7 @@
         }
       },
       "patch" : {
-        "description" : "Moves the item to the supplied parent folder, replacing its previous parent. To move to the top level, supply the root folder explicitly; null data is rejected. Returns the new parent linkage.",
+        "description" : "Moves the item to the supplied parent folder, replacing its previous parent. To move to the top level, supply the root folder explicitly; null data is rejected. The caller needs at least COLLABORATOR on the new parent. Within the item's tree they need OWNER on the item or COLLABORATOR on the folder holding it; only its creator moves it into another user's tree. Returns the new parent linkage.",
         "parameters" : [ {
           "description" : "Folder item id",
           "example" : "e3226624-355b-48f8-aa93-db42532caa66",
@@ -21563,6 +21566,681 @@
         }
       }
     },
+    "/resourceGrantInvitations" : {
+      "get" : {
+        "description" : "Retrieves multiple resourceGrantInvitations by available filters, or without if applicable.",
+        "parameters" : [ {
+          "description" : "Invitation code (e.g. `42179b73-6f0c-405c-b926-2fdb45363c44`)",
+          "in" : "query",
+          "name" : "filter[code]",
+          "required" : false,
+          "schema" : {
+            "minLength" : 1,
+            "type" : "string"
+          }
+        }, {
+          "description" : "Album, track or folder owned by the caller. Selects undeleted, unexpired invitations on the resource or its ancestors; used-up ones are included. Each keeps its own subject. Cannot be combined with other filters. Missing or non-owned resources and subjects without a live access node return no records. Ordered by expiry then ID; at most 20 invitations per page. Also accepts `folders:me`.",
+          "in" : "query",
+          "name" : "filter[self][appliesTo]",
+          "required" : false,
+          "schema" : {
+            "pattern" : "^(?:tracks|albums|folders):[^,]+$",
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: owners, previewGrant, subject",
+          "example" : "previewGrant.subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "previewGrant.subject"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "owners", "previewGrant", "subject" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: previewGrant.subject",
+          "example" : "previewGrant.subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "previewGrant.subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrantInvitations_Multi_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get multiple resourceGrantInvitations.",
+        "tags" : [ "resourceGrantInvitations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "post" : {
+        "description" : "Creates a new resourceGrantInvitation.",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ResourceGrantInvitationsCreateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrantInvitations_Create_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Create single resourceGrantInvitation.",
+        "tags" : [ "resourceGrantInvitations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/resourceGrantInvitations/{id}" : {
+      "delete" : {
+        "description" : "Delete the invitation, ending redemption.",
+        "parameters" : [ {
+          "description" : "Invitation id",
+          "example" : "e0163a07-8eee-4d30-ae44-75d44b1e47b0",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        }, {
+          "description" : "Also revoke the grants redemptions issued; access from other sources stays. Defaults to false. Not yet supported, so true is rejected with 400.",
+          "in" : "query",
+          "name" : "revokeGrants",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mutation_Response_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Delete single resourceGrantInvitation.",
+        "tags" : [ "resourceGrantInvitations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "get" : {
+        "description" : "Retrieves single resourceGrantInvitation by id.",
+        "parameters" : [ {
+          "description" : "Invitation id",
+          "example" : "e0163a07-8eee-4d30-ae44-75d44b1e47b0",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: owners, previewGrant, subject",
+          "example" : "previewGrant.subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "previewGrant.subject"
+            }
+          }
+        }, {
+          "description" : "Comma-separated direct relationships to return as linkage only, without related content.",
+          "explode" : false,
+          "in" : "query",
+          "name" : "includeLinkage",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "owners", "previewGrant", "subject" ]
+            }
+          },
+          "style" : "form"
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: previewGrant.subject",
+          "example" : "previewGrant.subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "previewGrant.subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrantInvitations_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get single resourceGrantInvitation.",
+        "tags" : [ "resourceGrantInvitations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      },
+      "patch" : {
+        "description" : "Set, change or remove the password. Users who redeemed keep their grants.",
+        "parameters" : [ {
+          "description" : "Invitation id",
+          "example" : "e0163a07-8eee-4d30-ae44-75d44b1e47b0",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "$ref" : "#/components/parameters/IdempotencyKey"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/vnd.api+json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ResourceGrantInvitationsUpdateOperation_Payload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrantInvitations_Update_Single_Resource_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Idempotency409Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/Idempotency422Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "w_usr" ]
+        } ],
+        "summary" : "Update single resourceGrantInvitation.",
+        "tags" : [ "resourceGrantInvitations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/resourceGrantInvitations/{id}/relationships/owners" : {
+      "get" : {
+        "description" : "Retrieves owners relationship.",
+        "parameters" : [ {
+          "description" : "Invitation id",
+          "example" : "e0163a07-8eee-4d30-ae44-75d44b1e47b0",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: owners",
+          "example" : "owners",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "owners"
+            }
+          }
+        }, {
+          "description" : "Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified",
+          "in" : "query",
+          "name" : "page[cursor]",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrantInvitations_Owners_Multi_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get owners relationship (\"to-many\").",
+        "tags" : [ "resourceGrantInvitations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/resourceGrantInvitations/{id}/relationships/previewGrant" : {
+      "get" : {
+        "description" : "Retrieves previewGrant relationship.",
+        "parameters" : [ {
+          "description" : "Invitation id",
+          "example" : "e0163a07-8eee-4d30-ae44-75d44b1e47b0",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: previewGrant",
+          "example" : "previewGrant.subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "previewGrant.subject"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: previewGrant.subject",
+          "example" : "previewGrant.subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "previewGrant.subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrantInvitations_PreviewGrant_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get previewGrant relationship (\"to-one\").",
+        "tags" : [ "resourceGrantInvitations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/resourceGrantInvitations/{id}/relationships/subject" : {
+      "get" : {
+        "description" : "Retrieves subject relationship.",
+        "parameters" : [ {
+          "description" : "Invitation id",
+          "example" : "e0163a07-8eee-4d30-ae44-75d44b1e47b0",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "subject"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: subject",
+          "example" : "subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrantInvitations_Subject_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Client_Credentials" : [ ]
+        }, {
+          "Authorization_Code_PKCE" : [ ]
+        } ],
+        "summary" : "Get subject relationship (\"to-one\").",
+        "tags" : [ "resourceGrantInvitations" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
     "/resourceGrants" : {
       "get" : {
         "description" : "Retrieves multiple resourceGrants by available filters, or without if applicable.",
@@ -21603,7 +22281,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: grantee, subject",
+          "description" : "Include related resources. Available relationships: grantee, invitation, subject",
           "example" : "grantee.artist.albums",
           "in" : "query",
           "name" : "include",
@@ -21625,7 +22303,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "grantee", "subject" ]
+              "enum" : [ "grantee", "invitation", "subject" ]
             }
           },
           "style" : "form"
@@ -21694,7 +22372,7 @@
         }
       },
       "post" : {
-        "description" : "Creates a new resourceGrant.",
+        "description" : "Create a direct grant from `role`, `subject` and `grantee`. Alternatively, redeem an invitation with only the `invitation` relationship: the caller receives the invitation's role on its subject, and the response is the caller's grant. Redeeming again returns the same grant. Every redemption, repeated ones included, needs a password-protected invitation's password and counts as a use of a limited invitation; password attempts are rate limited. The invitation's creator cannot redeem it.",
         "parameters" : [ {
           "$ref" : "#/components/parameters/IdempotencyKey"
         } ],
@@ -21721,6 +22399,9 @@
           "400" : {
             "$ref" : "#/components/responses/Default400Response"
           },
+          "403" : {
+            "$ref" : "#/components/responses/ResourceGrantsCreateResource403Response"
+          },
           "404" : {
             "$ref" : "#/components/responses/Default404Response"
           },
@@ -21740,7 +22421,7 @@
             "$ref" : "#/components/responses/Idempotency422Response"
           },
           "429" : {
-            "$ref" : "#/components/responses/Default429Response"
+            "$ref" : "#/components/responses/ResourceGrantsCreateResource429Response"
           },
           "500" : {
             "$ref" : "#/components/responses/Default500Response"
@@ -21835,7 +22516,7 @@
             "type" : "string"
           }
         }, {
-          "description" : "Include related resources. Available relationships: grantee, subject",
+          "description" : "Include related resources. Available relationships: grantee, invitation, subject",
           "example" : "grantee.artist.albums",
           "in" : "query",
           "name" : "include",
@@ -21857,7 +22538,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "grantee", "subject" ]
+              "enum" : [ "grantee", "invitation", "subject" ]
             }
           },
           "style" : "form"
@@ -22066,6 +22747,87 @@
           "Authorization_Code_PKCE" : [ "r_usr" ]
         } ],
         "summary" : "Get grantee relationship (\"to-one\").",
+        "tags" : [ "resourceGrants" ],
+        "x-path-item-properties" : {
+          "required-access-tier" : "INTERNAL"
+        }
+      }
+    },
+    "/resourceGrants/{id}/relationships/invitation" : {
+      "get" : {
+        "description" : "Retrieves invitation relationship.",
+        "parameters" : [ {
+          "description" : "Opaque resource grant ID",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Include related resources. Available relationships: invitation",
+          "example" : "invitation.subject",
+          "in" : "query",
+          "name" : "include",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "example" : "invitation.subject"
+            }
+          }
+        }, {
+          "description" : "Applies context-dependent replacements to media resource identifiers in selected relationships without changing stored data. Paths are comma-separated and follow `include` syntax. Example: invitation.subject",
+          "example" : "invitation.subject",
+          "in" : "query",
+          "name" : "replaceMedia",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "example" : "invitation.subject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/vnd.api+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResourceGrants_Invitation_Single_Relationship_Data_Document"
+                }
+              }
+            },
+            "description" : "Successful response"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/Default400Response"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/Default404Response"
+          },
+          "405" : {
+            "$ref" : "#/components/responses/Default405Response"
+          },
+          "406" : {
+            "$ref" : "#/components/responses/Default406Response"
+          },
+          "415" : {
+            "$ref" : "#/components/responses/Default415Response"
+          },
+          "429" : {
+            "$ref" : "#/components/responses/Default429Response"
+          },
+          "500" : {
+            "$ref" : "#/components/responses/Default500Response"
+          },
+          "503" : {
+            "$ref" : "#/components/responses/Default503Response"
+          }
+        },
+        "security" : [ {
+          "Authorization_Code_PKCE" : [ "r_usr" ]
+        } ],
+        "summary" : "Get invitation relationship (\"to-one\").",
         "tags" : [ "resourceGrants" ],
         "x-path-item-properties" : {
           "required-access-tier" : "INTERNAL"
@@ -28833,7 +29595,7 @@
         }
       },
       "patch" : {
-        "description" : "Updates existing track.",
+        "description" : "Updates existing track. A COLLABORATOR on the track may update it; changing accessType or isrc needs OWNER.",
         "parameters" : [ {
           "description" : "Track id",
           "example" : "75413016",
@@ -29026,7 +29788,7 @@
         }
       },
       "patch" : {
-        "description" : "Moves the uploaded track to the supplied album, replacing its previous album association. Exactly one album is required; empty data cannot clear it. Returns an acknowledgement.",
+        "description" : "Moves the uploaded track to the supplied album, replacing its previous album association. Exactly one album is required; empty data cannot clear it. The caller needs COLLABORATOR on the track and the album. The album must be in the same user's folders as the track (409 otherwise). Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Track id",
           "example" : "75413016",
@@ -29219,7 +29981,7 @@
         }
       },
       "patch" : {
-        "description" : "Sets the track's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the track or its album. Only the track's owner can change its artists. Returns an acknowledgement.",
+        "description" : "Sets the track's artists, replacing the current list. Artists are listed in the order given. Provide 1 to 10 distinct artists. You can add your own artist profile and the profiles of users who have owner or collaborator access to the track or its album. Owners and collaborators can change its artists. Returns an acknowledgement.",
         "parameters" : [ {
           "description" : "Track id",
           "example" : "75413016",
@@ -40012,6 +40774,26 @@
         },
         "description" : "Playlist already contains one or more requested items; Playlist item limit reached; Request already in progress for this idempotency key"
       },
+      "ResourceGrantsCreateResource403Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/ResourceGrantsCreateResource403ResponseBody"
+            }
+          }
+        },
+        "description" : "This invitation can no longer be accepted; The invitation is password protected; send its password; The invitation password is incorrect"
+      },
+      "ResourceGrantsCreateResource429Response" : {
+        "content" : {
+          "application/vnd.api+json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/ResourceGrantsCreateResource429ResponseBody"
+            }
+          }
+        },
+        "description" : "Too many invitation password attempts; try again later"
+      },
       "SavedSharesCreateResource403Response" : {
         "content" : {
           "application/vnd.api+json" : {
@@ -41248,7 +42030,7 @@
               "maxLength" : 13,
               "pattern" : "^$|^[0-9]{12,13}$",
               "type" : "string",
-              "description" : "A barcode the rights holder already owns: a GTIN-12 or GTIN-13 (UPC-A or EAN-13) with a valid GS1 check digit. A barcode set here can be replaced until the album is first sold, and null resets it to the default value. An empty string is also accepted as a reset for now, for compatibility. After the first sale both are rejected. The barcode TIDAL assigns at the album's first sale is permanent. Omit the field to leave the barcode unchanged.",
+              "description" : "A barcode the rights holder already owns: a GTIN-12 or GTIN-13 (UPC-A or EAN-13) with a valid GS1 check digit. A barcode set here can be replaced until the album is first sold, and null resets it to the default value. An empty string is also accepted as a reset for now, for compatibility. After the first sale both are rejected. The barcode TIDAL assigns at the album's first sale is permanent. Omit the field to leave the barcode unchanged. Only the album's owners can set it.",
               "example" : "9780306406157"
             }, {
               "type" : "object",
@@ -43752,6 +44534,13 @@
             "format" : "int32",
             "example" : 1523
           },
+          "numberOfFollowing" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Number of artists in the following relationship",
+            "format" : "int32",
+            "example" : 48
+          },
           "ownerType" : {
             "type" : "string",
             "description" : "Ownership type of the artist profile. LABEL: label-managed profile, USER: user-created profile, MIXED: claimed profile with both label and user content. May be null during rollout/backfill.",
@@ -44819,6 +45608,9 @@
                 "detail" : {
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
+                },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
                 },
                 "status" : {
                   "type" : "string",
@@ -47591,6 +48383,9 @@
             "type" : "string",
             "description" : "unique identifier for this particular occurrence of the problem"
           },
+          "meta" : {
+            "$ref" : "#/components/schemas/MetaObject"
+          },
           "source" : {
             "$ref" : "#/components/schemas/Error_Object_Source"
           },
@@ -48768,6 +49563,7 @@
               "purchases" : "#/components/schemas/Purchases_Resource_Object",
               "reactionSummaries" : "#/components/schemas/ReactionSummaries_Resource_Object",
               "reactions" : "#/components/schemas/Reactions_Resource_Object",
+              "resourceGrantInvitations" : "#/components/schemas/ResourceGrantInvitations_Resource_Object",
               "resourceGrants" : "#/components/schemas/ResourceGrants_Resource_Object",
               "savedShares" : "#/components/schemas/SavedShares_Resource_Object",
               "scopes" : "#/components/schemas/Scopes_Resource_Object",
@@ -48908,6 +49704,8 @@
             "$ref" : "#/components/schemas/ReactionSummaries_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/Reactions_Resource_Object"
+          }, {
+            "$ref" : "#/components/schemas/ResourceGrantInvitations_Resource_Object"
           }, {
             "$ref" : "#/components/schemas/ResourceGrants_Resource_Object"
           }, {
@@ -49885,6 +50683,23 @@
             "type" : "string",
             "description" : "Resource type",
             "example" : "tracks"
+          }
+        }
+      },
+      "MetaObject" : {
+        "type" : "object"
+      },
+      "MissingTermsMeta" : {
+        "required" : [ "missingTermsTypes" ],
+        "type" : "object",
+        "properties" : {
+          "missingTermsTypes" : {
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "DEVELOPER", "UPLOAD_MARKETPLACE", "MERCH_GUIDELINES", "TIDAL_CONNECT_DEVELOPER" ]
+            }
           }
         }
       },
@@ -53907,17 +54722,411 @@
         },
         "description" : "Relationship replacement projection provenance. ORIGINAL retains the requested identifier as the applicable resource, REPLACED projects another identifier, and NOT_REPLACED retains the requested identifier because no applicable replacement exists."
       },
+      "ResourceGrantInvitationsCreateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitationsCreateOperation_Payload_Data"
+          }
+        }
+      },
+      "ResourceGrantInvitationsCreateOperation_Payload_Data" : {
+        "required" : [ "attributes", "relationships", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitationsCreateOperation_Payload_Data_Attributes"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "resourceGrantInvitations" ]
+          }
+        }
+      },
+      "ResourceGrantInvitationsCreateOperation_Payload_Data_Attributes" : {
+        "required" : [ "role" ],
+        "type" : "object",
+        "properties" : {
+          "expiresAt" : {
+            "type" : "string",
+            "description" : "Time redemption ends; must be in the future and at most a year away. Defaults to seven days after creation.",
+            "format" : "date-time",
+            "nullable" : true,
+            "example" : "2021-07-08T00:00:00Z"
+          },
+          "maxUses" : {
+            "maximum" : 100,
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Number of redemptions permitted, repeated ones included. Unlimited when omitted or null.",
+            "format" : "int32",
+            "nullable" : true
+          },
+          "password" : {
+            "type" : "string",
+            "format" : "password",
+            "description" : "Password a user must send to redeem. Never returned. Must be printable ASCII characters. Playlist invitations cannot have one; 400.",
+            "maxLength" : 128,
+            "minLength" : 6,
+            "pattern" : "^[\\x20-\\x7E]*$",
+            "writeOnly" : true
+          },
+          "preview" : {
+            "type" : "boolean",
+            "description" : "Whether the code also gives VIEWER access to the subject, whatever the role, until the invitation expires. Previews are not yet supported, so true is rejected with 400. Defaults to false.",
+            "nullable" : true
+          },
+          "role" : {
+            "type" : "string",
+            "description" : "Role a redemption grants.",
+            "enum" : [ "VIEWER", "COLLABORATOR" ]
+          }
+        }
+      },
+      "ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships" : {
+        "required" : [ "subject" ],
+        "type" : "object",
+        "properties" : {
+          "subject" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships_Subject"
+          }
+        }
+      },
+      "ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships_Subject" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships_Subject_Data"
+          }
+        }
+      },
+      "ResourceGrantInvitationsCreateOperation_Payload_Data_Relationships_Subject_Data" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "albums", "tracks", "folders", "playlists" ]
+          }
+        }
+      },
+      "ResourceGrantInvitationsUpdateOperation_Payload" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitationsUpdateOperation_Payload_Data"
+          }
+        }
+      },
+      "ResourceGrantInvitationsUpdateOperation_Payload_Data" : {
+        "required" : [ "attributes", "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitationsUpdateOperation_Payload_Data_Attributes"
+          },
+          "id" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "resourceGrantInvitations" ]
+          }
+        }
+      },
+      "ResourceGrantInvitationsUpdateOperation_Payload_Data_Attributes" : {
+        "type" : "object",
+        "properties" : {
+          "password" : {
+            "writeOnly" : true,
+            "oneOf" : [ {
+              "type" : "string",
+              "format" : "password",
+              "description" : "Password a user must send to redeem. Never returned. Must be printable ASCII characters. A value sets or changes it; null removes it; omitted leaves it unchanged. Playlist invitations cannot have one.",
+              "maxLength" : 128,
+              "minLength" : 6,
+              "pattern" : "^[\\x20-\\x7E]*$",
+              "writeOnly" : true
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "preview" : {
+            "type" : "boolean",
+            "description" : "Whether the code also gives VIEWER access to the subject, whatever the role, until the invitation expires. Previews are not yet supported, so true is rejected with 400. Omitted leaves it unchanged."
+          }
+        }
+      },
+      "ResourceGrantInvitations_Attributes" : {
+        "required" : [ "code", "createdAt", "expiresAt", "passwordProtected", "preview", "role" ],
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Code that identifies the invitation to its recipients."
+          },
+          "createdAt" : {
+            "type" : "string",
+            "description" : "Time the invitation was created.",
+            "format" : "date-time",
+            "example" : "2021-07-01T00:00:00Z"
+          },
+          "expiresAt" : {
+            "type" : "string",
+            "description" : "Time redemption ends; issued grants remain.",
+            "format" : "date-time"
+          },
+          "maxUses" : {
+            "maximum" : 100,
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Number of redemptions permitted. Absent when unlimited.",
+            "format" : "int32"
+          },
+          "password" : {
+            "type" : "string",
+            "format" : "password",
+            "description" : "Password a user must send to redeem. Write-only: never returned.",
+            "maxLength" : 128,
+            "minLength" : 6,
+            "pattern" : "^[\\x20-\\x7E]*$",
+            "writeOnly" : true
+          },
+          "passwordProtected" : {
+            "type" : "boolean",
+            "description" : "Whether redemption requires a password. Only the owner and users with a role on the subject see a protected invitation's subject; others get null linkage."
+          },
+          "preview" : {
+            "type" : "boolean",
+            "description" : "Whether the code also gives VIEWER access to the subject until the invitation expires, through previewGrant. Previews are not yet supported, so it is always false."
+          },
+          "redemptionLink" : {
+            "$ref" : "#/components/schemas/Link_Object"
+          },
+          "role" : {
+            "type" : "string",
+            "description" : "Role a redemption grants.",
+            "enum" : [ "VIEWER", "COLLABORATOR" ]
+          },
+          "useCount" : {
+            "maximum" : 100,
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Number of redemptions so far, repeated ones included. Absent when maxUses is.",
+            "format" : "int32"
+          }
+        }
+      },
+      "ResourceGrantInvitations_Create_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitations_Resource_Object"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ResourceGrantInvitations_Multi_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ResourceGrantInvitations_Resource_Object"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ResourceGrantInvitations_Owners_Multi_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `users`."
+      },
+      "ResourceGrantInvitations_PreviewGrant_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `resourceGrants`."
+      },
+      "ResourceGrantInvitations_Relationships" : {
+        "properties" : {
+          "owners" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitations_Owners_Multi_Relationship_Data_Document"
+          },
+          "previewGrant" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitations_PreviewGrant_Single_Relationship_Data_Document"
+          },
+          "subject" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitations_Subject_Single_Relationship_Data_Document"
+          }
+        }
+      },
+      "ResourceGrantInvitations_Resource_Object" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "attributes" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitations_Attributes"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "relationships" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitations_Relationships"
+          },
+          "type" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ResourceGrantInvitations_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitations_Resource_Object"
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
+      "ResourceGrantInvitations_Subject_Resource_Identifier" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Resource id",
+            "example" : "12345"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitations_Subject_Resource_Identifier_Meta"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Resource type",
+            "example" : "tracks"
+          }
+        }
+      },
+      "ResourceGrantInvitations_Subject_Resource_Identifier_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "replacement" : {
+            "$ref" : "#/components/schemas/Replacement_Provenance"
+          }
+        }
+      },
+      "ResourceGrantInvitations_Subject_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/ResourceGrantInvitations_Subject_Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `albums`, `folders`, `playlists`, `tracks`."
+      },
+      "ResourceGrantInvitations_Update_Single_Resource_Data_Document" : {
+        "required" : [ "data", "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrantInvitations_Resource_Object"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        }
+      },
       "ResourceGrantsCreateOperation_Payload" : {
         "required" : [ "data" ],
         "type" : "object",
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/ResourceGrantsCreateOperation_Payload_Data"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/ResourceGrantsCreateOperation_Payload_Meta"
           }
         }
       },
       "ResourceGrantsCreateOperation_Payload_Data" : {
-        "required" : [ "attributes", "relationships", "type" ],
+        "required" : [ "relationships", "type" ],
         "type" : "object",
         "properties" : {
           "attributes" : {
@@ -53940,17 +55149,90 @@
             "type" : "string",
             "enum" : [ "VIEWER", "COLLABORATOR" ]
           }
-        }
+        },
+        "description" : "Required for a direct grant; omitted when redeeming."
       },
       "ResourceGrantsCreateOperation_Payload_Data_Relationships" : {
-        "required" : [ "grantee", "subject" ],
         "type" : "object",
         "properties" : {
           "grantee" : {
             "$ref" : "#/components/schemas/ResourceGrantsGranteeLinkage"
           },
+          "invitation" : {
+            "$ref" : "#/components/schemas/ResourceGrantsInvitationLinkage"
+          },
           "subject" : {
             "$ref" : "#/components/schemas/ResourceGrantsSubjectLinkage"
+          }
+        },
+        "description" : "Either `subject` and `grantee` for a direct grant, or only `invitation` to redeem it."
+      },
+      "ResourceGrantsCreateOperation_Payload_Meta" : {
+        "type" : "object",
+        "properties" : {
+          "password" : {
+            "type" : "string",
+            "format" : "password",
+            "description" : "Password of a password-protected invitation. Ignored for other invitations.",
+            "maxLength" : 128,
+            "minLength" : 1,
+            "writeOnly" : true
+          }
+        }
+      },
+      "ResourceGrantsCreateResource403ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "SHARE_PASSWORD_INVALID",
+                  "enum" : [ "SHARE_PASSWORD_INVALID", "SHARE_PASSWORD_REQUIRED", "UNAUTHORIZED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "This invitation can no longer be accepted"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "403"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ResourceGrantsCreateResource429ResponseBody" : {
+        "required" : [ "errors" ],
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "code", "status" ],
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "type" : "string",
+                  "example" : "SHARE_PASSWORD_ATTEMPTS_EXCEEDED",
+                  "enum" : [ "SHARE_PASSWORD_ATTEMPTS_EXCEEDED" ]
+                },
+                "detail" : {
+                  "type" : "string",
+                  "example" : "Too many invitation password attempts; try again later"
+                },
+                "status" : {
+                  "type" : "string",
+                  "example" : "429"
+                }
+              }
+            }
           }
         }
       },
@@ -53974,6 +55256,30 @@
         "properties" : {
           "data" : {
             "$ref" : "#/components/schemas/ResourceGrantsGrantee"
+          }
+        }
+      },
+      "ResourceGrantsInvitation" : {
+        "required" : [ "id", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "minLength" : 1,
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "resourceGrantInvitations" ]
+          }
+        },
+        "description" : "The invitation whose redemption issued the grant. Grants do not record it yet, so the linkage is always null."
+      },
+      "ResourceGrantsInvitationLinkage" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/ResourceGrantsInvitation"
           }
         }
       },
@@ -54078,6 +55384,28 @@
         },
         "description" : "Target resource types: `groups`, `users`."
       },
+      "ResourceGrants_Invitation_Single_Relationship_Data_Document" : {
+        "required" : [ "links" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Resource_Identifier"
+            }, {
+              "type" : "object",
+              "nullable" : true,
+              "enum" : [ null ]
+            } ]
+          },
+          "included" : {
+            "$ref" : "#/components/schemas/Included"
+          },
+          "links" : {
+            "$ref" : "#/components/schemas/Links"
+          }
+        },
+        "description" : "Target resource types: `resourceGrantInvitations`."
+      },
       "ResourceGrants_Multi_Resource_Data_Document" : {
         "required" : [ "data", "links" ],
         "type" : "object",
@@ -54100,6 +55428,9 @@
         "properties" : {
           "grantee" : {
             "$ref" : "#/components/schemas/ResourceGrants_Grantee_Single_Relationship_Data_Document"
+          },
+          "invitation" : {
+            "$ref" : "#/components/schemas/ResourceGrants_Invitation_Single_Relationship_Data_Document"
           },
           "subject" : {
             "$ref" : "#/components/schemas/ResourceGrants_Subject_Single_Relationship_Data_Document"
@@ -55567,6 +56898,9 @@
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
                 },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
+                },
                 "status" : {
                   "type" : "string",
                   "example" : "403"
@@ -55594,6 +56928,9 @@
                 "detail" : {
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
+                },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
                 },
                 "status" : {
                   "type" : "string",
@@ -55653,6 +56990,9 @@
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
                 },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
+                },
                 "status" : {
                   "type" : "string",
                   "example" : "403"
@@ -55708,6 +57048,9 @@
                 "detail" : {
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
+                },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
                 },
                 "status" : {
                   "type" : "string",
@@ -55985,6 +57328,9 @@
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
                 },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
+                },
                 "status" : {
                   "type" : "string",
                   "example" : "403"
@@ -56089,6 +57435,9 @@
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
                 },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
+                },
                 "status" : {
                   "type" : "string",
                   "example" : "403"
@@ -56190,6 +57539,9 @@
                 "detail" : {
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
+                },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
                 },
                 "status" : {
                   "type" : "string",
@@ -56414,6 +57766,9 @@
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
                 },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
+                },
                 "status" : {
                   "type" : "string",
                   "example" : "403"
@@ -56470,6 +57825,9 @@
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
                 },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
+                },
                 "status" : {
                   "type" : "string",
                   "example" : "403"
@@ -56525,6 +57883,9 @@
                 "detail" : {
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
+                },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
                 },
                 "status" : {
                   "type" : "string",
@@ -56644,6 +58005,9 @@
                 "detail" : {
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
+                },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
                 },
                 "status" : {
                   "type" : "string",
@@ -57016,6 +58380,9 @@
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
                 },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
+                },
                 "status" : {
                   "type" : "string",
                   "example" : "403"
@@ -57170,6 +58537,9 @@
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
                 },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
+                },
                 "status" : {
                   "type" : "string",
                   "example" : "403"
@@ -57226,6 +58596,9 @@
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
                 },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
+                },
                 "status" : {
                   "type" : "string",
                   "example" : "403"
@@ -57281,6 +58654,9 @@
                 "detail" : {
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
+                },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
                 },
                 "status" : {
                   "type" : "string",
@@ -57395,6 +58771,9 @@
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
                 },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
+                },
                 "status" : {
                   "type" : "string",
                   "example" : "403"
@@ -57450,6 +58829,9 @@
                 "detail" : {
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
+                },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
                 },
                 "status" : {
                   "type" : "string",
@@ -57558,6 +58940,9 @@
                 "detail" : {
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
+                },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
                 },
                 "status" : {
                   "type" : "string",
@@ -57881,6 +59266,9 @@
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
                 },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
+                },
                 "status" : {
                   "type" : "string",
                   "example" : "403"
@@ -57936,6 +59324,9 @@
                 "detail" : {
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
+                },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
                 },
                 "status" : {
                   "type" : "string",
@@ -58050,6 +59441,9 @@
                 "detail" : {
                   "type" : "string",
                   "example" : "Latest terms and conditions must be accepted"
+                },
+                "meta" : {
+                  "$ref" : "#/components/schemas/MissingTermsMeta"
                 },
                 "status" : {
                   "type" : "string",
@@ -59742,7 +61136,7 @@
               "maxLength" : 12,
               "pattern" : "^$|^[A-Z]{2}[A-Z0-9]{3}[0-9]{2}[0-9]{5}$",
               "type" : "string",
-              "description" : "An ISRC the rights holder already owns: the 12 characters ISO 3901 defines, without the hyphens of the display form. An ISRC set here can be replaced until the track is first sold, and null resets it to the default value. An empty string is also accepted as a reset for now, for compatibility. After the first sale both are rejected. The ISRC TIDAL assigns at the track's first sale is permanent. Omit the field to leave the ISRC unchanged.",
+              "description" : "An ISRC the rights holder already owns: the 12 characters ISO 3901 defines, without the hyphens of the display form. An ISRC set here can be replaced until the track is first sold, and null resets it to the default value. An empty string is also accepted as a reset for now, for compatibility. After the first sale both are rejected. The ISRC TIDAL assigns at the track's first sale is permanent. Omit the field to leave the ISRC unchanged. Only the track's owners can set it.",
               "example" : "QMJMT1701237"
             }, {
               "type" : "object",
