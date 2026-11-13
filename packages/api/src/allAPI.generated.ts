@@ -583,7 +583,7 @@ export interface paths {
         head?: never;
         /**
          * Update single album.
-         * @description Updates existing album. A COLLABORATOR on the album may update it; changing accessType or barcodeId needs OWNER.
+         * @description Updates existing album. A COLLABORATOR on the album may update it; changing accessType, published or barcodeId needs OWNER.
          */
         patch: {
             parameters: {
@@ -14583,7 +14583,7 @@ export interface paths {
         delete: {
             parameters: {
                 query?: {
-                    /** @description Also revoke the grants redemptions issued; access from other sources stays. Defaults to false. Not yet supported, so true is rejected with 400. */
+                    /** @description Also revoke the grants redemptions issued; access from other sources stays. Defaults to false. */
                     revokeGrants?: boolean;
                 };
                 header?: {
@@ -14880,7 +14880,7 @@ export interface paths {
                     "filter[grantee]"?: string;
                     /** @description One of: VIEWER, COLLABORATOR, OWNER (e.g. `VIEWER`) */
                     "filter[role]"?: "VIEWER" | "COLLABORATOR" | "OWNER";
-                    /** @description Album, track or folder owned by the caller; playlists return 400. Selects the live stored grants on the resource and its ancestor folders and albums, direct and from saved share links. Each grant keeps the subject it is stored on, so a grantee can have several; each grantee's OWNER grant is listed once, on its nearest node. Does not expand groups or bearer access or resolve effective permissions. Cannot be combined with other filters. Missing or non-owned resources return no records. Ordered by grantee, each grantee's nearest grants first; at most 20 grants per page. Also accepts `folders:me`. */
+                    /** @description Album, track or folder whose grants are listed, including those on its ancestor folders and albums. Each grant keeps the subject it is stored on. Also accepts `folders:me`. */
                     "filter[self][appliesTo]"?: string;
                     /** @description Filter by subject. Required unless `filter[self][appliesTo]` is used. The subject's owner reads all its grants; other callers read only grants made directly to them. Also accepts `folders:me`. */
                     "filter[subject]"?: string;
@@ -23783,6 +23783,213 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/userDataExports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get multiple userDataExports.
+         * @description Lists the authenticated user's exports, newest first.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description The authenticated user; exports of other users are never listed. Also accepts `me`. */
+                    "filter[owners.id]": string[];
+                    /** @description Include related resources. Available relationships: owners */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserDataExports_Multi_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        /**
+         * Create single userDataExport.
+         * @description Requests an export of the selected data types of the authenticated user's data, or returns the export already in progress as it was requested.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: {
+                    /** @description Unique idempotency key for safe retry of mutation requests. If the same caller repeats a key with the same method, path, query and payload, the original response is replayed. If the request differs, a 422 error is returned. */
+                    "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/vnd.api+json": components["schemas"]["UserDataExportsCreateOperation_Payload"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserDataExports_Create_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["UserDataExportsCreateResource400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                409: components["responses"]["UserDataExportsCreateResource409Response"];
+                415: components["responses"]["Default415Response"];
+                422: components["responses"]["Idempotency422Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userDataExports/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single userDataExport.
+         * @description Retrieves single userDataExport by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Include related resources. Available relationships: owners */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "owners"[];
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserDataExports_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/userDataExports/{id}/relationships/owners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get owners relationship ("to-many").
+         * @description Retrieves owners relationship.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: owners
+                     * @example owners
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["UserDataExports_Owners_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/userDiscoveryMixes/{id}": {
         parameters: {
             query?: never;
@@ -27387,6 +27594,11 @@ export interface components {
              * @description Explicit content. Deprecated: use 'explicit' instead. This field will be removed in a future version.
              */
             explicitLyrics?: boolean;
+            /**
+             * @description Whether the album is published to everyone.
+             * @example true
+             */
+            published?: boolean;
             /** Format: date */
             releaseDate?: string;
             title?: string;
@@ -30046,7 +30258,7 @@ export interface components {
              */
             viewAllLayout?: "GRID" | "LIST" | "UNKNOWN";
         };
-        /** @description Target resource types: `albums`, `artistStreamsStatistics`, `artists`, `playlists`, `tracks`, `videos`. */
+        /** @description Target resource types: `albums`, `artistStreamsStatistics`, `artists`, `playlists`, `squareItems`, `tracks`, `videos`. */
         DynamicModules_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["DynamicModules_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30154,20 +30366,12 @@ export interface components {
              * @example 12345
              */
             id: string;
-            meta?: components["schemas"]["DynamicPages_Resource_Object_Meta"];
             relationships?: components["schemas"]["DynamicPages_Relationships"];
             /**
              * @description Resource type (enum property replaced by openapi-typescript)
              * @enum {string}
              */
             type: "dynamicPages";
-        };
-        DynamicPages_Resource_Object_Meta: {
-            /**
-             * @description Reason why data has been redacted on this page
-             * @enum {string}
-             */
-            redactionReason?: "NO_BIRTHDAY" | "MINOR";
         };
         DynamicPages_Subject_Resource_Identifier: {
             /**
@@ -30671,7 +30875,7 @@ export interface components {
         };
         /** @description The viewer has the original subject in their normal collection. Present as an empty object when known present, otherwise omitted. Includes owned and saved playlists and saved mixes across folders; excludes Save for Later. */
         InCollection: Record<string, never>;
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["ArtworkLibraries_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["CommentSummaries_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["ReactionSummaries_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["ResourceGrantInvitations_Resource_Object"] | components["schemas"]["ResourceGrants_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SharingSummaries_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"] | components["schemas"]["SquareItemVariations_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["ArtworkLibraries_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["CommentSummaries_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["ReactionSummaries_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["ResourceGrantInvitations_Resource_Object"] | components["schemas"]["ResourceGrants_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SharingSummaries_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"] | components["schemas"]["SquareItemVariations_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDataExports_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -32947,7 +33151,7 @@ export interface components {
         ResourceGrantsGranteeLinkage: {
             data: components["schemas"]["ResourceGrantsGrantee"];
         };
-        /** @description The invitation whose redemption issued the grant. Grants do not record it yet, so the linkage is always null. */
+        /** @description The invitation whose redemption issued the grant. */
         ResourceGrantsInvitation: {
             id: string;
             /** @enum {string} */
@@ -36958,6 +37162,114 @@ export interface components {
              */
             type: "userDataExportRequests";
         };
+        UserDataExportsCreateOperation_Payload: {
+            data: components["schemas"]["UserDataExportsCreateOperation_Payload_Data"];
+            meta?: components["schemas"]["UserDataExportsCreateOperation_Payload_Meta"];
+        };
+        UserDataExportsCreateOperation_Payload_Data: {
+            attributes?: components["schemas"]["UserDataExportsCreateOperation_Payload_Data_Attributes"];
+            /** @enum {string} */
+            type: "userDataExports";
+        };
+        UserDataExportsCreateOperation_Payload_Data_Attributes: {
+            /** @description Data types to export. Every data type when absent; when present, at least one is required. */
+            dataTypes?: ("ALBUMS" | "ARTISTS" | "ARTIST_CLAIMS" | "BIOGRAPHY" | "BLOCKED_ITEMS" | "CHILDREN_ACCOUNTS" | "FOLDERS" | "LOGIN_LOCATION" | "MIXES" | "NOTIFICATION" | "PAYMENT" | "PLAYLISTS" | "SEARCHES" | "STREAMS" | "SUBSCRIPTION_EVENTS" | "TRACKS" | "USER" | "USER_CLIENT" | "UPLOADS" | "VIDEOS")[];
+        };
+        UserDataExportsCreateOperation_Payload_Meta: {
+            /**
+             * @description Language of the email sent when the export is ready. English when absent, malformed or not translated.
+             * @example nb-NO
+             */
+            locale?: string;
+        };
+        UserDataExportsCreateResource400ResponseBody: {
+            errors: {
+                /**
+                 * @example DATA_TYPES_NOT_AVAILABLE
+                 * @enum {string}
+                 */
+                code: "DATA_TYPES_NOT_AVAILABLE";
+                /** @example One or more of the selected data types are not available */
+                detail?: string;
+                /** @example 400 */
+                status: string;
+            }[];
+        };
+        UserDataExportsCreateResource409ResponseBody: {
+            errors: {
+                /**
+                 * @example DATA_EXPORT_REQUESTED_TOO_RECENTLY
+                 * @enum {string}
+                 */
+                code: "DATA_EXPORT_REQUESTED_TOO_RECENTLY" | "DATA_EXPORT_REQUEST_IN_PROGRESS" | "IDEMPOTENT_REQUEST_IN_PROGRESS";
+                /** @example Another data export request is being handled; try again shortly */
+                detail?: string;
+                /** @example 409 */
+                status: string;
+            }[];
+        };
+        UserDataExports_Attributes: {
+            /**
+             * Format: date-time
+             * @description When the export was requested
+             */
+            createdAt: string;
+            /** @description Kinds of data the export contains, as picked when requesting it */
+            dataTypes: ("ALBUMS" | "ARTISTS" | "ARTIST_CLAIMS" | "BIOGRAPHY" | "BLOCKED_ITEMS" | "CHILDREN_ACCOUNTS" | "FOLDERS" | "LOGIN_LOCATION" | "MIXES" | "NOTIFICATION" | "PAYMENT" | "PLAYLISTS" | "SEARCHES" | "STREAMS" | "SUBSCRIPTION_EVENTS" | "TRACKS" | "USER" | "USER_CLIENT" | "UPLOADS" | "VIDEOS")[];
+            downloadLink?: components["schemas"]["Link_Object"];
+            /**
+             * Format: date-time
+             * @description When the export and its download stop being available; absent until it is ready
+             */
+            expiresAt?: string;
+            /**
+             * Format: date-time
+             * @description When the export became ready; absent until then
+             */
+            readyAt?: string;
+            /**
+             * @description Lifecycle state of a user data export. New values may be added at any time.
+             * @enum {string}
+             */
+            status: "PENDING" | "PROCESSING" | "OK" | "ERROR" | "EXPIRED" | "CANCELLED";
+        };
+        UserDataExports_Create_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserDataExports_Resource_Object"];
+            links: components["schemas"]["Links"];
+        };
+        UserDataExports_Multi_Resource_Data_Document: {
+            data: components["schemas"]["UserDataExports_Resource_Object"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        /** @description Target resource types: `users`. */
+        UserDataExports_Owners_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        UserDataExports_Relationships: {
+            owners?: components["schemas"]["UserDataExports_Owners_Multi_Relationship_Data_Document"];
+        };
+        UserDataExports_Resource_Object: {
+            attributes?: components["schemas"]["UserDataExports_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["UserDataExports_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "userDataExports";
+        };
+        UserDataExports_Single_Resource_Data_Document: {
+            data: components["schemas"]["UserDataExports_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
         UserDiscoveryMixes_Attributes: Record<string, never>;
         /** @description Target resource types: `playlists`. */
         UserDiscoveryMixes_Items_Multi_Relationship_Data_Document: {
@@ -39053,6 +39365,24 @@ export interface components {
             };
             content: {
                 "application/vnd.api+json": components["schemas"]["UserCollectionVideosItemsReadMultiDataRelationship403ResponseBody"];
+            };
+        };
+        /** @description One or more of the selected data types are not available */
+        UserDataExportsCreateResource400Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserDataExportsCreateResource400ResponseBody"];
+            };
+        };
+        /** @description Another data export request is being handled; try again shortly; A data export was prepared recently; wait before requesting another; Request already in progress for this idempotency key */
+        UserDataExportsCreateResource409Response: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/vnd.api+json": components["schemas"]["UserDataExportsCreateResource409ResponseBody"];
             };
         };
         /** @description Recommendation block limit reached; Request already in progress for this idempotency key */
