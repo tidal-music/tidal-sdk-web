@@ -14578,7 +14578,7 @@ export interface paths {
         post?: never;
         /**
          * Delete single resourceGrantInvitation.
-         * @description Delete the invitation, ending redemption.
+         * @description Delete the invitation, ending redemption and its preview.
          */
         delete: {
             parameters: {
@@ -14626,7 +14626,7 @@ export interface paths {
         head?: never;
         /**
          * Update single resourceGrantInvitation.
-         * @description Set, change or remove the password. Users who redeemed keep their grants.
+         * @description Set, change or remove the password, or turn the preview on or off. Users who redeemed keep their grants.
          */
         patch: {
             parameters: {
@@ -18439,6 +18439,287 @@ export interface paths {
                     };
                     content: {
                         "application/vnd.api+json": components["schemas"]["StripeDashboardLinks_Owners_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studioHomeEventTiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single studioHomeEventTile.
+         * @description Retrieves single studioHomeEventTile by id.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Studio Home event tile id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StudioHomeEventTiles_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studioHomeInsightTiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single studioHomeInsightTile.
+         * @description Retrieves single studioHomeInsightTile by id.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Studio Home insight tile id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StudioHomeInsightTiles_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studioHomeMerchTiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single studioHomeMerchTile.
+         * @description Retrieves single studioHomeMerchTile by id.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: items
+                     * @example items
+                     */
+                    include?: string[];
+                    /** @description Comma-separated direct relationships to return as linkage only, without related content. */
+                    includeLinkage?: "items"[];
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Studio Home merch tile id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StudioHomeMerchTiles_Single_Resource_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studioHomeMerchTiles/{id}/relationships/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get items relationship ("to-many").
+         * @description The seller's catalog items, in title order; empty until the latest merch guidelines are accepted. A page can be short or empty and still have a next cursor.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Include related resources. Available relationships: items
+                     * @example items
+                     */
+                    include?: string[];
+                    /** @description Server-generated cursor value pointing a certain page of items. Optional, targets first page if not specified */
+                    "page[cursor]"?: string;
+                };
+                header?: never;
+                path: {
+                    /**
+                     * @description Studio Home merch tile id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StudioHomeMerchTiles_Items_Multi_Relationship_Data_Document"];
+                    };
+                };
+                400: components["responses"]["Default400Response"];
+                404: components["responses"]["Default404Response"];
+                405: components["responses"]["Default405Response"];
+                406: components["responses"]["Default406Response"];
+                415: components["responses"]["Default415Response"];
+                429: components["responses"]["Default429Response"];
+                500: components["responses"]["Default500Response"];
+                503: components["responses"]["Default503Response"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studioHomeMusicTiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get single studioHomeMusicTile.
+         * @description Retrieves single studioHomeMusicTile by id.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /**
+                     * @description Studio Home music tile id. Use `me` for the authenticated user's resource
+                     * @example me
+                     */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/vnd.api+json": components["schemas"]["StudioHomeMusicTiles_Single_Resource_Data_Document"];
                     };
                 };
                 400: components["responses"]["Default400Response"];
@@ -29514,6 +29795,11 @@ export interface components {
             type: "clients";
         };
         ClientsUpdateOperation_Payload_Data_Attributes: {
+            /**
+             * @description Client preset defining default OAuth settings and supported audio formats.
+             * @enum {string}
+             */
+            clientPreset?: "STANDARD_THIRD_PARTY" | "TIDAL_CONNECT_CD" | "TIDAL_CONNECT_HIRES" | "TIDAL_CONNECT_CD_WITH_ATMOS" | "TIDAL_CONNECT_HIRES_WITH_ATMOS";
             description?: string;
             name?: string;
             redirectUris?: string[];
@@ -29522,6 +29808,11 @@ export interface components {
         Clients_Attributes: {
             /** @enum {string} */
             accessTier: "THIRD_PARTY" | "THIRD_PARTY_PROD" | "PARTNER" | "INTERNAL";
+            /**
+             * @description Client preset defining default OAuth settings and supported audio formats.
+             * @enum {string}
+             */
+            clientPreset: "STANDARD_THIRD_PARTY" | "TIDAL_CONNECT_CD" | "TIDAL_CONNECT_HIRES" | "TIDAL_CONNECT_CD_WITH_ATMOS" | "TIDAL_CONNECT_HIRES_WITH_ATMOS";
             clientSecret?: string;
             /** Format: date-time */
             createdAt?: string;
@@ -30258,7 +30549,7 @@ export interface components {
              */
             viewAllLayout?: "GRID" | "LIST" | "UNKNOWN";
         };
-        /** @description Target resource types: `albums`, `artistStreamsStatistics`, `artists`, `playlists`, `squareItems`, `tracks`, `videos`. */
+        /** @description Target resource types: `albums`, `artistStreamsStatistics`, `artists`, `playlists`, `squareItems`, `studioHomeEventTiles`, `studioHomeInsightTiles`, `studioHomeMerchTiles`, `studioHomeMusicTiles`, `tracks`, `videos`. */
         DynamicModules_Items_Multi_Relationship_Data_Document: {
             data?: components["schemas"]["DynamicModules_Items_Resource_Identifier"][];
             included?: components["schemas"]["Included"];
@@ -30875,7 +31166,7 @@ export interface components {
         };
         /** @description The viewer has the original subject in their normal collection. Present as an empty object when known present, otherwise omitted. Includes owned and saved playlists and saved mixes across folders; excludes Save for Later. */
         InCollection: Record<string, never>;
-        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["ArtworkLibraries_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["CommentSummaries_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["ReactionSummaries_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["ResourceGrantInvitations_Resource_Object"] | components["schemas"]["ResourceGrants_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SharingSummaries_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"] | components["schemas"]["SquareItemVariations_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDataExports_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
+        Included: (components["schemas"]["AcceptedTerms_Resource_Object"] | components["schemas"]["AlbumStatistics_Resource_Object"] | components["schemas"]["Albums_Resource_Object"] | components["schemas"]["Appreciations_Resource_Object"] | components["schemas"]["ArtistBiographies_Resource_Object"] | components["schemas"]["ArtistClaimStatuses_Resource_Object"] | components["schemas"]["ArtistClaims_Resource_Object"] | components["schemas"]["ArtistRoles_Resource_Object"] | components["schemas"]["ArtistSalesStatistics_Resource_Object"] | components["schemas"]["ArtistStreamsStatistics_Resource_Object"] | components["schemas"]["Artists_Resource_Object"] | components["schemas"]["ArtworkLibraries_Resource_Object"] | components["schemas"]["Artworks_Resource_Object"] | components["schemas"]["ChangeEventStreams_Resource_Object"] | components["schemas"]["ClientCertificates_Resource_Object"] | components["schemas"]["Clients_Resource_Object"] | components["schemas"]["CollaborationInviteRedemptions_Resource_Object"] | components["schemas"]["CollaborationInvites_Resource_Object"] | components["schemas"]["CommentSummaries_Resource_Object"] | components["schemas"]["Comments_Resource_Object"] | components["schemas"]["ContentClaims_Resource_Object"] | components["schemas"]["Credits_Resource_Object"] | components["schemas"]["Downloads_Resource_Object"] | components["schemas"]["DspSharingLinks_Resource_Object"] | components["schemas"]["DynamicModules_Resource_Object"] | components["schemas"]["DynamicPages_Resource_Object"] | components["schemas"]["FolderItems_Resource_Object"] | components["schemas"]["Folders_Resource_Object"] | components["schemas"]["Genres_Resource_Object"] | components["schemas"]["Groups_Resource_Object"] | components["schemas"]["Installations_Resource_Object"] | components["schemas"]["Lyrics_Resource_Object"] | components["schemas"]["ManualArtistClaims_Resource_Object"] | components["schemas"]["OfflineTasks_Resource_Object"] | components["schemas"]["PlayQueues_Resource_Object"] | components["schemas"]["PlaylistGenerationSchedules_Resource_Object"] | components["schemas"]["PlaylistGenerations_Resource_Object"] | components["schemas"]["Playlists_Resource_Object"] | components["schemas"]["PriceConfigurations_Resource_Object"] | components["schemas"]["ProviderOwners_Resource_Object"] | components["schemas"]["ProviderProductInfos_Resource_Object"] | components["schemas"]["Providers_Resource_Object"] | components["schemas"]["Purchases_Resource_Object"] | components["schemas"]["ReactionSummaries_Resource_Object"] | components["schemas"]["Reactions_Resource_Object"] | components["schemas"]["ResourceGrantInvitations_Resource_Object"] | components["schemas"]["ResourceGrants_Resource_Object"] | components["schemas"]["SavedShares_Resource_Object"] | components["schemas"]["Scopes_Resource_Object"] | components["schemas"]["SearchHistoryEntries_Resource_Object"] | components["schemas"]["SearchResults_Resource_Object"] | components["schemas"]["SearchSuggestions_Resource_Object"] | components["schemas"]["Shares_Resource_Object"] | components["schemas"]["SharingSummaries_Resource_Object"] | components["schemas"]["SquareConnections_Resource_Object"] | components["schemas"]["SquareItemVariationPhysicalCounts_Resource_Object"] | components["schemas"]["SquareItemVariations_Resource_Object"] | components["schemas"]["SquareItems_Resource_Object"] | components["schemas"]["SquareSites_Resource_Object"] | components["schemas"]["StripeConnections_Resource_Object"] | components["schemas"]["StripeDashboardLinks_Resource_Object"] | components["schemas"]["StudioHomeEventTiles_Resource_Object"] | components["schemas"]["StudioHomeInsightTiles_Resource_Object"] | components["schemas"]["StudioHomeMerchTiles_Resource_Object"] | components["schemas"]["StudioHomeMusicTiles_Resource_Object"] | components["schemas"]["SubscriptionPriceChangeDecisions_Resource_Object"] | components["schemas"]["TemporaryUserTokens_Resource_Object"] | components["schemas"]["Terms_Resource_Object"] | components["schemas"]["TrackFiles_Resource_Object"] | components["schemas"]["TrackManifests_Resource_Object"] | components["schemas"]["TrackSourceFiles_Resource_Object"] | components["schemas"]["TrackStatistics_Resource_Object"] | components["schemas"]["Tracks_Resource_Object"] | components["schemas"]["TracksMetadataStatus_Resource_Object"] | components["schemas"]["UsageRules_Resource_Object"] | components["schemas"]["UserCollectionAlbums_Resource_Object"] | components["schemas"]["UserCollectionArtists_Resource_Object"] | components["schemas"]["UserCollectionFolders_Resource_Object"] | components["schemas"]["UserCollectionPlaylists_Resource_Object"] | components["schemas"]["UserCollectionSaveForLaters_Resource_Object"] | components["schemas"]["UserCollectionTracks_Resource_Object"] | components["schemas"]["UserCollectionVideos_Resource_Object"] | components["schemas"]["UserDailyMixes_Resource_Object"] | components["schemas"]["UserDataExportRequests_Resource_Object"] | components["schemas"]["UserDataExports_Resource_Object"] | components["schemas"]["UserDiscoveryMixes_Resource_Object"] | components["schemas"]["UserFeedItems_Resource_Object"] | components["schemas"]["UserFeeds_Resource_Object"] | components["schemas"]["UserNewReleaseMixes_Resource_Object"] | components["schemas"]["UserOfflineMixes_Resource_Object"] | components["schemas"]["UserPlaybackStates_Resource_Object"] | components["schemas"]["UserRecommendationBlocks_Resource_Object"] | components["schemas"]["UserReports_Resource_Object"] | components["schemas"]["UserSubscriptionPriceChanges_Resource_Object"] | components["schemas"]["Users_Resource_Object"] | components["schemas"]["VideoManifests_Resource_Object"] | components["schemas"]["Videos_Resource_Object"] | components["schemas"]["ViewerContexts_Resource_Object"])[];
         InstallationsCreateOperation_Payload: {
             data: components["schemas"]["InstallationsCreateOperation_Payload_Data"];
         };
@@ -32944,7 +33235,7 @@ export interface components {
              * @description Password a user must send to redeem. Never returned. Must be printable ASCII characters. Playlist invitations cannot have one; 400.
              */
             password?: string;
-            /** @description Whether the code also gives VIEWER access to the subject, whatever the role, until the invitation expires. Previews are not yet supported, so true is rejected with 400. Defaults to false. */
+            /** @description Whether previewGrant gives VIEWER access to the subject, whatever the role, until the invitation expires. Defaults to false. */
             preview?: boolean | null;
             /**
              * @description Role a redemption grants.
@@ -32974,7 +33265,7 @@ export interface components {
         };
         ResourceGrantInvitationsUpdateOperation_Payload_Data_Attributes: {
             password?: string | (never | null);
-            /** @description Whether the code also gives VIEWER access to the subject, whatever the role, until the invitation expires. Previews are not yet supported, so true is rejected with 400. Omitted leaves it unchanged. */
+            /** @description Whether previewGrant gives VIEWER access to the subject, whatever the role, until the invitation expires. Omitted leaves it unchanged. */
             preview?: boolean;
         };
         ResourceGrantInvitations_Attributes: {
@@ -33003,7 +33294,7 @@ export interface components {
             password?: string;
             /** @description Whether redemption requires a password. Only the owner and users with a role on the subject see a protected invitation's subject; others get null linkage. */
             passwordProtected: boolean;
-            /** @description Whether the code also gives VIEWER access to the subject until the invitation expires, through previewGrant. Previews are not yet supported, so it is always false. */
+            /** @description Whether previewGrant gives VIEWER access to the subject until the invitation expires. */
             preview: boolean;
             redemptionLink?: components["schemas"]["Link_Object"];
             /**
@@ -33182,6 +33473,13 @@ export interface components {
             role: "VIEWER" | "COLLABORATOR";
         };
         ResourceGrants_Attributes: {
+            /** @description Code of a bearer grant: whoever presents it as `shareCode` holds the role on the subject and everything below it. */
+            code?: string;
+            /**
+             * Format: date-time
+             * @description Time a bearer grant stops applying.
+             */
+            expiresAt?: string;
             /** @enum {string} */
             role: "VIEWER" | "COLLABORATOR" | "OWNER";
         };
@@ -33809,7 +34107,7 @@ export interface components {
             links: components["schemas"]["Links"];
         };
         SharingSummaries_Attributes: {
-            /** @description Whether a live grant to another user or an applicable undeleted, unexpired share exists on the subject or an ancestor. Everyone grants do not count. Ancestor folder links require VOUCHER; exhausted links still count. */
+            /** @description Whether a live grant to another user, an unexpired bearer grant or an applicable undeleted, unexpired share exists on the subject or an ancestor. Everyone grants do not count. Ancestor folder links require VOUCHER; exhausted links still count. */
             shared: boolean;
             /** @description The same sharing check restricted to ancestor folders and albums. Descendants never contribute. */
             sharedViaParent: boolean;
@@ -35173,6 +35471,109 @@ export interface components {
              * @enum {string}
              */
             type: "stripeDashboardLinks";
+        };
+        StudioHomeEventTiles_Attributes: {
+            /** @description Terms types the user must accept before using this tile; empty when none are missing. */
+            requiredTerms: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
+        };
+        StudioHomeEventTiles_Resource_Object: {
+            attributes?: components["schemas"]["StudioHomeEventTiles_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "studioHomeEventTiles";
+        };
+        StudioHomeEventTiles_Single_Resource_Data_Document: {
+            data: components["schemas"]["StudioHomeEventTiles_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StudioHomeInsightTiles_Attributes: {
+            /** @description Terms types the user must accept before using this tile; empty when none are missing. */
+            requiredTerms: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
+        };
+        StudioHomeInsightTiles_Resource_Object: {
+            attributes?: components["schemas"]["StudioHomeInsightTiles_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "studioHomeInsightTiles";
+        };
+        StudioHomeInsightTiles_Single_Resource_Data_Document: {
+            data: components["schemas"]["StudioHomeInsightTiles_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StudioHomeMerchTiles_Attributes: {
+            /**
+             * @description Terms types the seller must accept before managing merch; empty when none are missing.
+             * @example [
+             *       "MERCH_GUIDELINES"
+             *     ]
+             */
+            requiredTerms: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
+        };
+        /** @description Target resource types: `squareItems`. */
+        StudioHomeMerchTiles_Items_Multi_Relationship_Data_Document: {
+            data?: components["schemas"]["Resource_Identifier"][];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StudioHomeMerchTiles_Relationships: {
+            items?: components["schemas"]["StudioHomeMerchTiles_Items_Multi_Relationship_Data_Document"];
+        };
+        StudioHomeMerchTiles_Resource_Object: {
+            attributes?: components["schemas"]["StudioHomeMerchTiles_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            relationships?: components["schemas"]["StudioHomeMerchTiles_Relationships"];
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "studioHomeMerchTiles";
+        };
+        StudioHomeMerchTiles_Single_Resource_Data_Document: {
+            data: components["schemas"]["StudioHomeMerchTiles_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
+        };
+        StudioHomeMusicTiles_Attributes: {
+            /** @description Terms types the user must accept before using this tile; empty when none are missing. */
+            requiredTerms: ("DEVELOPER" | "UPLOAD_MARKETPLACE" | "MERCH_GUIDELINES" | "TIDAL_CONNECT_DEVELOPER")[];
+        };
+        StudioHomeMusicTiles_Resource_Object: {
+            attributes?: components["schemas"]["StudioHomeMusicTiles_Attributes"];
+            /**
+             * @description Resource id
+             * @example 12345
+             */
+            id: string;
+            /**
+             * @description Resource type (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            type: "studioHomeMusicTiles";
+        };
+        StudioHomeMusicTiles_Single_Resource_Data_Document: {
+            data: components["schemas"]["StudioHomeMusicTiles_Resource_Object"];
+            included?: components["schemas"]["Included"];
+            links: components["schemas"]["Links"];
         };
         SubscriptionPriceChangeDecisionsCreateOperation_Payload: {
             data: components["schemas"]["SubscriptionPriceChangeDecisionsCreateOperation_Payload_Data"];
